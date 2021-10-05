@@ -1,0 +1,144 @@
+<div class="signup__wrapper">
+    <mat-spinner
+        class="signup__spinner"
+        *ngIf="isLoading"
+        [diameter]="50"></mat-spinner>
+    <form
+        class="signup__form"
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()"
+        *ngIf="!isLoading">
+        <div class="signup__preference-wrapper">
+            <span class="signup__preference-wrapper--entry-text">
+                {{ 'auth.pick_language' | translate }}
+            </span>
+            <mat-radio-group
+                formControlName="language">
+                <mat-radio-button
+                    class="signup__preference-radio-button"
+                    value="en">
+                    {{ 'languages.english' | translate }}
+                </mat-radio-button>
+                <mat-radio-button
+                    class="signup__preference-radio-button"
+                    value="hr">
+                    {{ 'languages.croatian' | translate }}
+                </mat-radio-button>
+            </mat-radio-group>
+            <span
+                class="signup__error"
+                *ngIf="_accessFormData('language').errors?.required">
+                {{ 'preferences.errors.language_required' | translate }}
+            </span>
+            <span class="signup__preference-wrapper--entry-text">
+                {{ 'auth.pick_weight_format' | translate }}
+            </span>
+            <mat-radio-group
+                formControlName="weightFormat">
+                <mat-radio-button
+                    class="signup__preference-radio-button"
+                    value="kg">
+                    {{ 'common.kilograms' | translate }}
+                </mat-radio-button>
+                <mat-radio-button
+                    class="signup__preference-radio-button"
+                    value="lbs">
+                    {{ 'common.pounds' | translate }}
+                </mat-radio-button>
+            </mat-radio-group>
+            <span
+                class="signup__error"
+                *ngIf="_accessFormData('weightFormat').errors?.required">
+                {{ 'auth.errors.weight_format_required' | translate }}
+            </span>
+            <span
+                class="signup__did-you-know"
+                [matTooltip]="'common.change_preference_registration' | translate">
+                {{ 'common.did_you_know' | translate }}
+            </span>
+        </div>
+        <mat-form-field
+            class="signup__form-field"
+            appearance="fill">
+            <mat-label class="signup__label">{{ 'auth.email' | translate }}</mat-label>
+            <input
+                matInput
+                type="email"
+                formControlName="email">
+            <mat-error
+                class="signup__error"
+                *ngIf="_accessFormData('email').errors?.required">
+                {{ 'auth.errors.email_required' | translate }}
+            </mat-error>
+            <mat-error
+                class="signup__error"
+                *ngIf="_accessFormData('email').errors?.email">
+                {{ 'auth.errors.invalid_email' | translate }}
+            </mat-error>
+            <mat-error
+                class="signup__error"
+                *ngIf="_accessFormData('email').errors?.availableEmail">
+                {{ 'auth.errors.email_already_registered' | translate }}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field
+            class="signup__form-field"
+            appearance="fill">
+            <mat-label class="signup__label">{{ 'auth.password' | translate }}</mat-label>
+            <input
+                matInput
+                type="password"
+                formControlName="password"
+                #inputPassword>
+            <mat-hint>{{ inputPassword.value?.length || 0 }} / 6</mat-hint>
+            <mat-error
+                class="signup__error"
+                *ngIf="_accessFormData('password').errors?.required">
+                {{ 'auth.errors.password_required' | translate }}
+            </mat-error>
+            <mat-error
+                class="signup__error"
+                *ngIf="_accessFormData('password').errors?.minlength ||
+                    _accessFormData('password').errors?.maxlength">
+                {{ 'auth.errors.password_length' | translate }}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field
+            class="signup__form-field"
+            appearance="fill">
+            <mat-label class="signup__label">{{ 'auth.confirm_password' | translate }}</mat-label>
+            <input
+                matInput
+                type="password"
+                formControlName="confirmPassword"
+                #inputConfirmPassword>
+            <mat-hint>{{ inputConfirmPassword.value?.length || 0 }} / 6</mat-hint>
+            <mat-error
+                class="signup__error"
+                *ngIf="_accessFormData('confirmPassword').errors?.required">
+                {{ 'auth.errors.confirm_password_required' | translate }}
+            </mat-error>
+            <mat-error
+                class="signup__error"
+                *ngIf="_accessFormData('confirmPassword').errors?.minlength ||
+                    _accessFormData('confirmPassword').errors?.maxlength">
+                {{ 'auth.errors.password_length' | translate }}
+            </mat-error>
+        </mat-form-field>
+        <span
+            class="signup__error-custom"
+            *ngIf="form.errors?.equalPass
+                && !_accessFormData('confirmPassword').errors?.minlength
+                && !_accessFormData('confirmPassword').errors?.maxlength
+                && isSubmitted">
+            {{ 'auth.errors.equal_passwords' | translate }}
+        </span>
+        <button
+            class="signup__submit"
+            type="submit"
+            mat-raised-button
+            color="primary">
+            {{ 'auth.signup' | translate }}
+        </button>
+    </form>
+</div>

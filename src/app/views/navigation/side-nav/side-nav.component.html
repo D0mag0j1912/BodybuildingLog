@@ -1,0 +1,91 @@
+<mat-nav-list>
+    <a
+        *ngIf="!(isAuthenticated$ | async)"
+        routerLink="/login"
+        mat-list-item
+        (click)="onCloseSideNav()">
+        <mat-icon class="sidenav__icon">login</mat-icon>
+        <span class="sidenav__caption">
+            {{ 'navigation.login' | translate }}
+        </span>
+    </a>
+    <a
+        *ngIf="!(isAuthenticated$ | async)"
+        routerLink="/signup"
+        mat-list-item
+        (click)="onCloseSideNav()">
+        <mat-icon class="sidenav__icon">app_registration</mat-icon>
+        <span class="sidenav__caption">
+            {{ 'navigation.signup' | translate }}
+        </span>
+    </a>
+    <a
+        *ngIf="isAuthenticated$ | async"
+        routerLink="/new-training"
+        mat-list-item
+        (click)="onCloseSideNav()">
+        <mat-icon class="sidenav__icon">fitness_center</mat-icon>
+        <span class="sidenav__caption">
+            {{ 'navigation.new_training' | translate }}
+        </span>
+    </a>
+    <a
+        *ngIf="isAuthenticated$ | async"
+        mat-list-item
+        (click)="goToPastTrainings();onCloseSideNav()">
+        <mat-icon class="sidenav__icon">history</mat-icon>
+        <span class="sidenav__caption">
+            {{ 'navigation.past_trainings' | translate }}
+        </span>
+    </a>
+    <ng-container *ngIf="(loggedUserData$ | async) as userData">
+        <a
+            *ngIf="isAuthenticated$ | async"
+            mat-list-item
+            [matMenuTriggerFor]="languages">
+            <mat-icon class="sidenav__icon">language</mat-icon>
+            <span class="sidenav__caption">
+                {{ 'navigation.language' | translate }}
+            </span>
+            <mat-menu #languages="matMenu">
+                <button
+                    class="sidenav__menu-item"
+                    [class.chosenLanguage]="userData?.preferences?.language === 'hr'"
+                    mat-menu-item
+                    (click)="changeLanguage('hr')"
+                    [disabled]="userData?.preferences?.language === 'hr'">
+                    <img
+                        src="../../../../assets/images/flags/croatia.png"
+                        height="40"
+                        width="40">
+                    <span class="sidenav__menu-item--text">
+                        {{ 'languages.croatian' | translate }}
+                    </span>
+                </button>
+                <button
+                    class="sidenav__menu-item"
+                    [class.chosenLanguage]="userData?.preferences?.language === 'en'"
+                    mat-menu-item
+                    (click)="changeLanguage('en')"
+                    [disabled]="userData?.preferences?.language === 'en'">
+                    <img
+                        src="../../../../assets/images/flags/united-kingdom.png"
+                        height="24"
+                        width="40">
+                    <span class="sidenav__menu-item--text">
+                        {{ 'languages.english' | translate }}
+                    </span>
+                </button>
+            </mat-menu>
+        </a>
+    </ng-container>
+    <a
+        mat-list-item
+        (click)="onCloseSideNav();onLogout()"
+        *ngIf="isAuthenticated$ | async">
+        <mat-icon class="sidenav__icon">logout</mat-icon>
+        <span class="sidenav__caption">
+            {{ 'navigation.logout' | translate }}
+        </span>
+    </a>
+</mat-nav-list>

@@ -1,0 +1,44 @@
+<mat-card
+    class="training-item__wrapper"
+    (click)="trainingClicked()">
+    <div class="training-item__title-wrapper">
+        <strong class="training-item__day-name">
+            {{ ('weekdays.' + weekDays[dayIndex] | translate) }}</strong>
+        {{ '(' + (training.createdAt | date: 'dd.MM.yyyy') + ')'}}
+    </div>
+    <div class="training-item__central-wrapper">
+        <div
+            class="training-item__bodyweight"
+            *ngIf="training.bodyweight">
+            <strong class="training-item__bodyweight--key">
+                {{ 'common.bodyweight' | translate }}
+            </strong>
+            <span class="training-item__bodyweight--value">
+                {{ training.bodyweight + ' kg' }}
+            </span>
+        </div>
+        <div class="training-item__created-at">
+            <strong class="training-item__created-at--key">
+                {{ 'common.created_at' | translate }}
+            </strong>
+            <span class="training-item__created-at--value">
+                {{ timeCreated }}
+            </span>
+        </div>
+    </div>
+    <div
+        class="training-item__exercise-wrapper"
+        [matTooltip]="training.exercise.length > 2 ? (training | showExercises) : ''"
+        matTooltipClass="exercises-tooltip">
+        <span
+            *ngFor="let data of (training.exercise | slice:0:2); let i = index"
+            class="training-item__exercise-name">
+            {{ (i+1) + '. ' + data.exerciseName }}
+        </span>
+        <span
+            class="training-item__exercise-dots"
+            *ngIf="training.exercise.length > 2">
+            &#8942;
+        </span>
+    </div>
+</mat-card>

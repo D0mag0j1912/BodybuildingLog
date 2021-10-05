@@ -1,0 +1,28 @@
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { NewTraining } from "src/app/models/training/new-training.model";
+import { environment } from "src/environments/environment";
+import { PastTrainingsResponse } from "../../models/training/past-trainings-response.model";
+
+@Injectable({
+    providedIn: 'root'
+})
+export class PastTrainingsService {
+
+    constructor(
+        private readonly http: HttpClient
+    ){}
+
+    //Metoda koja dohvaća ILI sve treninge (inicijalno) ILI treninge za pojedine stranice paginatora
+    getPastTrainings(currentDate: Date)
+        : Observable<PastTrainingsResponse> {
+        const params: string = `?currentDate=${currentDate}`;
+        return this.http.get<PastTrainingsResponse>(environment.backend + '/pastTrainings' + params);
+    }
+
+    getPastTraining(id: string)
+        :Observable<NewTraining> {
+        return this.http.get<NewTraining>(environment.backend + `/pastTrainings/${id}`);
+    }
+}

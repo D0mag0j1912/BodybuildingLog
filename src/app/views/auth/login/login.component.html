@@ -1,0 +1,75 @@
+<div class="login__wrapper">
+    <form
+        class="login__main-form"
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()">
+        <mat-form-field
+            class="login__main-form-field"
+            appearance="fill">
+            <mat-label class="login__label">{{ 'auth.email' | translate }}</mat-label>
+            <input
+                matInput
+                type="email"
+                formControlName="email"
+                #emailRef>
+            <mat-error
+                class="login__error"
+                *ngIf="_accessFormData('email').errors?.required">
+                {{ 'auth.errors.email_required' | translate }}
+            </mat-error>
+            <mat-error
+                class="login__error"
+                *ngIf="_accessFormData('email').errors?.email
+                    && !_accessFormData('email').errors?.required">
+                {{ 'auth.errors.invalid_email' | translate }}
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field
+            class="login__main-form-field"
+            appearance="fill">
+            <mat-label class="login__label">{{ 'auth.password' | translate }}</mat-label>
+            <input
+                #inputPassword
+                matInput
+                type="password"
+                formControlName="password">
+            <mat-hint>{{ inputPassword.value?.length || 0 }} / 6</mat-hint>
+            <mat-error
+                class="login__error"
+                *ngIf="_accessFormData('password').errors?.required">
+                {{ 'auth.errors.password_required' | translate }}
+            </mat-error>
+            <mat-error
+                class="login__error"
+                *ngIf="_accessFormData('password').errors?.minlength ||
+                    _accessFormData('password').errors?.maxlength">
+                {{ 'auth.errors.password_length' | translate }}
+            </mat-error>
+        </mat-form-field>
+        <span
+            class="login__error-custom"
+            *ngIf="form.errors?.passwordFitsEmail
+                && !_accessFormData('password').errors?.required
+                && !_accessFormData('password').errors?.minlength
+                && !_accessFormData('password').errors?.maxlength">
+            {{ 'auth.errors.password_wrong_email' | translate }}
+        </span>
+        <button
+            class="login__submit"
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="!form.valid">
+            {{ 'auth.login' | translate }}
+        </button>
+    </form>
+    <span class="login__no_account_message">
+        {{ 'auth.no_account_message' | translate }}
+        <a
+            class="login__no-account-link"
+            routerLink="/signup">
+            {{ 'auth.signup_link' | translate }}
+        </a>
+        {{ 'common.here' | translate }}
+    </span>
+</div>

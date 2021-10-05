@@ -1,0 +1,12 @@
+
+.app {
+    &__sidenav-container,
+    &__sidenav-content,
+    &__sidenav {
+        height: 100%;
+    }
+
+    &__sidenav {
+        width: 250px;
+    }
+}

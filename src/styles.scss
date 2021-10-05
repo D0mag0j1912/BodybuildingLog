@@ -1,0 +1,31 @@
+@import '../styles/default-pallette.scss';
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.app {
+    &__snackbar {
+        background-color: $army-green;
+
+        .mat-simple-snackbar {
+            span {
+                color: white;
+                font-family: $poppins;
+                font-size: 14px;
+            }
+        }
+
+        &-error {
+            background-color: $dark-red !important;
+        }
+    }
+}
+
+
+

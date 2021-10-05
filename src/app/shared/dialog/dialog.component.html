@@ -1,0 +1,32 @@
+<!--Obična poruka-->
+<div
+    mat-dialog-title
+    *ngIf="data.message">
+    <p>{{data.message}}</p>
+</div>
+<!--Brisanje vježbe-->
+<div
+    mat-dialog-title
+    *ngIf="data.brisanje">
+    <p>{{data.brisanje.message}}</p>
+</div>
+<div
+    mat-dialog-content
+    *ngIf="data.brisanje">
+    <p class="mat-subheading-1">Exercise name:
+        <strong>{{data.brisanje.exerciseName}}</strong>
+    </p>
+</div>
+<mat-dialog-actions>
+    <button
+        type="button"
+        [mat-dialog-close]="true"
+        mat-raised-button
+        color="primary"
+        *ngIf="data.brisanje">Delete</button>
+    <button
+        type="button"
+        [mat-dialog-close]="false"
+        mat-raised-button
+        [color]="data.isError ? 'primary' : ''">Izađi</button>
+</mat-dialog-actions>
