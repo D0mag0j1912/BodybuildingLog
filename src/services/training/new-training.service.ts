@@ -13,7 +13,7 @@ export class NewTrainingService {
         @InjectModel('Training') private readonly trainingModel: Model<NewTraining>
     ){}
 
-    //do
+    //dom
     async editTraining(
         trainingId: string,
         updatedTrainingData: NewTraining
