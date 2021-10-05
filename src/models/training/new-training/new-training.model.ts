@@ -21,7 +21,12 @@ export const newTrainingSchema = new Schema({
         type: Boolean,
         required: true
     },
-    bodyweight: Number
+    bodyweight: Number,
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }
 }, {
     timestamps: true
 });
