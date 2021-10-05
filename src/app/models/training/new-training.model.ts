@@ -2,6 +2,7 @@ import { Exercise } from "./exercise.model";
 
 /*Interface-i za praćenje trenutnog stanja treninga*/
 export interface NewTraining {
+    userId: string;
     exercise: SingleExercise[];
     editMode: boolean;
     _id?: string;

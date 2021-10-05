@@ -6,6 +6,8 @@ import { BehaviorSubject, Observable, of, Subject} from "rxjs";
 import { Exercise } from "../../models/training/exercise.model";
 import { NewTraining, SingleExercise } from "../../models/training/new-training.model";
 import { GeneralResponseData } from "../../models/general-response.model";
+import { AuthService } from "../auth/auth.service";
+import { AuthResponseData } from "src/app/models/auth/auth-data.model";
 @Injectable({
     providedIn: 'root'
 })
@@ -31,21 +33,16 @@ export class NewTrainingService implements OnDestroy {
         exercise: [],
         _id: '',
         bodyweight: null,
-        editMode: false
+        editMode: false,
+        userId: null
     };
-    //Kreiram Subject koji čuva stanje trenutnog treninga
-    private currentTrainingChanged$$ = new BehaviorSubject<NewTraining>({
-        exercise: [],
-        _id: '',
-        bodyweight: null,
-        editMode: false
-    });
-    //Observable koji sadrži trenutno stanje treninga
+    private currentTrainingChanged$$ = new BehaviorSubject<NewTraining>(this.currentTrainingState);
     currentTrainingChanged$: Observable<NewTraining> = this.currentTrainingChanged$$.asObservable();
     /*************************************************** */
 
     constructor(
-        private readonly http: HttpClient
+        private readonly http: HttpClient,
+        private readonly authService: AuthService
     ){}
 
     /*************************************
@@ -55,6 +52,8 @@ export class NewTrainingService implements OnDestroy {
         : Observable<Exercise[]> {
         return this.http.get<Exercise[]>(environment.backend + '/getExercises').pipe(
             tap((exercises: Exercise[]) => {
+                console.log(exercises);
+                console.log(this.currentTrainingState);
                 //Dohvaćam 'trainingState' iz LS
                 const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
                 //Samo ako nema 'trainingState' u LS
@@ -251,7 +250,8 @@ export class NewTrainingService implements OnDestroy {
                 exercise: [],
                 _id: '',
                 bodyweight: null,
-                editMode: false
+                editMode: false,
+                userId: null
             };
         }
         //Ubacivam u centralno polje pripremljeni objekt

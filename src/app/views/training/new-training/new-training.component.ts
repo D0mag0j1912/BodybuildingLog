@@ -15,6 +15,8 @@ import { NewTrainingService } from '../../../services/training/new-training.serv
 import { SharedService } from 'src/app/services/shared/shared.service';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 @Component({
     selector: 'app-new-training',
     templateUrl: './new-training.component.html',
@@ -22,9 +24,7 @@ import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
 
-    //Spremam pretplatu
     private readonly subs$$: Subject<void> = new Subject<void>();
-    //Definiram formu
     form: FormGroup;
 
     _id: string;
@@ -63,6 +63,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         private readonly newTrainingService: NewTrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
+        private readonly authService: AuthService,
         private readonly dialog: MatDialog,
         private readonly snackBar: MatSnackBar,
         private readonly route: ActivatedRoute
@@ -181,36 +182,42 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
         this.isLoading = true;
 
-        this.gatherAllFormData().pipe(
-            switchMap(() => {
-                if(this.editMode){
-                    return this.newTrainingService.updateTraining(
-                        this.formTrainingState,
-                        this._id
-                    ).pipe(
-                        tap((response: GeneralResponseData) => {
-                            this.snackBar.open(response.message, null, {
-                                duration: 3000,
-                                panelClass: 'app__snackbar'
-                            });
-                        }),
-                        finalize(() => this.isLoading = false)
-                    );
-                }
-                else {
-                    return this.newTrainingService.addTraining(this.formTrainingState).pipe(
-                        tap((response: GeneralResponseData) => {
-                            this.snackBar.open(response.message, null, {
-                                duration: 3000,
-                                panelClass: 'app__snackbar'
-                            });
-                        }),
-                        finalize(() => this.isLoading = false)
-                    );
-                }
-            }),
-            tap(() => this.isLoading = false),
-            takeUntil(this.subs$$)
+        this.authService.loggedUser$.pipe(
+            take(1),
+            switchMap((userData: AuthResponseData) => {
+                this.formTrainingState.userId = userData._id;
+                return this.gatherAllFormData().pipe(
+                    switchMap(() => {
+                        if(this.editMode){
+                            return this.newTrainingService.updateTraining(
+                                this.formTrainingState,
+                                this._id
+                            ).pipe(
+                                tap((response: GeneralResponseData) => {
+                                    this.snackBar.open(response.message, null, {
+                                        duration: 3000,
+                                        panelClass: 'app__snackbar'
+                                    });
+                                }),
+                                finalize(() => this.isLoading = false)
+                            );
+                        }
+                        else {
+                            return this.newTrainingService.addTraining(this.formTrainingState).pipe(
+                                tap((response: GeneralResponseData) => {
+                                    this.snackBar.open(response.message, null, {
+                                        duration: 3000,
+                                        panelClass: 'app__snackbar'
+                                    });
+                                }),
+                                finalize(() => this.isLoading = false)
+                            );
+                        }
+                    }),
+                    tap(() => this.isLoading = false),
+                    takeUntil(this.subs$$)
+                );
+            })
         ).subscribe();
     }
 
@@ -527,7 +534,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     createdAt: this.editMode ? this.editedDate : new Date(new Date().setHours(new Date().getHours() + 2)),
                     exercise: exerciseFormData,
                     bodyweight: this.bodyweight.value ? +this.bodyweight.value : null,
-                    editMode: this.editMode
+                    editMode: this.editMode,
+                    userId: null
                 };
             })
         );
