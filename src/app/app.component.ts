@@ -23,11 +23,8 @@ export class AppComponent implements OnInit {
         this.translateService.use(language?.preferences.language || 'en');
     }
 
-    //Metoda koja se pokreće kada se app inicijalizira
     ngOnInit(){
-        //Metoda koja čuva stanje prijavljenog korisnika
         this.authService.autoLogin();
-        //Metoda koja čuva stanje novog treninga
         this.newTrainingService.keepTrainingState();
     }
 }
