@@ -6,7 +6,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { TrainingRoutingModule } from "./training-routing.module";
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MAT_DATE_LOCALE } from "@angular/material/core";
-import { SharedModule } from "../../shared/shared.module";
+import { SharedModule } from "../shared/shared.module";
 import { NewTrainingPipe } from '../../pipes/new-training.pipe';
 import { ShowExercisesPipe } from "src/app/pipes/show-exercises.pipe";
 import { PastTrainingsComponent } from './past-trainings/past-trainings.component';

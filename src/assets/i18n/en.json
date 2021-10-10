@@ -11,6 +11,8 @@
         "bodyweight": "Bodyweight",
         "created_at": "Created at",
         "here": "here.",
+        "delete": "Delete",
+        "close": "Close",
         "errors": {
             "something_went_wrong": "Something went wrong. Please try again.",
             "invalid_date": "Invalid date format.",
@@ -61,6 +63,7 @@
     },
     "training": {
         "new_training": {
+            "exercise_name": "Exercise name:",
             "pick_date": "Choose a date",
             "pick_bodyweight": "Enter your today's weight",
             "pick_exercise": "Pick an exercise",

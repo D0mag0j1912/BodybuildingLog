@@ -23,7 +23,7 @@ export class NewTrainingPipe implements PipeTransform {
         index: number,
         //Parametar koji mi služi samo da se Pipe ponovno izvede kada se dogodi akcija
         exerciseChanged: boolean)
-        :Observable<Exercise[]> {
+        : Observable<Exercise[]> {
         return this.newTrainingService.currentTrainingChanged$.pipe(
             take(1),
             switchMap((data: NewTraining) => {

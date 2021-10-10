@@ -13,7 +13,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 })
 export class SideNavComponent implements OnInit, OnDestroy {
 
-    subscription$$: Subject<void> = new Subject<void>();
+    private readonly subscription$$: Subject<void> = new Subject<void>();
 
     @Output() closeSideNav = new EventEmitter<void>();
 

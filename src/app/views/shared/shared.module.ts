@@ -1,13 +1,15 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { MaterialModule } from "../material.module";
+import { TranslateModule } from "@ngx-translate/core";
+import { MaterialModule } from "../../material.module";
 import { DialogComponent } from "./dialog/dialog.component";
 
 @NgModule({
     declarations: [DialogComponent],
     imports: [
         CommonModule,
-        MaterialModule
+        MaterialModule,
+        TranslateModule
     ],
     entryComponents: [DialogComponent]
 })

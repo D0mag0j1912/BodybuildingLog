@@ -7,16 +7,17 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, debounceTime, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
-import { DialogComponent } from 'src/app/shared/dialog/dialog.component';
+import { DialogComponent } from 'src/app/views/shared/dialog/dialog.component';
 import { Exercise } from '../../../models/training/exercise.model';
 import { NewTraining, Set, SingleExercise } from '../../../models/training/new-training.model';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
+import { TranslateService } from '@ngx-translate/core';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 @Component({
     selector: 'app-new-training',
     templateUrl: './new-training.component.html',
@@ -25,19 +26,25 @@ import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 export class NewTrainingComponent implements OnInit, OnDestroy {
 
     private readonly subs$$: Subject<void> = new Subject<void>();
+
+    private readonly indexChanged$$ = new Subject<{
+        indexExercise: number,
+        indexSet: number
+    }>();
+
     form: FormGroup;
 
-    _id: string;
-    editedDate: Date;
+    private _id: string;
+    private editedDate: Date;
 
     //Spremam dohvaćene vježbe
-    exercises$: Observable<Exercise[]>;
-    editTraining: NewTraining;
-    formTrainingState: NewTraining;
+    readonly exercises$: Observable<Exercise[]>;
+    private editTraining: NewTraining;
+    private formTrainingState: NewTraining;
 
     //Spremam inicijalnu kilažu
-    initialWeight: number = 0;
-    focusCounter: number = 0;
+    private initialWeight: number = 0;
+    private focusCounter: number = 0;
     //Spinner
     isLoading: boolean = true;
 
@@ -63,6 +70,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         private readonly newTrainingService: NewTrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
+        private readonly translateService: TranslateService,
         private readonly authService: AuthService,
         private readonly dialog: MatDialog,
         private readonly snackBar: MatSnackBar,
@@ -92,7 +100,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 }
                 else {
                     return of(null).pipe(
-                        tap(() => {
+                        tap(_ => {
                             const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
                             if(trainingState){
                                 if(trainingState.editMode && !this.editMode){
@@ -108,15 +116,15 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     );
                 }
             }),
-            tap(() => this.sharedService.editingTraining$$.next(this.editMode)),
-            switchMap(() => {
+            tap(_ => this.sharedService.editingTraining$$.next(this.editMode)),
+            switchMap(_ => {
                 return this.newTrainingService.getExercises().pipe(
                     catchError(_ => {
                         this.isError = true;
-                        this.isLoading = false;
+                        /* this.isLoading = false; */
                         return of(null);
                     }),
-                    switchMap(() => {
+                    switchMap(_ => {
                         return this.formInit();
                     }),
                     finalize(() => this.isLoading = false)
@@ -126,7 +134,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         ).subscribe();
 
         //Pretplaćujem se na vrijednosti index-a trenutne vježbe i trenutnog seta (korisnik ih trenutno upisuje)
-        this.newTrainingService.indexChanged$$.pipe(
+        this.indexChanged$$.pipe(
             debounceTime(1000),
             tap(indexes => {
                 //Ako su vrijednosti "weightLifted" te "reps" ispravno upisane (required && samo pozitivni brojevi) te ako je upisan NAZIV VJEŽBE
@@ -187,7 +195,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             switchMap((userData: AuthResponseData) => {
                 this.formTrainingState.userId = userData._id;
                 return this.gatherAllFormData().pipe(
-                    switchMap(() => {
+                    switchMap(_ => {
                         if(this.editMode){
                             return this.newTrainingService.updateTraining(
                                 this.formTrainingState,
@@ -230,6 +238,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     onExerciseNameChange(
         $event: MatSelectChange,
         indexExercise: number): void {
+        console.log($event);
         //Ako je izabrana vrijednost
         if($event.value){
             //Ako ima setova
@@ -251,7 +260,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         indexExercise: number,
         indexSet: number): void {
         //Emitiram trenutne indexe
-        this.newTrainingService.indexChanged$$.next({
+        this.indexChanged$$.next({
             indexExercise: indexExercise,
             indexSet: indexSet
         });
@@ -312,34 +321,42 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         //Ako je odabran naziv vježbe
         if(exerciseName){
             //Dohvaćam referencu na dialog
-            let dialogRef = this.dialog.open(
-                DialogComponent,
-                {
-                    data: {
-                            brisanje: {
-                                message: 'Are you sure you want to delete?',
-                                exerciseName: exerciseName
-                            }
-                        }
+            let dialogRef = this.dialog.open(DialogComponent, {
+                data: {
+                    brisanje: {
+                        message: this.translateService.instant('training.new_training.delete_exercise_dialog'),
+                        exerciseName: exerciseName
                     }
-            );
+                }
+            });
             //Pretplaćujem se na akcije u dialogu
             dialogRef.afterClosed().pipe(
-                switchMap(response => {
+                switchMap((response: boolean) => {
                     //Ako je korisnik kliknuo "Delete"
                     if(response){
-                        //Izbriši vježbu iz centralnog polja
-                        return this.newTrainingService.deleteExercise(
-                            indexExercise,
-                            exerciseName
-                        ).pipe(
-                            tap((toBeAddedExercise: Exercise[]) => {
-                                //Triggeram pipe
-                                this.exerciseChanged = !this.exerciseChanged;
-                                //Izbriši form group
-                                (<FormArray>this.form.get('exercise')).removeAt(indexExercise);
-                                //Dodaj u ostale selectove izbrisanu vježbu
-                                this.newTrainingService.pushToAvailableExercises(toBeAddedExercise);
+                        return this.newTrainingService.currentTrainingChanged$.pipe(
+                            take(1),
+                            switchMap((currentTrainingState: NewTraining) => {
+                                //Izbriši vježbu iz centralnog polja
+                                return this.newTrainingService.deleteExercise(
+                                    indexExercise,
+                                    currentTrainingState,
+                                    exerciseName
+                                ).pipe(
+                                    tap((data: [NewTraining, Exercise[]]) => {
+                                        if(data[1]) {
+                                            //Triggeram pipe
+                                            this.exerciseChanged = !this.exerciseChanged;
+                                            //Izbriši form group
+                                            (<FormArray>this.form.get('exercise')).removeAt(indexExercise);
+                                            //Dodaj u ostale selectove izbrisanu vježbu
+                                            this.newTrainingService.pushToAvailableExercises(
+                                                data[0],
+                                                data[1]
+                                            );
+                                        }
+                                    })
+                                );
                             })
                         );
                     }
@@ -353,11 +370,13 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
         //Ako nije odabran naziv vježbe
         else{
-            //Brišem ovu vježbu iz centralnog polja
-            this.newTrainingService.deleteExercise(
-                indexExercise
-            ).pipe(
-                tap(() => (<FormArray>this.form.get('exercise')).removeAt(indexExercise)),
+            this.newTrainingService.currentTrainingChanged$.pipe(
+                take(1),
+                switchMap((currentTrainingState: NewTraining) => {
+                    return this.newTrainingService.deleteExercise(indexExercise, currentTrainingState).pipe(
+                        tap(() => (<FormArray>this.form.get('exercise')).removeAt(indexExercise))
+                    );
+                }),
                 takeUntil(this.subs$$)
             ).subscribe();
         }
@@ -420,7 +439,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             this.pastTrainingService.getPastTraining(this._id).pipe(
                 tap((training: NewTraining) => {
                     this.editedDate = training.updatedAt;
-                    this.editTraining = {...training, editMode: this.editMode};
+                    this.editTraining = {
+                        ...training,
+                        editMode: this.editMode
+                    };
                     this.newTrainingService.saveData(this.editTraining);
                 }),
                 catchError(_ => {
@@ -448,7 +470,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         return this.newTrainingService.currentTrainingChanged$.pipe(
             take(1),
             tap((data: NewTraining) => {
-                //Inicijaliziram formu
                 this.form = new FormGroup({
                     'bodyweight': new FormControl(
                         NewTrainingHandler.fillBodyweight(
@@ -594,7 +615,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 alreadyUsedExercises.push(exercise.get('name').value);
             }
         }
-        return alreadyUsedExercises;
+        return alreadyUsedExercises as string[];
     }
 
 }

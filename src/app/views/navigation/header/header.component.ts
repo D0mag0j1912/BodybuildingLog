@@ -20,7 +20,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     isEditing$: Observable<boolean>;
     loggedUserData$: Observable<AuthResponseData>;
 
-    subscription$$: Subject<void> = new Subject<void>();
+    private readonly subscription$$: Subject<void> = new Subject<void>();
 
     @Output() toggleSideNav = new EventEmitter<void>();
 

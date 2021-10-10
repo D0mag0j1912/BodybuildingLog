@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     form: FormGroup;
 
     @ViewChild('emailRef')
-    emailInput: ElementRef;
+    private readonly emailInput: ElementRef;
 
     constructor(
         private readonly loginService: LoginService,

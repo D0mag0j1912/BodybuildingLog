@@ -12,6 +12,8 @@
         "bodyweight": "Tjelesna težina",
         "created_at": "Vrijeme izrade",
         "here": "ovdje.",
+        "delete": "Izbriši",
+        "close": "Izađi",
         "errors": {
             "something_went_wrong": "Došlo je do greške. Pokušajte ponovno.",
             "invalid_date": "Pogrešan format datuma.",
@@ -62,6 +64,7 @@
     },
     "training": {
         "new_training": {
+            "exercise_name": "Naziv vježbe:",
             "pick_date": "Izaberite datum",
             "pick_bodyweight": "Unesite današnju tjelesnu težinu",
             "pick_exercise": "Unesite vježbu",

@@ -1,48 +1,36 @@
-import { Injectable, OnDestroy } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { environment } from '../../../environments/environment';
 import { HttpClient } from "@angular/common/http";
-import { map, take, tap } from "rxjs/operators";
-import { BehaviorSubject, Observable, of, Subject} from "rxjs";
+import { finalize, map, take, tap } from "rxjs/operators";
+import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
 import { Exercise } from "../../models/training/exercise.model";
 import { NewTraining, SingleExercise } from "../../models/training/new-training.model";
 import { GeneralResponseData } from "../../models/general-response.model";
-import { AuthService } from "../auth/auth.service";
-import { AuthResponseData } from "src/app/models/auth/auth-data.model";
 @Injectable({
     providedIn: 'root'
 })
-export class NewTrainingService implements OnDestroy {
-
-    //Kontroliram pretplatu
-    private readonly subs$$ = new Subject<void>();
-
-    //Kreiram Subject u kojega spremam trenutni index vježbe i seta
-    indexChanged$$ = new Subject<{
-        indexExercise: number,
-        indexSet: number
-    }>();
+export class NewTrainingService {
 
     //Subject koji sadrži sve registrirane vježbe
-    private allExercisesChanged$$ = new BehaviorSubject<Exercise[]>([]);
+    private readonly allExercisesChanged$$ = new BehaviorSubject<Exercise[]>([]);
     //Observable koji sadrži sve registrirane vježbe
-    allExercisesChanged$: Observable<Exercise[]> = this.allExercisesChanged$$.asObservable();
+    readonly allExercisesChanged$: Observable<Exercise[]> = this.allExercisesChanged$$.asObservable();
 
     /*************************************************** */
     //Spremam trenutno stanje treninga kojega stavljam u Subject
-    private currentTrainingState: NewTraining = {
+
+    private readonly currentTrainingChanged$$ = new BehaviorSubject<NewTraining>({
         exercise: [],
         _id: '',
         bodyweight: null,
         editMode: false,
         userId: null
-    };
-    private currentTrainingChanged$$ = new BehaviorSubject<NewTraining>(this.currentTrainingState);
-    currentTrainingChanged$: Observable<NewTraining> = this.currentTrainingChanged$$.asObservable();
+    });
+    readonly currentTrainingChanged$: Observable<NewTraining> = this.currentTrainingChanged$$.asObservable();
     /*************************************************** */
 
     constructor(
-        private readonly http: HttpClient,
-        private readonly authService: AuthService
+        private readonly http: HttpClient
     ){}
 
     /*************************************
@@ -53,10 +41,9 @@ export class NewTrainingService implements OnDestroy {
         return this.http.get<Exercise[]>(environment.backend + '/getExercises').pipe(
             tap((exercises: Exercise[]) => {
                 console.log(exercises);
-                console.log(this.currentTrainingState);
                 //Dohvaćam 'trainingState' iz LS
                 const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
-                //Samo ako nema 'trainingState' u LS
+                //Samo ako nema 'trainingState' u LS (znači user se sada ulogirao)
                 if(!trainingState){
                     //Inicijalno stvaram prazni objekt
                     this.updateTrainingState(
@@ -94,8 +81,11 @@ export class NewTrainingService implements OnDestroy {
 
     //Metoda koja dodava novu vrijednost tjelesne težine u centralni objekt
     addBodyweightToStorage(value: string): void {
-        this.currentTrainingState.bodyweight = +value;
-        this.saveData();
+        const updatedTraining: NewTraining = {
+            ...this.currentTrainingChanged$$.getValue(),
+            bodyweight: +value
+        } as NewTraining;
+        this.saveData(updatedTraining);
     }
 
     //Metoda koja briše set određene vježbe iz centralnog polja, ažurira stanje Subjecta i LS-a
@@ -104,53 +94,63 @@ export class NewTrainingService implements OnDestroy {
         indexSet: number,
         newTotal: number
     ): void {
-        //Brišem set iz centralnog polja
-        this.currentTrainingState.exercise[indexExercise].sets.splice(indexSet, 1);
-        this.currentTrainingState.exercise[indexExercise].total = newTotal;
-        this.saveData();
+        const updatedTraining: NewTraining = {...this.currentTrainingChanged$$.getValue()};
+        updatedTraining.exercise[indexExercise].sets.splice(indexSet, 1);
+        updatedTraining.exercise[indexExercise].total = newTotal;
+        this.saveData(updatedTraining);
     }
 
     //Metoda koja dodava izbrisanu vježbu u ostale selectove
-    pushToAvailableExercises(toBeAddedExercise: Exercise[])
-        : void {
-        //Prolazim kroz sve vježbe
-        this.currentTrainingState.exercise.forEach((exercise) => {
-            if(!exercise.availableExercises.includes(toBeAddedExercise[0])){
+    pushToAvailableExercises(
+        currentTrainingState: NewTraining,
+        toBeAddedExercise: Exercise[]
+    ): void {
+        const updatedTraining: NewTraining = {...currentTrainingState};
+        updatedTraining.exercise.map((exercise: SingleExercise) => {
+            const isDeletedExerciseInAE: Exercise = exercise.availableExercises.find((exercise: Exercise) => exercise._id === toBeAddedExercise[0]._id);
+            if(!isDeletedExerciseInAE){
                 exercise.availableExercises.push(toBeAddedExercise[0]);
                 exercise.availableExercises.sort(this.compare);
             }
         });
-        this.saveData();
+        this.saveData(updatedTraining);
     }
 
     //Metoda koja briše vježbu iz centralnog polja
     deleteExercise(
         deletedIndex: number,
-        deletedExercise?: string
-    ): Observable<Exercise[]> {
+        currentTrainingState: NewTraining,
+        deletedExerciseName?: string
+    ): Observable<[NewTraining, Exercise[]]> {
+        let updatedTraining: NewTraining = {...currentTrainingState};
         //Brišem izbrisanu vježbu iz arraya
-        this.currentTrainingState.exercise = this.currentTrainingState.exercise.filter(exercise => exercise.formArrayIndex !== deletedIndex);
-        //Prolazim kroz sve vježbe te ako su bile POVIŠE izbrisane, dekrementiram im index
-        this.currentTrainingState.exercise.forEach((exercise) => {
-            if(exercise.formArrayIndex > deletedIndex){
-                exercise.formArrayIndex--;
-            }
-        });
+        updatedTraining.exercise = updatedTraining.exercise
+            .filter((exercise: SingleExercise) => exercise.formArrayIndex !== deletedIndex)
+            .map((exercise: SingleExercise) => {
+                if(exercise.formArrayIndex > deletedIndex){
+                    exercise.formArrayIndex--;
+                }
+                return exercise;
+            });
         //Ako je naziv vježbe bio popunjen prilikom brisanja
-        if(deletedExercise){
+        if(deletedExerciseName){
             //Dohvaćam cijeli objekt izbrisane vježbe da ga mogu dodati u ostale vježbe (selectove)
             return this.allExercisesChanged$.pipe(
                 take(1),
                 map((allExercises: Exercise[]) => {
-                    return allExercises.filter(exercise => exercise.name === deletedExercise);
+                    return [
+                        updatedTraining,
+                        allExercises.filter(exercise => exercise.name === deletedExerciseName)
+                    ];
                 })
             );
         }
         //Ako naziv vježbe NIJE BIO popunjen prilikom brisanja
         else{
-            return of(null).pipe(
-                tap(() => this.saveData())
-            );
+            return of([
+                updatedTraining,
+                null
+            ]);
         }
     }
 
@@ -163,31 +163,32 @@ export class NewTrainingService implements OnDestroy {
         reps: number;
         total: number;
     }): void {
+        const updatedTraining: NewTraining = {...this.currentTrainingChanged$$.getValue()};
         //Gledam postoji li broj trenutno dodanog seta u polju 'sets'
-        const indexFoundSet = this.currentTrainingState.exercise[trainingData.formArrayIndex].sets.findIndex(set => set.setNumber === trainingData.setNumber);
+        const indexFoundSet = updatedTraining.exercise[trainingData.formArrayIndex].sets.findIndex(set => set.setNumber === trainingData.setNumber);
         //Ako sam našao isti broj seta (ažuriram na tom indexu)
         if(indexFoundSet > -1){
             //Ažuriram set na tom broju
-            this.currentTrainingState.exercise[trainingData.formArrayIndex].sets[indexFoundSet] = {
-                ...this.currentTrainingState.exercise[trainingData.formArrayIndex].sets[indexFoundSet],
+            updatedTraining.exercise[trainingData.formArrayIndex].sets[indexFoundSet] = {
+                ...updatedTraining.exercise[trainingData.formArrayIndex].sets[indexFoundSet],
                 weightLifted: trainingData.weightLifted,
                 reps: trainingData.reps
             };
             //Ažuriram total
-            this.currentTrainingState.exercise[trainingData.formArrayIndex].total = trainingData.total;
+            updatedTraining.exercise[trainingData.formArrayIndex].total = trainingData.total;
         }
         //Ako NISAM našao isti broj seta
         else{
             //Dodavam novi set u polje za tu vježbu
-            this.currentTrainingState.exercise[trainingData.formArrayIndex].sets.push({
+            updatedTraining.exercise[trainingData.formArrayIndex].sets.push({
                 setNumber: trainingData.setNumber,
                 weightLifted: trainingData.weightLifted,
                 reps: trainingData.reps
             });
             //Ažuriram total
-            this.currentTrainingState.exercise[trainingData.formArrayIndex].total = trainingData.total;
+            updatedTraining.exercise[trainingData.formArrayIndex].total = trainingData.total;
         }
-        this.saveData();
+        this.saveData(updatedTraining);
     }
 
     /************************************************************** */
@@ -198,7 +199,7 @@ export class NewTrainingService implements OnDestroy {
         nextFormArrayIndex: number
     ): void {
         //Dohvaćam sve registrirane vježbe
-        const allExercises: Exercise[] = JSON.parse(localStorage.getItem('allExercises'));
+        const allExercises: Exercise[] = [...this.allExercisesChanged$$.getValue()];
         //Dohvaćam raspoložive vježbe za novo dodani select
         const availableExercises: Exercise[] = allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1);
         //Punim polje i Subject
@@ -212,15 +213,16 @@ export class NewTrainingService implements OnDestroy {
     updateExerciseChoices(
         selectedExercise: string,
         selectedIndex: number): void {
-        this.currentTrainingState.exercise[selectedIndex].exerciseName = selectedExercise;
+        const updatedTraining: NewTraining = {...this.currentTrainingChanged$$.getValue()};
+        updatedTraining.exercise[selectedIndex].exerciseName = selectedExercise;
         //Prolazim kroz sve selectove te brišem iz njih vježbu koja je trenutno odabrana u nekom selectu
-        this.currentTrainingState.exercise.forEach((exercise, index) => {
+        updatedTraining.exercise.forEach((exercise: SingleExercise, index: number) => {
             //Ako je vježba različita od odabrane
             if(index !== selectedIndex){
-                exercise.availableExercises = exercise.availableExercises.filter(exercise => exercise.name !== selectedExercise);
+                exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.name !== selectedExercise);
             }
         });
-        this.saveData();
+        this.saveData(updatedTraining);
     }
 
     //Metoda koja čuva trening stanje
@@ -232,8 +234,6 @@ export class NewTrainingService implements OnDestroy {
         if(!trainingState || !allExercises){
             return;
         }
-        //Spremam state iz LS u svoj objekt u servisu
-        this.currentTrainingState = {...trainingState};
         //Proslijedi podatke Subjectu
         this.currentTrainingChanged$$.next({...trainingState});
         this.allExercisesChanged$$.next([...allExercises]);
@@ -245,8 +245,9 @@ export class NewTrainingService implements OnDestroy {
         nextFormArrayIndex: number,
         restartAll?: boolean
     ): void {
+        let updatedTraining: NewTraining = {...this.currentTrainingChanged$$.getValue()};
         if(restartAll){
-            this.currentTrainingState = {
+            updatedTraining = {
                 exercise: [],
                 _id: '',
                 bodyweight: null,
@@ -255,13 +256,13 @@ export class NewTrainingService implements OnDestroy {
             };
         }
         //Ubacivam u centralno polje pripremljeni objekt
-        this.currentTrainingState.exercise.push(
+        updatedTraining.exercise.push(
             this.returnEmptyExercise(
                 exercises,
                 nextFormArrayIndex
             )
         );
-        this.saveData();
+        this.saveData(updatedTraining);
     }
 
     //Stvaram prazni objekt vježbe
@@ -280,12 +281,9 @@ export class NewTrainingService implements OnDestroy {
     }
 
     //Metoda koja sprema trenutno stanje polja
-    saveData(editTraining?: NewTraining): void {
-        if(editTraining){
-            this.currentTrainingState = editTraining;
-        }
-        this.currentTrainingChanged$$.next({...this.currentTrainingState});
-        localStorage.setItem('trainingState', JSON.stringify({...this.currentTrainingState}));
+    saveData(updatedTraining?: NewTraining): void {
+        this.currentTrainingChanged$$.next({...updatedTraining});
+        localStorage.setItem('trainingState', JSON.stringify({...updatedTraining}));
     }
 
     //Metoda koja sortira polje vježbi koje se nalaze u selectovima
@@ -301,11 +299,4 @@ export class NewTrainingService implements OnDestroy {
         }
         return 0;
     }
-
-    //Metoda koja se poziva kada se komponenta uništi
-    ngOnDestroy(): void {
-        this.subs$$.next();
-        this.subs$$.complete();
-    }
-
 }

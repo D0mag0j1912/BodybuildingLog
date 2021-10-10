@@ -13,8 +13,6 @@ import { TranslateService } from "@ngx-translate/core";
 })
 export class AuthService {
 
-    //Oznaka je korisnik prijavljen
-    isAuthenticated: boolean = false;
     //Spremam token
     private token: string;
     //Subject koji dava informaciju je li korisnik prijavljen
@@ -24,8 +22,8 @@ export class AuthService {
     //Spremam referencu timera
     private tokenTimer: any;
     //Spremam ID usera koji je prijavljen
-    private loggedUser$$: BehaviorSubject<AuthResponseData> = new BehaviorSubject<AuthResponseData>(null);
-    loggedUser$ = this.loggedUser$$.asObservable();
+    private readonly loggedUser$$: BehaviorSubject<AuthResponseData> = new BehaviorSubject<AuthResponseData>(null);
+    readonly loggedUser$ = this.loggedUser$$.asObservable();
 
     constructor(
         private readonly http: HttpClient,
@@ -87,14 +85,11 @@ export class AuthService {
             tap((response: AuthResponseData) => {
                 //Ako je server vratio token
                 if(response.token){
-                    //Emitiram vrijednost ID-a prijavljenog korisnika
                     this.loggedUser$$.next(response);
                     //Spremam token
                     this.token = response.token;
                     //Emitiram informaciju da je korisnik prijavljen
                     this.isAuth$$.next(true);
-                    //Označavam da je korisnik prijavljen
-                    this.isAuthenticated = true;
                     //Dohvaćam koliko je trajanje tokena
                     const expiresInDuration = response.expiresIn;
                     //Postavljam timer tokena
@@ -134,7 +129,6 @@ export class AuthService {
             //Ako je istek u budućnosti
             if(expiresIn > 0){
                 this.token = userData.token;
-                this.isAuthenticated = true;
                 this.setAuthTimer(expiresIn / 1000);
                 //Spremam stanja u Subjecte
                 this.isAuth$$.next(true);
@@ -147,7 +141,6 @@ export class AuthService {
     logout(): void {
         //Postavljam sve statuse prijave na status da je korisnik odjavljen
         this.token = null;
-        this.isAuthenticated = false;
         this.isAuth$$.next(false);
         //Čistim timer
         clearTimeout(this.tokenTimer);

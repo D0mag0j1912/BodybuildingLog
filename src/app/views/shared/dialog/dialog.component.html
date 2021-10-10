@@ -1,20 +1,21 @@
-<!--Obična poruka-->
+
 <div
     mat-dialog-title
     *ngIf="data.message">
-    <p>{{data.message}}</p>
+    <p>{{ data.message }}</p>
 </div>
-<!--Brisanje vježbe-->
+
 <div
     mat-dialog-title
     *ngIf="data.brisanje">
-    <p>{{data.brisanje.message}}</p>
+    <p>{{ data.brisanje.message }}</p>
 </div>
 <div
     mat-dialog-content
     *ngIf="data.brisanje">
-    <p class="mat-subheading-1">Exercise name:
-        <strong>{{data.brisanje.exerciseName}}</strong>
+    <p class="mat-subheading-1">
+        {{ 'training.new_training.exercise_name' | translate }}
+        <strong>{{ data.brisanje.exerciseName }}</strong>
     </p>
 </div>
 <mat-dialog-actions>
@@ -23,10 +24,14 @@
         [mat-dialog-close]="true"
         mat-raised-button
         color="primary"
-        *ngIf="data.brisanje">Delete</button>
+        *ngIf="data.brisanje">
+        {{ 'common.delete' | translate }}
+    </button>
     <button
         type="button"
         [mat-dialog-close]="false"
         mat-raised-button
-        [color]="data.isError ? 'primary' : ''">Izađi</button>
+        [color]="data.isError ? 'primary' : ''">
+        {{ 'common.close' | translate }}
+    </button>
 </mat-dialog-actions>

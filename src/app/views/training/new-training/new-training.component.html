@@ -38,7 +38,7 @@
                         <mat-label>{{ 'training.new_training.pick_exercise' | translate }}</mat-label>
                         <mat-select
                             formControlName="name"
-                            (selectionChange)="onExerciseNameChange($event,i)">
+                            (selectionChange)="onExerciseNameChange($event, i)">
                             <mat-optgroup
                                 *ngFor="let exercise of exercises$ | newTraining:i:exerciseChanged | async"
                                 [label]="exercise.primaryMuscleGroup">
