@@ -9,7 +9,7 @@ export class ShowExercisesPipe implements PipeTransform {
     transform(training: NewTraining): string {
         let exercisesToConcat: string = '';
         for(const exercises of training.exercise){
-            exercisesToConcat += `${exercises.exerciseName}\n`;
+            exercisesToConcat += `${exercises.currentExercise.name}\n`;
         }
         return exercisesToConcat;
     }

@@ -283,6 +283,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             new FormGroup({
                 'formArrayIndex': new FormControl(clicked ? this.getExercises().length : null,
                     [Validators.required]),
+                'exerciseId': new FormControl(null, [Validators.required]),
                 'name': new FormControl(null, [Validators.required]),
                 'sets': new FormArray([
                     new FormGroup({
@@ -492,15 +493,16 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         //Za svaku vježbu
         data.exercise.forEach(
             (exercise: SingleExercise, indexExercise: number) => {
+            console.log(exercise);
             //Označavam je li popunjen naziv vježbe
-            let isExerciseName: boolean = exercise.exerciseName ? true : false;
+            let isExerciseName: boolean = exercise.currentExercise.name ? true : false;
             //Kreiraj novi form array
             this.addExercise(isExerciseName);
             this.getFormArrayIndex(indexExercise).patchValue(indexExercise);
             //Ako JEST popunjen naziv vježbe
-            if(exercise.exerciseName) {
+            if(exercise.currentExercise.name) {
                 //Inicijalno postavljam ime vježbe u padajući izbornik
-                this.getExerciseName(indexExercise).patchValue(exercise.exerciseName);
+                this.getExerciseName(indexExercise).patchValue(exercise.currentExercise.name);
                 //Ako je unesen barem jedan set za tu vježbu
                 if(exercise.sets.length > 0){
                     //Prolazim kroz sve setove
@@ -533,7 +535,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
                     exerciseFormData.push({
                         formArrayIndex: +this.getFormArrayIndex(indexExercise).value,
-                        exerciseName: this.getExerciseName(indexExercise).value,
+                        currentExercise: {
+                            _id: this.getExerciseId(indexExercise).value,
+                            name: this.getExerciseName(indexExercise).value
+                        },
                         total: +splittedTotal[0],
                         availableExercises: allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1),
                         sets: []
@@ -574,6 +579,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     getFormArrayIndex(indexExercise: number)
         : AbstractControl {
         return (<FormArray>this.form.get('exercise')).at(indexExercise).get('formArrayIndex');
+    }
+
+    getExerciseId(indexExercise: number)
+        : AbstractControl {
+        return (<FormArray>this.form.get('exercise')).at(indexExercise).get('exerciseId');
     }
 
     getExerciseName(indexExercise: number)

@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { environment } from '../../../environments/environment';
 import { HttpClient } from "@angular/common/http";
-import { finalize, map, take, tap } from "rxjs/operators";
-import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
+import { map, take, tap } from "rxjs/operators";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { Exercise } from "../../models/training/exercise.model";
 import { NewTraining, SingleExercise } from "../../models/training/new-training.model";
 import { GeneralResponseData } from "../../models/general-response.model";
@@ -40,7 +40,6 @@ export class NewTrainingService {
         : Observable<Exercise[]> {
         return this.http.get<Exercise[]>(environment.backend + '/getExercises').pipe(
             tap((exercises: Exercise[]) => {
-                console.log(exercises);
                 //Dohvaćam 'trainingState' iz LS
                 const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
                 //Samo ako nema 'trainingState' u LS (znači user se sada ulogirao)
@@ -214,7 +213,7 @@ export class NewTrainingService {
         selectedExercise: string,
         selectedIndex: number): void {
         const updatedTraining: NewTraining = {...this.currentTrainingChanged$$.getValue()};
-        updatedTraining.exercise[selectedIndex].exerciseName = selectedExercise;
+        updatedTraining.exercise[selectedIndex].currentExercise.name = selectedExercise;
         //Prolazim kroz sve selectove te brišem iz njih vježbu koja je trenutno odabrana u nekom selectu
         updatedTraining.exercise.forEach((exercise: SingleExercise, index: number) => {
             //Ako je vježba različita od odabrane
@@ -272,7 +271,10 @@ export class NewTrainingService {
     ): SingleExercise {
         const newAddedExercise: SingleExercise = {
             formArrayIndex: nextFormArrayIndex,
-            exerciseName: null,
+            currentExercise: {
+                _id: null,
+                name: null
+            },
             sets: [],
             total: null,
             availableExercises: [...exercises]
