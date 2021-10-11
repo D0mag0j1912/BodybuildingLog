@@ -8,7 +8,8 @@ import {
     Min, 
     Max, 
     ValidateNested, 
-    IsNumber } from 'class-validator';
+    IsNumber, 
+    IsNotEmpty} from 'class-validator';
 import { Schema } from 'mongoose';
 import { SingleExercise, singleExerciseSchema } from './single-exercise.model';
 
@@ -33,12 +34,6 @@ export const newTrainingSchema = new Schema({
 
 export class NewTraining {
 
-    @IsBoolean({
-        message: '@training.new_training.errors.error_save_training'
-    })
-    @IsDefined()
-    editMode: boolean;
-
     @IsOptional()
     @IsString({
         message: '@training.new_training.errors.error_save_training'
@@ -47,6 +42,18 @@ export class NewTraining {
         message: '@training.new_training.errors.error_save_training'
     })
     _id: string;
+
+    @ValidateNested({
+        each: true
+    })
+    @Type(() => SingleExercise)
+    exercise: SingleExercise[]
+
+    @IsBoolean({
+        message: '@training.new_training.errors.error_save_training'
+    })
+    @IsDefined()
+    editMode: boolean;
 
     @IsOptional()
     @IsNumber({}, {
@@ -60,12 +67,6 @@ export class NewTraining {
     })
     bodyweight: number;
 
-    @ValidateNested({
-        each: true
-    })
-    @Type(() => SingleExercise)
-    exercise: SingleExercise[]
-
     @IsOptional()
     @IsDateString({}, {
         message: '@common.errors.invalid_date'
@@ -77,4 +78,9 @@ export class NewTraining {
         message: '@common.errors.invalid_date'
     })
     updatedAt: Date;
+
+    @IsNotEmpty({
+        message: '@common.errors.not_authenticated'
+    })
+    userId: string;
 }

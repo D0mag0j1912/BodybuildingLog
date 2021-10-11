@@ -16,7 +16,7 @@ export class CheckAuthMiddleware implements NestMiddleware {
         catch(error: unknown) {
             throw new HttpException({
                 status: HttpStatus.UNAUTHORIZED,
-                message: 'No token available!'
+                message: 'common.errors.not_authenticated'
             }, HttpStatus.UNAUTHORIZED);
         }
     }

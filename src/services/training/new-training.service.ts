@@ -13,7 +13,6 @@ export class NewTrainingService {
         @InjectModel('Training') private readonly trainingModel: Model<NewTraining>
     ){}
 
-    //dom
     async editTraining(
         trainingId: string,
         updatedTrainingData: NewTraining
@@ -25,13 +24,13 @@ export class NewTrainingService {
                 $set: updatedTrainingData
             });
             return {
-                message: 'Training updated.'
+                message: 'training.new_training.training_updated'
             } as GeneralResponseData;
         }
         catch(error: unknown) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'Error while trying to update training.'
+                message: 'training.new_training.errors.error_update_training'
             }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -40,15 +39,23 @@ export class NewTrainingService {
         trainingData: NewTraining
     ): Promise<GeneralResponseData> {
         try {
+            //Ovdje trebam dohvatiti ID trenutno ulogiranog usera
+            const trainingToBeStored: NewTraining = await this.trainingModel.findById(trainingData._id);
+            if(trainingToBeStored.userId !== ''){
+                throw new HttpException({
+                    status: HttpStatus.UNAUTHORIZED,
+                    message: '@common.errors.not_authenticated'
+                }, HttpStatus.UNAUTHORIZED);
+            }
             await this.trainingModel.create(trainingData);
             return {
-                message: 'Training saved.'
+                message: 'training.new_training.training_saved'
             } as GeneralResponseData;
         }
         catch(error: unknown) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'Error while trying to save training.'
+                message: 'training.new_training.errors.error_save_training'
             }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -60,7 +67,7 @@ export class NewTrainingService {
             if(exercises.length === 0){
                 throw new HttpException({
                     status: HttpStatus.INTERNAL_SERVER_ERROR,
-                    message: 'Exercises not available.'
+                    message: 'training.new_training.errors.exercises_not_available'
                 }, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return exercises;
@@ -68,7 +75,7 @@ export class NewTrainingService {
         catch(error: unknown) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'Exercises not available.'
+                message: 'training.new_training.errors.exercises_not_available'
             }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

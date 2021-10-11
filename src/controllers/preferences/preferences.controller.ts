@@ -18,7 +18,7 @@ export class PreferencesController {
         if(!userId){
             throw new HttpException({
                 status: HttpStatus.UNAUTHORIZED,
-                message: 'preferences.errors.not_authenticated'
+                message: 'common.errors.not_authenticated'
             }, HttpStatus.UNAUTHORIZED);
         }
         return this.preferencesService.setPreferences(
