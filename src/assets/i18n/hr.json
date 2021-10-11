@@ -17,7 +17,8 @@
         "errors": {
             "something_went_wrong": "Došlo je do greške. Pokušajte ponovno.",
             "invalid_date": "Pogrešan format datuma.",
-            "unknown_error": "Došlo je do greške."
+            "unknown_error": "Došlo je do greške.",
+            "not_authenticated": "Morate biti prijavljeni da biste izvršili ovu aktivnost."
         }
     },
     "auth": {
@@ -136,8 +137,7 @@
         "errors": {
             "language_required": "Jezik je obvezan za unos.",
             "language_change": "Došlo je do greške pri promjeni jezika.",
-            "weight_format_required": "Format težine je obvezan za unos.",
-            "not_authenticated": "Morate biti prijavljeni da biste izvršili ovu aktivnost."
+            "weight_format_required": "Format težine je obvezan za unos."
         }
     },
     "weekdays": {

@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 import { environment } from '../../../environments/environment';
 import { HttpClient } from "@angular/common/http";
-import { map, take, tap } from "rxjs/operators";
+import { map, switchMap, take, tap } from "rxjs/operators";
 import { BehaviorSubject, Observable, of } from "rxjs";
 import { Exercise } from "../../models/training/exercise.model";
 import { NewTraining, SingleExercise } from "../../models/training/new-training.model";
 import { GeneralResponseData } from "../../models/general-response.model";
+import { AuthService } from "../auth/auth.service";
+import { AuthResponseData } from "src/app/models/auth/auth-data.model";
 @Injectable({
     providedIn: 'root'
 })
@@ -30,30 +32,39 @@ export class NewTrainingService {
     /*************************************************** */
 
     constructor(
-        private readonly http: HttpClient
+        private readonly http: HttpClient,
+        private readonly authService: AuthService
     ){}
 
     /*************************************
     BACKEND */
     //Metoda koja dohvaća vježbe
-    getExercises()
-        : Observable<Exercise[]> {
+    getExercises(): Observable<AuthResponseData> {
         return this.http.get<Exercise[]>(environment.backend + '/getExercises').pipe(
-            tap((exercises: Exercise[]) => {
+            switchMap((exercises: Exercise[]) => {
                 //Dohvaćam 'trainingState' iz LS
                 const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
                 //Samo ako nema 'trainingState' u LS (znači user se sada ulogirao)
                 if(!trainingState){
-                    //Inicijalno stvaram prazni objekt
-                    this.updateTrainingState(
-                        exercises,
-                        0,
-                        true
+                    return this.authService.loggedUser$.pipe(
+                        take(1),
+                        tap((authResponseData: AuthResponseData) => {
+                            //Inicijalno stvaram prazni objekt
+                            this.updateTrainingState(
+                                exercises,
+                                0,
+                                true,
+                                authResponseData._id
+                            );
+                            //U BS stavljam SVE DOHVAĆENE VJEŽBE
+                            this.allExercisesChanged$$.next(exercises);
+                            //U LS stavljam SVE DOHVAĆENE VJEŽBE
+                            localStorage.setItem('allExercises', JSON.stringify(exercises));
+                        })
                     );
-                    //U BS stavljam SVE DOHVAĆENE VJEŽBE
-                    this.allExercisesChanged$$.next(exercises);
-                    //U LS stavljam SVE DOHVAĆENE VJEŽBE
-                    localStorage.setItem('allExercises', JSON.stringify(exercises));
+                }
+                else {
+                    return of(null);
                 }
             })
         );
@@ -242,7 +253,8 @@ export class NewTrainingService {
     updateTrainingState(
         exercises: Exercise[],
         nextFormArrayIndex: number,
-        restartAll?: boolean
+        restartAll?: boolean,
+        userId?: string
     ): void {
         let updatedTraining: NewTraining = {...this.currentTrainingChanged$$.getValue()};
         if(restartAll){
@@ -251,7 +263,8 @@ export class NewTrainingService {
                 _id: '',
                 bodyweight: null,
                 editMode: false,
-                userId: null
+                //Ovdje treba postaviti ID ulogiranog usera
+                userId: userId
             };
         }
         //Ubacivam u centralno polje pripremljeni objekt

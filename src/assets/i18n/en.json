@@ -16,7 +16,8 @@
         "errors": {
             "something_went_wrong": "Something went wrong. Please try again.",
             "invalid_date": "Invalid date format.",
-            "unknown_error": "Unknown error occured."
+            "unknown_error": "Unknown error occured.",
+            "not_authenticated": "You need to be authenticated to finish this activity."
         }
     },
     "auth": {
@@ -134,8 +135,7 @@
         "errors": {
             "language_required": "Language field is required.",
             "language_change": "Error while trying to change language.",
-            "weight_format_required": "Weight format field is required.",
-            "not_authenticated": "You need to be authenticated to finish this activity."
+            "weight_format_required": "Weight format field is required."
         }
     },
     "weekdays": {

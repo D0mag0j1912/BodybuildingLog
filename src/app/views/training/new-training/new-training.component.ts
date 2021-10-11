@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Observable, of, Subject } from 'rxjs';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { catchError, debounceTime, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { DialogComponent } from 'src/app/views/shared/dialog/dialog.component';
@@ -12,8 +12,6 @@ import { Exercise } from '../../../models/training/exercise.model';
 import { NewTraining, Set, SingleExercise } from '../../../models/training/new-training.model';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { TranslateService } from '@ngx-translate/core';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
@@ -71,7 +69,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
         private readonly translateService: TranslateService,
-        private readonly authService: AuthService,
         private readonly dialog: MatDialog,
         private readonly snackBar: MatSnackBar,
         private readonly route: ActivatedRoute
@@ -100,18 +97,29 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 }
                 else {
                     return of(null).pipe(
-                        tap(_ => {
-                            const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
-                            if(trainingState){
-                                if(trainingState.editMode && !this.editMode){
-                                    const availableExercises: Exercise[] = JSON.parse(localStorage.getItem('allExercises'));
-                                    this.newTrainingService.updateTrainingState(
-                                        availableExercises,
-                                        0,
-                                        true
-                                    );
-                                }
-                            }
+                        switchMap(_ => {
+                            return forkJoin([
+                                this.newTrainingService.allExercisesChanged$.pipe(
+                                    take(1)
+                                ),
+                                this.newTrainingService.currentTrainingChanged$.pipe(
+                                    take(1)
+                                )
+                            ]).pipe(
+                                tap((data: [Exercise[], NewTraining]) => {
+                                    const currentTrainingState: NewTraining = ((data[1] as NewTraining));
+                                    if(currentTrainingState){
+                                        if(currentTrainingState.editMode && !this.editMode){
+                                            this.newTrainingService.updateTrainingState(
+                                                data[0] as Exercise[],
+                                                0,
+                                                true,
+                                                currentTrainingState.userId
+                                            );
+                                        }
+                                    }
+                                })
+                            );
                         })
                     );
                 }
@@ -181,52 +189,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         this.subs$$.next();
         this.subs$$.complete();
         this.sharedService.editingTraining$$.next(false);
-    }
-
-    onSubmit(): void {
-        this.isSubmitted = true;
-        if(!this.form.valid){
-            return;
-        }
-        this.isLoading = true;
-
-        this.authService.loggedUser$.pipe(
-            take(1),
-            switchMap((userData: AuthResponseData) => {
-                this.formTrainingState.userId = userData._id;
-                return this.gatherAllFormData().pipe(
-                    switchMap(_ => {
-                        if(this.editMode){
-                            return this.newTrainingService.updateTraining(
-                                this.formTrainingState,
-                                this._id
-                            ).pipe(
-                                tap((response: GeneralResponseData) => {
-                                    this.snackBar.open(response.message, null, {
-                                        duration: 3000,
-                                        panelClass: 'app__snackbar'
-                                    });
-                                }),
-                                finalize(() => this.isLoading = false)
-                            );
-                        }
-                        else {
-                            return this.newTrainingService.addTraining(this.formTrainingState).pipe(
-                                tap((response: GeneralResponseData) => {
-                                    this.snackBar.open(response.message, null, {
-                                        duration: 3000,
-                                        panelClass: 'app__snackbar'
-                                    });
-                                }),
-                                finalize(() => this.isLoading = false)
-                            );
-                        }
-                    }),
-                    tap(() => this.isLoading = false),
-                    takeUntil(this.subs$$)
-                );
-            })
-        ).subscribe();
     }
 
     //Metoda koja se poziva kada polje tjelesne težine promijeni svoju vrijednost
@@ -520,43 +482,87 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         return this.getExercises();
     }
 
+    onSubmit(): void {
+        this.isSubmitted = true;
+        if(!this.form.valid){
+            return;
+        }
+        this.isLoading = true;
+
+        this.gatherAllFormData().pipe(
+            switchMap(_ => {
+                if(this.editMode){
+                    return this.newTrainingService.updateTraining(
+                        this.formTrainingState,
+                        this._id
+                    ).pipe(
+                        tap((response: GeneralResponseData) => {
+                            this.snackBar.open(response.message, null, {
+                                duration: 3000,
+                                panelClass: 'app__snackbar'
+                            });
+                        }),
+                        finalize(() => this.isLoading = false)
+                    );
+                }
+                else {
+                    return this.newTrainingService.addTraining(this.formTrainingState).pipe(
+                        tap((response: GeneralResponseData) => {
+                            this.snackBar.open(response.message, null, {
+                                duration: 3000,
+                                panelClass: 'app__snackbar'
+                            });
+                        }),
+                        finalize(() => this.isLoading = false)
+                    );
+                }
+            }),
+            tap(() => this.isLoading = false)
+        ).subscribe();
+    }
+
     private gatherAllFormData(): Observable<Exercise[]> {
-        return this.newTrainingService.allExercisesChanged$.pipe(
+        return this.newTrainingService.currentTrainingChanged$.pipe(
             take(1),
-            tap((allExercises: Exercise[]) => {
-                let exerciseFormData: SingleExercise[] = [];
-                let alreadyUsedExercises: string[] = [];
+            switchMap((currentTrainingState: NewTraining) => {
+                return this.newTrainingService.allExercisesChanged$.pipe(
+                    take(1),
+                    tap((allExercises: Exercise[]) => {
+                        let exerciseFormData: SingleExercise[] = [];
+                        let alreadyUsedExercises: string[] = [];
 
-                this.getExercises().forEach((exercise: AbstractControl, indexExercise: number) => {
-                    let splittedTotal: string[] = (this.getTotal(indexExercise).value as string).split(' ');
+                        this.getExercises().forEach((exercise: AbstractControl, indexExercise: number) => {
+                            let splittedTotal: string[] = (this.getTotal(indexExercise).value as string).split(' ');
 
-                    exerciseFormData.push({
-                        formArrayIndex: +this.getFormArrayIndex(indexExercise).value,
-                        exerciseName: this.getExerciseName(indexExercise).value,
-                        total: +splittedTotal[0],
-                        availableExercises: allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1),
-                        sets: []
-                    });
-                    alreadyUsedExercises.push(this.getExerciseName(indexExercise).value);
-                    let formSetData: Set[] = [];
+                            exerciseFormData.push({
+                                formArrayIndex: +this.getFormArrayIndex(indexExercise).value,
+                                exerciseName: this.getExerciseName(indexExercise).value,
+                                total: +splittedTotal[0],
+                                availableExercises: allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1),
+                                sets: []
+                            });
+                            alreadyUsedExercises.push(this.getExerciseName(indexExercise).value);
+                            let formSetData: Set[] = [];
 
-                    this.getSets(indexExercise).forEach((set: AbstractControl, indexSet: number) => {
-                        formSetData.push({
-                            setNumber: +this.getSetNumber(indexExercise, indexSet).value,
-                            weightLifted: +this.getWeightLifted(indexExercise, indexSet).value,
-                            reps: +this.getReps(indexExercise, indexSet).value
+                            this.getSets(indexExercise).forEach((set: AbstractControl, indexSet: number) => {
+                                formSetData.push({
+                                    setNumber: +this.getSetNumber(indexExercise, indexSet).value,
+                                    weightLifted: +this.getWeightLifted(indexExercise, indexSet).value,
+                                    reps: +this.getReps(indexExercise, indexSet).value
+                                });
+                            });
+                            exerciseFormData[indexExercise].sets = formSetData;
                         });
-                    });
-                    exerciseFormData[indexExercise].sets = formSetData;
-                });
 
-                this.formTrainingState = {
-                    createdAt: this.editMode ? this.editedDate : new Date(new Date().setHours(new Date().getHours() + 2)),
-                    exercise: exerciseFormData,
-                    bodyweight: this.bodyweight.value ? +this.bodyweight.value : null,
-                    editMode: this.editMode,
-                    userId: null
-                };
+                        this.formTrainingState = {
+                            createdAt: this.editMode ? this.editedDate : new Date(new Date().setHours(new Date().getHours() + 2)),
+                            exercise: exerciseFormData,
+                            bodyweight: this.bodyweight.value ? +this.bodyweight.value : null,
+                            editMode: this.editMode,
+                            userId: currentTrainingState.userId
+                        };
+                    })
+                );
             })
         );
     }

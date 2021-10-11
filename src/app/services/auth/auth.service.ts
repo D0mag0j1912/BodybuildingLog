@@ -18,7 +18,7 @@ export class AuthService {
     //Subject koji dava informaciju je li korisnik prijavljen
     private isAuth$$ = new BehaviorSubject<boolean>(false);
     //Observable od Subjecta
-    isAuth$ = this.isAuth$$.asObservable();
+    readonly isAuth$ = this.isAuth$$.asObservable();
     //Spremam referencu timera
     private tokenTimer: any;
     //Spremam ID usera koji je prijavljen
@@ -31,9 +31,12 @@ export class AuthService {
         private readonly translateService: TranslateService
     ){}
 
-    updateUserData(
-        preferences?: Preferences
-    ): void {
+    getToken(): string {
+        return this.token;
+    }
+
+    updateUserData(preferences?: Preferences): void {
+        //Ovdje treba pokupiti podatke iz Subjecta, a ne LS
         const userData: AuthResponseData = JSON.parse(localStorage.getItem('userData'));
         const updatedUserData: AuthResponseData = {...userData, preferences: {
             userId: preferences.userId,
@@ -42,11 +45,6 @@ export class AuthService {
         }};
         this.loggedUser$$.next(updatedUserData);
         localStorage.setItem('userData', JSON.stringify(updatedUserData));
-    }
-
-    //Dohvaćam token
-    getToken(): string {
-        return this.token;
     }
 
     //Metoda pomoću koje se korisnika registrira
