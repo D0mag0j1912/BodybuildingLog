@@ -213,7 +213,7 @@ export class NewTrainingService {
         selectedExercise: string,
         selectedIndex: number): void {
         const updatedTraining: NewTraining = {...this.currentTrainingChanged$$.getValue()};
-        updatedTraining.exercise[selectedIndex].currentExercise.name = selectedExercise;
+        updatedTraining.exercise[selectedIndex].exerciseName = selectedExercise;
         //Prolazim kroz sve selectove te brišem iz njih vježbu koja je trenutno odabrana u nekom selectu
         updatedTraining.exercise.forEach((exercise: SingleExercise, index: number) => {
             //Ako je vježba različita od odabrane
@@ -271,10 +271,7 @@ export class NewTrainingService {
     ): SingleExercise {
         const newAddedExercise: SingleExercise = {
             formArrayIndex: nextFormArrayIndex,
-            currentExercise: {
-                _id: null,
-                name: null
-            },
+            exerciseName: null,
             sets: [],
             total: null,
             availableExercises: [...exercises]

@@ -12,7 +12,7 @@ export interface NewTraining {
 }
 export interface SingleExercise {
     formArrayIndex: number;
-    currentExercise: Exercise;
+    exerciseName: string;
     sets: Set[];
     total: number;
     availableExercises: Exercise[];
