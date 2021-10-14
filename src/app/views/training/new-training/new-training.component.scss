@@ -171,8 +171,8 @@
             background: $light-blue !important;
         }
 
-        &-button:hover,
-        &-button:active {
+        &-button:not([disabled]):hover,
+        &-button:not([disabled]):active {
             color: $light-blue !important;
             background: $army-green !important;
         }

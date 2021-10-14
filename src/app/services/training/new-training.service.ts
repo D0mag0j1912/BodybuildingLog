@@ -157,6 +157,7 @@ export class NewTrainingService {
         }
         //Ako naziv vježbe NIJE BIO popunjen prilikom brisanja
         else{
+            this.saveData(updatedTraining);
             return of([
                 updatedTraining,
                 null

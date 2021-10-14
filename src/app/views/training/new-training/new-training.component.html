@@ -192,15 +192,23 @@
             </ng-container>
             <mat-divider class="new-training__divider"></mat-divider>
         </ng-container>
-        <div class="new-training__add-exercise">
-            <button
-                type="button"
-                mat-raised-button
-                color="accent"
-                (click)="addExercise(false, $event)"
-                class="new-training__add-exercise-button">
-                {{ 'training.new_training.buttons.add_exercise' | translate }}
-            </button>
+        <div
+            class="new-training__add-exercise">
+            <div
+                *ngIf="(isAddingExercisesAllowed$ | async) as isAddingExercisesAllowed"
+                [matTooltip]="isAddingExercisesAllowed[0].length >= isAddingExercisesAllowed[1].length
+                    ? ('training.new_training.errors.exercises_not_available' | translate)
+                    : ''">
+                <button
+                    mat-raised-button
+                    type="button"
+                    color="accent"
+                    class="new-training__add-exercise-button"
+                    (click)="addExercise(false, $event)"
+                    [disabled]="isAddingExercisesAllowed[0].length >= isAddingExercisesAllowed[1].length">
+                    {{ 'training.new_training.buttons.add_exercise' | translate }}
+                </button>
+            </div>
             <button
                 class="new-training__finish-training"
                 type="submit"

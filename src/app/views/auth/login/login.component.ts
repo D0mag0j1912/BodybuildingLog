@@ -87,7 +87,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         ).subscribe();
     }
 
-    public _accessFormData(formFieldName: keyof FormData): FormControl {
+    _accessFormData(formFieldName: keyof FormData): FormControl {
         return this.form.get(formFieldName) as FormControl;
     }
 

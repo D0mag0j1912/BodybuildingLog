@@ -5,7 +5,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params } from '@angular/router';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { catchError, debounceTime, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { catchError, debounceTime, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { DialogComponent } from 'src/app/views/shared/dialog/dialog.component';
 import { Exercise } from '../../../models/training/exercise.model';
@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
+
 @Component({
     selector: 'app-new-training',
     templateUrl: './new-training.component.html',
@@ -54,7 +55,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     exerciseChanged: boolean = false;
 
-    @ViewChild('bodyweightRef')
+    @ViewChild('bodyweightRef', {
+        read: ElementRef
+    })
     set bodyweightInput(bodyweight: ElementRef){
         if(bodyweight && this.focusCounter === 0){
             setTimeout(() => {
@@ -63,6 +66,16 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             });
         }
     }
+
+    readonly isAddingExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> = forkJoin([
+        this.newTrainingService.currentTrainingChanged$.pipe(
+            take(1),
+            map((currentTrainingState: NewTraining) => currentTrainingState.exercise)
+        ),
+        this.newTrainingService.allExercisesChanged$.pipe(
+            take(1)
+        )
+    ]);
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
@@ -567,11 +580,22 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         );
     }
 
-    /*******************************/
-    //Getteri
-    get date(): FormControl {
-        return this.form.get('date') as FormControl;
-    }
+    /* _accessFormData(
+        formField: keyof FormData,
+        indexExercise?: number,
+        indexSet?: number
+    ): AbstractControl {
+        if(!indexExercise && !indexSet){
+            return this.form.get(formField);
+        }
+        else if(indexExercise){
+            return (<FormArray>this.form.get('exercise')).at(indexExercise).get(formField);
+        }
+        else if(indexExercise && indexSet){
+            return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).at(indexSet).get(formField);
+        }
+    }  */
+
     get bodyweight(): FormControl {
         return this.form.get('bodyweight') as FormControl;
     }
