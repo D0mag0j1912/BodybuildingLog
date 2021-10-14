@@ -38,6 +38,7 @@ export class PastTrainingsService {
                 startDate: getIntervalDate(new Date(currentDate)).startDate,
                 endDate: getIntervalDate(new Date(currentDate)).endDate
             };
+            //TODO: dohvaćati samo treninge koji su kreirani od strane trenutno logiranog usera
             const trainings: NewTraining[] = await this.trainingModel.find({
                 createdAt: {
                     $gte: dates.startDate,

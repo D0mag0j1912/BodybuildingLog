@@ -18,6 +18,7 @@ export class NewTrainingService {
         updatedTrainingData: NewTraining
     ): Promise<GeneralResponseData> {
         try {
+            //TODO: Ovdje trebam pitati je li trening koji se hoće editirati napravljen od strane trenutno logiranog usera
             await this.trainingModel.updateOne({
                 _id: trainingId
             }, {
@@ -39,14 +40,6 @@ export class NewTrainingService {
         trainingData: NewTraining
     ): Promise<GeneralResponseData> {
         try {
-            //Ovdje trebam dohvatiti ID trenutno ulogiranog usera
-            const trainingToBeStored: NewTraining = await this.trainingModel.findById(trainingData._id);
-            if(trainingToBeStored.userId !== ''){
-                throw new HttpException({
-                    status: HttpStatus.UNAUTHORIZED,
-                    message: '@common.errors.not_authenticated'
-                }, HttpStatus.UNAUTHORIZED);
-            }
             await this.trainingModel.create(trainingData);
             return {
                 message: 'training.new_training.training_saved'

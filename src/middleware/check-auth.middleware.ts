@@ -1,7 +1,6 @@
 import { NestMiddleware, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
-
 export class CheckAuthMiddleware implements NestMiddleware {
     use(
         request: Request, 
