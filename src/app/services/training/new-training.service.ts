@@ -283,14 +283,13 @@ export class NewTrainingService {
         exercises: Exercise[],
         nextFormArrayIndex: number
     ): SingleExercise {
-        const newAddedExercise: SingleExercise = {
+        return {
             formArrayIndex: nextFormArrayIndex,
             exerciseName: null,
             sets: [],
             total: null,
             availableExercises: [...exercises]
-        };
-        return newAddedExercise as SingleExercise;
+        } as SingleExercise;
     }
 
     //Metoda koja sprema trenutno stanje polja

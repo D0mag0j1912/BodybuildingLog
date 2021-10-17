@@ -7,7 +7,7 @@
 .new-training {
 
     &__section {
-        margin-top: 3.5rem;
+        margin-top: 56px;
     }
 
     &__spinner {
@@ -54,7 +54,7 @@
     &__exercise-text {
         display: inline-block;
         font-family: $poppins;
-        font-size: 0.8rem;
+        font-size: 13px;
         text-align: center;
         margin:0;
         position: absolute;
@@ -69,7 +69,7 @@
 
     &__sets {
         width: 300px;
-        font-size: 0.8rem;
+        font-size: 13px;
         display: flex;
         align-items: center;
         column-gap: 12px;
@@ -112,8 +112,8 @@
         margin-top: 10px;
 
         &-button {
-            margin-left: 1rem;
-            margin-top: 0.7rem;
+            margin-left: 16px;
+            margin-top: 11px;
             font-family: $poppins;
         }
 
@@ -125,16 +125,17 @@
     }
 
     &__total {
-        margin-top:10px;
-        font-size: 0.8rem;
+        margin: 10px 0;
+        font-size: 13px;
         width: 300px;
         display: flex;
         justify-content: center;
         align-items: center;
         column-gap: 10px;
+        border-bottom: 2px solid $army-green;
 
         &-text {
-            font-size: 1.2rem;
+            font-size: 19px;
             color: $army-green;
             margin: 0;
             padding-bottom: 20px;
@@ -148,14 +149,6 @@
                 color: $dark-red;
             }
         }
-    }
-
-    &__divider {
-        width: 85%;
-        margin: 15px !important;
-        max-width: 300px;
-        border-top-color: $army-green !important;
-        border-top-width: 2px !important;
     }
 
     &__add-exercise {
@@ -180,7 +173,7 @@
 
     &__error-wrapper {
         width: 250px;
-        margin: 5rem auto;
+        margin: 80px auto;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -207,7 +200,7 @@
 
 }
 
-@media (min-width: 40rem) {
+@media (min-width: 640px) {
     .new-training {
 
         &__spinner {

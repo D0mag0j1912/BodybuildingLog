@@ -71,7 +71,7 @@
             "weight_lifted": "Weight lifted",
             "reps_performed": "Reps performed",
             "total": "Total",
-            "delete_exercise_dialog": "Are you sure you want to delete?",
+            "delete_exercise_prompt": "Are you sure you want to delete?",
             "training_updated": "Training updated.",
             "set_saved": "Set saved.",
             "training_saved": "Training saved.",

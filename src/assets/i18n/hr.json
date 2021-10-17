@@ -72,7 +72,7 @@
             "weight_lifted": "Težina",
             "reps_performed": "Ponavljanja",
             "total": "Ukupno",
-            "delete_exercise_dialog": "Jeste li sigurni da želite izbrisati vježbu?",
+            "delete_exercise_prompt": "Jeste li sigurni da želite izbrisati vježbu?",
             "training_updated": "Trening ažuriran.",
             "set_saved": "Set spremljen.",
             "training_saved": "Trening spremljen.",

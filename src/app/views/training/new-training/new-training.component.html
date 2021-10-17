@@ -190,7 +190,6 @@
                     </mat-form-field>
                 </div>
             </ng-container>
-            <mat-divider class="new-training__divider"></mat-divider>
         </ng-container>
         <div
             class="new-training__add-exercise">
@@ -198,7 +197,7 @@
                 *ngIf="(isAddingExercisesAllowed$ | async) as isAddingExercisesAllowed"
                 [matTooltip]="isAddingExercisesAllowed[0].length >= isAddingExercisesAllowed[1].length
                     ? ('training.new_training.errors.exercises_not_available' | translate)
-                    : ''">
+                    : ('')">
                 <button
                     mat-raised-button
                     type="button"

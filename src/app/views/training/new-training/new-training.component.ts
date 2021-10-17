@@ -4,8 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params } from '@angular/router';
-import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { catchError, debounceTime, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
+import { catchError, debounceTime, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { DialogComponent } from 'src/app/views/shared/dialog/dialog.component';
 import { Exercise } from '../../../models/training/exercise.model';
@@ -17,6 +17,11 @@ import { SharedService } from 'src/app/services/shared/shared.service';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 
+interface SetStateChanged {
+    indexExercise: number;
+    indexSet: number;
+}
+
 @Component({
     selector: 'app-new-training',
     templateUrl: './new-training.component.html',
@@ -25,26 +30,20 @@ import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 export class NewTrainingComponent implements OnInit, OnDestroy {
 
     private readonly subs$$: Subject<void> = new Subject<void>();
-
-    private readonly indexChanged$$ = new Subject<{
-        indexExercise: number,
-        indexSet: number
-    }>();
+    private readonly indexChanged$$: Subject<SetStateChanged> = new Subject<SetStateChanged>();
 
     form: FormGroup;
 
     private _id: string;
     private editedDate: Date;
 
-    //Spremam dohvaćene vježbe
     readonly exercises$: Observable<Exercise[]>;
     private editTraining: NewTraining;
     private formTrainingState: NewTraining;
 
-    //Spremam inicijalnu kilažu
     private initialWeight: number = 0;
     private focusCounter: number = 0;
-    //Spinner
+
     isLoading: boolean = true;
 
     isError: boolean = false;
@@ -67,12 +66,14 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
-    readonly isAddingExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> = forkJoin([
+    readonly isAddingExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> = combineLatest([
         this.newTrainingService.currentTrainingChanged$.pipe(
             take(1),
+            tap((currentTrainingState: NewTraining) => console.log(currentTrainingState)),
             map((currentTrainingState: NewTraining) => currentTrainingState.exercise)
         ),
         this.newTrainingService.allExercisesChanged$.pipe(
+            tap((x: Exercise[]) => console.log(x)),
             take(1)
         )
     ]);
@@ -237,7 +238,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         this.indexChanged$$.next({
             indexExercise: indexExercise,
             indexSet: indexSet
-        });
+        } as SetStateChanged);
     }
 
     /***************************
@@ -298,7 +299,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             let dialogRef = this.dialog.open(DialogComponent, {
                 data: {
                     brisanje: {
-                        message: this.translateService.instant('training.new_training.delete_exercise_dialog'),
+                        message: this.translateService.instant('training.new_training.delete_exercise_prompt'),
                         exerciseName: exerciseName
                     }
                 }
@@ -343,7 +344,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             ).subscribe();
         }
         //Ako nije odabran naziv vježbe
-        else{
+        else {
             this.newTrainingService.currentTrainingChanged$.pipe(
                 take(1),
                 switchMap((currentTrainingState: NewTraining) => {

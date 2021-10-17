@@ -10,7 +10,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
@@ -30,7 +29,6 @@ import { MatRadioModule } from '@angular/material/radio';
         MatSelectModule,
         MatIconModule,
         MatListModule,
-        MatDividerModule,
         MatTooltipModule,
         MatSnackBarModule,
         MatCardModule,
