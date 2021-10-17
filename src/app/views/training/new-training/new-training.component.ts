@@ -229,6 +229,23 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         return '';
     }
 
+    isAddingExercisesDisabled(
+        currentTrainingStateLength: number,
+        allExercisesLength: number
+    ): string {
+        if(currentTrainingStateLength >= allExercisesLength) {
+            return this.translateService.instant('training.new_training.errors.exercises_not_available');
+        }
+        else {
+            if(!this.getExerciseName(this.getExercises().length - 1).value){
+                return this.translateService.instant('training.new_training.errors.pick_previous_exercise');
+            }
+            else {
+                return '';
+            }
+        }
+    }
+
     //Metoda koja se poziva kada polje tjelesne težine promijeni svoju vrijednost
     onBodyweightChange(bodyweight: string): void {
         this.newTrainingService.addBodyweightToStorage(bodyweight);

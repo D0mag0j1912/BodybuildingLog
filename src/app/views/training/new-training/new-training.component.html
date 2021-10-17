@@ -206,16 +206,15 @@
         <div class="new-training__add-exercise">
             <div
                 *ngIf="(isAddingExercisesAllowed$ | async) as isAddingExercisesAllowed"
-                [matTooltip]="isAddingExercisesAllowed[0].length >= isAddingExercisesAllowed[1].length
-                    ? ('training.new_training.errors.exercises_not_available' | translate)
-                    : ('')">
+                [matTooltip]="isAddingExercisesDisabled(isAddingExercisesAllowed[0].length, isAddingExercisesAllowed[1].length)">
                 <button
                     mat-raised-button
                     type="button"
                     color="accent"
                     class="new-training__add-exercise-button"
                     (click)="addExercise(false, $event)"
-                    [disabled]="isAddingExercisesAllowed[0].length >= isAddingExercisesAllowed[1].length">
+                    [disabled]="(isAddingExercisesAllowed[0].length >= isAddingExercisesAllowed[1].length)
+                        || (!getExerciseName(getExercises().length - 1)?.value)">
                     {{ 'training.new_training.buttons.add_exercise' | translate }}
                 </button>
             </div>

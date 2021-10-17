@@ -102,7 +102,8 @@
                 "new_training_error_load": "Došlo je do problema pri učitavanju novog treninga. Molimo pokušajte ponovno.",
                 "error_update_training": "Došlo je do greške pri ažuriranju treninga.",
                 "error_save_training": "Došlo je do greške pri spremanju treninga.",
-                "exercises_not_available": "Vježbe nisu dostupne."
+                "exercises_not_available": "Vježbe nisu dostupne.",
+                "pick_previous_exercise": "Prvo morate izabrati prethodnu vježbu."
             },
             "buttons": {
                 "try_again": "Pokušajte ponovno",
