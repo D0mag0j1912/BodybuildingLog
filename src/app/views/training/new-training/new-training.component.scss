@@ -1,9 +1,5 @@
 @import '../../../../../styles/default-pallette.scss';
 
-.mat-form-field-appearance-outline .mat-form-field-outline-thick {
-    color: $army-green;
-}
-
 .new-training {
 
     &__section {
@@ -26,6 +22,7 @@
 
     &__bodyweight {
         width: 300px;
+        font-family: $poppins;
     }
 
     &__exercise-wrapper {
@@ -36,6 +33,10 @@
 
     &__exercise-form-field {
         width: 230px;
+
+        .mat-select {
+            font-family: $poppins;
+        }
     }
 
     &__label {
@@ -148,6 +149,7 @@
         &-form-field {
             width: 100px;
             margin-right: 32px;
+            font-family: $poppins;
 
             &--error {
                 color: $dark-red;

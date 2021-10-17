@@ -41,8 +41,10 @@
                             {{ 'training.new_training.pick_exercise' | translate }}
                         </mat-label>
                         <mat-select
+                            #exerciseNameChoice
                             formControlName="name"
-                            (selectionChange)="onExerciseNameChange($event, i)">
+                            (selectionChange)="onExerciseNameChange($event, i)"
+                            [matTooltip]="showFullExerciseName()">
                             <mat-optgroup
                                 *ngFor="let exercise of exercises$ | newTraining:i:exerciseChanged | async"
                                 [label]="exercise.primaryMuscleGroup">
@@ -201,8 +203,7 @@
                 </div>
             </ng-container>
         </ng-container>
-        <div
-            class="new-training__add-exercise">
+        <div class="new-training__add-exercise">
             <div
                 *ngIf="(isAddingExercisesAllowed$ | async) as isAddingExercisesAllowed"
                 [matTooltip]="isAddingExercisesAllowed[0].length >= isAddingExercisesAllowed[1].length

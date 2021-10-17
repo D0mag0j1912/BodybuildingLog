@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params } from '@angular/router';
-import { combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { catchError, debounceTime, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { DialogComponent } from 'src/app/views/shared/dialog/dialog.component';
@@ -22,6 +22,8 @@ interface SetStateChanged {
     indexSet: number;
 }
 
+const MAX_EXERCISE_NAME_WIDTH: number = 188;
+
 @Component({
     selector: 'app-new-training',
     templateUrl: './new-training.component.html',
@@ -31,6 +33,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     private readonly subs$$: Subject<void> = new Subject<void>();
     private readonly indexChanged$$: Subject<SetStateChanged> = new Subject<SetStateChanged>();
+    private readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
 
     form: FormGroup;
 
@@ -66,17 +69,31 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
-    readonly isAddingExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> = combineLatest([
-        this.newTrainingService.currentTrainingChanged$.pipe(
-            take(1),
-            tap((currentTrainingState: NewTraining) => console.log(currentTrainingState)),
-            map((currentTrainingState: NewTraining) => currentTrainingState.exercise)
-        ),
-        this.newTrainingService.allExercisesChanged$.pipe(
-            tap((x: Exercise[]) => console.log(x)),
-            take(1)
-        )
-    ]);
+    /* @ViewChild('exerciseNameChoice', {
+        read: ElementRef
+    })
+    set exerciseNameChoice(exerciseName: ElementRef) {
+        if(exerciseName){
+            const exerciseValue: HTMLSpanElement = (<HTMLElement>exerciseName.nativeElement).querySelector('.mat-select-min-line');
+            console.log(exerciseValue?.offsetWidth);
+        }
+    }; */
+
+    readonly isAddingExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> =
+        this.exerciseStateChanged$$.pipe(
+            startWith(undefined as void),
+            switchMap(_ => {
+                return forkJoin([
+                    this.newTrainingService.currentTrainingChanged$.pipe(
+                        take(1),
+                        map((currentTrainingState: NewTraining) => currentTrainingState.exercise)
+                    ),
+                    this.newTrainingService.allExercisesChanged$.pipe(
+                        take(1)
+                    )
+                ]);
+            })
+        );
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
@@ -208,6 +225,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         this.sharedService.editingTraining$$.next(false);
     }
 
+    showFullExerciseName(): string {
+        return '';
+    }
+
     //Metoda koja se poziva kada polje tjelesne težine promijeni svoju vrijednost
     onBodyweightChange(bodyweight: string): void {
         this.newTrainingService.addBodyweightToStorage(bodyweight);
@@ -289,6 +310,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 this.getAlreadyUsedExercises(),
                 this.getExercises().length - 1
             );
+            this.exerciseStateChanged$$.next();
         }
     }
 
@@ -358,6 +380,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 takeUntil(this.subs$$)
             ).subscribe();
         }
+        this.exerciseStateChanged$$.next();
     }
     /*******************************/
 
