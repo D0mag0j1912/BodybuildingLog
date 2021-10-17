@@ -14,7 +14,9 @@
         <mat-form-field
             appearance="outline"
             class="new-training__bodyweight">
-            <mat-label>{{ 'training.new_training.pick_bodyweight' | translate }}</mat-label>
+            <mat-label class="new-training__label">
+                {{ 'training.new_training.pick_bodyweight' | translate }}
+            </mat-label>
             <input
                 #bodyweightRef
                 matInput
@@ -35,7 +37,9 @@
                     <mat-form-field
                         appearance="outline"
                         class="new-training__exercise-form-field">
-                        <mat-label>{{ 'training.new_training.pick_exercise' | translate }}</mat-label>
+                        <mat-label class="new-training__label">
+                            {{ 'training.new_training.pick_exercise' | translate }}
+                        </mat-label>
                         <mat-select
                             formControlName="name"
                             (selectionChange)="onExerciseNameChange($event, i)">
@@ -80,12 +84,15 @@
                             <mat-form-field
                                 appearance="outline"
                                 class="new-training__sets-weight-lifted">
-                                <mat-label>{{ 'training.new_training.weight_lifted' | translate }}</mat-label>
+                                <mat-label class="new-training__label">
+                                    {{ 'training.new_training.weight_lifted' | translate }}
+                                </mat-label>
                                 <input
                                     matInput
                                     type="text"
                                     formControlName="weightLifted"
-                                    (input)="onChangeSets(i,j)">
+                                    (input)="onChangeSets(i,j)"
+                                    [matTooltip]="'training.new_training.weight_lifted' | translate">
                                 <!--Only first set is required-->
                                 <mat-error
                                     *ngIf="set.get('weightLifted').errors?.required
@@ -118,12 +125,15 @@
                             <mat-form-field
                                 appearance="outline"
                                 class="new-training__sets-reps">
-                                <mat-label>{{ 'training.new_training.reps_performed' | translate }}</mat-label>
+                                <mat-label class="new-training__label">
+                                    {{ 'training.new_training.reps_performed' | translate }}
+                                </mat-label>
                                 <input
                                     matInput
                                     type="text"
                                     formControlName="reps"
-                                    (input)="onChangeSets(i,j)">
+                                    (input)="onChangeSets(i,j)"
+                                    [matTooltip]="'training.new_training.reps_performed' | translate">
                                 <!--Only first set is required-->
                                 <mat-error
                                     *ngIf="set.get('reps').errors?.required && getExerciseName(i).value && j === 0">

@@ -99,7 +99,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     return this.pastTrainingService.getPastTraining(this._id).pipe(
                         tap((training: NewTraining) => {
                             this.editedDate = training.updatedAt;
-                            this.editTraining = {...training, editMode: this.editMode};
+                            this.editTraining = {
+                                ...training,
+                                editMode: this.editMode
+                            };
                             this.newTrainingService.saveData(this.editTraining);
                         }),
                         catchError(_ => {
@@ -158,7 +161,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         //Pretplaćujem se na vrijednosti index-a trenutne vježbe i trenutnog seta (korisnik ih trenutno upisuje)
         this.indexChanged$$.pipe(
             debounceTime(1000),
-            tap(indexes => {
+            tap((indexes: SetStateChanged) => {
                 //Ako su vrijednosti "weightLifted" te "reps" ispravno upisane (required && samo pozitivni brojevi) te ako je upisan NAZIV VJEŽBE
                 if(this.getWeightLifted(indexes.indexExercise, indexes.indexSet).valid
                     && this.getReps(indexes.indexExercise, indexes.indexSet).valid
@@ -168,7 +171,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         //Inicijaliziram početni total za vježbu
                         let total: number = 0;
                         //Prolazim kroz sve setove za određenu vježbu
-                        this.getSets(indexes.indexExercise).forEach((el) => {
+                        this.getSets(indexes.indexExercise).forEach((el: AbstractControl) => {
                             //Računam total
                             total = total + (+el.get('weightLifted').value * +el.get('reps').value);
                         });

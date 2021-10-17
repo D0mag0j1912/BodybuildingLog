@@ -38,6 +38,10 @@
         width: 230px;
     }
 
+    &__label {
+        font-family: $poppins;
+    }
+
     &__exercise-option {
         padding: 0 !important;
     }
