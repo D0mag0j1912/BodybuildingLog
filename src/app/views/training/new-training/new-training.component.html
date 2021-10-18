@@ -1,15 +1,15 @@
 <mat-spinner
-    class="new-training__spinner"
     *ngIf="isLoading"
+    class="new-training__spinner"
     [diameter]="50"></mat-spinner>
 <section
-    class="new-training__section"
-    *ngIf="!isError && !isLoading">
+    *ngIf="!isError && !isLoading"
+    class="new-training__section">
     <form
+        *ngIf="form"
         class="new-training__main-form"
         autocomplete="off"
         [formGroup]="form"
-        *ngIf="form"
         (ngSubmit)="onSubmit()">
         <mat-form-field
             appearance="outline"
@@ -30,8 +30,8 @@
             </mat-error>
         </mat-form-field>
         <ng-container
-            formArrayName="exercise"
-            *ngFor="let group of getExercises(); let i = index">
+            *ngFor="let group of getExercises(); let i = index"
+            formArrayName="exercise">
             <ng-container [formGroupName]="i">
                 <div class="new-training__exercise-wrapper">
                     <mat-form-field
@@ -44,7 +44,7 @@
                             #exerciseNameChoice
                             formControlName="name"
                             (selectionChange)="onExerciseNameChange($event, i)"
-                            [matTooltip]="showFullExerciseName()">
+                            [matTooltip]="showExerciseNameTooltip(getExerciseName(i).value)">
                             <mat-optgroup
                                 *ngFor="let exercise of exercises$ | newTraining:i:exerciseChanged | async"
                                 [label]="exercise.primaryMuscleGroup">
@@ -86,16 +86,19 @@
                             <mat-form-field
                                 appearance="outline"
                                 class="new-training__sets-weight-lifted">
-                                <mat-label class="new-training__label">
+                                <mat-label
+                                    #weightLiftedLabel
+                                    class="new-training__label">
                                     {{ 'training.new_training.weight_lifted' | translate }}
                                 </mat-label>
                                 <input
                                     matInput
                                     type="text"
                                     formControlName="weightLifted"
-                                    (input)="onChangeSets(i,j)"
-                                    [matTooltip]="'training.new_training.weight_lifted' | translate">
-                                <!--Only first set is required-->
+                                    [matTooltip]="showSetTooltip(
+                                        'weight_lifted',
+                                        weightLiftedLabel)"
+                                    (input)="onChangeSets(i,j)">
                                 <mat-error
                                     *ngIf="set.get('weightLifted').errors?.required
                                         && getExerciseName(i).value && j === 0">
@@ -127,16 +130,19 @@
                             <mat-form-field
                                 appearance="outline"
                                 class="new-training__sets-reps">
-                                <mat-label class="new-training__label">
+                                <mat-label
+                                    #repsLabel
+                                    class="new-training__label">
                                     {{ 'training.new_training.reps_performed' | translate }}
                                 </mat-label>
                                 <input
                                     matInput
                                     type="text"
                                     formControlName="reps"
-                                    (input)="onChangeSets(i,j)"
-                                    [matTooltip]="'training.new_training.reps_performed' | translate">
-                                <!--Only first set is required-->
+                                    [matTooltip]="showSetTooltip(
+                                        'reps',
+                                        repsLabel)"
+                                    (input)="onChangeSets(i,j)">
                                 <mat-error
                                     *ngIf="set.get('reps').errors?.required && getExerciseName(i).value && j === 0">
                                     {{ 'training.new_training.errors.reps_required' | translate }}

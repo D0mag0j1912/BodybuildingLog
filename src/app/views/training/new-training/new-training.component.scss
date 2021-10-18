@@ -57,15 +57,17 @@
     }
 
     &__exercise-text {
-        display: inline-block;
         font-family: $poppins;
         font-size: 13px;
-        text-align: center;
-        margin:0;
+        margin: 0;
         position: absolute;
         bottom: 4%;
         left: 25%;
-        width: 75%;
+        text-align: center;
+        width: 165px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     &__delete-exercise-wrapper {

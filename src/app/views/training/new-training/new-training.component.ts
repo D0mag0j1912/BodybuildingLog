@@ -22,7 +22,10 @@ interface SetStateChanged {
     indexSet: number;
 }
 
-const MAX_EXERCISE_NAME_WIDTH: number = 188;
+type SetVariable = 'weight_lifted' | 'reps';
+
+const MAX_EXERCISE_NAME_WIDTH: number = 165;
+const MAX_SET_LABEL_WIDTH: number = 80;
 
 @Component({
     selector: 'app-new-training',
@@ -63,21 +66,16 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     set bodyweightInput(bodyweight: ElementRef){
         if(bodyweight && this.focusCounter === 0){
             setTimeout(() => {
-                (<HTMLInputElement>bodyweight.nativeElement).focus();
+                (bodyweight.nativeElement as HTMLInputElement).focus();
                 this.focusCounter++;
             });
         }
     }
 
-    /* @ViewChild('exerciseNameChoice', {
+    @ViewChild('exerciseNameChoice', {
         read: ElementRef
     })
-    set exerciseNameChoice(exerciseName: ElementRef) {
-        if(exerciseName){
-            const exerciseValue: HTMLSpanElement = (<HTMLElement>exerciseName.nativeElement).querySelector('.mat-select-min-line');
-            console.log(exerciseValue?.offsetWidth);
-        }
-    }; */
+    exerciseNameChoice: ElementRef;
 
     readonly isAddingExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> =
         this.exerciseStateChanged$$.pipe(
@@ -175,24 +173,18 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             takeUntil(this.subs$$)
         ).subscribe();
 
-        //Pretplaćujem se na vrijednosti index-a trenutne vježbe i trenutnog seta (korisnik ih trenutno upisuje)
         this.indexChanged$$.pipe(
             debounceTime(1000),
             tap((indexes: SetStateChanged) => {
-                //Ako su vrijednosti "weightLifted" te "reps" ispravno upisane (required && samo pozitivni brojevi) te ako je upisan NAZIV VJEŽBE
                 if(this.getWeightLifted(indexes.indexExercise, indexes.indexSet).valid
                     && this.getReps(indexes.indexExercise, indexes.indexSet).valid
                     && this.getWeightLifted(indexes.indexExercise, indexes.indexSet).value
                     && this.getReps(indexes.indexExercise, indexes.indexSet).value
                     && this.getExerciseName(indexes.indexExercise).value){
-                        //Inicijaliziram početni total za vježbu
                         let total: number = 0;
-                        //Prolazim kroz sve setove za određenu vježbu
                         this.getSets(indexes.indexExercise).forEach((el: AbstractControl) => {
-                            //Računam total
                             total = total + (+el.get('weightLifted').value * +el.get('reps').value);
                         });
-                        //Kreiram pomoćni objekt pomoću kojega prosljeđivam trenutno unesene podatke servisu
                         let trainingData: {
                             formArrayIndex: number;
                             exerciseName: string;
@@ -208,9 +200,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             reps: +this.getReps(indexes.indexExercise, indexes.indexSet).value,
                             total: total
                         };
-                        //Ažuriram trenutno stanje treninga
                         this.newTrainingService.setsChanged(trainingData);
-                        //Postavljam polje kilaže na vrijednost vraćenu iz servera
                         this.getTotal(indexes.indexExercise).patchValue(total.toString()+ ' kg');
                 }
             }),
@@ -218,15 +208,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    //Metoda koja se poziva kada se komponenta uništi
     ngOnDestroy(): void {
         this.subs$$.next();
         this.subs$$.complete();
         this.sharedService.editingTraining$$.next(false);
-    }
-
-    showFullExerciseName(): string {
-        return '';
     }
 
     isAddingExercisesDisabled(
@@ -246,18 +231,34 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
-    //Metoda koja se poziva kada polje tjelesne težine promijeni svoju vrijednost
+    //TODO: show tooltip on exercise name if needed
+    showExerciseNameTooltip(fullExerciseName: string): string {
+        return '';
+    }
+
+    //TODO: show tooltip on set variable if needed
+    showSetTooltip(
+        setVariable: SetVariable,
+        labelElement: HTMLElement
+    ): string {
+        console.log(labelElement);
+        if(labelElement.offsetWidth > MAX_SET_LABEL_WIDTH){
+            return this.translateService.instant(`training.new_training.${setVariable}_performed`);
+        }
+        else {
+            return '';
+        }
+    }
+
     onBodyweightChange(bodyweight: string): void {
         this.newTrainingService.addBodyweightToStorage(bodyweight);
     }
 
-    //Metoda koja se izvodi kada korisnik promijeni naziv vježbe
     onExerciseNameChange(
         $event: MatSelectChange,
-        indexExercise: number): void {
-        //Ako je izabrana vrijednost
+        indexExercise: number
+    ): void {
         if($event.value){
-            //Ako ima setova
             if(this.getSets(indexExercise).length > 0){
                 this.getWeightLifted(indexExercise, 0).enable();
                 this.getReps(indexExercise, 0).enable();
@@ -266,35 +267,28 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 $event.value,
                 indexExercise
             );
-            //Triggeraj pipe
             this.exerciseChanged = !this.exerciseChanged;
         }
     }
 
-    //Metoda koja reagira na promjene "weightLifted" ili "reps"
     onChangeSets(
         indexExercise: number,
-        indexSet: number): void {
-        //Emitiram trenutne indexe
+        indexSet: number
+    ): void {
         this.indexChanged$$.next({
             indexExercise: indexExercise,
             indexSet: indexSet
         } as SetStateChanged);
     }
 
-    /***************************
-    Metode za upravljanje vanjskim form arrayom */
-
-    //Metoda koja dohvaća form groupove iz form arraya
     getExercises(): AbstractControl[] {
         return (<FormArray>this.form.get('exercise')).controls;
     }
 
-    //Metoda koja dodava novu vježbu u form array
     addExercise(
         isExerciseName?: boolean,
-        clicked?: MouseEvent)
-        : void {
+        clicked?: MouseEvent
+    ): void {
         (<FormArray>this.form.get('exercise')).push(
             new FormGroup({
                 'formArrayIndex': new FormControl(clicked ? this.getExercises().length : null,
@@ -321,7 +315,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             })
         );
 
-        //Ako NIJE POČETAK TRENINGA
         if(clicked){
             this.newTrainingService.addNewExercise(
                 this.getAlreadyUsedExercises(),
@@ -331,13 +324,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
-    //Metoda koja briše vježbu iz form arraya
     deleteExercise(
         indexExercise: number,
-        exerciseName: string): void {
-        //Ako je odabran naziv vježbe
+        exerciseName: string
+    ): void {
         if(exerciseName){
-            //Dohvaćam referencu na dialog
             let dialogRef = this.dialog.open(DialogComponent, {
                 data: {
                     brisanje: {
@@ -346,15 +337,12 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     }
                 }
             });
-            //Pretplaćujem se na akcije u dialogu
             dialogRef.afterClosed().pipe(
                 switchMap((response: boolean) => {
-                    //Ako je korisnik kliknuo "Delete"
                     if(response){
                         return this.newTrainingService.currentTrainingChanged$.pipe(
                             take(1),
                             switchMap((currentTrainingState: NewTraining) => {
-                                //Izbriši vježbu iz centralnog polja
                                 return this.newTrainingService.deleteExercise(
                                     indexExercise,
                                     currentTrainingState,
@@ -362,11 +350,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                 ).pipe(
                                     tap((data: [NewTraining, Exercise[]]) => {
                                         if(data[1]) {
-                                            //Triggeram pipe
                                             this.exerciseChanged = !this.exerciseChanged;
-                                            //Izbriši form group
                                             (<FormArray>this.form.get('exercise')).removeAt(indexExercise);
-                                            //Dodaj u ostale selectove izbrisanu vježbu
                                             this.newTrainingService.pushToAvailableExercises(
                                                 data[0],
                                                 data[1]
@@ -377,7 +362,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             })
                         );
                     }
-                    //Ako je korisnik kliknuo "Izađi"
                     else{
                         return of(null);
                     }
@@ -385,7 +369,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 takeUntil(this.subs$$)
             ).subscribe();
         }
-        //Ako nije odabran naziv vježbe
         else {
             this.newTrainingService.currentTrainingChanged$.pipe(
                 take(1),
@@ -399,17 +382,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
         this.exerciseStateChanged$$.next();
     }
-    /*******************************/
 
-    /**************************
-    Metode za upravljanje unutarnjim form arrayom
-    */
-    getSets(indexExercise: number)
-        : AbstractControl[] {
+    getSets(indexExercise: number): AbstractControl[] {
         return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).controls;
     }
 
-    //Metoda koja dodava novi set u form array
     addSet(indexExercise: number): void {
         (<FormArray>(<FormGroup>(<FormArray>this.form.get('exercise')).at(indexExercise)).get('sets')).push(
             new FormGroup({
@@ -427,22 +404,17 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         );
     }
 
-    //Metoda koja briše set iz form arraya
     deleteSet(
         indexExercise: number,
-        indexSet: number): void {
-        //Izbriši set iz forme
+        indexSet: number
+    ): void {
         (<FormArray>(<FormGroup>(<FormArray>this.form.get('exercise')).at(indexExercise)).get('sets')).removeAt(indexSet);
-        //Inicijaliziram početni total za vježbu
         let total: number = 0;
-        //Prolazim kroz sve setove za određenu vježbu
+
         this.getSets(indexExercise).forEach((el) => {
-            //Računam total
             total = total + (+el.get('weightLifted').value * +el.get('reps').value);
         });
-        //Ažurirani total postavljam u njegovo polje
         this.getTotal(indexExercise).patchValue(total.toString() + ' kg');
-        //Izbriši set iz centralnog polja
         this.newTrainingService.deleteSet(
             indexExercise,
             indexSet,
@@ -504,34 +476,24 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         );
     }
 
-    //Metoda koja inicijalizira form array
-    private formArrayInit(data: NewTraining)
-        : AbstractControl[] {
-        //Za svaku vježbu
+    private formArrayInit(data: NewTraining): AbstractControl[] {
         data.exercise.forEach(
             (exercise: SingleExercise, indexExercise: number) => {
-            //Označavam je li popunjen naziv vježbe
             let isExerciseName: boolean = exercise.exerciseName ? true : false;
-            //Kreiraj novi form array
             this.addExercise(isExerciseName);
             this.getFormArrayIndex(indexExercise).patchValue(indexExercise);
-            //Ako JEST popunjen naziv vježbe
+
             if(exercise.exerciseName) {
-                //Inicijalno postavljam ime vježbe u padajući izbornik
                 this.getExerciseName(indexExercise).patchValue(exercise.exerciseName);
-                //Ako je unesen barem jedan set za tu vježbu
                 if(exercise.sets.length > 0){
-                    //Prolazim kroz sve setove
                     exercise.sets.forEach(
                         (set: Set, indexSet: number) => {
                         this.getWeightLifted(indexExercise, indexSet).patchValue(set.weightLifted);
                         this.getReps(indexExercise, indexSet).patchValue(set.reps);
-                        //Nadodaj novi set samo ako nije zadnja iteracija (jer sam nadodao inicijalno jedan set u 'addExercise()')
                         if(indexSet < exercise.sets.length - 1){
                             this.addSet(indexExercise);
                         }
                     });
-                    //Inicijalno postavljam izračunati total
                     this.getTotal(indexExercise).patchValue(exercise.total + ' kg');
                 }
             }
@@ -644,13 +606,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         return this.form.get('bodyweight') as FormControl;
     }
 
-    getFormArrayIndex(indexExercise: number)
-        : AbstractControl {
+    getFormArrayIndex(indexExercise: number): AbstractControl {
         return (<FormArray>this.form.get('exercise')).at(indexExercise).get('formArrayIndex');
     }
 
-    getExerciseName(indexExercise: number)
-        : AbstractControl {
+    getExerciseName(indexExercise: number): AbstractControl {
         return (<FormArray>this.form.get('exercise')).at(indexExercise).get('name');
     }
 
@@ -663,28 +623,26 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     getWeightLifted(
         indexExercise: number,
-        indexSet: number) : AbstractControl {
+        indexSet: number
+    ) : AbstractControl {
         return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).at(indexSet).get('weightLifted');
     }
 
     getReps(
         indexExercise: number,
-        indexSet: number) : AbstractControl {
+        indexSet: number
+    ) : AbstractControl {
         return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).at(indexSet).get('reps');
     }
 
-    getTotal(indexExercise: number)
-        : AbstractControl {
+    getTotal(indexExercise: number): AbstractControl {
         return (<FormArray>this.form.get('exercise')).at(indexExercise).get('total');
     }
 
     getAlreadyUsedExercises(): string[] {
-        //Inicijaliziram polje već iskorištenih vježbi
         let alreadyUsedExercises: string[] = [];
         for(const exercise of this.getExercises()){
-            //Ako je odabrana vježba u selectu
             if(exercise.get('name').value){
-                //Dodaj je u popis već iskorištenih
                 alreadyUsedExercises.push(exercise.get('name').value);
             }
         }
