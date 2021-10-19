@@ -28,7 +28,7 @@
     </div>
     <div
         class="training-item__exercise-wrapper"
-        [matTooltip]="training.exercise.length > 2 ? (training | showExercises) : ''"
+        [matTooltip]="training.exercise.length > 2 ? (training | showAllExercises) : ''"
         matTooltipClass="exercises-tooltip">
         <span
             *ngFor="let data of (training.exercise | slice:0:2); let i = index"

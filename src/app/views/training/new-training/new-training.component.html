@@ -36,15 +36,16 @@
                 <div class="new-training__exercise-wrapper">
                     <mat-form-field
                         appearance="outline"
-                        class="new-training__exercise-form-field">
+                        class="new-training__exercise-form-field"
+                        [matTooltip]="getExerciseName(i).value | showFullExerciseName:exerciseNameChoice"
+                        matTooltipClass="new-training-tooltip">
                         <mat-label class="new-training__label">
                             {{ 'training.new_training.pick_exercise' | translate }}
                         </mat-label>
                         <mat-select
                             #exerciseNameChoice
                             formControlName="name"
-                            (selectionChange)="onExerciseNameChange($event, i)"
-                            [matTooltip]="showExerciseNameTooltip(getExerciseName(i).value)">
+                            (selectionChange)="onExerciseNameChange($event, i)">
                             <mat-optgroup
                                 *ngFor="let exercise of exercises$ | newTraining:i:exerciseChanged | async"
                                 [label]="exercise.primaryMuscleGroup">
@@ -66,7 +67,8 @@
                     <div
                         class="new-training__delete-exercise-wrapper"
                         [matTooltip]="'training.new_training.buttons.delete_exercise' | translate"
-                        matTooltipPosition="above">
+                        matTooltipPosition="above"
+                        matTooltipClass="new-training-tooltip">
                         <button
                             type="button"
                             mat-raised-button
@@ -86,18 +88,13 @@
                             <mat-form-field
                                 appearance="outline"
                                 class="new-training__sets-weight-lifted">
-                                <mat-label
-                                    #weightLiftedLabel
-                                    class="new-training__label">
+                                <mat-label class="new-training__label">
                                     {{ 'training.new_training.weight_lifted' | translate }}
                                 </mat-label>
                                 <input
                                     matInput
                                     type="text"
                                     formControlName="weightLifted"
-                                    [matTooltip]="showSetTooltip(
-                                        'weight_lifted',
-                                        weightLiftedLabel)"
                                     (input)="onChangeSets(i,j)">
                                 <mat-error
                                     *ngIf="set.get('weightLifted').errors?.required
@@ -113,7 +110,7 @@
                                 <mat-hint
                                     class="new-training__sets-success"
                                     *ngIf="getWeightLifted(i,j).value && getWeightLifted(i,j).valid
-                                    && getReps(i,j).value && getReps(i,j).valid">
+                                    && getReps(i,j).value && getReps(i,j).valid && !editMode">
                                     {{ 'training.new_training.set_saved' | translate }}
                                 </mat-hint>
                                 <mat-error
@@ -130,18 +127,13 @@
                             <mat-form-field
                                 appearance="outline"
                                 class="new-training__sets-reps">
-                                <mat-label
-                                    #repsLabel
-                                    class="new-training__label">
+                                <mat-label class="new-training__label">
                                     {{ 'training.new_training.reps_performed' | translate }}
                                 </mat-label>
                                 <input
                                     matInput
                                     type="text"
                                     formControlName="reps"
-                                    [matTooltip]="showSetTooltip(
-                                        'reps',
-                                        repsLabel)"
                                     (input)="onChangeSets(i,j)">
                                 <mat-error
                                     *ngIf="set.get('reps').errors?.required && getExerciseName(i).value && j === 0">
@@ -163,7 +155,8 @@
                             <div
                                 class="new-training__delete-set-wrapper"
                                 [matTooltip]="'training.new_training.buttons.delete_set' | translate"
-                                matTooltipPosition="above">
+                                matTooltipPosition="above"
+                                matTooltipClass="new-training-tooltip">
                                 <button
                                     type="button"
                                     mat-raised-button
@@ -171,7 +164,9 @@
                                     class="new-training__button-delete-sets"
                                     (click)="deleteSet(i,j)"
                                     [disabled]="j === 0 || isLoading">
-                                    <mat-icon>delete</mat-icon>
+                                    <mat-icon class="new-training__icon-delete-sets">
+                                        delete
+                                    </mat-icon>
                                 </button>
                             </div>
                         </div>
@@ -212,7 +207,8 @@
         <div class="new-training__add-exercise">
             <div
                 *ngIf="(isAddingExercisesAllowed$ | async) as isAddingExercisesAllowed"
-                [matTooltip]="isAddingExercisesDisabled(isAddingExercisesAllowed[0].length, isAddingExercisesAllowed[1].length)">
+                [matTooltip]="(isAddingExercisesDisabled(isAddingExercisesAllowed[0].length, isAddingExercisesAllowed[1].length)) | async"
+                matTooltipClass="new-training-tooltip">
                 <button
                     mat-raised-button
                     type="button"
@@ -230,7 +226,8 @@
                 mat-raised-button
                 color="primary"
                 [matTooltip]="'training.new_training.finish_training' | translate"
-                matTooltipPosition="above">
+                matTooltipPosition="above"
+                matTooltipClass="new-training-tooltip">
                 <mat-icon class="new-training__finish-training-icon">done</mat-icon>
             </button>
         </div>

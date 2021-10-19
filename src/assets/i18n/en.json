@@ -102,7 +102,7 @@
                 "error_update_training": "Error while trying to update training. Please check your data again.",
                 "error_save_training": "Error while trying to save training. Please check your data again.",
                 "exercises_not_available": "Exercises not available.",
-                "pick_previous_exercise": "Previous exercise needs to be selected first."
+                "pick_current_exercise": "Current exercise needs to be selected first."
             },
             "buttons": {
                 "add_set": "Add new set",

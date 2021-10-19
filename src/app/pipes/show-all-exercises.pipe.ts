@@ -2,9 +2,9 @@ import { Pipe, PipeTransform } from "@angular/core";
 import { NewTraining } from "../models/training/new-training.model";
 
 @Pipe({
-    name: 'showExercises'
+    name: 'showAllExercises'
 })
-export class ShowExercisesPipe implements PipeTransform {
+export class ShowAllExercisesPipe implements PipeTransform {
 
     transform(training: NewTraining): string {
         let exercisesToConcat: string = '';

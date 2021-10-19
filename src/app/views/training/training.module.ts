@@ -8,16 +8,18 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MAT_DATE_LOCALE } from "@angular/material/core";
 import { SharedModule } from "../shared/shared.module";
 import { NewTrainingPipe } from '../../pipes/new-training.pipe';
-import { ShowExercisesPipe } from "src/app/pipes/show-exercises.pipe";
+import { ShowAllExercisesPipe } from "src/app/pipes/show-all-exercises.pipe";
 import { PastTrainingsComponent } from './past-trainings/past-trainings.component';
 import { TrainingItemComponent } from './past-trainings/training-item/training-item.component';
 import { TranslateModule } from "@ngx-translate/core";
+import { ShowFullExerciseNamePipe } from '../../pipes/show-full-exercise-name.pipe';
 
 @NgModule({
     declarations: [
         NewTrainingComponent,
         NewTrainingPipe,
-        ShowExercisesPipe,
+        ShowAllExercisesPipe,
+        ShowFullExerciseNamePipe,
         PastTrainingsComponent,
         TrainingItemComponent
     ],

@@ -103,7 +103,7 @@
                 "error_update_training": "Došlo je do greške pri ažuriranju treninga.",
                 "error_save_training": "Došlo je do greške pri spremanju treninga.",
                 "exercises_not_available": "Vježbe nisu dostupne.",
-                "pick_previous_exercise": "Prvo morate izabrati prethodnu vježbu."
+                "pick_current_exercise": "Prvo morate izabrati trenutnu vježbu."
             },
             "buttons": {
                 "try_again": "Pokušajte ponovno",

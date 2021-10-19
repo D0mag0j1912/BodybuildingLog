@@ -1,5 +1,12 @@
 @import '../../../../../styles/default-pallette.scss';
 
+::ng-deep .new-training-tooltip {
+    font-size: 11px;
+    font-family: $poppins;
+    white-space: pre-line;
+    background-color: $army-green;
+}
+
 .new-training {
 
     &__section {

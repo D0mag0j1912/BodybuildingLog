@@ -12,7 +12,7 @@ import { format } from 'date-fns';
 export class TrainingItemComponent implements OnInit {
 
     @Input()
-    readonly training: NewTraining;
+    training: NewTraining;
 
     timeCreated: string;
 

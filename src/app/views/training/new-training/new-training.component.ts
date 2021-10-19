@@ -22,11 +22,6 @@ interface SetStateChanged {
     indexSet: number;
 }
 
-type SetVariable = 'weight_lifted' | 'reps';
-
-const MAX_EXERCISE_NAME_WIDTH: number = 165;
-const MAX_SET_LABEL_WIDTH: number = 80;
-
 @Component({
     selector: 'app-new-training',
     templateUrl: './new-training.component.html',
@@ -71,11 +66,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             });
         }
     }
-
-    @ViewChild('exerciseNameChoice', {
-        read: ElementRef
-    })
-    exerciseNameChoice: ElementRef;
 
     readonly isAddingExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> =
         this.exerciseStateChanged$$.pipe(
@@ -217,37 +207,24 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     isAddingExercisesDisabled(
         currentTrainingStateLength: number,
         allExercisesLength: number
-    ): string {
+    ): Observable<string> {
         if(currentTrainingStateLength >= allExercisesLength) {
-            return this.translateService.instant('training.new_training.errors.exercises_not_available');
+            return this.translateService.stream('training.new_training.errors.exercises_not_available');
         }
         else {
             if(!this.getExerciseName(this.getExercises().length - 1).value){
-                return this.translateService.instant('training.new_training.errors.pick_previous_exercise');
+                return this.translateService.stream('training.new_training.errors.pick_current_exercise');
             }
             else {
-                return '';
+                return of('');
             }
         }
     }
 
     //TODO: show tooltip on exercise name if needed
-    showExerciseNameTooltip(fullExerciseName: string): string {
-        return '';
-    }
-
-    //TODO: show tooltip on set variable if needed
-    showSetTooltip(
-        setVariable: SetVariable,
-        labelElement: HTMLElement
-    ): string {
-        console.log(labelElement);
-        if(labelElement.offsetWidth > MAX_SET_LABEL_WIDTH){
-            return this.translateService.instant(`training.new_training.${setVariable}_performed`);
-        }
-        else {
-            return '';
-        }
+    showOuterExerciseNameTooltip(fullExerciseName: HTMLElement): string {
+        console.log(fullExerciseName);
+        return 'uu';
     }
 
     onBodyweightChange(bodyweight: string): void {
