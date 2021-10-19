@@ -24,7 +24,7 @@
 
         <div
             class="training-item-wrapper"
-            [class.past-trainings__no-trainings]="trainingsPerPage === 0"
+            [class.no-trainings]="trainingsPerPage === 0"
             *ngIf="trainingsPerPage > 0; else noTrainings">
             <app-training-item
                 *ngFor="let training of (trainings$ | async)"
