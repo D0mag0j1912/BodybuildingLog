@@ -1,80 +1,79 @@
 @import '../../../../../styles/default-pallette.scss';
 
-.header {
-    &__toolbar {
-        padding-right:0;
-        position: fixed;
-        z-index: 1;
 
-        &-button {
-            vertical-align: middle;
-        }
-    }
+.toolbar {
+    padding-right:0;
+    position: fixed;
+    z-index: 1;
 
-    &__title {
-        text-decoration: none;
-        font-size: 25px;
-        font-family: 'Anton', sans-serif;
-        color: white;
+    &-button {
         vertical-align: middle;
     }
-
-    &__edit-button {
-        margin-left: auto;
-        margin-right: 10px;
-    }
-
-    &__edit-button:hover,
-    &__edit-button:active {
-        background: $light-blue;
-    }
-
-    &__nav-items {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        column-gap: 10px;
-        align-items: center;
-    }
-
-    &__nav-item {
-        &--icon {
-            color: $army-green;
-        }
-
-        &-txt {
-            text-decoration: none;
-            color: white;
-            cursor: pointer;
-            margin-right: 10px;
-            font-family: $poppins;
-        }
-
-        &--menu-items {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: $poppins;
-
-            &:not(:nth-child(1)){
-                justify-content: flex-start;
-            }
-
-            &:hover {
-                background: $light-blue;
-            }
-        }
-    }
-
-    &__nav-item-txt:hover,
-    &__nav-item-txt:active,
-    &__title:hover,
-    &__title:active {
-        color: $light-blue;
-    }
-
 }
+
+.title {
+    text-decoration: none;
+    font-size: 25px;
+    font-family: 'Anton', sans-serif;
+    color: white;
+    vertical-align: middle;
+}
+
+.edit-button {
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.edit-button:hover,
+.edit-button:active {
+    background: $light-blue;
+}
+
+.nav-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    column-gap: 10px;
+    align-items: center;
+}
+
+.nav-item {
+    &--icon {
+        color: $army-green;
+    }
+
+    &-txt {
+        text-decoration: none;
+        color: white;
+        cursor: pointer;
+        margin-right: 10px;
+        font-family: $poppins;
+    }
+
+    &--menu-items {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: $poppins;
+
+        &:not(:nth-child(1)){
+            justify-content: flex-start;
+        }
+
+        &:hover {
+            background: $light-blue;
+        }
+    }
+}
+
+.nav-item-txt:hover,
+.nav-item-txt:active,
+.title:hover,
+.title:active {
+    color: $light-blue;
+}
+
 
 .nested-items {
     width: 150px;
@@ -99,11 +98,10 @@
 }
 
 @media (min-width: 40rem) {
-    .header {
-        &__edit-button {
-            margin-right: 0;
-            margin-left: 20px;
-        }
+
+    .edit-button {
+        margin-right: 0;
+        margin-left: 20px;
     }
 }
 

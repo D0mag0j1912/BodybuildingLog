@@ -212,8 +212,13 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             return this.translateService.stream('training.new_training.errors.exercises_not_available');
         }
         else {
-            if(!this.getExerciseName(this.getExercises().length - 1).value){
-                return this.translateService.stream('training.new_training.errors.pick_current_exercise');
+            if(this.getExercises().length > 0){
+                if(!this.getExerciseName(this.getExercises().length - 1)?.value){
+                    return this.translateService.stream('training.new_training.errors.pick_current_exercise');
+                }
+                else {
+                    return of('');
+                }
             }
             else {
                 return of('');
@@ -588,7 +593,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     }
 
     getExerciseName(indexExercise: number): AbstractControl {
-        return (<FormArray>this.form.get('exercise')).at(indexExercise).get('name');
+        return (<FormArray>this.form.get('exercise')).at(indexExercise)?.get('name');
     }
 
     getSetNumber(

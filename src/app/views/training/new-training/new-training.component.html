@@ -1,20 +1,20 @@
 <mat-spinner
     *ngIf="isLoading"
-    class="new-training__spinner"
+    class="spinner"
     [diameter]="50"></mat-spinner>
 <section
     *ngIf="!isError && !isLoading"
-    class="new-training__section">
+    class="section">
     <form
         *ngIf="form"
-        class="new-training__main-form"
+        class="main-form"
         autocomplete="off"
         [formGroup]="form"
         (ngSubmit)="onSubmit()">
         <mat-form-field
             appearance="outline"
-            class="new-training__bodyweight">
-            <mat-label class="new-training__label">
+            class="bodyweight">
+            <mat-label class="label">
                 {{ 'training.new_training.pick_bodyweight' | translate }}
             </mat-label>
             <input
@@ -33,13 +33,13 @@
             *ngFor="let group of getExercises(); let i = index"
             formArrayName="exercise">
             <ng-container [formGroupName]="i">
-                <div class="new-training__exercise-wrapper">
+                <div class="exercise-wrapper">
                     <mat-form-field
                         appearance="outline"
-                        class="new-training__exercise-form-field"
+                        class="exercise-form-field"
                         [matTooltip]="getExerciseName(i).value | showFullExerciseName:exerciseNameChoice"
-                        matTooltipClass="new-training-tooltip">
-                        <mat-label class="new-training__label">
+                        matTooltipClass="tooltip">
+                        <mat-label class="label">
                             {{ 'training.new_training.pick_exercise' | translate }}
                         </mat-label>
                         <mat-select
@@ -51,11 +51,11 @@
                                 [label]="exercise.primaryMuscleGroup">
                                 <mat-option
                                     [value]="exercise.name"
-                                    class="new-training__exercise-option">
+                                    class="exercise-option">
                                     <img
-                                        class="new-training__exercise-img"
+                                        class="exercise-img"
                                         [src]="exercise.imageUrl">
-                                    <p class="new-training__exercise-text">{{ exercise.name }}</p>
+                                    <p class="exercise-text">{{ exercise.name }}</p>
                                 </mat-option>
                             </mat-optgroup>
                         </mat-select>
@@ -65,10 +65,10 @@
                         </mat-error>
                     </mat-form-field>
                     <div
-                        class="new-training__delete-exercise-wrapper"
+                        class="delete-exercise-wrapper"
                         [matTooltip]="'training.new_training.buttons.delete_exercise' | translate"
                         matTooltipPosition="above"
-                        matTooltipClass="new-training-tooltip">
+                        matTooltipClass="tooltip">
                         <button
                             type="button"
                             mat-raised-button
@@ -83,12 +83,12 @@
                     *ngFor="let set of getSets(i); let j = index">
                     <ng-container [formGroupName]="j">
                         <div
-                            class="new-training__sets"
+                            class="sets"
                             [class.new-training__sets--after-first]="j > 0">
                             <mat-form-field
                                 appearance="outline"
-                                class="new-training__sets-weight-lifted">
-                                <mat-label class="new-training__label">
+                                class="sets-weight-lifted">
+                                <mat-label class="label">
                                     {{ 'training.new_training.weight_lifted' | translate }}
                                 </mat-label>
                                 <input
@@ -102,13 +102,13 @@
                                     {{ 'training.new_training.errors.weight_lifted_required' | translate }}
                                 </mat-error>
                                 <mat-hint
-                                    class="new-training__sets-weight-lifted--error"
+                                    class="sets-weight-lifted--error"
                                     *ngIf="j > 0 && set.errors?.weightLiftedRequired
                                         && !set.get('reps').errors?.pattern">
                                     {{ 'training.new_training.errors.weight_lifted_required' | translate }}
                                 </mat-hint>
                                 <mat-hint
-                                    class="new-training__sets-success"
+                                    class="sets-success"
                                     *ngIf="getWeightLifted(i,j).value && getWeightLifted(i,j).valid
                                     && getReps(i,j).value && getReps(i,j).valid && !editMode">
                                     {{ 'training.new_training.set_saved' | translate }}
@@ -126,8 +126,8 @@
                             </mat-form-field>
                             <mat-form-field
                                 appearance="outline"
-                                class="new-training__sets-reps">
-                                <mat-label class="new-training__label">
+                                class="sets-reps">
+                                <mat-label class="label">
                                     {{ 'training.new_training.reps_performed' | translate }}
                                 </mat-label>
                                 <input
@@ -140,7 +140,7 @@
                                     {{ 'training.new_training.errors.reps_required' | translate }}
                                 </mat-error>
                                 <mat-hint
-                                    class="new-training__sets-reps--error"
+                                    class="sets-reps--error"
                                     *ngIf="j > 0 && set.errors?.repsRequired
                                         && !set.get('weightLifted').errors?.samoBrojevi
                                         && !set.get('weightLifted').errors?.onlyPositiveNumbers">
@@ -153,18 +153,18 @@
                                 </mat-error>
                             </mat-form-field>
                             <div
-                                class="new-training__delete-set-wrapper"
+                                class="delete-set-wrapper"
                                 [matTooltip]="'training.new_training.buttons.delete_set' | translate"
                                 matTooltipPosition="above"
-                                matTooltipClass="new-training-tooltip">
+                                matTooltipClass="tooltip">
                                 <button
                                     type="button"
                                     mat-raised-button
                                     color="warn"
-                                    class="new-training__button-delete-sets"
+                                    class="button-delete-sets"
                                     (click)="deleteSet(i,j)"
                                     [disabled]="j === 0 || isLoading">
-                                    <mat-icon class="new-training__icon-delete-sets">
+                                    <mat-icon class="icon-delete-sets">
                                         delete
                                     </mat-icon>
                                 </button>
@@ -172,31 +172,31 @@
                         </div>
                     </ng-container>
                 </ng-container>
-                <div class="new-training__add-sets">
+                <div class="add-sets">
                     <button
                         type="button"
                         color="primary"
                         mat-raised-button
-                        class="new-training__add-sets-button"
+                        class="add-sets-button"
                         (click)="addSet(i);"
                         [disabled]="!group.get('name').value || group.errors?.setNotFilled">
                         {{ 'training.new_training.buttons.add_set' | translate }}
                     </button>
                 </div>
-                <div class="new-training__total">
-                    <p class="new-training__total-text">
+                <div class="total">
+                    <p class="total-text">
                         {{ 'training.new_training.total' | translate }}
                     </p>
                     <mat-form-field
                         appearance="outline"
-                        class="new-training__total-form-field">
+                        class="total-form-field">
                         <input
                             matInput
                             type="text"
                             readonly
                             formControlName="total">
                         <mat-hint
-                            class="new-training__total-form-field--error"
+                            class="total-form-field--error"
                             *ngIf="group.errors?.atLeastOneSet && isSubmitted">
                             {{ 'training.new_training.errors.at_least_one_set' | translate }}
                         </mat-hint>
@@ -204,52 +204,52 @@
                 </div>
             </ng-container>
         </ng-container>
-        <div class="new-training__add-exercise">
+        <div class="add-exercise">
             <div
                 *ngIf="(isAddingExercisesAllowed$ | async) as isAddingExercisesAllowed"
                 [matTooltip]="(isAddingExercisesDisabled(isAddingExercisesAllowed[0].length, isAddingExercisesAllowed[1].length)) | async"
-                matTooltipClass="new-training-tooltip">
+                matTooltipClass="tooltip">
                 <button
                     mat-raised-button
                     type="button"
                     color="accent"
-                    class="new-training__add-exercise-button"
+                    class="add-exercise-button"
                     (click)="addExercise(false, $event)"
                     [disabled]="(isAddingExercisesAllowed[0].length >= isAddingExercisesAllowed[1].length)
-                        || (!getExerciseName(getExercises().length - 1)?.value)">
+                        || (!getExerciseName(getExercises().length - 1)?.value) && getExercises().length > 0">
                     {{ 'training.new_training.buttons.add_exercise' | translate }}
                 </button>
             </div>
             <button
-                class="new-training__finish-training"
+                class="finish-training"
                 type="submit"
                 mat-raised-button
                 color="primary"
                 [matTooltip]="'training.new_training.finish_training' | translate"
                 matTooltipPosition="above"
-                matTooltipClass="new-training-tooltip">
-                <mat-icon class="new-training__finish-training-icon">done</mat-icon>
+                matTooltipClass="tooltip">
+                <mat-icon class="finish-training-icon">done</mat-icon>
             </button>
         </div>
     </form>
 </section>
 
 <ng-container *ngIf="isError && !isLoading">
-    <div class="new-training__error-wrapper">
+    <div class="error-wrapper">
         <img
-            class="new-training__error-image"
+            class="error-image"
             src="../../../../assets/svgs/error1.svg">
-        <h3 class="new-training__error-title">
+        <h3 class="error-title">
             {{ 'training.new_training.errors.new_training_error_title' | translate }}
         </h3>
         <span
             *ngIf="editMode"
-            class="new-training__error-description">
+            class="error-description">
             {{ 'training.new_training.errors.new_training_error_description' | translate }}
         </span>
         <span
             *ngIf="!editMode"
-            class="new-training__error-description">
+            class="error-description">
             {{ 'training.new_training.errors.new_training_error_load' | translate }}
         </span>
         <button

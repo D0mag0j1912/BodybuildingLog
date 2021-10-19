@@ -1,27 +1,26 @@
 @import '../../../../../styles/default-pallette.scss';
 
-.sidenav {
-    &__icon {
-        color: $army-green;
-    }
 
-    &__caption {
-        display: inline-block;
-        padding-left: 6px;
+.icon {
+    color: $army-green;
+}
+
+.caption {
+    display: inline-block;
+    padding-left: 6px;
+    font-family: $poppins;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    column-gap: 10px;
+    width: 150px;
+
+    &--text {
+        font-size: 15px;
         font-family: $poppins;
-    }
-
-    &__menu-item {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        column-gap: 10px;
-        width: 150px;
-
-        &--text {
-            font-size: 15px;
-            font-family: $poppins;
-        }
     }
 }
 

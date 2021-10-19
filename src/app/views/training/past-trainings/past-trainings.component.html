@@ -1,21 +1,21 @@
 <mat-spinner
     *ngIf="isLoading"
-    class="past-trainings__spinner"
+    class="spinner"
     [diameter]="50"></mat-spinner>
 <ng-container *ngIf="!isLoading && !isError">
     <section
-        class="past-trainings__main-section">
+        class="main-section">
         <mat-card
-            class="past-trainings__card-info-wrapper">
+            class="card-info-wrapper">
             <mat-card-title
-                class="past-trainings__week-title">
-                <strong class="past-trainings__week-title--txt">
+                class="week-title">
+                <strong class="week-title--txt">
                     {{ 'common.week' | translate }}
                 </strong>
                 {{ ' (' + (startDate | date: 'dd.MM.yyyy') + ' - ' + (endDate | date: 'dd.MM.yyyy') + ')'}}</mat-card-title>
             <mat-card-subtitle
-                class="past-trainings__food-subtitle">
-                <strong class="past-trainings__food-subtitle--txt">
+                class="food-subtitle">
+                <strong class="food-subtitle--txt">
                     {{ ('common.food' | translate) + ': ' }}
                 </strong>
                 {{ food + ' ' + ('common.kcal' | translate) }}
@@ -23,7 +23,7 @@
         </mat-card>
 
         <div
-            class="past-trainings__training-item-wrapper"
+            class="training-item-wrapper"
             [class.past-trainings__no-trainings]="trainingsPerPage === 0"
             *ngIf="trainingsPerPage > 0; else noTrainings">
             <app-training-item
@@ -32,46 +32,48 @@
         </div>
     </section>
     <div
-        class="past-trainings__training-paginator">
+        class="training-paginator">
         <span
-            class="past-trainings__training-paginator--label">
+            class="training-paginator--label">
             {{ 'training.past_trainings.training_number' | translate }} {{ trainingsPerPage }}
         </span>
         <div
-            class="past-trainings__training-paginator--button-wrapper">
+            class="training-paginator--button-wrapper">
             <div
                 [matTooltip]="'training.past_trainings.buttons.previous_week' | translate"
-                matTooltipPosition="above">
+                matTooltipPosition="above"
+                matTooltipClass="tooltip">
                 <button
                     type="button"
-                    class="past-trainings__training-paginator--previous"
+                    class="training-paginator--previous"
                     mat-raised-button
                     (click)="loadWeekTraining('Previous week')">
-                    <mat-icon class="past-trainings__training-paginator--icon">navigate_before</mat-icon>
+                    <mat-icon class="training-paginator--icon">navigate_before</mat-icon>
                 </button>
             </div>
             <div
                 [matTooltip]="'training.past_trainings.buttons.next_week' | translate"
-                matTooltipPosition="above">
+                matTooltipPosition="above"
+                matTooltipClass="tooltip">
                 <button
                     type="button"
-                    class="past-trainings__training-paginator--next"
+                    class="training-paginator--next"
                     mat-raised-button
                     (click)="loadWeekTraining('Next week')"
                     [disabled]="isNextWeekDisabled">
-                    <mat-icon class="past-trainings__training-paginator--icon">navigate_next</mat-icon>
+                    <mat-icon class="training-paginator--icon">navigate_next</mat-icon>
                 </button>
             </div>
         </div>
     </div>
 
     <ng-template #noTrainings>
-        <section class="past-trainings__no-trainings">
-            <h1 class="past-trainings__no-trainings-title">
+        <section class="no-trainings">
+            <h1 class="no-trainings-title">
                 {{ 'training.past_trainings.no_trainings' | translate }}
             </h1>
             <button
-                class="past-trainings__no-trainings-button"
+                class="no-trainings-button"
                 mat-raised-button
                 type="button"
                 routerLink="/new-training"
@@ -83,14 +85,14 @@
 </ng-container>
 
 <ng-container *ngIf="!isLoading && isError">
-    <div class="past-trainings__error-wrapper">
+    <div class="error-wrapper">
         <img
-            class="past-trainings__error-image"
+            class="error-image"
             src="../../../../assets/svgs/error1.svg">
-        <h3 class="past-trainings__error-title">
+        <h3 class="error-title">
             {{ 'training.past_trainings.errors.past_trainings_error_title' | translate }}
         </h3>
-        <span class="past-trainings__error-description">
+        <span class="error-description">
             {{ 'training.past_trainings.errors.past_trainings_error_description' | translate }}
         </span>
         <button

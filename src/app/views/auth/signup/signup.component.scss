@@ -1,100 +1,98 @@
 @import '../../../../../styles/default-pallette.scss';
 
-.signup {
 
-    &__wrapper {
-        margin-top: 6rem;
-        margin-left: auto;
-        margin-right : auto;
-        border-radius: 6px;
-        width: 90%;
-        background: $light-blue;
-    }
+.wrapper {
+    margin-top: 6rem;
+    margin-left: auto;
+    margin-right : auto;
+    border-radius: 6px;
+    width: 90%;
+    background: $light-blue;
+}
 
-    &__spinner {
-        margin: 80% auto;
-    }
+.spinner {
+    margin: 80% auto;
+}
 
-    &__form {
-        padding-top: 16px;
-        padding-bottom: 16px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        row-gap: 15px;
-    }
+.form {
+    padding-top: 16px;
+    padding-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 15px;
+}
 
-    &__form-field {
-        width: 300px;
-    }
+.form-field {
+    width: 300px;
+}
 
-    &__preference-wrapper {
-        width: 300px;
-        display: flex;
-        flex-direction: column;
-        row-gap: 10px;
+.preference-wrapper {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
 
-        &--entry-text {
-            font-size: 14px;
-            color: $army-green;
-            font-weight: 500;
-        }
-    }
-
-    &__did-you-know {
-        font-size: 12px;
-        color: $blue-grey;
-    }
-
-    &__preference-radio-button:nth-of-type(2) {
-        margin-left: 20px;
-    }
-
-    &__error,
-    &__error-custom {
-        font-size: 11px;
-        color: $dark-red;
-        font-family: $poppins;
-    }
-
-    &__error-custom {
-        align-self: flex-start;
-        margin-left: 20px;
-    }
-
-    &__submit,
-    &__label,
-    &__preference-radio-button {
-        font-family: $poppins;
+    &--entry-text {
+        font-size: 14px;
+        color: $army-green;
+        font-weight: 500;
     }
 }
 
-@media (min-width: 640px) {
-    .signup {
-        &__wrapper {
-            width: 400px;
-        }
+.did-you-know {
+    font-size: 12px;
+    color: $blue-grey;
+}
 
-        &__error-custom {
-            margin-left: 50px;
-        }
+.preference-radio-button:nth-of-type(2) {
+    margin-left: 20px;
+}
+
+.error,
+.error-custom {
+    font-size: 11px;
+    color: $dark-red;
+    font-family: $poppins;
+}
+
+.error-custom {
+    align-self: flex-start;
+    margin-left: 20px;
+}
+
+.submit,
+.label,
+.preference-radio-button {
+    font-family: $poppins;
+}
+
+
+@media (min-width: 640px) {
+
+    .wrapper {
+        width: 400px;
     }
+
+    .error-custom {
+        margin-left: 50px;
+    }
+
 }
 
 @media (max-width: 320px) {
-    .signup {
 
-        &__wrapper {
-            margin-bottom: 20px;
-        }
-
-        &__form-field {
-            width: 250px;
-        }
-
-        &__preference-wrapper {
-            width: 250px;
-        }
+    .wrapper {
+        margin-bottom: 20px;
     }
+
+    .form-field {
+        width: 250px;
+    }
+
+    .preference-wrapper {
+        width: 250px;
+    }
+
 }
 

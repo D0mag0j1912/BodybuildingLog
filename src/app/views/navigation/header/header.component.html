@@ -1,5 +1,5 @@
 <mat-toolbar
-    class="header__toolbar"
+    class="toolbar"
     color="primary">
     <!--Prikaži ovaj button samo na xs ekranima-->
     <div
@@ -7,18 +7,18 @@
         <button
             mat-icon-button
             (click)="onToggle()"
-            class="header__toolbar-button">
+            class="toolbar-button">
             <mat-icon>menu</mat-icon>
         </button>
     </div>
     <div>
-        <a class="header__title">
+        <a class="title">
             {{ 'navigation.title' | translate }}
         </a>
     </div>
     <ng-container *ngIf="isAuthenticated$ | async">
         <button
-            class="header__edit-button"
+            class="edit-button"
             *ngIf="isEditing$ | async"
             type="button"
             mat-raised-button
@@ -32,39 +32,39 @@
         fxLayout
         fxLayoutAlign="flex-end"
         fxHide.xs>
-        <ul class="header__nav-items">
+        <ul class="nav-items">
             <li
                 *ngIf="!(isAuthenticated$ | async)"
-                class="header__nav-item">
+                class="nav-item">
                 <a
-                    class="header__nav-item-txt"
+                    class="nav-item-txt"
                     routerLink="/login">
                     {{ 'navigation.login' | translate }}
                 </a>
             </li>
             <li
                 *ngIf="!(isAuthenticated$ | async)"
-                class="header__nav-item">
+                class="nav-item">
                 <a
-                    class="header__nav-item-txt"
+                    class="nav-item-txt"
                     routerLink="/signup">
                     {{ 'navigation.signup' | translate }}
                 </a>
             </li>
             <li
                 *ngIf="isAuthenticated$ | async"
-                class="header__nav-item">
+                class="nav-item">
                 <a
-                    class="header__nav-item-txt"
+                    class="nav-item-txt"
                     routerLink="/new-training">
                     {{ 'navigation.new_training' | translate }}
                 </a>
             </li>
             <li
                 *ngIf="isAuthenticated$ | async"
-                class="header__nav-item">
+                class="nav-item">
                 <a
-                    class="header__nav-item-txt"
+                    class="nav-item-txt"
                     (click)="goToPastTrainings()">
                     {{ 'navigation.past_trainings' | translate }}
                 </a>
@@ -72,7 +72,7 @@
             <ng-container *ngIf="(loggedUserData$ | async) as userData">
                 <li
                     *ngIf="isAuthenticated$ | async"
-                    class="header__nav-item">
+                    class="nav-item">
                     <button
                         mat-button
                         [matMenuTriggerFor]="main">
@@ -80,23 +80,23 @@
                     </button>
                     <mat-menu #main="matMenu">
                         <button
-                            class="header__nav-item--menu-items"
+                            class="nav-item--menu-items"
                             mat-menu-item
                             [matMenuTriggerFor]="languages">
-                            <mat-icon class="header__nav-item--icon">language</mat-icon>
+                            <mat-icon class="nav-item--icon">language</mat-icon>
                             <span>{{ 'navigation.language' | translate }}</span>
                         </button>
                         <button
-                            class="header__nav-item--menu-items"
+                            class="nav-item--menu-items"
                             mat-menu-item
                             (click)="onLogout()">
-                            <mat-icon class="header__nav-item--icon">logout</mat-icon>
+                            <mat-icon class="nav-item--icon">logout</mat-icon>
                             <span>{{ 'navigation.logout' | translate }}</span>
                         </button>
                     </mat-menu>
                     <mat-menu #languages="matMenu">
                         <button
-                            class="header__nav-item--menu-items nested-items"
+                            class="nav-item--menu-items nested-items"
                             [class.chosenLanguage]="userData?.preferences?.language === 'hr'"
                             mat-menu-item
                             (click)="changeLanguage('hr')"
@@ -110,7 +110,7 @@
                             </span>
                         </button>
                         <button
-                            class="header__nav-item--menu-items nested-items"
+                            class="nav-item--menu-items nested-items"
                             [class.chosenLanguage]="userData?.preferences?.language === 'en'"
                             [class.alignEn]="userData?.preferences?.language === 'hr'"
                             mat-menu-item

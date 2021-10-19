@@ -1,232 +1,226 @@
 @import '../../../../../styles/default-pallette.scss';
 
-::ng-deep .new-training-tooltip {
+::ng-deep .tooltip {
     font-size: 11px;
     font-family: $poppins;
     white-space: pre-line;
     background-color: $army-green;
 }
 
-.new-training {
+.section {
+    margin-top: 56px;
+}
 
-    &__section {
-        margin-top: 56px;
-    }
+.spinner {
+    position: absolute;
+    left: 45%;
+    top: 45%;
+}
 
-    &__spinner {
-        position: absolute;
-        left: 45%;
-        top: 45%;
-    }
+.main-form {
+    padding-top: 32px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-    &__main-form {
-        padding-top: 32px;
-        margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+.bodyweight {
+    width: 300px;
+    font-family: $poppins;
+}
 
-    &__bodyweight {
-        width: 300px;
+.exercise-wrapper {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+}
+
+.exercise-form-field {
+    width: 230px;
+
+    .mat-select {
         font-family: $poppins;
     }
+}
 
-    &__exercise-wrapper {
-        display: flex;
-        align-items: center;
-        column-gap: 10px;
-    }
+.label {
+    font-family: $poppins;
+}
 
-    &__exercise-form-field {
-        width: 230px;
+.exercise-option {
+    padding: 0 !important;
+}
 
-        .mat-select {
-            font-family: $poppins;
+.exercise-img {
+    position: absolute;
+    bottom: 1%;
+    left:0%;
+    display: inline-block;
+    width: 25%;
+    height: 48px;
+}
+
+.exercise-text {
+    font-family: $poppins;
+    font-size: 13px;
+    margin: 0;
+    position: absolute;
+    bottom: 4%;
+    left: 25%;
+    text-align: center;
+    width: 165px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.delete-exercise-wrapper {
+    margin-top: -20px;
+}
+
+.sets {
+    width: 300px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    column-gap: 12px;
+
+    &-weight-lifted,
+    &-reps {
+        width: 100px;
+
+        &--error {
+            color: $dark-red;
         }
     }
 
-    &__label {
+    &--after-first {
+        padding-top: 5px;
+    }
+
+    &-success {
+        color: $army-green;
+        font-size: 11px;
+    }
+}
+
+.delete-set-wrapper {
+    margin-top: -15px;
+}
+
+.button-delete-sets:not([disabled]):hover,
+.button-delete-sets:not([disabled]):active,
+.button-delete-exercise:hover,
+.button-delete-exercise:active{
+    color:#f44336;
+}
+
+.add-sets {
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+
+    &-button {
+        margin-left: 16px;
+        margin-top: 11px;
         font-family: $poppins;
     }
 
-    &__exercise-option {
-        padding: 0 !important;
+    &-button:not([disabled]):hover,
+    &-button:not([disabled]):active {
+        color: $army-green;
+        background: white;
     }
+}
 
-    &__exercise-img {
-        position: absolute;
-        bottom: 1%;
-        left:0%;
-        display: inline-block;
-        width: 25%;
-        height: 48px;
-    }
+.total {
+    margin: 10px 0;
+    font-size: 13px;
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 10px;
+    border-bottom: 2px solid $army-green;
 
-    &__exercise-text {
-        font-family: $poppins;
-        font-size: 13px;
+    &-text {
+        font-size: 19px;
+        color: $army-green;
         margin: 0;
-        position: absolute;
-        bottom: 4%;
-        left: 25%;
-        text-align: center;
-        width: 165px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        padding-bottom: 20px;
     }
 
-    &__delete-exercise-wrapper {
-        margin-top: -20px;
-    }
+    &-form-field {
+        width: 100px;
+        margin-right: 32px;
+        font-family: $poppins;
 
-    &__sets {
-        width: 300px;
-        font-size: 13px;
-        display: flex;
-        align-items: center;
-        column-gap: 12px;
-
-        &-weight-lifted,
-        &-reps {
-            width: 100px;
-
-            &--error {
-                color: $dark-red;
-            }
-        }
-
-        &--after-first {
-            padding-top: 5px;
-        }
-
-        &-success {
-            color: $army-green;
-            font-size: 11px;
+        &--error {
+            color: $dark-red;
         }
     }
+}
 
-    &__delete-set-wrapper {
-        margin-top: -15px;
+.add-exercise {
+    display: flex;
+    justify-content: space-around;
+    width: 300px;
+    margin-top:10px;
+    column-gap:5px;
+
+    &-button {
+        color: $army-green;
+        font-family: $poppins;
+        background: $light-blue !important;
     }
 
-    &__button-delete-sets:not([disabled]):hover,
-    &__button-delete-sets:not([disabled]):active,
-    &__button-delete-exercise:hover,
-    &__button-delete-exercise:active{
-        color:#f44336;
+    &-button:not([disabled]):hover,
+    &-button:not([disabled]):active {
+        color: $light-blue !important;
+        background: $army-green !important;
     }
+}
 
-    &__add-sets {
-        width: 300px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 10px;
+.error-wrapper {
+    width: 250px;
+    margin: 80px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-        &-button {
-            margin-left: 16px;
-            margin-top: 11px;
-            font-family: $poppins;
-        }
+.error-title {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
 
-        &-button:not([disabled]):hover,
-        &-button:not([disabled]):active {
-            color: $army-green;
-            background: white;
-        }
-    }
+.error-description {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 15px;
+    line-height: 24px;
+    text-align: center;
+    color: $blue-grey;
+}
 
-    &__total {
-        margin: 10px 0;
-        font-size: 13px;
-        width: 300px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        column-gap: 10px;
-        border-bottom: 2px solid $army-green;
-
-        &-text {
-            font-size: 19px;
-            color: $army-green;
-            margin: 0;
-            padding-bottom: 20px;
-        }
-
-        &-form-field {
-            width: 100px;
-            margin-right: 32px;
-            font-family: $poppins;
-
-            &--error {
-                color: $dark-red;
-            }
-        }
-    }
-
-    &__add-exercise {
-        display: flex;
-        justify-content: space-around;
-        width: 300px;
-        margin-top:10px;
-        column-gap:5px;
-
-        &-button {
-            color: $army-green;
-            font-family: $poppins;
-            background: $light-blue !important;
-        }
-
-        &-button:not([disabled]):hover,
-        &-button:not([disabled]):active {
-            color: $light-blue !important;
-            background: $army-green !important;
-        }
-    }
-
-    &__error-wrapper {
-        width: 250px;
-        margin: 80px auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    &__error-title {
-        font-size: 18px;
-        margin-bottom: 5px;
-    }
-
-    &__error-description {
-        margin-top: 0;
-        margin-bottom: 10px;
-        font-size: 15px;
-        line-height: 24px;
-        text-align: center;
-        color: $blue-grey;
-    }
-
-    &__error-image {
-        width: 250px;
-        height: 200px;
-    }
-
+.error-image {
+    width: 250px;
+    height: 200px;
 }
 
 @media (min-width: 640px) {
-    .new-training {
 
-        &__spinner {
-            top: 50%;
-            left: 50%;
-        }
+    .spinner {
+        top: 50%;
+        left: 50%;
+    }
 
-        &__error-wrapper {
-            width: 300px;
-            left: 40%;
-        }
+    .error-wrapper {
+        width: 300px;
+        left: 40%;
     }
 }
 

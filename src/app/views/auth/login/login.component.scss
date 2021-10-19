@@ -1,81 +1,79 @@
 @import '../../../../../styles/default-pallette.scss';
 
-.login {
+.wrapper {
+    width: 90%;
+    border-radius: 6px;
+    margin-top: 6rem;
+    margin-left: auto;
+    margin-right: auto;
+    background: $light-blue;
+    text-align: center;
+}
 
-    &__wrapper {
-        width: 90%;
-        border-radius: 6px;
-        margin-top: 6rem;
-        margin-left: auto;
-        margin-right: auto;
-        background: $light-blue;
-        text-align: center;
-    }
+.spinner {
+    margin: 80% auto;
+}
 
-    &__spinner {
-        margin: 80% auto;
-    }
+.main-form {
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 10px;
 
-    &__main-form {
-        padding-top: 16px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        row-gap: 10px;
-
-        &-field {
-            width: 300px;
-        }
-    }
-
-    &__error,
-    &__error-custom {
-        font-size: 11px;
-        color: $dark-red;
-        font-family: $poppins;
-    }
-
-    &__error-custom {
-        align-self: flex-start;
-        margin-left: 20px;
-    }
-
-    &__no_account_message {
-        font-size: 12px;
-        color: $blue-grey;
-        display: inline-block;
-        margin-top: 15px;
-        padding-bottom: 16px;
-    }
-
-    &__no-account-link {
-        text-decoration: none;
-        font-weight: bold;
-        color: $blue-grey;
-    }
-
-    &__submit,
-    &__label {
-        font-family: $poppins;
+    &-field {
+        width: 300px;
     }
 }
 
-@media (min-width: 640px) {
-    .login {
-        &__wrapper {
-            width: 400px;
-        }
+.error,
+.error-custom {
+    font-size: 11px;
+    color: $dark-red;
+    font-family: $poppins;
+}
 
-        &__error-custom {
-            margin-left: 50px;
-        }
+.error-custom {
+    align-self: flex-start;
+    margin-left: 20px;
+}
+
+.no_account_message {
+    font-size: 12px;
+    color: $blue-grey;
+    display: inline-block;
+    margin-top: 15px;
+    padding-bottom: 16px;
+}
+
+.no-account-link {
+    text-decoration: none;
+    font-weight: bold;
+    color: $blue-grey;
+}
+
+.submit,
+.label {
+    font-family: $poppins;
+}
+
+
+@media (min-width: 640px) {
+
+    .wrapper {
+        width: 400px;
     }
+
+    .error-custom {
+        margin-left: 50px;
+    }
+
 }
 
 @media (max-width: 320px) {
-    .login {
-        &__main-form-field {
-            width: 250px;
-        }
+
+    .main-form-field {
+        width: 250px;
     }
+
 }
