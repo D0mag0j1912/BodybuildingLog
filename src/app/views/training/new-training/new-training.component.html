@@ -39,7 +39,7 @@
                         class="exercise-form-field"
                         matTooltipClass="tooltip"
                         matTooltipPosition="above"
-                        [matTooltipDisabled]="disabledTooltip"
+                        [matTooltipDisabled]="getDisabledTooltip(i).value"
                         [matTooltip]="getExerciseName(i).value">
                         <mat-label class="label">
                             {{ 'training.new_training.pick_exercise' | translate }}

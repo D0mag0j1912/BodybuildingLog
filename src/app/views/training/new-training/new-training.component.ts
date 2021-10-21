@@ -57,8 +57,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     exerciseChanged: boolean = false;
 
-    disabledTooltip: boolean = true;
-
     @ViewChild('bodyweightRef', {
         read: ElementRef
     })
@@ -248,7 +246,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         indexExercise: number,
         element: MatSelect
     ): void {
-        console.log(element);
         if($event.value){
             if(this.getSets(indexExercise).length > 0){
                 this.getWeightLifted(indexExercise, 0).enable();
@@ -259,7 +256,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 indexExercise
             );
             this.exerciseChanged = !this.exerciseChanged;
-            this.setExerciseNameTooltip(element);
+            this.setExerciseNameTooltip(
+                element,
+                indexExercise
+            );
         }
     }
 
@@ -301,7 +301,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     })
                 ]),
                 'total': new FormControl(this.initialWeight.toString() + ' kg',
-                    [Validators.required])
+                    [Validators.required]),
+                'disabledTooltip': new FormControl(true, [Validators.required])
             }, {
                 validators: [NewTrainingValidators.atLeastOneSet(), NewTrainingValidators.allSetsFilled()]
             })
@@ -487,6 +488,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         }
                     });
                     this.getTotal(indexExercise).patchValue(exercise.total + ' kg');
+                    this.getDisabledTooltip(indexExercise).patchValue(exercise.disabledTooltip);
                 }
             }
         });
@@ -548,9 +550,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             exerciseFormData.push({
                                 formArrayIndex: +this.getFormArrayIndex(indexExercise).value,
                                 exerciseName: this.getExerciseName(indexExercise).value,
+                                sets: [],
                                 total: +splittedTotal[0],
+                                disabledTooltip: this.getDisabledTooltip(indexExercise).value,
                                 availableExercises: allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1),
-                                sets: []
                             });
                             alreadyUsedExercises.push(this.getExerciseName(indexExercise).value);
                             let formSetData: Set[] = [];
@@ -577,15 +580,18 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             })
         );
     }
-
-    private setExerciseNameTooltip(element: MatSelect): void {
+    //TODO: Trebam prvo izvršiti ovo, pa onda updateExerciseChoices
+    private setExerciseNameTooltip(
+        element: MatSelect,
+        indexExercise?: number
+    ): void {
         setTimeout(() => {
-            const width: number = ((element._elementRef.nativeElement as HTMLParagraphElement).querySelector('.mat-select-value-text') as HTMLSpanElement).offsetWidth;
+            const width: number = ((element._elementRef.nativeElement as HTMLParagraphElement).querySelector('.mat-select-value-text') as HTMLSpanElement)?.offsetWidth;
             if(width > MAX_EXERCISE_NAME_WIDTH){
-                this.disabledTooltip = false;
+                this.getDisabledTooltip(indexExercise ? indexExercise : 0).patchValue(false);
             }
             else {
-                this.disabledTooltip = true;
+                this.getDisabledTooltip(indexExercise ? indexExercise : 0).patchValue(true);
             }
         });
     }
@@ -641,6 +647,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     getTotal(indexExercise: number): AbstractControl {
         return (<FormArray>this.form.get('exercise')).at(indexExercise).get('total');
+    }
+
+    getDisabledTooltip(indexExercise: number): AbstractControl {
+        return (<FormArray>this.form.get('exercise')).at(indexExercise).get('disabledTooltip');
     }
 
     getAlreadyUsedExercises(): string[] {

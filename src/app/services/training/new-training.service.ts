@@ -288,6 +288,7 @@ export class NewTrainingService {
             exerciseName: null,
             sets: [],
             total: null,
+            disabledTooltip: true,
             availableExercises: [...exercises]
         } as SingleExercise;
     }

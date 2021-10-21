@@ -15,6 +15,7 @@ export interface SingleExercise {
     exerciseName: string;
     sets: Set[];
     total: number;
+    disabledTooltip: boolean;
     availableExercises: Exercise[];
 }
 export interface Set {
