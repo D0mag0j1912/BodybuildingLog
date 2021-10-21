@@ -223,9 +223,12 @@ export class NewTrainingService {
     //Metoda koja ažurira raspoložive vježbe u drugim selectovima kada korisnik ODABERE ILI IZBRIŠE vježbu iz nekog selecta
     updateExerciseChoices(
         selectedExercise: string,
-        selectedIndex: number): void {
+        selectedIndex: number,
+        disabledTooltip: boolean
+    ): void {
         const updatedTraining: NewTraining = {...this.currentTrainingChanged$$.getValue()};
         updatedTraining.exercise[selectedIndex].exerciseName = selectedExercise;
+        updatedTraining.exercise[selectedIndex].disabledTooltip = disabledTooltip;
         //Prolazim kroz sve selectove te brišem iz njih vježbu koja je trenutno odabrana u nekom selectu
         updatedTraining.exercise.forEach((exercise: SingleExercise, index: number) => {
             //Ako je vježba različita od odabrane
