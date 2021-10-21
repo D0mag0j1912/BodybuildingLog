@@ -37,21 +37,23 @@
                     <mat-form-field
                         appearance="outline"
                         class="exercise-form-field"
-                        [matTooltip]="getExerciseName(i).value | showFullExerciseName:exerciseNameChoice"
-                        matTooltipClass="tooltip">
+                        matTooltipClass="tooltip"
+                        matTooltipPosition="above"
+                        [matTooltipDisabled]="disabledTooltip"
+                        [matTooltip]="getExerciseName(i).value">
                         <mat-label class="label">
                             {{ 'training.new_training.pick_exercise' | translate }}
                         </mat-label>
                         <mat-select
                             #exerciseNameChoice
                             formControlName="name"
-                            (selectionChange)="onExerciseNameChange($event, i)">
+                            (selectionChange)="onExerciseNameChange($event, i, exerciseNameChoice)">
                             <mat-optgroup
                                 *ngFor="let exercise of exercises$ | newTraining:i:exerciseChanged | async"
                                 [label]="exercise.primaryMuscleGroup">
                                 <mat-option
-                                    [value]="exercise.name"
-                                    class="exercise-option">
+                                    class="exercise-option"
+                                    [value]="exercise.name">
                                     <img
                                         class="exercise-img"
                                         [src]="exercise.imageUrl">
@@ -189,7 +191,8 @@
                     </p>
                     <mat-form-field
                         appearance="outline"
-                        class="total-form-field">
+                        class="total-form-field"
+                        [class.at-least-one-set]="group.errors?.atLeastOneSet && isSubmitted">
                         <input
                             matInput
                             type="text"

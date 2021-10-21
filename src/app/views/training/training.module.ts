@@ -12,14 +12,12 @@ import { ShowAllExercisesPipe } from "src/app/pipes/show-all-exercises.pipe";
 import { PastTrainingsComponent } from './past-trainings/past-trainings.component';
 import { TrainingItemComponent } from './past-trainings/training-item/training-item.component';
 import { TranslateModule } from "@ngx-translate/core";
-import { ShowFullExerciseNamePipe } from '../../pipes/show-full-exercise-name.pipe';
 
 @NgModule({
     declarations: [
         NewTrainingComponent,
         NewTrainingPipe,
         ShowAllExercisesPipe,
-        ShowFullExerciseNamePipe,
         PastTrainingsComponent,
         TrainingItemComponent
     ],

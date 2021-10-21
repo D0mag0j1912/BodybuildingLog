@@ -1,11 +1,11 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params } from '@angular/router';
-import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { catchError, debounceTime, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { forkJoin, fromEvent, Observable, of, Subject } from 'rxjs';
+import { catchError, debounceTime, delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { DialogComponent } from 'src/app/views/shared/dialog/dialog.component';
 import { Exercise } from '../../../models/training/exercise.model';
@@ -16,6 +16,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
+
+const MAX_EXERCISE_NAME_WIDTH: number = 181;
 
 interface SetStateChanged {
     indexExercise: number;
@@ -55,6 +57,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     exerciseChanged: boolean = false;
 
+    disabledTooltip: boolean = true;
+
     @ViewChild('bodyweightRef', {
         read: ElementRef
     })
@@ -64,6 +68,15 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 (bodyweight.nativeElement as HTMLInputElement).focus();
                 this.focusCounter++;
             });
+        }
+    }
+
+    @ViewChild('exerciseNameChoice', {
+        read: MatSelect
+    })
+    set exerciseNameChoice(exerciseName: MatSelect){
+        if(exerciseName){
+            this.setExerciseNameTooltip(exerciseName);
         }
     }
 
@@ -226,20 +239,16 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
-    //TODO: show tooltip on exercise name if needed
-    showOuterExerciseNameTooltip(fullExerciseName: HTMLElement): string {
-        console.log(fullExerciseName);
-        return 'uu';
-    }
-
     onBodyweightChange(bodyweight: string): void {
         this.newTrainingService.addBodyweightToStorage(bodyweight);
     }
 
     onExerciseNameChange(
         $event: MatSelectChange,
-        indexExercise: number
+        indexExercise: number,
+        element: MatSelect
     ): void {
+        console.log(element);
         if($event.value){
             if(this.getSets(indexExercise).length > 0){
                 this.getWeightLifted(indexExercise, 0).enable();
@@ -250,6 +259,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 indexExercise
             );
             this.exerciseChanged = !this.exerciseChanged;
+            this.setExerciseNameTooltip(element);
         }
     }
 
@@ -498,7 +508,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         this._id
                     ).pipe(
                         tap((response: GeneralResponseData) => {
-                            this.snackBar.open(response.message, null, {
+                            this.snackBar.open(this.translateService.instant(response.message), null, {
                                 duration: 3000,
                                 panelClass: 'app__snackbar'
                             });
@@ -509,7 +519,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 else {
                     return this.newTrainingService.addTraining(this.formTrainingState).pipe(
                         tap((response: GeneralResponseData) => {
-                            this.snackBar.open(response.message, null, {
+                            this.snackBar.open(this.translateService.instant(response.message), null, {
                                 duration: 3000,
                                 panelClass: 'app__snackbar'
                             });
@@ -566,6 +576,18 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 );
             })
         );
+    }
+
+    private setExerciseNameTooltip(element: MatSelect): void {
+        setTimeout(() => {
+            const width: number = ((element._elementRef.nativeElement as HTMLParagraphElement).querySelector('.mat-select-value-text') as HTMLSpanElement).offsetWidth;
+            if(width > MAX_EXERCISE_NAME_WIDTH){
+                this.disabledTooltip = false;
+            }
+            else {
+                this.disabledTooltip = true;
+            }
+        });
     }
 
     /* _accessFormData(
