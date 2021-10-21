@@ -9,7 +9,8 @@ import {
     IsInt, 
     ValidateNested, 
     IsNumber, 
-    IsNotEmpty} from 'class-validator';
+    IsNotEmpty,
+    IsBoolean} from 'class-validator';
 import { Exercise } from '../exercise.model';
 import { Set } from './set.model';
 
@@ -22,12 +23,16 @@ export const singleExerciseSchema = new Schema({
         type: String,
         required: true
     },
+    sets: {
+        type: [setSchema],
+        required: true
+    },
     total: {
         type: Number,
         required: true
     },
-    sets: {
-        type: [setSchema],
+    disabledTooltip: {
+        type: Boolean,
         required: true
     },
     availableExercises: {
@@ -71,6 +76,14 @@ export class SingleExercise {
         message: '@training.new_training.errors.error_save_training'
     })
     total: number;
+
+    @IsBoolean({
+        message: '@training.new_training.errors.error_save_training'
+    })
+    @IsNotEmpty({
+        message: '@training.new_training.errors.error_save_training'
+    })
+    disabledTooltip: boolean;
 
     @ValidateNested({
         each: true
