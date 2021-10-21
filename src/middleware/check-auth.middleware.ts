@@ -1,6 +1,14 @@
 import { NestMiddleware, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
+
+interface VerifiedToken {
+    email: string;
+    _id: string;
+    iat: number;
+    exp: number;
+}
+
 export class CheckAuthMiddleware implements NestMiddleware {
     use(
         request: Request, 
@@ -9,7 +17,9 @@ export class CheckAuthMiddleware implements NestMiddleware {
     ){
         try {
             const token: string = request.headers.authorization.split(' ')[1];
-            verify(token, 'secret_this_should_be_longer');
+            //OVDJE IMAM _id logiranog usera kojeg mogu proslijediti dalje
+            const userData: VerifiedToken = verify(token, 'secret_this_should_be_longer');
+            console.log(userData);
             next();
         }
         catch(error: unknown) {
