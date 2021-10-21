@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable } from "rxjs";
-import { tap } from "rxjs/operators";
+import { switchMap, tap } from "rxjs/operators";
 import { environment } from "src/environments/environment";
 import { GeneralResponseData } from '../models/general-response.model';
 import { Preferences } from "../models/preferences.model";
@@ -33,17 +33,22 @@ export class NavigationService {
         return this.http.put<GeneralResponseData>(environment.backend + `/preferences/${userId}`, {
             preferences: preferences
         }).pipe(
-            tap((response: GeneralResponseData) => {
+            tap(_ => {
                 this.authService.updateUserData({
                     userId: userId,
                     language: language,
                     weightFormat: weightFormat
                 } as Preferences);
-                this.translateService.use(language);
-                this.snackBar.open(this.translateService.instant(response.message), null, {
-                    duration: 3000,
-                    panelClass: 'app__snackbar'
-                });
+            }),
+            switchMap((response: GeneralResponseData) => {
+                return this.translateService.use(language).pipe(
+                    tap(_ => {
+                        this.snackBar.open(this.translateService.instant(response.message), null, {
+                            duration: 3000,
+                            panelClass: 'app__snackbar'
+                        });
+                    })
+                );
             })
         )
     }

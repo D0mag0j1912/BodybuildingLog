@@ -27,6 +27,13 @@ body {
     }
 }
 
+::ng-deep .tooltip {
+    font-size: 11px;
+    font-family: $poppins;
+    white-space: pre-line;
+    background-color: $army-green;
+}
+
 
 
 
