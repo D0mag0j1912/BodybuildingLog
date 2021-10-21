@@ -599,15 +599,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 }
             })
         );
-        /* setTimeout(() => {
-            const width: number = ((element._elementRef.nativeElement as HTMLParagraphElement).querySelector('.mat-select-value-text') as HTMLSpanElement)?.offsetWidth;
-            if(width > MAX_EXERCISE_NAME_WIDTH){
-                this.getDisabledTooltip(indexExercise ? indexExercise : 0).patchValue(false);
-            }
-            else {
-                this.getDisabledTooltip(indexExercise ? indexExercise : 0).patchValue(true);
-            }
-        }); */
     }
 
     /* _accessFormData(

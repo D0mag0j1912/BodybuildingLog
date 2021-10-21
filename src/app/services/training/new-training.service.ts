@@ -71,8 +71,7 @@ export class NewTrainingService {
     }
 
     //Metoda koja šalje uneseni trening backendu
-    addTraining(trainingData: NewTraining)
-        : Observable<GeneralResponseData> {
+    addTraining(trainingData: NewTraining): Observable<GeneralResponseData> {
         return this.http.post<GeneralResponseData>(environment.backend + '/handleTraining', {
             trainingData: trainingData
         });
@@ -80,8 +79,8 @@ export class NewTrainingService {
 
     updateTraining(
         trainingData: NewTraining,
-        trainingId: string)
-        : Observable<GeneralResponseData> {
+        trainingId: string
+    ): Observable<GeneralResponseData> {
         return this.http.put<GeneralResponseData>(environment.backend + `/handleTraining/${trainingId}`, {
             updatedTrainingData: trainingData
         });
