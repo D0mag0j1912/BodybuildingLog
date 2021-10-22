@@ -7,8 +7,8 @@
 
 <div
     mat-dialog-title
-    *ngIf="data.brisanje">
-    <p>{{ data.brisanje.message }}</p>
+    *ngIf="(data.brisanje.message$ | async) as message">
+    <p>{{ message }}</p>
 </div>
 <div
     mat-dialog-content

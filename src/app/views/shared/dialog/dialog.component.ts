@@ -1,5 +1,6 @@
 import { Component, Inject } from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { Observable } from "rxjs";
 
 @Component({
     templateUrl: './dialog.component.html',
@@ -12,7 +13,7 @@ export class DialogComponent {
             {
                 message?: string,
                 brisanje?: {
-                    message: string,
+                    message$: Observable<string>,
                     exerciseName: string
                 },
                 isError: boolean

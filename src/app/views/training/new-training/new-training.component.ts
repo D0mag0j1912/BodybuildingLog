@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params } from '@angular/router';
-import { forkJoin, fromEvent, Observable, of, Subject } from 'rxjs';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { catchError, debounceTime, delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { DialogComponent } from 'src/app/views/shared/dialog/dialog.component';
@@ -327,7 +327,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             let dialogRef = this.dialog.open(DialogComponent, {
                 data: {
                     brisanje: {
-                        message: this.translateService.instant('training.new_training.delete_exercise_prompt'),
+                        message$: this.translateService.stream('training.new_training.delete_exercise_prompt'),
                         exerciseName: exerciseName
                     }
                 }
@@ -601,7 +601,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         );
     }
 
-    /* _accessFormData(
+    _accessFormData(
         formField: keyof FormData,
         indexExercise?: number,
         indexSet?: number
@@ -615,7 +615,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         else if(indexExercise && indexSet){
             return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).at(indexSet).get(formField);
         }
-    }  */
+        else {
+            return null;
+        }
+    }
 
     get bodyweight(): FormControl {
         return this.form.get('bodyweight') as FormControl;
