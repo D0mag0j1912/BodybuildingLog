@@ -33,7 +33,7 @@
         <span
             *ngFor="let data of (training.exercise | slice:0:2); let i = index"
             class="exercise-name">
-            {{ (i+1) + '. ' + data.exerciseName }}
+            {{ (i+1) + '. ' + (data.exerciseName | translate) }}
         </span>
         <span
             class="exercise-dots"
