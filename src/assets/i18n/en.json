@@ -147,5 +147,11 @@
         "friday": "Friday",
         "saturday": "Saturday",
         "sunday": "Sunday"
+    },
+    "exercises": {
+        "chinups": "Chinups",
+        "pullups": "Pullups",
+        "incline_dumbbell_press": "Incline dumbbell press",
+        "romanian_barbell_deadlift": "Romanian barbell deadlift"
     }
 }

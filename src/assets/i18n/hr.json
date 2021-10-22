@@ -149,5 +149,11 @@
         "friday": "Petak",
         "saturday": "Subota",
         "sunday": "Nedjelja"
+    },
+    "exercises": {
+        "chinups": "Zgib (Pothvat)",
+        "pullups": "Zgib (Nathvat)",
+        "incline_dumbbell_press": "Kosi potisak bučicama",
+        "romanian_barbell_deadlift": "Rumunjsko mrtvo dizanje šipkom"
     }
 }

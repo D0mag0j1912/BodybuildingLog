@@ -48,7 +48,7 @@
                         matTooltipClass="tooltip"
                         matTooltipPosition="above"
                         [matTooltipDisabled]="getDisabledTooltip(i).value"
-                        [matTooltip]="getExerciseName(i).value">
+                        [matTooltip]="getExerciseName(i).value | translate">
                         <mat-label class="label">
                             {{ 'training.new_training.pick_exercise' | translate }}
                         </mat-label>
@@ -65,7 +65,7 @@
                                     <img
                                         class="exercise-img"
                                         [src]="exercise.imageUrl">
-                                    <p class="exercise-text">{{ exercise.name }}</p>
+                                    <p class="exercise-text">{{ exercise.name | translate }}</p>
                                 </mat-option>
                             </mat-optgroup>
                         </mat-select>
