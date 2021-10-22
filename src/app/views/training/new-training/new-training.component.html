@@ -27,13 +27,21 @@
                 <mat-error *ngIf="bodyweight.errors?.samoBrojevi">
                     {{ 'training.new_training.errors.only_numbers' | translate }}
                 </mat-error>
+                <mat-error *ngIf="bodyweight.errors?.min">
+                    {{ 'training.new_training.errors.bodyweight_min' | translate }}
+                </mat-error>
+                <mat-error *ngIf="bodyweight.errors?.max">
+                    {{ 'training.new_training.errors.bodyweight_max' | translate }}
+                </mat-error>
             </mat-error>
         </mat-form-field>
         <ng-container
             *ngFor="let group of getExercises(); let i = index"
             formArrayName="exercise">
             <ng-container [formGroupName]="i">
-                <div class="exercise-wrapper">
+                <div
+                    class="exercise-wrapper"
+                    [class.bodyweight-error]="bodyweight.errors">
                     <mat-form-field
                         appearance="outline"
                         class="exercise-form-field"

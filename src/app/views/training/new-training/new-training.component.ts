@@ -461,7 +461,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             data.bodyweight,
                             this.editTraining ? this.editTraining.bodyweight : null
                         ),
-                        [NewTrainingValidators.isBroj()]
+                        [NewTrainingValidators.isBroj(), Validators.min(30), Validators.max(300)]
                     ),
                     'exercise': new FormArray([])
                 });
@@ -582,7 +582,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             })
         );
     }
-    //TODO: Trebam prvo izvršiti ovo, pa onda updateExerciseChoices
+
     private setExerciseNameTooltip(
         element: MatSelect,
         indexExercise?: number
@@ -599,25 +599,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 }
             })
         );
-    }
-
-    _accessFormData(
-        formField: keyof FormData,
-        indexExercise?: number,
-        indexSet?: number
-    ): AbstractControl {
-        if(!indexExercise && !indexSet){
-            return this.form.get(formField);
-        }
-        else if(indexExercise){
-            return (<FormArray>this.form.get('exercise')).at(indexExercise).get(formField);
-        }
-        else if(indexExercise && indexSet){
-            return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).at(indexSet).get(formField);
-        }
-        else {
-            return null;
-        }
     }
 
     get bodyweight(): FormControl {
