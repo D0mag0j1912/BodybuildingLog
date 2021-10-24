@@ -74,7 +74,17 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     })
     set exerciseNameChoice(exerciseName: MatSelect){
         if(exerciseName){
-            this.setExerciseNameTooltip(exerciseName).subscribe();
+            this.newTrainingService.currentTrainingChanged$.pipe(
+                take(1),
+                switchMap((currentTrainingState: NewTraining) => {
+                    return this.setExerciseNameTooltip(
+                        exerciseName,
+                        null,
+                        currentTrainingState
+                    );
+                }),
+                takeUntil(this.subs$$)
+            ).subscribe();
         }
     }
 
@@ -583,19 +593,29 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         );
     }
 
+    //TODO: popraviti inicijalni load (proći kroz cijeli form array te ovisno o podatcima iz Subjecta, popuniti vrijednosti disabledTooltip)
     private setExerciseNameTooltip(
         element: MatSelect,
-        indexExercise?: number
+        indexExercise?: number,
+        currentTrainingState?: NewTraining
     ): Observable<void> {
         return of(null).pipe(
             delay(0),
             tap(_ => {
-                const width: number = ((element._elementRef.nativeElement as HTMLParagraphElement).querySelector('.mat-select-value-text') as HTMLSpanElement)?.offsetWidth;
-                if(width > MAX_EXERCISE_NAME_WIDTH){
-                    this.getDisabledTooltip(indexExercise ? indexExercise : 0).patchValue(false);
+                if(currentTrainingState){
+                    currentTrainingState.exercise.forEach((value: SingleExercise, index: number) => {
+                        this.getDisabledTooltip(index).patchValue(value.disabledTooltip);
+                    });
                 }
                 else {
-                    this.getDisabledTooltip(indexExercise ? indexExercise : 0).patchValue(true);
+                    const width: number = ((element._elementRef.nativeElement as HTMLParagraphElement).querySelector('.mat-select-value-text') as HTMLSpanElement)?.offsetWidth;
+
+                    if(width > MAX_EXERCISE_NAME_WIDTH){
+                        this.getDisabledTooltip(indexExercise ? indexExercise : 0).patchValue(false);
+                    }
+                    else {
+                        this.getDisabledTooltip(indexExercise ? indexExercise : 0).patchValue(true);
+                    }
                 }
             })
         );

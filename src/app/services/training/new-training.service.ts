@@ -238,21 +238,17 @@ export class NewTrainingService {
         this.saveData(updatedTraining);
     }
 
-    //Metoda koja čuva trening stanje
     keepTrainingState(): void {
-        //Dohvaćam podatke iz LS
         const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
         const allExercises: Exercise[] = JSON.parse(localStorage.getItem('allExercises'));
-        //Ako ih nema
+
         if(!trainingState || !allExercises){
             return;
         }
-        //Proslijedi podatke Subjectu
         this.currentTrainingChanged$$.next({...trainingState});
         this.allExercisesChanged$$.next([...allExercises]);
     }
 
-    //Metoda koja priprema centralni objekt pri inicijalizaciji
     updateTrainingState(
         exercises: Exercise[],
         nextFormArrayIndex: number,
@@ -266,11 +262,10 @@ export class NewTrainingService {
                 _id: '',
                 bodyweight: null,
                 editMode: false,
-                //Ovdje treba postaviti ID ulogiranog usera
                 userId: userId
             };
         }
-        //Ubacivam u centralno polje pripremljeni objekt
+
         updatedTraining.exercise.push(
             this.returnEmptyExercise(
                 exercises,
@@ -280,7 +275,6 @@ export class NewTrainingService {
         this.saveData(updatedTraining);
     }
 
-    //Stvaram prazni objekt vježbe
     returnEmptyExercise(
         exercises: Exercise[],
         nextFormArrayIndex: number
@@ -295,13 +289,11 @@ export class NewTrainingService {
         } as SingleExercise;
     }
 
-    //Metoda koja sprema trenutno stanje polja
     saveData(updatedTraining?: NewTraining): void {
         this.currentTrainingChanged$$.next({...updatedTraining});
         localStorage.setItem('trainingState', JSON.stringify({...updatedTraining}));
     }
 
-    //Metoda koja sortira polje vježbi koje se nalaze u selectovima
     private compare(
         a: Exercise,
         b: Exercise
