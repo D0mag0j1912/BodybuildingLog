@@ -17,9 +17,8 @@ export class CheckAuthMiddleware implements NestMiddleware {
     ){
         try {
             const token: string = request.headers.authorization.split(' ')[1];
-            //OVDJE IMAM _id logiranog usera kojeg mogu proslijediti dalje
             const userData: VerifiedToken = verify(token, 'secret_this_should_be_longer');
-            console.log(userData);
+            request.headers.userId = userData._id;
             next();
         }
         catch(error: unknown) {

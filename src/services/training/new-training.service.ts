@@ -5,6 +5,14 @@ import { GeneralResponseData } from "src/app.service";
 import { Exercise } from "src/models/training/exercise.model";
 import { NewTraining } from '../../models/training/new-training/new-training.model';
 
+interface Error {
+    response?: {
+        status: number;
+        message: string;
+    }
+    status?: number;
+}
+
 @Injectable()
 export class NewTrainingService {
 
@@ -15,10 +23,17 @@ export class NewTrainingService {
 
     async editTraining(
         trainingId: string,
-        updatedTrainingData: NewTraining
+        updatedTrainingData: NewTraining,
+        loggedUserId: string
     ): Promise<GeneralResponseData> {
         try {
-            //TODO: Ovdje trebam pitati je li trening koji se hoće editirati napravljen od strane trenutno logiranog usera
+            const trainingToBeUpdated: NewTraining = await this.trainingModel.findById(trainingId);
+            if(trainingToBeUpdated.userId.toString() !== loggedUserId.toString()) {
+                throw new HttpException({
+                    status: HttpStatus.UNAUTHORIZED,
+                    message: 'common.errors.not_authorized'
+                }, HttpStatus.UNAUTHORIZED);
+            }
             await this.trainingModel.updateOne({
                 _id: trainingId
             }, {
@@ -29,10 +44,23 @@ export class NewTrainingService {
             } as GeneralResponseData;
         }
         catch(error: unknown) {
-            throw new HttpException({
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'training.new_training.errors.error_update_training'
-            }, HttpStatus.INTERNAL_SERVER_ERROR);
+            switch((error as Error).status) {
+                case 500:
+                    throw new HttpException({
+                        status: HttpStatus.INTERNAL_SERVER_ERROR,
+                        message: 'training.new_training.errors.error_update_training'
+                    }, HttpStatus.INTERNAL_SERVER_ERROR);
+                case 401:
+                    throw new HttpException({
+                        status: HttpStatus.UNAUTHORIZED,
+                        message: 'common.errors.not_authorized'
+                    }, HttpStatus.UNAUTHORIZED);
+                default:
+                    throw new HttpException({
+                        status: HttpStatus.INTERNAL_SERVER_ERROR,
+                        message: 'training.new_training.errors.error_update_training'
+                    }, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
 

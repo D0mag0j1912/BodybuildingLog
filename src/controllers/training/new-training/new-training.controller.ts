@@ -4,7 +4,8 @@ import {
     Controller, 
     Param, 
     Post, 
-    Put } from "@nestjs/common";
+    Put, 
+    Req } from "@nestjs/common";
 import { GeneralResponseData } from "src/app.service";
 import { NewTraining } from "src/models/training/new-training/new-training.model";
 import { NewTrainingService } from "src/services/training/new-training.service";
@@ -25,6 +26,7 @@ export class NewTrainingController {
 
     @Put(':trainingId')
     updateTraining(
+        @Req() request,
         @Param('trainingId') trainingId: string,
         @Body('updatedTrainingData') updatedTrainingData: NewTraining
     ): Promise<GeneralResponseData> {
@@ -33,7 +35,8 @@ export class NewTrainingController {
         }
         return this.newTrainingService.editTraining(
             trainingId,
-            updatedTrainingData
+            updatedTrainingData,
+            request.headers.userId as string
         );
     }
 }
