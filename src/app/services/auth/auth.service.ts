@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from '../../../environments/environment';
-import { tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { Signup, Login } from "../../models/auth/auth-data.model";
 import { BehaviorSubject, Observable } from "rxjs";
 import { Router } from "@angular/router";
@@ -25,7 +25,7 @@ export class AuthService {
     constructor(
         private readonly http: HttpClient,
         private readonly router: Router,
-        private readonly translateService: TranslateService
+        private readonly translateService: TranslateService,
     ){}
 
     getToken(): string {
@@ -78,22 +78,24 @@ export class AuthService {
             tap((response: AuthResponseData) => {
                 if(response.token){
                     this.loggedUser$$.next(response);
-                    this.token = response.token;
                     this.isAuth$$.next(true);
-                    const expiresInDuration = response.expiresIn;
+                    this.token = response.token as string;
+                    const expiresInDuration: number = response.expiresIn as number;
                     this.setAuthTimer(expiresInDuration);
-                    const now = new Date();
-                    const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+                    const now: Date = new Date();
+                    const expirationDate: Date = new Date(now.getTime() + expiresInDuration * 1000);
                     this.saveLS(
                         this.token,
                         expirationDate,
                         response._id,
                         response.preferences
                     );
-                    this.translateService.use(response.preferences.language);
                     this.router.navigate(['/new-training']);
                 }
-            })
+            })/* ,
+            switchMap((response: AuthResponseData) => {
+                return this.translateService.use(response.preferences.language);
+            }) */
         );
     }
 
@@ -109,8 +111,8 @@ export class AuthService {
                 _id: userData._id,
                 preferences: userData.preferences
             };
-            const now = new Date();
-            const expiresIn = authData.expirationDate.getTime() - now.getTime();
+            const now: Date = new Date();
+            const expiresIn: number = authData.expirationDate.getTime() - now.getTime();
             if(expiresIn > 0){
                 this.token = userData.token;
                 this.setAuthTimer(expiresIn / 1000);

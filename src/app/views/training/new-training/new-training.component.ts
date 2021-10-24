@@ -111,7 +111,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         private readonly translateService: TranslateService,
         private readonly dialog: MatDialog,
         private readonly snackBar: MatSnackBar,
-        private readonly route: ActivatedRoute
+        private readonly route: ActivatedRoute,
     ) {}
 
     ngOnInit(): void {
@@ -593,7 +593,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         );
     }
 
-    //TODO: popraviti inicijalni load (proći kroz cijeli form array te ovisno o podatcima iz Subjecta, popuniti vrijednosti disabledTooltip)
     private setExerciseNameTooltip(
         element: MatSelect,
         indexExercise?: number,

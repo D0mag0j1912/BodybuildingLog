@@ -27,7 +27,7 @@ export class NewTrainingService {
 
     constructor(
         private readonly http: HttpClient,
-        private readonly authService: AuthService
+        private readonly authService: AuthService,
     ){}
 
     getExercises(): Observable<AuthResponseData> {

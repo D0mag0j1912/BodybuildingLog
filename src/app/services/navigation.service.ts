@@ -18,7 +18,7 @@ export class NavigationService {
         private readonly http: HttpClient,
         private readonly authService: AuthService,
         private readonly translateService: TranslateService,
-        private readonly snackBar: MatSnackBar
+        private readonly snackBar: MatSnackBar,
     ){}
 
     setPreferences(

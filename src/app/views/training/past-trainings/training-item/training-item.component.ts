@@ -30,7 +30,7 @@ export class TrainingItemComponent implements OnInit {
 
     constructor(
         private readonly sharedService: SharedService,
-        private readonly router: Router
+        private readonly router: Router,
     ) { }
 
     ngOnInit(): void {

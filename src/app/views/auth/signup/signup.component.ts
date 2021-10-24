@@ -86,7 +86,6 @@ export class SignupComponent implements OnInit {
             return;
         }
 
-
         this.authService.signup(
             this._accessFormData('language').value,
             this._accessFormData('weightFormat').value,

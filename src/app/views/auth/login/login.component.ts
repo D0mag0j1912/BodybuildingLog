@@ -22,10 +22,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     isLoading: boolean = false;
 
-    //Definiram formu
     form: FormGroup;
 
-    @ViewChild('emailRef')
+    @ViewChild('emailRef', {
+        read: ElementRef
+    })
     private readonly emailInput: ElementRef;
 
     constructor(
@@ -35,10 +36,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
         private readonly snackBar: MatSnackBar
     ) { }
 
-    //Metoda koja se pokreće kada se komponenta inicijalizira
     ngOnInit(): void {
 
-        //Inicijaliziram formu
         this.form = new FormGroup({
             'email': new FormControl(null, [
                 Validators.required,
@@ -60,10 +59,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
         });
     }
 
-    //Metoda koja se pokreće kada se klikne "Login"
     onSubmit(){
         this.isLoading = true;
-        //Ako je forma neispravna
+
         if(!this.form.valid){
             this.snackBar.open('All fields needs to be correctly filled.', null, {
                 duration: 3000,

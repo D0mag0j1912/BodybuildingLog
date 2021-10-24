@@ -1,18 +1,16 @@
 import { Injectable } from "@angular/core";
-import {environment} from '../../../environments/environment';
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-
+import { environment } from '../../../environments/environment';
 @Injectable({
     providedIn: 'root'
 })
 export class LoginService {
 
     constructor(
-        private readonly http: HttpClient
+        private readonly http: HttpClient,
     ){}
 
-    //Metoda koja vraća Observable sa odgovorom servera je li lozinka odgovara emailu
     passwordFitsEmail(
         email: string,
         password: string

@@ -11,10 +11,9 @@ import { PastTrainingsResponse } from "../../models/training/past-trainings-resp
 export class PastTrainingsService {
 
     constructor(
-        private readonly http: HttpClient
+        private readonly http: HttpClient,
     ){}
 
-    //Metoda koja dohvaća ILI sve treninge (inicijalno) ILI treninge za pojedine stranice paginatora
     getPastTrainings(currentDate: Date)
         : Observable<PastTrainingsResponse> {
         const params: string = `?currentDate=${currentDate}`;

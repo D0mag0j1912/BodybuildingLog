@@ -16,14 +16,14 @@ export class AppComponent implements OnInit {
     constructor(
         private readonly authService: AuthService,
         private readonly newTrainingService: NewTrainingService,
-        private readonly translateService: TranslateService
+        private readonly translateService: TranslateService,
     ){
         this.translateService.setDefaultLang('en');
         const language: AuthResponseData = JSON.parse(localStorage.getItem('userData'));
-        this.translateService.use(language?.preferences.language || 'en').subscribe();
+        this.translateService.use(language?.preferences.language || 'en').subscribe(() => console.log('tu sam'));
     }
 
-    ngOnInit(){
+    ngOnInit(): void {
         this.authService.autoLogin();
         this.newTrainingService.keepTrainingState();
     }

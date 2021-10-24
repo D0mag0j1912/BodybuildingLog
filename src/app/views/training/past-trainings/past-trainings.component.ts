@@ -19,7 +19,6 @@ export class PastTrainingsComponent implements OnInit {
 
     isLoading: boolean = false;
     isError: boolean = false;
-    //Inicijalno stavljam da gledam trenutni tjedan
     isNextWeekDisabled: boolean = true;
 
     startDate: Date;
@@ -33,7 +32,7 @@ export class PastTrainingsComponent implements OnInit {
         private readonly pastTrainingsService: PastTrainingsService,
         private readonly sharedService: SharedService,
         private readonly router: Router,
-        private readonly route: ActivatedRoute
+        private readonly route: ActivatedRoute,
     ) { }
 
     ngOnInit(): void {
@@ -66,8 +65,7 @@ export class PastTrainingsComponent implements OnInit {
     private initializePastTrainings(
         orientationDate: Date,
         isArrow?: boolean
-    )
-        : Observable<PastTrainingsResponse> {
+    ): Observable<PastTrainingsResponse> {
         return this.pastTrainingsService.getPastTrainings(orientationDate).pipe(
             tap((result: PastTrainingsResponse) => {
                 this.startDate = this.sharedService.subtractTwoHours(result.dates.startDate);
