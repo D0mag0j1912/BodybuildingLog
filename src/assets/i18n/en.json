@@ -17,7 +17,8 @@
             "something_went_wrong": "Something went wrong. Please try again.",
             "invalid_date": "Invalid date format.",
             "unknown_error": "Unknown error occured.",
-            "not_authenticated": "You need to be authenticated to finish this activity."
+            "not_authenticated": "You need to be authenticated to finish this activity.",
+            "not_authorized": "You need to be authorized to finish this activity."
         }
     },
     "auth": {
