@@ -41,7 +41,7 @@ export class SignupComponent implements OnInit {
         private readonly signupService: SignupService,
         private readonly translateService: TranslateService,
         private readonly router: Router,
-        private readonly snackBar: MatSnackBar
+        private readonly snackBar: MatSnackBar,
     ) { }
 
     ngOnInit(): void {

@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         private readonly loginService: LoginService,
         private readonly authService: AuthService,
         private readonly translateService: TranslateService,
-        private readonly snackBar: MatSnackBar
+        private readonly snackBar: MatSnackBar,
     ) { }
 
     ngOnInit(): void {

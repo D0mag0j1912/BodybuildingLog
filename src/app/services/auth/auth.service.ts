@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from '../../../environments/environment';
-import { switchMap, tap } from 'rxjs/operators';
+import { mergeMap, switchMap, tap } from 'rxjs/operators';
 import { Signup, Login } from "../../models/auth/auth-data.model";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { Router } from "@angular/router";
 import { AuthResponseData } from "../../models/auth/auth-data.model";
 import { Preferences } from "src/app/models/preferences.model";
@@ -92,10 +92,14 @@ export class AuthService {
                     );
                     this.router.navigate(['/new-training']);
                 }
-            })/* ,
-            switchMap((response: AuthResponseData) => {
-                return this.translateService.use(response.preferences.language);
-            }) */
+            }),
+            mergeMap((response: AuthResponseData) => {
+                return this.translateService.use(response.preferences.language).pipe(
+                    switchMap(_ => {
+                        return of(response);
+                    })
+                );
+            })
         );
     }
 
