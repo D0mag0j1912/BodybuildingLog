@@ -64,9 +64,7 @@ export class NewTrainingService {
         }
     }
 
-    async addTraining(
-        trainingData: NewTraining
-    ): Promise<GeneralResponseData> {
+    async addTraining(trainingData: NewTraining): Promise<GeneralResponseData> {
         try {
             await this.trainingModel.create(trainingData);
             return {
@@ -81,8 +79,7 @@ export class NewTrainingService {
         }
     }
 
-    async getExercises()
-        : Promise<Exercise[]> {
+    async getExercises(): Promise<Exercise[]> {
         try {
             const exercises: Exercise[] = await this.exerciseModel.find();
             if(exercises.length === 0){

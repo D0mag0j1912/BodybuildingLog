@@ -12,9 +12,7 @@ export class PastTrainingsService {
         @InjectModel('Training') private readonly trainingModel: Model<NewTraining>
     ){}
 
-    async getPastTraining(
-        trainingId: string
-    ): Promise<NewTraining> {
+    async getPastTraining(trainingId: string): Promise<NewTraining> {
         try {
             const training: NewTraining = await this.trainingModel.findById(trainingId);
             return training as NewTraining;
@@ -28,7 +26,8 @@ export class PastTrainingsService {
     }
 
     async getPastTrainings(
-        currentDate: Date
+        currentDate: Date,
+        loggedUserId: string
     ): Promise<PastTrainingsResponse> {
         try {
             const dates: {
@@ -38,8 +37,9 @@ export class PastTrainingsService {
                 startDate: getIntervalDate(new Date(currentDate)).startDate,
                 endDate: getIntervalDate(new Date(currentDate)).endDate
             };
-            //TODO: dohvaćati samo treninge koji su kreirani od strane trenutno logiranog usera
+            
             const trainings: NewTraining[] = await this.trainingModel.find({
+                userId: loggedUserId,
                 createdAt: {
                     $gte: dates.startDate,
                     $lt: dates.endDate
@@ -48,6 +48,7 @@ export class PastTrainingsService {
                 createdAt: 'asc'
             });
             const trainingsPerPage: number = await this.trainingModel.countDocuments({
+                userId: loggedUserId,
                 createdAt: {
                     $gte: dates.startDate,
                     $lt: dates.endDate

@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, Param, Query } from "@nestjs/common";
+import { BadRequestException, Controller, Get, Param, Query, Req } from "@nestjs/common";
 import { NewTraining } from "src/models/training/new-training/new-training.model";
 import { PastTrainingsResponse } from "src/models/training/past-trainings/past-trainings-response.model";
 import { PastTrainingsService } from "src/services/training/past-trainings.service";
@@ -11,12 +11,16 @@ export class PastTrainingsController {
 
     @Get()
     getPastTrainings(
+        @Req() request,
         @Query('currentDate') currentDate: Date
     ): Promise<PastTrainingsResponse> {
         if(!currentDate){
             throw new BadRequestException('training.past_trainings.errors.past_trainings_error_title');
         }
-        return this.pastTrainingsService.getPastTrainings(currentDate);
+        return this.pastTrainingsService.getPastTrainings(
+            currentDate,
+            request.headers.userId as string
+        );
     }  
 
     @Get(':id')
