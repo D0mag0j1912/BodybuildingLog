@@ -47,8 +47,8 @@ export class NewTrainingService {
                                 true,
                                 authResponseData._id
                             );
-                            this.allExercisesChanged$$.next(exercises);
-                            localStorage.setItem('allExercises', JSON.stringify(exercises));
+                            this.allExercisesChanged$$.next(exercises as Exercise[]);
+                            localStorage.setItem('allExercises', JSON.stringify(exercises as Exercise[]));
                         })
                     );
                 }
@@ -81,7 +81,7 @@ export class NewTrainingService {
             ...this.currentTrainingChanged$$.getValue(),
             bodyweight: +value
         } as NewTraining;
-        this.saveTrainingData(updatedTraining);
+        this.saveTrainingData({ ...updatedTraining } as NewTraining);
     }
 
     deleteSet(
@@ -92,7 +92,7 @@ export class NewTrainingService {
         const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
         updatedTraining.exercise[indexExercise].sets.splice(indexSet, 1);
         updatedTraining.exercise[indexExercise].total = newTotal;
-        this.saveTrainingData(updatedTraining);
+        this.saveTrainingData({ ...updatedTraining } as NewTraining);
     }
 
     pushToAvailableExercises(
@@ -107,7 +107,7 @@ export class NewTrainingService {
                 exercise.availableExercises.sort(this.compare);
             }
         });
-        this.saveTrainingData(updatedTraining);
+        this.saveTrainingData({ ...updatedTraining } as NewTraining);
     }
 
     deleteExercise(
@@ -136,7 +136,7 @@ export class NewTrainingService {
             );
         }
         else{
-            this.saveTrainingData(updatedTraining);
+            this.saveTrainingData({ ...updatedTraining } as NewTraining);
             return of([
                 updatedTraining,
                 null
@@ -171,7 +171,7 @@ export class NewTrainingService {
             });
             updatedTraining.exercise[trainingData.formArrayIndex].total = trainingData.total;
         }
-        this.saveTrainingData(updatedTraining);
+        this.saveTrainingData({ ...updatedTraining } as NewTraining);
     }
 
     addNewExercise(
@@ -199,7 +199,7 @@ export class NewTrainingService {
                 exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.name !== selectedExercise);
             }
         });
-        this.saveTrainingData(updatedTraining);
+        this.saveTrainingData({ ...updatedTraining } as NewTraining);
     }
 
     keepTrainingState(): void {
@@ -222,21 +222,17 @@ export class NewTrainingService {
         let updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
         if(restartAll){
             updatedTraining = {
-                exercise: [],
-                _id: '',
-                bodyweight: null,
-                editMode: false,
+                ...EMPTY_TRAINING,
                 userId: userId
             };
         }
-
         updatedTraining.exercise.push(
             this.returnEmptyExercise(
                 exercises,
                 nextFormArrayIndex
             )
         );
-        this.saveTrainingData(updatedTraining);
+        this.saveTrainingData({ ...updatedTraining } as NewTraining);
     }
 
     returnEmptyExercise(
@@ -253,14 +249,19 @@ export class NewTrainingService {
         } as SingleExercise;
     }
 
-    saveTrainingData(updatedTraining: NewTraining): void {
+    private saveTrainingData(updatedTraining: NewTraining): void {
         this.currentTrainingChanged$$.next({ ...updatedTraining });
         localStorage.setItem('trainingState', JSON.stringify({ ...updatedTraining }));
+    }
+
+    updateTrainingData(editTraining: NewTraining): void {
+        this.saveTrainingData({ ...editTraining });
     }
 
     clearTrainingData(): void {
         this.saveTrainingData({ ...EMPTY_TRAINING });
     }
+
 
     private compare(
         a: Exercise,

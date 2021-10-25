@@ -119,17 +119,17 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         this.route.params.pipe(
             switchMap((params: Params) => {
                 if(params['id']){
-                    this._id = params['id'];
+                    this._id = params['id'] as string;
                     this.sharedService.pastTrainingId$$.next(this._id);
                     this.editMode = true;
                     return this.pastTrainingService.getPastTraining(this._id).pipe(
                         tap((training: NewTraining) => {
-                            this.editedDate = training.updatedAt;
+                            this.editedDate = training.updatedAt as Date;
                             this.editTraining = {
                                 ...training,
-                                editMode: this.editMode
-                            };
-                            this.newTrainingService.saveTrainingData(this.editTraining);
+                                editMode: true
+                            } as NewTraining;
+                            this.newTrainingService.updateTrainingData(this.editTraining);
                         }),
                         catchError(_ => {
                             this.isError = true;
@@ -433,12 +433,12 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         if(!this.editTraining){
             this.pastTrainingService.getPastTraining(this._id).pipe(
                 tap((training: NewTraining) => {
-                    this.editedDate = training.updatedAt;
+                    this.editedDate = training.updatedAt as Date;
                     this.editTraining = {
                         ...training,
                         editMode: this.editMode
-                    };
-                    this.newTrainingService.saveTrainingData(this.editTraining);
+                    } as NewTraining;
+                    this.newTrainingService.updateTrainingData(this.editTraining);
                 }),
                 catchError(_ => {
                     this.isError = true;
