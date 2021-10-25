@@ -24,7 +24,7 @@
                 formControlName="bodyweight"
                 (input)="onBodyweightChange(bodyweightRef.value)">
             <mat-error *ngIf="(bodyweight.touched || bodyweight.dirty) && !bodyweight.valid">
-                <mat-error *ngIf="bodyweight.errors?.samoBrojevi">
+                <mat-error *ngIf="bodyweight.errors?.onlyNumbers">
                     {{ 'training.new_training.errors.only_numbers' | translate }}
                 </mat-error>
                 <mat-error *ngIf="bodyweight.errors?.min">
@@ -124,13 +124,13 @@
                                     {{ 'training.new_training.set_saved' | translate }}
                                 </mat-hint>
                                 <mat-error
-                                    *ngIf="set.get('weightLifted').errors?.samoBrojevi
-                                    && !set.get('weightLifted').errors?.onlyPositiveNumbers">
+                                    *ngIf="set.get('weightLifted').errors?.onlyNumbers
+                                    && !set.get('weightLifted').errors?.min">
                                     {{ 'training.new_training.errors.only_numbers' | translate }}
                                 </mat-error>
                                 <mat-error
-                                    *ngIf="set.get('weightLifted').errors?.onlyPositiveNumbers
-                                    && !set.get('weightLifted').errors?.samoBrojevi">
+                                    *ngIf="set.get('weightLifted').errors?.min
+                                    && !set.get('weightLifted').errors?.onlyNumbers">
                                     {{ 'training.new_training.errors.only_positive' | translate }}
                                 </mat-error>
                             </mat-form-field>
@@ -152,13 +152,13 @@
                                 <mat-hint
                                     class="sets-reps--error"
                                     *ngIf="j > 0 && set.errors?.repsRequired
-                                        && !set.get('weightLifted').errors?.samoBrojevi
-                                        && !set.get('weightLifted').errors?.onlyPositiveNumbers">
+                                        && !set.get('weightLifted').errors?.onlyNumbers
+                                        && !set.get('weightLifted').errors?.min">
                                     {{ 'training.new_training.errors.reps_required' | translate }}
                                 </mat-hint>
                                 <mat-error
                                     *ngIf="set.get('reps').errors?.pattern
-                                    && !set.get('weightLifted').errors?.samoBrojevi">
+                                    && !set.get('weightLifted').errors?.onlyNumbers">
                                     {{ 'training.new_training.errors.only_positive' | translate }}
                                 </mat-error>
                             </mat-form-field>

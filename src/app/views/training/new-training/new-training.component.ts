@@ -95,10 +95,12 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 return forkJoin([
                     this.newTrainingService.currentTrainingChanged$.pipe(
                         take(1),
+                        tap((currentTrainingState: NewTraining) => console.log(currentTrainingState)),
                         map((currentTrainingState: NewTraining) => currentTrainingState.exercise)
                     ),
                     this.newTrainingService.allExercisesChanged$.pipe(
-                        take(1)
+                        take(1),
+                        tap((x: Exercise[]) => console.log(x))
                     )
                 ]);
             })
@@ -303,8 +305,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         'setNumber': new FormControl(1, [Validators.required]),
                         'weightLifted': new FormControl({value: null, disabled: !isExerciseName}, [
                             Validators.required,
-                            NewTrainingValidators.isBroj(),
-                            NewTrainingValidators.isPositiveNumber()
+                            Validators.min(0),
+                            NewTrainingValidators.isBroj()
                         ]),
                         'reps': new FormControl({value: null, disabled: !isExerciseName}, [
                             Validators.required,
@@ -397,8 +399,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             new FormGroup({
                 'setNumber': new FormControl(this.getSets(indexExercise).length + 1, [Validators.required]),
                 'weightLifted': new FormControl(null,[
-                    NewTrainingValidators.isBroj(),
-                    NewTrainingValidators.isPositiveNumber()
+                    Validators.min(0),
+                    NewTrainingValidators.isBroj()
                 ]),
                 'reps': new FormControl(null, [
                     Validators.pattern('^[0-9]*$')

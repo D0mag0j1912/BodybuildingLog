@@ -37,8 +37,6 @@ export function atLeastOneSet(): ValidatorFn {
     }
 }
 
-
-//Validator koji osigurava da i 'weightLifted' i 'reps' moraju biti uneseni, ako se unese jedno od to dvoje
 export function bothValuesRequired(): ValidatorFn {
     return (group: AbstractControl): {[key: string]: boolean} | null => {
         if(group){
@@ -56,30 +54,13 @@ export function bothValuesRequired(): ValidatorFn {
     }
 }
 
-//Funkcija koja provjerava je li unesen pozitivan broj
-export function isPositiveNumber(): ValidatorFn {
-    return (control: AbstractControl): {[key: string]: boolean} | null => {
-        //Ako postoji neka upisana vrijednost
-        if(control.value){
-            //Ako ta vrijednost nije pozitivna
-            if(+control.value < 0){
-                return {'onlyPositiveNumbers': true};
-            }
-            return null;
-        }
-        return null;
-    }
-}
-
-//Funkcija koja provjerava je li unesen broj
 export function isBroj(): ValidatorFn {
     return (control: AbstractControl): {[key: string]: boolean} | null => {
-        //Ako postoji neka upisana vrijednost
         if(control.value){
             if(!isNaN(parseFloat(control.value)) && isFinite(control.value)){
                 return null;
             }
-            return {'samoBrojevi': true};
+            return {'onlyNumbers': true};
         }
         return null;
     }
