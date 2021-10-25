@@ -63,12 +63,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-height: 50%;
+    max-height: 150px;
     width: 90%;
 }
 
 .exercise-name {
     font-family: $poppins;
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .exercise-dots {

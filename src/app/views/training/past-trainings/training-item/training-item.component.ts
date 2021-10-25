@@ -16,7 +16,7 @@ export class TrainingItemComponent implements OnInit {
 
     timeCreated: string;
 
-    weekDays: string[] = [
+    readonly weekDays: ReadonlyArray<string> = [
         'sunday',
         'monday',
         'tuesday',
