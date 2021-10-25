@@ -129,7 +129,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                 ...training,
                                 editMode: this.editMode
                             };
-                            this.newTrainingService.saveData(this.editTraining);
+                            this.newTrainingService.saveTrainingData(this.editTraining);
                         }),
                         catchError(_ => {
                             this.isError = true;
@@ -438,7 +438,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         ...training,
                         editMode: this.editMode
                     };
-                    this.newTrainingService.saveData(this.editTraining);
+                    this.newTrainingService.saveTrainingData(this.editTraining);
                 }),
                 catchError(_ => {
                     this.isError = true;

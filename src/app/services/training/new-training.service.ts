@@ -81,7 +81,7 @@ export class NewTrainingService {
             ...this.currentTrainingChanged$$.getValue(),
             bodyweight: +value
         } as NewTraining;
-        this.saveData(updatedTraining);
+        this.saveTrainingData(updatedTraining);
     }
 
     deleteSet(
@@ -92,7 +92,7 @@ export class NewTrainingService {
         const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
         updatedTraining.exercise[indexExercise].sets.splice(indexSet, 1);
         updatedTraining.exercise[indexExercise].total = newTotal;
-        this.saveData(updatedTraining);
+        this.saveTrainingData(updatedTraining);
     }
 
     pushToAvailableExercises(
@@ -107,7 +107,7 @@ export class NewTrainingService {
                 exercise.availableExercises.sort(this.compare);
             }
         });
-        this.saveData(updatedTraining);
+        this.saveTrainingData(updatedTraining);
     }
 
     deleteExercise(
@@ -136,7 +136,7 @@ export class NewTrainingService {
             );
         }
         else{
-            this.saveData(updatedTraining);
+            this.saveTrainingData(updatedTraining);
             return of([
                 updatedTraining,
                 null
@@ -171,7 +171,7 @@ export class NewTrainingService {
             });
             updatedTraining.exercise[trainingData.formArrayIndex].total = trainingData.total;
         }
-        this.saveData(updatedTraining);
+        this.saveTrainingData(updatedTraining);
     }
 
     addNewExercise(
@@ -199,7 +199,7 @@ export class NewTrainingService {
                 exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.name !== selectedExercise);
             }
         });
-        this.saveData(updatedTraining);
+        this.saveTrainingData(updatedTraining);
     }
 
     keepTrainingState(): void {
@@ -236,7 +236,7 @@ export class NewTrainingService {
                 nextFormArrayIndex
             )
         );
-        this.saveData(updatedTraining);
+        this.saveTrainingData(updatedTraining);
     }
 
     returnEmptyExercise(
@@ -253,13 +253,13 @@ export class NewTrainingService {
         } as SingleExercise;
     }
 
-    saveData(updatedTraining?: NewTraining): void {
+    saveTrainingData(updatedTraining: NewTraining): void {
         this.currentTrainingChanged$$.next({ ...updatedTraining });
         localStorage.setItem('trainingState', JSON.stringify({ ...updatedTraining }));
     }
 
     clearTrainingData(): void {
-        this.saveData({ ...EMPTY_TRAINING });
+        this.saveTrainingData({ ...EMPTY_TRAINING });
     }
 
     private compare(

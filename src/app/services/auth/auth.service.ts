@@ -19,7 +19,7 @@ export class AuthService {
     private readonly isAuth$$ = new BehaviorSubject<boolean>(false);
     readonly isAuth$ = this.isAuth$$.asObservable();
 
-    private tokenTimer: any;
+    private tokenTimer: NodeJS.Timeout;
     private token: string;
 
     constructor(
@@ -40,8 +40,8 @@ export class AuthService {
             language: preferences.language,
             weightFormat: 'kg'
         }};
-        this.loggedUser$$.next(updatedUserData);
-        localStorage.setItem('userData', JSON.stringify(updatedUserData));
+        this.loggedUser$$.next({ ...updatedUserData });
+        localStorage.setItem('userData', JSON.stringify({ ...updatedUserData }));
     }
 
     signup(
