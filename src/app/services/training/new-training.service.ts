@@ -8,6 +8,15 @@ import { NewTraining, SingleExercise } from "../../models/training/new-training.
 import { GeneralResponseData } from "../../models/general-response.model";
 import { AuthService } from "../auth/auth.service";
 import { AuthResponseData } from "src/app/models/auth/auth-data.model";
+
+const EMPTY_TRAINING: NewTraining = {
+    exercise: [],
+    _id: '',
+    bodyweight: null,
+    editMode: false,
+    userId: null
+};
+
 @Injectable({
     providedIn: 'root'
 })
@@ -16,13 +25,7 @@ export class NewTrainingService {
     private readonly allExercisesChanged$$ = new BehaviorSubject<Exercise[]>([]);
     readonly allExercisesChanged$: Observable<Exercise[]> = this.allExercisesChanged$$.asObservable();
 
-    private readonly currentTrainingChanged$$ = new BehaviorSubject<NewTraining>({
-        exercise: [],
-        _id: '',
-        bodyweight: null,
-        editMode: false,
-        userId: null
-    });
+    private readonly currentTrainingChanged$$ = new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
     readonly currentTrainingChanged$: Observable<NewTraining> = this.currentTrainingChanged$$.asObservable();
 
     constructor(
@@ -34,7 +37,6 @@ export class NewTrainingService {
         return this.http.get<Exercise[]>(environment.backend + '/getExercises').pipe(
             switchMap((exercises: Exercise[]) => {
                 const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
-                console.log(trainingState);
                 if(!trainingState){
                     return this.authService.loggedUser$.pipe(
                         take(1),
@@ -254,6 +256,10 @@ export class NewTrainingService {
     saveData(updatedTraining?: NewTraining): void {
         this.currentTrainingChanged$$.next({ ...updatedTraining });
         localStorage.setItem('trainingState', JSON.stringify({ ...updatedTraining }));
+    }
+
+    clearTrainingData(): void {
+        this.saveData({ ...EMPTY_TRAINING });
     }
 
     private compare(

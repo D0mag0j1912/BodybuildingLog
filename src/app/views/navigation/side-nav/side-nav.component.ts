@@ -6,10 +6,11 @@ import { take, switchMap, tap, takeUntil } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { NewTrainingService } from 'src/app/services/training/new-training.service';
 @Component({
-  selector: 'app-side-nav',
-  templateUrl: './side-nav.component.html',
-  styleUrls: ['./side-nav.component.scss']
+    selector: 'app-side-nav',
+    templateUrl: './side-nav.component.html',
+    styleUrls: ['./side-nav.component.scss'],
 })
 export class SideNavComponent implements OnInit, OnDestroy {
 
@@ -23,11 +24,11 @@ export class SideNavComponent implements OnInit, OnDestroy {
     constructor(
         private readonly authService: AuthService,
         private readonly navigationService: NavigationService,
-        private readonly router: Router
+        private readonly newTrainingService: NewTrainingService,
+        private readonly router: Router,
     ) {}
 
     ngOnInit(): void {
-        //Pretplaćujem se na informaciju je li korisnik prijavljen (Subject emitira)
         this.isAuthenticated$ = this.authService.isAuth$;
         this.loggedUserData$ = this.authService.loggedUser$;
     }
@@ -37,8 +38,8 @@ export class SideNavComponent implements OnInit, OnDestroy {
         this.subscription$$.complete();
     }
 
-    //Metoda koja se poziva kada korisnik klikne "Logout"
     onLogout(){
+        this.newTrainingService.clearTrainingData();
         this.authService.logout();
     }
 
@@ -75,7 +76,6 @@ export class SideNavComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    //Metoda koja se pokreće kada se klikne neki element liste
     onCloseSideNav(){
         this.closeSideNav.emit();
     }

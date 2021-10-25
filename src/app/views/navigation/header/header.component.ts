@@ -9,10 +9,17 @@ import { PastTrainingsService } from 'src/app/services/training/past-trainings.s
 import { NewTraining } from 'src/app/models/training/new-training.model';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
+import { NewTrainingService } from 'src/app/services/training/new-training.service';
+
+interface DateData {
+    startDate: Date;
+    endDate: Date;
+}
+
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
@@ -25,16 +32,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
     @Output() toggleSideNav = new EventEmitter<void>();
 
     constructor(
+        private readonly newTrainingService: NewTrainingService,
         private readonly pastTrainingsService: PastTrainingsService,
         private readonly authService: AuthService,
         private readonly sharedService: SharedService,
         private readonly navigationService: NavigationService,
-        private readonly router: Router
+        private readonly router: Router,
     ) { }
 
-    //Metoda koja se pokreće kada se komponenta inicijalizira
     ngOnInit(): void {
-
         this.isAuthenticated$ = this.authService.isAuth$;
         this.loggedUserData$ = this.authService.loggedUser$;
         this.isEditing$ = this.sharedService.editingTraining$;
@@ -45,8 +51,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.subscription$$.complete();
     }
 
-    //Metoda koja se pokreće kada se klikne "Logout"
     onLogout(){
+        this.newTrainingService.clearTrainingData();
         this.authService.logout();
     }
 
@@ -78,7 +84,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         });
     }
 
-    //Metoda koja se poziva kada korisnik klikne na "Toggle sidenav"
     onToggle(){
         this.toggleSideNav.emit();
     }
@@ -111,7 +116,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         return {
             startDate: startDate,
             endDate: endDate
-        };
+        } as DateData;
     }
 
 }
