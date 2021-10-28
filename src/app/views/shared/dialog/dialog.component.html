@@ -7,15 +7,15 @@
 
 <div
     mat-dialog-title
-    *ngIf="(data.brisanje.message$ | async) as message">
+    *ngIf="(data.deleteExercise.message$ | async) as message">
     <p class="message">{{ message }}</p>
 </div>
 <div
     mat-dialog-content
-    *ngIf="data.brisanje">
+    *ngIf="data.deleteExercise">
     <p class="mat-subheading-1 message">
         {{ 'training.new_training.exercise_name' | translate }}
-        <strong>{{ data.brisanje.exerciseName | translate }}</strong>
+        <strong>{{ data.deleteExercise.exerciseName | translate }}</strong>
     </p>
 </div>
 <mat-dialog-actions class="actions">
@@ -31,7 +31,7 @@
         [mat-dialog-close]="true"
         mat-raised-button
         color="primary"
-        *ngIf="data.brisanje">
+        *ngIf="data.deleteExercise">
         {{ 'common.delete' | translate }}
     </button>
 </mat-dialog-actions>

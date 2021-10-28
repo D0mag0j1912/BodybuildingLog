@@ -17,11 +17,10 @@ export class NewTrainingPipe implements PipeTransform {
         private readonly pastTrainingService: PastTrainingsService,
         private readonly route: ActivatedRoute
     ){}
-    //Prima polje svih vježbi te vraća filtrirano polje
+
     transform(
         value: Observable<Exercise[]>,
         index: number,
-        //Parametar koji mi služi samo da se Pipe ponovno izvede kada se dogodi akcija
         exerciseChanged: boolean)
         : Observable<Exercise[]> {
         return this.newTrainingService.currentTrainingChanged$.pipe(

@@ -14,6 +14,8 @@ import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SharedService } from 'src/app/services/shared/shared.service';
+import { DialogData } from 'src/app/views/shared/dialog/dialog.component';
+import { DeleteExerciseDialogData } from 'src/app/views/shared/dialog/dialog.component';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 
@@ -174,7 +176,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 return this.newTrainingService.getExercises().pipe(
                     catchError(_ => {
                         this.isError = true;
-                        /* this.isLoading = false; */
                         return of(null);
                     }),
                     switchMap(_ => {
@@ -350,11 +351,12 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         if(exerciseName){
             let dialogRef = this.dialog.open(DialogComponent, {
                 data: {
-                    brisanje: {
+                    isError: false,
+                    deleteExercise: {
                         message$: this.translateService.stream('training.new_training.delete_exercise_prompt'),
                         exerciseName: exerciseName
-                    }
-                }
+                    } as DeleteExerciseDialogData
+                } as DialogData
             });
             dialogRef.afterClosed().pipe(
                 switchMap((response: boolean) => {
