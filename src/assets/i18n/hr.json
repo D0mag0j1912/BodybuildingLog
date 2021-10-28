@@ -106,7 +106,8 @@
                 "exercises_not_available": "Vježbe nisu dostupne.",
                 "no_more_exercises_available": "Nema više dostupnih vježbi.",
                 "pick_current_exercise": "Prvo morate izabrati trenutnu vježbu.",
-                "delete_first_set": "Prvi set ne može biti izbrisan."
+                "delete_first_set": "Prvi set ne može biti izbrisan.",
+                "first_set_required": "Prvi set je obvezan za unos."
             },
             "buttons": {
                 "try_again": "Pokušajte ponovno",

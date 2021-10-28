@@ -237,7 +237,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
-    isAddingExercisesDisabled(
+    adjustAddExerciseTooltip(
         currentTrainingStateLength: number,
         allExercisesLength: number
     ): Observable<string> {
@@ -248,6 +248,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             if(this.getExercises().length > 0){
                 if(!this.getExerciseName(this.getExercises().length - 1)?.value){
                     return this.translateService.stream('training.new_training.errors.pick_current_exercise');
+                }
+                else if(this.getExercises()[this.getExercises().length - 1]?.errors?.atLeastOneSet) {
+                    return this.translateService.stream('training.new_training.errors.first_set_required');
                 }
                 else {
                     return of('');
@@ -307,8 +310,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     ): void {
         (<FormArray>this.form.get('exercise')).push(
             new FormGroup({
-                'formArrayIndex': new FormControl(clicked ? this.getExercises().length : null,
-                    [Validators.required]),
+                'formArrayIndex': new FormControl(clicked ? this.getExercises().length : null, [Validators.required]),
                 'name': new FormControl(null, [Validators.required]),
                 'sets': new FormArray([
                     new FormGroup({
@@ -327,8 +329,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         ])
                     })
                 ]),
-                'total': new FormControl(this.initialWeight.toString() + ' kg',
-                    [Validators.required]),
+                'total': new FormControl(this.initialWeight.toString() + ' kg', [Validators.required]),
                 'disabledTooltip': new FormControl(true, [Validators.required])
             }, {
                 validators: [NewTrainingValidators.atLeastOneSet(), NewTrainingValidators.allSetsFilled()]
@@ -412,7 +413,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         (<FormArray>(<FormGroup>(<FormArray>this.form.get('exercise')).at(indexExercise)).get('sets')).push(
             new FormGroup({
                 'setNumber': new FormControl(this.getSets(indexExercise).length + 1, [Validators.required]),
-                'weightLifted': new FormControl(null,[
+                'weightLifted': new FormControl(null, [
                     Validators.min(1),
                     Validators.max(1000),
                     NewTrainingValidators.isBroj()
