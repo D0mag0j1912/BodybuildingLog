@@ -1,5 +1,7 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { NewTraining, SingleExercise } from "../models/training/new-training.model";
 
 @Pipe({
@@ -11,12 +13,15 @@ export class ShowAllExercisesPipe implements PipeTransform {
         private readonly translateService: TranslateService,
     ){}
 
-    transform(training: NewTraining): string {
-        //TODO: this.translateService.stream['key1', 'key2'...].pipe()
-        let exercisesToConcat: string = '';
-        training.exercise.forEach((x: SingleExercise, index: number) => {
-            exercisesToConcat += `${index+1}. ${this.translateService.instant(x.exerciseName)}\n`;
-        });
-        return exercisesToConcat as string;
+    transform(training: NewTraining): Observable<string> {
+        return this.translateService.stream(training.exercise.map((x: SingleExercise) => x.exerciseName)).pipe(
+            map((value: {[key: string]: string}) => {
+                let exercisesToConcat: string = '';
+                Object.values(value).forEach((exerciseName: string, index: number) => {
+                    exercisesToConcat += `${index+1}. ${exerciseName}\n`;
+                })
+                return exercisesToConcat as string;
+            })
+        );
     }
 }
