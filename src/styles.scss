@@ -32,6 +32,10 @@ body {
     font-family: $poppins;
     white-space: pre-line;
     background-color: $army-green;
+
+    &-error {
+        background-color: $dark-red;
+    }
 }
 
 
