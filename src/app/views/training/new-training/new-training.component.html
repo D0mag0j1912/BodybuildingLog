@@ -131,7 +131,11 @@
                                 <mat-error
                                     *ngIf="set.get('weightLifted').errors?.min
                                     && !set.get('weightLifted').errors?.onlyNumbers">
-                                    {{ 'training.new_training.errors.only_positive' | translate }}
+                                    {{ 'training.new_training.errors.weight_lifted_min' | translate }}
+                                </mat-error>
+                                <mat-error *ngIf="set.get('weightLifted').errors?.max
+                                        && !set.get('weightLifted').errors?.onlyNumbers">
+                                    {{ 'training.new_training.errors.weight_lifted_max' | translate }}
                                 </mat-error>
                             </mat-form-field>
                             <mat-form-field
@@ -160,6 +164,18 @@
                                     *ngIf="set.get('reps').errors?.pattern
                                     && !set.get('weightLifted').errors?.onlyNumbers">
                                     {{ 'training.new_training.errors.only_positive' | translate }}
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="set.get('reps').errors?.min
+                                    && !set.get('weightLifted').errors?.onlyNumbers
+                                    && !set.get('reps').errors?.pattern">
+                                    {{ 'training.new_training.errors.reps_min' | translate }}
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="set.get('reps').errors?.max
+                                    && !set.get('weightLifted').errors?.onlyNumbers
+                                    && !set.get('reps').errors?.pattern">
+                                    {{ 'training.new_training.errors.reps_max' | translate }}
                                 </mat-error>
                             </mat-form-field>
                             <div

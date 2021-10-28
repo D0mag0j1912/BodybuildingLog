@@ -12,6 +12,7 @@ export class ShowAllExercisesPipe implements PipeTransform {
     ){}
 
     transform(training: NewTraining): string {
+        //TODO: this.translateService.stream['key1', 'key2'...].pipe()
         let exercisesToConcat: string = '';
         training.exercise.forEach((x: SingleExercise, index: number) => {
             exercisesToConcat += `${index+1}. ${this.translateService.instant(x.exerciseName)}\n`;

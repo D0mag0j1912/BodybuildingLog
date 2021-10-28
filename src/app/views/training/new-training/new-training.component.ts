@@ -305,11 +305,14 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         'setNumber': new FormControl(1, [Validators.required]),
                         'weightLifted': new FormControl({value: null, disabled: !isExerciseName}, [
                             Validators.required,
-                            Validators.min(0),
+                            Validators.min(1),
+                            Validators.max(1000),
                             NewTrainingValidators.isBroj()
                         ]),
                         'reps': new FormControl({value: null, disabled: !isExerciseName}, [
                             Validators.required,
+                            Validators.min(1),
+                            Validators.max(1000),
                             Validators.pattern('^[0-9]*$')
                         ])
                     })
@@ -399,10 +402,13 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             new FormGroup({
                 'setNumber': new FormControl(this.getSets(indexExercise).length + 1, [Validators.required]),
                 'weightLifted': new FormControl(null,[
-                    Validators.min(0),
+                    Validators.min(1),
+                    Validators.max(1000),
                     NewTrainingValidators.isBroj()
                 ]),
                 'reps': new FormControl(null, [
+                    Validators.min(1),
+                    Validators.max(1000),
                     Validators.pattern('^[0-9]*$')
                 ])
             }, {
