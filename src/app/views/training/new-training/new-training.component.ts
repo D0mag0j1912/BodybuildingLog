@@ -241,7 +241,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         allExercisesLength: number
     ): Observable<string> {
         if(currentTrainingStateLength >= allExercisesLength) {
-            return this.translateService.stream('training.new_training.errors.exercises_not_available');
+            return this.translateService.stream('training.new_training.errors.no_more_exercises_available');
         }
         else {
             if(this.getExercises().length > 0){
