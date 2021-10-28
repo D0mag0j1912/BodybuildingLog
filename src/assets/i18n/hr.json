@@ -104,7 +104,8 @@
                 "error_update_training": "Došlo je do greške pri ažuriranju treninga.",
                 "error_save_training": "Došlo je do greške pri spremanju treninga.",
                 "exercises_not_available": "Vježbe nisu dostupne.",
-                "pick_current_exercise": "Prvo morate izabrati trenutnu vježbu."
+                "pick_current_exercise": "Prvo morate izabrati trenutnu vježbu.",
+                "delete_first_set": "Prvi set ne može biti izbrisan."
             },
             "buttons": {
                 "try_again": "Pokušajte ponovno",

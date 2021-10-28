@@ -27,7 +27,7 @@ interface SetStateChanged {
 @Component({
     selector: 'app-new-training',
     templateUrl: './new-training.component.html',
-    styleUrls: ['./new-training.component.scss']
+    styleUrls: ['./new-training.component.scss'],
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
 
@@ -225,6 +225,15 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         this.subs$$.next();
         this.subs$$.complete();
         this.sharedService.editingTraining$$.next(false);
+    }
+
+    adjustDeleteSetTooltip(indexSet: number): Observable<string> {
+        if(indexSet > 0){
+            return this.translateService.stream('training.new_training.buttons.delete_set');
+        }
+        else {
+            return this.translateService.stream('training.new_training.errors.delete_first_set');
+        }
     }
 
     isAddingExercisesDisabled(
