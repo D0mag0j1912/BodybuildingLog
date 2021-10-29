@@ -242,9 +242,9 @@
                     color="accent"
                     class="add-exercise-button"
                     (click)="addExercise(false, $event)"
-                    [disabled]="(isAddingExercisesAllowed[0].length >= isAddingExercisesAllowed[1].length)
-                        || (!getExerciseName(getExercises().length - 1)?.value) && getExercises().length > 0
-                        || this.getExercises()[this.getExercises().length - 1]?.errors?.atLeastOneSet">
+                    [disabled]="isAddingExercisesDisabled(
+                        isAddingExercisesAllowed[0].length,
+                        isAddingExercisesAllowed[1].length)">
                     {{ 'training.new_training.buttons.add_exercise' | translate }}
                 </button>
             </div>

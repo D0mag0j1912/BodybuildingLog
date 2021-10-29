@@ -248,6 +248,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 else if(this.getExercises()[this.getExercises().length - 1]?.errors?.atLeastOneSet) {
                     return this.translateService.stream('training.new_training.errors.first_set_required');
                 }
+                else if(this.getWeightLifted(this.getExercises().length - 1, 0)?.errors || this.getReps(this.getExercises().length - 1, 0)?.errors) {
+                    return this.translateService.stream('training.new_training.errors.first_set_invalid');
+                }
                 else {
                     return of('');
                 }
@@ -256,6 +259,17 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 return of('');
             }
         }
+    }
+
+    isAddingExercisesDisabled(
+        currentExercisesLength: number,
+        allExercisesLength: number
+    ): boolean {
+        return (currentExercisesLength >= allExercisesLength)
+            || ((!this.getExerciseName(this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
+            || this.getExercises()[this.getExercises().length - 1]?.errors?.atLeastOneSet
+            || this.getWeightLifted(this.getExercises().length - 1, 0)?.errors
+            || this.getReps(this.getExercises().length - 1, 0)?.errors;
     }
 
     onBodyweightChange(bodyweight: string): void {
