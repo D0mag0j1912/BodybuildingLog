@@ -52,9 +52,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.subscription$$.complete();
     }
 
-    onLogout(): void {
+    async onLogout(): Promise<void> {
         this.newTrainingService.clearTrainingData();
-        this.authService.logout();
+        await this.authService.logout();
     }
 
     goToPastTraining(): void {

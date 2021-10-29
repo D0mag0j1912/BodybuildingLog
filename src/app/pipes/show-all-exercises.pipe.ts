@@ -19,7 +19,7 @@ export class ShowAllExercisesPipe implements PipeTransform {
                 let exercisesToConcat: string = '';
                 Object.values(value).forEach((exerciseName: string, index: number) => {
                     exercisesToConcat += `${index+1}. ${exerciseName}\n`;
-                })
+                });
                 return exercisesToConcat as string;
             })
         );

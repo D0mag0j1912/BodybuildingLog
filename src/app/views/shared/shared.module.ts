@@ -13,4 +13,4 @@ import { DialogComponent } from './dialog/dialog.component';
     ],
     entryComponents: [DialogComponent]
 })
-export class SharedModule{}
+export class SharedModule {}
