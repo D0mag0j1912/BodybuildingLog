@@ -265,11 +265,16 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         currentExercisesLength: number,
         allExercisesLength: number
     ): boolean {
-        return (currentExercisesLength >= allExercisesLength)
+        if(this.getExercises().length > 0){
+            return (currentExercisesLength >= allExercisesLength)
             || ((!this.getExerciseName(this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
             || this.getExercises()[this.getExercises().length - 1]?.errors?.atLeastOneSet
             || this.getWeightLifted(this.getExercises().length - 1, 0)?.errors
             || this.getReps(this.getExercises().length - 1, 0)?.errors;
+        }
+        else {
+            return false;
+        }
     }
 
     onBodyweightChange(bodyweight: string): void {
