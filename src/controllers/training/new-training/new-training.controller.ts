@@ -32,7 +32,7 @@ export class NewTrainingController {
         @Body('updatedTrainingData') updatedTrainingData: NewTraining
     ): Promise<GeneralResponseData> {
         if(!trainingId){
-            throw new BadRequestException('training.new_training.errors.error_update_training')
+            throw new BadRequestException('training.new_training.errors.error_update_training');
         }
         return this.newTrainingService.editTraining(
             trainingId as string,
