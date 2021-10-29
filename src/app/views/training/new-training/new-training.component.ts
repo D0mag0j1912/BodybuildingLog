@@ -21,6 +21,15 @@ import * as NewTrainingValidators from '../../../validators/new-training.validat
 
 const MAX_EXERCISE_NAME_WIDTH: number = 181;
 
+export interface SetTrainingData {
+    formArrayIndex: number;
+    exerciseName: string;
+    setNumber: number;
+    weightLifted: number;
+    reps: number;
+    total: number;
+}
+
 interface SetStateChanged {
     indexExercise: number;
     indexSet: number;
@@ -80,9 +89,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 take(1),
                 switchMap((currentTrainingState: NewTraining) =>
                     this.setExerciseNameTooltip(
-                        exerciseName,
+                        exerciseName as MatSelect,
                         null,
-                        currentTrainingState
+                        currentTrainingState as NewTraining
                     )),
                 takeUntil(this.subs$$)
             ).subscribe();
@@ -122,16 +131,16 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             switchMap((params: Params) => {
                 if(params['id']){
                     this._id = params['id'] as string;
-                    this.sharedService.pastTrainingId$$.next(this._id);
+                    this.sharedService.pastTrainingId$$.next(this._id as string);
                     this.editMode = true;
-                    return this.pastTrainingService.getPastTraining(this._id).pipe(
+                    return this.pastTrainingService.getPastTraining(this._id as string).pipe(
                         tap((training: NewTraining) => {
                             this.editedDate = training.updatedAt as Date;
                             this.editTraining = {
-                                ...training,
+                                ...training as NewTraining,
                                 editMode: true
                             } as NewTraining;
-                            this.newTrainingService.updateTrainingData(this.editTraining);
+                            this.newTrainingService.updateTrainingData(this.editTraining as NewTraining);
                         }),
                         catchError(_ => {
                             this.isError = true;
@@ -159,7 +168,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                                 data[0] as Exercise[],
                                                 0,
                                                 true,
-                                                currentTrainingState.userId
+                                                currentTrainingState.userId as string
                                             );
                                         }
                                     }
@@ -168,7 +177,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     );
                 }
             }),
-            tap(_ => this.sharedService.editingTraining$$.next(this.editMode)),
+            tap(_ => this.sharedService.editingTraining$$.next(this.editMode as boolean)),
             switchMap(_ =>
                 this.newTrainingService.getExercises().pipe(
                     catchError(_ => {
@@ -190,26 +199,19 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     && this.getReps(indexes.indexExercise, indexes.indexSet).value
                     && this.getExerciseName(indexes.indexExercise).value){
                         let total: number = 0;
-                        this.getSets(indexes.indexExercise).forEach((el: AbstractControl) => {
-                            total = total + (+el.get('weightLifted').value * +el.get('reps').value);
+                        this.getSets(indexes.indexExercise).forEach((control: AbstractControl) => {
+                            total = total + (+control.get('weightLifted').value * +control.get('reps').value);
                         });
-                        const trainingData: {
-                            formArrayIndex: number;
-                            exerciseName: string;
-                            setNumber: number;
-                            weightLifted: number;
-                            reps: number;
-                            total: number;
-                        } = {
-                            formArrayIndex: +this.getFormArrayIndex(indexes.indexExercise).value,
-                            exerciseName: this.getExerciseName(indexes.indexExercise).value,
-                            setNumber: +this.getSetNumber(indexes.indexExercise, indexes.indexSet).value,
-                            weightLifted: +this.getWeightLifted(indexes.indexExercise, indexes.indexSet).value,
-                            reps: +this.getReps(indexes.indexExercise, indexes.indexSet).value,
-                            total: total
+                        const trainingData: SetTrainingData = {
+                            formArrayIndex: this.getFormArrayIndex(indexes.indexExercise).value as number,
+                            exerciseName: this.getExerciseName(indexes.indexExercise).value as string,
+                            setNumber: this.getSetNumber(indexes.indexExercise, indexes.indexSet).value as number,
+                            weightLifted: this.getWeightLifted(indexes.indexExercise, indexes.indexSet).value as number,
+                            reps: +this.getReps(indexes.indexExercise, indexes.indexSet).value as number,
+                            total: total as number
                         };
-                        this.newTrainingService.setsChanged(trainingData);
-                        this.getTotal(indexes.indexExercise).patchValue(total.toString()+ ' kg');
+                        this.newTrainingService.setsChanged(trainingData as SetTrainingData);
+                        this.getTotal(indexes.indexExercise as number).patchValue(total.toString()+ ' kg');
                 }
             }),
             takeUntil(this.subs$$)
@@ -272,13 +274,13 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             }
             this.exerciseChanged = !this.exerciseChanged;
             this.setExerciseNameTooltip(
-                element,
-                indexExercise
+                element as MatSelect,
+                indexExercise as number
             ).subscribe(_ => {
                 this.newTrainingService.updateExerciseChoices(
-                    $event.value,
-                    indexExercise,
-                    this.getDisabledTooltip(indexExercise).value
+                    $event.value as string,
+                    indexExercise as number,
+                    this.getDisabledTooltip(indexExercise).value as boolean
                 );
             });
         }
@@ -332,8 +334,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
         if(clicked){
             this.newTrainingService.addNewExercise(
-                this.getAlreadyUsedExercises(),
-                this.getExercises().length - 1
+                this.getAlreadyUsedExercises() as string[],
+                this.getExercises().length - 1 as number
             );
             this.exerciseStateChanged$$.next();
         }
@@ -360,17 +362,17 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             take(1),
                             switchMap((currentTrainingState: NewTraining) =>
                                 this.newTrainingService.deleteExercise(
-                                    indexExercise,
-                                    currentTrainingState,
-                                    exerciseName
+                                    indexExercise as number,
+                                    currentTrainingState as NewTraining,
+                                    exerciseName as string
                                 ).pipe(
                                     tap((data: [NewTraining, Exercise[]]) => {
                                         if(data[1]) {
                                             this.exerciseChanged = !this.exerciseChanged;
                                             (<FormArray>this.form.get('exercise')).removeAt(indexExercise);
                                             this.newTrainingService.pushToAvailableExercises(
-                                                data[0],
-                                                data[1]
+                                                data[0] as NewTraining,
+                                                data[1] as Exercise[]
                                             );
                                         }
                                     })
@@ -388,7 +390,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             this.newTrainingService.currentTrainingChanged$.pipe(
                 take(1),
                 switchMap((currentTrainingState: NewTraining) =>
-                    this.newTrainingService.deleteExercise(indexExercise, currentTrainingState).pipe(
+                    this.newTrainingService.deleteExercise(
+                        indexExercise as number,
+                        currentTrainingState as NewTraining
+                    ).pipe(
                         tap(() => (<FormArray>this.form.get('exercise')).removeAt(indexExercise))
                     )
                 ),
@@ -427,16 +432,16 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         indexSet: number
     ): void {
         (<FormArray>(<FormGroup>(<FormArray>this.form.get('exercise')).at(indexExercise)).get('sets')).removeAt(indexSet);
-        let total: number = 0;
 
+        let newTotal: number = 0;
         this.getSets(indexExercise).forEach((control: AbstractControl) => {
-            total = total + (+control.get('weightLifted').value * +control.get('reps').value);
+            newTotal = newTotal + (+control.get('weightLifted').value * +control.get('reps').value);
         });
-        this.getTotal(indexExercise).patchValue(total.toString() + ' kg');
+        this.getTotal(indexExercise).patchValue(newTotal.toString() + ' kg');
         this.newTrainingService.deleteSet(
-            indexExercise,
-            indexSet,
-            total
+            indexExercise as number,
+            indexSet as number,
+            newTotal as number
         );
     }
 
@@ -444,14 +449,14 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         this.isLoading = true;
         this.isError = false;
         if(!this.editTraining){
-            this.pastTrainingService.getPastTraining(this._id).pipe(
+            this.pastTrainingService.getPastTraining(this._id as string).pipe(
                 tap((training: NewTraining) => {
                     this.editedDate = training.updatedAt as Date;
                     this.editTraining = {
-                        ...training,
+                        ...training as NewTraining,
                         editMode: this.editMode
                     } as NewTraining;
-                    this.newTrainingService.updateTrainingData(this.editTraining);
+                    this.newTrainingService.updateTrainingData(this.editTraining as NewTraining);
                 }),
                 catchError(_ => {
                     this.isError = true;
@@ -500,18 +505,18 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             this.getFormArrayIndex(indexExercise).patchValue(indexExercise);
 
             if(exercise.exerciseName) {
-                this.getExerciseName(indexExercise).patchValue(exercise.exerciseName);
+                this.getExerciseName(indexExercise).patchValue(exercise.exerciseName as string);
                 if(exercise.sets.length > 0){
                     exercise.sets.forEach(
                         (set: Set, indexSet: number) => {
-                        this.getWeightLifted(indexExercise, indexSet).patchValue(set.weightLifted);
-                        this.getReps(indexExercise, indexSet).patchValue(set.reps);
+                        this.getWeightLifted(indexExercise, indexSet).patchValue(set.weightLifted as number);
+                        this.getReps(indexExercise, indexSet).patchValue(set.reps as number);
                         if(indexSet < exercise.sets.length - 1){
                             this.addSet(indexExercise);
                         }
                     });
-                    this.getTotal(indexExercise).patchValue(exercise.total + ' kg');
-                    this.getDisabledTooltip(indexExercise).patchValue(exercise.disabledTooltip);
+                    this.getTotal(indexExercise).patchValue(exercise.total.toString() + ' kg');
+                    this.getDisabledTooltip(indexExercise).patchValue(exercise.disabledTooltip as boolean);
                 }
             }
         });
@@ -529,11 +534,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             switchMap(_ => {
                 if(this.editMode){
                     return this.newTrainingService.updateTraining(
-                        this.formTrainingState,
-                        this._id
+                        this.formTrainingState as NewTraining,
+                        this._id as string
                     ).pipe(
                         tap((response: GeneralResponseData) => {
-                            this.snackBar.open(this.translateService.instant(response.message), null, {
+                            this.snackBar.open(this.translateService.instant(response.message as string), null, {
                                 duration: 3000,
                                 panelClass: 'app__snackbar'
                             });
@@ -542,9 +547,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     );
                 }
                 else {
-                    return this.newTrainingService.addTraining(this.formTrainingState).pipe(
+                    return this.newTrainingService.addTraining(this.formTrainingState as NewTraining).pipe(
                         tap((response: GeneralResponseData) => {
-                            this.snackBar.open(this.translateService.instant(response.message), null, {
+                            this.snackBar.open(this.translateService.instant(response.message as string), null, {
                                 duration: 3000,
                                 panelClass: 'app__snackbar'
                             });
@@ -569,23 +574,22 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
                         this.getExercises().forEach((exercise: AbstractControl, indexExercise: number) => {
                             const splittedTotal: string[] = (this.getTotal(indexExercise).value as string).split(' ');
-
                             exerciseFormData.push({
-                                formArrayIndex: +this.getFormArrayIndex(indexExercise).value,
-                                exerciseName: this.getExerciseName(indexExercise).value,
+                                formArrayIndex: +this.getFormArrayIndex(indexExercise).value as number,
+                                exerciseName: this.getExerciseName(indexExercise).value as string,
                                 sets: [],
-                                total: +splittedTotal[0],
-                                disabledTooltip: this.getDisabledTooltip(indexExercise).value,
+                                total: +(splittedTotal[0] as string),
+                                disabledTooltip: this.getDisabledTooltip(indexExercise).value as boolean,
                                 availableExercises: allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1),
                             });
-                            alreadyUsedExercises.push(this.getExerciseName(indexExercise).value);
-                            const formSetData: Set[] = [];
+                            alreadyUsedExercises.push(this.getExerciseName(indexExercise).value as string);
 
+                            const formSetData: Set[] = [];
                             this.getSets(indexExercise).forEach((set: AbstractControl, indexSet: number) => {
                                 formSetData.push({
-                                    setNumber: +this.getSetNumber(indexExercise, indexSet).value,
-                                    weightLifted: +this.getWeightLifted(indexExercise, indexSet).value,
-                                    reps: +this.getReps(indexExercise, indexSet).value
+                                    setNumber: +this.getSetNumber(indexExercise, indexSet).value as number,
+                                    weightLifted: +this.getWeightLifted(indexExercise, indexSet).value as number,
+                                    reps: +this.getReps(indexExercise, indexSet).value as number
                                 });
                             });
                             exerciseFormData[indexExercise].sets = formSetData;
@@ -593,11 +597,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
                         this.formTrainingState = {
                             createdAt: this.editMode ? this.editedDate : new Date(new Date().setHours(new Date().getHours() + 2)),
-                            exercise: exerciseFormData,
-                            bodyweight: this.bodyweight.value ? +this.bodyweight.value : null,
-                            editMode: this.editMode,
-                            userId: currentTrainingState.userId
-                        };
+                            exercise: exerciseFormData as SingleExercise[],
+                            bodyweight: this.bodyweight.value ? +this.bodyweight.value as number : null,
+                            editMode: this.editMode as boolean,
+                            userId: currentTrainingState.userId as string
+                        } as NewTraining;
                     })
                 ))
         );
@@ -613,7 +617,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             tap(_ => {
                 if(currentTrainingState){
                     currentTrainingState.exercise.forEach((value: SingleExercise, index: number) => {
-                        this.getDisabledTooltip(index).patchValue(value.disabledTooltip);
+                        this.getDisabledTooltip(index).patchValue(value.disabledTooltip as boolean);
                     });
                 }
                 else {
@@ -675,7 +679,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         const alreadyUsedExercises: string[] = [];
         for(const exercise of this.getExercises()){
             if(exercise.get('name').value){
-                alreadyUsedExercises.push(exercise.get('name').value);
+                alreadyUsedExercises.push(exercise.get('name').value as string);
             }
         }
         return alreadyUsedExercises as string[];

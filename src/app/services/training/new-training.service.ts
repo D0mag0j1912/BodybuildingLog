@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
+import { SetTrainingData } from 'src/app/views/training/new-training/new-training.component';
 import { environment } from '../../../environments/environment';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Exercise } from '../../models/training/exercise.model';
@@ -144,14 +145,7 @@ export class NewTrainingService {
         }
     }
 
-    setsChanged(trainingData: {
-        formArrayIndex: number;
-        exerciseName: string;
-        setNumber: number;
-        weightLifted: number;
-        reps: number;
-        total: number;
-    }): void {
+    setsChanged(trainingData: SetTrainingData): void {
         const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
         const indexFoundSet = updatedTraining.exercise[trainingData.formArrayIndex].sets.findIndex(set => set.setNumber === trainingData.setNumber);
 
