@@ -1,18 +1,18 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
-import { AuthResponse } from "src/models/auth/auth-response.model";
-import { Login } from 'src/models/auth/login.model';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { compare, hash } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
-import { Preferences } from "src/models/preferences/preferences.model";
+import { Model } from 'mongoose';
+import { AuthResponse } from 'src/models/auth/auth-response.model';
+import { Login } from 'src/models/auth/login.model';
+import { Preferences } from 'src/models/preferences/preferences.model';
 
 @Injectable()
 export class AuthService {
 
     constructor(
         @InjectModel('User') private readonly userModel: Model<Login>,
-        @InjectModel('Preferences') private readonly preferencesModel: Model<Preferences>
+        @InjectModel('Preferences') private readonly preferencesModel: Model<Preferences>,
     ){}
 
     async passwordFitsEmail(
@@ -20,6 +20,7 @@ export class AuthService {
         password: string
     ): Promise<boolean> {
         try {
+            // tslint:disable-next-line: await-promise
             const user: Login = await this.userModel.findOne({
                 email: email
             });
@@ -45,6 +46,7 @@ export class AuthService {
         password: string
     ): Promise<AuthResponse> {
         try {
+            // tslint:disable-next-line: await-promise
             const user: Login = await this.userModel.findOne({
                 email: email
             });
@@ -70,6 +72,7 @@ export class AuthService {
             }, 'secret_this_should_be_longer', {
                 expiresIn: '3h'
             });
+            // tslint:disable-next-line: await-promise
             const preferences: Preferences = await this.preferencesModel.findOne({
                 userId: user._id
             });
@@ -95,6 +98,7 @@ export class AuthService {
             const result: {
                 _id: string,
                 password: string
+            // tslint:disable-next-line: await-promise
             } = await this.userModel.findOne({
                 email: email
             }, 'password');
@@ -126,7 +130,7 @@ export class AuthService {
                 language: language,
                 weightFormat: weightFormat
             } as Preferences;
-            await this.preferencesModel.create(preferences); 
+            await this.preferencesModel.create(preferences);
             return {
                 success: true,
                 message: 'auth.signup_success'

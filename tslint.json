@@ -1,0 +1,139 @@
+{
+    "rules": {
+        "no-any": true,
+        "typedef": [
+            true,
+            "call-signature",
+            "parameter",
+            "property-declaration",
+            "member-variable-declaration"
+        ],
+        "typedef-whitespace": [
+            true,
+            {
+                "call-signature": "nospace",
+                "index-signature": "nospace",
+                "parameter": "nospace",
+                "property-declaration": "nospace",
+                "variable-declaration": "nospace"
+            },
+            {
+                "call-signature": "onespace",
+                "index-signature": "onespace",
+                "parameter": "onespace",
+                "property-declaration": "onespace",
+                "variable-declaration": "onespace"
+            }
+        ],
+        "variable-name": [
+            true,
+            "ban-keywords",
+            "check-format",
+            "allow-leading-underscore"
+        ],
+        "member-access": false,
+        "member-ordering": [
+            false,
+            {
+                "order": [
+                    "public-static-field",
+                    "public-instance-field",
+                    "private-static-field",
+                    "private-instance-field",
+                    "public-constructor",
+                    "private-constructor",
+                    "public-instance-method",
+                    "protected-instance-method",
+                    "private-instance-method"
+                ]
+            }
+        ],
+        "no-reference": true,
+        "no-var-requires": true,
+        "only-arrow-functions": [
+            true,
+            "allow-declarations"
+        ],
+        "prefer-for-of": true,
+        "curly": true,
+        "no-invalid-this": true,
+        "no-misused-new": true,
+        "no-object-literal-type-assertion": false,
+        "no-sparse-arrays": true,
+        "no-string-throw": true,
+        "no-switch-case-fall-through": true,
+        "no-var-keyword": true,
+        "strict-boolean-expressions": false,
+        "triple-equals": true,
+        "use-isnan": true,
+        "deprecation": false,
+        "indent": [
+            true,
+            "spaces",
+            4
+        ],
+        "max-classes-per-file": [
+            true,
+            1
+        ],
+        "max-line-length": [
+            true,
+            300
+        ],
+        "prefer-const": true,
+        "prefer-readonly": false,
+        "align": false,
+        "array-type": [
+            true,
+            "array"
+        ],
+        "arrow-parens": [
+            true,
+            "ban-single-arg-parens"
+        ],
+        "arrow-return-shorthand": [
+            true,
+            "multiline"
+        ],
+        "binary-expression-operand-order": true,
+        "callable-types": true,
+        "class-name": true,
+        "newline-before-return": false,
+        "newline-per-chained-call": false,
+        "no-consecutive-blank-lines": true,
+        "no-irregular-whitespace": true,
+        "no-parameter-properties": false,
+        "no-trailing-whitespace": [
+            true,
+            "ignore-jsdoc",
+            "ignore-template-strings",
+            "ignore-blank-lines"
+        ],
+        "ordered-imports": true,
+        "prefer-method-signature": true,
+        "quotemark": [
+            true,
+            "single"
+        ],
+        "semicolon": true,
+        "space-before-function-paren": [
+            true,
+            {
+                "anonymous": "always",
+                "named": "never",
+                "asyncArrow": "always",
+                "method": "never",
+                "constructor": "never"
+            }
+        ],
+        "await-promise": [
+            true,
+            "Thenable"
+        ],
+        "promise-function-async": true,
+        "no-floating-promises": true,
+        "no-console": true,
+        "no-debugger": true,
+        "interface-name": [true, "never-prefix"]
+    }
+}

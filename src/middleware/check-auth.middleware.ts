@@ -1,5 +1,5 @@
-import { NestMiddleware, HttpException, HttpStatus } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+import { HttpException, HttpStatus, NestMiddleware } from '@nestjs/common';
+import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 
 interface VerifiedToken {
@@ -11,10 +11,10 @@ interface VerifiedToken {
 
 export class CheckAuthMiddleware implements NestMiddleware {
     use(
-        request: Request, 
+        request: Request,
         response: Response,
         next: NextFunction
-    ){
+    ): void {
         try {
             const token: string = request.headers.authorization.split(' ')[1];
             const userData: VerifiedToken = verify(token, 'secret_this_should_be_longer');

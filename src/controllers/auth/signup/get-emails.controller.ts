@@ -1,15 +1,15 @@
-import { Controller, Get, Query } from "@nestjs/common";
-import { AuthService } from "src/services/auth/auth.service";
+import { Controller, Get, Query } from '@nestjs/common';
+import { AuthService } from 'src/services/auth/auth.service';
 
 @Controller('getAllEmails')
 export class GetEmailsController {
 
     constructor(
-        private readonly authService: AuthService
+        private readonly authService: AuthService,
     ){}
 
     @Get()
-    getEmails(@Query() params: {
+    async getEmails(@Query() params: {
         email: string
     }): Promise<boolean> {
         return this.authService.getAllEmails(params.email);

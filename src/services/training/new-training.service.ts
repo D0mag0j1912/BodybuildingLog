@@ -1,15 +1,15 @@
-import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
-import { GeneralResponseData } from "src/app.service";
-import { Exercise } from "src/models/training/exercise.model";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { GeneralResponseData } from 'src/app.service';
+import { Exercise } from 'src/models/training/exercise.model';
 import { NewTraining } from '../../models/training/new-training/new-training.model';
 
 interface Error {
     response?: {
         status: number;
         message: string;
-    }
+    };
     status?: number;
 }
 
@@ -18,7 +18,7 @@ export class NewTrainingService {
 
     constructor(
         @InjectModel('Exercise') private readonly exerciseModel: Model<Exercise>,
-        @InjectModel('Training') private readonly trainingModel: Model<NewTraining>
+        @InjectModel('Training') private readonly trainingModel: Model<NewTraining>,
     ){}
 
     async editTraining(
@@ -27,6 +27,7 @@ export class NewTrainingService {
         loggedUserId: string
     ): Promise<GeneralResponseData> {
         try {
+            // tslint:disable-next-line: await-promise
             const trainingToBeUpdated: NewTraining = await this.trainingModel.findById(trainingId);
             if(trainingToBeUpdated.userId.toString() !== loggedUserId.toString()) {
                 throw new HttpException({
@@ -34,6 +35,7 @@ export class NewTrainingService {
                     message: 'common.errors.not_authorized'
                 }, HttpStatus.UNAUTHORIZED);
             }
+            // tslint:disable-next-line: await-promise
             await this.trainingModel.updateOne({
                 _id: trainingId
             }, {
@@ -81,6 +83,7 @@ export class NewTrainingService {
 
     async getExercises(): Promise<Exercise[]> {
         try {
+            // tslint:disable-next-line: await-promise
             const exercises: Exercise[] = await this.exerciseModel.find();
             if(exercises.length === 0){
                 throw new HttpException({

@@ -1,20 +1,20 @@
-import { Schema } from 'mongoose';
-import { setSchema } from './set.model';
-import { exerciseSchema } from '../exercise.model';
 import { Type } from 'class-transformer';
-import { 
-    IsOptional, 
-    IsString, 
-    IsDefined, 
-    IsInt, 
-    ValidateNested, 
-    IsNumber, 
+import {
+    IsBoolean,
+    IsDefined,
+    IsInt,
     IsNotEmpty,
-    IsBoolean} from 'class-validator';
+    IsNumber,
+    IsOptional,
+    IsString,
+    ValidateNested} from 'class-validator';
+import { Schema } from 'mongoose';
+import { exerciseSchema } from '../exercise.model';
 import { Exercise } from '../exercise.model';
+import { SET_SCHEMA } from './set.model';
 import { Set } from './set.model';
 
-export const singleExerciseSchema = new Schema({
+export const SINGLE_EXERCISE_SCHEMA = new Schema({
     formArrayIndex: {
         type: Number,
         required: true
@@ -24,7 +24,7 @@ export const singleExerciseSchema = new Schema({
         required: true
     },
     sets: {
-        type: [setSchema],
+        type: [SET_SCHEMA],
         required: true
     },
     total: {

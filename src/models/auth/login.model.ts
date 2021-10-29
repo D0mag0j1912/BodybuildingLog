@@ -1,14 +1,14 @@
-import { 
-    IsDefined, 
+import {
+    IsDefined,
     IsEmail,
     IsNotEmpty,
-    IsOptional, 
-    IsString, 
-    Length } from "class-validator";
+    IsOptional,
+    IsString,
+    Length } from 'class-validator';
 import { Schema } from 'mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
 
-export const UserSchema = new Schema({
+export const USER_SCHEMA = new Schema({
     email: {
         type: String,
         required: true,
@@ -20,7 +20,7 @@ export const UserSchema = new Schema({
     }
 });
 
-UserSchema.plugin(uniqueValidator);
+USER_SCHEMA.plugin(uniqueValidator);
 
 export class Login {
 

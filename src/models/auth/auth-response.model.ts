@@ -1,4 +1,4 @@
-import { Preferences } from "../preferences/preferences.model";
+import { Preferences } from '../preferences/preferences.model';
 
 export interface AuthResponse {
     message: string;

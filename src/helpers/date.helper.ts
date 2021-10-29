@@ -1,6 +1,11 @@
-import { startOfWeek, endOfWeek } from 'date-fns';
+import { endOfWeek, startOfWeek } from 'date-fns';
 
-export function getIntervalDate(currentDate: Date) {
+export interface DateInterval {
+    startDate: Date;
+    endDate: Date;
+}
+
+export function getIntervalDate(currentDate: Date): DateInterval {
     const startDate: Date = startOfWeek(currentDate, {
         weekStartsOn: 1
     });
@@ -12,5 +17,5 @@ export function getIntervalDate(currentDate: Date) {
     return {
         startDate: startDate,
         endDate: endDate
-    };
+    } as DateInterval;
 }

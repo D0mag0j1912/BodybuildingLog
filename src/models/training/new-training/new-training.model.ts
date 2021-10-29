@@ -1,21 +1,21 @@
 import { Type } from 'class-transformer';
-import { 
-    IsDefined, 
-    IsDateString, 
-    IsBoolean, 
-    IsOptional, 
-    IsString, 
-    Min, 
-    Max, 
-    ValidateNested, 
-    IsNumber, 
-    IsNotEmpty} from 'class-validator';
+import {
+    IsBoolean,
+    IsDateString,
+    IsDefined,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsString,
+    Max,
+    Min,
+    ValidateNested} from 'class-validator';
 import { Schema } from 'mongoose';
-import { SingleExercise, singleExerciseSchema } from './single-exercise.model';
+import { SingleExercise, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model';
 
-export const newTrainingSchema = new Schema({
+export const NEW_TRAINING_SCHEMA = new Schema({
     exercise: {
-        type: [singleExerciseSchema],
+        type: [SINGLE_EXERCISE_SCHEMA],
         required: true
     },
     editMode: {
@@ -47,7 +47,7 @@ export class NewTraining {
         each: true
     })
     @Type(() => SingleExercise)
-    exercise: SingleExercise[]
+    exercise: SingleExercise[];
 
     @IsBoolean({
         message: '@training.new_training.errors.error_save_training'

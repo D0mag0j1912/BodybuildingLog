@@ -1,8 +1,8 @@
-import {  
-    IsString, 
-    IsEmail, 
-    Length, 
-    IsNotEmpty} from "class-validator";
+import {
+    IsEmail,
+    IsNotEmpty,
+    IsString,
+    Length} from 'class-validator';
 
 export class Signup {
 

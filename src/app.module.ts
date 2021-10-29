@@ -1,15 +1,15 @@
 import { MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/common';
+import { APP_PIPE } from '@nestjs/core';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from './modules/auth/auth.module';
-import { TrainingModule } from './modules/training/training.module';
-import { CheckAuthMiddleware } from './middleware/check-auth.middleware';
 import { GetExercisesController } from './controllers/training/new-training/get-exercises.controller';
 import { NewTrainingController } from './controllers/training/new-training/new-training.controller';
 import { PastTrainingsController } from './controllers/training/past-trainings/past-trainings.controller';
-import { APP_PIPE } from '@nestjs/core';
+import { CheckAuthMiddleware } from './middleware/check-auth.middleware';
+import { AuthModule } from './modules/auth/auth.module';
 import { PreferencesModule } from './modules/preferences/preferences.module';
+import { TrainingModule } from './modules/training/training.module';
 
 @Module({
     imports: [
@@ -30,7 +30,7 @@ import { PreferencesModule } from './modules/preferences/preferences.module';
     ],
 })
 export class AppModule implements NestModule{
-    configure(consumer: MiddlewareConsumer){
+    configure(consumer: MiddlewareConsumer): void {
         consumer
             .apply(CheckAuthMiddleware)
             .forRoutes(

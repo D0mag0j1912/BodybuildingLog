@@ -1,7 +1,7 @@
 import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 
-export const preferencesSchema = new Schema({
+export const PREFERENCES_SCHEMA = new Schema({
     language: {
         type: String,
         required: true

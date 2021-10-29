@@ -1,13 +1,13 @@
-import { 
-    IsOptional, 
-    IsString, 
-    IsNumber, 
-    Min, 
-    Max, 
+import {
+    IsNumber,
+    IsOptional,
+    IsString,
+    Max,
+    Min,
     NotEquals} from 'class-validator';
 import { Schema } from 'mongoose';
 
-export const setSchema = new Schema({
+export const SET_SCHEMA = new Schema({
     setNumber: {
         type: Number,
         required: true

@@ -1,7 +1,7 @@
-import { 
-    IsOptional, 
-    IsString, 
-    IsDefined } from 'class-validator';
+import {
+    IsDefined,
+    IsOptional,
+    IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 
 export const exerciseSchema = new Schema({

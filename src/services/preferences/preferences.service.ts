@@ -1,22 +1,23 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
-import { Preferences } from "src/models/preferences/preferences.model";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Preferences } from 'src/models/preferences/preferences.model';
 import { GeneralResponseData } from '../../app.service';
 
 @Injectable()
 export class PreferencesService {
 
     constructor(
-        @InjectModel('Preferences') private readonly preferencesModel: Model<Preferences>
+        @InjectModel('Preferences') private readonly preferencesModel: Model<Preferences>,
     ){}
 
     async setPreferences(
         userId: string,
         language: string,
         weightFormat: string
-    ): Promise<any> {
+    ): Promise<GeneralResponseData> {
         try {
+            // tslint:disable-next-line: await-promise
             const preferences = await this.preferencesModel.findOne({
                 userId: userId
             });
