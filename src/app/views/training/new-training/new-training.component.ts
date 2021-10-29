@@ -9,6 +9,7 @@ import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { catchError, debounceTime, delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { SharedService } from 'src/app/services/shared/shared.service';
+import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { DialogComponent } from 'src/app/views/shared/dialog/dialog.component';
 import { DialogData } from 'src/app/views/shared/dialog/dialog.component';
@@ -39,10 +40,10 @@ interface SetStateChanged {
     selector: 'app-new-training',
     templateUrl: './new-training.component.html',
     styleUrls: ['./new-training.component.scss'],
+    providers: [UnsubscribeService],
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
 
-    private readonly subs$$: Subject<void> = new Subject<void>();
     private readonly indexChanged$$: Subject<SetStateChanged> = new Subject<SetStateChanged>();
     private readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
 
@@ -93,7 +94,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         null,
                         currentTrainingState as NewTraining
                     )),
-                takeUntil(this.subs$$)
+                takeUntil(this.unsubsService)
             ).subscribe();
         }
     }
@@ -120,6 +121,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
         private readonly translateService: TranslateService,
+        private readonly unsubsService: UnsubscribeService,
         private readonly dialog: MatDialog,
         private readonly snackBar: MatSnackBar,
         private readonly route: ActivatedRoute,
@@ -187,7 +189,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     switchMap(_ => this.formInit()),
                     finalize(() => this.isLoading = false)
                 )),
-            takeUntil(this.subs$$)
+            takeUntil(this.unsubsService)
         ).subscribe();
 
         this.indexChanged$$.pipe(
@@ -214,13 +216,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         this.getTotal(indexes.indexExercise as number).patchValue(total.toString()+ ' kg');
                 }
             }),
-            takeUntil(this.subs$$)
+            takeUntil(this.unsubsService)
         ).subscribe();
     }
 
     ngOnDestroy(): void {
-        this.subs$$.next();
-        this.subs$$.complete();
         this.sharedService.editingTraining$$.next(false);
     }
 
@@ -383,7 +383,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         return of(null);
                     }
                 }),
-                takeUntil(this.subs$$)
+                takeUntil(this.unsubsService)
             ).subscribe();
         }
         else {
@@ -397,7 +397,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         tap(() => (<FormArray>this.form.get('exercise')).removeAt(indexExercise))
                     )
                 ),
-                takeUntil(this.subs$$)
+                takeUntil(this.unsubsService)
             ).subscribe();
         }
         this.exerciseStateChanged$$.next();
@@ -493,7 +493,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 });
                 (<FormArray>this.form.get('exercise')).patchValue(this.formArrayInit(this.editTraining ? this.editTraining : data));
             }),
-            takeUntil(this.subs$$)
+            takeUntil(this.unsubsService)
         );
     }
 

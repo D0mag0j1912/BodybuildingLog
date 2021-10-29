@@ -1,12 +1,13 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { endOfWeek, format, startOfWeek } from 'date-fns';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { NewTraining } from 'src/app/models/training/new-training.model';
-import { NavigationService } from 'src/app/services/navigation.service';
+import { NavigationService } from 'src/app/services/shared/navigation.service';
 import { SharedService } from 'src/app/services/shared/shared.service';
+import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service';
 import { NewTrainingService } from 'src/app/services/training/new-training.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { DateData } from '../../../models/training/past-trainings-response.model';
@@ -16,14 +17,13 @@ import { AuthService } from '../../../services/auth/auth.service';
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
+    providers: [UnsubscribeService],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
 
     isAuthenticated$: Observable<boolean>;
     isEditing$: Observable<boolean>;
     loggedUserData$: Observable<AuthResponseData>;
-
-    private readonly subscription$$: Subject<void> = new Subject<void>();
 
     @Output()
     toggleSideNav: EventEmitter<void> = new EventEmitter<void>();
@@ -34,6 +34,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private readonly authService: AuthService,
         private readonly sharedService: SharedService,
         private readonly navigationService: NavigationService,
+        private readonly unsubsService: UnsubscribeService,
         private readonly router: Router,
     ) { }
 
@@ -41,11 +42,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.isAuthenticated$ = this.authService.isAuth$;
         this.loggedUserData$ = this.authService.loggedUser$;
         this.isEditing$ = this.sharedService.editingTraining$;
-    }
-
-    ngOnDestroy(): void {
-        this.subscription$$.next();
-        this.subscription$$.complete();
     }
 
     async onLogout(): Promise<void> {
@@ -67,7 +63,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                         });
                     })
                 )),
-            takeUntil(this.subscription$$)
+            takeUntil(this.unsubsService)
         ).subscribe();
     }
 
@@ -95,7 +91,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                     'kg'
                 )
             ),
-            takeUntil(this.subscription$$)
+            takeUntil(this.unsubsService)
         ).subscribe();
     }
 

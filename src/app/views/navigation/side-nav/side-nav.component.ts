@@ -1,20 +1,20 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { endOfWeek, format, startOfWeek } from 'date-fns';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { NavigationService } from 'src/app/services/navigation.service';
+import { NavigationService } from 'src/app/services/shared/navigation.service';
+import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service';
 import { NewTrainingService } from 'src/app/services/training/new-training.service';
 @Component({
     selector: 'app-side-nav',
     templateUrl: './side-nav.component.html',
     styleUrls: ['./side-nav.component.scss'],
+    providers: [UnsubscribeService],
 })
-export class SideNavComponent implements OnInit, OnDestroy {
-
-    private readonly subscription$$: Subject<void> = new Subject<void>();
+export class SideNavComponent implements OnInit {
 
     @Output()
     closeSideNav: EventEmitter<void> = new EventEmitter<void>();
@@ -26,17 +26,13 @@ export class SideNavComponent implements OnInit, OnDestroy {
         private readonly authService: AuthService,
         private readonly navigationService: NavigationService,
         private readonly newTrainingService: NewTrainingService,
+        private readonly unsubsService: UnsubscribeService,
         private readonly router: Router,
     ) {}
 
     ngOnInit(): void {
         this.isAuthenticated$ = this.authService.isAuth$;
         this.loggedUserData$ = this.authService.loggedUser$;
-    }
-
-    ngOnDestroy(): void {
-        this.subscription$$.next();
-        this.subscription$$.complete();
     }
 
     async onLogout(): Promise<void> {
@@ -73,7 +69,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
                     })
                 )
             ),
-            takeUntil(this.subscription$$)
+            takeUntil(this.unsubsService)
         ).subscribe();
     }
 

@@ -5,9 +5,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { GeneralResponseData } from '../models/general-response.model';
-import { Preferences } from '../models/preferences.model';
-import { AuthService } from './auth/auth.service';
+import { GeneralResponseData } from '../../models/general-response.model';
+import { Preferences } from '../../models/preferences.model';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
     providedIn: 'root'
