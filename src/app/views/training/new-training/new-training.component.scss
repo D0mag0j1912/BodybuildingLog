@@ -121,8 +121,7 @@
 
     &-button:not([disabled]):hover,
     &-button:not([disabled]):active {
-        color: $army-green;
-        background: white;
+        color: $light-blue;
     }
 }
 
@@ -166,15 +165,12 @@
     column-gap:5px;
 
     &-button {
-        color: $army-green;
         font-family: $poppins;
-        background: $light-blue !important;
     }
 
     &-button:not([disabled]):hover,
     &-button:not([disabled]):active {
-        color: $light-blue !important;
-        background: $army-green !important;
+        color: $light-blue;
     }
 }
 
