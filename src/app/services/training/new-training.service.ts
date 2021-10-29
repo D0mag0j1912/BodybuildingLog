@@ -1,13 +1,13 @@
-import { Injectable } from "@angular/core";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, switchMap, take, tap } from 'rxjs/operators';
+import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { environment } from '../../../environments/environment';
-import { HttpClient } from "@angular/common/http";
-import { map, switchMap, take, tap } from "rxjs/operators";
-import { BehaviorSubject, Observable, of } from "rxjs";
-import { Exercise } from "../../models/training/exercise.model";
-import { NewTraining, SingleExercise } from "../../models/training/new-training.model";
-import { GeneralResponseData } from "../../models/general-response.model";
-import { AuthService } from "../auth/auth.service";
-import { AuthResponseData } from "src/app/models/auth/auth-data.model";
+import { GeneralResponseData } from '../../models/general-response.model';
+import { Exercise } from '../../models/training/exercise.model';
+import { NewTraining, SingleExercise } from '../../models/training/new-training.model';
+import { AuthService } from '../auth/auth.service';
 
 const EMPTY_TRAINING: NewTraining = {
     exercise: [],
@@ -22,10 +22,10 @@ const EMPTY_TRAINING: NewTraining = {
 })
 export class NewTrainingService {
 
-    private readonly allExercisesChanged$$ = new BehaviorSubject<Exercise[]>([]);
+    private readonly allExercisesChanged$$: BehaviorSubject<Exercise[]> = new BehaviorSubject<Exercise[]>([]);
     readonly allExercisesChanged$: Observable<Exercise[]> = this.allExercisesChanged$$.asObservable();
 
-    private readonly currentTrainingChanged$$ = new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
+    private readonly currentTrainingChanged$$: BehaviorSubject<NewTraining> = new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
     readonly currentTrainingChanged$: Observable<NewTraining> = this.currentTrainingChanged$$.asObservable();
 
     constructor(
@@ -115,7 +115,7 @@ export class NewTrainingService {
         currentTrainingState: NewTraining,
         deletedExerciseName?: string
     ): Observable<[NewTraining, Exercise[]]> {
-        let updatedTraining: NewTraining = { ...currentTrainingState };
+        const updatedTraining: NewTraining = { ...currentTrainingState };
         updatedTraining.exercise = updatedTraining.exercise
             .filter((exercise: SingleExercise) => exercise.formArrayIndex !== deletedIndex)
             .map((exercise: SingleExercise) => {
@@ -127,12 +127,12 @@ export class NewTrainingService {
         if(deletedExerciseName){
             return this.allExercisesChanged$.pipe(
                 take(1),
-                map((allExercises: Exercise[]) => {
-                    return [
+                map((allExercises: Exercise[]) =>
+                    [
                         updatedTraining,
                         allExercises.filter(exercise => exercise.name === deletedExerciseName)
-                    ];
-                })
+                    ]
+                )
             );
         }
         else{
@@ -261,7 +261,6 @@ export class NewTrainingService {
     clearTrainingData(): void {
         this.saveTrainingData({ ...EMPTY_TRAINING });
     }
-
 
     private compare(
         a: Exercise,

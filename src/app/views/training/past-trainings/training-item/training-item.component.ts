@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { format } from 'date-fns';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { NewTraining } from '../../../../models/training/new-training.model';
-import { format } from 'date-fns';
 
 @Component({
   selector: 'app-training-item',
@@ -38,8 +38,8 @@ export class TrainingItemComponent implements OnInit {
         this.dayIndex = this.sharedService.subtractTwoHours(this.training.createdAt).getDay();
     }
 
-    trainingClicked(): void {
-        this.router.navigate(['/new-training', this.training._id]);
+    async trainingClicked(): Promise<void> {
+        await this.router.navigate(['/new-training', this.training._id]);
     }
 
 }

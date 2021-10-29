@@ -4,20 +4,20 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { catchError, debounceTime, delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { GeneralResponseData } from 'src/app/models/general-response.model';
+import { SharedService } from 'src/app/services/shared/shared.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { DialogComponent } from 'src/app/views/shared/dialog/dialog.component';
-import { Exercise } from '../../../models/training/exercise.model';
-import { NewTraining, Set, SingleExercise } from '../../../models/training/new-training.model';
-import { GeneralResponseData } from 'src/app/models/general-response.model';
-import { NewTrainingService } from '../../../services/training/new-training.service';
-import { TranslateService } from '@ngx-translate/core';
-import { SharedService } from 'src/app/services/shared/shared.service';
 import { DialogData } from 'src/app/views/shared/dialog/dialog.component';
 import { DeleteExerciseDialogData } from 'src/app/views/shared/dialog/dialog.component';
-import * as NewTrainingValidators from '../../../validators/new-training.validators';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
+import { Exercise } from '../../../models/training/exercise.model';
+import { NewTraining, Set, SingleExercise } from '../../../models/training/new-training.model';
+import { NewTrainingService } from '../../../services/training/new-training.service';
+import * as NewTrainingValidators from '../../../validators/new-training.validators';
 
 const MAX_EXERCISE_NAME_WIDTH: number = 181;
 
@@ -78,13 +78,12 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         if(exerciseName){
             this.newTrainingService.currentTrainingChanged$.pipe(
                 take(1),
-                switchMap((currentTrainingState: NewTraining) => {
-                    return this.setExerciseNameTooltip(
+                switchMap((currentTrainingState: NewTraining) =>
+                    this.setExerciseNameTooltip(
                         exerciseName,
                         null,
                         currentTrainingState
-                    );
-                }),
+                    )),
                 takeUntil(this.subs$$)
             ).subscribe();
         }
@@ -93,8 +92,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     readonly isAddingExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> =
         this.exerciseStateChanged$$.pipe(
             startWith(undefined as void),
-            switchMap(_ => {
-                return forkJoin([
+            switchMap(_ =>
+                forkJoin([
                     this.newTrainingService.currentTrainingChanged$.pipe(
                         take(1),
                         tap((currentTrainingState: NewTraining) => console.log(currentTrainingState)),
@@ -104,8 +103,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         take(1),
                         tap((x: Exercise[]) => console.log(x))
                     )
-                ]);
-            })
+                ]))
         );
 
     constructor(
@@ -144,8 +142,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 }
                 else {
                     return of(null).pipe(
-                        switchMap(_ => {
-                            return forkJoin([
+                        switchMap(_ =>
+                            forkJoin([
                                 this.newTrainingService.allExercisesChanged$.pipe(
                                     take(1)
                                 ),
@@ -166,24 +164,20 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                         }
                                     }
                                 })
-                            );
-                        })
+                            ))
                     );
                 }
             }),
             tap(_ => this.sharedService.editingTraining$$.next(this.editMode)),
-            switchMap(_ => {
-                return this.newTrainingService.getExercises().pipe(
+            switchMap(_ =>
+                this.newTrainingService.getExercises().pipe(
                     catchError(_ => {
                         this.isError = true;
                         return of(null);
                     }),
-                    switchMap(_ => {
-                        return this.formInit();
-                    }),
+                    switchMap(_ => this.formInit()),
                     finalize(() => this.isLoading = false)
-                );
-            }),
+                )),
             takeUntil(this.subs$$)
         ).subscribe();
 
@@ -199,7 +193,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         this.getSets(indexes.indexExercise).forEach((el: AbstractControl) => {
                             total = total + (+el.get('weightLifted').value * +el.get('reps').value);
                         });
-                        let trainingData: {
+                        const trainingData: {
                             formArrayIndex: number;
                             exerciseName: string;
                             setNumber: number;
@@ -350,7 +344,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         exerciseName: string
     ): void {
         if(exerciseName){
-            let dialogRef = this.dialog.open(DialogComponent, {
+            const dialogRef = this.dialog.open(DialogComponent, {
                 data: {
                     isError: false,
                     deleteExercise: {
@@ -364,8 +358,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     if(response){
                         return this.newTrainingService.currentTrainingChanged$.pipe(
                             take(1),
-                            switchMap((currentTrainingState: NewTraining) => {
-                                return this.newTrainingService.deleteExercise(
+                            switchMap((currentTrainingState: NewTraining) =>
+                                this.newTrainingService.deleteExercise(
                                     indexExercise,
                                     currentTrainingState,
                                     exerciseName
@@ -380,8 +374,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                             );
                                         }
                                     })
-                                );
-                            })
+                                ))
                         );
                     }
                     else{
@@ -394,11 +387,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         else {
             this.newTrainingService.currentTrainingChanged$.pipe(
                 take(1),
-                switchMap((currentTrainingState: NewTraining) => {
-                    return this.newTrainingService.deleteExercise(indexExercise, currentTrainingState).pipe(
+                switchMap((currentTrainingState: NewTraining) =>
+                    this.newTrainingService.deleteExercise(indexExercise, currentTrainingState).pipe(
                         tap(() => (<FormArray>this.form.get('exercise')).removeAt(indexExercise))
-                    );
-                }),
+                    )
+                ),
                 takeUntil(this.subs$$)
             ).subscribe();
         }
@@ -436,8 +429,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         (<FormArray>(<FormGroup>(<FormArray>this.form.get('exercise')).at(indexExercise)).get('sets')).removeAt(indexSet);
         let total: number = 0;
 
-        this.getSets(indexExercise).forEach((el) => {
-            total = total + (+el.get('weightLifted').value * +el.get('reps').value);
+        this.getSets(indexExercise).forEach((control: AbstractControl) => {
+            total = total + (+control.get('weightLifted').value * +control.get('reps').value);
         });
         this.getTotal(indexExercise).patchValue(total.toString() + ' kg');
         this.newTrainingService.deleteSet(
@@ -474,9 +467,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     this.isLoading = false;
                     return of(null);
                 }),
-                switchMap(() => {
-                    return this.formInit();
-                })
+                switchMap(() => this.formInit())
             );
         }
     }
@@ -504,7 +495,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     private formArrayInit(data: NewTraining): AbstractControl[] {
         data.exercise.forEach(
             (exercise: SingleExercise, indexExercise: number) => {
-            let isExerciseName: boolean = exercise.exerciseName ? true : false;
+            const isExerciseName: boolean = exercise.exerciseName ? true : false;
             this.addExercise(isExerciseName);
             this.getFormArrayIndex(indexExercise).patchValue(indexExercise);
 
@@ -569,15 +560,15 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     private gatherAllFormData(): Observable<Exercise[]> {
         return this.newTrainingService.currentTrainingChanged$.pipe(
             take(1),
-            switchMap((currentTrainingState: NewTraining) => {
-                return this.newTrainingService.allExercisesChanged$.pipe(
+            switchMap((currentTrainingState: NewTraining) =>
+                this.newTrainingService.allExercisesChanged$.pipe(
                     take(1),
                     tap((allExercises: Exercise[]) => {
-                        let exerciseFormData: SingleExercise[] = [];
-                        let alreadyUsedExercises: string[] = [];
+                        const exerciseFormData: SingleExercise[] = [];
+                        const alreadyUsedExercises: string[] = [];
 
                         this.getExercises().forEach((exercise: AbstractControl, indexExercise: number) => {
-                            let splittedTotal: string[] = (this.getTotal(indexExercise).value as string).split(' ');
+                            const splittedTotal: string[] = (this.getTotal(indexExercise).value as string).split(' ');
 
                             exerciseFormData.push({
                                 formArrayIndex: +this.getFormArrayIndex(indexExercise).value,
@@ -588,7 +579,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                 availableExercises: allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1),
                             });
                             alreadyUsedExercises.push(this.getExerciseName(indexExercise).value);
-                            let formSetData: Set[] = [];
+                            const formSetData: Set[] = [];
 
                             this.getSets(indexExercise).forEach((set: AbstractControl, indexSet: number) => {
                                 formSetData.push({
@@ -608,8 +599,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             userId: currentTrainingState.userId
                         };
                     })
-                );
-            })
+                ))
         );
     }
 
@@ -662,14 +652,14 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     getWeightLifted(
         indexExercise: number,
         indexSet: number
-    ) : AbstractControl {
+    ): AbstractControl {
         return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).at(indexSet).get('weightLifted');
     }
 
     getReps(
         indexExercise: number,
         indexSet: number
-    ) : AbstractControl {
+    ): AbstractControl {
         return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).at(indexSet).get('reps');
     }
 
@@ -682,7 +672,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     }
 
     getAlreadyUsedExercises(): string[] {
-        let alreadyUsedExercises: string[] = [];
+        const alreadyUsedExercises: string[] = [];
         for(const exercise of this.getExercises()){
             if(exercise.get('name').value){
                 alreadyUsedExercises.push(exercise.get('name').value);

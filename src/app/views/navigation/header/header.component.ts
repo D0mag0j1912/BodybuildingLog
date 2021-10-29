@@ -1,15 +1,15 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { Observable, Subject } from 'rxjs';
-import { SharedService } from 'src/app/services/shared/shared.service';
-import { AuthService } from '../../../services/auth/auth.service';
-import { startOfWeek, endOfWeek, format } from 'date-fns';
 import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
-import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
+import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { NewTraining } from 'src/app/models/training/new-training.model';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
+import { SharedService } from 'src/app/services/shared/shared.service';
 import { NewTrainingService } from 'src/app/services/training/new-training.service';
+import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
+import { AuthService } from '../../../services/auth/auth.service';
 
 interface DateData {
     startDate: Date;
@@ -29,7 +29,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     private readonly subscription$$: Subject<void> = new Subject<void>();
 
-    @Output() toggleSideNav = new EventEmitter<void>();
+    @Output()
+    toggleSideNav: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
@@ -51,7 +52,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.subscription$$.complete();
     }
 
-    onLogout(){
+    onLogout(): void {
         this.newTrainingService.clearTrainingData();
         this.authService.logout();
     }
@@ -59,24 +60,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
     goToPastTraining(): void {
         this.sharedService.pastTrainingId$$.pipe(
             take(1),
-            switchMap((_id: string) => {
-                return this.pastTrainingsService.getPastTraining(_id).pipe(
-                    tap((training: NewTraining) => {
-                        this.router.navigate(['/past-trainings'], {
+            switchMap((_id: string) =>
+                this.pastTrainingsService.getPastTraining(_id).pipe(
+                    tap(async (training: NewTraining) => {
+                        await this.router.navigate(['/past-trainings'], {
                             queryParams: {
                                 startDate: format(this.constructDates(new Date(training.createdAt)).startDate, 'dd-MM-yyyy'),
                                 endDate: format(this.constructDates(new Date(training.createdAt)).endDate, 'dd-MM-yyyy')
                             }
                         });
                     })
-                );
-            }),
+                )),
             takeUntil(this.subscription$$)
         ).subscribe();
     }
 
-    goToPastTrainings(): void {
-        this.router.navigate(['/past-trainings'], {
+    async goToPastTrainings(): Promise<void> {
+        await this.router.navigate(['/past-trainings'], {
             queryParams: {
                 startDate: format(this.constructDates(new Date()).startDate, 'dd-MM-yyyy'),
                 endDate: format(this.constructDates(new Date()).endDate, 'dd-MM-yyyy')
@@ -84,7 +84,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         });
     }
 
-    onToggle(){
+    onToggle(): void {
         this.toggleSideNav.emit();
     }
 
@@ -92,13 +92,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
         this.authService.loggedUser$.pipe(
             take(1),
-            switchMap((userData: AuthResponseData) => {
-                return this.navigationService.setPreferences(
+            switchMap((userData: AuthResponseData) =>
+                this.navigationService.setPreferences(
                     userData._id,
                     language,
                     'kg'
-                );
-            }),
+                )
+            ),
             takeUntil(this.subscription$$)
         ).subscribe();
     }

@@ -1,23 +1,23 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { mergeMap, switchMap, tap } from 'rxjs/operators';
-import { Signup, Login } from "../../models/auth/auth-data.model";
-import { BehaviorSubject, Observable, of } from "rxjs";
-import { Router } from "@angular/router";
-import { AuthResponseData } from "../../models/auth/auth-data.model";
-import { Preferences } from "src/app/models/preferences.model";
-import { TranslateService } from "@ngx-translate/core";
+import { Preferences } from 'src/app/models/preferences.model';
+import { environment } from '../../../environments/environment';
+import { Login, Signup } from '../../models/auth/auth-data.model';
+import { AuthResponseData } from '../../models/auth/auth-data.model';
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
 
     private readonly loggedUser$$: BehaviorSubject<AuthResponseData> = new BehaviorSubject<AuthResponseData>(null);
-    readonly loggedUser$ = this.loggedUser$$.asObservable();
+    readonly loggedUser$: Observable<AuthResponseData> = this.loggedUser$$.asObservable();
 
-    private readonly isAuth$$ = new BehaviorSubject<boolean>(false);
-    readonly isAuth$ = this.isAuth$$.asObservable();
+    private readonly isAuth$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    readonly isAuth$: Observable<boolean> = this.isAuth$$.asObservable();
 
     private tokenTimer: NodeJS.Timeout;
     private token: string;
@@ -75,7 +75,7 @@ export class AuthService {
             password: password
         };
         return this.http.post<AuthResponseData>(environment.backend + '/login', authData).pipe(
-            tap((response: AuthResponseData) => {
+            tap(async (response: AuthResponseData) => {
                 if(response.token){
                     this.loggedUser$$.next(response);
                     this.isAuth$$.next(true);
@@ -90,16 +90,13 @@ export class AuthService {
                         response._id,
                         response.preferences
                     );
-                    this.router.navigate(['/new-training']);
+                    await this.router.navigate(['/new-training']);
                 }
             }),
-            mergeMap((response: AuthResponseData) => {
-                return this.translateService.use(response.preferences.language).pipe(
-                    switchMap(_ => {
-                        return of(response);
-                    })
-                );
-            })
+            mergeMap((response: AuthResponseData) =>
+                this.translateService.use(response.preferences.language).pipe(
+                    switchMap(_ => of(response))
+                ))
         );
     }
 
@@ -126,17 +123,17 @@ export class AuthService {
         }
     }
 
-    logout(): void {
+    async logout(): Promise<void> {
         this.token = null;
         this.isAuth$$.next(false);
         clearTimeout(this.tokenTimer);
         this.clearLS();
-        this.router.navigate(['/login']);
+        await this.router.navigate(['/login']);
     }
 
     private setAuthTimer(duration: number): void {
-        this.tokenTimer = setTimeout(() => {
-            this.logout();
+        this.tokenTimer = setTimeout(async () => {
+            await this.logout();
         }, duration * 1000);
     }
 

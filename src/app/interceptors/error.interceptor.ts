@@ -1,19 +1,20 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { Observable, throwError } from "rxjs";
-import { catchError } from "rxjs/operators";
-import { ErrorMessage } from "../models/training/past-trainings-response.model";
-import { captureException } from "@sentry/minimal";
-import { TranslateService } from "@ngx-translate/core";
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
+import { captureException } from '@sentry/minimal';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { ErrorMessage } from '../models/training/past-trainings-response.model';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
     constructor(
         private readonly snackBar: MatSnackBar,
-        private readonly translateService: TranslateService
+        private readonly translateService: TranslateService,
     ){}
+
     intercept(request: HttpRequest<unknown>, next: HttpHandler)
         : Observable<HttpEvent<unknown>> {
         return next.handle(request).pipe(

@@ -1,4 +1,4 @@
-import { Preferences } from "../preferences.model";
+import { Preferences } from '../preferences.model';
 
 export interface Signup {
     email: string;

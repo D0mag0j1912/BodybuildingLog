@@ -14,13 +14,13 @@
                 #emailRef>
             <mat-error
                 class="error"
-                *ngIf="_accessFormData('email').errors?.required">
+                *ngIf="accessFormData('email').errors?.required">
                 {{ 'auth.errors.email_required' | translate }}
             </mat-error>
             <mat-error
                 class="error"
-                *ngIf="_accessFormData('email').errors?.email
-                    && !_accessFormData('email').errors?.required">
+                *ngIf="accessFormData('email').errors?.email
+                    && !accessFormData('email').errors?.required">
                 {{ 'auth.errors.invalid_email' | translate }}
             </mat-error>
         </mat-form-field>
@@ -36,22 +36,22 @@
             <mat-hint>{{ inputPassword.value?.length || 0 }} / 6</mat-hint>
             <mat-error
                 class="error"
-                *ngIf="_accessFormData('password').errors?.required">
+                *ngIf="accessFormData('password').errors?.required">
                 {{ 'auth.errors.password_required' | translate }}
             </mat-error>
             <mat-error
                 class="error"
-                *ngIf="_accessFormData('password').errors?.minlength ||
-                    _accessFormData('password').errors?.maxlength">
+                *ngIf="accessFormData('password').errors?.minlength ||
+                    accessFormData('password').errors?.maxlength">
                 {{ 'auth.errors.password_length' | translate }}
             </mat-error>
         </mat-form-field>
         <span
             class="error-custom"
             *ngIf="form.errors?.passwordFitsEmail
-                && !_accessFormData('password').errors?.required
-                && !_accessFormData('password').errors?.minlength
-                && !_accessFormData('password').errors?.maxlength">
+                && !accessFormData('password').errors?.required
+                && !accessFormData('password').errors?.minlength
+                && !accessFormData('password').errors?.maxlength">
             {{ 'auth.errors.password_wrong_email' | translate }}
         </span>
         <button

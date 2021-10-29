@@ -1,21 +1,18 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { AuthService } from "../services/auth/auth.service";
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AuthService } from '../services/auth/auth.service';
 
-//Ako želimo injectat drugi servis u ovaj
 @Injectable()
-export class AuthInterceptor implements HttpInterceptor{
+export class AuthInterceptor implements HttpInterceptor {
 
     constructor(
-        private readonly authService: AuthService
+        private readonly authService: AuthService,
     ){}
-    //Za svaki poslani zahtjev prema backendu, ova metoda se pokreće
+
     intercept(request: HttpRequest<unknown>, next: HttpHandler)
-        :Observable<HttpEvent<unknown>> {
-        //Dohvaćam token
+        : Observable<HttpEvent<unknown>> {
         const token = this.authService.getToken();
-        //Kreiram klonirani request te u njega stavljam token
         const authRequest = request.clone({
             headers: request.headers.set('authorization', 'Bearer ' + token)
         });

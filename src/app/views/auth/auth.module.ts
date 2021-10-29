@@ -1,12 +1,12 @@
-import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
-import { ReactiveFormsModule } from "@angular/forms";
-import { MaterialModule } from "../../material.module";
-import { SignupComponent } from "./signup/signup.component";
-import { AuthRoutingModule } from "./auth-routing.module";
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { MaterialModule } from '../../material.module';
+import { SharedModule } from '../shared/shared.module';
+import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './login/login.component';
-import { SharedModule } from "../shared/shared.module";
-import { TranslateModule } from "@ngx-translate/core";
+import { SignupComponent } from './signup/signup.component';
 
 @NgModule({
     declarations: [

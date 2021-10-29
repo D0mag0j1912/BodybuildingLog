@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { addDays, eachDayOfInterval, format, startOfDay, subDays } from 'date-fns';
 import { Observable, of } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { NewTraining } from '../../../models/training/new-training.model';
 import { PastTrainingsResponse } from '../../../models/training/past-trainings-response.model';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
-import { subDays, addDays, eachDayOfInterval, startOfDay, format } from 'date-fns';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-past-trainings',
@@ -78,11 +78,11 @@ export class PastTrainingsComponent implements OnInit {
                 this.isError = true;
                 return of(null);
             }),
-            finalize(() => {
+            finalize(async () => {
                 this.isLoading = false;
 
                 if(isArrow){
-                    this.router.navigate([], {
+                    await this.router.navigate([], {
                         relativeTo: this.route,
                         queryParams: {
                             startDate: format(this.startDate, 'dd-MM-yyyy'),

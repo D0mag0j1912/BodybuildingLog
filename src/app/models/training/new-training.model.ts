@@ -1,6 +1,5 @@
-import { Exercise } from "./exercise.model";
+import { Exercise } from './exercise.model';
 
-/*Interface-i za praćenje trenutnog stanja treninga*/
 export interface NewTraining {
     exercise: SingleExercise[];
     editMode: boolean;

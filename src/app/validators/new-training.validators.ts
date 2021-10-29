@@ -1,4 +1,4 @@
-import { AbstractControl, FormArray, ValidatorFn } from "@angular/forms";
+import { AbstractControl, FormArray, ValidatorFn } from '@angular/forms';
 
 export function allSetsFilled(): ValidatorFn {
     return (group: AbstractControl): {[key: string]: boolean} | null => {
@@ -16,7 +16,7 @@ export function allSetsFilled(): ValidatorFn {
             return {'setNotFilled': true};
         }
         return null;
-    }
+    };
 }
 
 export function atLeastOneSet(): ValidatorFn {
@@ -34,7 +34,7 @@ export function atLeastOneSet(): ValidatorFn {
             return {'atLeastOneSet': true};
         }
         return null;
-    }
+    };
 }
 
 export function bothValuesRequired(): ValidatorFn {
@@ -51,7 +51,7 @@ export function bothValuesRequired(): ValidatorFn {
             }
         }
         return null;
-    }
+    };
 }
 
 export function isBroj(): ValidatorFn {
@@ -63,6 +63,5 @@ export function isBroj(): ValidatorFn {
             return {'onlyNumbers': true};
         }
         return null;
-    }
+    };
 }
-

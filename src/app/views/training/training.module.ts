@@ -1,17 +1,17 @@
-import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
-import { NewTrainingComponent } from "./new-training/new-training.component";
-import { MaterialModule } from '../../material.module';
-import { ReactiveFormsModule } from "@angular/forms";
-import { TrainingRoutingModule } from "./training-routing.module";
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { MAT_DATE_LOCALE } from "@angular/material/core";
-import { SharedModule } from "../shared/shared.module";
+import { ReactiveFormsModule } from '@angular/forms';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { ShowAllExercisesPipe } from 'src/app/pipes/show-all-exercises.pipe';
+import { MaterialModule } from '../../material.module';
 import { NewTrainingPipe } from '../../pipes/new-training.pipe';
-import { ShowAllExercisesPipe } from "src/app/pipes/show-all-exercises.pipe";
+import { SharedModule } from '../shared/shared.module';
+import { NewTrainingComponent } from './new-training/new-training.component';
 import { PastTrainingsComponent } from './past-trainings/past-trainings.component';
 import { TrainingItemComponent } from './past-trainings/training-item/training-item.component';
-import { TranslateModule } from "@ngx-translate/core";
+import { TrainingRoutingModule } from './training-routing.module';
 
 @NgModule({
     declarations: [

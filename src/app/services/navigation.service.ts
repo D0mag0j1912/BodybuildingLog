@@ -1,13 +1,13 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { TranslateService } from "@ngx-translate/core";
-import { Observable } from "rxjs";
-import { switchMap, tap } from "rxjs/operators";
-import { environment } from "src/environments/environment";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { GeneralResponseData } from '../models/general-response.model';
-import { Preferences } from "../models/preferences.model";
-import { AuthService } from "./auth/auth.service";
+import { Preferences } from '../models/preferences.model';
+import { AuthService } from './auth/auth.service';
 
 @Injectable({
     providedIn: 'root'
@@ -40,17 +40,16 @@ export class NavigationService {
                     weightFormat: weightFormat
                 } as Preferences);
             }),
-            switchMap((response: GeneralResponseData) => {
-                return this.translateService.use(language).pipe(
+            switchMap((response: GeneralResponseData) =>
+                this.translateService.use(language).pipe(
                     tap(_ => {
                         this.snackBar.open(this.translateService.instant(response.message), null, {
                             duration: 3000,
                             panelClass: 'app__snackbar'
                         });
                     })
-                );
-            })
-        )
+                ))
+        );
     }
 
 }

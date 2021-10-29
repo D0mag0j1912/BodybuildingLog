@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MAT_RADIO_DEFAULT_OPTIONS } from '@angular/material/radio';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { finalize, tap } from 'rxjs/operators';
+import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SignupService } from '../../../services/auth/signup.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
-import { finalize, tap } from 'rxjs/operators';
-import { MAT_RADIO_DEFAULT_OPTIONS } from '@angular/material/radio';
-import { TranslateService } from '@ngx-translate/core';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
 
 type FormData = {
@@ -27,7 +27,7 @@ type FormData = {
         useValue: {
             color: 'primary'
         }
-    }]
+    }],
 })
 export class SignupComponent implements OnInit {
 
@@ -73,7 +73,7 @@ export class SignupComponent implements OnInit {
         });
     }
 
-    onSubmit() {
+    onSubmit(): void {
         this.isSubmitted = true;
         this.isLoading = true;
 
@@ -87,28 +87,28 @@ export class SignupComponent implements OnInit {
         }
 
         this.authService.signup(
-            this._accessFormData('language').value,
-            this._accessFormData('weightFormat').value,
-            this._accessFormData('email').value,
-            this._accessFormData('password').value,
-            this._accessFormData('confirmPassword').value
+            this.accessFormData('language').value,
+            this.accessFormData('weightFormat').value,
+            this.accessFormData('email').value,
+            this.accessFormData('password').value,
+            this.accessFormData('confirmPassword').value
         ).pipe(
-            tap((response: AuthResponseData) => {
+            tap(async (response: AuthResponseData) => {
                 this.snackBar.open(this.translateService.instant(response.message), null, {
                     duration: 3000,
                     panelClass: response.success ? 'app__snackbar' : 'app__snackbar-error'
                 });
                 if(response.success){
-                    this._accessFormData('email').clearAsyncValidators();
-                    this._accessFormData('email').updateValueAndValidity();
-                    this.router.navigate(['/login']);
+                    this.accessFormData('email').clearAsyncValidators();
+                    this.accessFormData('email').updateValueAndValidity();
+                    await this.router.navigate(['/login']);
                 }
             }),
             finalize(() => this.isLoading = false)
         ).subscribe();
     }
 
-    _accessFormData(formFieldName: keyof FormData): FormControl {
+    accessFormData(formFieldName: keyof FormData): FormControl {
         return this.form.get(formFieldName) as FormControl;
     }
 

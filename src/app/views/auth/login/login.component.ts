@@ -1,11 +1,11 @@
-import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
+import { finalize, tap } from 'rxjs/operators';
+import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { LoginService } from '../../../services/auth/login.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
-import { finalize, tap } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
 
 type FormData = {
@@ -14,9 +14,9 @@ type FormData = {
 };
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit, AfterViewInit {
 
@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         private readonly authService: AuthService,
         private readonly translateService: TranslateService,
         private readonly snackBar: MatSnackBar,
-    ) { }
+    ) {}
 
     ngOnInit(): void {
 
@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         });
     }
 
-    onSubmit(){
+    onSubmit(): void {
         this.isLoading = true;
 
         if(!this.form.valid){
@@ -72,8 +72,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
         }
 
         this.authService.login(
-            this._accessFormData('email').value,
-            this._accessFormData('password').value
+            this.accessFormData('email').value,
+            this.accessFormData('password').value
         ).pipe(
             tap((response: AuthResponseData) => {
                 this.snackBar.open(this.translateService.instant(response.message), null, {
@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         ).subscribe();
     }
 
-    _accessFormData(formFieldName: keyof FormData): FormControl {
+    accessFormData(formFieldName: keyof FormData): FormControl {
         return this.form.get(formFieldName) as FormControl;
     }
 

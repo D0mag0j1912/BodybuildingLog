@@ -1,5 +1,5 @@
-import { ErrorHandler, Injectable } from "@angular/core";
-import { captureException } from "@sentry/minimal";
+import { ErrorHandler, Injectable } from '@angular/core';
+import { captureException } from '@sentry/minimal';
 
 @Injectable()
 export class SentryService implements ErrorHandler {

@@ -1,9 +1,9 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { NewTraining } from "src/app/models/training/new-training.model";
-import { environment } from "src/environments/environment";
-import { PastTrainingsResponse } from "../../models/training/past-trainings-response.model";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { NewTraining } from 'src/app/models/training/new-training.model';
+import { environment } from 'src/environments/environment';
+import { PastTrainingsResponse } from '../../models/training/past-trainings-response.model';
 
 @Injectable({
     providedIn: 'root'
@@ -21,7 +21,7 @@ export class PastTrainingsService {
     }
 
     getPastTraining(id: string)
-        :Observable<NewTraining> {
+        : Observable<NewTraining> {
         return this.http.get<NewTraining>(environment.backend + `/pastTrainings/${id}`);
     }
 }
