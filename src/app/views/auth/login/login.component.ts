@@ -72,11 +72,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
         }
 
         this.authService.login(
-            this.accessFormData('email').value,
-            this.accessFormData('password').value
+            this.accessFormData('email').value as string,
+            this.accessFormData('password').value as string
         ).pipe(
             tap((response: AuthResponseData) => {
-                this.snackBar.open(this.translateService.instant(response.message), null, {
+                this.snackBar.open(this.translateService.instant(response.message as string), null, {
                     duration: 3000,
                     panelClass: response.token ? 'app__snackbar' : 'app__snackbar-error'
                 });

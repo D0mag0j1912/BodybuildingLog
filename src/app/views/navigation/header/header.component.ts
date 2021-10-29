@@ -9,12 +9,8 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { NewTrainingService } from 'src/app/services/training/new-training.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
+import { DateData } from '../../../models/training/past-trainings-response.model';
 import { AuthService } from '../../../services/auth/auth.service';
-
-interface DateData {
-    startDate: Date;
-    endDate: Date;
-}
 
 @Component({
     selector: 'app-header',
@@ -103,10 +99,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    private constructDates(date: Date): {
-        startDate: Date,
-        endDate: Date
-    } {
+    private constructDates(date: Date): DateData {
         const startDate: Date = startOfWeek(date, {
             weekStartsOn: 1
         });

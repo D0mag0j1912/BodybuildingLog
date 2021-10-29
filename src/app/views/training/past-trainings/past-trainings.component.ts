@@ -11,7 +11,7 @@ import { PastTrainingsService } from '../../../services/training/past-trainings.
 @Component({
     selector: 'app-past-trainings',
     templateUrl: './past-trainings.component.html',
-    styleUrls: ['./past-trainings.component.scss']
+    styleUrls: ['./past-trainings.component.scss'],
 })
 export class PastTrainingsComponent implements OnInit {
 
@@ -48,10 +48,11 @@ export class PastTrainingsComponent implements OnInit {
         this.isLoading = true;
 
         this.initializePastTrainings(
-            previousOrNextWeek === 'Previous week' ?
-            subDays(this.startDate, 7) :
-            addDays(this.startDate, 7),
-            true).subscribe();
+            previousOrNextWeek === 'Previous week'
+                ? subDays(this.startDate, 7) as Date
+                : addDays(this.startDate, 7) as Date,
+                true
+        ).subscribe();
     }
 
     tryAgain(): void {
@@ -66,12 +67,12 @@ export class PastTrainingsComponent implements OnInit {
         orientationDate: Date,
         isArrow?: boolean
     ): Observable<PastTrainingsResponse> {
-        return this.pastTrainingsService.getPastTrainings(orientationDate).pipe(
+        return this.pastTrainingsService.getPastTrainings(orientationDate as Date).pipe(
             tap((result: PastTrainingsResponse) => {
-                this.startDate = this.sharedService.subtractTwoHours(result.dates.startDate);
-                this.endDate = this.sharedService.subtractTwoHours(result.dates.endDate);
-                this.trainings$ = of(result.trainings);
-                this.trainingsPerPage = +result.trainingsPerPage;
+                this.startDate = this.sharedService.subtractTwoHours(result.dates.startDate) as Date;
+                this.endDate = this.sharedService.subtractTwoHours(result.dates.endDate) as Date;
+                this.trainings$ = of(result.trainings as NewTraining[]);
+                this.trainingsPerPage = +result.trainingsPerPage as number;
                 this.disableNextWeek();
             }),
             catchError(_ => {
@@ -99,6 +100,6 @@ export class PastTrainingsComponent implements OnInit {
             start: this.startDate,
             end: this.endDate
         }).map(date => date.getTime());
-        this.isNextWeekDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime());
+        this.isNextWeekDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number);
     }
 }

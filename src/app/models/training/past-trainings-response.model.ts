@@ -11,3 +11,8 @@ export interface ErrorMessage {
     message: string;
     statusCode?: number;
 }
+
+export interface DateData {
+    startDate: Date;
+    endDate: Date;
+}

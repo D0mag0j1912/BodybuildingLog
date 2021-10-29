@@ -87,14 +87,14 @@ export class SignupComponent implements OnInit {
         }
 
         this.authService.signup(
-            this.accessFormData('language').value,
-            this.accessFormData('weightFormat').value,
-            this.accessFormData('email').value,
-            this.accessFormData('password').value,
-            this.accessFormData('confirmPassword').value
+            this.accessFormData('language').value as string,
+            this.accessFormData('weightFormat').value as string,
+            this.accessFormData('email').value as string,
+            this.accessFormData('password').value as string,
+            this.accessFormData('confirmPassword').value as string
         ).pipe(
             tap(async (response: AuthResponseData) => {
-                this.snackBar.open(this.translateService.instant(response.message), null, {
+                this.snackBar.open(this.translateService.instant(response.message as string), null, {
                     duration: 3000,
                     panelClass: response.success ? 'app__snackbar' : 'app__snackbar-error'
                 });
