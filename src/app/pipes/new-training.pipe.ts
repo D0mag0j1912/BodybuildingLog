@@ -27,7 +27,7 @@ export class NewTrainingPipe implements PipeTransform {
             take(1),
             switchMap((data: NewTraining) => {
                 value = of(data.exercise[index].availableExercises);
-                return value;
+                return value as Observable<Exercise[]>;
             })
         );
         /* return this.route.params.pipe(

@@ -35,6 +35,10 @@
     width: 100%;
 }
 
+.centered-central-wrapper {
+    justify-content: center;
+}
+
 .bodyweight,
 .created-at {
     display: flex;
@@ -85,7 +89,7 @@
     .wrapper {
         box-sizing: border-box;
         height: 200px;
-        width: 275px;
+        width: 270px;
         margin: 0 0 5px 0;
     }
 

@@ -1,18 +1,17 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { format } from 'date-fns';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { NewTraining } from '../../../../models/training/new-training.model';
 
+const MAX_EXERCISE_NAME_WIDTH: number = 200;
+
 @Component({
-  selector: 'app-training-item',
-  templateUrl: './training-item.component.html',
-  styleUrls: ['./training-item.component.scss']
+    selector: 'app-training-item',
+    templateUrl: './training-item.component.html',
+    styleUrls: ['./training-item.component.scss'],
 })
 export class TrainingItemComponent implements OnInit {
-
-    @Input()
-    training: NewTraining;
 
     timeCreated: string;
 
@@ -28,14 +27,30 @@ export class TrainingItemComponent implements OnInit {
 
     dayIndex: number;
 
+    isTooltipDisabled: boolean = true;
+
+    @Input()
+    readonly training: NewTraining;
+
+    @ViewChild('wrapper', {
+        read: ElementRef
+    })
+    set wrapper(wrapper: ElementRef) {
+        if(wrapper){
+            setTimeout(() => {
+                console.log((wrapper.nativeElement as HTMLDivElement).querySelector('exercise-name'));
+            });
+        }
+    }
+
     constructor(
         private readonly sharedService: SharedService,
         private readonly router: Router,
-    ) { }
+    ) {}
 
     ngOnInit(): void {
-        this.timeCreated = format(this.sharedService.subtractTwoHours(new Date(this.training.createdAt)), 'HH:mm');
-        this.dayIndex = this.sharedService.subtractTwoHours(this.training.createdAt).getDay();
+        this.timeCreated = format(this.sharedService.subtractTwoHours(new Date(this.training.createdAt as Date)), 'HH:mm');
+        this.dayIndex = this.sharedService.subtractTwoHours(this.training.createdAt as Date).getDay();
     }
 
     async trainingClicked(): Promise<void> {
