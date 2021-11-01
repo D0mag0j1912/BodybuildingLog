@@ -111,7 +111,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     this.newTrainingService.allExercisesChanged$.pipe(
                         take(1)
                     )
-                ]))
+                ])
+            ),
+            takeUntil(this.unsubsService)
         );
 
     constructor(
@@ -172,8 +174,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                             );
                                         }
                                     }
-                                })
-                            ))
+                                }),
+                                takeUntil(this.unsubsService)
+                            )
+                        )
                     );
                 }
             }),
@@ -394,7 +398,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                         }
                                     }),
                                     finalize(() => this.exerciseStateChanged$$.next())
-                                ))
+                                )
+                            ),
+                            takeUntil(this.unsubsService)
                         );
                     }
                     else{
@@ -621,7 +627,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             userId: currentTrainingState.userId as string
                         } as NewTraining;
                     })
-                ))
+                )
+            ),
+            takeUntil(this.unsubsService)
         );
     }
 
