@@ -133,6 +133,9 @@
                 "previous_week": "Prošli tjedan",
                 "next_week": "Sljedeći tjedan",
                 "delete_training": "Izbriši trening"
+            },
+            "actions": {
+                "delete_training": "Jeste li sigurni da želite izbrisati trening?"
             }
         }
     },

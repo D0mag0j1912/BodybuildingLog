@@ -9,7 +9,7 @@
         "kcal": "calories",
         "try_again": "Try again",
         "bodyweight": "Bodyweight",
-        "created_at": "Created at",
+        "created_at": "Time created",
         "here": "here.",
         "delete": "Delete",
         "close": "Close",
@@ -131,6 +131,9 @@
                 "previous_week": "Previous week",
                 "next_week": "Next week",
                 "delete_training": "Delete training"
+            },
+            "actions": {
+                "delete_training": "Are you sure you want to delete training?"
             }
         }
     },

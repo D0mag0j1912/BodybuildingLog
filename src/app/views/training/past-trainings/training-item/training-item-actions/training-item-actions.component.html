@@ -2,6 +2,6 @@
     class="action"
     matTooltipClass="tooltip"
     [matTooltip]="(action | mapTrainingItemActions: 'tooltip') | translate"
-    (click)="$event.stopPropagation()">
+    (click)="$event.stopPropagation(); performAction(action)">
     {{ action | mapTrainingItemActions: 'icon' }}
 </mat-icon>
