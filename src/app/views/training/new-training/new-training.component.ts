@@ -391,9 +391,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                                 data[0] as NewTraining,
                                                 data[1] as Exercise[]
                                             );
-                                            this.exerciseStateChanged$$.next();
                                         }
-                                    })
+                                    }),
+                                    finalize(() => this.exerciseStateChanged$$.next())
                                 ))
                         );
                     }
@@ -412,10 +412,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         indexExercise as number,
                         currentTrainingState as NewTraining
                     ).pipe(
-                        tap(_ => {
-                            this.exerciseStateChanged$$.next();
-                            (<FormArray>this.form.get('exercise')).removeAt(indexExercise);
-                        })
+                        tap(_ => (<FormArray>this.form.get('exercise')).removeAt(indexExercise)),
+                        finalize(() => this.exerciseStateChanged$$.next())
                     )
                 ),
                 takeUntil(this.unsubsService)
