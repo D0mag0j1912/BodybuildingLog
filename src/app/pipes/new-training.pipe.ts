@@ -18,6 +18,7 @@ export class NewTrainingPipe implements PipeTransform {
         private readonly route: ActivatedRoute
     ){}
 
+    //TODO: fixati Pipe da ispravno prikazuje kada je edit mode
     transform(
         value: Observable<Exercise[]>,
         index: number,

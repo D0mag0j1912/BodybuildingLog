@@ -1,15 +1,98 @@
 @import '../../../../../../styles/default-pallette.scss';
 
 .wrapper {
-    height: 175px;
+    height: 225px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    row-gap: 10px;
     margin: 0 10px 10px 10px;
     padding-left: 10px;
     padding-right: 10px;
     cursor: pointer;
+
+    .title-wrapper {
+        font-size: 20px;
+        font-weight: 400;
+        font-family: $poppins;
+        display: flex;
+        margin-bottom: 10px;
+
+        .day-name {
+            color: $army-green;
+            margin-right: 3px;
+        }
+    }
+
+    .central-wrapper {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 10px;
+
+        .bodyweight,
+        .created-at {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            align-self: flex-start;
+            max-width: 120px;
+
+            &--key {
+                color: $army-green;
+                font-family: $poppins;
+                justify-content: center;
+            }
+
+            &--value {
+                justify-content: center;
+            }
+        }
+
+        .created-at {
+            align-self: flex-end;
+        }
+    }
+
+    .centered-central-wrapper {
+        justify-content: center;
+    }
+
+    .exercise-wrapper {
+        padding-top: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 80px;
+        width: 90%;
+
+        .exercise-name {
+            font-family: $poppins;
+            max-width: 90%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .exercise-dots {
+            align-self: center;
+        }
+    }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+        height: 40px;
+        border-top: 1px solid $light-periwinkle;
+
+        .action {
+            padding: 10px;
+            color: $army-green;
+            font-size: 26px;
+            border-left: 1px solid $light-periwinkle;
+        }
+    }
 }
 
 .wrapper:hover,
@@ -17,78 +100,12 @@
     background: $light-blue;
 }
 
-.title-wrapper {
-    font-size: 20px;
-    font-weight: 400;
-    font-family: $poppins;
-    display: flex;
-}
-
-.day-name {
-    color: $army-green;
-    margin-right: 3px;
-}
-
-.central-wrapper {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.centered-central-wrapper {
-    justify-content: center;
-}
-
-.bodyweight,
-.created-at {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    align-self: flex-start;
-    max-width: 120px;
-
-    &--key {
-        color: $army-green;
-        font-family: $poppins;
-        justify-content: center;
-    }
-
-    &--value {
-        justify-content: center;
-    }
-}
-
-.created-at {
-    align-self: flex-end;
-}
-
-.exercise-wrapper {
-    padding-top: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-height: 150px;
-    width: 90%;
-}
-
-.exercise-name {
-    font-family: $poppins;
-    max-width: 90%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.exercise-dots {
-    align-self: center;
-}
-
 
 @media (min-width: 40rem) {
 
     .wrapper {
         box-sizing: border-box;
-        height: 200px;
+        height: 225px;
         width: 270px;
         margin: 0 0 5px 0;
     }

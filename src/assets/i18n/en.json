@@ -129,7 +129,8 @@
             },
             "buttons": {
                 "previous_week": "Previous week",
-                "next_week": "Next week"
+                "next_week": "Next week",
+                "delete_training": "Delete training"
             }
         }
     },
