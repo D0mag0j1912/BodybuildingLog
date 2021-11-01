@@ -64,6 +64,10 @@
 
     &--label {
         font-size: 15px;
+
+        &-count {
+            color: $army-green;
+        }
     }
 
     &--button-wrapper {

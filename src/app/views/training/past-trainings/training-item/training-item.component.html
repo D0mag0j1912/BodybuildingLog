@@ -4,7 +4,7 @@
     <div class="title-wrapper">
         <strong class="day-name">
             {{ ('weekdays.' + weekDays[dayIndex] | translate) }}</strong>
-        {{ '(' + (training.createdAt | date: 'dd.MM.yyyy') + ')'}}
+        {{ '(' + (training.createdAt | date: 'dd.MM.yyyy') + ')' }}
     </div>
     <div
         class="central-wrapper"
@@ -29,11 +29,11 @@
         </div>
     </div>
     <div
-        #wrapper
         class="exercise-wrapper"
         matTooltipClass="tooltip"
         [matTooltip]="training.exercise.length > 2 ? (training | showAllExercises | async) : ''">
         <span
+            #exerciseName
             *ngFor="let data of (training.exercise | slice:0:2); let i = index"
             class="exercise-name">
             {{ (i+1) + '. ' + (data.exerciseName | translate) }}

@@ -15,8 +15,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         private readonly translateService: TranslateService,
     ){}
 
-    intercept(request: HttpRequest<unknown>, next: HttpHandler)
-        : Observable<HttpEvent<unknown>> {
+    intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         return next.handle(request).pipe(
             catchError((error: HttpErrorResponse) => {
                 let errorMessage: string;
@@ -45,7 +44,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                     duration: 3000,
                     panelClass: 'app__snackbar-error'
                 });
-                return throwError(error);
+                return throwError(error as HttpErrorResponse);
             })
         );
     }

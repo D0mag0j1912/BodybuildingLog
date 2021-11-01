@@ -30,18 +30,7 @@ export class TrainingItemComponent implements OnInit {
     isTooltipDisabled: boolean = true;
 
     @Input()
-    readonly training: NewTraining;
-
-    @ViewChild('wrapper', {
-        read: ElementRef
-    })
-    set wrapper(wrapper: ElementRef) {
-        if(wrapper){
-            setTimeout(() => {
-                console.log((wrapper.nativeElement as HTMLDivElement).querySelector('exercise-name'));
-            });
-        }
-    }
+    training: NewTraining;
 
     constructor(
         private readonly sharedService: SharedService,
