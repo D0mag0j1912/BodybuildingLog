@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { TrainingItemActions } from '../training-item.component';
 
 @Component({
     selector: 'app-training-item-actions',
@@ -8,5 +9,5 @@ import { Component, Input } from '@angular/core';
 export class TrainingItemActionsComponent {
 
     @Input()
-    iconName: string = '';
+    action: TrainingItemActions = 'more';
 }

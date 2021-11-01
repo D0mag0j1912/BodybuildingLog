@@ -1,7 +1,7 @@
 <mat-icon
     class="action"
     matTooltipClass="tooltip"
-    [matTooltip]="'training.past_trainings.buttons.delete_training' | translate"
+    [matTooltip]="(action | mapTrainingItemActions: 'tooltip') | translate"
     (click)="$event.stopPropagation()">
-    {{ iconName }}
+    {{ action | mapTrainingItemActions: 'icon' }}
 </mat-icon>

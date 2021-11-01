@@ -4,7 +4,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { ActionToIconPipe } from 'src/app/pipes/training/past-trainings/action-to-icon.pipe';
+import { MapTrainingItemActionsPipe } from 'src/app/pipes/training/past-trainings/map-training-actions.pipe';
 import { ShowAllExercisesPipe } from 'src/app/pipes/training/past-trainings/show-all-exercises.pipe';
 import { MaterialModule } from '../../material.module';
 import { NewTrainingPipe } from '../../pipes/training/new-training/new-training.pipe';
@@ -23,7 +23,7 @@ import { TrainingRoutingModule } from './training-routing.module';
         PastTrainingsComponent,
         TrainingItemComponent,
         TrainingItemActionsComponent,
-        ActionToIconPipe,
+        MapTrainingItemActionsPipe,
     ],
     imports: [
         CommonModule,
