@@ -6,8 +6,7 @@
     flex-direction: column;
     align-items: center;
     margin: 0 10px 10px 10px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 10px 0 0 0;
     cursor: pointer;
 
     .title-wrapper {
@@ -25,7 +24,7 @@
 
     .central-wrapper {
         display: flex;
-        justify-content: space-between;
+        justify-content: space-around;
         width: 100%;
         margin-bottom: 10px;
 
@@ -65,6 +64,10 @@
         height: 80px;
         width: 90%;
 
+        &-no-dots {
+            margin-bottom: 20px;
+        }
+
         .exercise-name {
             font-family: $poppins;
             max-width: 90%;
@@ -83,15 +86,8 @@
         justify-content: flex-end;
         align-items: center;
         width: 100%;
-        height: 40px;
+        height: 45px;
         border-top: 1px solid $light-periwinkle;
-
-        .action {
-            padding: 10px;
-            color: $army-green;
-            font-size: 26px;
-            border-left: 1px solid $light-periwinkle;
-        }
     }
 }
 
@@ -105,7 +101,7 @@
 
     .wrapper {
         box-sizing: border-box;
-        height: 225px;
+        height: 230px;
         width: 270px;
         margin: 0 0 5px 0;
     }

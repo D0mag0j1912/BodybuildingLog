@@ -6,6 +6,8 @@ import { NewTraining } from '../../../../models/training/new-training.model';
 
 const MAX_EXERCISE_NAME_WIDTH: number = 200;
 
+export type TrainingItemActions = 'delete' | 'more';
+
 @Component({
     selector: 'app-training-item',
     templateUrl: './training-item.component.html',
@@ -23,6 +25,11 @@ export class TrainingItemComponent implements OnInit {
         'thursday',
         'friday',
         'saturday'
+    ];
+
+    readonly actions: ReadonlyArray<TrainingItemActions> = [
+        'delete',
+        'more'
     ];
 
     dayIndex: number;

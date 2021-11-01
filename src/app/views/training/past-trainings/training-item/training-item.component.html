@@ -30,9 +30,11 @@
     </div>
     <div
         class="exercise-wrapper"
+        [class.exercise-wrapper-no-dots]="training.exercise.length <= 2"
         matTooltipClass="tooltip"
         [matTooltipDisabled]="isTooltipDisabled"
-        [matTooltip]="(training | showAllExercises | async)">
+        [matTooltip]="(training | showAllExercises | async)"
+        (click)="$event.stopPropagation()">
         <span
             #exerciseNameEl
             *ngFor="let data of (training.exercise | slice:0:2); let i = index"
@@ -46,15 +48,8 @@
         </span>
     </div>
     <div class="actions">
-        <mat-icon
-            class="action"
-            matTooltipClass="tooltip"
-            [matTooltip]="'training.past_trainings.buttons.delete_training' | translate">
-            delete
-        </mat-icon>
-        <mat-icon
-            class="action"
-            matTooltipClass="tooltip"
-            matTooltip="TODO">more_vert</mat-icon>
+        <app-training-item-actions
+            *ngFor="let action of actions"
+            [iconName]="action | actionToIcon"></app-training-item-actions>
     </div>
 </mat-card>
