@@ -9,5 +9,5 @@ import { TrainingItemActions } from '../training-item.component';
 export class TrainingItemActionsComponent {
 
     @Input()
-    action: TrainingItemActions = 'more';
+    action: TrainingItemActions;
 }

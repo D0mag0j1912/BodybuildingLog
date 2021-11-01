@@ -4,10 +4,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { MapTrainingItemActionsPipe } from 'src/app/pipes/training/past-trainings/map-training-actions.pipe';
-import { ShowAllExercisesPipe } from 'src/app/pipes/training/past-trainings/show-all-exercises.pipe';
+import { PipesModule } from 'src/app/pipes/pipes.module';
 import { MaterialModule } from '../../material.module';
-import { NewTrainingPipe } from '../../pipes/training/new-training/new-training.pipe';
 import { SharedModule } from '../shared/shared.module';
 import { NewTrainingComponent } from './new-training/new-training.component';
 import { PastTrainingsComponent } from './past-trainings/past-trainings.component';
@@ -18,21 +16,19 @@ import { TrainingRoutingModule } from './training-routing.module';
 @NgModule({
     declarations: [
         NewTrainingComponent,
-        NewTrainingPipe,
-        ShowAllExercisesPipe,
         PastTrainingsComponent,
         TrainingItemComponent,
         TrainingItemActionsComponent,
-        MapTrainingItemActionsPipe,
     ],
     imports: [
         CommonModule,
         ReactiveFormsModule,
         FlexLayoutModule,
         MaterialModule,
+        TranslateModule,
         TrainingRoutingModule,
         SharedModule,
-        TranslateModule
+        PipesModule,
     ],
     exports: [
         NewTrainingComponent,
