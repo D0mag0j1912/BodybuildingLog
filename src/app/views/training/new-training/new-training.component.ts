@@ -106,12 +106,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 forkJoin([
                     this.newTrainingService.currentTrainingChanged$.pipe(
                         take(1),
-                        tap((currentTrainingState: NewTraining) => console.log(currentTrainingState)),
                         map((currentTrainingState: NewTraining) => currentTrainingState.exercise)
                     ),
                     this.newTrainingService.allExercisesChanged$.pipe(
-                        take(1),
-                        tap((x: Exercise[]) => console.log(x))
+                        take(1)
                     )
                 ]))
         );
@@ -393,6 +391,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                                 data[0] as NewTraining,
                                                 data[1] as Exercise[]
                                             );
+                                            this.exerciseStateChanged$$.next();
                                         }
                                     })
                                 ))
@@ -413,13 +412,15 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         indexExercise as number,
                         currentTrainingState as NewTraining
                     ).pipe(
-                        tap(() => (<FormArray>this.form.get('exercise')).removeAt(indexExercise))
+                        tap(_ => {
+                            this.exerciseStateChanged$$.next();
+                            (<FormArray>this.form.get('exercise')).removeAt(indexExercise);
+                        })
                     )
                 ),
                 takeUntil(this.unsubsService)
             ).subscribe();
         }
-        this.exerciseStateChanged$$.next();
     }
 
     getSets(indexExercise: number): AbstractControl[] {

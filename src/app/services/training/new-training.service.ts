@@ -104,7 +104,7 @@ export class NewTrainingService {
         updatedTraining.exercise.map((exercise: SingleExercise) => {
             const isDeletedExerciseInAE: Exercise = exercise.availableExercises.find((exercise: Exercise) => exercise._id === toBeAddedExercise[0]._id);
             if(!isDeletedExerciseInAE){
-                exercise.availableExercises.push(toBeAddedExercise[0]);
+                exercise.availableExercises.push(toBeAddedExercise[0] as Exercise);
                 exercise.availableExercises.sort(this.compare);
             }
         });
