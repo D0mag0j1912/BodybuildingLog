@@ -119,7 +119,8 @@
         "past_trainings": {
             "no_trainings": "No found trainings for this week.",
             "log_training": "Log new training",
-            "training_number": "Number of trainings:",
+            "training_number": "Number of trainings: ",
+            "disabled_next_week": "Future weeks are not available.",
             "errors": {
                 "error_load_training": "Error while loading training.",
                 "get_training_error": "Requested training is not available.",

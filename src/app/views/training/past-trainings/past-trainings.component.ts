@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, startOfDay, subDays } from 'date-fns';
 import { Observable, of } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
@@ -30,13 +31,13 @@ export class PastTrainingsComponent implements OnInit {
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
+        private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
         private readonly router: Router,
         private readonly route: ActivatedRoute,
     ) { }
 
     ngOnInit(): void {
-
         this.isLoading = true;
         const dateElements: string[] = (this.route.snapshot.queryParams.startDate as string).split('-');
         this.initializePastTrainings(
@@ -53,6 +54,15 @@ export class PastTrainingsComponent implements OnInit {
                 : addDays(this.startDate, 7) as Date,
                 true
         ).subscribe();
+    }
+
+    setNextWeekTooltip(): Observable<string> {
+        if(!this.isNextWeekDisabled){
+            return this.translateService.stream('training.past_trainings.buttons.next_week');
+        }
+        else {
+            return this.translateService.stream('training.past_trainings.disabled_next_week');
+        }
     }
 
     tryAgain(): void {
@@ -100,6 +110,6 @@ export class PastTrainingsComponent implements OnInit {
             start: this.startDate,
             end: this.endDate
         }).map(date => date.getTime());
-        this.isNextWeekDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number);
+        this.isNextWeekDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number) as boolean;
     }
 }

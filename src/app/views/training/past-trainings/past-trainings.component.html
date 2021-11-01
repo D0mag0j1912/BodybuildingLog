@@ -53,9 +53,9 @@
                 </button>
             </div>
             <div
-                [matTooltip]="'training.past_trainings.buttons.next_week' | translate"
                 matTooltipPosition="above"
-                matTooltipClass="tooltip">
+                [matTooltip]="setNextWeekTooltip() | async"
+                [matTooltipClass]="isNextWeekDisabled ? 'tooltip-error' : 'tooltip'">
                 <button
                     type="button"
                     class="training-paginator--next"
