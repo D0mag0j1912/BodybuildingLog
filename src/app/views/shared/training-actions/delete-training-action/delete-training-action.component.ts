@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 export interface DeleteTrainingActionDialogData {
     title$: Observable<string>;
+    createdAt$: Observable<string>;
 }
 
 @Component({

@@ -20,7 +20,6 @@ import { MoreTrainingActionComponent } from './training-actions/more-training-ac
     entryComponents: [
         DialogComponent,
         DeleteTrainingActionComponent,
-        MoreTrainingActionComponent,
     ]
 })
 export class SharedModule {}

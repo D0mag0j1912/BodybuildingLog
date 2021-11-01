@@ -3,7 +3,10 @@ import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { DeleteTrainingActionComponent, DeleteTrainingActionDialogData } from 'src/app/views/shared/training-actions/delete-training-action/delete-training-action.component';
+import { NewTraining } from 'src/app/models/training/new-training.model';
+import {
+    DeleteTrainingActionComponent,
+    DeleteTrainingActionDialogData } from 'src/app/views/shared/training-actions/delete-training-action/delete-training-action.component';
 import { TrainingItemActions } from '../training-item.component';
 
 type ActionComponents = ComponentType<DeleteTrainingActionComponent>;
@@ -17,6 +20,12 @@ export class TrainingItemActionsComponent {
 
     @Input()
     action: TrainingItemActions;
+
+    @Input()
+    training: NewTraining;
+
+    @Input()
+    dayIndex: number;
 
     constructor(
         private readonly matDialog: MatDialog,
