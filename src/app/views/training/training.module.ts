@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -39,6 +39,6 @@ import { TrainingRoutingModule } from './training-routing.module';
     providers: [{
         provide: MAT_DATE_LOCALE,
         useValue: 'en-GB'
-    }]
+    }, DatePipe]
 })
 export class TrainingModule {}

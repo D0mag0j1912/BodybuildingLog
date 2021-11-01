@@ -10,7 +10,7 @@
         "kcal": "kalorija",
         "try_again": "Pokušajte ponovno",
         "bodyweight": "Tjelesna težina",
-        "created_at": "Vrijeme izrade",
+        "created_at_time": "Vrijeme izrade",
         "here": "ovdje.",
         "delete": "Izbriši",
         "close": "Izađi",
@@ -123,6 +123,7 @@
             "log_training": "Unesite novi trening",
             "training_number": "Broj treninga: ",
             "disabled_next_week": "Idući tjedni nisu dostupni.",
+            "created_at": "Trening kreiran: ",
             "errors": {
                 "error_load_training": "Greška pri učitavanju treninga.",
                 "get_training_error": "Traženi trening nije dostupan.",

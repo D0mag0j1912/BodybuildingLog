@@ -9,7 +9,7 @@
         "kcal": "calories",
         "try_again": "Try again",
         "bodyweight": "Bodyweight",
-        "created_at": "Time created",
+        "created_at_time": "Time created",
         "here": "here.",
         "delete": "Delete",
         "close": "Close",
@@ -121,6 +121,7 @@
             "log_training": "Log new training",
             "training_number": "Number of trainings: ",
             "disabled_next_week": "Future weeks are not available.",
+            "created_at": "Training created: ",
             "errors": {
                 "error_load_training": "Error while loading training.",
                 "get_training_error": "Requested training is not available.",

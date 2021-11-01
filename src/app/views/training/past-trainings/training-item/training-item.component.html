@@ -21,7 +21,7 @@
         </div>
         <div class="created-at">
             <strong class="created-at--key">
-                {{ 'common.created_at' | translate }}
+                {{ 'common.created_at_time' | translate }}
             </strong>
             <span class="created-at--value">
                 {{ timeCreated }}
@@ -50,6 +50,9 @@
     <div class="actions">
         <app-training-item-actions
             *ngFor="let action of actions"
-            [action]="action"></app-training-item-actions>
+            [action]="action"
+            [training]="training"
+            [weekDays]="weekDays"
+            [dayIndex]="dayIndex"></app-training-item-actions>
     </div>
 </mat-card>

@@ -1,5 +1,15 @@
-<span
-    mat-dialog-title
-    class="title">
-    {{ data.title$ | async }}
-</span>
+<div>
+    <span
+        mat-dialog-title
+        class="title">
+        {{ data.title$ | async }}
+    </span>
+</div>
+<mat-dialog-content>
+    <div>
+        <span>
+            {{ 'training.past_trainings.created_at' | translate }}
+            <strong class="created-at">{{ data.createdAt$ | async }}</strong>
+        </span>
+    </div>
+</mat-dialog-content>
