@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { format } from 'date-fns';
 import { SharedService } from 'src/app/services/shared/shared.service';
@@ -31,6 +31,24 @@ export class TrainingItemComponent implements OnInit {
 
     @Input()
     training: NewTraining;
+
+    @ViewChildren('exerciseNameEl', {
+        read: ElementRef
+    })
+    set exerciseNameEls(exerciseNames: QueryList<ElementRef>){
+        if(exerciseNames){
+            setTimeout(() => {
+                exerciseNames.forEach((exerciseName: ElementRef) => {
+                    if((exerciseName.nativeElement as HTMLSpanElement)?.offsetWidth > MAX_EXERCISE_NAME_WIDTH || this.training.exercise.length > 2){
+                        this.isTooltipDisabled = false;
+                    }
+                    else {
+                        this.isTooltipDisabled = true;
+                    }
+                });
+            });
+        }
+    }
 
     constructor(
         private readonly sharedService: SharedService,
