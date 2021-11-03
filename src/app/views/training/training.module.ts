@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { PipesModule } from 'src/app/pipes/pipes.module';
+import { ShowAllExercisesModule } from 'src/app/pipes/training/past-trainings/show-all-exercises.module';
 import { MaterialModule } from '../../material.module';
 import { SharedModule } from '../shared/shared.module';
 import { NewTrainingComponent } from './new-training/new-training.component';
@@ -29,6 +30,7 @@ import { TrainingRoutingModule } from './training-routing.module';
         TrainingRoutingModule,
         SharedModule,
         PipesModule,
+        ShowAllExercisesModule,
     ],
     exports: [
         NewTrainingComponent,

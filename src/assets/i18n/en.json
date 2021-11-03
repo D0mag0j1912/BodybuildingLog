@@ -1,5 +1,6 @@
 {
     "common": {
+        "exercises":"Exercises: ",
         "change_preference_registration": "Your preferences can be changed during application use anytime.",
         "did_you_know": "Did you know?",
         "kilograms": "Kilograms",
@@ -11,14 +12,16 @@
         "bodyweight": "Bodyweight",
         "created_at_time": "Time created",
         "here": "here.",
-        "delete": "Delete",
-        "close": "Close",
         "errors": {
             "something_went_wrong": "Something went wrong. Please try again.",
             "invalid_date": "Invalid date format.",
             "unknown_error": "Unknown error occured.",
             "not_authenticated": "You need to be authenticated to finish this activity.",
             "not_authorized": "You need to be authorized to finish this activity."
+        },
+        "actions": {
+            "delete": "Delete",
+            "close": "Close"
         }
     },
     "auth": {

@@ -24,7 +24,7 @@
         [mat-dialog-close]="false"
         mat-raised-button
         [color]="data.isError ? 'primary' : ''">
-        {{ 'common.close' | translate }}
+        {{ 'common.actions.close' | translate }}
     </button>
     <button
         type="button"
@@ -32,6 +32,6 @@
         mat-raised-button
         color="primary"
         *ngIf="data.deleteExercise">
-        {{ 'common.delete' | translate }}
+        {{ 'common.actions.delete' | translate }}
     </button>
 </mat-dialog-actions>

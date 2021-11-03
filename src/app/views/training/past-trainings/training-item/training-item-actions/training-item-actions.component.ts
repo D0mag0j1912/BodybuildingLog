@@ -3,15 +3,16 @@ import { DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NewTraining } from 'src/app/models/training/new-training.model';
 import {
     DeleteTrainingActionComponent,
     DeleteTrainingActionDialogData } from 'src/app/views/shared/training-actions/delete-training-action/delete-training-action.component';
+import { MoreTrainingActionComponent } from '../../../../shared/training-actions/more-training-action/more-training-action.component';
 import { TrainingItemActions } from '../training-item.component';
 
-type ActionComponents = ComponentType<DeleteTrainingActionComponent>;
+type ActionComponents = ComponentType<DeleteTrainingActionComponent | MoreTrainingActionComponent>;
 
 @Component({
     selector: 'app-training-item-actions',
@@ -39,14 +40,25 @@ export class TrainingItemActionsComponent {
     ){}
 
     performAction(action: TrainingItemActions): void {
-        this.matDialog.open(this.getComponent(action), {
+        this.matDialog.open(this.getComponent(action) as ComponentType<DeleteTrainingActionComponent>, {
             data: {
                 title$: this.getTitle(action),
                 createdAt$: this.translateService.stream(`weekdays.${this.weekDays[this.dayIndex]}`).pipe(
                     map((value: { [key: string]: string }) => `${value} (${this.datePipe.transform(this.training.createdAt, 'dd.MM.yyyy')})`)
-                )
-            } as DeleteTrainingActionDialogData
+                ),
+                training$: of(this.training as NewTraining),
+            } as DeleteTrainingActionDialogData,
+            panelClass: this.getClass(action) as string
         });
+    }
+
+    private getClass(action: TrainingItemActions): string {
+        switch(action) {
+            case 'delete':
+                return 'delete-training-dialog';
+            default:
+                return '';
+        }
     }
 
     private getComponent(action: TrainingItemActions): ActionComponents {
@@ -54,7 +66,7 @@ export class TrainingItemActionsComponent {
             case 'delete':
                 return DeleteTrainingActionComponent;
             default:
-                return null;
+                return MoreTrainingActionComponent;
         }
     }
 

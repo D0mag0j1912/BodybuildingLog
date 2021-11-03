@@ -1,9 +1,39 @@
 @import '../../../../../../styles/default-pallette.scss';
 
+::ng-deep .delete-training-dialog {
+    .mat-dialog-container {
+        padding: 30px;
+    }
+}
+
 .title {
     font-family: $poppins;
 }
 
 .created-at {
-    color: $army-green;
+    &-key {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    &-value {
+        color: $army-green;
+    }
+}
+
+.exercises-wrapper {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    justify-content: flex-start;
+
+    .exercise {
+        &-value {
+            color: $army-green;
+        }
+    }
+}
+
+.actions {
+    justify-content: flex-end;
 }

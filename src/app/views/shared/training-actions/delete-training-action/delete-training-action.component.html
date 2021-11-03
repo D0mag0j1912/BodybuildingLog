@@ -6,10 +6,34 @@
     </span>
 </div>
 <mat-dialog-content>
-    <div>
-        <span>
-            {{ 'training.past_trainings.created_at' | translate }}
-            <strong class="created-at">{{ data.createdAt$ | async }}</strong>
-        </span>
-    </div>
+    <span class="created-at-key">
+        {{ 'training.past_trainings.created_at' | translate }}
+        <strong class="created-at-value">{{ data.createdAt$ | async }}</strong>
+    </span>
+    <ng-container *ngIf="(data.training$ | async) as training">
+        <div
+            class="exercises-wrapper"
+            matTooltipClass="tooltip"
+            matTooltipPosition="above"
+            [matTooltip]="training | showAllExercises | async">
+            <span>{{ 'common.exercises' | translate }}</span>
+            <strong
+                *ngFor="let exercise of training.exercise | slice:0:4"
+                class="exercise-value">
+                {{ exercise.exerciseName | translate }}
+            </strong>
+        </div>
+    </ng-container>
 </mat-dialog-content>
+<mat-dialog-actions class="actions">
+    <button
+        mat-raised-button
+        mat-dialog-close>
+        {{ 'common.actions.close' | translate }}
+    </button>
+    <button
+        mat-raised-button
+        color="primary">
+        {{ 'common.actions.delete' | translate }}
+    </button>
+</mat-dialog-actions>
