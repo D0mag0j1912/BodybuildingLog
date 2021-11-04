@@ -137,7 +137,8 @@
                 "delete_training": "Delete training"
             },
             "actions": {
-                "delete_training": "Are you sure you want to delete training?"
+                "delete_training": "Are you sure you want to delete training?",
+                "delete_success": "Training successfully deleted."
             }
         }
     },

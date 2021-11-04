@@ -139,7 +139,8 @@
                 "delete_training": "Izbriši trening"
             },
             "actions": {
-                "delete_training": "Jeste li sigurni da želite izbrisati trening?"
+                "delete_training": "Jeste li sigurni da želite izbrisati trening?",
+                "delete_success": "Trening uspješno izbrisan."
             }
         }
     },

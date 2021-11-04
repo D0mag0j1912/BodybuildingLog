@@ -1,16 +1,16 @@
-<div>
-    <span
-        mat-dialog-title
-        class="title">
-        {{ data.title$ | async }}
-    </span>
-</div>
-<mat-dialog-content class="content">
-    <span class="created-at-key">
-        {{ 'training.past_trainings.created_at' | translate }}
-        <strong class="created-at-value">{{ data.createdAt$ | async }}</strong>
-    </span>
-    <ng-container *ngIf="(data.training$ | async) as training">
+<ng-container *ngIf="(data.training$ | async) as training">
+    <div>
+        <span
+            mat-dialog-title
+            class="title">
+            {{ data.title$ | async }}
+        </span>
+    </div>
+    <mat-dialog-content class="content">
+        <span class="created-at-key">
+            {{ 'training.past_trainings.created_at' | translate }}
+            <strong class="created-at-value">{{ data.createdAt$ | async }}</strong>
+        </span>
         <div
             class="exercises-wrapper">
             <span>{{ 'common.exercises' | translate }}</span>
@@ -23,18 +23,19 @@
                 {{ exercise.exerciseName | translate }}
             </strong>
         </div>
-    </ng-container>
-</mat-dialog-content>
-<mat-dialog-actions class="actions">
-    <button
-        mat-raised-button
-        mat-dialog-close>
-        {{ 'common.actions.close' | translate }}
-    </button>
-    <button
-        mat-raised-button
-        class="delete-btn"
-        color="primary">
-        {{ 'common.actions.delete' | translate }}
-    </button>
-</mat-dialog-actions>
+    </mat-dialog-content>
+    <mat-dialog-actions class="actions">
+        <button
+            mat-raised-button
+            mat-dialog-close>
+            {{ 'common.actions.close' | translate }}
+        </button>
+        <button
+            mat-raised-button
+            class="delete-btn"
+            color="primary"
+            (click)="deleteTraining(training._id)">
+            {{ 'common.actions.delete' | translate }}
+        </button>
+    </mat-dialog-actions>
+</ng-container>
