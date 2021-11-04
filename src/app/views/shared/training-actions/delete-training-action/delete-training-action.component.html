@@ -5,21 +5,21 @@
         {{ data.title$ | async }}
     </span>
 </div>
-<mat-dialog-content>
+<mat-dialog-content class="content">
     <span class="created-at-key">
         {{ 'training.past_trainings.created_at' | translate }}
         <strong class="created-at-value">{{ data.createdAt$ | async }}</strong>
     </span>
     <ng-container *ngIf="(data.training$ | async) as training">
         <div
-            class="exercises-wrapper"
-            matTooltipClass="tooltip"
-            matTooltipPosition="above"
-            [matTooltip]="training | showAllExercises | async">
+            class="exercises-wrapper">
             <span>{{ 'common.exercises' | translate }}</span>
             <strong
                 *ngFor="let exercise of training.exercise | slice:0:4"
-                class="exercise-value">
+                class="exercise-value"
+                matTooltipClass="tooltip"
+                matTooltipPosition="above"
+                [matTooltip]="training.exercise.length > 4 ? (training | showAllExercises | async) : ''">
                 {{ exercise.exerciseName | translate }}
             </strong>
         </div>
@@ -33,6 +33,7 @@
     </button>
     <button
         mat-raised-button
+        class="delete-btn"
         color="primary">
         {{ 'common.actions.delete' | translate }}
     </button>

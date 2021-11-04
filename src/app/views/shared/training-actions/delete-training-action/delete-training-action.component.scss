@@ -10,6 +10,11 @@
     font-family: $poppins;
 }
 
+.content {
+    margin: 0 -30px;
+    padding: 0 30px;
+}
+
 .created-at {
     &-key {
         display: block;
@@ -30,10 +35,15 @@
     .exercise {
         &-value {
             color: $army-green;
+            width: fit-content;
         }
     }
 }
 
 .actions {
     justify-content: flex-end;
+
+    .delete-btn {
+        margin-left: 20px;
+    }
 }

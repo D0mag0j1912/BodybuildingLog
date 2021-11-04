@@ -13,14 +13,16 @@
         "bodyweight": "Tjelesna težina",
         "created_at_time": "Vrijeme izrade",
         "here": "ovdje.",
-        "delete": "Izbriši",
-        "close": "Izađi",
         "errors": {
             "something_went_wrong": "Došlo je do greške. Pokušajte ponovno.",
             "invalid_date": "Pogrešan format datuma.",
             "unknown_error": "Došlo je do greške.",
             "not_authenticated": "Morate biti prijavljeni da biste izvršili ovu aktivnost.",
             "not_authorized": "Morate imati korisničke ovlasti da biste izvršili ovu aktivnost."
+        },
+        "actions": {
+            "delete": "Izbriši",
+            "close": "Izađi"
         }
     },
     "auth": {
