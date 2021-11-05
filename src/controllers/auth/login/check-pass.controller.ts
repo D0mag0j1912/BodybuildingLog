@@ -2,7 +2,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { Login } from 'src/models/auth/login.model';
 import { AuthService } from 'src/services/auth/auth.service';
 
-@Controller('checkPass')
+@Controller('check_pass')
 export class CheckPassController {
 
     constructor(

@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { AuthService } from 'src/services/auth/auth.service';
 
-@Controller('getAllEmails')
+@Controller('get_all_emails')
 export class GetEmailsController {
 
     constructor(

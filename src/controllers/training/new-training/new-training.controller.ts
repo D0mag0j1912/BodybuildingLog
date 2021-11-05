@@ -11,7 +11,7 @@ import { GeneralResponseData } from 'src/app.service';
 import { NewTraining } from 'src/models/training/new-training/new-training.model';
 import { NewTrainingService } from 'src/services/training/new-training.service';
 
-@Controller('handleTraining')
+@Controller('handle_training')
 export class NewTrainingController {
 
     constructor(

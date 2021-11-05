@@ -3,7 +3,7 @@ import { Request } from 'express';
 import { NewTraining } from 'src/models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings-response.model';
 import { PastTrainingsService } from 'src/services/training/past-trainings.service';
-@Controller('pastTrainings')
+@Controller('past_trainings')
 export class PastTrainingsController {
 
     constructor(

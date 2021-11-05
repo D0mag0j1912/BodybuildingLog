@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { Exercise } from 'src/models/training/exercise.model';
 import { NewTrainingService } from 'src/services/training/new-training.service';
 
-@Controller('getExercises')
+@Controller('get_exercises')
 export class GetExercisesController {
 
     constructor(
