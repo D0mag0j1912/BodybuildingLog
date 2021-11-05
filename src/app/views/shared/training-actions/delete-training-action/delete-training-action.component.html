@@ -27,13 +27,15 @@
     <mat-dialog-actions class="actions">
         <button
             mat-raised-button
-            mat-dialog-close>
+            mat-dialog-close
+            [disabled]="isLoading">
             {{ 'common.actions.close' | translate }}
         </button>
         <button
             mat-raised-button
             class="delete-btn"
             color="primary"
+            [class.spinner]="isLoading"
             (click)="deleteTraining(training._id)">
             {{ 'common.actions.delete' | translate }}
         </button>
