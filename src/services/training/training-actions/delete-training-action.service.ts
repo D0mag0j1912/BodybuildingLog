@@ -1,0 +1,52 @@
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { GeneralResponseData } from 'src/app.service';
+import { NewTraining } from 'src/models/training/new-training/new-training.model';
+import { Error } from '../../../models/errors/error';
+
+@Injectable()
+export class DeleteTrainingActionService {
+
+    constructor(
+        @InjectModel('Training') private readonly trainingModel: Model<NewTraining>,
+    ){}
+
+    async deleteTraining(
+        trainingId: string,
+        loggedUserId: string,
+    ): Promise<GeneralResponseData> {
+        try {
+            const trainingToBeRemoved: NewTraining = await Promise.resolve(this.trainingModel.findById(trainingId as string));
+            if(loggedUserId.toString() !== trainingToBeRemoved.userId.toString()){
+                throw new HttpException({
+                    status: HttpStatus.UNAUTHORIZED,
+                    message: 'common.errors.not_authorized'
+                }, HttpStatus.UNAUTHORIZED);
+            }
+            await Promise.resolve(this.trainingModel.findByIdAndRemove(trainingId));
+            return {
+                message: 'training.past_trainings.actions.delete_success'
+            } as GeneralResponseData;
+        }
+        catch(error: unknown) {
+            switch((error as Error).status) {
+                case 500:
+                    throw new HttpException({
+                        status: HttpStatus.INTERNAL_SERVER_ERROR,
+                        message: 'training.past_trainings.actions.errors.error_delete_training'
+                    }, HttpStatus.INTERNAL_SERVER_ERROR);
+                case 401:
+                    throw new HttpException({
+                        status: HttpStatus.UNAUTHORIZED,
+                        message: 'common.errors.not_authorized'
+                    }, HttpStatus.UNAUTHORIZED);
+                default:
+                    throw new HttpException({
+                        status: HttpStatus.INTERNAL_SERVER_ERROR,
+                        message: 'training.past_trainings.actions.errors.error_delete_training'
+                    }, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+}

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GetExercisesController } from 'src/controllers/training/new-training/get-exercises.controller';
 import { NewTrainingController } from 'src/controllers/training/new-training/new-training.controller';
+import { DeleteTrainingActionController } from 'src/controllers/training/past-trainings/delete-training-action.controller';
 import { PastTrainingsController } from 'src/controllers/training/past-trainings/past-trainings.controller';
 import { exerciseSchema } from 'src/models/training/exercise.model';
 import { NEW_TRAINING_SCHEMA } from 'src/models/training/new-training/new-training.model';
@@ -9,6 +10,7 @@ import { SET_SCHEMA } from 'src/models/training/new-training/set.model';
 import { SINGLE_EXERCISE_SCHEMA } from 'src/models/training/new-training/single-exercise.model';
 import { NewTrainingService } from 'src/services/training/new-training.service';
 import { PastTrainingsService } from 'src/services/training/past-trainings.service';
+import { DeleteTrainingActionService } from 'src/services/training/training-actions/delete-training-action.service';
 
 @Module({
     imports: [
@@ -29,11 +31,13 @@ import { PastTrainingsService } from 'src/services/training/past-trainings.servi
     controllers: [
         GetExercisesController,
         NewTrainingController,
-        PastTrainingsController
+        PastTrainingsController,
+        DeleteTrainingActionController,
     ],
     providers: [
         NewTrainingService,
-        PastTrainingsService
+        PastTrainingsService,
+        DeleteTrainingActionService,
     ]
 })
 export class TrainingModule {}
