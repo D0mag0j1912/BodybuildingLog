@@ -12,8 +12,8 @@ export class DeleteTrainingActionController {
 
     @Delete(':id')
     async deleteTraining(
-        @Param('id') trainingId: string,
         @Req() request: Request,
+        @Param('id') trainingId: string,
     ): Promise<GeneralResponseData> {
         if(!trainingId){
             throw new BadRequestException('training.past_trainings.actions.errors.error_delete_training');

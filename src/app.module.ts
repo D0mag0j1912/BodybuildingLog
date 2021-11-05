@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GetExercisesController } from './controllers/training/new-training/get-exercises.controller';
 import { NewTrainingController } from './controllers/training/new-training/new-training.controller';
+import { DeleteTrainingActionController } from './controllers/training/past-trainings/delete-training-action.controller';
 import { PastTrainingsController } from './controllers/training/past-trainings/past-trainings.controller';
 import { CheckAuthMiddleware } from './middleware/check-auth.middleware';
 import { AuthModule } from './modules/auth/auth.module';
@@ -36,7 +37,8 @@ export class AppModule implements NestModule{
             .forRoutes(
                 GetExercisesController,
                 NewTrainingController,
-                PastTrainingsController
+                PastTrainingsController,
+                DeleteTrainingActionController,
             );
     }
 }
