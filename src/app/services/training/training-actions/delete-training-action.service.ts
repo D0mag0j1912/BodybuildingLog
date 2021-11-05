@@ -11,6 +11,6 @@ export class DeleteTrainingActionService {
     ){}
 
     deleteTraining(trainingId: string): Observable<GeneralResponseData>{
-        return this.http.delete<GeneralResponseData>(environment.backend + `/delete-training/${trainingId}`);
+        return this.http.delete<GeneralResponseData>(environment.backend + `/delete_training/${trainingId}`);
     }
 }
