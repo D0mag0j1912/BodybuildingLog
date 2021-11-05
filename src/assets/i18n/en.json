@@ -138,7 +138,10 @@
             },
             "actions": {
                 "delete_training": "Are you sure you want to delete training?",
-                "delete_success": "Training successfully deleted."
+                "delete_success": "Training successfully deleted.",
+                "errors": {
+                    "error_delete_training": "Deleting training failed."
+                }
             }
         }
     },

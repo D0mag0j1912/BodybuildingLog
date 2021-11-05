@@ -1,16 +1,17 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { NewTraining } from 'src/app/models/training/new-training/new-training.model';
-import { DeleteTrainingActionService } from 'src/app/services/training/training-actions/delete-training-action.service';
 
 export interface DeleteTrainingActionDialogData {
     title$: Observable<string>;
     createdAt$: Observable<string>;
     training$: Observable<NewTraining>;
+    deleteTrainingFn(trainingId: string): Observable<GeneralResponseData>;
 }
 
 @Component({
@@ -21,16 +22,19 @@ export class DeleteTrainingActionComponent {
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public readonly data: DeleteTrainingActionDialogData,
-        private readonly deleteTrainingActionService: DeleteTrainingActionService,
+        private readonly dialogRef: MatDialogRef<DeleteTrainingActionComponent>,
         private readonly translateService: TranslateService,
         private readonly snackBar: MatSnackBar,
     ){}
 
     deleteTraining(trainingId: string): void {
-        this.deleteTrainingActionService.deleteTraining(trainingId as string)
-            .subscribe((response: GeneralResponseData) => {
-                this.snackBar.open(this.translateService.instant(response.message as string), null, { duration: 3000 });
-            }
-        );
+        this.data.deleteTrainingFn(trainingId as string).pipe(
+            finalize(() => this.dialogRef.close())
+        ).subscribe((response: GeneralResponseData) => {
+            this.snackBar.open(this.translateService.instant(response.message as string), null, {
+                duration: 3000,
+                panelClass: 'app__snackbar'
+            });
+        });
     }
 }
