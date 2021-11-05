@@ -36,6 +36,7 @@
             class="delete-btn"
             color="primary"
             [class.spinner]="isLoading"
+            [disabled]="isLoading"
             (click)="deleteTraining(training._id)">
             {{ 'common.actions.delete' | translate }}
         </button>
