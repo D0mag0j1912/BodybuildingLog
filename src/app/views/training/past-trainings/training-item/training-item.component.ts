@@ -3,10 +3,9 @@ import { Router } from '@angular/router';
 import { format } from 'date-fns';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
+import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
 
 const MAX_EXERCISE_NAME_WIDTH: number = 200;
-
-export type TrainingItemActions = 'delete' | 'more';
 
 @Component({
     selector: 'app-training-item',

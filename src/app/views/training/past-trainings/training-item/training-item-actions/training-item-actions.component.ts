@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { NewTraining } from 'src/app/models/training/new-training/new-training.model';
 import { DeleteTrainingActionService } from 'src/app/services/training/training-actions/delete-training-action.service';
-import { DeleteTrainingActionData } from '../../../../../services/training/training-actions/delete-training-action.service';
-import { TrainingItemActions } from '../training-item.component';
+import { TrainingItemActions } from '../../../../../models/training/past-trainings/training-actions/training-actions.model';
+import { DeleteTrainingActionData } from '../../../../../models/training/past-trainings/training-actions/training-actions.model';
 
 @Component({
     selector: 'app-training-item-actions',

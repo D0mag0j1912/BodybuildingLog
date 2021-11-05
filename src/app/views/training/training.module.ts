@@ -14,33 +14,45 @@ import { TrainingItemActionsComponent } from './past-trainings/training-item/tra
 import { TrainingItemComponent } from './past-trainings/training-item/training-item.component';
 import { TrainingRoutingModule } from './training-routing.module';
 
+const COMPONENTS = [
+    NewTrainingComponent,
+    PastTrainingsComponent,
+    TrainingItemComponent,
+    TrainingItemActionsComponent,
+];
+
+const EXTERNAL_MODULES = [
+    CommonModule,
+    ReactiveFormsModule,
+    FlexLayoutModule,
+    MaterialModule,
+    TranslateModule,
+];
+
+const MY_MODULES = [
+    TrainingRoutingModule,
+    SharedModule,
+    PipesModule,
+];
+
+const PIPES_MODULES = [ShowAllExercisesModule];
+
 @NgModule({
     declarations: [
-        NewTrainingComponent,
-        PastTrainingsComponent,
-        TrainingItemComponent,
-        TrainingItemActionsComponent,
+        ...COMPONENTS,
     ],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FlexLayoutModule,
-        MaterialModule,
-        TranslateModule,
-        TrainingRoutingModule,
-        SharedModule,
-        PipesModule,
-        ShowAllExercisesModule,
+        ...EXTERNAL_MODULES,
+        ...MY_MODULES,
+        ...PIPES_MODULES,
     ],
     exports: [
-        NewTrainingComponent,
-        PastTrainingsComponent,
-        TrainingItemComponent,
-        TrainingItemActionsComponent,
+        ...COMPONENTS,
     ],
     providers: [{
         provide: MAT_DATE_LOCALE,
         useValue: 'en-GB'
-    }, DatePipe]
+    },
+    DatePipe]
 })
 export class TrainingModule {}

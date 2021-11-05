@@ -11,14 +11,11 @@ import {
     DeleteTrainingActionComponent,
     DeleteTrainingActionDialogData } from 'src/app/views/shared/training-actions/delete-training-action/delete-training-action.component';
 import { environment } from '../../../../environments/environment';
+import { TrainingActions } from '../../../models/training/past-trainings/training-actions/training-actions.model';
+import { DeleteTrainingActionData } from '../../../models/training/past-trainings/training-actions/training-actions.model';
 
-export interface DeleteTrainingActionData {
-    weekDays: ReadonlyArray<string>;
-    dayIndex: number;
-    training: NewTraining;
-}
 @Injectable()
-export class DeleteTrainingActionService {
+export class DeleteTrainingActionService implements TrainingActions {
 
     constructor(
         private readonly http: HttpClient,

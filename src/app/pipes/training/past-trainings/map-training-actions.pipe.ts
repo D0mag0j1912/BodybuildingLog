@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TrainingItemActions } from 'src/app/views/training/past-trainings/training-item/training-item.component';
+import { TrainingItemActions } from '../../../models/training/past-trainings/training-actions/training-actions.model';
 
 interface TrainingItemActionsProperties {
     icon: string;
