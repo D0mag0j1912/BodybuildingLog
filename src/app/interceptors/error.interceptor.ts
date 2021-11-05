@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { captureException } from '@sentry/minimal';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { ErrorMessage } from '../models/training/past-trainings-response.model';
+import { ErrorMessage } from '../models/training/past-trainings/past-trainings-response.model';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {

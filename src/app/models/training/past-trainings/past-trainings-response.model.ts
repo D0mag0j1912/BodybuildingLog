@@ -1,4 +1,4 @@
-import { NewTraining } from './new-training.model';
+import { NewTraining } from '../new-training/new-training.model';
 export interface PastTrainingsResponse {
     trainings: [NewTraining];
     dates: {

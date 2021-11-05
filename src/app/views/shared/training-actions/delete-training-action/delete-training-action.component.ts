@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
-import { NewTraining } from 'src/app/models/training/new-training.model';
+import { NewTraining } from 'src/app/models/training/new-training/new-training.model';
 import { DeleteTrainingActionService } from 'src/app/services/training/training-actions/delete-training-action.service';
 
 export interface DeleteTrainingActionDialogData {
@@ -27,10 +27,10 @@ export class DeleteTrainingActionComponent {
     ){}
 
     deleteTraining(trainingId: string): void {
-        this.deleteTrainingActionService.deleteTraining(trainingId as string).subscribe((response: GeneralResponseData) => {
-            this.snackBar.open(this.translateService.instant(response.message as string), null, {
-                duration: 3000
-            });
-        });
+        this.deleteTrainingActionService.deleteTraining(trainingId as string)
+            .subscribe((response: GeneralResponseData) => {
+                this.snackBar.open(this.translateService.instant(response.message as string), null, { duration: 3000 });
+            }
+        );
     }
 }

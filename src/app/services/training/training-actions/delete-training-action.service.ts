@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { environment } from '../../../../environments/environment';
-
 @Injectable()
 export class DeleteTrainingActionService {
 

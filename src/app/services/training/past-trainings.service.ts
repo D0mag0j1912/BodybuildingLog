@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { NewTraining } from 'src/app/models/training/new-training.model';
+import { NewTraining } from 'src/app/models/training/new-training/new-training.model';
 import { environment } from 'src/environments/environment';
-import { PastTrainingsResponse } from '../../models/training/past-trainings-response.model';
+import { PastTrainingsResponse } from '../../models/training/past-trainings/past-trainings-response.model';
 
 @Injectable({
     providedIn: 'root'

@@ -7,7 +7,7 @@ import { SetTrainingData } from 'src/app/views/training/new-training/new-trainin
 import { environment } from '../../../environments/environment';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Exercise } from '../../models/training/exercise.model';
-import { NewTraining, SingleExercise } from '../../models/training/new-training.model';
+import { NewTraining, SingleExercise } from '../../models/training/new-training/new-training.model';
 import { AuthService } from '../auth/auth.service';
 
 const EMPTY_TRAINING: NewTraining = {

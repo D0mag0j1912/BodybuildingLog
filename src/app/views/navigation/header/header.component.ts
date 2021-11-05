@@ -4,13 +4,13 @@ import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
 import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
-import { NewTraining } from 'src/app/models/training/new-training.model';
+import { NewTraining } from 'src/app/models/training/new-training/new-training.model';
 import { NavigationService } from 'src/app/services/shared/navigation.service';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service';
 import { NewTrainingService } from 'src/app/services/training/new-training.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
-import { DateData } from '../../../models/training/past-trainings-response.model';
+import { DateData } from '../../../models/training/past-trainings/past-trainings-response.model';
 import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({

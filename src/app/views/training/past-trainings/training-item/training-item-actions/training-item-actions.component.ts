@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { NewTraining } from 'src/app/models/training/new-training.model';
+import { NewTraining } from 'src/app/models/training/new-training/new-training.model';
 import {
     DeleteTrainingActionComponent,
     DeleteTrainingActionDialogData } from 'src/app/views/shared/training-actions/delete-training-action/delete-training-action.component';

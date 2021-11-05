@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@
 import { Router } from '@angular/router';
 import { format } from 'date-fns';
 import { SharedService } from 'src/app/services/shared/shared.service';
-import { NewTraining } from '../../../../models/training/new-training.model';
+import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 
 const MAX_EXERCISE_NAME_WIDTH: number = 200;
 

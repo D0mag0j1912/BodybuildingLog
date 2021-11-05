@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { Exercise } from '../../../models/training/exercise.model';
-import { NewTraining } from '../../../models/training/new-training.model';
+import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
 @Pipe({

@@ -5,8 +5,8 @@ import { addDays, eachDayOfInterval, format, startOfDay, subDays } from 'date-fn
 import { Observable, of } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
-import { NewTraining } from '../../../models/training/new-training.model';
-import { PastTrainingsResponse } from '../../../models/training/past-trainings-response.model';
+import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import { PastTrainingsResponse } from '../../../models/training/past-trainings/past-trainings-response.model';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
 @Component({

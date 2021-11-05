@@ -16,7 +16,7 @@ import { DialogData } from 'src/app/views/shared/dialog/dialog.component';
 import { DeleteExerciseDialogData } from 'src/app/views/shared/dialog/dialog.component';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { Exercise } from '../../../models/training/exercise.model';
-import { NewTraining, Set, SingleExercise } from '../../../models/training/new-training.model';
+import { NewTraining, Set, SingleExercise } from '../../../models/training/new-training/new-training.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
 
