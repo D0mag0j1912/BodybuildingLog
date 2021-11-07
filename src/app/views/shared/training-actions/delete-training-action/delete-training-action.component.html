@@ -9,7 +9,11 @@
     <mat-dialog-content class="content">
         <span class="created-at-key">
             {{ 'training.past_trainings.created_at' | translate }}
-            <strong class="created-at-value">{{ data.createdAt$ | async }}</strong>
+            <span class="created-at-value">
+                {{ data.dateCreated$ | async }}
+                <span class="dot"></span>
+                <span>{{ ' ' + (data.timeCreated$ | async) }}</span>
+            </span>
         </span>
         <div
             class="exercises-wrapper">

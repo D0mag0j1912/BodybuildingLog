@@ -23,6 +23,9 @@ export class TrainingItemActionsComponent {
     @Input()
     weekDays: ReadonlyArray<string>;
 
+    @Input()
+    timeCreated: string;
+
     constructor(
         private readonly deleteTrainingActionService: DeleteTrainingActionService,
     ){}
@@ -30,6 +33,7 @@ export class TrainingItemActionsComponent {
     performAction(action: TrainingItemActions): void {
         const data: DeleteTrainingActionData = {
             weekDays: this.weekDays as ReadonlyArray<string>,
+            timeCreated: this.timeCreated as string,
             dayIndex: this.dayIndex as number,
             training: this.training as NewTraining
         };

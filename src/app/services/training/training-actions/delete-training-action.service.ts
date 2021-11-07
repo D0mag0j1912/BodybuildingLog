@@ -32,11 +32,12 @@ export class DeleteTrainingActionService implements TrainingActions {
         this.dialog.open(DeleteTrainingActionComponent, {
             data: {
                 title$: this.translateService.stream('training.past_trainings.actions.delete_training') as Observable<string>,
-                createdAt$: this.translateService.stream(`weekdays.${data.weekDays[data.dayIndex]}`).pipe(
+                dateCreated$: this.translateService.stream(`weekdays.${data.weekDays[data.dayIndex]}`).pipe(
                     map((value: { [key: string]: string }) => `${value} (${this.datePipe.transform(data.training.createdAt as Date, 'dd.MM.yyyy')})`)
-                ),
+                ) as Observable<string>,
+                timeCreated$: of(data.timeCreated) as Observable<string>,
                 training$: of(data.training as NewTraining),
-                deleteTrainingFn: (trainingId: string) => this.deleteTraining(trainingId)
+                deleteTrainingFn: (trainingId: string) => this.deleteTraining(trainingId),
             } as DeleteTrainingActionDialogData,
             panelClass: 'delete-training-dialog'
         });

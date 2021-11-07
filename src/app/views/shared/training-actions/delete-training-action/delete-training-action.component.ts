@@ -9,7 +9,8 @@ import { NewTraining } from 'src/app/models/training/new-training/new-training.m
 
 export interface DeleteTrainingActionDialogData {
     title$: Observable<string>;
-    createdAt$: Observable<string>;
+    dateCreated$: Observable<string>;
+    timeCreated$: Observable<string>;
     training$: Observable<NewTraining>;
     deleteTrainingFn(trainingId: string): Observable<GeneralResponseData>;
 }

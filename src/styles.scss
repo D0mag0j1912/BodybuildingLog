@@ -38,6 +38,14 @@ body {
     }
 }
 
+.dot {
+    height: 12px;
+    width: 12px;
+    background-color: $army-green;
+    border-radius: 50%;
+    display: inline-block;
+}
+
 @keyframes spinner {
     to {
         transform: rotate(360deg);
