@@ -3,16 +3,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, startOfDay, subDays } from 'date-fns';
 import { Observable, of } from 'rxjs';
-import { catchError, finalize, tap } from 'rxjs/operators';
+import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from '../../../models/training/past-trainings/past-trainings-response.model';
+import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
 @Component({
     selector: 'app-past-trainings',
     templateUrl: './past-trainings.component.html',
     styleUrls: ['./past-trainings.component.scss'],
+    providers: [UnsubscribeService],
 })
 export class PastTrainingsComponent implements OnInit {
 
@@ -33,18 +35,25 @@ export class PastTrainingsComponent implements OnInit {
         private readonly pastTrainingsService: PastTrainingsService,
         private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
+        private readonly unsubscribeService: UnsubscribeService,
         private readonly router: Router,
         private readonly route: ActivatedRoute,
-    ) { }
+    ) {
+        this.sharedService.pastTrainingsData$$.pipe(
+            takeUntil(this.unsubscribeService)
+        ).subscribe((response: PastTrainingsResponse) => {
+            this.fillTemplateVariables(response);
+        });
+    }
 
     ngOnInit(): void {
         this.isLoading = true;
         this.initializePastTrainings(
-            this.sharedService.subtractTwoHours(new Date(`
+            new Date(`
                 ${this.getSplittedCurrentDate()[2]}-
                 ${this.getSplittedCurrentDate()[1]}-
                 ${this.getSplittedCurrentDate()[0]}
-            `))
+            `)
         ).subscribe();
     }
 
@@ -71,11 +80,11 @@ export class PastTrainingsComponent implements OnInit {
     tryAgain(): void {
         this.isLoading = true;
         this.initializePastTrainings(
-            this.sharedService.subtractTwoHours(new Date(`
+            new Date(`
                 ${this.getSplittedCurrentDate()[2]}-
                 ${this.getSplittedCurrentDate()[1]}-
                 ${this.getSplittedCurrentDate()[0]}
-            `))
+            `)
         ).subscribe();
     }
 
@@ -85,11 +94,7 @@ export class PastTrainingsComponent implements OnInit {
     ): Observable<PastTrainingsResponse> {
         return this.pastTrainingsService.getPastTrainings(orientationDate as Date).pipe(
             tap((result: PastTrainingsResponse) => {
-                this.startDate = this.sharedService.subtractTwoHours(result.dates.startDate) as Date;
-                this.endDate = this.sharedService.subtractTwoHours(result.dates.endDate) as Date;
-                this.trainings$ = of(result.trainings as NewTraining[]);
-                this.trainingsPerPage = +result.trainingsPerPage as number;
-                this.disableNextWeek();
+                this.fillTemplateVariables(result);
             }),
             catchError(_ => {
                 this.isError = true;
@@ -109,6 +114,15 @@ export class PastTrainingsComponent implements OnInit {
                 }
             })
         );
+    }
+
+    private fillTemplateVariables(response: PastTrainingsResponse): void {
+        console.log(response)
+        this.startDate = new Date(response.dates.startDate) as Date;
+        this.endDate = new Date(response.dates.endDate) as Date;
+        this.trainings$ = of(response.trainings as NewTraining[]);
+        this.trainingsPerPage = +response.trainingsPerPage as number;
+        this.disableNextWeek();
     }
 
     private disableNextWeek(): void {

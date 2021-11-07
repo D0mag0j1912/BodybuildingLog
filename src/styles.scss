@@ -46,13 +46,13 @@ body {
     display: inline-block;
 }
 
-@keyframes spinner {
+@keyframes button-spinner {
     to {
         transform: rotate(360deg);
     }
 }
 
-.spinner:before {
+.button-spinner:before {
     content: '';
     box-sizing: border-box;
     position: absolute;
@@ -65,7 +65,7 @@ body {
     border-radius: 50%;
     border: 2px solid #ffffff;
     border-top-color: #000000;
-    animation: spinner .8s linear infinite;
+    animation: button-spinner .8s linear infinite;
 }
 
 

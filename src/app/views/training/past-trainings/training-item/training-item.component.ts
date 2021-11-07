@@ -1,7 +1,6 @@
 import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { format } from 'date-fns';
-import { SharedService } from 'src/app/services/shared/shared.service';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
 
@@ -57,13 +56,12 @@ export class TrainingItemComponent implements OnInit {
     }
 
     constructor(
-        private readonly sharedService: SharedService,
         private readonly router: Router,
     ) {}
 
     ngOnInit(): void {
-        this.timeCreated = format(this.sharedService.subtractTwoHours(new Date(this.training.createdAt as Date)), 'HH:mm');
-        this.dayIndex = this.sharedService.subtractTwoHours(this.training.createdAt as Date).getDay();
+        this.timeCreated = format(new Date(this.training.createdAt as Date), 'HH:mm');
+        this.dayIndex = (this.training.createdAt as Date).getDay();
     }
 
     async trainingClicked(): Promise<void> {

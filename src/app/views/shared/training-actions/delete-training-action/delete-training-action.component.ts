@@ -40,13 +40,14 @@ export class DeleteTrainingActionComponent {
     ){}
 
     deleteTraining(trainingId: string): void {
+        this.isLoading = true;
         this.data.deleteTrainingFn(
             trainingId as string,
-            this.sharedService.subtractTwoHours(new Date(`
+            new Date(`
                 ${this.getSplittedCurrentDate()[2]}-
                 ${this.getSplittedCurrentDate()[1]}-
                 ${this.getSplittedCurrentDate()[0]}
-            `)) as Date,
+            `) as Date,
         ).pipe(
             finalize(() => {
                 this.dialogRef.close();
@@ -54,6 +55,7 @@ export class DeleteTrainingActionComponent {
                 this.changeDetectorRef.markForCheck();
             })
         ).subscribe((response: PastTrainingsResponse) => {
+            this.sharedService.pastTrainingsData$$.next(response as PastTrainingsResponse);
             this.snackBar.open(this.translateService.instant(response.message as string), null, {
                 duration: 3000,
                 panelClass: 'app__snackbar'

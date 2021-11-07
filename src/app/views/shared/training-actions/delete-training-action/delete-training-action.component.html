@@ -39,7 +39,7 @@
             mat-raised-button
             class="delete-btn"
             color="primary"
-            [class.spinner]="isLoading"
+            [class.button-spinner]="isLoading"
             [disabled]="isLoading"
             (click)="deleteTraining(training._id)">
             {{ 'common.actions.delete' | translate }}

@@ -41,7 +41,7 @@ export class HeaderComponent implements OnInit {
     ngOnInit(): void {
         this.isAuthenticated$ = this.authService.isAuth$;
         this.loggedUserData$ = this.authService.loggedUser$;
-        this.isEditing$ = this.sharedService.editingTraining$;
+        this.isEditing$ = this.sharedService.editingTraining$$;
     }
 
     async onLogout(): Promise<void> {
