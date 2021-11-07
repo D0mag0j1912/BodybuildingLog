@@ -51,6 +51,6 @@ export class DeleteTrainingActionService implements TrainingActions {
         currentDate: Date,
     ): Observable<GeneralResponseData> {
         const params: string = `?currentDate=${currentDate}`;
-        return this.http.delete<GeneralResponseData>(environment.backend + `/delete_training/${trainingId}${params}`);
+        return this.http.delete<GeneralResponseData>(environment.BACKEND + `/delete_training/${trainingId}${params}`);
     }
 }

@@ -33,8 +33,7 @@
         [class.exercise-wrapper-no-dots]="training.exercise.length <= 2"
         matTooltipClass="tooltip"
         [matTooltipDisabled]="isTooltipDisabled"
-        [matTooltip]="(training | showAllExercises | async)"
-        (click)="$event.stopPropagation()">
+        [matTooltip]="(training | showAllExercises | async)">
         <span
             #exerciseNameEl
             *ngFor="let data of (training.exercise | slice:0:2); let i = index"

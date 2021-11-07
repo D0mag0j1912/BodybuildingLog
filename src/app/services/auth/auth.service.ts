@@ -60,7 +60,7 @@ export class AuthService {
             language: language,
             weightFormat: weightFormat
         };
-        return this.http.post<AuthResponseData>(environment.backend + '/signup', {
+        return this.http.post<AuthResponseData>(environment.BACKEND + '/signup', {
             signupData: signupData,
             preferences: preferences
         });
@@ -74,7 +74,7 @@ export class AuthService {
             email: email,
             password: password
         };
-        return this.http.post<AuthResponseData>(environment.backend + '/login', authData).pipe(
+        return this.http.post<AuthResponseData>(environment.BACKEND + '/login', authData).pipe(
             tap(async (response: AuthResponseData) => {
                 if(response.token){
                     this.loggedUser$$.next(response);

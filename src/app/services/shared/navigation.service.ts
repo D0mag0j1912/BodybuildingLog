@@ -30,7 +30,7 @@ export class NavigationService {
             language: language,
             weightFormat: weightFormat
         };
-        return this.http.put<GeneralResponseData>(environment.backend + `/preferences/${userId}`, {
+        return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${userId}`, {
             preferences: preferences
         }).pipe(
             tap(_ => {

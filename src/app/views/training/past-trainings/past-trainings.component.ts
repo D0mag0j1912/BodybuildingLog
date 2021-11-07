@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, startOfDay, subDays } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 import { Observable, of } from 'rxjs';
 import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
+import { environment } from '../../../../environments/environment';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from '../../../models/training/past-trainings/past-trainings-response.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
@@ -48,13 +50,7 @@ export class PastTrainingsComponent implements OnInit {
 
     ngOnInit(): void {
         this.isLoading = true;
-        this.initializePastTrainings(
-            new Date(`
-                ${this.getSplittedCurrentDate()[2]}-
-                ${this.getSplittedCurrentDate()[1]}-
-                ${this.getSplittedCurrentDate()[0]}
-            `)
-        ).subscribe();
+        this.initializePastTrainings(this.getLocalDateTime()).subscribe();
     }
 
     loadWeekTraining(previousOrNextWeek: string): void {
@@ -62,8 +58,17 @@ export class PastTrainingsComponent implements OnInit {
 
         this.initializePastTrainings(
             previousOrNextWeek === 'Previous week'
-                ? subDays(this.startDate, 7) as Date
-                : addDays(this.startDate, 7) as Date,
+                ? subDays(
+                    utcToZonedTime(
+                        this.startDate as Date,
+                        environment.TIMEZONE as string
+                    )
+                    , 7) as Date
+                : addDays(
+                    utcToZonedTime(
+                        this.startDate as Date,
+                        environment.TIMEZONE as string
+                    ), 7) as Date,
                 true
         ).subscribe();
     }
@@ -79,13 +84,7 @@ export class PastTrainingsComponent implements OnInit {
 
     tryAgain(): void {
         this.isLoading = true;
-        this.initializePastTrainings(
-            new Date(`
-                ${this.getSplittedCurrentDate()[2]}-
-                ${this.getSplittedCurrentDate()[1]}-
-                ${this.getSplittedCurrentDate()[0]}
-            `)
-        ).subscribe();
+        this.initializePastTrainings(this.getLocalDateTime()).subscribe();
     }
 
     private initializePastTrainings(
@@ -107,8 +106,16 @@ export class PastTrainingsComponent implements OnInit {
                     await this.router.navigate([], {
                         relativeTo: this.route,
                         queryParams: {
-                            startDate: format(this.startDate, 'dd-MM-yyyy'),
-                            endDate: format(this.endDate, 'dd-MM-yyyy')
+                            startDate: format(
+                                utcToZonedTime(
+                                    this.startDate as Date,
+                                    environment.TIMEZONE as string)
+                                , 'dd-MM-yyyy'),
+                            endDate: format(
+                                utcToZonedTime(
+                                    this.endDate as Date,
+                                    environment.TIMEZONE as string
+                                ), 'dd-MM-yyyy')
                         }
                     });
                 }
@@ -117,9 +124,12 @@ export class PastTrainingsComponent implements OnInit {
     }
 
     private fillTemplateVariables(response: PastTrainingsResponse): void {
-        console.log(response)
-        this.startDate = new Date(response.dates.startDate) as Date;
-        this.endDate = new Date(response.dates.endDate) as Date;
+        this.startDate = utcToZonedTime(
+            response.dates.startDate as Date,
+            environment.TIMEZONE as string) as Date;
+        this.endDate = utcToZonedTime(
+            response.dates.endDate as Date,
+            environment.TIMEZONE as string) as Date;
         this.trainings$ = of(response.trainings as NewTraining[]);
         this.trainingsPerPage = +response.trainingsPerPage as number;
         this.disableNextWeek();
@@ -127,13 +137,19 @@ export class PastTrainingsComponent implements OnInit {
 
     private disableNextWeek(): void {
         const arrayOfDates: number[] = eachDayOfInterval({
-            start: this.startDate,
-            end: this.endDate
+            start: utcToZonedTime(
+                this.startDate as Date,
+                environment.TIMEZONE as string),
+            end: utcToZonedTime(
+                this.endDate as Date,
+                environment.TIMEZONE as string)
         }).map((date: Date) => date.getTime() as number);
         this.isNextWeekDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number) as boolean;
     }
 
-    private getSplittedCurrentDate(): string[] {
-        return (this.route.snapshot.queryParams.startDate as string).split('-');
+    private getLocalDateTime(): Date {
+        const splittedDate = (this.route.snapshot.queryParams.startDate as string).split('-');
+        const utc: string = new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString();
+        return utcToZonedTime(new Date(utc), environment.TIMEZONE as string);
     }
 }

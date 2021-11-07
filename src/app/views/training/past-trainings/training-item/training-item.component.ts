@@ -1,6 +1,8 @@
 import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { format } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
+import { environment } from '../../../../../environments/environment';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
 
@@ -60,8 +62,16 @@ export class TrainingItemComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.timeCreated = format(new Date(this.training.createdAt as Date), 'HH:mm');
-        this.dayIndex = (this.training.createdAt as Date).getDay();
+        console.log(this.training.createdAt)
+        console.log(utcToZonedTime(this.training.createdAt, environment.TIMEZONE))
+        this.timeCreated = format(
+            utcToZonedTime(
+                this.training.createdAt as Date,
+                environment.TIMEZONE as string)
+            , 'HH:mm');
+        this.dayIndex = utcToZonedTime(
+            this.training.createdAt as Date,
+            environment.TIMEZONE as string).getDay();
     }
 
     async trainingClicked(): Promise<void> {

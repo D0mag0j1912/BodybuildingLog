@@ -4,7 +4,8 @@
 
 export const environment = {
     production: false,
-    backend: 'http://localhost:3000'
+    BACKEND: 'http://localhost:3000',
+    TIMEZONE: 'Europe/Zagreb'
 };
 
 /*
