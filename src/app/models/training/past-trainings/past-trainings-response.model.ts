@@ -6,6 +6,7 @@ export interface PastTrainingsResponse {
         endDate: Date
     };
     trainingsPerPage: number;
+    message?: string;
 }
 export interface ErrorMessage {
     message: string;

@@ -39,9 +39,12 @@ export class PastTrainingsComponent implements OnInit {
 
     ngOnInit(): void {
         this.isLoading = true;
-        const dateElements: string[] = (this.route.snapshot.queryParams.startDate as string).split('-');
         this.initializePastTrainings(
-            this.sharedService.subtractTwoHours(new Date(`${dateElements[2]}-${dateElements[1]}-${dateElements[0]}`))
+            this.sharedService.subtractTwoHours(new Date(`
+                ${this.getSplittedCurrentDate()[2]}-
+                ${this.getSplittedCurrentDate()[1]}-
+                ${this.getSplittedCurrentDate()[0]}
+            `))
         ).subscribe();
     }
 
@@ -67,9 +70,12 @@ export class PastTrainingsComponent implements OnInit {
 
     tryAgain(): void {
         this.isLoading = true;
-        const dateElements: string[] = (this.route.snapshot.queryParams.startDate as string).split('-');
         this.initializePastTrainings(
-            this.sharedService.subtractTwoHours(new Date(`${dateElements[2]}-${dateElements[1]}-${dateElements[0]}`))
+            this.sharedService.subtractTwoHours(new Date(`
+                ${this.getSplittedCurrentDate()[2]}-
+                ${this.getSplittedCurrentDate()[1]}-
+                ${this.getSplittedCurrentDate()[0]}
+            `))
         ).subscribe();
     }
 
@@ -109,7 +115,11 @@ export class PastTrainingsComponent implements OnInit {
         const arrayOfDates: number[] = eachDayOfInterval({
             start: this.startDate,
             end: this.endDate
-        }).map(date => date.getTime());
+        }).map((date: Date) => date.getTime() as number);
         this.isNextWeekDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number) as boolean;
+    }
+
+    private getSplittedCurrentDate(): string[] {
+        return (this.route.snapshot.queryParams.startDate as string).split('-');
     }
 }

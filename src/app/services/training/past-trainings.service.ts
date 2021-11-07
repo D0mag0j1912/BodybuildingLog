@@ -14,14 +14,13 @@ export class PastTrainingsService {
         private readonly http: HttpClient,
     ){}
 
-    getPastTrainings(currentDate: Date)
-        : Observable<PastTrainingsResponse> {
+    getPastTrainings(currentDate: Date): Observable<PastTrainingsResponse> {
         const params: string = `?currentDate=${currentDate}`;
         return this.http.get<PastTrainingsResponse>(environment.backend + '/past_trainings' + params);
     }
 
-    getPastTraining(id: string)
-        : Observable<NewTraining> {
+    getPastTraining(id: string): Observable<NewTraining> {
         return this.http.get<NewTraining>(environment.backend + `/past_trainings/${id}`);
     }
+
 }

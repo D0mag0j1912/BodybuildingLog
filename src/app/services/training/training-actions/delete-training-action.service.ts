@@ -37,13 +37,20 @@ export class DeleteTrainingActionService implements TrainingActions {
                 ) as Observable<string>,
                 timeCreated$: of(data.timeCreated) as Observable<string>,
                 training$: of(data.training as NewTraining),
-                deleteTrainingFn: (trainingId: string) => this.deleteTraining(trainingId),
+                deleteTrainingFn: (
+                    trainingId: string,
+                    currentDate: Date,
+                ) => this.deleteTraining(trainingId, currentDate),
             } as DeleteTrainingActionDialogData,
-            panelClass: 'delete-training-dialog'
+            panelClass: 'delete-training-dialog',
         });
     }
 
-    deleteTraining(trainingId: string): Observable<GeneralResponseData>{
-        return this.http.delete<GeneralResponseData>(environment.backend + `/delete_training/${trainingId}`);
+    deleteTraining(
+        trainingId: string,
+        currentDate: Date,
+    ): Observable<GeneralResponseData> {
+        const params: string = `?currentDate=${currentDate}`;
+        return this.http.delete<GeneralResponseData>(environment.backend + `/delete_training/${trainingId}${params}`);
     }
 }
