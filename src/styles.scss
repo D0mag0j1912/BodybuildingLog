@@ -13,18 +13,16 @@ body {
     &__snackbar {
         background-color: $army-green;
 
-        .mat-simple-snackbar {
-            span {
-                color: white;
-                font-family: $poppins;
-                font-size: 14px;
-            }
-        }
-
         &-error {
             background-color: $dark-red !important;
         }
     }
+}
+
+.mat-simple-snackbar {
+    color: white;
+    font-family: $poppins;
+    font-size: 14px;
 }
 
 .tooltip {
