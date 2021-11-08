@@ -13,18 +13,18 @@ export class PreferencesController {
     @Put(':userId')
     async setPreferences(
         @Body('preferences') preferences: Preferences,
-        @Param('userId') userId: string
+        @Param('userId') userId: string,
     ): Promise<GeneralResponseData> {
         if(!userId){
             throw new HttpException({
                 status: HttpStatus.UNAUTHORIZED,
-                message: 'common.errors.not_authenticated'
+                message: 'common.errors.not_authenticated',
             }, HttpStatus.UNAUTHORIZED);
         }
         return this.preferencesService.setPreferences(
             userId as string,
             preferences.language as string,
-            preferences.weightFormat as string
+            preferences.weightFormat as string,
         );
     }
 }

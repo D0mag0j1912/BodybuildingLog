@@ -10,11 +10,10 @@ export class CheckPassController {
     ){}
 
     @Get()
-    async passwordFitsEmail(@Query() params: Login)
-        : Promise<boolean> {
+    async passwordFitsEmail(@Query() params: Login): Promise<boolean> {
         return this.authService.passwordFitsEmail(
             params.email as string,
-            params.password as string
+            params.password as string,
         );
     }
 }

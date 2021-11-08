@@ -14,24 +14,20 @@ export class PreferencesService {
     async setPreferences(
         userId: string,
         language: string,
-        weightFormat: string
+        weightFormat: string,
     ): Promise<GeneralResponseData> {
         try {
             // tslint:disable-next-line: await-promise
-            const preferences = await this.preferencesModel.findOne({
-                userId: userId
-            });
+            const preferences = await this.preferencesModel.findOne({ userId: userId });
             preferences.language = language;
             preferences.weightFormat = weightFormat;
             await preferences.save();
-            return {
-                message: 'preferences.language_changed'
-            } as GeneralResponseData;
+            return { message: 'preferences.language_changed' } as GeneralResponseData;
         }
         catch(error: unknown) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'preferences.errors.language_change'
+                message: 'preferences.errors.language_change',
             }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

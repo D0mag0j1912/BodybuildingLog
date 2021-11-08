@@ -17,7 +17,7 @@ export class NewTrainingService {
     async editTraining(
         trainingId: string,
         updatedTrainingData: NewTraining,
-        loggedUserId: string
+        loggedUserId: string,
     ): Promise<GeneralResponseData> {
         try {
             // tslint:disable-next-line: await-promise
@@ -25,17 +25,13 @@ export class NewTrainingService {
             if(trainingToBeUpdated.userId.toString() !== loggedUserId.toString()) {
                 throw new HttpException({
                     status: HttpStatus.UNAUTHORIZED,
-                    message: 'common.errors.not_authorized'
+                    message: 'common.errors.not_authorized',
                 }, HttpStatus.UNAUTHORIZED);
             }
             // tslint:disable-next-line: await-promise
-            await this.trainingModel.updateOne({
-                _id: trainingId
-            }, {
-                $set: updatedTrainingData
-            });
+            await this.trainingModel.updateOne({ _id: trainingId }, { $set: updatedTrainingData });
             return {
-                message: 'training.new_training.training_updated'
+                message: 'training.new_training.training_updated',
             } as GeneralResponseData;
         }
         catch(error: unknown) {
@@ -43,17 +39,17 @@ export class NewTrainingService {
                 case 500:
                     throw new HttpException({
                         status: HttpStatus.INTERNAL_SERVER_ERROR,
-                        message: 'training.new_training.errors.error_update_training'
+                        message: 'training.new_training.errors.error_update_training',
                     }, HttpStatus.INTERNAL_SERVER_ERROR);
                 case 401:
                     throw new HttpException({
                         status: HttpStatus.UNAUTHORIZED,
-                        message: 'common.errors.not_authorized'
+                        message: 'common.errors.not_authorized',
                     }, HttpStatus.UNAUTHORIZED);
                 default:
                     throw new HttpException({
                         status: HttpStatus.INTERNAL_SERVER_ERROR,
-                        message: 'training.new_training.errors.error_update_training'
+                        message: 'training.new_training.errors.error_update_training',
                     }, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
@@ -62,14 +58,12 @@ export class NewTrainingService {
     async addTraining(trainingData: NewTraining): Promise<GeneralResponseData> {
         try {
             await this.trainingModel.create(trainingData);
-            return {
-                message: 'training.new_training.training_saved'
-            } as GeneralResponseData;
+            return { message: 'training.new_training.training_saved' } as GeneralResponseData;
         }
         catch(error: unknown) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'training.new_training.errors.error_save_training'
+                message: 'training.new_training.errors.error_save_training',
             }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -81,7 +75,7 @@ export class NewTrainingService {
             if(exercises.length === 0){
                 throw new HttpException({
                     status: HttpStatus.INTERNAL_SERVER_ERROR,
-                    message: 'training.new_training.errors.exercises_not_available'
+                    message: 'training.new_training.errors.exercises_not_available',
                 }, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return exercises;
@@ -89,7 +83,7 @@ export class NewTrainingService {
         catch(error: unknown) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'training.new_training.errors.exercises_not_available'
+                message: 'training.new_training.errors.exercises_not_available',
             }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

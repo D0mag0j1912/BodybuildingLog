@@ -14,7 +14,7 @@ export class SignupController {
     @Post()
     async signup(
         @Body('signupData') signupData: Signup,
-        @Body('preferences') preferences: Preferences
+        @Body('preferences') preferences: Preferences,
     ): Promise<AuthResponse> {
         if(signupData.password !== signupData.confirmPassword){
             throw new BadRequestException('auth.errors.equal_passwords');
@@ -23,7 +23,7 @@ export class SignupController {
             preferences.language as string,
             preferences.weightFormat as string,
             signupData.email as string,
-            signupData.password as string
+            signupData.password as string,
         );
     }
 }

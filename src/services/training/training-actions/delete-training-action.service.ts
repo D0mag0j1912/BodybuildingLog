@@ -24,17 +24,17 @@ export class DeleteTrainingActionService {
             if(loggedUserId.toString() !== trainingToBeRemoved.userId.toString()){
                 throw new HttpException({
                     status: HttpStatus.UNAUTHORIZED,
-                    message: 'common.errors.not_authorized'
+                    message: 'common.errors.not_authorized',
                 }, HttpStatus.UNAUTHORIZED);
             }
             await Promise.resolve(this.trainingModel.findByIdAndRemove(trainingId));
             const pastTrainings: PastTrainingsResponse = await this.pastTrainingService.getPastTrainings(
                 currentDate as Date,
-                loggedUserId as string
+                loggedUserId as string,
             );
             return {
                 ...pastTrainings,
-                message: 'training.past_trainings.actions.delete_success'
+                message: 'training.past_trainings.actions.delete_success',
             } as PastTrainingsResponse;
         }
         catch(error: unknown) {
@@ -42,17 +42,17 @@ export class DeleteTrainingActionService {
                 case 500:
                     throw new HttpException({
                         status: HttpStatus.INTERNAL_SERVER_ERROR,
-                        message: 'training.past_trainings.actions.errors.error_delete_training'
+                        message: 'training.past_trainings.actions.errors.error_delete_training',
                     }, HttpStatus.INTERNAL_SERVER_ERROR);
                 case 401:
                     throw new HttpException({
                         status: HttpStatus.UNAUTHORIZED,
-                        message: 'common.errors.not_authorized'
+                        message: 'common.errors.not_authorized',
                     }, HttpStatus.UNAUTHORIZED);
                 default:
                     throw new HttpException({
                         status: HttpStatus.INTERNAL_SERVER_ERROR,
-                        message: 'training.past_trainings.actions.errors.error_delete_training'
+                        message: 'training.past_trainings.actions.errors.error_delete_training',
                     }, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }

@@ -13,21 +13,19 @@ export class PastTrainingsController {
     @Get()
     async getPastTrainings(
         @Req() request: Request,
-        @Query('currentDate') currentDate: Date
+        @Query('currentDate') currentDate: Date,
     ): Promise<PastTrainingsResponse> {
         if(!currentDate){
             throw new BadRequestException('training.past_trainings.errors.past_trainings_error_title');
         }
         return this.pastTrainingsService.getPastTrainings(
             currentDate as Date,
-            request.headers.userId as string
+            request.headers.userId as string,
         );
     }
 
     @Get(':id')
-    async getPastTraining(
-        @Param('id') trainingId: string
-    ): Promise<NewTraining> {
+    async getPastTraining( @Param('id') trainingId: string ): Promise<NewTraining> {
         if(!trainingId){
             throw new BadRequestException('training.past_trainings.errors.get_training_error');
         }

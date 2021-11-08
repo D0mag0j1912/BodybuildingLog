@@ -12,22 +12,30 @@ import { AuthModule } from './modules/auth/auth.module';
 import { PreferencesModule } from './modules/preferences/preferences.module';
 import { TrainingModule } from './modules/training/training.module';
 
+const MY_IMPORTS = [
+    AuthModule,
+    PreferencesModule,
+    TrainingModule,
+];
+
+const CONTROLLERS = [AppController];
+
+const SERVICES = [AppService];
+
 @Module({
     imports: [
         MongooseModule.forRoot(
-            'mongodb://localhost:27017/training'
+            'mongodb://localhost:27017/training',
         ),
-        AuthModule,
-        PreferencesModule,
-        TrainingModule
+        ...MY_IMPORTS,
     ],
-    controllers: [AppController],
+    controllers: [ ...CONTROLLERS ],
     providers: [
-        AppService,
+        ...SERVICES,
         {
             provide: APP_PIPE,
-            useClass: ValidationPipe
-        }
+            useClass: ValidationPipe,
+        },
     ],
 })
 export class AppModule implements NestModule{

@@ -3,17 +3,17 @@ import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 
 interface VerifiedToken {
-    email: string;
-    _id: string;
-    iat: number;
-    exp: number;
+    readonly email: string;
+    readonly _id: string;
+    readonly iat: number;
+    readonly exp: number;
 }
 
 export class CheckAuthMiddleware implements NestMiddleware {
     use(
         request: Request,
         response: Response,
-        next: NextFunction
+        next: NextFunction,
     ): void {
         try {
             const token: string = request.headers.authorization.split(' ')[1];
@@ -24,7 +24,7 @@ export class CheckAuthMiddleware implements NestMiddleware {
         catch(error: unknown) {
             throw new HttpException({
                 status: HttpStatus.UNAUTHORIZED,
-                message: 'common.errors.not_authenticated'
+                message: 'common.errors.not_authenticated',
             }, HttpStatus.UNAUTHORIZED);
         }
     }

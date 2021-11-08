@@ -19,9 +19,7 @@ export class NewTrainingController {
     ){}
 
     @Post()
-    async addTraining(
-        @Body('trainingData') trainingData: NewTraining
-    ): Promise<GeneralResponseData> {
+    async addTraining( @Body('trainingData') trainingData: NewTraining ): Promise<GeneralResponseData> {
         return this.newTrainingService.addTraining(trainingData as NewTraining);
     }
 
@@ -29,7 +27,7 @@ export class NewTrainingController {
     async updateTraining(
         @Req() request: Request,
         @Param('trainingId') trainingId: string,
-        @Body('updatedTrainingData') updatedTrainingData: NewTraining
+        @Body('updatedTrainingData') updatedTrainingData: NewTraining,
     ): Promise<GeneralResponseData> {
         if(!trainingId){
             throw new BadRequestException('training.new_training.errors.error_update_training');
@@ -37,7 +35,7 @@ export class NewTrainingController {
         return this.newTrainingService.editTraining(
             trainingId as string,
             updatedTrainingData as NewTraining,
-            request.headers.userId as string
+            request.headers.userId as string,
         );
     }
 }

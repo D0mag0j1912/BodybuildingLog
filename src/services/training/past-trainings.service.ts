@@ -22,19 +22,19 @@ export class PastTrainingsService {
         catch(error: unknown) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'training.past_trainings.errors.error_load_training'
+                message: 'training.past_trainings.errors.error_load_training',
             }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     async getPastTrainings(
         currentDate: Date,
-        loggedUserId: string
+        loggedUserId: string,
     ): Promise<PastTrainingsResponse> {
         try {
             const dates: DateInterval = {
                 startDate: getIntervalDate(new Date(currentDate)).startDate,
-                endDate: getIntervalDate(new Date(currentDate)).endDate
+                endDate: getIntervalDate(new Date(currentDate)).endDate,
             };
             
             // tslint:disable-next-line: await-promise
@@ -42,29 +42,27 @@ export class PastTrainingsService {
                 userId: loggedUserId,
                 createdAt: {
                     $gte: dates.startDate,
-                    $lt: dates.endDate
-                }
-            }).sort({
-                createdAt: 'asc'
-            });
+                    $lt: dates.endDate,
+                },
+            }).sort({ createdAt: 'asc' });
             // tslint:disable-next-line: await-promise
             const trainingsPerPage: number = await this.trainingModel.countDocuments({
                 userId: loggedUserId,
                 createdAt: {
                     $gte: dates.startDate,
-                    $lt: dates.endDate
-                }
+                    $lt: dates.endDate,
+                },
             });
             return {
                 trainings: trainings,
                 dates: dates,
-                trainingsPerPage: trainingsPerPage
+                trainingsPerPage: trainingsPerPage,
             } as PastTrainingsResponse;
         }
         catch(error: unknown) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'training.past_trainings.errors.past_trainings_error_title'
+                message: 'training.past_trainings.errors.past_trainings_error_title',
             }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

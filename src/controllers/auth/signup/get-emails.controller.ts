@@ -9,9 +9,7 @@ export class GetEmailsController {
     ){}
 
     @Get()
-    async getEmails(@Query() params: {
-        email: string
-    }): Promise<boolean> {
+    async getEmails(@Query() params: { email: string }): Promise<boolean> {
         return this.authService.getAllEmails(params.email);
     }
 }

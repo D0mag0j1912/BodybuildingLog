@@ -8,10 +8,10 @@ import { PreferencesController } from '../../controllers/preferences/preferences
     imports: [
         MongooseModule.forFeature([{
             name: 'Preferences',
-            schema: PREFERENCES_SCHEMA
-        }])
+            schema: PREFERENCES_SCHEMA,
+        }]),
     ],
     controllers: [PreferencesController],
-    providers: [PreferencesService]
+    providers: [PreferencesService],
 })
 export class PreferencesModule {}

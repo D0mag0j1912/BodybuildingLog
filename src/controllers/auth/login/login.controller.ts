@@ -10,12 +10,10 @@ export class LoginController {
     ){}
 
     @Post()
-    async login(
-        @Body() authRequestData: Login
-    ): Promise<AuthResponse> {
+    async login( @Body() authRequestData: Login ): Promise<AuthResponse> {
         return this.authService.login(
             authRequestData.email as string,
-            authRequestData.password as string
+            authRequestData.password as string,
         );
     }
 }

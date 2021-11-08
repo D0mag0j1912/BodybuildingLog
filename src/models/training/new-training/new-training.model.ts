@@ -16,71 +16,61 @@ import { SingleExercise, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model'
 export const NEW_TRAINING_SCHEMA = new Schema({
     exercise: {
         type: [SINGLE_EXERCISE_SCHEMA],
-        required: true
+        required: true,
     },
     editMode: {
         type: Boolean,
-        required: true
+        required: true,
     },
     bodyweight: Number,
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
-    }
-}, {
-    timestamps: true
-});
+        required: true,
+    },
+}, { timestamps: true });
 
 export class NewTraining {
 
     @IsOptional()
-    @IsString({
-        message: '@training.new_training.errors.error_save_training'
-    })
-    @IsDefined({
-        message: '@training.new_training.errors.error_save_training'
-    })
+    @IsString({ message: '@training.new_training.errors.error_save_training' })
+    @IsDefined({ message: '@training.new_training.errors.error_save_training' })
     _id: string;
 
-    @ValidateNested({
-        each: true
-    })
+    @ValidateNested({ each: true })
     @Type(() => SingleExercise)
     exercise: SingleExercise[];
 
-    @IsBoolean({
-        message: '@training.new_training.errors.error_save_training'
-    })
+    @IsBoolean({ message: '@training.new_training.errors.error_save_training' })
     @IsDefined()
     editMode: boolean;
 
     @IsOptional()
     @IsNumber({}, {
-        message: '@training.new_training.errors.bodyweight_number'
+        message: '@training.new_training.errors.bodyweight_number',
     })
     @Min(30, {
-        message: '@training.new_training.errors.bodyweight_min'
+        message: '@training.new_training.errors.bodyweight_min',
     })
     @Max(300, {
-        message: '@training.new_training.errors.bodyweight_max'
+        message: '@training.new_training.errors.bodyweight_max',
     })
     bodyweight: number;
 
     @IsOptional()
     @IsDateString({}, {
-        message: '@common.errors.invalid_date'
+        message: '@common.errors.invalid_date',
     })
     createdAt: Date;
 
     @IsOptional()
     @IsDateString({}, {
-        message: '@common.errors.invalid_date'
+        message: '@common.errors.invalid_date',
     })
     updatedAt: Date;
 
     @IsNotEmpty({
-        message: '@common.errors.not_authenticated'
+        message: '@common.errors.not_authenticated',
     })
     userId: string;
 }

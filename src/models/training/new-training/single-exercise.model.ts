@@ -17,28 +17,28 @@ import { Set } from './set.model';
 export const SINGLE_EXERCISE_SCHEMA = new Schema({
     formArrayIndex: {
         type: Number,
-        required: true
+        required: true,
     },
     exerciseName: {
         type: String,
-        required: true
+        required: true,
     },
     sets: {
         type: [SET_SCHEMA],
-        required: true
+        required: true,
     },
     total: {
         type: Number,
-        required: true
+        required: true,
     },
     disabledTooltip: {
         type: Boolean,
-        required: true
+        required: true,
     },
     availableExercises: {
         type: [exerciseSchema],
-        required: true
-    }
+        required: true,
+    },
 });
 
 export class SingleExercise {
@@ -47,47 +47,30 @@ export class SingleExercise {
     @IsString()
     _id: string;
 
-    @IsInt({
-        message: '@training.new_training.errors.error_save_training'
-    })
-    @IsDefined({
-        message: '@training.new_training.errors.error_save_training'
-    })
+    @IsInt({ message: '@training.new_training.errors.error_save_training' })
+    @IsDefined({ message: '@training.new_training.errors.error_save_training' })
     formArrayIndex: number;
 
-    @IsString({
-        message: '@training.new_training.errors.exercise_name_string'
-    })
-    @IsNotEmpty({
-        message: '@training.new_training.errors.exercise_name_required'
-    })
+    @IsString({ message: '@training.new_training.errors.exercise_name_string' })
+    @IsNotEmpty({ message: '@training.new_training.errors.exercise_name_required' })
     exerciseName: string;
 
-    @ValidateNested({
-        each: true
-    })
+    @ValidateNested({ each: true })
     @Type(() => Set)
     sets: Set[];
 
-    @IsNumber({}, {
-        message: '@training.new_training.errors.total_numerical'
-    })
-    @IsNotEmpty({
-        message: '@training.new_training.errors.error_save_training'
-    })
+    @IsNumber(
+        {},
+        { message: '@training.new_training.errors.total_numerical' },
+    )
+    @IsNotEmpty({ message: '@training.new_training.errors.error_save_training' })
     total: number;
 
-    @IsBoolean({
-        message: '@training.new_training.errors.error_save_training'
-    })
-    @IsNotEmpty({
-        message: '@training.new_training.errors.error_save_training'
-    })
+    @IsBoolean({ message: '@training.new_training.errors.error_save_training' })
+    @IsNotEmpty({ message: '@training.new_training.errors.error_save_training' })
     disabledTooltip: boolean;
 
-    @ValidateNested({
-        each: true
-    })
+    @ValidateNested({ each: true })
     @Type(() => Exercise)
     availableExercises: Exercise[];
 }

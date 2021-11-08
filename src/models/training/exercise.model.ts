@@ -7,16 +7,16 @@ import { Schema } from 'mongoose';
 export const exerciseSchema = new Schema({
     name: {
         type: String,
-        required: true
+        required: true,
     },
     imageUrl: {
         type: String,
-        required: true
+        required: true,
     },
     primaryMuscleGroup: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 });
 
 export class Exercise {

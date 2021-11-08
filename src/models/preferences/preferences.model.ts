@@ -4,43 +4,31 @@ import { Schema } from 'mongoose';
 export const PREFERENCES_SCHEMA = new Schema({
     language: {
         type: String,
-        required: true
+        required: true,
     },
     weightFormat: {
         type: String,
-        required: true
+        required: true,
     },
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
-    }
+        required: true,
+    },
 });
 
 export class Preferences {
 
     @IsOptional()
-    @IsDefined({
-        message: '@common.errors.something_went_wrong'
-    })
-    @IsString({
-        message: '@common.errors.something_went_wrong'
-    })
+    @IsDefined({ message: '@common.errors.something_went_wrong' })
+    @IsString({ message: '@common.errors.something_went_wrong' })
     userId: string;
 
-    @IsString({
-        message: '@common.errors.something_went_wrong'
-    })
-    @IsNotEmpty({
-        message: '@preferences.errors.language_required'
-    })
+    @IsString({ message: '@common.errors.something_went_wrong' })
+    @IsNotEmpty({ message: '@preferences.errors.language_required' })
     language: string;
 
-    @IsString({
-        message: '@common.errors.something_went_wrong'
-    })
-    @IsNotEmpty({
-        message: '@preferences.errors.weight_format_required'
-    })
+    @IsString({ message: '@common.errors.something_went_wrong' })
+    @IsNotEmpty({ message: '@preferences.errors.weight_format_required' })
     weightFormat: string;
 }

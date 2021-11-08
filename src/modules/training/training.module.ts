@@ -12,32 +12,36 @@ import { NewTrainingService } from 'src/services/training/new-training.service';
 import { PastTrainingsService } from 'src/services/training/past-trainings.service';
 import { DeleteTrainingActionService } from 'src/services/training/training-actions/delete-training-action.service';
 
+const CONTROLLERS = [
+    GetExercisesController,
+    NewTrainingController,
+    PastTrainingsController,
+    DeleteTrainingActionController,
+];
+
+const SERVICES = [
+    NewTrainingService,
+    PastTrainingsService,
+    DeleteTrainingActionService,
+];
+
 @Module({
     imports: [
         MongooseModule.forFeature([{
             name: 'Exercise',
-            schema: exerciseSchema
+            schema: exerciseSchema,
         }, {
             name: 'Set',
-            schema: SET_SCHEMA
+            schema: SET_SCHEMA,
         }, {
             name: 'SingleExercise',
-            schema: SINGLE_EXERCISE_SCHEMA
+            schema: SINGLE_EXERCISE_SCHEMA,
         }, {
             name: 'Training',
-            schema: NEW_TRAINING_SCHEMA
-        }])
+            schema: NEW_TRAINING_SCHEMA,
+        }]),
     ],
-    controllers: [
-        GetExercisesController,
-        NewTrainingController,
-        PastTrainingsController,
-        DeleteTrainingActionController,
-    ],
-    providers: [
-        NewTrainingService,
-        PastTrainingsService,
-        DeleteTrainingActionService,
-    ]
+    controllers: [ ...CONTROLLERS ],
+    providers: [ ...SERVICES ],
 })
 export class TrainingModule {}

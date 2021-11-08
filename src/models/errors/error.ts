@@ -1,7 +1,7 @@
 export interface Error {
-    response?: {
-        status: number;
-        message: string;
+    readonly response?: {
+        readonly status: number;
+        readonly message: string;
     };
-    status?: number;
+    readonly status?: number;
 }
