@@ -8,14 +8,14 @@ import { NewTraining } from '../../../models/training/new-training/new-training.
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
 @Pipe({
-    name: 'newTraining'
+    name: 'newTraining',
 })
 export class NewTrainingPipe implements PipeTransform {
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
         private readonly pastTrainingService: PastTrainingsService,
-        private readonly route: ActivatedRoute
+        private readonly route: ActivatedRoute,
     ){}
 
     //TODO: fixati Pipe da ispravno prikazuje kada je edit mode
@@ -29,7 +29,7 @@ export class NewTrainingPipe implements PipeTransform {
             switchMap((data: NewTraining) => {
                 value = of(data.exercise[index].availableExercises);
                 return value as Observable<Exercise[]>;
-            })
+            }),
         );
         /* return this.route.params.pipe(
             switchMap((params: Params) => {

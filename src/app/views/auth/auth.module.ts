@@ -3,28 +3,48 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '../../material.module';
+import { AuthService } from '../../services/auth/auth.service';
+import { LoginService } from '../../services/auth/login.service';
+import { SignupService } from '../../services/auth/signup.service';
 import { SharedModule } from '../shared/shared.module';
 import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 
+const COMPONENTS = [
+    SignupComponent,
+    LoginComponent,
+];
+
+const EXTERNAL_IMPORTS = [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+];
+
+const MY_IMPORTS = [
+    MaterialModule,
+    AuthRoutingModule,
+    SharedModule,
+];
+
+const SERVICES = [
+    SignupService,
+    LoginService,
+    AuthService,
+];
+
 @NgModule({
-    declarations: [
-        SignupComponent,
-        LoginComponent
-    ],
+    declarations: [ ...COMPONENTS ],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        MaterialModule,
-        AuthRoutingModule,
-        SharedModule
+        ...EXTERNAL_IMPORTS,
+        ...MY_IMPORTS,
     ],
     exports: [
         SignupComponent,
         LoginComponent,
-        AuthRoutingModule
-    ]
+        AuthRoutingModule,
+    ],
+    providers: [ ...SERVICES ],
 })
-export class AuthModule{}
+export class AuthModule {}

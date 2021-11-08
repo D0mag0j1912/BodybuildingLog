@@ -2,12 +2,12 @@ import { Exercise } from '../exercise.model';
 
 export interface NewTraining {
     exercise: SingleExercise[];
-    editMode: boolean;
-    userId: string;
-    _id?: string;
-    bodyweight?: number;
-    createdAt?: Date;
-    updatedAt?: Date;
+    readonly editMode: boolean;
+    readonly userId: string;
+    readonly _id?: string;
+    readonly bodyweight?: number;
+    readonly createdAt?: Date;
+    readonly updatedAt?: Date;
 }
 export interface SingleExercise {
     formArrayIndex: number;

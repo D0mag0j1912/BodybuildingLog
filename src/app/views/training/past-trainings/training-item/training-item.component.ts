@@ -24,12 +24,12 @@ export class TrainingItemComponent implements OnInit {
         'wednesday',
         'thursday',
         'friday',
-        'saturday'
+        'saturday',
     ];
 
     readonly actions: ReadonlyArray<TrainingItemActions> = [
         'delete',
-        'more'
+        'more',
     ];
 
     dayIndex: number;
@@ -40,7 +40,7 @@ export class TrainingItemComponent implements OnInit {
     training: NewTraining;
 
     @ViewChildren('exerciseNameEl', {
-        read: ElementRef
+        read: ElementRef,
     })
     set exerciseNameEls(exerciseNames: QueryList<ElementRef>){
         if(exerciseNames){

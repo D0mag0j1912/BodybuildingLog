@@ -52,12 +52,12 @@ export class DeleteTrainingActionComponent {
                 this.dialogRef.close();
                 this.isLoading = false;
                 this.changeDetectorRef.markForCheck();
-            })
+            }),
         ).subscribe((response: PastTrainingsResponse) => {
             this.sharedService.pastTrainingsData$$.next(response as PastTrainingsResponse);
             this.snackBar.open(this.translateService.instant(response.message as string), null, {
                 duration: 3000,
-                panelClass: 'app__snackbar'
+                panelClass: 'app__snackbar',
             });
         });
     }

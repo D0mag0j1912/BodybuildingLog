@@ -58,12 +58,12 @@ export class HeaderComponent implements OnInit {
                         await this.router.navigate(['/past-trainings'], {
                             queryParams: {
                                 startDate: format(this.constructDates(new Date(training.createdAt)).startDate, 'dd-MM-yyyy'),
-                                endDate: format(this.constructDates(new Date(training.createdAt)).endDate, 'dd-MM-yyyy')
-                            }
+                                endDate: format(this.constructDates(new Date(training.createdAt)).endDate, 'dd-MM-yyyy'),
+                            },
                         });
-                    })
+                    }),
                 )),
-            takeUntil(this.unsubsService)
+            takeUntil(this.unsubsService),
         ).subscribe();
     }
 
@@ -71,8 +71,8 @@ export class HeaderComponent implements OnInit {
         await this.router.navigate(['/past-trainings'], {
             queryParams: {
                 startDate: format(this.constructDates(new Date()).startDate, 'dd-MM-yyyy'),
-                endDate: format(this.constructDates(new Date()).endDate, 'dd-MM-yyyy')
-            }
+                endDate: format(this.constructDates(new Date()).endDate, 'dd-MM-yyyy'),
+            },
         });
     }
 
@@ -88,23 +88,23 @@ export class HeaderComponent implements OnInit {
                 this.navigationService.setPreferences(
                     userData._id,
                     language,
-                    'kg'
-                )
+                    'kg',
+                ),
             ),
-            takeUntil(this.unsubsService)
+            takeUntil(this.unsubsService),
         ).subscribe();
     }
 
     private constructDates(date: Date): DateData {
         const startDate: Date = startOfWeek(date, {
-            weekStartsOn: 1
+            weekStartsOn: 1,
         });
         const endDate: Date = endOfWeek(date, {
-            weekStartsOn: 1
+            weekStartsOn: 1,
         });
         return {
             startDate: startDate,
-            endDate: endDate
+            endDate: endDate,
         } as DateData;
     }
 

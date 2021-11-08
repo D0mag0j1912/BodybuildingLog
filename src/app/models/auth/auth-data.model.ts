@@ -1,22 +1,22 @@
 import { Preferences } from '../preferences.model';
 
 export interface Signup {
-    email: string;
-    password: string;
-    confirmPassword: string;
+    readonly email: string;
+    readonly password: string;
+    readonly confirmPassword: string;
 }
 
 export interface Login {
-    email: string;
-    password: string;
+    readonly email: string;
+    readonly password: string;
 }
 
 export interface AuthResponseData {
-    message?: string;
-    success?: boolean;
-    token?: string;
-    expiresIn?: number;
-    expirationDate?: Date;
-    _id?: string;
-    preferences?: Preferences;
+    readonly message?: string;
+    readonly success?: boolean;
+    readonly token?: string;
+    readonly expiresIn?: number;
+    readonly expirationDate?: Date;
+    readonly _id?: string;
+    readonly preferences?: Preferences;
 }

@@ -33,7 +33,7 @@ export class DeleteTrainingActionService implements TrainingActions {
             data: {
                 title$: this.translateService.stream('training.past_trainings.actions.delete_training') as Observable<string>,
                 dateCreated$: this.translateService.stream(`weekdays.${data.weekDays[data.dayIndex]}`).pipe(
-                    map((value: { [key: string]: string }) => `${value} (${this.datePipe.transform(data.training.createdAt as Date, 'dd.MM.yyyy')})`)
+                    map((value: { [key: string]: string }) => `${value} (${this.datePipe.transform(data.training.createdAt as Date, 'dd.MM.yyyy')})`),
                 ) as Observable<string>,
                 timeCreated$: of(data.timeCreated) as Observable<string>,
                 training$: of(data.training as NewTraining),

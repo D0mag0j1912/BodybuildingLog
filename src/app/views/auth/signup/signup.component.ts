@@ -25,8 +25,8 @@ type FormData = {
     providers: [{
         provide: MAT_RADIO_DEFAULT_OPTIONS,
         useValue: {
-            color: 'primary'
-        }
+            color: 'primary',
+        },
     }],
 })
 export class SignupComponent implements OnInit {
@@ -47,29 +47,25 @@ export class SignupComponent implements OnInit {
     ngOnInit(): void {
 
         this.form = new FormGroup({
-            'language': new FormControl('en', [
-                Validators.required
-            ]),
-            'weightFormat': new FormControl('kg', [
-                Validators.required
-            ]),
+            'language': new FormControl('en', [Validators.required]),
+            'weightFormat': new FormControl('kg', [Validators.required]),
             'email': new FormControl(null, [
                 Validators.required,
-                Validators.email
+                Validators.email,
             ],
             [AuthCustomValidators.isEmailAvailable(this.signupService)]),
             'password': new FormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
-                Validators.maxLength(20)
+                Validators.maxLength(20),
             ]),
             'confirmPassword': new FormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
-                Validators.maxLength(20)
-            ])
+                Validators.maxLength(20),
+            ]),
         }, {
-            validators: AuthCustomValidators.samePasswords()
+            validators: AuthCustomValidators.samePasswords(),
         });
     }
 
@@ -80,7 +76,7 @@ export class SignupComponent implements OnInit {
         if(!this.form.valid){
             this.snackBar.open('All fields needs to be correctly filled.', null, {
                 duration: 3000,
-                panelClass: 'app__snackbar-error'
+                panelClass: 'app__snackbar-error',
             });
             this.isLoading = false;
             return;
@@ -91,12 +87,12 @@ export class SignupComponent implements OnInit {
             this.accessFormData('weightFormat').value as string,
             this.accessFormData('email').value as string,
             this.accessFormData('password').value as string,
-            this.accessFormData('confirmPassword').value as string
+            this.accessFormData('confirmPassword').value as string,
         ).pipe(
             tap(async (response: AuthResponseData) => {
                 this.snackBar.open(this.translateService.instant(response.message as string), null, {
                     duration: 3000,
-                    panelClass: response.success ? 'app__snackbar' : 'app__snackbar-error'
+                    panelClass: response.success ? 'app__snackbar' : 'app__snackbar-error',
                 });
                 if(response.success){
                     this.accessFormData('email').clearAsyncValidators();
@@ -104,7 +100,7 @@ export class SignupComponent implements OnInit {
                     await this.router.navigate(['/login']);
                 }
             }),
-            finalize(() => this.isLoading = false)
+            finalize(() => this.isLoading = false),
         ).subscribe();
     }
 

@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     form: FormGroup;
 
     @ViewChild('emailRef', {
-        read: ElementRef
+        read: ElementRef,
     })
     private readonly emailInput: ElementRef;
 
@@ -41,15 +41,15 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.form = new FormGroup({
             'email': new FormControl(null, [
                 Validators.required,
-                Validators.email
+                Validators.email,
             ]),
             'password': new FormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
-                Validators.maxLength(20)
-            ])
+                Validators.maxLength(20),
+            ]),
         }, {
-            asyncValidators: AuthCustomValidators.passwordFitsEmail(this.loginService)
+            asyncValidators: AuthCustomValidators.passwordFitsEmail(this.loginService),
         });
     }
 
@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         if(!this.form.valid){
             this.snackBar.open('All fields needs to be correctly filled.', null, {
                 duration: 3000,
-                panelClass: 'app__snackbar-error'
+                panelClass: 'app__snackbar-error',
             });
             this.isLoading = false;
             return;
@@ -73,15 +73,15 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
         this.authService.login(
             this.accessFormData('email').value as string,
-            this.accessFormData('password').value as string
+            this.accessFormData('password').value as string,
         ).pipe(
             tap((response: AuthResponseData) => {
                 this.snackBar.open(this.translateService.instant(response.message as string), null, {
                     duration: 3000,
-                    panelClass: response.token ? 'app__snackbar' : 'app__snackbar-error'
+                    panelClass: response.token ? 'app__snackbar' : 'app__snackbar-error',
                 });
             }),
-            finalize(() => this.isLoading = false)
+            finalize(() => this.isLoading = false),
         ).subscribe();
     }
 

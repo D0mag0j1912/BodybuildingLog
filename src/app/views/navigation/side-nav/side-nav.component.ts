@@ -42,16 +42,16 @@ export class SideNavComponent implements OnInit {
 
     async goToPastTrainings(): Promise<void> {
         const startDate: Date = startOfWeek(new Date(), {
-            weekStartsOn: 1
+            weekStartsOn: 1,
         });
         const endDate: Date = endOfWeek(new Date(), {
-            weekStartsOn: 1
+            weekStartsOn: 1,
         });
         await this.router.navigate(['/past-trainings'], {
             queryParams: {
                 startDate: format(startDate, 'dd-MM-yyyy'),
-                endDate: format(endDate, 'dd-MM-yyyy')
-            }
+                endDate: format(endDate, 'dd-MM-yyyy'),
+            },
         });
     }
 
@@ -62,14 +62,14 @@ export class SideNavComponent implements OnInit {
                 this.navigationService.setPreferences(
                     userData._id,
                     language,
-                    'kg'
+                    'kg',
                 ).pipe(
                     tap(_ => {
                         this.onCloseSideNav();
-                    })
-                )
+                    }),
+                ),
             ),
-            takeUntil(this.unsubsService)
+            takeUntil(this.unsubsService),
         ).subscribe();
     }
 

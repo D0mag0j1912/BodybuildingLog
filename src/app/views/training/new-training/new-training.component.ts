@@ -70,7 +70,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     exerciseChanged: boolean = false;
 
     @ViewChild('bodyweightRef', {
-        read: ElementRef
+        read: ElementRef,
     })
     set bodyweightInput(bodyweight: ElementRef){
         if(bodyweight && this.focusCounter === 0){
@@ -82,7 +82,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     }
 
     @ViewChild('exerciseNameChoice', {
-        read: MatSelect
+        read: MatSelect,
     })
     set exerciseNameChoice(exerciseName: MatSelect){
         if(exerciseName){
@@ -92,9 +92,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     this.setExerciseNameTooltip(
                         exerciseName as MatSelect,
                         null,
-                        currentTrainingState as NewTraining
+                        currentTrainingState as NewTraining,
                     )),
-                takeUntil(this.unsubsService)
+                takeUntil(this.unsubsService),
             ).subscribe();
         }
     }
@@ -106,14 +106,14 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 forkJoin([
                     this.newTrainingService.currentTrainingChanged$.pipe(
                         take(1),
-                        map((currentTrainingState: NewTraining) => currentTrainingState.exercise)
+                        map((currentTrainingState: NewTraining) => currentTrainingState.exercise),
                     ),
                     this.newTrainingService.allExercisesChanged$.pipe(
-                        take(1)
-                    )
-                ])
+                        take(1),
+                    ),
+                ]),
             ),
-            takeUntil(this.unsubsService)
+            takeUntil(this.unsubsService),
         );
 
     constructor(
@@ -140,7 +140,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             this.editedDate = training.updatedAt as Date;
                             this.editTraining = {
                                 ...training as NewTraining,
-                                editMode: true
+                                editMode: true,
                             } as NewTraining;
                             this.newTrainingService.updateTrainingData(this.editTraining as NewTraining);
                         }),
@@ -148,7 +148,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             this.isError = true;
                             this.isLoading = false;
                             return of(null);
-                        })
+                        }),
                     );
                 }
                 else {
@@ -156,11 +156,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         switchMap(_ =>
                             forkJoin([
                                 this.newTrainingService.allExercisesChanged$.pipe(
-                                    take(1)
+                                    take(1),
                                 ),
                                 this.newTrainingService.currentTrainingChanged$.pipe(
-                                    take(1)
-                                )
+                                    take(1),
+                                ),
                             ]).pipe(
                                 tap((data: [Exercise[], NewTraining]) => {
                                     const currentTrainingState: NewTraining = ((data[1] as NewTraining));
@@ -170,14 +170,14 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                                 data[0] as Exercise[],
                                                 0,
                                                 true,
-                                                currentTrainingState.userId as string
+                                                currentTrainingState.userId as string,
                                             );
                                         }
                                     }
                                 }),
-                                takeUntil(this.unsubsService)
-                            )
-                        )
+                                takeUntil(this.unsubsService),
+                            ),
+                        ),
                     );
                 }
             }),
@@ -189,9 +189,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         return of(null);
                     }),
                     switchMap(_ => this.formInit()),
-                    finalize(() => this.isLoading = false)
+                    finalize(() => this.isLoading = false),
                 )),
-            takeUntil(this.unsubsService)
+            takeUntil(this.unsubsService),
         ).subscribe();
 
         this.indexChanged$$.pipe(
@@ -212,13 +212,13 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             setNumber: this.getSetNumber(indexes.indexExercise, indexes.indexSet).value as number,
                             weightLifted: this.getWeightLifted(indexes.indexExercise, indexes.indexSet).value as number,
                             reps: +this.getReps(indexes.indexExercise, indexes.indexSet).value as number,
-                            total: total as number
+                            total: total as number,
                         };
                         this.newTrainingService.setsChanged(trainingData as SetTrainingData);
                         this.getTotal(indexes.indexExercise as number).patchValue(total.toString()+ ' kg');
                 }
             }),
-            takeUntil(this.unsubsService)
+            takeUntil(this.unsubsService),
         ).subscribe();
     }
 
@@ -237,7 +237,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     adjustAddExerciseTooltip(
         currentTrainingStateLength: number,
-        allExercisesLength: number
+        allExercisesLength: number,
     ): Observable<string> {
         if(currentTrainingStateLength >= allExercisesLength) {
             return this.translateService.stream('training.new_training.errors.no_more_exercises_available');
@@ -265,7 +265,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     isAddingExercisesDisabled(
         currentExercisesLength: number,
-        allExercisesLength: number
+        allExercisesLength: number,
     ): boolean {
         if(this.getExercises().length > 0){
             return (currentExercisesLength >= allExercisesLength)
@@ -286,7 +286,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     onExerciseNameChange(
         $event: MatSelectChange,
         indexExercise: number,
-        element: MatSelect
+        element: MatSelect,
     ): void {
         if($event.value){
             if(this.getSets(indexExercise).length > 0){
@@ -296,12 +296,12 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             this.exerciseChanged = !this.exerciseChanged;
             this.setExerciseNameTooltip(
                 element as MatSelect,
-                indexExercise as number
+                indexExercise as number,
             ).subscribe(_ => {
                 this.newTrainingService.updateExerciseChoices(
                     $event.value as string,
                     indexExercise as number,
-                    this.getDisabledTooltip(indexExercise).value as boolean
+                    this.getDisabledTooltip(indexExercise).value as boolean,
                 );
             });
         }
@@ -309,11 +309,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     onChangeSets(
         indexExercise: number,
-        indexSet: number
+        indexSet: number,
     ): void {
         this.indexChanged$$.next({
             indexExercise: indexExercise,
-            indexSet: indexSet
+            indexSet: indexSet,
         } as SetStateChanged);
     }
 
@@ -323,7 +323,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     addExercise(
         isExerciseName?: boolean,
-        clicked?: MouseEvent
+        clicked?: MouseEvent,
     ): void {
         (<FormArray>this.form.get('exercise')).push(
             new FormGroup({
@@ -336,27 +336,27 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             Validators.required,
                             Validators.min(1),
                             Validators.max(1000),
-                            NewTrainingValidators.isBroj()
+                            NewTrainingValidators.isBroj(),
                         ]),
                         'reps': new FormControl({value: null, disabled: !isExerciseName}, [
                             Validators.required,
                             Validators.min(1),
                             Validators.max(1000),
-                            Validators.pattern('^[0-9]*$')
-                        ])
-                    })
+                            Validators.pattern('^[0-9]*$'),
+                        ]),
+                    }),
                 ]),
                 'total': new FormControl(this.initialWeight.toString() + ' kg', [Validators.required]),
-                'disabledTooltip': new FormControl(true, [Validators.required])
+                'disabledTooltip': new FormControl(true, [Validators.required]),
             }, {
-                validators: [NewTrainingValidators.atLeastOneSet(), NewTrainingValidators.allSetsFilled()]
-            })
+                validators: [NewTrainingValidators.atLeastOneSet(), NewTrainingValidators.allSetsFilled()],
+            }),
         );
 
         if(clicked){
             this.newTrainingService.addNewExercise(
                 this.getAlreadyUsedExercises() as string[],
-                this.getExercises().length - 1 as number
+                this.getExercises().length - 1 as number,
             );
             this.exerciseStateChanged$$.next();
         }
@@ -364,7 +364,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     deleteExercise(
         indexExercise: number,
-        exerciseName: string
+        exerciseName: string,
     ): void {
         if(exerciseName){
             const dialogRef = this.dialog.open(DialogComponent, {
@@ -372,9 +372,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     isError: false,
                     deleteExercise: {
                         message$: this.translateService.stream('training.new_training.delete_exercise_prompt'),
-                        exerciseName: exerciseName
-                    } as DeleteExerciseDialogData
-                } as DialogData
+                        exerciseName: exerciseName,
+                    } as DeleteExerciseDialogData,
+                } as DialogData,
             });
             dialogRef.afterClosed().pipe(
                 switchMap((response: boolean) => {
@@ -385,7 +385,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                 this.newTrainingService.deleteExercise(
                                     indexExercise as number,
                                     currentTrainingState as NewTraining,
-                                    exerciseName as string
+                                    exerciseName as string,
                                 ).pipe(
                                     tap((data: [NewTraining, Exercise[]]) => {
                                         if(data[1]) {
@@ -393,21 +393,21 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                             (<FormArray>this.form.get('exercise')).removeAt(indexExercise);
                                             this.newTrainingService.pushToAvailableExercises(
                                                 data[0] as NewTraining,
-                                                data[1] as Exercise[]
+                                                data[1] as Exercise[],
                                             );
                                         }
                                     }),
-                                    finalize(() => this.exerciseStateChanged$$.next())
-                                )
+                                    finalize(() => this.exerciseStateChanged$$.next()),
+                                ),
                             ),
-                            takeUntil(this.unsubsService)
+                            takeUntil(this.unsubsService),
                         );
                     }
                     else{
                         return of(null);
                     }
                 }),
-                takeUntil(this.unsubsService)
+                takeUntil(this.unsubsService),
             ).subscribe();
         }
         else {
@@ -416,13 +416,13 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 switchMap((currentTrainingState: NewTraining) =>
                     this.newTrainingService.deleteExercise(
                         indexExercise as number,
-                        currentTrainingState as NewTraining
+                        currentTrainingState as NewTraining,
                     ).pipe(
                         tap(_ => (<FormArray>this.form.get('exercise')).removeAt(indexExercise)),
-                        finalize(() => this.exerciseStateChanged$$.next())
-                    )
+                        finalize(() => this.exerciseStateChanged$$.next()),
+                    ),
                 ),
-                takeUntil(this.unsubsService)
+                takeUntil(this.unsubsService),
             ).subscribe();
         }
     }
@@ -438,22 +438,22 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 'weightLifted': new FormControl(null, [
                     Validators.min(1),
                     Validators.max(1000),
-                    NewTrainingValidators.isBroj()
+                    NewTrainingValidators.isBroj(),
                 ]),
                 'reps': new FormControl(null, [
                     Validators.min(1),
                     Validators.max(1000),
-                    Validators.pattern('^[0-9]*$')
-                ])
+                    Validators.pattern('^[0-9]*$'),
+                ]),
             }, {
-                validators: [NewTrainingValidators.bothValuesRequired()]
-            })
+                validators: [NewTrainingValidators.bothValuesRequired()],
+            }),
         );
     }
 
     deleteSet(
         indexExercise: number,
-        indexSet: number
+        indexSet: number,
     ): void {
         (<FormArray>(<FormGroup>(<FormArray>this.form.get('exercise')).at(indexExercise)).get('sets')).removeAt(indexSet);
 
@@ -465,7 +465,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         this.newTrainingService.deleteSet(
             indexExercise as number,
             indexSet as number,
-            newTotal as number
+            newTotal as number,
         );
     }
 
@@ -478,7 +478,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     this.editedDate = training.updatedAt as Date;
                     this.editTraining = {
                         ...training as NewTraining,
-                        editMode: this.editMode
+                        editMode: this.editMode,
                     } as NewTraining;
                     this.newTrainingService.updateTrainingData(this.editTraining as NewTraining);
                 }),
@@ -486,7 +486,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     this.isError = true;
                     this.isLoading = false;
                     return of(null);
-                })
+                }),
             ).subscribe();
         }
         else {
@@ -496,7 +496,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     this.isLoading = false;
                     return of(null);
                 }),
-                switchMap(() => this.formInit())
+                switchMap(() => this.formInit()),
             );
         }
     }
@@ -509,15 +509,15 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     'bodyweight': new FormControl(
                         NewTrainingHandler.fillBodyweight(
                             data.bodyweight,
-                            this.editTraining ? this.editTraining.bodyweight : null
+                            this.editTraining ? this.editTraining.bodyweight : null,
                         ),
-                        [NewTrainingValidators.isBroj(), Validators.min(30), Validators.max(300)]
+                        [NewTrainingValidators.isBroj(), Validators.min(30), Validators.max(300)],
                     ),
-                    'exercise': new FormArray([])
+                    'exercise': new FormArray([]),
                 });
                 (<FormArray>this.form.get('exercise')).patchValue(this.formArrayInit(this.editTraining ? this.editTraining : data));
             }),
-            takeUntil(this.unsubsService)
+            takeUntil(this.unsubsService),
         );
     }
 
@@ -559,15 +559,15 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 if(this.editMode){
                     return this.newTrainingService.updateTraining(
                         this.formTrainingState as NewTraining,
-                        this._id as string
+                        this._id as string,
                     ).pipe(
                         tap((response: GeneralResponseData) => {
                             this.snackBar.open(this.translateService.instant(response.message as string), null, {
                                 duration: 3000,
-                                panelClass: 'app__snackbar'
+                                panelClass: 'app__snackbar',
                             });
                         }),
-                        finalize(() => this.isLoading = false)
+                        finalize(() => this.isLoading = false),
                     );
                 }
                 else {
@@ -575,14 +575,14 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         tap((response: GeneralResponseData) => {
                             this.snackBar.open(this.translateService.instant(response.message as string), null, {
                                 duration: 3000,
-                                panelClass: 'app__snackbar'
+                                panelClass: 'app__snackbar',
                             });
                         }),
-                        finalize(() => this.isLoading = false)
+                        finalize(() => this.isLoading = false),
                     );
                 }
             }),
-            tap(() => this.isLoading = false)
+            tap(() => this.isLoading = false),
         ).subscribe();
     }
 
@@ -613,7 +613,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                 formSetData.push({
                                     setNumber: +this.getSetNumber(indexExercise, indexSet).value as number,
                                     weightLifted: +this.getWeightLifted(indexExercise, indexSet).value as number,
-                                    reps: +this.getReps(indexExercise, indexSet).value as number
+                                    reps: +this.getReps(indexExercise, indexSet).value as number,
                                 });
                             });
                             exerciseFormData[indexExercise].sets = formSetData;
@@ -624,19 +624,19 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             exercise: exerciseFormData as SingleExercise[],
                             bodyweight: this.bodyweight.value ? +this.bodyweight.value as number : null,
                             editMode: this.editMode as boolean,
-                            userId: currentTrainingState.userId as string
+                            userId: currentTrainingState.userId as string,
                         } as NewTraining;
-                    })
-                )
+                    }),
+                ),
             ),
-            takeUntil(this.unsubsService)
+            takeUntil(this.unsubsService),
         );
     }
 
     private setExerciseNameTooltip(
         element: MatSelect,
         indexExercise?: number,
-        currentTrainingState?: NewTraining
+        currentTrainingState?: NewTraining,
     ): Observable<void> {
         return of(null).pipe(
             delay(0),
@@ -656,7 +656,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         this.getDisabledTooltip(indexExercise ? indexExercise : 0).patchValue(true);
                     }
                 }
-            })
+            }),
         );
     }
 
@@ -674,21 +674,21 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     getSetNumber(
         indexExercise: number,
-        indexSet: number
+        indexSet: number,
     ): AbstractControl {
         return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).at(indexSet).get('setNumber');
     }
 
     getWeightLifted(
         indexExercise: number,
-        indexSet: number
+        indexSet: number,
     ): AbstractControl {
         return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).at(indexSet).get('weightLifted');
     }
 
     getReps(
         indexExercise: number,
-        indexSet: number
+        indexSet: number,
     ): AbstractControl {
         return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).at(indexSet).get('reps');
     }

@@ -33,7 +33,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatSnackBarModule,
         MatCardModule,
         MatMenuModule,
-        MatRadioModule
-    ]
+        MatRadioModule,
+    ],
 })
 export class MaterialModule{}

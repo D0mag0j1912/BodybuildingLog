@@ -9,9 +9,7 @@ import { GeneralResponseData } from '../../models/general-response.model';
 import { Preferences } from '../../models/preferences.model';
 import { AuthService } from '../auth/auth.service';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class NavigationService {
 
     constructor(
@@ -24,20 +22,18 @@ export class NavigationService {
     setPreferences(
         userId: string,
         language: string,
-        weightFormat: string
+        weightFormat: string,
     ): Observable<GeneralResponseData> {
         const preferences: Preferences = {
             language: language,
-            weightFormat: weightFormat
+            weightFormat: weightFormat,
         };
-        return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${userId}`, {
-            preferences: preferences
-        }).pipe(
+        return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${userId}`, { preferences: preferences }).pipe(
             tap(_ => {
                 this.authService.updateUserData({
                     userId: userId,
                     language: language,
-                    weightFormat: weightFormat
+                    weightFormat: weightFormat,
                 } as Preferences);
             }),
             switchMap((response: GeneralResponseData) =>
@@ -45,10 +41,11 @@ export class NavigationService {
                     tap(_ => {
                         this.snackBar.open(this.translateService.instant(response.message), null, {
                             duration: 3000,
-                            panelClass: 'app__snackbar'
+                            panelClass: 'app__snackbar',
                         });
-                    })
-                ))
+                    }),
+                ),
+            ),
         );
     }
 

@@ -16,12 +16,12 @@ export function passwordFitsEmail(loginService: LoginService): AsyncValidatorFn 
                 return loginService.passwordFitsEmail(email, password).pipe(
                     map((response: boolean) => {
                         if(!response){
-                            return {'passwordFitsEmail': true};
+                            return { 'passwordFitsEmail': true };
                         }
                         return null;
-                    })
+                    }),
                 );
-            })
+            }),
         );
 }
 
@@ -38,11 +38,11 @@ export function isEmailAvailable(signupService: SignupService): AsyncValidatorFn
                             if(response){
                                 return null;
                             }
-                            return {'availableEmail': true};
-                        })
+                            return { 'availableEmail': true };
+                        }),
                     );
                 }
-            })
+            }),
         );
 }
 
@@ -55,9 +55,7 @@ export function samePasswords(): ValidatorFn {
         }
         else{
             if(password !== confirmPassword){
-                return {
-                    'equalPass': true
-                };
+                return { 'equalPass': true };
             }
             else{
                 return null;

@@ -1,7 +1,7 @@
 
 export function fillBodyweight(
     initialBodyweight: number,
-    editBodyweight: number
+    editBodyweight: number,
 ): string {
     if(initialBodyweight){
         if(!editBodyweight){

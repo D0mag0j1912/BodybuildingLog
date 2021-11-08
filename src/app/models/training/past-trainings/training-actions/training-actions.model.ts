@@ -7,8 +7,8 @@ export interface TrainingActions {
 }
 
 export interface DeleteTrainingActionData {
-    weekDays: ReadonlyArray<string>;
-    timeCreated: string;
-    dayIndex: number;
-    training: NewTraining;
+    readonly weekDays: ReadonlyArray<string>;
+    readonly timeCreated: string;
+    readonly dayIndex: number;
+    readonly training: NewTraining;
 }

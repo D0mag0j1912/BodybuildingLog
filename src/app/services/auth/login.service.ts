@@ -2,9 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class LoginService {
 
     constructor(
@@ -13,7 +11,7 @@ export class LoginService {
 
     passwordFitsEmail(
         email: string,
-        password: string
+        password: string,
     ): Observable<boolean> {
         const params = `?email=${email}&password=${password}`;
         return this.http.get<boolean>(environment.BACKEND + '/check_pass' + params);

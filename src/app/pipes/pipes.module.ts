@@ -10,6 +10,6 @@ import { MapTrainingItemActionsPipe } from './training/past-trainings/map-traini
     exports: [
         NewTrainingPipe,
         MapTrainingItemActionsPipe,
-    ]
+    ],
 })
 export class PipesModule {}

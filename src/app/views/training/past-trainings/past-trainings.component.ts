@@ -42,7 +42,7 @@ export class PastTrainingsComponent implements OnInit {
         private readonly route: ActivatedRoute,
     ) {
         this.sharedService.pastTrainingsData$$.pipe(
-            takeUntil(this.unsubscribeService)
+            takeUntil(this.unsubscribeService),
         ).subscribe((response: PastTrainingsResponse) => {
             this.fillTemplateVariables(response);
         });
@@ -61,15 +61,15 @@ export class PastTrainingsComponent implements OnInit {
                 ? subDays(
                     utcToZonedTime(
                         this.startDate as Date,
-                        environment.TIMEZONE as string
+                        environment.TIMEZONE as string,
                     )
                     , 7) as Date
                 : addDays(
                     utcToZonedTime(
                         this.startDate as Date,
-                        environment.TIMEZONE as string
+                        environment.TIMEZONE as string,
                     ), 7) as Date,
-                true
+                true,
         ).subscribe();
     }
 
@@ -89,7 +89,7 @@ export class PastTrainingsComponent implements OnInit {
 
     private initializePastTrainings(
         orientationDate: Date,
-        isArrow?: boolean
+        isArrow?: boolean,
     ): Observable<PastTrainingsResponse> {
         return this.pastTrainingsService.getPastTrainings(orientationDate as Date).pipe(
             tap((result: PastTrainingsResponse) => {
@@ -114,12 +114,12 @@ export class PastTrainingsComponent implements OnInit {
                             endDate: format(
                                 utcToZonedTime(
                                     this.endDate as Date,
-                                    environment.TIMEZONE as string
-                                ), 'dd-MM-yyyy')
-                        }
+                                    environment.TIMEZONE as string,
+                                ), 'dd-MM-yyyy'),
+                        },
                     });
                 }
-            })
+            }),
         );
     }
 
@@ -142,7 +142,7 @@ export class PastTrainingsComponent implements OnInit {
                 environment.TIMEZONE as string),
             end: utcToZonedTime(
                 this.endDate as Date,
-                environment.TIMEZONE as string)
+                environment.TIMEZONE as string),
         }).map((date: Date) => date.getTime() as number);
         this.isNextWeekDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number) as boolean;
     }

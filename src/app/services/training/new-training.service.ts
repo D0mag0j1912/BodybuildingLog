@@ -15,12 +15,10 @@ const EMPTY_TRAINING: NewTraining = {
     _id: '',
     bodyweight: null,
     editMode: false,
-    userId: null
+    userId: null,
 };
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class NewTrainingService {
 
     private readonly allExercisesChanged$$: BehaviorSubject<Exercise[]> = new BehaviorSubject<Exercise[]>([]);
@@ -46,33 +44,29 @@ export class NewTrainingService {
                                 exercises,
                                 0,
                                 true,
-                                authResponseData._id
+                                authResponseData._id,
                             );
                             this.allExercisesChanged$$.next(exercises as Exercise[]);
                             localStorage.setItem('allExercises', JSON.stringify(exercises as Exercise[]));
-                        })
+                        }),
                     );
                 }
                 else {
                     return of(null);
                 }
-            })
+            }),
         );
     }
 
     addTraining(trainingData: NewTraining): Observable<GeneralResponseData> {
-        return this.http.post<GeneralResponseData>(environment.BACKEND + '/handle_training', {
-            trainingData: trainingData
-        });
+        return this.http.post<GeneralResponseData>(environment.BACKEND + '/handle_training', { trainingData: trainingData });
     }
 
     updateTraining(
         trainingData: NewTraining,
-        trainingId: string
+        trainingId: string,
     ): Observable<GeneralResponseData> {
-        return this.http.put<GeneralResponseData>(environment.BACKEND + `/handle_training/${trainingId}`, {
-            updatedTrainingData: trainingData
-        });
+        return this.http.put<GeneralResponseData>(environment.BACKEND + `/handle_training/${trainingId}`, { updatedTrainingData: trainingData });
     }
 
     /**************************************** */
@@ -80,7 +74,7 @@ export class NewTrainingService {
     addBodyweightToStorage(value: string): void {
         const updatedTraining: NewTraining = {
             ...this.currentTrainingChanged$$.getValue(),
-            bodyweight: +value
+            bodyweight: +value,
         } as NewTraining;
         this.saveTrainingData({ ...updatedTraining } as NewTraining);
     }
@@ -88,7 +82,7 @@ export class NewTrainingService {
     deleteSet(
         indexExercise: number,
         indexSet: number,
-        newTotal: number
+        newTotal: number,
     ): void {
         const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
         updatedTraining.exercise[indexExercise].sets.splice(indexSet, 1);
@@ -98,7 +92,7 @@ export class NewTrainingService {
 
     pushToAvailableExercises(
         currentTrainingState: NewTraining,
-        toBeAddedExercise: Exercise[]
+        toBeAddedExercise: Exercise[],
     ): void {
         const updatedTraining: NewTraining = { ...currentTrainingState };
         updatedTraining.exercise.map((exercise: SingleExercise) => {
@@ -114,7 +108,7 @@ export class NewTrainingService {
     deleteExercise(
         deletedIndex: number,
         currentTrainingState: NewTraining,
-        deletedExerciseName?: string
+        deletedExerciseName?: string,
     ): Observable<[NewTraining, Exercise[]]> {
         const updatedTraining: NewTraining = { ...currentTrainingState };
         updatedTraining.exercise = updatedTraining.exercise
@@ -131,16 +125,16 @@ export class NewTrainingService {
                 map((allExercises: Exercise[]) =>
                     [
                         updatedTraining,
-                        allExercises.filter(exercise => exercise.name === deletedExerciseName)
-                    ]
-                )
+                        allExercises.filter(exercise => exercise.name === deletedExerciseName),
+                    ],
+                ),
             );
         }
         else{
             this.saveTrainingData({ ...updatedTraining } as NewTraining);
             return of([
                 updatedTraining,
-                null
+                null,
             ]);
         }
     }
@@ -153,7 +147,7 @@ export class NewTrainingService {
             updatedTraining.exercise[trainingData.formArrayIndex].sets[indexFoundSet] = {
                 ...updatedTraining.exercise[trainingData.formArrayIndex].sets[indexFoundSet],
                 weightLifted: trainingData.weightLifted,
-                reps: trainingData.reps
+                reps: trainingData.reps,
             };
             updatedTraining.exercise[trainingData.formArrayIndex].total = trainingData.total;
         }
@@ -161,7 +155,7 @@ export class NewTrainingService {
             updatedTraining.exercise[trainingData.formArrayIndex].sets.push({
                 setNumber: trainingData.setNumber,
                 weightLifted: trainingData.weightLifted,
-                reps: trainingData.reps
+                reps: trainingData.reps,
             });
             updatedTraining.exercise[trainingData.formArrayIndex].total = trainingData.total;
         }
@@ -170,20 +164,20 @@ export class NewTrainingService {
 
     addNewExercise(
         alreadyUsedExercises: string[],
-        nextFormArrayIndex: number
+        nextFormArrayIndex: number,
     ): void {
         const allExercises: Exercise[] = [ ...this.allExercisesChanged$$.getValue() ];
         const availableExercises: Exercise[] = allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1);
         this.updateTrainingState(
             availableExercises,
-            nextFormArrayIndex
+            nextFormArrayIndex,
         );
     }
 
     updateExerciseChoices(
         selectedExercise: string,
         selectedIndex: number,
-        disabledTooltip: boolean
+        disabledTooltip: boolean,
     ): void {
         const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
         updatedTraining.exercise[selectedIndex].exerciseName = selectedExercise;
@@ -211,27 +205,27 @@ export class NewTrainingService {
         exercises: Exercise[],
         nextFormArrayIndex: number,
         restartAll?: boolean,
-        userId?: string
+        userId?: string,
     ): void {
         let updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
         if(restartAll){
             updatedTraining = {
                 ...EMPTY_TRAINING,
-                userId: userId
+                userId: userId,
             };
         }
         updatedTraining.exercise.push(
             this.returnEmptyExercise(
                 exercises,
-                nextFormArrayIndex
-            )
+                nextFormArrayIndex,
+            ),
         );
         this.saveTrainingData({ ...updatedTraining } as NewTraining);
     }
 
     returnEmptyExercise(
         exercises: Exercise[],
-        nextFormArrayIndex: number
+        nextFormArrayIndex: number,
     ): SingleExercise {
         return {
             formArrayIndex: nextFormArrayIndex,
@@ -239,7 +233,7 @@ export class NewTrainingService {
             sets: [],
             total: null,
             disabledTooltip: true,
-            availableExercises: [ ...exercises ]
+            availableExercises: [ ...exercises ],
         } as SingleExercise;
     }
 
@@ -258,7 +252,7 @@ export class NewTrainingService {
 
     private compare(
         a: Exercise,
-        b: Exercise
+        b: Exercise,
     ): number {
         if(a.name < b.name){
             return -1;

@@ -7,28 +7,28 @@ const routes: Routes = [
     {
         path: '',
         redirectTo: '/login',
-        pathMatch: 'full'
+        pathMatch: 'full',
     },
     {
         path: 'new-training',
         /* loadChildren: () => import('./training/training.module').then(module => module.TrainingModule) */
-        component: NewTrainingComponent
+        component: NewTrainingComponent,
     },
     {
         path: 'new-training/:id',
-        component: NewTrainingComponent
+        component: NewTrainingComponent,
     },
     {
         path: 'past-trainings',
-        component: PastTrainingsComponent
-    }
+        component: PastTrainingsComponent,
+    },
 ];
 
 @NgModule({
     imports: [RouterModule.forRoot(routes, {
-        preloadingStrategy: PreloadAllModules
+        preloadingStrategy: PreloadAllModules,
     })],
-    exports: [RouterModule]
+    exports: [RouterModule],
 })
 export class AppRoutingModule{
 

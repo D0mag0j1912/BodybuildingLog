@@ -17,7 +17,7 @@ import { NavigationModule } from './views/navigation/navigation.module';
 import { TrainingModule } from './views/training/training.module';
 
 init({
-    dsn: 'https://b4903b17554c4e40bbada176e50e4719@o997027.ingest.sentry.io/5955490'
+    dsn: 'https://b4903b17554c4e40bbada176e50e4719@o997027.ingest.sentry.io/5955490',
 });
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -26,7 +26,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
     ],
     imports: [
         BrowserModule,
@@ -42,23 +42,23 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
             loader: {
                 provide: TranslateLoader,
                 useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            }
-        })
+                deps: [HttpClient],
+            },
+        }),
     ],
     providers: [{
         provide: HTTP_INTERCEPTORS,
         useClass: AuthInterceptor,
-        multi: true
+        multi: true,
     }, {
         provide: HTTP_INTERCEPTORS,
         useClass: ErrorInterceptor,
-        multi: true
+        multi: true,
     }, {
         provide: ErrorHandler,
-        useClass: SentryService
+        useClass: SentryService,
     },
     HttpClient],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
 })
 export class AppModule { }

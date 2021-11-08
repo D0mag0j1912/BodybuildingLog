@@ -35,7 +35,7 @@ export class TrainingItemActionsComponent {
             weekDays: this.weekDays as ReadonlyArray<string>,
             timeCreated: this.timeCreated as string,
             dayIndex: this.dayIndex as number,
-            training: this.training as NewTraining
+            training: this.training as NewTraining,
         };
         switch(action) {
             case 'delete':

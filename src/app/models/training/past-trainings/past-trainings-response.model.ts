@@ -1,19 +1,19 @@
 import { NewTraining } from '../new-training/new-training.model';
 export interface PastTrainingsResponse {
-    trainings: [NewTraining];
-    dates: {
+    readonly trainings: [NewTraining];
+    readonly dates: {
         startDate: Date,
         endDate: Date
     };
-    trainingsPerPage: number;
-    message?: string;
+    readonly trainingsPerPage: number;
+    readonly message?: string;
 }
 export interface ErrorMessage {
-    message: string;
-    statusCode?: number;
+    readonly message: string;
+    readonly statusCode?: number;
 }
 
 export interface DateData {
-    startDate: Date;
-    endDate: Date;
+    readonly startDate: Date;
+    readonly endDate: Date;
 }

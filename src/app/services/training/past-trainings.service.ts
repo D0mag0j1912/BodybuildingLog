@@ -5,9 +5,7 @@ import { NewTraining } from 'src/app/models/training/new-training/new-training.m
 import { environment } from 'src/environments/environment';
 import { PastTrainingsResponse } from '../../models/training/past-trainings/past-trainings-response.model';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class PastTrainingsService {
 
     constructor(

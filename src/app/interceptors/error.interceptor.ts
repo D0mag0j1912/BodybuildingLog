@@ -32,7 +32,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                             if(Array.isArray((error.error as ErrorMessage).message)) {
                                 errorMessage = this.translateService.instant((error.error as ErrorMessage).message[0].substring(
                                     (error.error as ErrorMessage).message[0].indexOf('@') + 1,
-                                    (error.error as ErrorMessage).message[0].length
+                                    (error.error as ErrorMessage).message[0].length,
                                 ));
                             }
                             else {
@@ -46,10 +46,10 @@ export class ErrorInterceptor implements HttpInterceptor {
                 }
                 this.snackBar.open(errorMessage, null, {
                     duration: 10000,
-                    panelClass: 'app__snackbar-error'
+                    panelClass: 'app__snackbar-error',
                 });
                 return throwError(error as HttpErrorResponse);
-            })
+            }),
         );
     }
 }

@@ -6,16 +6,16 @@ import { PastTrainingsComponent } from './past-trainings/past-trainings.componen
 const routes: Routes = [
     {
         path: '',
-        component: NewTrainingComponent
+        component: NewTrainingComponent,
     },
     {
         path: 'past-trainings',
-        component: PastTrainingsComponent
-    }
+        component: PastTrainingsComponent,
+    },
 ];
 
 @NgModule({
     imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+    exports: [RouterModule],
 })
 export class TrainingRoutingModule{}

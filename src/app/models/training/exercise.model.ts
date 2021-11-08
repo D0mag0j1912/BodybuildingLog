@@ -1,6 +1,6 @@
 export interface Exercise {
-    _id: number;
-    name: string;
-    imageUrl?: string;
-    primaryMuscleGroup?: string;
+    readonly _id: number;
+    readonly name: string;
+    readonly imageUrl?: string;
+    readonly primaryMuscleGroup?: string;
 }

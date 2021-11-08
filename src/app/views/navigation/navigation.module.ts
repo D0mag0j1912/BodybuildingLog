@@ -10,18 +10,18 @@ import { SideNavComponent } from './side-nav/side-nav.component';
 @NgModule({
     declarations: [
         HeaderComponent,
-        SideNavComponent
+        SideNavComponent,
     ],
     imports: [
         CommonModule,
         TranslateModule,
         MaterialModule,
         FlexLayoutModule,
-        AuthModule
+        AuthModule,
     ],
     exports: [
         HeaderComponent,
-        SideNavComponent
-    ]
+        SideNavComponent,
+    ],
 })
 export class NavigationModule {}

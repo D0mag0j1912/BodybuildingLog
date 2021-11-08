@@ -8,9 +8,7 @@ import { Preferences } from 'src/app/models/preferences.model';
 import { environment } from '../../../environments/environment';
 import { Login, Signup } from '../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../models/auth/auth-data.model';
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class AuthService {
 
     private readonly loggedUser$$: BehaviorSubject<AuthResponseData> = new BehaviorSubject<AuthResponseData>(null);
@@ -38,7 +36,7 @@ export class AuthService {
         const updatedUserData: AuthResponseData = {...userData, preferences: {
             userId: preferences.userId,
             language: preferences.language,
-            weightFormat: 'kg'
+            weightFormat: 'kg',
         }};
         this.loggedUser$$.next({ ...updatedUserData });
         localStorage.setItem('userData', JSON.stringify({ ...updatedUserData }));
@@ -49,30 +47,30 @@ export class AuthService {
         weightFormat: string,
         email: string,
         password: string,
-        confirmPassword: string
+        confirmPassword: string,
     ): Observable<AuthResponseData> {
         const signupData: Signup = {
             email,
             password,
-            confirmPassword
+            confirmPassword,
         };
         const preferences: Preferences = {
             language: language,
-            weightFormat: weightFormat
+            weightFormat: weightFormat,
         };
         return this.http.post<AuthResponseData>(environment.BACKEND + '/signup', {
             signupData: signupData,
-            preferences: preferences
+            preferences: preferences,
         });
     }
 
     login(
         email: string,
-        password: string
+        password: string,
     ): Observable<AuthResponseData> {
         const authData: Login = {
             email: email,
-            password: password
+            password: password,
         };
         return this.http.post<AuthResponseData>(environment.BACKEND + '/login', authData).pipe(
             tap(async (response: AuthResponseData) => {
@@ -88,15 +86,16 @@ export class AuthService {
                         this.token,
                         expirationDate,
                         response._id,
-                        response.preferences
+                        response.preferences,
                     );
                     await this.router.navigate(['/new-training']);
                 }
             }),
             mergeMap((response: AuthResponseData) =>
                 this.translateService.use(response.preferences.language).pipe(
-                    switchMap(_ => of(response))
-                ))
+                    switchMap(_ => of(response)),
+                ),
+            ),
         );
     }
 
@@ -110,7 +109,7 @@ export class AuthService {
                 token: userData.token,
                 expirationDate: new Date(userData.expirationDate),
                 _id: userData._id,
-                preferences: userData.preferences
+                preferences: userData.preferences,
             };
             const now: Date = new Date();
             const expiresIn: number = authData.expirationDate.getTime() - now.getTime();
@@ -141,13 +140,13 @@ export class AuthService {
         token: string,
         expirationDate: Date,
         userId: string,
-        preferences: Preferences
+        preferences: Preferences,
     ): void {
         const userData: AuthResponseData = {
             token: token,
             expirationDate: expirationDate,
             _id: userId,
-            preferences: preferences
+            preferences: preferences,
         };
         localStorage.setItem('userData', JSON.stringify(userData));
     }

@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { NewTraining, SingleExercise } from '../../../../models/training/new-training/new-training.model';
 
 @Pipe({
-    name: 'showAllExercises'
+    name: 'showAllExercises',
 })
 export class ShowAllExercisesPipe implements PipeTransform {
 
@@ -21,7 +21,7 @@ export class ShowAllExercisesPipe implements PipeTransform {
                     exercisesToConcat += `${index+1}. ${exerciseName}\n`;
                 });
                 return exercisesToConcat as string;
-            })
+            }),
         );
     }
 }
