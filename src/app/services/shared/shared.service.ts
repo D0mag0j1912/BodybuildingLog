@@ -8,6 +8,6 @@ export class SharedService {
 
     readonly pastTrainingId$$: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    readonly pastTrainingsData$$: Subject<PastTrainingsResponse> = new Subject<PastTrainingsResponse>();
+    readonly deletedTraining$$: Subject<PastTrainingsResponse> = new Subject<PastTrainingsResponse>();
 
 }

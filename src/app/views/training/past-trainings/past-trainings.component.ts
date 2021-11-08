@@ -41,7 +41,7 @@ export class PastTrainingsComponent implements OnInit {
         private readonly router: Router,
         private readonly route: ActivatedRoute,
     ) {
-        this.sharedService.pastTrainingsData$$.pipe(
+        this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((response: PastTrainingsResponse) => {
             this.fillTemplateVariables(response);
