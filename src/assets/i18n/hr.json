@@ -18,7 +18,8 @@
             "invalid_date": "Pogrešan format datuma.",
             "unknown_error": "Došlo je do greške.",
             "not_authenticated": "Morate biti prijavljeni da biste izvršili ovu aktivnost.",
-            "not_authorized": "Morate imati korisničke ovlasti da biste izvršili ovu aktivnost."
+            "not_authorized": "Morate imati korisničke ovlasti da biste izvršili ovu aktivnost.",
+            "internet_required": "Morate biti spojeni na Internet."
         },
         "actions": {
             "delete": "Izbriši",

@@ -40,7 +40,6 @@ export class DeleteTrainingActionComponent {
     ){}
 
     deleteTraining(trainingId: string): void {
-        this.isLoading = true;
         this.data.deleteTrainingFn(
             trainingId as string,
             new Date(`

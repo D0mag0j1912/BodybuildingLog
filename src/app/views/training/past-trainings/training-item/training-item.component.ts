@@ -62,8 +62,7 @@ export class TrainingItemComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        console.log(this.training.createdAt)
-        console.log(utcToZonedTime(this.training.createdAt, environment.TIMEZONE))
+        //TODO: vrijeme ovdje ide 2 sata unaprijed
         this.timeCreated = format(
             utcToZonedTime(
                 this.training.createdAt as Date,

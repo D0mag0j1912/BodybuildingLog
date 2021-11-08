@@ -19,21 +19,25 @@ export class ErrorInterceptor implements HttpInterceptor {
         return next.handle(request).pipe(
             catchError((error: HttpErrorResponse) => {
                 let errorMessage: string;
-                //Server error
-                if(error instanceof HttpErrorResponse){
+                if(error instanceof HttpErrorResponse) {
                     captureException(error);
-                    if((error.error as ErrorMessage).statusCode === 404){
-                        errorMessage = this.translateService.instant('common.errors.unknown_error');
+                    if(!window.navigator.onLine){
+                        errorMessage = this.translateService.instant('common.errors.internet_required');
                     }
                     else {
-                        if(Array.isArray((error.error as ErrorMessage).message)){
-                            errorMessage = this.translateService.instant((error.error as ErrorMessage).message[0].substring(
-                                (error.error as ErrorMessage).message[0].indexOf('@') + 1,
-                                (error.error as ErrorMessage).message[0].length
-                            ));
+                        if((error.error as ErrorMessage).statusCode === 404) {
+                            errorMessage = this.translateService.instant('common.errors.unknown_error');
                         }
                         else {
-                            errorMessage = this.translateService.instant((error.error as ErrorMessage).message);
+                            if(Array.isArray((error.error as ErrorMessage).message)) {
+                                errorMessage = this.translateService.instant((error.error as ErrorMessage).message[0].substring(
+                                    (error.error as ErrorMessage).message[0].indexOf('@') + 1,
+                                    (error.error as ErrorMessage).message[0].length
+                                ));
+                            }
+                            else {
+                                errorMessage = this.translateService.instant((error.error as ErrorMessage).message);
+                            }
                         }
                     }
                 }
