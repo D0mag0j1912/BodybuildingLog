@@ -53,19 +53,18 @@ export class DeleteTrainingActionComponent {
             tap((response: PastTrainingsResponse) => {
                 if(response){
                     this.dialogRef.close();
+                    this.sharedService.deletedTraining$$.next(response as PastTrainingsResponse);
+                    this.snackBar.open(this.translateService.instant(response.message as string), null, {
+                        duration: 3000,
+                        panelClass: 'app__snackbar',
+                    });
                 }
             }),
             finalize(() => {
                 this.isLoading = false;
                 this.changeDetectorRef.markForCheck();
             }),
-        ).subscribe((response: PastTrainingsResponse) => {
-            this.sharedService.deletedTraining$$.next(response as PastTrainingsResponse);
-            this.snackBar.open(this.translateService.instant(response.message as string), null, {
-                duration: 3000,
-                panelClass: 'app__snackbar',
-            });
-        });
+        ).subscribe();
     }
 
     private getSplittedCurrentDate(): string[] {
