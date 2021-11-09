@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { format } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
@@ -12,6 +12,7 @@ const MAX_EXERCISE_NAME_WIDTH: number = 200;
     selector: 'app-training-item',
     templateUrl: './training-item.component.html',
     styleUrls: ['./training-item.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrainingItemComponent implements OnInit {
 
@@ -53,12 +54,14 @@ export class TrainingItemComponent implements OnInit {
                         this.isTooltipDisabled = true;
                     }
                 });
+                this.changeDetectorRef.markForCheck();
             });
         }
     }
 
     constructor(
         private readonly router: Router,
+        private readonly changeDetectorRef: ChangeDetectorRef,
     ) {}
 
     ngOnInit(): void {
