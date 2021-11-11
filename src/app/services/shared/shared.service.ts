@@ -10,4 +10,7 @@ export class SharedService {
 
     readonly deletedTraining$$: Subject<PastTrainingsResponse> = new Subject<PastTrainingsResponse>();
 
+    subtractTwoHours(date: Date): Date {
+        return new Date(new Date(date).setHours(new Date(date).getHours() - 2));
+    }
 }

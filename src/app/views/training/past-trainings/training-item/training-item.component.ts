@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { format } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
-import { environment } from '../../../../../environments/environment';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
+import { SharedService } from '../../../../services/shared/shared.service';
 
 const MAX_EXERCISE_NAME_WIDTH: number = 200;
 
@@ -60,20 +59,17 @@ export class TrainingItemComponent implements OnInit {
     }
 
     constructor(
+        private readonly sharedService: SharedService,
         private readonly router: Router,
         private readonly changeDetectorRef: ChangeDetectorRef,
     ) {}
 
     ngOnInit(): void {
-        //TODO: vrijeme ovdje ide 2 sata unaprijed
+        //TODO: vrijeme ovdje ide 2 sata unaprijed (uskladiti s lokalnom zonom) - Zasad samo oduzimam 2 sata
         this.timeCreated = format(
-            utcToZonedTime(
-                this.training.createdAt as Date,
-                environment.TIMEZONE as string)
+            this.sharedService.subtractTwoHours(new Date(this.training.createdAt))
             , 'HH:mm');
-        this.dayIndex = utcToZonedTime(
-            this.training.createdAt as Date,
-            environment.TIMEZONE as string).getDay();
+        this.dayIndex = this.sharedService.subtractTwoHours(new Date(this.training.createdAt)).getDay();
     }
 
     async trainingClicked(): Promise<void> {
