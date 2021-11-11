@@ -15,6 +15,7 @@ import { DialogComponent } from 'src/app/views/shared/dialog/dialog.component';
 import { DialogData } from 'src/app/views/shared/dialog/dialog.component';
 import { DeleteExerciseDialogData } from 'src/app/views/shared/dialog/dialog.component';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
+import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { NewTraining, Set, SingleExercise } from '../../../models/training/new-training/new-training.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
@@ -94,7 +95,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         null,
                         currentTrainingState as NewTraining,
                     )),
-                takeUntil(this.unsubsService),
+                takeUntil(this.unsubscribeService),
             ).subscribe();
         }
     }
@@ -113,7 +114,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     ),
                 ]),
             ),
-            takeUntil(this.unsubsService),
+            takeUntil(this.unsubscribeService),
         );
 
     constructor(
@@ -121,7 +122,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
         private readonly translateService: TranslateService,
-        private readonly unsubsService: UnsubscribeService,
+        private readonly unsubscribeService: UnsubscribeService,
         private readonly dialog: MatDialog,
         private readonly snackBar: MatSnackBar,
         private readonly route: ActivatedRoute,
@@ -175,7 +176,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                         }
                                     }
                                 }),
-                                takeUntil(this.unsubsService),
+                                takeUntil(this.unsubscribeService),
                             ),
                         ),
                     );
@@ -191,7 +192,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     switchMap(_ => this.formInit()),
                     finalize(() => this.isLoading = false),
                 )),
-            takeUntil(this.unsubsService),
+            takeUntil(this.unsubscribeService),
         ).subscribe();
 
         this.indexChanged$$.pipe(
@@ -218,7 +219,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         this.getTotal(indexes.indexExercise as number).patchValue(total.toString()+ ' kg');
                 }
             }),
-            takeUntil(this.unsubsService),
+            takeUntil(this.unsubscribeService),
         ).subscribe();
     }
 
@@ -400,14 +401,14 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                     finalize(() => this.exerciseStateChanged$$.next()),
                                 ),
                             ),
-                            takeUntil(this.unsubsService),
+                            takeUntil(this.unsubscribeService),
                         );
                     }
                     else{
                         return of(null);
                     }
                 }),
-                takeUntil(this.unsubsService),
+                takeUntil(this.unsubscribeService),
             ).subscribe();
         }
         else {
@@ -422,7 +423,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         finalize(() => this.exerciseStateChanged$$.next()),
                     ),
                 ),
-                takeUntil(this.unsubsService),
+                takeUntil(this.unsubscribeService),
             ).subscribe();
         }
     }
@@ -471,33 +472,39 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     tryAgain(): void {
         this.isLoading = true;
-        this.isError = false;
-        if(!this.editTraining){
+        if(this.editTraining){
             this.pastTrainingService.getPastTraining(this._id as string).pipe(
-                tap((training: NewTraining) => {
+                catchError(_ => {
+                    this.isError = true;
+                    return of(null);
+                }),
+                finalize(() => this.isLoading = false),
+            ).subscribe((training: NewTraining) => {
+                if(training){
                     this.editedDate = training.updatedAt as Date;
                     this.editTraining = {
                         ...training as NewTraining,
                         editMode: this.editMode,
                     } as NewTraining;
                     this.newTrainingService.updateTrainingData(this.editTraining as NewTraining);
-                }),
-                catchError(_ => {
-                    this.isError = true;
-                    this.isLoading = false;
-                    return of(null);
-                }),
-            ).subscribe();
+                    this.isError = false;
+                }
+            });
         }
         else {
             this.newTrainingService.getExercises().pipe(
                 catchError(_ => {
                     this.isError = true;
-                    this.isLoading = false;
                     return of(null);
                 }),
+                tap((response: AuthResponseData) => {
+                    if(response){
+                        this.isError = false;
+                    }
+                }),
+                finalize(() => this.isLoading = false),
                 switchMap(() => this.formInit()),
-            );
+            ).subscribe();
         }
     }
 
@@ -517,7 +524,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 });
                 (<FormArray>this.form.get('exercise')).patchValue(this.formArrayInit(this.editTraining ? this.editTraining : data));
             }),
-            takeUntil(this.unsubsService),
+            takeUntil(this.unsubscribeService),
         );
     }
 
@@ -629,7 +636,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     }),
                 ),
             ),
-            takeUntil(this.unsubsService),
+            takeUntil(this.unsubscribeService),
         );
     }
 

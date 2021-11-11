@@ -7,6 +7,7 @@ import { SetTrainingData } from 'src/app/views/training/new-training/new-trainin
 import { environment } from '../../../environments/environment';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Exercise } from '../../models/training/exercise.model';
+import { ExerciseFetch } from '../../models/training/exercise.model';
 import { EMPTY_TRAINING } from '../../models/training/new-training/empty-training.model';
 import { NewTraining, SingleExercise } from '../../models/training/new-training/new-training.model';
 import { AuthService } from '../auth/auth.service';
@@ -25,7 +26,7 @@ export class NewTrainingService {
         private readonly authService: AuthService,
     ){}
 
-    getExercises(): Observable<AuthResponseData> {
+    getExercises(): Observable<AuthResponseData | ExerciseFetch> {
         return this.http.get<Exercise[]>(environment.BACKEND + '/get_exercises').pipe(
             switchMap((exercises: Exercise[]) => {
                 const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
@@ -45,7 +46,7 @@ export class NewTrainingService {
                     );
                 }
                 else {
-                    return of(null);
+                    return of('alreadyFetched' as ExerciseFetch);
                 }
             }),
         );

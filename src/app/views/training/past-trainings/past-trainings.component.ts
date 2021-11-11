@@ -84,7 +84,11 @@ export class PastTrainingsComponent implements OnInit {
 
     tryAgain(): void {
         this.isLoading = true;
-        this.initializePastTrainings(this.getLocalDateTime()).subscribe();
+        this.initializePastTrainings(this.getLocalDateTime()).subscribe((response: PastTrainingsResponse) => {
+            if(response){
+                this.isError = false;
+            }
+        });
     }
 
     private initializePastTrainings(
@@ -92,16 +96,8 @@ export class PastTrainingsComponent implements OnInit {
         isArrow?: boolean,
     ): Observable<PastTrainingsResponse> {
         return this.pastTrainingsService.getPastTrainings(orientationDate as Date).pipe(
-            tap((result: PastTrainingsResponse) => {
+            tap(async (result: PastTrainingsResponse) => {
                 this.fillTemplateVariables(result);
-            }),
-            catchError(_ => {
-                this.isError = true;
-                return of(null);
-            }),
-            finalize(async () => {
-                this.isLoading = false;
-
                 if(isArrow){
                     await this.router.navigate([], {
                         relativeTo: this.route,
@@ -119,6 +115,13 @@ export class PastTrainingsComponent implements OnInit {
                         },
                     });
                 }
+            }),
+            catchError(_ => {
+                this.isError = true;
+                return of(null);
+            }),
+            finalize(() => {
+                this.isLoading = false;
             }),
         );
     }
