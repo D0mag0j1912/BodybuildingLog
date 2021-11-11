@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, startOfDay, subDays } from 'date-fns';
@@ -17,6 +17,7 @@ import { PastTrainingsService } from '../../../services/training/past-trainings.
     templateUrl: './past-trainings.component.html',
     styleUrls: ['./past-trainings.component.scss'],
     providers: [UnsubscribeService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PastTrainingsComponent implements OnInit {
 
@@ -40,6 +41,7 @@ export class PastTrainingsComponent implements OnInit {
         private readonly unsubscribeService: UnsubscribeService,
         private readonly router: Router,
         private readonly route: ActivatedRoute,
+        private readonly changeDetectorRef: ChangeDetectorRef,
     ) {
         this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
@@ -122,6 +124,7 @@ export class PastTrainingsComponent implements OnInit {
             }),
             finalize(() => {
                 this.isLoading = false;
+                this.changeDetectorRef.markForCheck();
             }),
         );
     }
@@ -136,6 +139,7 @@ export class PastTrainingsComponent implements OnInit {
         this.trainings$ = of(response.trainings as NewTraining[]);
         this.trainingsPerPage = +response.trainingsPerPage as number;
         this.disableNextWeek();
+        this.changeDetectorRef.markForCheck();
     }
 
     private disableNextWeek(): void {
@@ -148,6 +152,7 @@ export class PastTrainingsComponent implements OnInit {
                 environment.TIMEZONE as string),
         }).map((date: Date) => date.getTime() as number);
         this.isNextWeekDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number) as boolean;
+        this.changeDetectorRef.markForCheck();
     }
 
     private getLocalDateTime(): Date {
