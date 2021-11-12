@@ -13,7 +13,7 @@ export function allSetsFilled(): ValidatorFn {
             if(isSetFilled){
                 return null;
             }
-            return {'setNotFilled': true};
+            return { 'setNotFilled': true };
         }
         return null;
     };
@@ -31,7 +31,7 @@ export function atLeastOneSet(): ValidatorFn {
             if(isSet){
                 return null;
             }
-            return {'atLeastOneSet': true};
+            return { 'atLeastOneSet': true };
         }
         return null;
     };
@@ -41,10 +41,10 @@ export function bothValuesRequired(): ValidatorFn {
     return (group: AbstractControl): {[key: string]: boolean} | null => {
         if(group){
             if(group.get('weightLifted').value && !group.get('reps').value){
-                return {'repsRequired': true};
+                return { 'repsRequired': true };
             }
             else if(!group.get('weightLifted').value && group.get('reps').value){
-                return {'weightLiftedRequired': true};
+                return { 'weightLiftedRequired': true };
             }
             else {
                 return null;
@@ -60,7 +60,7 @@ export function isBroj(): ValidatorFn {
             if(!isNaN(parseFloat(control.value)) && isFinite(control.value)){
                 return null;
             }
-            return {'onlyNumbers': true};
+            return { 'onlyNumbers': true };
         }
         return null;
     };

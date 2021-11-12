@@ -180,7 +180,7 @@
                             </mat-form-field>
                             <div
                                 class="delete-set-wrapper"
-                                [matTooltip]="adjustDeleteSetTooltip(j) | async"
+                                [matTooltip]="showDeleteSetTooltip(j) | async"
                                 matTooltipPosition="above"
                                 [matTooltipClass]="j > 0 ? 'tooltip' : 'tooltip-error'">
                                 <button
@@ -199,15 +199,21 @@
                     </ng-container>
                 </ng-container>
                 <div class="add-sets">
-                    <button
-                        type="button"
-                        color="primary"
-                        mat-raised-button
-                        class="add-sets-button"
-                        (click)="addSet(i);"
-                        [disabled]="!group.get('name').value || group.errors?.setNotFilled">
-                        {{ 'training.new_training.buttons.add_set' | translate }}
-                    </button>
+                    <div
+                        matTooltipClass="tooltip"
+                        [matTooltip]="showAddSetTooltip(
+                            group.errors?.setNotFilled,
+                            i) | async">
+                        <button
+                            type="button"
+                            color="primary"
+                            mat-raised-button
+                            class="add-sets-button"
+                            (click)="addSet(i);"
+                            [disabled]="!getExerciseName(i).value || group.errors?.setNotFilled">
+                            {{ 'training.new_training.buttons.add_set' | translate }}
+                        </button>
+                    </div>
                 </div>
                 <div class="total">
                     <p class="total-text">
@@ -234,7 +240,7 @@
         <div class="add-exercise">
             <div
                 *ngIf="(isAddingExercisesAllowed$ | async) as isAddingExercisesAllowed"
-                [matTooltip]="(adjustAddExerciseTooltip(isAddingExercisesAllowed[0].length, isAddingExercisesAllowed[1].length)) | async"
+                [matTooltip]="(showAddExerciseTooltip(isAddingExercisesAllowed[0].length, isAddingExercisesAllowed[1].length)) | async"
                 [matTooltipClass]="'tooltip-error'">
                 <button
                     mat-raised-button

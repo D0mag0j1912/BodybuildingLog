@@ -227,7 +227,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         this.sharedService.editingTraining$$.next(false);
     }
 
-    adjustDeleteSetTooltip(indexSet: number): Observable<string> {
+    showDeleteSetTooltip(indexSet: number): Observable<string> {
         if(indexSet > 0){
             return this.translateService.stream('training.new_training.buttons.delete_set');
         }
@@ -236,7 +236,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
-    adjustAddExerciseTooltip(
+    showAddExerciseTooltip(
         currentTrainingStateLength: number,
         allExercisesLength: number,
     ): Observable<string> {
@@ -261,6 +261,20 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             else {
                 return of('');
             }
+        }
+    }
+
+    showAddSetTooltip(
+        isSetError: boolean,
+        indexExercise: number,
+    ): Observable<string> {
+        if(isSetError){
+            return this.translateService.stream('training.new_training.first_add_previous_set', {
+                setNumber: this.getSets(indexExercise).length > 0 ? this.getSets(indexExercise).length : 1,
+            });
+        }
+        else {
+            return of('');
         }
     }
 

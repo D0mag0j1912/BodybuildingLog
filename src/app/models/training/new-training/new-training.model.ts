@@ -22,3 +22,8 @@ export interface Set {
     weightLifted: number;
     reps: number;
 }
+
+export interface SetStateChanged {
+    indexExercise: number;
+    indexSet: number;
+}

@@ -79,6 +79,7 @@
             "delete_exercise_prompt": "Are you sure you want to delete?",
             "training_updated": "Training updated.",
             "set_saved": "Set saved.",
+            "first_add_previous_set": "You need to enter set number {{ setNumber }}.",
             "training_saved": "Training saved.",
             "finish_training": "Finish training",
             "errors": {
