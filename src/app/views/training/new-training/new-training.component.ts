@@ -20,6 +20,7 @@ import { Exercise } from '../../../models/training/exercise.model';
 import { NewTraining, SingleExercise } from '../../../models/training/new-training/new-training.model';
 import { Set, SetStateChanged } from '../../../models/training/new-training/set.model';
 import { SetTrainingData } from '../../../models/training/new-training/set.model';
+import { createInitialSet } from '../../../models/training/new-training/set.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
 
@@ -285,7 +286,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             new FormGroup({
                 'formArrayIndex': new FormControl(clicked ? this.getExercises().length : null, [Validators.required]),
                 'name': new FormControl(null, [Validators.required]),
-                'sets': new FormControl(this.buildSets()),
+                'sets': new FormControl(createInitialSet()),
                 'total': new FormControl(this.initialWeight.toString() + ' kg', [Validators.required]),
                 'disabledTooltip': new FormControl(true, [Validators.required]),
             }),
@@ -449,16 +450,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             }),
             tap(() => this.isLoading = false),
         ).subscribe();
-    }
-
-    private buildSets(): Set[] {
-        const sets: Set[] = [];
-        sets.push({
-            setNumber: 1,
-            weightLifted: null,
-            reps: null,
-        } as Set);
-        return sets as Set[];
     }
 
     private formInit(): Observable<NewTraining> {

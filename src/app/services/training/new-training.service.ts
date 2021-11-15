@@ -11,6 +11,7 @@ import { EMPTY_TRAINING } from '../../models/training/new-training/empty-trainin
 import { NewTraining, SingleExercise } from '../../models/training/new-training/new-training.model';
 import { SetTrainingData } from '../../models/training/new-training/set.model';
 import { Set } from '../../models/training/new-training/set.model';
+import { createInitialSet } from '../../models/training/new-training/set.model';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
@@ -230,7 +231,7 @@ export class NewTrainingService {
         return {
             formArrayIndex: nextFormArrayIndex,
             exerciseName: null,
-            sets: [],
+            sets: createInitialSet(),
             total: null,
             disabledTooltip: true,
             availableExercises: [ ...exercises ],

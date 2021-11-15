@@ -14,17 +14,19 @@ type SetData = {
     reps?: number;
 };
 
+const CONTROL_VALUE_ACCESSOR = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => SetsComponent),
+    multi: true,
+};
+
 @Component({
     selector: 'app-sets',
     templateUrl: './sets.component.html',
     styleUrls: ['./sets.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => SetsComponent),
-            multi: true,
-        },
+        CONTROL_VALUE_ACCESSOR,
         UnsubscribeService,
     ],
 })
@@ -33,6 +35,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     form: FormArray = new FormArray([]);
 
     onTouched: () => void;
+    onChange: (isSetError: boolean) => void;
 
     @Input()
     exerciseNameControl: AbstractControl;
@@ -97,11 +100,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     }
 
     registerOnChange(fn: (isSetError: boolean) => void): void {
-        this.form.valueChanges.pipe(
-            takeUntil(this.unsubscribeService),
-        ).subscribe(_ => {
-            fn(this.form.errors ? true : false);
-        });
+        this.onChange = fn;
     }
 
     registerOnTouched(fn: () => void): void {

@@ -21,3 +21,13 @@ export interface SetTrainingData {
     reps: number;
     total: number;
 }
+
+export function createInitialSet(): Set[] {
+    const sets: Set[] = [];
+    sets.push({
+        setNumber: 1,
+        weightLifted: null,
+        reps: null,
+    } as Set);
+    return sets as Set[];
+}
