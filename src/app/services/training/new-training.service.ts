@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
-import { SetTrainingData } from 'src/app/views/training/new-training/new-training.component';
 import { environment } from '../../../environments/environment';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Exercise } from '../../models/training/exercise.model';
 import { ExerciseFetch } from '../../models/training/exercise.model';
 import { EMPTY_TRAINING } from '../../models/training/new-training/empty-training.model';
 import { NewTraining, SingleExercise } from '../../models/training/new-training/new-training.model';
+import { SetTrainingData } from '../../models/training/new-training/set.model';
+import { Set } from '../../models/training/new-training/set.model';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
@@ -80,6 +81,11 @@ export class NewTrainingService {
     ): void {
         const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
         updatedTraining.exercise[indexExercise].sets.splice(indexSet, 1);
+        updatedTraining.exercise[indexExercise].sets.map((set: Set) => {
+            if(set.setNumber > (indexSet + 1)){
+                set.setNumber--;
+            }
+        });
         updatedTraining.exercise[indexExercise].total = newTotal;
         this.saveTrainingData({ ...updatedTraining } as NewTraining);
     }

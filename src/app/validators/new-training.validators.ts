@@ -1,10 +1,10 @@
 import { AbstractControl, FormArray, ValidatorFn } from '@angular/forms';
 
 export function allSetsFilled(): ValidatorFn {
-    return (group: AbstractControl): {[key: string]: boolean} | null => {
-        if(group){
+    return (array: AbstractControl): {[key: string]: boolean} | null => {
+        if(array){
             let isSetFilled: boolean = true;
-            (<FormArray>group.get('sets')).controls.forEach((set: AbstractControl) => {
+            (array as FormArray).controls.forEach((set: AbstractControl) => {
                 if(!set.get('weightLifted').value || !set.get('reps').value
                     || set.get('weightLifted').errors || set.get('reps').errors){
                     isSetFilled = false;
@@ -20,10 +20,10 @@ export function allSetsFilled(): ValidatorFn {
 }
 
 export function atLeastOneSet(): ValidatorFn {
-    return (group: AbstractControl): {[key: string]: boolean} | null => {
-        if(group){
+    return (array: AbstractControl): {[key: string]: boolean} | null => {
+        if(array){
             let isSet: boolean = false;
-            (<FormArray>group.get('sets')).controls.forEach((set: AbstractControl) => {
+            (array as FormArray).controls.forEach((set: AbstractControl) => {
                 if(set.get('weightLifted').value && set.get('reps').value){
                     isSet = true;
                 }

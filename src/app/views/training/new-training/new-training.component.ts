@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Params } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { catchError, debounceTime, delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { catchError, delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service';
@@ -17,25 +17,13 @@ import { DeleteExerciseDialogData } from 'src/app/views/shared/dialog/dialog.com
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { Exercise } from '../../../models/training/exercise.model';
-import { NewTraining, Set, SingleExercise } from '../../../models/training/new-training/new-training.model';
+import { NewTraining, SingleExercise } from '../../../models/training/new-training/new-training.model';
+import { Set, SetStateChanged } from '../../../models/training/new-training/set.model';
+import { SetTrainingData } from '../../../models/training/new-training/set.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
 
 const MAX_EXERCISE_NAME_WIDTH: number = 181;
-
-export interface SetTrainingData {
-    formArrayIndex: number;
-    exerciseName: string;
-    setNumber: number;
-    weightLifted: number;
-    reps: number;
-    total: number;
-}
-
-interface SetStateChanged {
-    indexExercise: number;
-    indexSet: number;
-}
 
 @Component({
     selector: 'app-new-training',
@@ -45,8 +33,7 @@ interface SetStateChanged {
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
 
-    private readonly indexChanged$$: Subject<SetStateChanged> = new Subject<SetStateChanged>();
-    private readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
+    readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
 
     form: FormGroup;
 
@@ -195,45 +182,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             takeUntil(this.unsubscribeService),
         ).subscribe();
 
-        this.indexChanged$$.pipe(
-            debounceTime(1000),
-            tap((indexes: SetStateChanged) => {
-                if(this.getWeightLifted(indexes.indexExercise, indexes.indexSet).valid
-                    && this.getReps(indexes.indexExercise, indexes.indexSet).valid
-                    && this.getWeightLifted(indexes.indexExercise, indexes.indexSet).value
-                    && this.getReps(indexes.indexExercise, indexes.indexSet).value
-                    && this.getExerciseName(indexes.indexExercise).value){
-                        let total: number = 0;
-                        this.getSets(indexes.indexExercise).forEach((control: AbstractControl) => {
-                            total = total + (+control.get('weightLifted').value * +control.get('reps').value);
-                        });
-                        const trainingData: SetTrainingData = {
-                            formArrayIndex: this.getFormArrayIndex(indexes.indexExercise).value as number,
-                            exerciseName: this.getExerciseName(indexes.indexExercise).value as string,
-                            setNumber: this.getSetNumber(indexes.indexExercise, indexes.indexSet).value as number,
-                            weightLifted: this.getWeightLifted(indexes.indexExercise, indexes.indexSet).value as number,
-                            reps: +this.getReps(indexes.indexExercise, indexes.indexSet).value as number,
-                            total: total as number,
-                        };
-                        this.newTrainingService.setsChanged(trainingData as SetTrainingData);
-                        this.getTotal(indexes.indexExercise as number).patchValue(total.toString()+ ' kg');
-                }
-            }),
-            takeUntil(this.unsubscribeService),
-        ).subscribe();
     }
 
     ngOnDestroy(): void {
         this.sharedService.editingTraining$$.next(false);
-    }
-
-    showDeleteSetTooltip(indexSet: number): Observable<string> {
-        if(indexSet > 0){
-            return this.translateService.stream('training.new_training.buttons.delete_set');
-        }
-        else {
-            return this.translateService.stream('training.new_training.errors.delete_first_set');
-        }
     }
 
     showAddExerciseTooltip(
@@ -248,10 +200,12 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 if(!this.getExerciseName(this.getExercises().length - 1)?.value){
                     return this.translateService.stream('training.new_training.errors.pick_current_exercise');
                 }
-                else if(this.getExercises()[this.getExercises().length - 1]?.errors?.atLeastOneSet) {
+                //TODO: popraviti
+                else if(this.getSets(this.getExercises().length - 1)?.errors?.atLeastOneSet) {
                     return this.translateService.stream('training.new_training.errors.first_set_required');
                 }
-                else if(this.getWeightLifted(this.getExercises().length - 1, 0)?.errors || this.getReps(this.getExercises().length - 1, 0)?.errors) {
+                //TODO: popraviti
+                else if(this.getSets(this.getExercises().length - 1)?.errors) {
                     return this.translateService.stream('training.new_training.errors.first_set_invalid');
                 }
                 else {
@@ -264,30 +218,15 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
-    showAddSetTooltip(
-        isSetError: boolean,
-        indexExercise: number,
-    ): Observable<string> {
-        if(isSetError){
-            return this.translateService.stream('training.new_training.first_add_previous_set', {
-                setNumber: this.getSets(indexExercise).length > 0 ? this.getSets(indexExercise).length : 1,
-            });
-        }
-        else {
-            return of('');
-        }
-    }
-
     isAddingExercisesDisabled(
         currentExercisesLength: number,
         allExercisesLength: number,
     ): boolean {
         if(this.getExercises().length > 0){
             return (currentExercisesLength >= allExercisesLength)
-            || ((!this.getExerciseName(this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
-            || this.getExercises()[this.getExercises().length - 1]?.errors?.atLeastOneSet
-            || this.getWeightLifted(this.getExercises().length - 1, 0)?.errors
-            || this.getReps(this.getExercises().length - 1, 0)?.errors;
+                || ((!this.getExerciseName(this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
+                //TODO: popraviti
+                || this.getSets(this.getExercises().length - 1)?.errors ? true : false;
         }
         else {
             return false;
@@ -304,10 +243,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         element: MatSelect,
     ): void {
         if($event.value){
-            if(this.getSets(indexExercise).length > 0){
-                this.getWeightLifted(indexExercise, 0).enable();
-                this.getReps(indexExercise, 0).enable();
-            }
             this.exerciseChanged = !this.exerciseChanged;
             this.setExerciseNameTooltip(
                 element as MatSelect,
@@ -322,49 +257,37 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
-    onChangeSets(
-        indexExercise: number,
-        indexSet: number,
-    ): void {
-        this.indexChanged$$.next({
-            indexExercise: indexExercise,
-            indexSet: indexSet,
-        } as SetStateChanged);
+    onChangeSets($event: SetStateChanged): void {
+        setTimeout(() => {
+            if($event.isWeightLiftedValid
+                && $event.isRepsValid
+                && this.getExerciseName($event.indexExercise).value){
+                    const trainingData: SetTrainingData = {
+                        formArrayIndex: this.getFormArrayIndex($event.indexExercise).value as number,
+                        exerciseName: this.getExerciseName($event.indexExercise).value as string,
+                        setNumber: $event.newSet.setNumber as number,
+                        weightLifted: $event.newSet.weightLifted as number,
+                        reps: $event.newSet.reps as number,
+                        total: $event.newTotal as number,
+                    };
+                    this.newTrainingService.setsChanged(trainingData as SetTrainingData);
+                    this.getTotal($event.indexExercise as number).patchValue($event.newTotal.toString()+ ' kg');
+            }
+        }, 1000);
     }
 
     getExercises(): AbstractControl[] {
         return (<FormArray>this.form.get('exercise')).controls;
     }
 
-    addExercise(
-        isExerciseName?: boolean,
-        clicked?: MouseEvent,
-    ): void {
+    addExercise(clicked?: MouseEvent): void {
         (<FormArray>this.form.get('exercise')).push(
             new FormGroup({
                 'formArrayIndex': new FormControl(clicked ? this.getExercises().length : null, [Validators.required]),
                 'name': new FormControl(null, [Validators.required]),
-                'sets': new FormArray([
-                    new FormGroup({
-                        'setNumber': new FormControl(1, [Validators.required]),
-                        'weightLifted': new FormControl({value: null, disabled: !isExerciseName}, [
-                            Validators.required,
-                            Validators.min(1),
-                            Validators.max(1000),
-                            NewTrainingValidators.isBroj(),
-                        ]),
-                        'reps': new FormControl({value: null, disabled: !isExerciseName}, [
-                            Validators.required,
-                            Validators.min(1),
-                            Validators.max(1000),
-                            Validators.pattern('^[0-9]*$'),
-                        ]),
-                    }),
-                ]),
+                'sets': new FormControl(this.buildSets()),
                 'total': new FormControl(this.initialWeight.toString() + ' kg', [Validators.required]),
                 'disabledTooltip': new FormControl(true, [Validators.required]),
-            }, {
-                validators: [NewTrainingValidators.atLeastOneSet(), NewTrainingValidators.allSetsFilled()],
             }),
         );
 
@@ -442,45 +365,12 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
-    getSets(indexExercise: number): AbstractControl[] {
-        return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).controls;
-    }
-
-    addSet(indexExercise: number): void {
-        (<FormArray>(<FormGroup>(<FormArray>this.form.get('exercise')).at(indexExercise)).get('sets')).push(
-            new FormGroup({
-                'setNumber': new FormControl(this.getSets(indexExercise).length + 1, [Validators.required]),
-                'weightLifted': new FormControl(null, [
-                    Validators.min(1),
-                    Validators.max(1000),
-                    NewTrainingValidators.isBroj(),
-                ]),
-                'reps': new FormControl(null, [
-                    Validators.min(1),
-                    Validators.max(1000),
-                    Validators.pattern('^[0-9]*$'),
-                ]),
-            }, {
-                validators: [NewTrainingValidators.bothValuesRequired()],
-            }),
-        );
-    }
-
-    deleteSet(
-        indexExercise: number,
-        indexSet: number,
-    ): void {
-        (<FormArray>(<FormGroup>(<FormArray>this.form.get('exercise')).at(indexExercise)).get('sets')).removeAt(indexSet);
-
-        let newTotal: number = 0;
-        this.getSets(indexExercise).forEach((control: AbstractControl) => {
-            newTotal = newTotal + (+control.get('weightLifted').value * +control.get('reps').value);
-        });
-        this.getTotal(indexExercise).patchValue(newTotal.toString() + ' kg');
+    deleteSet($event: Partial<SetStateChanged>): void {
+        this.getTotal($event.indexExercise).patchValue($event.newTotal.toString() + ' kg');
         this.newTrainingService.deleteSet(
-            indexExercise as number,
-            indexSet as number,
-            newTotal as number,
+            $event.indexExercise as number,
+            $event.indexSet as number,
+            $event.newTotal as number,
         );
     }
 
@@ -522,52 +412,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
-    private formInit(): Observable<NewTraining> {
-        return this.newTrainingService.currentTrainingChanged$.pipe(
-            take(1),
-            tap((data: NewTraining) => {
-                this.form = new FormGroup({
-                    'bodyweight': new FormControl(
-                        NewTrainingHandler.fillBodyweight(
-                            data.bodyweight,
-                            this.editTraining ? this.editTraining.bodyweight : null,
-                        ),
-                        [NewTrainingValidators.isBroj(), Validators.min(30), Validators.max(300)],
-                    ),
-                    'exercise': new FormArray([]),
-                });
-                (<FormArray>this.form.get('exercise')).patchValue(this.formArrayInit(this.editTraining ? this.editTraining : data));
-            }),
-            takeUntil(this.unsubscribeService),
-        );
-    }
-
-    private formArrayInit(data: NewTraining): AbstractControl[] {
-        data.exercise.forEach(
-            (exercise: SingleExercise, indexExercise: number) => {
-            const isExerciseName: boolean = exercise.exerciseName ? true : false;
-            this.addExercise(isExerciseName);
-            this.getFormArrayIndex(indexExercise).patchValue(indexExercise);
-
-            if(exercise.exerciseName) {
-                this.getExerciseName(indexExercise).patchValue(exercise.exerciseName as string);
-                if(exercise.sets.length > 0){
-                    exercise.sets.forEach(
-                        (set: Set, indexSet: number) => {
-                        this.getWeightLifted(indexExercise, indexSet).patchValue(set.weightLifted as number);
-                        this.getReps(indexExercise, indexSet).patchValue(set.reps as number);
-                        if(indexSet < exercise.sets.length - 1){
-                            this.addSet(indexExercise);
-                        }
-                    });
-                    this.getTotal(indexExercise).patchValue(exercise.total.toString() + ' kg');
-                    this.getDisabledTooltip(indexExercise).patchValue(exercise.disabledTooltip as boolean);
-                }
-            }
-        });
-        return this.getExercises();
-    }
-
     onSubmit(): void {
         this.isSubmitted = true;
         if(!this.form.valid){
@@ -607,6 +451,52 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
+    private buildSets(): Set[] {
+        const sets: Set[] = [];
+        sets.push({
+            setNumber: 1,
+            weightLifted: null,
+            reps: null,
+        } as Set);
+        return sets as Set[];
+    }
+
+    private formInit(): Observable<NewTraining> {
+        return this.newTrainingService.currentTrainingChanged$.pipe(
+            take(1),
+            tap((data: NewTraining) => {
+                this.form = new FormGroup({
+                    'bodyweight': new FormControl(
+                        NewTrainingHandler.fillBodyweight(
+                            data.bodyweight,
+                            this.editTraining ? this.editTraining.bodyweight : null,
+                        ),
+                        [NewTrainingValidators.isBroj(), Validators.min(30), Validators.max(300)],
+                    ),
+                    'exercise': new FormArray([]),
+                });
+                (<FormArray>this.form.get('exercise')).patchValue(this.formArrayInit(this.editTraining ? this.editTraining : data));
+            }),
+            takeUntil(this.unsubscribeService),
+        );
+    }
+
+    private formArrayInit(data: NewTraining): AbstractControl[] {
+        data.exercise.forEach(
+            (exercise: SingleExercise, indexExercise: number) => {
+            this.addExercise();
+            this.getFormArrayIndex(indexExercise).patchValue(indexExercise);
+
+            if(exercise.exerciseName) {
+                this.getExerciseName(indexExercise).patchValue(exercise.exerciseName as string);
+                this.getSets(indexExercise).patchValue(exercise.sets);
+                this.getTotal(indexExercise).patchValue(exercise.total ? exercise.total.toString() + ' kg' : '0kg');
+                this.getDisabledTooltip(indexExercise).patchValue(exercise.disabledTooltip as boolean);
+            }
+        });
+        return this.getExercises();
+    }
+
     private gatherAllFormData(): Observable<Exercise[]> {
         return this.newTrainingService.currentTrainingChanged$.pipe(
             take(1),
@@ -630,13 +520,13 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             alreadyUsedExercises.push(this.getExerciseName(indexExercise).value as string);
 
                             const formSetData: Set[] = [];
-                            this.getSets(indexExercise).forEach((set: AbstractControl, indexSet: number) => {
+                            /* this.getSets(indexExercise).forEach((set: AbstractControl, indexSet: number) => {
                                 formSetData.push({
                                     setNumber: +this.getSetNumber(indexExercise, indexSet).value as number,
                                     weightLifted: +this.getWeightLifted(indexExercise, indexSet).value as number,
                                     reps: +this.getReps(indexExercise, indexSet).value as number,
                                 });
-                            });
+                            }); */
                             exerciseFormData[indexExercise].sets = formSetData;
                         });
 
@@ -693,25 +583,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         return (<FormArray>this.form.get('exercise')).at(indexExercise)?.get('name');
     }
 
-    getSetNumber(
-        indexExercise: number,
-        indexSet: number,
-    ): AbstractControl {
-        return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).at(indexSet).get('setNumber');
-    }
-
-    getWeightLifted(
-        indexExercise: number,
-        indexSet: number,
-    ): AbstractControl {
-        return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).at(indexSet).get('weightLifted');
-    }
-
-    getReps(
-        indexExercise: number,
-        indexSet: number,
-    ): AbstractControl {
-        return (<FormArray>(<FormArray>this.form.get('exercise')).at(indexExercise).get('sets')).at(indexSet).get('reps');
+    getSets(indexExercise: number): AbstractControl {
+        return (<FormArray>this.form.get('exercise')).at(indexExercise)?.get('sets');
     }
 
     getTotal(indexExercise: number): AbstractControl {

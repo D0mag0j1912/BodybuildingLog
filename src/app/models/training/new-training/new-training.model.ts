@@ -1,4 +1,5 @@
 import { Exercise } from '../exercise.model';
+import { Set } from './set.model';
 
 export interface NewTraining {
     exercise: SingleExercise[];
@@ -16,14 +17,4 @@ export interface SingleExercise {
     total: number;
     disabledTooltip: boolean;
     availableExercises: Exercise[];
-}
-export interface Set {
-    setNumber: number;
-    weightLifted: number;
-    reps: number;
-}
-
-export interface SetStateChanged {
-    indexExercise: number;
-    indexSet: number;
 }

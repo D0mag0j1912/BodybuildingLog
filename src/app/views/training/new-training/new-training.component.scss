@@ -76,55 +76,6 @@
     margin-top: -20px;
 }
 
-.sets {
-    width: 300px;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    column-gap: 12px;
-
-    &-weight-lifted,
-    &-reps {
-        width: 100px;
-
-        &--error {
-            color: $dark-red;
-        }
-    }
-
-    &--after-first {
-        padding-top: 5px;
-    }
-
-    &-success {
-        color: $army-green;
-        font-size: 11px;
-    }
-}
-
-.delete-set-wrapper {
-    margin-top: -15px;
-}
-
-.add-sets {
-    width: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-
-    &-button {
-        margin-left: 16px;
-        margin-top: 11px;
-        font-family: $poppins;
-    }
-
-    &-button:not([disabled]):hover,
-    &-button:not([disabled]):active {
-        color: $light-blue;
-    }
-}
-
 .total {
     margin: 10px 0;
     font-size: 13px;

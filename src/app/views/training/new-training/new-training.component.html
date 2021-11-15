@@ -88,133 +88,14 @@
                         </button>
                     </div>
                 </div>
-                <ng-container
-                    formArrayName="sets"
-                    *ngFor="let set of getSets(i); let j = index">
-                    <ng-container [formGroupName]="j">
-                        <div
-                            class="sets"
-                            [class.sets--after-first]="j > 0">
-                            <mat-form-field
-                                appearance="outline"
-                                class="sets-weight-lifted">
-                                <mat-label class="label">
-                                    {{ 'training.new_training.weight_lifted' | translate }}
-                                </mat-label>
-                                <input
-                                    matInput
-                                    type="text"
-                                    formControlName="weightLifted"
-                                    (input)="onChangeSets(i,j)">
-                                <mat-error
-                                    *ngIf="set.get('weightLifted').errors?.required
-                                        && getExerciseName(i).value && j === 0">
-                                    {{ 'training.new_training.errors.weight_lifted_required' | translate }}
-                                </mat-error>
-                                <mat-hint
-                                    class="sets-weight-lifted--error"
-                                    *ngIf="j > 0 && set.errors?.weightLiftedRequired
-                                        && !set.get('reps').errors?.pattern">
-                                    {{ 'training.new_training.errors.weight_lifted_required' | translate }}
-                                </mat-hint>
-                                <mat-hint
-                                    class="sets-success"
-                                    *ngIf="getWeightLifted(i,j).value && getWeightLifted(i,j).valid
-                                    && getReps(i,j).value && getReps(i,j).valid && !editMode">
-                                    {{ 'training.new_training.set_saved' | translate }}
-                                </mat-hint>
-                                <mat-error
-                                    *ngIf="set.get('weightLifted').errors?.onlyNumbers
-                                    && !set.get('weightLifted').errors?.min">
-                                    {{ 'training.new_training.errors.only_numbers' | translate }}
-                                </mat-error>
-                                <mat-error
-                                    *ngIf="set.get('weightLifted').errors?.min
-                                    && !set.get('weightLifted').errors?.onlyNumbers">
-                                    {{ 'training.new_training.errors.weight_lifted_min' | translate }}
-                                </mat-error>
-                                <mat-error *ngIf="set.get('weightLifted').errors?.max
-                                        && !set.get('weightLifted').errors?.onlyNumbers">
-                                    {{ 'training.new_training.errors.weight_lifted_max' | translate }}
-                                </mat-error>
-                            </mat-form-field>
-                            <mat-form-field
-                                appearance="outline"
-                                class="sets-reps">
-                                <mat-label class="label">
-                                    {{ 'training.new_training.reps_performed' | translate }}
-                                </mat-label>
-                                <input
-                                    matInput
-                                    type="text"
-                                    formControlName="reps"
-                                    (input)="onChangeSets(i,j)">
-                                <mat-error
-                                    *ngIf="set.get('reps').errors?.required && getExerciseName(i).value && j === 0">
-                                    {{ 'training.new_training.errors.reps_required' | translate }}
-                                </mat-error>
-                                <mat-hint
-                                    class="sets-reps--error"
-                                    *ngIf="j > 0 && set.errors?.repsRequired
-                                        && !set.get('weightLifted').errors?.onlyNumbers
-                                        && !set.get('weightLifted').errors?.min">
-                                    {{ 'training.new_training.errors.reps_required' | translate }}
-                                </mat-hint>
-                                <mat-error
-                                    *ngIf="set.get('reps').errors?.pattern
-                                    && !set.get('weightLifted').errors?.onlyNumbers">
-                                    {{ 'training.new_training.errors.only_positive' | translate }}
-                                </mat-error>
-                                <mat-error
-                                    *ngIf="set.get('reps').errors?.min
-                                    && !set.get('weightLifted').errors?.onlyNumbers
-                                    && !set.get('reps').errors?.pattern">
-                                    {{ 'training.new_training.errors.reps_min' | translate }}
-                                </mat-error>
-                                <mat-error
-                                    *ngIf="set.get('reps').errors?.max
-                                    && !set.get('weightLifted').errors?.onlyNumbers
-                                    && !set.get('reps').errors?.pattern">
-                                    {{ 'training.new_training.errors.reps_max' | translate }}
-                                </mat-error>
-                            </mat-form-field>
-                            <div
-                                class="delete-set-wrapper"
-                                [matTooltip]="showDeleteSetTooltip(j) | async"
-                                matTooltipPosition="above"
-                                [matTooltipClass]="j > 0 ? 'tooltip' : 'tooltip-error'">
-                                <button
-                                    type="button"
-                                    mat-raised-button
-                                    color="warn"
-                                    class="button-delete-sets"
-                                    (click)="deleteSet(i,j)"
-                                    [disabled]="j === 0 || isLoading">
-                                    <mat-icon class="icon-delete-sets">
-                                        delete
-                                    </mat-icon>
-                                </button>
-                            </div>
-                        </div>
-                    </ng-container>
-                </ng-container>
-                <div class="add-sets">
-                    <div
-                        matTooltipClass="tooltip"
-                        [matTooltip]="showAddSetTooltip(
-                            group.errors?.setNotFilled,
-                            i) | async">
-                        <button
-                            type="button"
-                            color="primary"
-                            mat-raised-button
-                            class="add-sets-button"
-                            (click)="addSet(i);"
-                            [disabled]="!getExerciseName(i).value || group.errors?.setNotFilled">
-                            {{ 'training.new_training.buttons.add_set' | translate }}
-                        </button>
-                    </div>
-                </div>
+                <app-sets
+                    formControlName="sets"
+                    [exerciseNameControl]="getExerciseName(i)"
+                    [indexExercise]="i"
+                    [isLoading]="isLoading"
+                    [editMode]="editMode"
+                    (setAdded)="onChangeSets($event)"
+                    (setDeleted)="deleteSet($event)"></app-sets>
                 <div class="total">
                     <p class="total-text">
                         {{ 'training.new_training.total' | translate }}
@@ -247,7 +128,7 @@
                     type="button"
                     color="primary"
                     class="add-exercise-button"
-                    (click)="addExercise(false, $event)"
+                    (click)="addExercise($event)"
                     [disabled]="isAddingExercisesDisabled(
                         isAddingExercisesAllowed[0].length,
                         isAddingExercisesAllowed[1].length)">
