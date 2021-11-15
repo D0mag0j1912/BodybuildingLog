@@ -80,15 +80,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     'weightLifted': new FormControl({
                         value: set.weightLifted as number,
                         disabled: this.exerciseNameControl.value ? false : true,
-                    }, [
-                        Validators.min(1),
+                    }, [Validators.min(1),
                         Validators.max(1000),
                         NewTrainingValidators.isBroj()]),
                     'reps': new FormControl({
                         value: set.reps as number,
                         disabled: this.exerciseNameControl.value ? false : true,
-                    }, [
-                        Validators.min(1),
+                    }, [Validators.min(1),
                         Validators.max(1000),
                         Validators.pattern('^[0-9]*$')]),
                 }, { validators: [NewTrainingValidators.bothValuesRequired()] }));
@@ -118,15 +116,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 'weightLifted': new FormControl({
                     value: null,
                     disabled: this.exerciseNameControl.value ? false : true,
-                }, [
-                    Validators.min(1),
+                }, [Validators.min(1),
                     Validators.max(1000),
                     NewTrainingValidators.isBroj()]),
                 'reps': new FormControl({
                     value: null,
                     disabled: this.exerciseNameControl.value ? false : true,
-                }, [
-                    Validators.min(1),
+                }, [Validators.min(1),
                     Validators.max(1000),
                     Validators.pattern('^[0-9]*$')]),
             }, {

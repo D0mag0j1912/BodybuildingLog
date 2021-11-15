@@ -2,6 +2,7 @@ export interface Set {
     setNumber: number;
     weightLifted: number;
     reps: number;
+    _id?: string;
 }
 
 export interface SetStateChanged {
