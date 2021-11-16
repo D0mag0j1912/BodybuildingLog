@@ -7,12 +7,12 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { NewTraining } from 'src/app/models/training/new-training/new-training.model';
-import {
-    DeleteTrainingActionComponent,
-    DeleteTrainingActionDialogData } from 'src/app/views/shared/training-actions/delete-training-action/delete-training-action.component';
 import { environment } from '../../../../environments/environment';
 import { TrainingActions } from '../../../models/training/past-trainings/training-actions/training-actions.model';
 import { DeleteTrainingActionData } from '../../../models/training/past-trainings/training-actions/training-actions.model';
+import {
+    DeleteTrainingActionComponent,
+    DeleteTrainingActionDialogData } from '../../../views/shared/training/training-actions/delete-training-action/delete-training-action.component';
 
 @Injectable()
 export class DeleteTrainingActionService implements TrainingActions {

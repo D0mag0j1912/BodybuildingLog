@@ -11,7 +11,6 @@ import { NewTrainingService } from '../../services/training/new-training.service
 import { PastTrainingsService } from '../../services/training/past-trainings.service';
 import { SharedModule } from '../shared/shared.module';
 import { NewTrainingComponent } from './new-training/new-training.component';
-import { SetsComponent } from './new-training/sets/sets.component';
 import { PastTrainingsComponent } from './past-trainings/past-trainings.component';
 import { TrainingItemActionsComponent } from './past-trainings/training-item/training-item-actions/training-item-actions.component';
 import { TrainingItemComponent } from './past-trainings/training-item/training-item.component';
@@ -24,13 +23,12 @@ const SERVICES = [
 
 const COMPONENTS = [
     NewTrainingComponent,
-    SetsComponent,
     PastTrainingsComponent,
     TrainingItemComponent,
     TrainingItemActionsComponent,
 ];
 
-const EXTERNAL_MODULES = [
+const EXTERNAL_IMPORTS = [
     CommonModule,
     ReactiveFormsModule,
     FlexLayoutModule,
@@ -38,7 +36,7 @@ const EXTERNAL_MODULES = [
     TranslateModule,
 ];
 
-const MY_MODULES = [
+const IMPORTS = [
     TrainingRoutingModule,
     SharedModule,
     PipesModule,
@@ -51,8 +49,8 @@ const PIPES_MODULES = [ShowAllExercisesModule];
         ...COMPONENTS,
     ],
     imports: [
-        ...EXTERNAL_MODULES,
-        ...MY_MODULES,
+        ...EXTERNAL_IMPORTS,
+        ...IMPORTS,
         ...PIPES_MODULES,
     ],
     exports: [
