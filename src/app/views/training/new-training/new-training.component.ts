@@ -203,11 +203,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 if(!this.getExerciseName(this.getExercises().length - 1)?.value) {
                     return this.translateService.stream('training.new_training.errors.pick_current_exercise');
                 }
-                //TODO: treba pitat za errore u child form arrayu, a ne ovdje na form controlu
                 else if(this.setFormErrors?.wholeFormErrors?.atLeastOneSet) {
                     return this.translateService.stream('training.new_training.errors.first_set_required');
                 }
-                //TODO: treba pitat za errore u child form arrayu, u prvom setu, zadnje vježbe
                 else if(this.setFormErrors?.firstSetInvalid) {
                     return this.translateService.stream('training.new_training.errors.first_set_invalid');
                 }
@@ -438,7 +436,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                 panelClass: 'app__snackbar',
                             });
                         }),
-                        finalize(() => this.isLoading = false),
                     );
                 }
                 else {
@@ -449,11 +446,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                 panelClass: 'app__snackbar',
                             });
                         }),
-                        finalize(() => this.isLoading = false),
                     );
                 }
             }),
-            tap(() => this.isLoading = false),
+            finalize(() => this.isLoading = false),
         ).subscribe();
     }
 
@@ -516,13 +512,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             alreadyUsedExercises.push(this.getExerciseName(indexExercise).value as string);
 
                             const formSetData: Set[] = [];
-                            /* this.getSets(indexExercise).forEach((set: AbstractControl, indexSet: number) => {
-                                formSetData.push({
-                                    setNumber: +this.getSetNumber(indexExercise, indexSet).value as number,
-                                    weightLifted: +this.getWeightLifted(indexExercise, indexSet).value as number,
-                                    reps: +this.getReps(indexExercise, indexSet).value as number,
-                                });
-                            }); */
+                            (this.getSets(indexExercise).value as Set[]).forEach((set: Set) => {
+                                formSetData.push(set);
+                            });
                             exerciseFormData[indexExercise].sets = formSetData;
                         });
 
