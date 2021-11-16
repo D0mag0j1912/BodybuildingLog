@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -21,6 +21,7 @@ import { NewTraining, SingleExercise } from '../../../models/training/new-traini
 import { Set, SetStateChanged } from '../../../models/training/new-training/set.model';
 import { SetTrainingData } from '../../../models/training/new-training/set.model';
 import { createInitialSet } from '../../../models/training/new-training/set.model';
+import { SetFormErrors } from '../../../models/training/new-training/set.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
 
@@ -37,7 +38,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     private readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
 
     form: FormGroup;
-    setFormErrors: ValidationErrors;
+    setFormErrors: SetFormErrors;
 
     private _id: string;
     private editedDate: Date;
@@ -63,7 +64,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         read: ElementRef,
     })
     set bodyweightInput(bodyweight: ElementRef){
-        if(bodyweight && this.focusCounter === 0){
+        if(bodyweight && this.focusCounter === 0) {
             setTimeout(() => {
                 (bodyweight.nativeElement as HTMLInputElement).focus();
                 this.focusCounter++;
@@ -75,7 +76,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         read: MatSelect,
     })
     set exerciseNameChoice(exerciseName: MatSelect){
-        if(exerciseName){
+        if(exerciseName) {
             this.newTrainingService.currentTrainingChanged$.pipe(
                 take(1),
                 switchMap((currentTrainingState: NewTraining) =>
@@ -121,7 +122,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
         this.route.params.pipe(
             switchMap((params: Params) => {
-                if(params['id']){
+                if(params['id']) {
                     this._id = params['id'] as string;
                     this.sharedService.pastTrainingId$$.next(this._id as string);
                     this.editMode = true;
@@ -154,8 +155,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             ]).pipe(
                                 tap((data: [Exercise[], NewTraining]) => {
                                     const currentTrainingState: NewTraining = ((data[1] as NewTraining));
-                                    if(currentTrainingState){
-                                        if(currentTrainingState.editMode && !this.editMode){
+                                    if(currentTrainingState) {
+                                        if(currentTrainingState.editMode && !this.editMode) {
                                             this.newTrainingService.updateTrainingState(
                                                 data[0] as Exercise[],
                                                 0,
@@ -198,16 +199,16 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             return this.translateService.stream('training.new_training.errors.no_more_exercises_available');
         }
         else {
-            if(this.getExercises().length > 0){
-                if(!this.getExerciseName(this.getExercises().length - 1)?.value){
+            if(this.getExercises().length > 0) {
+                if(!this.getExerciseName(this.getExercises().length - 1)?.value) {
                     return this.translateService.stream('training.new_training.errors.pick_current_exercise');
                 }
                 //TODO: treba pitat za errore u child form arrayu, a ne ovdje na form controlu
-                else if(this.setFormErrors?.atLeastOneSet) {
+                else if(this.setFormErrors?.wholeFormErrors?.atLeastOneSet) {
                     return this.translateService.stream('training.new_training.errors.first_set_required');
                 }
                 //TODO: treba pitat za errore u child form arrayu, u prvom setu, zadnje vježbe
-                else if(this.setFormErrors) {
+                else if(this.setFormErrors?.firstSetInvalid) {
                     return this.translateService.stream('training.new_training.errors.first_set_invalid');
                 }
                 else {
@@ -224,10 +225,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         currentExercisesLength: number,
         allExercisesLength: number,
     ): boolean {
-        if(this.getExercises().length > 0){
+        if(this.getExercises().length > 0) {
             return (currentExercisesLength >= allExercisesLength)
                 || ((!this.getExerciseName(this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
-                || this.setFormErrors !== null;
+                || this.setFormErrors?.wholeFormErrors !== null;
         }
         else {
             return false;
@@ -243,7 +244,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         indexExercise: number,
         element: MatSelect,
     ): void {
-        if($event.value){
+        if($event.value) {
             this.exerciseChanged = !this.exerciseChanged;
             this.setExerciseNameTooltip(
                 element as MatSelect,
@@ -262,7 +263,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         setTimeout(() => {
             if($event.isWeightLiftedValid
                 && $event.isRepsValid
-                && this.getExerciseName($event.indexExercise).value){
+                && this.getExerciseName($event.indexExercise).value) {
                     const trainingData: SetTrainingData = {
                         formArrayIndex: this.getFormArrayIndex($event.indexExercise).value as number,
                         exerciseName: this.getExerciseName($event.indexExercise).value as string,
@@ -277,7 +278,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }, 1000);
     }
 
-    onSetFormChange($event: ValidationErrors): void {
+    onSetFormChange($event: SetFormErrors): void {
         this.setFormErrors = $event;
     }
 
@@ -296,7 +297,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             }),
         );
 
-        if(clicked){
+        if(clicked) {
             this.newTrainingService.addNewExercise(
                 this.getAlreadyUsedExercises() as string[],
                 this.getExercises().length - 1 as number,
@@ -309,7 +310,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         indexExercise: number,
         exerciseName: string,
     ): void {
-        if(exerciseName){
+        if(exerciseName) {
             const dialogRef = this.dialog.open(DialogComponent, {
                 data: {
                     isError: false,
@@ -321,7 +322,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             });
             dialogRef.afterClosed().pipe(
                 switchMap((response: boolean) => {
-                    if(response){
+                    if(response) {
                         return this.newTrainingService.currentTrainingChanged$.pipe(
                             take(1),
                             switchMap((currentTrainingState: NewTraining) =>
@@ -381,7 +382,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     tryAgain(): void {
         this.isLoading = true;
-        if(this.editTraining){
+        if(this.editTraining) {
             this.pastTrainingService.getPastTraining(this._id as string).pipe(
                 catchError(_ => {
                     this.isError = true;
@@ -389,7 +390,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 }),
                 finalize(() => this.isLoading = false),
             ).subscribe((training: NewTraining) => {
-                if(training){
+                if(training) {
                     this.editedDate = training.updatedAt as Date;
                     this.editTraining = {
                         ...training as NewTraining,
@@ -407,7 +408,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     return of(null);
                 }),
                 tap((response: AuthResponseData) => {
-                    if(response){
+                    if(response) {
                         this.isError = false;
                     }
                 }),
@@ -419,14 +420,14 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     onSubmit(): void {
         this.isSubmitted = true;
-        if(!this.form.valid){
+        if(!this.form.valid) {
             return;
         }
         this.isLoading = true;
 
         this.gatherAllFormData().pipe(
             switchMap(_ => {
-                if(this.editMode){
+                if(this.editMode) {
                     return this.newTrainingService.updateTraining(
                         this.formTrainingState as NewTraining,
                         this._id as string,
@@ -547,7 +548,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         return of(null).pipe(
             delay(0),
             tap(_ => {
-                if(currentTrainingState){
+                if(currentTrainingState) {
                     currentTrainingState.exercise.forEach((value: SingleExercise, index: number) => {
                         this.getDisabledTooltip(index).patchValue(value.disabledTooltip as boolean);
                     });
@@ -555,7 +556,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 else {
                     const width: number = ((element._elementRef.nativeElement as HTMLParagraphElement).querySelector('.mat-select-value-text') as HTMLSpanElement)?.offsetWidth;
 
-                    if(width > MAX_EXERCISE_NAME_WIDTH){
+                    if(width > MAX_EXERCISE_NAME_WIDTH) {
                         this.getDisabledTooltip(indexExercise ? indexExercise : 0).patchValue(false);
                     }
                     else {
@@ -593,7 +594,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     getAlreadyUsedExercises(): string[] {
         const alreadyUsedExercises: string[] = [];
         for(const exercise of this.getExercises()){
-            if(exercise.get('name').value){
+            if(exercise.get('name').value) {
                 alreadyUsedExercises.push(exercise.get('name').value as string);
             }
         }
