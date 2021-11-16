@@ -17,11 +17,12 @@ import { DeleteExerciseDialogData } from 'src/app/views/shared/dialog/dialog.com
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { Exercise } from '../../../models/training/exercise.model';
-import { NewTraining, SingleExercise } from '../../../models/training/new-training/new-training.model';
-import { Set, SetStateChanged } from '../../../models/training/new-training/set.model';
-import { SetTrainingData } from '../../../models/training/new-training/set.model';
-import { createInitialSet } from '../../../models/training/new-training/set.model';
-import { SetFormErrors } from '../../../models/training/new-training/set.model';
+import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import { Set, SetStateChanged } from '../../../models/training/shared/set.model';
+import { SetTrainingData } from '../../../models/training/shared/set.model';
+import { createInitialSet } from '../../../models/training/shared/set.model';
+import { SetFormErrors } from '../../../models/training/shared/set.model';
+import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
 

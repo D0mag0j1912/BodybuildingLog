@@ -3,10 +3,10 @@ import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGrou
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { SetStateChanged } from '../../../../models/training/new-training/set.model';
-import { Set } from '../../../../models/training/new-training/set.model';
-import { SetFormErrors } from '../../../../models/training/new-training/set.model';
-import { FormSetData } from '../../../../models/training/new-training/set.model';
+import { SetStateChanged } from '../../../../models/training/shared/set.model';
+import { Set } from '../../../../models/training/shared/set.model';
+import { SetFormErrors } from '../../../../models/training/shared/set.model';
+import { FormSetData } from '../../../../models/training/shared/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as NewTrainingValidators from '../../../../validators/new-training.validators';
 

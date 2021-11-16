@@ -1,5 +1,4 @@
-import { Exercise } from '../exercise.model';
-import { Set } from './set.model';
+import { SingleExercise } from '../shared/single-exercise.model';
 
 export interface NewTraining {
     exercise: SingleExercise[];
@@ -9,12 +8,4 @@ export interface NewTraining {
     readonly bodyweight?: number;
     readonly createdAt?: Date;
     readonly updatedAt?: Date;
-}
-export interface SingleExercise {
-    formArrayIndex: number;
-    exerciseName: string;
-    sets: Set[];
-    total: number;
-    disabledTooltip: boolean;
-    availableExercises: Exercise[];
 }

@@ -8,10 +8,11 @@ import { GeneralResponseData } from '../../models/general-response.model';
 import { Exercise } from '../../models/training/exercise.model';
 import { ExerciseFetch } from '../../models/training/exercise.model';
 import { EMPTY_TRAINING } from '../../models/training/new-training/empty-training.model';
-import { NewTraining, SingleExercise } from '../../models/training/new-training/new-training.model';
-import { SetTrainingData } from '../../models/training/new-training/set.model';
-import { Set } from '../../models/training/new-training/set.model';
-import { createInitialSet } from '../../models/training/new-training/set.model';
+import { NewTraining } from '../../models/training/new-training/new-training.model';
+import { SetTrainingData } from '../../models/training/shared/set.model';
+import { Set } from '../../models/training/shared/set.model';
+import { createInitialSet } from '../../models/training/shared/set.model';
+import { SingleExercise } from '../../models/training/shared/single-exercise.model';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
