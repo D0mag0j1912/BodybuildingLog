@@ -32,10 +32,9 @@ const CONTROL_VALUE_ACCESSOR = {
 })
 export class SetsComponent implements ControlValueAccessor, OnInit {
 
-    form: FormArray = new FormArray([]);
+    readonly form: FormArray = new FormArray([]);
 
     onTouched: () => void;
-    onChange: (isSetError: boolean) => void;
 
     @Input()
     exerciseNameControl: AbstractControl;
@@ -55,6 +54,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     @Output()
     readonly setDeleted: EventEmitter<Partial<SetStateChanged>> = new EventEmitter<Partial<SetStateChanged>>();
 
+    @Output()
+    readonly formStateChanged: EventEmitter<ValidationErrors> = new EventEmitter<ValidationErrors>();
+
     constructor(
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
@@ -73,32 +75,21 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     writeValue(value: Set[]): void {
         this.form.setValidators([NewTrainingValidators.allSetsFilled(), NewTrainingValidators.atLeastOneSet()]);
         this.form.updateValueAndValidity();
-        if(value.length > 0){
+        if(value.length > 0) {
             for(const set of value) {
-                this.form.push(new FormGroup({
-                    'setNumber': new FormControl(set.setNumber as number, [Validators.required]),
-                    'weightLifted': new FormControl({
-                        value: set.weightLifted as number,
-                        disabled: this.exerciseNameControl.value ? false : true,
-                    }, [Validators.min(1),
-                        Validators.max(1000),
-                        NewTrainingValidators.isBroj()]),
-                    'reps': new FormControl({
-                        value: set.reps as number,
-                        disabled: this.exerciseNameControl.value ? false : true,
-                    }, [Validators.min(1),
-                        Validators.max(1000),
-                        Validators.pattern('^[0-9]*$')]),
-                }, { validators: [NewTrainingValidators.bothValuesRequired()] }));
+                this.addSet(set);
             }
         }
         else {
             this.addSet();
         }
+        this.formStateChanged.emit(this.formErrors);
     }
 
-    registerOnChange(fn: (isSetError: boolean) => void): void {
-        this.onChange = fn;
+    registerOnChange(fn: () => void): void {
+        this.form.valueChanges.pipe(
+            takeUntil(this.unsubscribeService),
+        ).subscribe(() => this.formStateChanged.emit(this.form.errors));
     }
 
     registerOnTouched(fn: () => void): void {
@@ -109,18 +100,18 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         return (this.form as FormArray).controls;
     }
 
-    addSet(): void {
+    addSet(set?: Set): void {
         this.form.push(
             new FormGroup({
-                'setNumber': new FormControl(this.getSets().length + 1, [Validators.required]),
+                'setNumber': new FormControl(set ? (set.setNumber as number) : this.getSets().length + 1, [Validators.required]),
                 'weightLifted': new FormControl({
-                    value: null,
+                    value: set ? (set.weightLifted as number) : null,
                     disabled: this.exerciseNameControl.value ? false : true,
                 }, [Validators.min(1),
                     Validators.max(1000),
                     NewTrainingValidators.isBroj()]),
                 'reps': new FormControl({
-                    value: null,
+                    value: set ? (set.reps as number) : null,
                     disabled: this.exerciseNameControl.value ? false : true,
                 }, [Validators.min(1),
                     Validators.max(1000),
@@ -200,6 +191,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             total += (+group.get('weightLifted').value * +group.get('reps').value);
         }
         return total as number;
+    }
+
+    get formErrors(): ValidationErrors {
+        return this.form.errors;
     }
 
 }

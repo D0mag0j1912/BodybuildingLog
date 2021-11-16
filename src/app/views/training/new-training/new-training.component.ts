@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -34,9 +34,10 @@ const MAX_EXERCISE_NAME_WIDTH: number = 181;
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
 
-    readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
+    private readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
 
     form: FormGroup;
+    setFormErrors: ValidationErrors;
 
     private _id: string;
     private editedDate: Date;
@@ -201,12 +202,12 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 if(!this.getExerciseName(this.getExercises().length - 1)?.value){
                     return this.translateService.stream('training.new_training.errors.pick_current_exercise');
                 }
-                //TODO: popraviti
-                else if(this.getSets(this.getExercises().length - 1)?.errors?.atLeastOneSet) {
+                //TODO: treba pitat za errore u child form arrayu, a ne ovdje na form controlu
+                else if(this.setFormErrors?.atLeastOneSet) {
                     return this.translateService.stream('training.new_training.errors.first_set_required');
                 }
-                //TODO: popraviti
-                else if(this.getSets(this.getExercises().length - 1)?.errors) {
+                //TODO: treba pitat za errore u child form arrayu, u prvom setu, zadnje vježbe
+                else if(this.setFormErrors) {
                     return this.translateService.stream('training.new_training.errors.first_set_invalid');
                 }
                 else {
@@ -226,8 +227,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         if(this.getExercises().length > 0){
             return (currentExercisesLength >= allExercisesLength)
                 || ((!this.getExerciseName(this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
-                //TODO: popraviti
-                || this.getSets(this.getExercises().length - 1)?.errors ? true : false;
+                || this.setFormErrors !== null;
         }
         else {
             return false;
@@ -275,6 +275,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     this.getTotal($event.indexExercise as number).patchValue($event.newTotal.toString()+ ' kg');
             }
         }, 1000);
+    }
+
+    onSetFormChange($event: ValidationErrors): void {
+        this.setFormErrors = $event;
     }
 
     getExercises(): AbstractControl[] {

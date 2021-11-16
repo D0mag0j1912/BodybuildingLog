@@ -15,7 +15,7 @@
                         matInput
                         type="text"
                         formControlName="weightLifted"
-                        (input)="onChangeSets(j); onChange(form.errors ? true : false);"
+                        (input)="onChangeSets(j);"
                         (blur)="onTouched()">
                     <mat-error
                         *ngIf="set.get('weightLifted').errors?.required
@@ -59,7 +59,7 @@
                         matInput
                         type="text"
                         formControlName="reps"
-                        (input)="onChangeSets(j); onChange(form.errors ? true : false);"
+                        (input)="onChangeSets(j);"
                         (blur)="onTouched()">
                     <mat-error
                         *ngIf="set.get('reps').errors?.required && exerciseNameControl.value && j === 0">

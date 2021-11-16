@@ -95,7 +95,8 @@
                     [isLoading]="isLoading"
                     [editMode]="editMode"
                     (setAdded)="onChangeSets($event)"
-                    (setDeleted)="deleteSet($event)"></app-sets>
+                    (setDeleted)="deleteSet($event)"
+                    (formStateChanged)="onSetFormChange($event)"></app-sets>
                 <div class="total">
                     <p class="total-text">
                         {{ 'training.new_training.total' | translate }}
