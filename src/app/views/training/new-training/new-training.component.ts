@@ -1,28 +1,15 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { catchError, delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
-import { GeneralResponseData } from 'src/app/models/general-response.model';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
-import { DialogComponent } from 'src/app/views/shared/dialog/dialog.component';
-import { DialogData } from 'src/app/views/shared/dialog/dialog.component';
-import { DeleteExerciseDialogData } from 'src/app/views/shared/dialog/dialog.component';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
-import { Set, SetStateChanged } from '../../../models/training/shared/set.model';
-import { SetTrainingData } from '../../../models/training/shared/set.model';
-import { createInitialSet } from '../../../models/training/shared/set.model';
-import { SetFormErrors } from '../../../models/training/shared/set.model';
-import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
 
@@ -34,19 +21,14 @@ import * as NewTrainingValidators from '../../../validators/new-training.validat
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
 
-    private readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
-
     form: FormGroup;
-    setFormErrors: SetFormErrors;
 
     private _id: string;
     private editedDate: Date;
 
-    readonly exercises$: Observable<Exercise[]>;
     private editTraining: NewTraining;
     private formTrainingState: NewTraining;
 
-    private initialWeight: number = 0;
     private focusCounter: number = 0;
 
     isLoading: boolean = true;
@@ -56,8 +38,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     editMode: boolean = false;
 
     isSubmitted: boolean = false;
-
-    exerciseChanged: boolean = false;
 
     @ViewChild('bodyweightRef', {
         read: ElementRef,
@@ -75,10 +55,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         private readonly newTrainingService: NewTrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
-        private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
-        private readonly dialog: MatDialog,
-        private readonly snackBar: MatSnackBar,
         private readonly route: ActivatedRoute,
     ) {}
 
