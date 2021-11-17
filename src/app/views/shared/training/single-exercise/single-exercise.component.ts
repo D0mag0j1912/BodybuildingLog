@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, Input, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Input, ViewChild } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
@@ -94,6 +94,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly dialog: MatDialog,
+        private readonly changeDetectorRef: ChangeDetectorRef,
     ){}
 
     writeValue(data: NewTraining): void {
@@ -266,6 +267,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     onSetFormChange($event: SetFormErrors): void {
         this.setFormErrors = $event;
+        this.changeDetectorRef.markForCheck();
     }
 
     showAddExerciseTooltip(
