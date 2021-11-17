@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, Input, ViewChild } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
@@ -53,6 +53,24 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     @Input()
     isBodyweightError: boolean = false;
+
+    @ViewChild('exerciseNameChoice', {
+        read: MatSelect,
+    })
+    set exerciseNameChoice(exerciseName: MatSelect){
+        if(exerciseName) {
+            this.newTrainingService.currentTrainingChanged$.pipe(
+                take(1),
+                switchMap((currentTrainingState: NewTraining) =>
+                    this.setExerciseNameTooltip(
+                        exerciseName as MatSelect,
+                        null,
+                        currentTrainingState as NewTraining,
+                    )),
+                takeUntil(this.unsubscribeService),
+            ).subscribe();
+        }
+    }
 
     readonly isAddingExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> =
         this.exerciseStateChanged$$.pipe(

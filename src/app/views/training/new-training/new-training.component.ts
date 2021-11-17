@@ -26,8 +26,6 @@ import { SingleExercise } from '../../../models/training/shared/single-exercise.
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as NewTrainingValidators from '../../../validators/new-training.validators';
 
-const MAX_EXERCISE_NAME_WIDTH: number = 181;
-
 @Component({
     selector: 'app-new-training',
     templateUrl: './new-training.component.html',
@@ -72,41 +70,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             });
         }
     }
-
-    @ViewChild('exerciseNameChoice', {
-        read: MatSelect,
-    })
-    set exerciseNameChoice(exerciseName: MatSelect){
-        if(exerciseName) {
-            this.newTrainingService.currentTrainingChanged$.pipe(
-                take(1),
-                switchMap((currentTrainingState: NewTraining) =>
-                    this.setExerciseNameTooltip(
-                        exerciseName as MatSelect,
-                        null,
-                        currentTrainingState as NewTraining,
-                    )),
-                takeUntil(this.unsubscribeService),
-            ).subscribe();
-        }
-    }
-
-    readonly isAddingExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> =
-        this.exerciseStateChanged$$.pipe(
-            startWith(undefined as void),
-            switchMap(_ =>
-                forkJoin([
-                    this.newTrainingService.currentTrainingChanged$.pipe(
-                        take(1),
-                        map((currentTrainingState: NewTraining) => currentTrainingState.exercise),
-                    ),
-                    this.newTrainingService.allExercisesChanged$.pipe(
-                        take(1),
-                    ),
-                ]),
-            ),
-            takeUntil(this.unsubscribeService),
-        );
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
@@ -192,193 +155,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         this.sharedService.editingTraining$$.next(false);
     }
 
-    onExerciseStateChanged(): void {}
-
-    showAddExerciseTooltip(
-        currentTrainingStateLength: number,
-        allExercisesLength: number,
-    ): Observable<string> {
-        if(currentTrainingStateLength >= allExercisesLength) {
-            return this.translateService.stream('training.new_training.errors.no_more_exercises_available');
-        }
-        else {
-            if(this.getExercises().length > 0) {
-                if(!this.getExerciseName(this.getExercises().length - 1)?.value) {
-                    return this.translateService.stream('training.new_training.errors.pick_current_exercise');
-                }
-                else if(this.setFormErrors?.wholeFormErrors?.atLeastOneSet) {
-                    return this.translateService.stream('training.new_training.errors.first_set_required');
-                }
-                else if(this.setFormErrors?.firstSetInvalid) {
-                    return this.translateService.stream('training.new_training.errors.first_set_invalid');
-                }
-                else {
-                    return of('');
-                }
-            }
-            else {
-                return of('');
-            }
-        }
-    }
-
-    isAddingExercisesDisabled(
-        currentExercisesLength: number,
-        allExercisesLength: number,
-    ): boolean {
-        if(this.getExercises().length > 0) {
-            return (currentExercisesLength >= allExercisesLength)
-                || ((!this.getExerciseName(this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
-                || this.setFormErrors?.wholeFormErrors !== null;
-        }
-        else {
-            return false;
-        }
-    }
-
     onBodyweightChange(bodyweight: string): void {
         this.newTrainingService.addBodyweightToStorage(bodyweight);
-    }
-
-    onExerciseNameChange(
-        $event: MatSelectChange,
-        indexExercise: number,
-        element: MatSelect,
-    ): void {
-        if($event.value) {
-            this.exerciseChanged = !this.exerciseChanged;
-            this.setExerciseNameTooltip(
-                element as MatSelect,
-                indexExercise as number,
-            ).subscribe(_ => {
-                this.newTrainingService.updateExerciseChoices(
-                    $event.value as string,
-                    indexExercise as number,
-                    this.getDisabledTooltip(indexExercise).value as boolean,
-                );
-            });
-        }
-    }
-
-    onChangeSets($event: SetStateChanged): void {
-        setTimeout(() => {
-            if($event.isWeightLiftedValid
-                && $event.isRepsValid
-                && this.getExerciseName($event.indexExercise).value) {
-                    const trainingData: SetTrainingData = {
-                        formArrayIndex: this.getFormArrayIndex($event.indexExercise).value as number,
-                        exerciseName: this.getExerciseName($event.indexExercise).value as string,
-                        setNumber: $event.newSet.setNumber as number,
-                        weightLifted: $event.newSet.weightLifted as number,
-                        reps: $event.newSet.reps as number,
-                        total: $event.newTotal as number,
-                    };
-                    this.newTrainingService.setsChanged(trainingData as SetTrainingData);
-                    this.getTotal($event.indexExercise as number).patchValue($event.newTotal.toString()+ ' kg');
-            }
-        }, 1000);
-    }
-
-    onSetFormChange($event: SetFormErrors): void {
-        this.setFormErrors = $event;
-    }
-
-    getExercises(): AbstractControl[] {
-        return (<FormArray>this.form.get('exercise')).controls;
-    }
-
-    addExercise(clicked?: MouseEvent): void {
-        (<FormArray>this.form.get('exercise')).push(
-            new FormGroup({
-                'formArrayIndex': new FormControl(clicked ? this.getExercises().length : null, [Validators.required]),
-                'name': new FormControl(null, [Validators.required]),
-                'sets': new FormControl(createInitialSet()),
-                'total': new FormControl(this.initialWeight.toString() + ' kg', [Validators.required]),
-                'disabledTooltip': new FormControl(true, [Validators.required]),
-            }),
-        );
-
-        if(clicked) {
-            this.newTrainingService.addNewExercise(
-                this.getAlreadyUsedExercises() as string[],
-                this.getExercises().length - 1 as number,
-            );
-            this.exerciseStateChanged$$.next();
-        }
-    }
-
-    deleteExercise(
-        indexExercise: number,
-        exerciseName: string,
-    ): void {
-        if(exerciseName) {
-            const dialogRef = this.dialog.open(DialogComponent, {
-                data: {
-                    isError: false,
-                    deleteExercise: {
-                        message$: this.translateService.stream('training.new_training.delete_exercise_prompt'),
-                        exerciseName: exerciseName,
-                    } as DeleteExerciseDialogData,
-                } as DialogData,
-            });
-            dialogRef.afterClosed().pipe(
-                switchMap((response: boolean) => {
-                    if(response) {
-                        return this.newTrainingService.currentTrainingChanged$.pipe(
-                            take(1),
-                            switchMap((currentTrainingState: NewTraining) =>
-                                this.newTrainingService.deleteExercise(
-                                    indexExercise as number,
-                                    currentTrainingState as NewTraining,
-                                    exerciseName as string,
-                                ).pipe(
-                                    tap((data: [NewTraining, Exercise[]]) => {
-                                        if(data[1]) {
-                                            this.exerciseChanged = !this.exerciseChanged;
-                                            (<FormArray>this.form.get('exercise')).removeAt(indexExercise);
-                                            this.newTrainingService.pushToAvailableExercises(
-                                                data[0] as NewTraining,
-                                                data[1] as Exercise[],
-                                            );
-                                        }
-                                    }),
-                                    finalize(() => this.exerciseStateChanged$$.next()),
-                                ),
-                            ),
-                            takeUntil(this.unsubscribeService),
-                        );
-                    }
-                    else{
-                        return of(null);
-                    }
-                }),
-                takeUntil(this.unsubscribeService),
-            ).subscribe();
-        }
-        else {
-            this.newTrainingService.currentTrainingChanged$.pipe(
-                take(1),
-                switchMap((currentTrainingState: NewTraining) =>
-                    this.newTrainingService.deleteExercise(
-                        indexExercise as number,
-                        currentTrainingState as NewTraining,
-                    ).pipe(
-                        tap(_ => (<FormArray>this.form.get('exercise')).removeAt(indexExercise)),
-                        finalize(() => this.exerciseStateChanged$$.next()),
-                    ),
-                ),
-                takeUntil(this.unsubscribeService),
-            ).subscribe();
-        }
-    }
-
-    deleteSet($event: Partial<SetStateChanged>): void {
-        this.getTotal($event.indexExercise).patchValue($event.newTotal.toString() + ' kg');
-        this.newTrainingService.deleteSet(
-            $event.indexExercise as number,
-            $event.indexSet as number,
-            $event.newTotal as number,
-        );
     }
 
     tryAgain(): void {
@@ -426,7 +204,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
         this.isLoading = true;
 
-        this.gatherAllFormData().pipe(
+        /* this.gatherAllFormData().pipe(
             switchMap(_ => {
                 if(this.editMode) {
                     return this.newTrainingService.updateTraining(
@@ -453,7 +231,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 }
             }),
             finalize(() => this.isLoading = false),
-        ).subscribe();
+        ).subscribe(); */
     }
 
     private formInit(): Observable<NewTraining> {
@@ -470,29 +248,12 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     ),
                     'exercise': new FormControl(data as NewTraining),
                 });
-                /* (<FormArray>this.form.get('exercise')).patchValue(this.formArrayInit(this.editTraining ? this.editTraining : data)); */
             }),
             takeUntil(this.unsubscribeService),
         );
     }
 
-    private formArrayInit(data: NewTraining): AbstractControl[] {
-        data.exercise.forEach(
-            (exercise: SingleExercise, indexExercise: number) => {
-            this.addExercise();
-            this.getFormArrayIndex(indexExercise).patchValue(indexExercise);
-
-            if(exercise.exerciseName) {
-                this.getExerciseName(indexExercise).patchValue(exercise.exerciseName as string);
-                this.getSets(indexExercise).patchValue(exercise.sets);
-                this.getTotal(indexExercise).patchValue(exercise.total ? exercise.total.toString() + ' kg' : '0kg');
-                this.getDisabledTooltip(indexExercise).patchValue(exercise.disabledTooltip as boolean);
-            }
-        });
-        return this.getExercises();
-    }
-
-    private gatherAllFormData(): Observable<Exercise[]> {
+    /* private gatherAllFormData(): Observable<Exercise[]> {
         return this.newTrainingService.currentTrainingChanged$.pipe(
             take(1),
             switchMap((currentTrainingState: NewTraining) =>
@@ -533,34 +294,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             ),
             takeUntil(this.unsubscribeService),
         );
-    }
-
-    private setExerciseNameTooltip(
-        element: MatSelect,
-        indexExercise?: number,
-        currentTrainingState?: NewTraining,
-    ): Observable<void> {
-        return of(null).pipe(
-            delay(0),
-            tap(_ => {
-                if(currentTrainingState) {
-                    currentTrainingState.exercise.forEach((value: SingleExercise, index: number) => {
-                        this.getDisabledTooltip(index).patchValue(value.disabledTooltip as boolean);
-                    });
-                }
-                else {
-                    const width: number = ((element._elementRef.nativeElement as HTMLParagraphElement).querySelector('.mat-select-value-text') as HTMLSpanElement)?.offsetWidth;
-
-                    if(width > MAX_EXERCISE_NAME_WIDTH) {
-                        this.getDisabledTooltip(indexExercise ? indexExercise : 0).patchValue(false);
-                    }
-                    else {
-                        this.getDisabledTooltip(indexExercise ? indexExercise : 0).patchValue(true);
-                    }
-                }
-            }),
-        );
-    }
+    } */
 
     get bodyweight(): FormControl {
         return this.form.get('bodyweight') as FormControl;
@@ -568,36 +302,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     get isBodyweightError(): boolean {
         return this.bodyweight.errors ? true : false;
-    }
-
-    getFormArrayIndex(indexExercise: number): AbstractControl {
-        return (<FormArray>this.form.get('exercise')).at(indexExercise).get('formArrayIndex');
-    }
-
-    getExerciseName(indexExercise: number): AbstractControl {
-        return (<FormArray>this.form.get('exercise')).at(indexExercise)?.get('name');
-    }
-
-    getSets(indexExercise: number): AbstractControl {
-        return (<FormArray>this.form.get('exercise')).at(indexExercise)?.get('sets');
-    }
-
-    getTotal(indexExercise: number): AbstractControl {
-        return (<FormArray>this.form.get('exercise')).at(indexExercise).get('total');
-    }
-
-    getDisabledTooltip(indexExercise: number): AbstractControl {
-        return (<FormArray>this.form.get('exercise')).at(indexExercise).get('disabledTooltip');
-    }
-
-    getAlreadyUsedExercises(): string[] {
-        const alreadyUsedExercises: string[] = [];
-        for(const exercise of this.getExercises()){
-            if(exercise.get('name').value) {
-                alreadyUsedExercises.push(exercise.get('name').value as string);
-            }
-        }
-        return alreadyUsedExercises as string[];
     }
 
 }
