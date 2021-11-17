@@ -9,3 +9,11 @@ export interface SingleExercise {
     disabledTooltip: boolean;
     availableExercises: Exercise[];
 }
+
+export type FormSingleExerciseData = {
+    formArrayIndex?: number;
+    name?: string;
+    sets?: Set[];
+    total?: string;
+    disabledTooltip?: boolean;
+};

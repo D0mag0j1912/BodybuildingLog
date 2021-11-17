@@ -35,7 +35,10 @@
                 </mat-error>
             </mat-error>
         </mat-form-field>
-        <ng-container
+        <app-single-exercise
+            formControlName="exercise"
+            [isBodyweightError]="isBodyweightError"></app-single-exercise>
+        <!-- <ng-container
             *ngFor="let group of getExercises(); let i = index"
             formArrayName="exercise">
             <ng-container [formGroupName]="i">
@@ -146,7 +149,7 @@
                 matTooltipClass="tooltip">
                 <mat-icon class="finish-training-icon">done</mat-icon>
             </button>
-        </div>
+        </div> -->
     </form>
 </section>
 

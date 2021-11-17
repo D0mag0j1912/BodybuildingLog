@@ -192,6 +192,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         this.sharedService.editingTraining$$.next(false);
     }
 
+    onExerciseStateChanged(): void {}
+
     showAddExerciseTooltip(
         currentTrainingStateLength: number,
         allExercisesLength: number,
@@ -466,9 +468,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         ),
                         [NewTrainingValidators.isBroj(), Validators.min(30), Validators.max(300)],
                     ),
-                    'exercise': new FormArray([]),
+                    'exercise': new FormControl(data as NewTraining),
                 });
-                (<FormArray>this.form.get('exercise')).patchValue(this.formArrayInit(this.editTraining ? this.editTraining : data));
+                /* (<FormArray>this.form.get('exercise')).patchValue(this.formArrayInit(this.editTraining ? this.editTraining : data)); */
             }),
             takeUntil(this.unsubscribeService),
         );
@@ -562,6 +564,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     get bodyweight(): FormControl {
         return this.form.get('bodyweight') as FormControl;
+    }
+
+    get isBodyweightError(): boolean {
+        return this.bodyweight.errors ? true : false;
     }
 
     getFormArrayIndex(indexExercise: number): AbstractControl {

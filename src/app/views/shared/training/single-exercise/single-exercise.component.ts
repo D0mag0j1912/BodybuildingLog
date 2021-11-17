@@ -1,6 +1,19 @@
-import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
-import { ControlValueAccessor, FormArray, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, forwardRef, Input } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { TranslateService } from '@ngx-translate/core';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
+import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { Exercise } from '../../../../models/training/exercise.model';
+import { NewTraining } from '../../../../models/training/new-training/new-training.model';
+import { createInitialSet, SetFormErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
+import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
+import { FormSingleExerciseData } from '../../../../models/training/shared/single-exercise.model';
+import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
+import { NewTrainingService } from '../../../../services/training/new-training.service';
+import { DeleteExerciseDialogData, DialogComponent, DialogData } from '../../dialog/dialog.component';
 
 const CONTROL_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
@@ -8,28 +21,311 @@ const CONTROL_VALUE_ACCESSOR = {
     multi: true,
 };
 
+const INITIAL_WEIGHT: number = 0;
+const MAX_EXERCISE_NAME_WIDTH: number = 181;
+
 @Component({
     selector: 'app-single-exercise',
     templateUrl: './single-exercise.component.html',
     styleUrls: ['./single-exercise.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [CONTROL_VALUE_ACCESSOR],
+    providers: [
+        CONTROL_VALUE_ACCESSOR,
+        UnsubscribeService,
+    ],
 })
 export class SingleExerciseComponent implements ControlValueAccessor {
 
+    private readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
+
     form: FormArray = new FormArray([]);
+    setFormErrors: SetFormErrors;
+
+    readonly exercises$: Observable<Exercise[]>;
+
+    exerciseChanged: boolean = false;
+    isSubmitted: boolean = false;
+    isLoading: boolean = false;
+    editMode: boolean = false;
 
     onChange: () => void;
     onTouched: () => void;
 
-    writeValue(exercises: SingleExercise[]): void {
-        throw new Error('Method not implemented.');
-    }
-    registerOnChange(fn: () => void): void {
-        throw new Error('Method not implemented.');
-    }
-    registerOnTouched(fn: () => void): void {
-        throw new Error('Method not implemented.');
+    @Input()
+    isBodyweightError: boolean = false;
+
+    readonly isAddingExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> =
+        this.exerciseStateChanged$$.pipe(
+            startWith(undefined as void),
+            switchMap(_ =>
+                forkJoin([
+                    this.newTrainingService.currentTrainingChanged$.pipe(
+                        take(1),
+                        map((currentTrainingState: NewTraining) => currentTrainingState.exercise),
+                    ),
+                    this.newTrainingService.allExercisesChanged$.pipe(
+                        take(1),
+                    ),
+                ]),
+            ),
+            takeUntil(this.unsubscribeService),
+        );
+
+    constructor(
+        private readonly newTrainingService: NewTrainingService,
+        private readonly unsubscribeService: UnsubscribeService,
+        private readonly translateService: TranslateService,
+        private readonly dialog: MatDialog,
+    ){}
+
+    writeValue(data: NewTraining): void {
+        if(data.exercise.length > 0) {
+            (data.exercise as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
+                this.addExercise();
+                this.accessFormField('formArrayIndex', indexExercise).patchValue(indexExercise);
+                if(exercise.exerciseName){
+                    this.accessFormField('name', indexExercise).patchValue(exercise.exerciseName as string);
+                    this.accessFormField('sets', indexExercise).patchValue(exercise.sets as Set[]);
+                    this.accessFormField('total', indexExercise).patchValue(exercise.total ? exercise.total.toString() + ' kg' : '0kg');
+                    this.accessFormField('disabledTooltip', indexExercise).patchValue(exercise.disabledTooltip as boolean);
+                }
+            });
+        }
+        else {
+            this.addExercise();
+        }
     }
 
+    registerOnChange(fn: () => void): void {
+        this.onChange = fn;
+    }
+
+    registerOnTouched(fn: () => void): void {
+        this.onTouched = fn;
+    }
+
+    onExerciseNameChange(
+        $event: MatSelectChange,
+        indexExercise: number,
+        element: MatSelect,
+    ): void {
+        if($event.value) {
+            this.exerciseChanged = !this.exerciseChanged;
+            this.setExerciseNameTooltip(
+                element as MatSelect,
+                indexExercise as number,
+            ).subscribe(_ => {
+                this.newTrainingService.updateExerciseChoices(
+                    $event.value as string,
+                    indexExercise as number,
+                    this.accessFormField('disabledTooltip', indexExercise).value as boolean,
+                );
+            });
+        }
+    }
+
+    addExercise(clicked?: MouseEvent): void {
+        this.form.push(new FormGroup({
+            'formArrayIndex': new FormControl(clicked ? this.getExercises().length : null, [Validators.required]),
+            'name': new FormControl(null, [Validators.required]),
+            'sets': new FormControl(createInitialSet()),
+            'total': new FormControl(INITIAL_WEIGHT.toString() + ' kg', [Validators.required]),
+            'disabledTooltip': new FormControl(true, [Validators.required]),
+        }));
+
+        if(clicked) {
+            this.newTrainingService.addNewExercise(
+                this.getAlreadyUsedExercises() as string[],
+                this.getExercises().length - 1 as number,
+            );
+            this.exerciseStateChanged$$.next();
+        }
+    }
+
+    deleteExercise(
+        indexExercise: number,
+        exerciseName: string,
+    ): void {
+        if(exerciseName) {
+            const dialogRef = this.dialog.open(DialogComponent, {
+                data: {
+                    isError: false,
+                    deleteExercise: {
+                        message$: this.translateService.stream('training.new_training.delete_exercise_prompt'),
+                        exerciseName: exerciseName,
+                    } as DeleteExerciseDialogData,
+                } as DialogData,
+            });
+            dialogRef.afterClosed().pipe(
+                switchMap((response: boolean) => {
+                    if(response) {
+                        return this.newTrainingService.currentTrainingChanged$.pipe(
+                            take(1),
+                            switchMap((currentTrainingState: NewTraining) =>
+                                this.newTrainingService.deleteExercise(
+                                    indexExercise as number,
+                                    currentTrainingState as NewTraining,
+                                    exerciseName as string,
+                                ).pipe(
+                                    tap((data: [NewTraining, Exercise[]]) => {
+                                        if(data[1]) {
+                                            this.exerciseChanged = !this.exerciseChanged;
+                                            (<FormArray>this.form.get('exercise')).removeAt(indexExercise);
+                                            this.newTrainingService.pushToAvailableExercises(
+                                                data[0] as NewTraining,
+                                                data[1] as Exercise[],
+                                            );
+                                        }
+                                    }),
+                                    finalize(() => this.exerciseStateChanged$$.next()),
+                                ),
+                            ),
+                            takeUntil(this.unsubscribeService),
+                        );
+                    }
+                    else{
+                        return of(null);
+                    }
+                }),
+                takeUntil(this.unsubscribeService),
+            ).subscribe();
+        }
+        else {
+            this.newTrainingService.currentTrainingChanged$.pipe(
+                take(1),
+                switchMap((currentTrainingState: NewTraining) =>
+                    this.newTrainingService.deleteExercise(
+                        indexExercise as number,
+                        currentTrainingState as NewTraining,
+                    ).pipe(
+                        tap(_ => (<FormArray>this.form.get('exercise')).removeAt(indexExercise)),
+                        finalize(() => this.exerciseStateChanged$$.next()),
+                    ),
+                ),
+                takeUntil(this.unsubscribeService),
+            ).subscribe();
+        }
+    }
+
+    onChangeSets($event: SetStateChanged): void {
+        setTimeout(() => {
+            if($event.isWeightLiftedValid
+                && $event.isRepsValid
+                && this.accessFormField('name', $event.indexExercise).value) {
+                    const trainingData: SetTrainingData = {
+                        formArrayIndex: this.accessFormField('formArrayIndex', $event.indexExercise).value as number,
+                        exerciseName: this.accessFormField('name', $event.indexExercise).value as string,
+                        setNumber: $event.newSet.setNumber as number,
+                        weightLifted: $event.newSet.weightLifted as number,
+                        reps: $event.newSet.reps as number,
+                        total: $event.newTotal as number,
+                    };
+                    this.newTrainingService.setsChanged(trainingData as SetTrainingData);
+                    this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal.toString()+ ' kg');
+            }
+        }, 1000);
+    }
+
+    deleteSet($event: Partial<SetStateChanged>): void {
+        this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal.toString() + ' kg');
+        this.newTrainingService.deleteSet(
+            $event.indexExercise as number,
+            $event.indexSet as number,
+            $event.newTotal as number,
+        );
+    }
+
+    getExercises(): AbstractControl[] {
+        return this.form.controls;
+    }
+
+    accessFormField(
+        formField: keyof FormSingleExerciseData,
+        indexExercise: number,
+    ): AbstractControl {
+        return this.form.at(indexExercise).get(formField);
+    }
+
+    onSetFormChange($event: SetFormErrors): void {
+        this.setFormErrors = $event;
+    }
+
+    showAddExerciseTooltip(
+        currentTrainingStateLength: number,
+        allExercisesLength: number,
+    ): Observable<string> {
+        if(currentTrainingStateLength >= allExercisesLength) {
+            return this.translateService.stream('training.new_training.errors.no_more_exercises_available');
+        }
+        else {
+            if(this.getExercises().length > 0) {
+                if(!this.accessFormField('name', this.getExercises().length - 1)?.value) {
+                    return this.translateService.stream('training.new_training.errors.pick_current_exercise');
+                }
+                else if(this.setFormErrors?.wholeFormErrors?.atLeastOneSet) {
+                    return this.translateService.stream('training.new_training.errors.first_set_required');
+                }
+                else if(this.setFormErrors?.firstSetInvalid) {
+                    return this.translateService.stream('training.new_training.errors.first_set_invalid');
+                }
+                else {
+                    return of('');
+                }
+            }
+            else {
+                return of('');
+            }
+        }
+    }
+
+    isAddingExercisesDisabled(
+        currentExercisesLength: number,
+        allExercisesLength: number,
+    ): boolean {
+        if(this.getExercises().length > 0) {
+            return (currentExercisesLength >= allExercisesLength)
+                || ((!this.accessFormField('name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
+                || this.setFormErrors?.wholeFormErrors !== null;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private setExerciseNameTooltip(
+        element: MatSelect,
+        indexExercise?: number,
+        currentTrainingState?: NewTraining,
+    ): Observable<void> {
+        return of(null).pipe(
+            delay(0),
+            tap(_ => {
+                if(currentTrainingState) {
+                    currentTrainingState.exercise.forEach((value: SingleExercise, index: number) => {
+                        this.accessFormField('disabledTooltip', index).patchValue(value.disabledTooltip as boolean);
+                    });
+                }
+                else {
+                    const width: number = ((element._elementRef.nativeElement as HTMLParagraphElement).querySelector('.mat-select-value-text') as HTMLSpanElement)?.offsetWidth;
+
+                    if(width > MAX_EXERCISE_NAME_WIDTH) {
+                        this.accessFormField('disabledTooltip', indexExercise ? indexExercise : 0).patchValue(false);
+                    }
+                    else {
+                        this.accessFormField('disabledTooltip', indexExercise ? indexExercise : 0).patchValue(true);
+                    }
+                }
+            }),
+        );
+    }
+
+    private getAlreadyUsedExercises(): string[] {
+        const alreadyUsedExercises: string[] = [];
+        for(const exercise of this.getExercises()){
+            if(exercise.get('name').value) {
+                alreadyUsedExercises.push(exercise.get('name').value as string);
+            }
+        }
+        return alreadyUsedExercises as string[];
+    }
 }

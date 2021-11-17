@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '../../material.module';
+import { PipesModule } from '../../pipes/pipes.module';
 import { ShowAllExercisesModule } from '../../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NavigationService } from '../../services/shared/navigation.service';
 import { SharedService } from '../../services/shared/shared.service';
@@ -31,7 +32,10 @@ const EXTERNAL_IMPORTS = [
     TranslateModule,
 ];
 
-const IMPORTS = [ShowAllExercisesModule];
+const IMPORTS = [
+    ShowAllExercisesModule,
+    PipesModule,
+];
 
 const SERVICES = [
     SharedService,
