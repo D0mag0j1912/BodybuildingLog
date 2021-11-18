@@ -19,6 +19,10 @@ body {
     }
 }
 
+.mat-form-field-appearance-outline:not(.mat-form-field-disabled) .mat-form-field-flex:hover .mat-form-field-outline-thick {
+    color: $army-green;
+}
+
 .mat-simple-snackbar {
     color: white;
     font-family: $poppins;

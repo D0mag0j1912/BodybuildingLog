@@ -15,6 +15,7 @@ import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import { FormSingleExerciseData } from '../../../../models/training/shared/single-exercise.model';
 import { WeightFormat } from '../../../../models/training/shared/weight-format.model';
+import { SharedService } from '../../../../services/shared/shared.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../../services/training/new-training.service';
 import { EditData } from '../../../../views/training/new-training/new-training.component';
@@ -99,6 +100,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
+        private readonly sharedService: SharedService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly dialog: MatDialog,
@@ -206,13 +208,13 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                                             );
                                         }
                                     }),
-                                    finalize(() => this.exerciseStateChanged$$.next()),
                                 ),
                             ),
+                            finalize(() => this.exerciseStateChanged$$.next()),
                             takeUntil(this.unsubscribeService),
                         );
                     }
-                    else{
+                    else {
                         return of(null);
                     }
                 }),
@@ -228,9 +230,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         currentTrainingState as NewTraining,
                     ).pipe(
                         tap(_ => this.form.removeAt(indexExercise)),
-                        finalize(() => this.exerciseStateChanged$$.next()),
                     ),
                 ),
+                finalize(() => this.exerciseStateChanged$$.next()),
                 takeUntil(this.unsubscribeService),
             ).subscribe();
         }
@@ -295,9 +297,11 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 if(!this.accessFormField('name', this.getExercises().length - 1)?.value) {
                     return this.translateService.stream('training.new_training.errors.pick_current_exercise');
                 }
+                //TODO: ažurirati status nakon brisanja vježbe
                 else if(this.setFormErrors?.wholeFormErrors?.atLeastOneSet) {
                     return this.translateService.stream('training.new_training.errors.first_set_required');
                 }
+                //TODO: ažurirati status nakon brisanja vježbe
                 else if(this.setFormErrors?.firstSetInvalid) {
                     return this.translateService.stream('training.new_training.errors.first_set_invalid');
                 }
@@ -318,6 +322,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         if(this.getExercises().length > 0) {
             return (currentExercisesLength >= allExercisesLength)
                 || ((!this.accessFormField('name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
+                //TODO: ažurirati status nakon brisanja vježbe
                 || this.setFormErrors?.wholeFormErrors !== null;
         }
         else {
