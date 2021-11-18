@@ -49,9 +49,6 @@ export class TrainingItemComponent implements OnInit {
                     if((exerciseName.nativeElement as HTMLSpanElement)?.offsetWidth > MAX_EXERCISE_NAME_WIDTH || this.training.exercise.length > 2){
                         this.isTooltipDisabled = false;
                     }
-                    else {
-                        this.isTooltipDisabled = true;
-                    }
                 });
                 this.changeDetectorRef.markForCheck();
             });
