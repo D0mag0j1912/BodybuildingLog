@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 import { forkJoin, Observable, of } from 'rxjs';
@@ -18,6 +18,7 @@ import * as NewTrainingValidators from '../../../validators/new-training.validat
     templateUrl: './new-training.component.html',
     styleUrls: ['./new-training.component.scss'],
     providers: [UnsubscribeService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
 
@@ -57,6 +58,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         private readonly sharedService: SharedService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly route: ActivatedRoute,
+        private readonly changeDetectorRef: ChangeDetectorRef,
     ) {}
 
     ngOnInit(): void {
@@ -78,8 +80,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         }),
                         catchError(_ => {
                             this.isError = true;
-                            this.isLoading = false;
                             return of(null);
+                        }),
+                        finalize(() => {
+                            this.isLoading = false;
+                            this.changeDetectorRef.markForCheck();
                         }),
                     );
                 }
@@ -121,8 +126,12 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         return of(null);
                     }),
                     switchMap(_ => this.formInit()),
-                    finalize(() => this.isLoading = false),
-                )),
+                    finalize(() => {
+                        this.isLoading = false;
+                        this.changeDetectorRef.markForCheck();
+                    }),
+                ),
+            ),
             takeUntil(this.unsubscribeService),
         ).subscribe();
 
@@ -144,7 +153,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     this.isError = true;
                     return of(null);
                 }),
-                finalize(() => this.isLoading = false),
+                finalize(() => {
+                    this.isLoading = false;
+                    this.changeDetectorRef.markForCheck();
+                }),
             ).subscribe((training: NewTraining) => {
                 if(training) {
                     this.editedDate = training.updatedAt as Date;
@@ -168,8 +180,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         this.isError = false;
                     }
                 }),
-                finalize(() => this.isLoading = false),
                 switchMap(() => this.formInit()),
+                finalize(() => {
+                    this.isLoading = false;
+                    this.changeDetectorRef.markForCheck();
+                }),
             ).subscribe();
         }
     }
@@ -275,10 +290,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     get bodyweight(): FormControl {
         return this.form.get('bodyweight') as FormControl;
-    }
-
-    get isBodyweightError(): boolean {
-        return this.bodyweight.errors ? true : false;
     }
 
 }

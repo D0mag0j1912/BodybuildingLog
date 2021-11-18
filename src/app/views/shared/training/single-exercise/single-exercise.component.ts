@@ -45,14 +45,18 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     exerciseChanged: boolean = false;
     isSubmitted: boolean = false;
-    isLoading: boolean = false;
-    editMode: boolean = false;
 
     onChange: () => void;
     onTouched: () => void;
 
     @Input()
-    isBodyweightError: boolean = false;
+    bodyweight: AbstractControl | null;
+
+    @Input()
+    isLoading: boolean = false;
+
+    @Input()
+    editMode: boolean = false;
 
     @ViewChild('exerciseNameChoice', {
         read: MatSelect,

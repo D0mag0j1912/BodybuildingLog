@@ -4,7 +4,7 @@
         <ng-container [formGroupName]="i">
             <div
                 class="exercise-wrapper"
-                [class.bodyweight-error]="isBodyweightError">
+                [class.bodyweight-error]="!bodyweight.valid">
                 <mat-form-field
                     appearance="outline"
                     class="exercise-form-field"

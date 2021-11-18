@@ -37,7 +37,9 @@
         </mat-form-field>
         <app-single-exercise
             formControlName="exercise"
-            [isBodyweightError]="isBodyweightError"></app-single-exercise>
+            [bodyweight]="bodyweight"
+            [isLoading]="isLoading"
+            [editMode]="editMode"></app-single-exercise>
     </form>
 </section>
 
