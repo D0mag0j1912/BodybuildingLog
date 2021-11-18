@@ -38,6 +38,7 @@ export function createInitialSet(): Set[] {
 export type SetFormErrors = {
     wholeFormErrors?: ValidationErrors;
     firstSetInvalid?: boolean;
+    indexExercise?: number;
 };
 
 export type FormSetData = {

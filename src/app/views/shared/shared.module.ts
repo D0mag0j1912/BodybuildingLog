@@ -11,6 +11,7 @@ import { DeleteTrainingActionService } from '../../services/training/training-ac
 import { DialogComponent } from './dialog/dialog.component';
 import { SetsComponent } from './training/sets/sets.component';
 import { SingleExerciseComponent } from './training/single-exercise/single-exercise.component';
+import { TotalWeightComponent } from './training/total-weight/total-weight.component';
 import { DeleteTrainingActionComponent } from './training/training-actions/delete-training-action/delete-training-action.component';
 import { MoreTrainingActionComponent } from './training/training-actions/more-training-action/more-training-action.component';
 
@@ -18,6 +19,7 @@ const COMPONENTS = [
     DialogComponent,
     SingleExerciseComponent,
     SetsComponent,
+    TotalWeightComponent,
 ];
 
 const ACTION_COMPONENTS = [

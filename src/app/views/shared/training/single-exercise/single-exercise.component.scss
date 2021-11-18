@@ -18,7 +18,8 @@
     }
 }
 
-.label {
+.label,
+.error {
     font-family: $poppins;
 }
 
@@ -53,36 +54,9 @@
     margin-top: -20px;
 }
 
-.total {
-    margin: 10px 0;
-    font-size: 13px;
-    width: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    column-gap: 10px;
-    border-bottom: 2px solid $army-green;
-
-    &-text {
-        font-size: 19px;
-        color: $army-green;
-        margin: 0;
-        padding-bottom: 20px;
-    }
-
-    &-form-field {
-        width: 100px;
-        margin-right: 32px;
-        font-family: $poppins;
-
-        &--error {
-            color: $dark-red;
-        }
-    }
-
-    .at-least-one-set {
-        margin-bottom: 20px;
-    }
+.total-error {
+    color: $dark-red;
+    font-size: 12px;
 }
 
 .add-exercise {

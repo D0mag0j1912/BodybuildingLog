@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALUE_ACCESSOR, ValidationErrors, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { SetFormErrors } from '../../../../models/training/shared/set.model';
@@ -10,19 +11,13 @@ import { FormSetData } from '../../../../models/training/shared/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as NewTrainingValidators from '../../../../validators/new-training.validators';
 
-const CONTROL_VALUE_ACCESSOR = {
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => SetsComponent),
-    multi: true,
-};
-
 @Component({
     selector: 'app-sets',
     templateUrl: './sets.component.html',
     styleUrls: ['./sets.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
-        CONTROL_VALUE_ACCESSOR,
+        getControlValueAccessor(SetsComponent),
         UnsubscribeService,
     ],
 })
@@ -59,6 +54,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     ){}
 
     ngOnInit(): void {
+        this.form.setValidators([NewTrainingValidators.allSetsFilled(), NewTrainingValidators.atLeastOneSet()]);
+        this.form.updateValueAndValidity();
+
         this.exerciseNameControl.valueChanges.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((value: string) => {
@@ -68,8 +66,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     }
 
     writeValue(value: Set[]): void {
-        this.form.setValidators([NewTrainingValidators.allSetsFilled(), NewTrainingValidators.atLeastOneSet()]);
-        this.form.updateValueAndValidity();
         if(value.length > 0) {
             for(const set of value) {
                 this.addSet(set);
@@ -81,6 +77,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         this.formStateChanged.emit({
             wholeFormErrors: this.formErrors,
             firstSetInvalid: this.isFirstSetInvalid() as boolean,
+            indexExercise: this.indexExercise as number,
         } as SetFormErrors);
     }
 
@@ -90,6 +87,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         ).subscribe(() => this.formStateChanged.emit({
             wholeFormErrors: this.formErrors as ValidationErrors,
             firstSetInvalid: this.isFirstSetInvalid() as boolean,
+            indexExercise: this.indexExercise as number,
         } as SetFormErrors));
     }
 

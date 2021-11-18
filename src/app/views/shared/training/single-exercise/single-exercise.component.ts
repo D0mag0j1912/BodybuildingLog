@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Input, ViewChild } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { debounceTime, delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
+import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { createInitialSet, SetFormErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
@@ -19,12 +20,6 @@ import { NewTrainingService } from '../../../../services/training/new-training.s
 import { EditData } from '../../../../views/training/new-training/new-training.component';
 import { DeleteExerciseDialogData, DialogComponent, DialogData } from '../../dialog/dialog.component';
 
-const CONTROL_VALUE_ACCESSOR = {
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => SingleExerciseComponent),
-    multi: true,
-};
-
 const INITIAL_WEIGHT: number = 0;
 const MAX_EXERCISE_NAME_WIDTH: number = 181;
 const WEIGHT_FORMAT: WeightFormat = 'kg';
@@ -35,7 +30,7 @@ const WEIGHT_FORMAT: WeightFormat = 'kg';
     styleUrls: ['./single-exercise.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
-        CONTROL_VALUE_ACCESSOR,
+        getControlValueAccessor(SingleExerciseComponent),
         UnsubscribeService,
     ],
 })
@@ -204,7 +199,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                                     tap((data: [NewTraining, Exercise[]]) => {
                                         if(data[1]) {
                                             this.exerciseChanged = !this.exerciseChanged;
-                                            (<FormArray>this.form.get('exercise')).removeAt(indexExercise);
+                                            this.form.removeAt(indexExercise);
                                             this.newTrainingService.pushToAvailableExercises(
                                                 data[0] as NewTraining,
                                                 data[1] as Exercise[],
@@ -232,7 +227,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         indexExercise as number,
                         currentTrainingState as NewTraining,
                     ).pipe(
-                        tap(_ => (<FormArray>this.form.get('exercise')).removeAt(indexExercise)),
+                        tap(_ => this.form.removeAt(indexExercise)),
                         finalize(() => this.exerciseStateChanged$$.next()),
                     ),
                 ),
@@ -243,7 +238,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     onChangeSets($event: SetStateChanged): void {
         of(null).pipe(
-            debounceTime(1000),
+            delay(1000),
             takeUntil(this.unsubscribeService),
         ).subscribe(_ => {
             if($event.isWeightLiftedValid
