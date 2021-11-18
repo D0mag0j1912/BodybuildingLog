@@ -9,8 +9,7 @@
         *ngIf="form"
         class="main-form"
         autocomplete="off"
-        [formGroup]="form"
-        (ngSubmit)="onSubmit()">
+        [formGroup]="form">
         <mat-form-field
             appearance="outline"
             class="bodyweight">
@@ -38,6 +37,7 @@
         <app-single-exercise
             formControlName="exercise"
             [bodyweight]="bodyweight"
+            [editData]="editData"
             [isLoading]="isLoading"
             [editMode]="editMode"></app-single-exercise>
     </form>

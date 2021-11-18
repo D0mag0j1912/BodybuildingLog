@@ -1,4 +1,6 @@
-<form [formGroup]="$any(form)">
+<form
+    [formGroup]="$any(form)"
+    (ngSubmit)="onSubmit()">
     <ng-container
         *ngFor="let group of getExercises(); let i = index">
         <ng-container [formGroupName]="i">

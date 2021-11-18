@@ -2,17 +2,21 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Inpu
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { createInitialSet, SetFormErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import { FormSingleExerciseData } from '../../../../models/training/shared/single-exercise.model';
+import { WeightFormat } from '../../../../models/training/shared/weight-format.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../../services/training/new-training.service';
+import { EditData } from '../../../../views/training/new-training/new-training.component';
 import { DeleteExerciseDialogData, DialogComponent, DialogData } from '../../dialog/dialog.component';
 
 const CONTROL_VALUE_ACCESSOR = {
@@ -23,6 +27,7 @@ const CONTROL_VALUE_ACCESSOR = {
 
 const INITIAL_WEIGHT: number = 0;
 const MAX_EXERCISE_NAME_WIDTH: number = 181;
+const WEIGHT_FORMAT: WeightFormat = 'kg';
 
 @Component({
     selector: 'app-single-exercise',
@@ -42,12 +47,16 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     setFormErrors: SetFormErrors;
 
     readonly exercises$: Observable<Exercise[]>;
+    private formTrainingState: NewTraining;
 
     exerciseChanged: boolean = false;
     isSubmitted: boolean = false;
 
     onChange: () => void;
     onTouched: () => void;
+
+    @Input()
+    editData: EditData | null;
 
     @Input()
     bodyweight: AbstractControl | null;
@@ -98,6 +107,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly dialog: MatDialog,
+        private readonly snackBar: MatSnackBar,
         private readonly changeDetectorRef: ChangeDetectorRef,
     ){}
 
@@ -109,7 +119,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 if(exercise.exerciseName){
                     this.accessFormField('name', indexExercise).patchValue(exercise.exerciseName as string);
                     this.accessFormField('sets', indexExercise).patchValue(exercise.sets as Set[]);
-                    this.accessFormField('total', indexExercise).patchValue(exercise.total ? exercise.total.toString() + ' kg' : '0kg');
+                    this.accessFormField('total', indexExercise).patchValue(exercise.total ? exercise.total.toString() + ` ${WEIGHT_FORMAT}` : `0${WEIGHT_FORMAT}`);
                     this.accessFormField('disabledTooltip', indexExercise).patchValue(exercise.disabledTooltip as boolean);
                 }
             });
@@ -151,8 +161,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         this.form.push(new FormGroup({
             'formArrayIndex': new FormControl(clicked ? this.getExercises().length : null, [Validators.required]),
             'name': new FormControl(null, [Validators.required]),
+            //TODO: popraviti kada je edit mode
             'sets': new FormControl(createInitialSet()),
-            'total': new FormControl(INITIAL_WEIGHT.toString() + ' kg', [Validators.required]),
+            'total': new FormControl(INITIAL_WEIGHT.toString() + ` ${WEIGHT_FORMAT}`, [Validators.required]),
             'disabledTooltip': new FormControl(true, [Validators.required]),
         }));
 
@@ -231,7 +242,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     }
 
     onChangeSets($event: SetStateChanged): void {
-        setTimeout(() => {
+        of(null).pipe(
+            debounceTime(1000),
+            takeUntil(this.unsubscribeService),
+        ).subscribe(_ => {
             if($event.isWeightLiftedValid
                 && $event.isRepsValid
                 && this.accessFormField('name', $event.indexExercise).value) {
@@ -243,14 +257,14 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         reps: $event.newSet.reps as number,
                         total: $event.newTotal as number,
                     };
-                    this.newTrainingService.setsChanged(trainingData as SetTrainingData);
-                    this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal.toString()+ ' kg');
+                    const updatedTraining: NewTraining = this.newTrainingService.setsChanged(trainingData as SetTrainingData);
+                    this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal.toString()+ ` ${WEIGHT_FORMAT}`);
             }
-        }, 1000);
+        });
     }
 
     deleteSet($event: Partial<SetStateChanged>): void {
-        this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal.toString() + ' kg');
+        this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal.toString() + ` ${WEIGHT_FORMAT}`);
         this.newTrainingService.deleteSet(
             $event.indexExercise as number,
             $event.indexSet as number,
@@ -314,6 +328,89 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         else {
             return false;
         }
+    }
+
+    onSubmit(): void {
+        this.isSubmitted = true;
+        if(!this.form.valid || this.setFormErrors?.wholeFormErrors) {
+            return;
+        }
+        this.isLoading = true;
+
+        this.gatherAllFormData().pipe(
+            switchMap(_ => {
+                if(this.editMode) {
+                    return this.newTrainingService.updateTraining(
+                        this.formTrainingState as NewTraining,
+                        this.editData._id as string,
+                    ).pipe(
+                        tap((response: GeneralResponseData) => {
+                            this.snackBar.open(this.translateService.instant(response.message as string), null, {
+                                duration: 3000,
+                                panelClass: 'app__snackbar',
+                            });
+                        }),
+                    );
+                }
+                else {
+                    return this.newTrainingService.addTraining(this.formTrainingState as NewTraining).pipe(
+                        tap((response: GeneralResponseData) => {
+                            this.snackBar.open(this.translateService.instant(response.message as string), null, {
+                                duration: 3000,
+                                panelClass: 'app__snackbar',
+                            });
+                        }),
+                    );
+                }
+            }),
+            finalize(() => {
+                this.isLoading = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        ).subscribe();
+    }
+
+    private gatherAllFormData(): Observable<Exercise[]> {
+        return this.newTrainingService.currentTrainingChanged$.pipe(
+            take(1),
+            switchMap((currentTrainingState: NewTraining) =>
+                this.newTrainingService.allExercisesChanged$.pipe(
+                    take(1),
+                    tap((allExercises: Exercise[]) => {
+                        const exerciseFormData: SingleExercise[] = [];
+                        const alreadyUsedExercises: string[] = [];
+
+                        this.getExercises().forEach((exercise: AbstractControl, indexExercise: number) => {
+                            const splittedTotal: string[] = (this.accessFormField('total', indexExercise).value as string).split(' ');
+                            exerciseFormData.push({
+                                formArrayIndex: +this.accessFormField('formArrayIndex', indexExercise).value as number,
+                                exerciseName: this.accessFormField('name', indexExercise).value as string,
+                                sets: [],
+                                total: +(splittedTotal[0] as string),
+                                disabledTooltip: this.accessFormField('disabledTooltip', indexExercise).value as boolean,
+                                availableExercises: allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1),
+                            });
+                            alreadyUsedExercises.push(this.accessFormField('name', indexExercise).value as string);
+
+                            const formSetData: Set[] = [];
+                            (this.accessFormField('sets', indexExercise).value as Set[]).forEach((set: Set) => {
+                                formSetData.push(set);
+                            });
+                            exerciseFormData[indexExercise].sets = formSetData;
+                        });
+
+                        this.formTrainingState = {
+                            createdAt: this.editMode ? this.editData.editedDate : new Date(),
+                            exercise: exerciseFormData as SingleExercise[],
+                            bodyweight: this.bodyweight.value ? +this.bodyweight.value as number : null,
+                            editMode: this.editMode as boolean,
+                            userId: currentTrainingState.userId as string,
+                        } as NewTraining;
+                    }),
+                ),
+            ),
+            takeUntil(this.unsubscribeService),
+        );
     }
 
     private setExerciseNameTooltip(

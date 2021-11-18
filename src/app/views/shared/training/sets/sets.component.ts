@@ -56,7 +56,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     constructor(
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
-        private readonly changeDetectorRef: ChangeDetectorRef,
     ){}
 
     ngOnInit(): void {

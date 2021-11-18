@@ -11,7 +11,6 @@ import { EMPTY_TRAINING } from '../../models/training/new-training/empty-trainin
 import { NewTraining } from '../../models/training/new-training/new-training.model';
 import { SetTrainingData } from '../../models/training/shared/set.model';
 import { Set } from '../../models/training/shared/set.model';
-import { createInitialSet } from '../../models/training/shared/set.model';
 import { SingleExercise } from '../../models/training/shared/single-exercise.model';
 import { AuthService } from '../auth/auth.service';
 
@@ -33,7 +32,7 @@ export class NewTrainingService {
         return this.http.get<Exercise[]>(environment.BACKEND + '/get_exercises').pipe(
             switchMap((exercises: Exercise[]) => {
                 const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
-                if(!trainingState){
+                if(!trainingState) {
                     return this.authService.loggedUser$.pipe(
                         take(1),
                         tap((authResponseData: AuthResponseData) => {
@@ -84,7 +83,7 @@ export class NewTrainingService {
         const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
         updatedTraining.exercise[indexExercise].sets.splice(indexSet, 1);
         updatedTraining.exercise[indexExercise].sets.map((set: Set) => {
-            if(set.setNumber > (indexSet + 1)){
+            if(set.setNumber > (indexSet + 1)) {
                 set.setNumber--;
             }
         });
@@ -99,7 +98,7 @@ export class NewTrainingService {
         const updatedTraining: NewTraining = { ...currentTrainingState };
         updatedTraining.exercise.map((exercise: SingleExercise) => {
             const isDeletedExerciseInAE: Exercise = exercise.availableExercises.find((exercise: Exercise) => exercise._id === toBeAddedExercise[0]._id);
-            if(!isDeletedExerciseInAE){
+            if(!isDeletedExerciseInAE) {
                 exercise.availableExercises.push(toBeAddedExercise[0] as Exercise);
                 exercise.availableExercises.sort(this.compare);
             }
@@ -121,7 +120,7 @@ export class NewTrainingService {
                 }
                 return exercise;
             });
-        if(deletedExerciseName){
+        if(deletedExerciseName) {
             return this.allExercisesChanged$.pipe(
                 take(1),
                 map((allExercises: Exercise[]) =>
@@ -132,7 +131,7 @@ export class NewTrainingService {
                 ),
             );
         }
-        else{
+        else {
             this.saveTrainingData({ ...updatedTraining } as NewTraining);
             return of([
                 updatedTraining,
@@ -141,11 +140,11 @@ export class NewTrainingService {
         }
     }
 
-    setsChanged(trainingData: SetTrainingData): void {
+    setsChanged(trainingData: SetTrainingData): NewTraining {
         const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
         const indexFoundSet = updatedTraining.exercise[trainingData.formArrayIndex].sets.findIndex(set => set.setNumber === trainingData.setNumber);
 
-        if(indexFoundSet > -1){
+        if(indexFoundSet > -1) {
             updatedTraining.exercise[trainingData.formArrayIndex].sets[indexFoundSet] = {
                 ...updatedTraining.exercise[trainingData.formArrayIndex].sets[indexFoundSet],
                 weightLifted: trainingData.weightLifted,
@@ -153,7 +152,7 @@ export class NewTrainingService {
             };
             updatedTraining.exercise[trainingData.formArrayIndex].total = trainingData.total;
         }
-        else{
+        else {
             updatedTraining.exercise[trainingData.formArrayIndex].sets.push({
                 setNumber: trainingData.setNumber,
                 weightLifted: trainingData.weightLifted,
@@ -162,6 +161,7 @@ export class NewTrainingService {
             updatedTraining.exercise[trainingData.formArrayIndex].total = trainingData.total;
         }
         this.saveTrainingData({ ...updatedTraining } as NewTraining);
+        return { ...updatedTraining };
     }
 
     addNewExercise(
@@ -196,7 +196,7 @@ export class NewTrainingService {
         const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
         const allExercises: Exercise[] = JSON.parse(localStorage.getItem('allExercises'));
 
-        if(!trainingState || !allExercises){
+        if(!trainingState || !allExercises) {
             return;
         }
         this.currentTrainingChanged$$.next({ ...trainingState });
@@ -210,7 +210,7 @@ export class NewTrainingService {
         userId?: string,
     ): void {
         let updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
-        if(restartAll){
+        if(restartAll) {
             updatedTraining = {
                 ...EMPTY_TRAINING,
                 userId: userId,
@@ -232,7 +232,7 @@ export class NewTrainingService {
         return {
             formArrayIndex: nextFormArrayIndex,
             exerciseName: null,
-            sets: createInitialSet(),
+            sets: [],
             total: null,
             disabledTooltip: true,
             availableExercises: [ ...exercises ],
@@ -256,10 +256,10 @@ export class NewTrainingService {
         a: Exercise,
         b: Exercise,
     ): number {
-        if(a.name < b.name){
+        if(a.name < b.name) {
             return -1;
         }
-        if(a.name > b.name){
+        if(a.name > b.name) {
             return 1;
         }
         return 0;
