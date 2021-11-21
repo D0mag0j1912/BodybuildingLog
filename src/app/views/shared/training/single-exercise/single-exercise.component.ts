@@ -15,7 +15,6 @@ import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import { FormSingleExerciseData } from '../../../../models/training/shared/single-exercise.model';
 import { WeightFormat } from '../../../../models/training/shared/weight-format.model';
-import { SharedService } from '../../../../services/shared/shared.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../../services/training/new-training.service';
 import { EditData } from '../../../../views/training/new-training/new-training.component';
@@ -37,7 +36,7 @@ const WEIGHT_FORMAT: WeightFormat = 'kg';
 })
 export class SingleExerciseComponent implements ControlValueAccessor {
 
-    private readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
+    readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
 
     form: FormArray = new FormArray([]);
     setFormErrors: SetFormErrors;
@@ -100,7 +99,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
-        private readonly sharedService: SharedService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly dialog: MatDialog,
@@ -150,6 +148,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     indexExercise as number,
                     this.accessFormField('disabledTooltip', indexExercise).value as boolean,
                 );
+                this.changeDetectorRef.markForCheck();
             });
         }
     }
@@ -254,6 +253,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         reps: $event.newSet.reps as number,
                         total: $event.newTotal as number,
                     };
+                    //TODO: fixati
                     const updatedTraining: NewTraining = this.newTrainingService.setsChanged(trainingData as SetTrainingData);
                     this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal.toString()+ ` ${WEIGHT_FORMAT}`);
             }
@@ -270,7 +270,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     }
 
     getExercises(): AbstractControl[] {
-        return this.form.controls;
+        return (this.form as FormArray).controls;
     }
 
     accessFormField(
@@ -302,7 +302,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     return this.translateService.stream('training.new_training.errors.first_set_required');
                 }
                 //TODO: ažurirati status nakon brisanja vježbe
-                else if(this.setFormErrors?.firstSetInvalid) {
+                else if(!this.setFormErrors?.isFirstSetValid) {
                     return this.translateService.stream('training.new_training.errors.first_set_invalid');
                 }
                 else {

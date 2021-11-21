@@ -76,7 +76,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         }
         this.formStateChanged.emit({
             wholeFormErrors: this.formErrors,
-            firstSetInvalid: this.isFirstSetInvalid() as boolean,
+            isFirstSetValid: this.isFirstSetValid() as boolean,
             indexExercise: this.indexExercise as number,
         } as SetFormErrors);
     }
@@ -84,9 +84,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     registerOnChange(fn: () => void): void {
         this.form.valueChanges.pipe(
             takeUntil(this.unsubscribeService),
-        ).subscribe(() => this.formStateChanged.emit({
+        ).subscribe(_ => this.formStateChanged.emit({
             wholeFormErrors: this.formErrors as ValidationErrors,
-            firstSetInvalid: this.isFirstSetInvalid() as boolean,
+            isFirstSetValid: this.isFirstSetValid() as boolean,
             indexExercise: this.indexExercise as number,
         } as SetFormErrors));
     }
@@ -192,8 +192,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         return total as number;
     }
 
-    private isFirstSetInvalid(): boolean {
-        return this.accessFormField('weightLifted', 0).errors || this.accessFormField('reps', 0).errors ? true : false;
+    private isFirstSetValid(): boolean {
+        let isValid: boolean = true;
+        if(this.accessFormField('weightLifted', 0).errors
+            || this.accessFormField('reps', 0).errors) {
+            isValid = false;
+        }
+        return isValid;
     }
 
     get formErrors(): ValidationErrors {
