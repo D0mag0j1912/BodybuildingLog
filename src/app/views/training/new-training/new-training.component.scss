@@ -23,6 +23,12 @@
     font-family: $poppins;
 }
 
+.bodyweight-error {
+    color: $dark-red;
+    font-size: 12px;
+    line-height: 16px;
+}
+
 .error-wrapper {
     width: 250px;
     margin: 80px auto;

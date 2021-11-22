@@ -1,13 +1,13 @@
 @import '../../../../../../styles/default-pallette.scss';
 
+.invalid-bodyweight {
+    margin-top: 5px;
+}
+
 .exercise-wrapper {
     display: flex;
     align-items: center;
     column-gap: 10px;
-}
-
-.bodyweight-error {
-    margin-top: 5px;
 }
 
 .exercise-form-field {

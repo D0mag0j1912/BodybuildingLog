@@ -47,8 +47,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     exerciseChanged: boolean = false;
     isSubmitted: boolean = false;
 
-    onChange: () => void;
     onTouched: () => void;
+    onChange: () => void;
 
     @Input()
     editData: EditData | null;
@@ -139,6 +139,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     ): void {
         if($event.value) {
             this.exerciseChanged = !this.exerciseChanged;
+            this.exerciseStateChanged$$.next();
             this.setExerciseNameTooltip(
                 element as MatSelect,
                 indexExercise as number,
@@ -157,7 +158,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         this.form.push(new FormGroup({
             'formArrayIndex': new FormControl(clicked ? this.getExercises().length : null, [Validators.required]),
             'name': new FormControl(null, [Validators.required]),
-            //TODO: popraviti kada je edit mode
             'sets': new FormControl(createInitialSet()),
             'total': new FormControl(INITIAL_WEIGHT.toString() + ` ${WEIGHT_FORMAT}`, [Validators.required]),
             'disabledTooltip': new FormControl(true, [Validators.required]),
@@ -209,7 +209,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                                     }),
                                 ),
                             ),
-                            finalize(() => this.exerciseStateChanged$$.next()),
+                            finalize(() => {
+                                this.exerciseStateChanged$$.next();
+                                this.changeDetectorRef.markForCheck();
+                            }),
                             takeUntil(this.unsubscribeService),
                         );
                     }

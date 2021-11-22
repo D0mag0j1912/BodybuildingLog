@@ -5,8 +5,7 @@
         *ngFor="let group of getExercises(); let i = index">
         <ng-container [formGroupName]="i">
             <div
-                class="exercise-wrapper"
-                [class.bodyweight-error]="!bodyweight.valid">
+                class="exercise-wrapper">
                 <mat-form-field
                     appearance="outline"
                     class="exercise-form-field"
@@ -36,10 +35,12 @@
                             </mat-option>
                         </mat-optgroup>
                     </mat-select>
-                    <mat-error
-                        class="error"
-                        *ngIf="accessFormField('name', i).errors?.required && isSubmitted">
-                        {{ 'training.new_training.errors.exercise_name_required' | translate }}
+                    <mat-error *ngIf="(accessFormField('name', i).touched || accessFormField('name', i).dirty) || isSubmitted">
+                        <mat-error
+                            class="error"
+                            *ngIf="accessFormField('name', i).errors?.required">
+                            {{ 'training.new_training.errors.exercise_name_required' | translate }}
+                        </mat-error>
                     </mat-error>
                 </mat-form-field>
                 <div
@@ -58,6 +59,7 @@
             </div>
             <app-sets
                 formControlName="sets"
+                [exerciseStateChanged$]="exerciseStateChanged$$.asObservable()"
                 [exerciseNameControl]="accessFormField('name', i)"
                 [indexExercise]="i"
                 [isLoading]="isLoading"
