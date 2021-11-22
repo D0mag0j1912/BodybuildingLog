@@ -4,7 +4,7 @@ import { GetExercisesController } from 'src/controllers/training/new-training/ge
 import { NewTrainingController } from 'src/controllers/training/new-training/new-training.controller';
 import { DeleteTrainingActionController } from 'src/controllers/training/past-trainings/delete-training-action.controller';
 import { PastTrainingsController } from 'src/controllers/training/past-trainings/past-trainings.controller';
-import { exerciseSchema } from 'src/models/training/exercise.model';
+import { EXERCISE_SCHEMA } from 'src/models/training/exercise.model';
 import { NEW_TRAINING_SCHEMA } from 'src/models/training/new-training/new-training.model';
 import { SET_SCHEMA } from 'src/models/training/new-training/set.model';
 import { SINGLE_EXERCISE_SCHEMA } from 'src/models/training/new-training/single-exercise.model';
@@ -29,7 +29,7 @@ const SERVICES = [
     imports: [
         MongooseModule.forFeature([{
             name: 'Exercise',
-            schema: exerciseSchema,
+            schema: EXERCISE_SCHEMA,
         }, {
             name: 'Set',
             schema: SET_SCHEMA,

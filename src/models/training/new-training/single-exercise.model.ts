@@ -9,7 +9,7 @@ import {
     IsString,
     ValidateNested} from 'class-validator';
 import { Schema } from 'mongoose';
-import { exerciseSchema } from '../exercise.model';
+import { EXERCISE_SCHEMA } from '../exercise.model';
 import { Exercise } from '../exercise.model';
 import { SET_SCHEMA } from './set.model';
 import { Set } from './set.model';
@@ -36,7 +36,7 @@ export const SINGLE_EXERCISE_SCHEMA = new Schema({
         required: true,
     },
     availableExercises: {
-        type: [exerciseSchema],
+        type: [EXERCISE_SCHEMA],
         required: true,
     },
 });

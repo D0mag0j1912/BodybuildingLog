@@ -36,7 +36,6 @@ export class PastTrainingsService {
                 startDate: getIntervalDate(new Date(currentDate)).startDate,
                 endDate: getIntervalDate(new Date(currentDate)).endDate,
             };
-            
             // tslint:disable-next-line: await-promise
             const trainings: NewTraining[] = await this.trainingModel.find({
                 userId: loggedUserId,

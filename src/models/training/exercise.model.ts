@@ -4,7 +4,7 @@ import {
     IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 
-export const exerciseSchema = new Schema({
+export const EXERCISE_SCHEMA = new Schema({
     name: {
         type: String,
         required: true,
