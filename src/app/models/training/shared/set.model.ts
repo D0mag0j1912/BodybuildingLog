@@ -41,6 +41,12 @@ export type SetFormErrors = {
     indexExercise?: number;
 };
 
+export const INITIAL_SET_FORM_ERROR: SetFormErrors = {
+    wholeFormErrors: null,
+    isFirstSetValid: true,
+    indexExercise: 0,
+};
+
 export type FormSetData = {
     setNumber?: number;
     weightLifted?: number;

@@ -12,6 +12,7 @@ import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { createInitialSet, SetFormErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
+import { INITIAL_SET_FORM_ERROR } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import { FormSingleExerciseData } from '../../../../models/training/shared/single-exercise.model';
 import { WeightFormat } from '../../../../models/training/shared/weight-format.model';
@@ -39,7 +40,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
 
     form: FormArray = new FormArray([]);
-    setFormErrors: SetFormErrors;
+    setFormErrors: SetFormErrors = INITIAL_SET_FORM_ERROR;
 
     readonly exercises$: Observable<Exercise[]>;
     private formTrainingState: NewTraining;

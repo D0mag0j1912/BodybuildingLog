@@ -64,6 +64,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             }),
             takeUntil(this.unsubscribeService),
         ).subscribe();
+
+        this.form.valueChanges.subscribe(_ => this.formStateChanged.emit({
+            wholeFormErrors: this.formErrors as ValidationErrors,
+            isFirstSetValid: this.isFirstSetValid() as boolean,
+            indexExercise: this.indexExercise as number,
+        } as SetFormErrors))
     }
 
     writeValue(value: Set[]): void {
@@ -77,7 +83,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         }
     }
     //Sending parent new form value when form value changes
-    registerOnChange(fn: (formValue: Set[]) => void): void {
+    registerOnChange(fn: (formValue: Partial<Set[]>) => void): void {
         this.form.valueChanges.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((formValue: Partial<Set[]>) => {
