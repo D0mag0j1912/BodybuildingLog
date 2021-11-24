@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { merge, Observable, of } from 'rxjs';
-import { take, takeUntil, tap } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
@@ -26,16 +26,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     readonly form: FormArray = new FormArray([]);
 
     onTouched: () => void;
-    onChange: () => void;
 
     @Input()
-    exerciseStateChanged$: Observable<void>;
+    exerciseNameControl: AbstractControl | null;
 
     @Input()
-    exerciseNameControl: AbstractControl;
-
-    @Input()
-    indexExercise: number;
+    indexExercise: number = 0;
 
     @Input()
     editMode: boolean = false;
@@ -61,8 +57,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         this.form.setValidators([NewTrainingValidators.allSetsFilled(), NewTrainingValidators.atLeastOneSet()]);
         this.form.updateValueAndValidity();
 
-        this.exerciseStateChanged$.pipe(take(1)).subscribe(() => this.accessFormField('weightLifted', 0).enable());
-
         merge(
             this.exerciseNameControl.valueChanges.pipe(
                 tap((value: string) => {
@@ -78,7 +72,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                         isFirstSetValid: this.isFirstSetValid() as boolean,
                         indexExercise: this.indexExercise as number,
                     } as SetFormErrors);
-                    console.log('tu sam');
                 }),
                 takeUntil(this.unsubscribeService),
             ),
@@ -95,9 +88,18 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             this.addSet();
         }
     }
-
-    registerOnChange(fn: () => void): void {
-        this.onChange = fn;
+    //Sending parent new form value when form value changes
+    registerOnChange(fn: (formValue: Set[]) => void): void {
+        this.form.valueChanges.pipe(
+            takeUntil(this.unsubscribeService),
+        ).subscribe((formValue: Partial<Set[]>) => {
+            this.formStateChanged.emit({
+                wholeFormErrors: this.formErrors as ValidationErrors,
+                isFirstSetValid: this.isFirstSetValid() as boolean,
+                indexExercise: this.indexExercise as number,
+            } as SetFormErrors);
+            fn(formValue as Partial<Set[]>);
+        });
     }
 
     registerOnTouched(fn: () => void): void {
@@ -194,11 +196,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     }
 
     private calculateTotal(): number {
-        let total = 0;
+        let total: number = 0;
         for(const group of this.getSets()){
             total += (+group.get('weightLifted').value * +group.get('reps').value);
         }
-        return total as number;
+        return total;
     }
 
     private isFirstSetValid(): boolean {

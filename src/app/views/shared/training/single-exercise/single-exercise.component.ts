@@ -48,7 +48,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     isSubmitted: boolean = false;
 
     onTouched: () => void;
-    onChange: () => void;
 
     @Input()
     editData: EditData | null;
@@ -101,9 +100,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         private readonly newTrainingService: NewTrainingService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
+        private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly dialog: MatDialog,
         private readonly snackBar: MatSnackBar,
-        private readonly changeDetectorRef: ChangeDetectorRef,
     ){}
 
     writeValue(data: NewTraining): void {
@@ -124,8 +123,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         }
     }
 
-    registerOnChange(fn: () => void): void {
-        this.onChange = fn;
+    registerOnChange(fn: (formValue: SingleExercise[]) => void): void {
+        this.form.valueChanges.pipe(
+            takeUntil(this.unsubscribeService),
+        ).subscribe(fn);
     }
 
     registerOnTouched(fn: () => void): void {
