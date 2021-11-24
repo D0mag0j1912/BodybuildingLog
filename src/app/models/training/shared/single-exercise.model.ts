@@ -8,6 +8,7 @@ export interface SingleExercise {
     total: number;
     disabledTooltip: boolean;
     availableExercises: Exercise[];
+    _id?: string;
 }
 
 export type FormSingleExerciseData = {

@@ -123,7 +123,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         }
     }
 
-    registerOnChange(fn: (formValue: SingleExercise[]) => void): void {
+    registerOnChange(fn: (formValue: Partial<SingleExercise[]>) => void): void {
         this.form.valueChanges.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe(fn);
