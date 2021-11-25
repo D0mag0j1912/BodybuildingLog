@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
-import { SetFormErrors } from '../../../../models/training/shared/set.model';
 import { FormSetData } from '../../../../models/training/shared/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
-import * as NewTrainingValidators from '../../../../validators/new-training.validators';
+import * as CommonValidators from '../../../../validators/shared/common.validators';
+import * as SetValidators from '../../../../validators/shared/set.validators';
 
 @Component({
     selector: 'app-sets',
@@ -46,7 +46,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     readonly setDeleted: EventEmitter<Partial<SetStateChanged>> = new EventEmitter<Partial<SetStateChanged>>();
 
     @Output()
-    readonly formStateChanged: EventEmitter<SetFormErrors> = new EventEmitter<SetFormErrors>();
+    readonly formStateChanged: EventEmitter<string[]> = new EventEmitter<string[]>();
 
     constructor(
         private readonly translateService: TranslateService,
@@ -54,7 +54,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     ){}
 
     ngOnInit(): void {
-        this.form.setValidators([NewTrainingValidators.allSetsFilled(), NewTrainingValidators.atLeastOneSet()]);
+        this.form.setValidators([SetValidators.allSetsFilled(), SetValidators.isFirstSetValid()]);
         this.form.updateValueAndValidity();
 
         this.exerciseNameControl.valueChanges.pipe(
@@ -81,11 +81,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         this.form.valueChanges.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((formValue: Partial<Set[]>) => {
-            this.formStateChanged.emit({
-                wholeFormErrors: this.formErrors as ValidationErrors,
-                isFirstSetValid: this.isFirstSetValid() as boolean,
-                indexExercise: this.indexExercise as number,
-            } as SetFormErrors);
+            this.formStateChanged.emit(this.formErrors);
             fn(formValue as Partial<Set[]>);
         });
     }
@@ -107,7 +103,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     disabled: this.exerciseNameControl.value ? false : true,
                 }, [Validators.min(1),
                     Validators.max(1000),
-                    NewTrainingValidators.isBroj()]),
+                    CommonValidators.isBroj()]),
                 'reps': new FormControl({
                     value: set ? (set.reps as number) : null,
                     disabled: this.exerciseNameControl.value ? false : true,
@@ -115,7 +111,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     Validators.max(1000),
                     Validators.pattern('^[0-9]*$')]),
             }, {
-                validators: [NewTrainingValidators.bothValuesRequired()],
+                validators: [SetValidators.bothValuesRequired()],
             }),
         );
     }
@@ -186,22 +182,22 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     private calculateTotal(): number {
         let total: number = 0;
         for(const group of this.getSets()){
-            total += (+group.get('weightLifted').value * +group.get('reps').value);
+            total += (+group.get('weightLifted')?.value * +group.get('reps')?.value);
         }
         return total;
     }
 
-    private isFirstSetValid(): boolean {
-        let isValid: boolean = true;
-        if(this.accessFormField('weightLifted', 0).errors
-            || this.accessFormField('reps', 0).errors) {
-            isValid = false;
+    get formErrors(): string[] {
+        let errors: string[] = [];
+        if(this.form.errors){
+            errors = errors.concat(Object.keys(this.form.errors));
         }
-        return isValid;
-    }
-
-    get formErrors(): ValidationErrors {
-        return this.form.errors;
+        this.form.controls.forEach((group: AbstractControl) => {
+            if(group?.errors){
+                errors = errors.concat(Object.keys(group.errors));
+            }
+        });
+        return errors;
     }
 
 }

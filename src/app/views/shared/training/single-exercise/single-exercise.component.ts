@@ -10,9 +10,8 @@ import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
-import { createInitialSet, SetFormErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
+import { createInitialSet, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
-import { INITIAL_SET_FORM_ERROR } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import { FormSingleExerciseData } from '../../../../models/training/shared/single-exercise.model';
 import { WeightFormat } from '../../../../models/training/shared/weight-format.model';
@@ -40,7 +39,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
 
     form: FormArray = new FormArray([]);
-    setFormErrors: SetFormErrors = INITIAL_SET_FORM_ERROR;
+    setErrors: string[] = [];
 
     readonly exercises$: Observable<Exercise[]>;
     private formTrainingState: NewTraining;
@@ -198,17 +197,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                                     indexExercise as number,
                                     currentTrainingState as NewTraining,
                                     exerciseName as string,
-                                ).pipe(
-                                    tap((data: [NewTraining, Exercise[]]) => {
-                                        if(data[1]) {
-                                            this.exerciseChanged = !this.exerciseChanged;
-                                            this.form.removeAt(indexExercise);
-                                            this.newTrainingService.pushToAvailableExercises(
-                                                data[0] as NewTraining,
-                                                data[1] as Exercise[],
-                                            );
-                                        }
-                                    }),
                                 ),
                             ),
                             finalize(() => {
@@ -223,7 +211,17 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     }
                 }),
                 takeUntil(this.unsubscribeService),
-            ).subscribe();
+            ).subscribe((data: [NewTraining, Exercise[]]) => {
+                if(data) {
+                    this.exerciseChanged = !this.exerciseChanged;
+                    this.accessFormField('sets', indexExercise).markAsTouched();
+                    this.form.removeAt(indexExercise);
+                    this.newTrainingService.pushToAvailableExercises(
+                        data[0] as NewTraining,
+                        data[1] as Exercise[],
+                    );
+                }
+            });
         }
         else {
             this.newTrainingService.currentTrainingChanged$.pipe(
@@ -232,13 +230,14 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     this.newTrainingService.deleteExercise(
                         indexExercise as number,
                         currentTrainingState as NewTraining,
-                    ).pipe(
-                        tap(_ => this.form.removeAt(indexExercise)),
                     ),
                 ),
                 finalize(() => this.exerciseStateChanged$$.next()),
                 takeUntil(this.unsubscribeService),
-            ).subscribe();
+            ).subscribe(_ => {
+                this.accessFormField('sets', indexExercise).markAsTouched();
+                this.form.removeAt(indexExercise);
+            });
         }
     }
 
@@ -285,8 +284,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         return this.form.at(indexExercise).get(formField);
     }
 
-    onSetFormChange($event: SetFormErrors): void {
-        this.setFormErrors = $event;
+    onSetFormChange($event: string[]): void {
+        this.setErrors = $event;
         this.changeDetectorRef.markForCheck();
     }
 
@@ -303,12 +302,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     return this.translateService.stream('training.new_training.errors.pick_current_exercise');
                 }
                 //TODO: ažurirati status nakon brisanja vježbe
-                else if(this.setFormErrors?.wholeFormErrors?.atLeastOneSet) {
+                else if(this.setErrors.includes('firstSetInvalid')) {
                     return this.translateService.stream('training.new_training.errors.first_set_required');
-                }
-                //TODO: ažurirati status nakon brisanja vježbe
-                else if(!this.setFormErrors?.isFirstSetValid) {
-                    return this.translateService.stream('training.new_training.errors.first_set_invalid');
                 }
                 else {
                     return of('');
@@ -327,8 +322,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         if(this.getExercises().length > 0) {
             return (currentExercisesLength >= allExercisesLength)
                 || ((!this.accessFormField('name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
-                //TODO: ažurirati status nakon brisanja vježbe
-                || this.setFormErrors?.wholeFormErrors !== null;
+                || this.setErrors.includes('firstSetInvalid');
         }
         else {
             return false;
@@ -337,7 +331,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     onSubmit(): void {
         this.isSubmitted = true;
-        if(!this.form.valid || this.setFormErrors?.wholeFormErrors) {
+        if(!this.form.valid || this.setErrors.length > 0) {
             return;
         }
         this.isLoading = true;

@@ -1,7 +1,7 @@
-import { AbstractControl, FormArray, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export function allSetsFilled(): ValidatorFn {
-    return (array: AbstractControl): {[key: string]: boolean} | null => {
+    return (array: AbstractControl): ValidationErrors | null => {
         if(array){
             let isSetFilled: boolean = true;
             (array as FormArray).controls.forEach((set: AbstractControl) => {
@@ -19,26 +19,27 @@ export function allSetsFilled(): ValidatorFn {
     };
 }
 
-export function atLeastOneSet(): ValidatorFn {
-    return (array: AbstractControl): {[key: string]: boolean} | null => {
-        if(array){
+export function isFirstSetValid(): ValidatorFn {
+    return (array: AbstractControl): ValidationErrors | null => {
+        if (array) {
             let isSet: boolean = false;
             (array as FormArray).controls.forEach((set: AbstractControl) => {
-                if(set.get('weightLifted').value && set.get('reps').value){
+                if (set.get('weightLifted').value && set.get('weightLifted').valid
+                    && set.get('reps').value && set.get('reps').valid) {
                     isSet = true;
                 }
             });
             if(isSet){
                 return null;
             }
-            return { 'atLeastOneSet': true };
+            return { 'firstSetInvalid': true };
         }
         return null;
     };
 }
 
 export function bothValuesRequired(): ValidatorFn {
-    return (group: AbstractControl): {[key: string]: boolean} | null => {
+    return (group: AbstractControl): ValidationErrors | null => {
         if(group){
             if(group.get('weightLifted').value && !group.get('reps').value){
                 return { 'repsRequired': true };
@@ -49,18 +50,6 @@ export function bothValuesRequired(): ValidatorFn {
             else {
                 return null;
             }
-        }
-        return null;
-    };
-}
-
-export function isBroj(): ValidatorFn {
-    return (control: AbstractControl): {[key: string]: boolean} | null => {
-        if(control.value){
-            if(!isNaN(parseFloat(control.value)) && isFinite(control.value)){
-                return null;
-            }
-            return { 'onlyNumbers': true };
         }
         return null;
     };

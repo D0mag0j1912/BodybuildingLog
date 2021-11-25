@@ -11,7 +11,7 @@ import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
-import * as NewTrainingValidators from '../../../validators/new-training.validators';
+import * as CommonValidators from '../../../validators/shared/common.validators';
 
 export type EditData = {
     _id?: string;
@@ -203,7 +203,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             data.bodyweight,
                             this.editData?.editTraining ? this.editData.editTraining.bodyweight : null,
                         ),
-                        [NewTrainingValidators.isBroj(), Validators.min(30), Validators.max(300)],
+                        [CommonValidators.isBroj(), Validators.min(30), Validators.max(300)],
                     ),
                     'exercise': new FormControl(data as NewTraining),
                 });

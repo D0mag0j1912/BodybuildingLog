@@ -1,4 +1,3 @@
-import { ValidationErrors } from '@angular/forms';
 
 export interface Set {
     setNumber: number;
@@ -35,17 +34,15 @@ export function createInitialSet(): Set[] {
     return sets as Set[];
 }
 
-export type SetFormErrors = {
-    wholeFormErrors?: ValidationErrors;
-    isFirstSetValid?: boolean;
-    indexExercise?: number;
-};
-
-export const INITIAL_SET_FORM_ERROR: SetFormErrors = {
-    wholeFormErrors: null,
-    isFirstSetValid: true,
-    indexExercise: 0,
-};
+export type SetFormValidationErrors =
+    'setNotFilled' |
+    'firstSetInvalid' |
+    'repsRequired' |
+    'weightLiftedRequired' |
+    'min' |
+    'max' |
+    'pattern' |
+    'onlyNumbers';
 
 export type FormSetData = {
     setNumber?: number;
