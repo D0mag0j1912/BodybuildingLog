@@ -214,7 +214,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
             ).subscribe((data: [NewTraining, Exercise[]]) => {
                 if(data) {
                     this.exerciseChanged = !this.exerciseChanged;
-                    this.accessFormField('sets', indexExercise).markAsTouched();
                     this.form.removeAt(indexExercise);
                     this.newTrainingService.pushToAvailableExercises(
                         data[0] as NewTraining,
@@ -234,10 +233,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 ),
                 finalize(() => this.exerciseStateChanged$$.next()),
                 takeUntil(this.unsubscribeService),
-            ).subscribe(_ => {
-                this.accessFormField('sets', indexExercise).markAsTouched();
-                this.form.removeAt(indexExercise);
-            });
+            ).subscribe(_ => this.form.removeAt(indexExercise));
         }
     }
 
@@ -301,7 +297,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 if(!this.accessFormField('name', this.getExercises().length - 1)?.value) {
                     return this.translateService.stream('training.new_training.errors.pick_current_exercise');
                 }
-                //TODO: ažurirati status nakon brisanja vježbe
                 else if(this.setErrors.includes('firstSetInvalid')) {
                     return this.translateService.stream('training.new_training.errors.first_set_required');
                 }

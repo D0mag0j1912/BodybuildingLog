@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
@@ -56,14 +56,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     ngOnInit(): void {
         this.form.setValidators([SetValidators.allSetsFilled(), SetValidators.isFirstSetValid()]);
         this.form.updateValueAndValidity();
+        /* this.formStateChanged.emit(this.formErrors); */
 
         this.exerciseNameControl.valueChanges.pipe(
-            tap((value: string) => {
-                value ? this.accessFormField('weightLifted', 0).enable() : this.accessFormField('weightLifted', 0).disable();
-                value ? this.accessFormField('reps', 0).enable() : this.accessFormField('reps', 0).disable();
-            }),
             takeUntil(this.unsubscribeService),
-        ).subscribe();
+        ).subscribe((value: string) => {
+            value ? this.accessFormField('weightLifted', 0).enable() : this.accessFormField('weightLifted', 0).disable();
+            value ? this.accessFormField('reps', 0).enable() : this.accessFormField('reps', 0).disable();
+        });
     }
 
     writeValue(value: Set[]): void {

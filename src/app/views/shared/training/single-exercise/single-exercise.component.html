@@ -4,8 +4,7 @@
     <ng-container
         *ngFor="let group of getExercises(); let i = index">
         <ng-container [formGroupName]="i">
-            <div
-                class="exercise-wrapper">
+            <div class="exercise-wrapper">
                 <mat-form-field
                     appearance="outline"
                     class="exercise-form-field"
@@ -37,20 +36,20 @@
                     </mat-select>
                     <mat-error *ngIf="(accessFormField('name', i).touched || accessFormField('name', i).dirty) || isSubmitted">
                         <mat-error
-                            class="error"
-                            *ngIf="accessFormField('name', i).errors?.required">
+                            *ngIf="accessFormField('name', i).errors?.required"
+                            class="error">
                             {{ 'training.new_training.errors.exercise_name_required' | translate }}
                         </mat-error>
                     </mat-error>
                 </mat-form-field>
                 <div
                     class="delete-exercise-wrapper"
-                    [matTooltip]="'training.new_training.buttons.delete_exercise' | translate"
                     matTooltipPosition="above"
-                    matTooltipClass="tooltip">
+                    matTooltipClass="tooltip"
+                    [matTooltip]="'training.new_training.buttons.delete_exercise' | translate">
                     <button
-                        type="button"
                         mat-raised-button
+                        type="button"
                         color="warn"
                         (click)="deleteExercise(i, accessFormField('name', i).value)">
                         <mat-icon>delete_forever</mat-icon>
@@ -68,8 +67,8 @@
                 (formStateChanged)="onSetFormChange($event)"></app-sets>
             <!--TODO: setFormErrors?.indexExercise === i nadodati ispod uvjet-->
             <span
-                class="total-error"
-                *ngIf="setErrors.includes('firstSetInvalid') && isSubmitted">
+                *ngIf="setErrors.includes('firstSetInvalid') && isSubmitted"
+                class="total-error">
                 {{ 'training.new_training.errors.at_least_one_set' | translate }}
             </span>
             <app-total-weight formControlName="total"></app-total-weight>
@@ -85,21 +84,21 @@
                 type="button"
                 color="primary"
                 class="add-exercise-button"
-                (click)="addExercise($event)"
                 [disabled]="isAddingExercisesDisabled(
                     isAddingExercisesAllowed[0].length,
-                    isAddingExercisesAllowed[1].length)">
+                    isAddingExercisesAllowed[1].length)"
+                (click)="addExercise($event)">
                 {{ 'training.new_training.buttons.add_exercise' | translate }}
             </button>
         </div>
         <button
+            mat-raised-button
             class="finish-training"
             type="submit"
-            mat-raised-button
             color="primary"
-            [matTooltip]="'training.new_training.finish_training' | translate"
             matTooltipPosition="above"
-            matTooltipClass="tooltip">
+            matTooltipClass="tooltip"
+            [matTooltip]="'training.new_training.finish_training' | translate">
             <mat-icon class="finish-training-icon">done</mat-icon>
         </button>
     </div>
