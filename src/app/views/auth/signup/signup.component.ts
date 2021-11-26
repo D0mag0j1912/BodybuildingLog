@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_RADIO_DEFAULT_OPTIONS } from '@angular/material/radio';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { finalize, tap } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { SNACK_BAR_DURATION } from '../../../consts/snack-bar-duration.const';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -23,6 +23,7 @@ type FormData = {
     selector: 'app-signup',
     templateUrl: './signup.component.html',
     styleUrls: ['./signup.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [{
         provide: MAT_RADIO_DEFAULT_OPTIONS,
         useValue: {
@@ -41,8 +42,9 @@ export class SignupComponent implements OnInit {
         private readonly authService: AuthService,
         private readonly signupService: SignupService,
         private readonly translateService: TranslateService,
-        private readonly router: Router,
+        private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly snackBar: MatSnackBar,
+        private readonly router: Router,
     ) { }
 
     ngOnInit(): void {
@@ -53,8 +55,7 @@ export class SignupComponent implements OnInit {
             'email': new FormControl(null, [
                 Validators.required,
                 Validators.email,
-            ],
-            [AuthCustomValidators.isEmailAvailable(this.signupService)]),
+            ], [AuthCustomValidators.isEmailAvailable(this.signupService)]),
             'password': new FormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
@@ -65,23 +66,20 @@ export class SignupComponent implements OnInit {
                 Validators.minLength(6),
                 Validators.maxLength(20),
             ]),
-        }, {
-            validators: AuthCustomValidators.samePasswords(),
-        });
+        }, { validators: AuthCustomValidators.samePasswords() });
     }
 
     onSubmit(): void {
         this.isSubmitted = true;
-        this.isLoading = true;
-
+        //TODO: fixati kad mi nakon drugog klika na 'Sign up' izbaciva donji error
         if(!this.form.valid){
-            this.snackBar.open('All fields needs to be correctly filled.', null, {
+            this.snackBar.open(this.translateService.instant('auth.errors.invalid_form'), null, {
                 duration: SNACK_BAR_DURATION.GENERAL,
                 panelClass: 'app__snackbar-error',
             });
-            this.isLoading = false;
             return;
         }
+        this.isLoading = true;
 
         this.authService.signup(
             this.accessFormData('language').value as string,
@@ -90,19 +88,21 @@ export class SignupComponent implements OnInit {
             this.accessFormData('password').value as string,
             this.accessFormData('confirmPassword').value as string,
         ).pipe(
-            tap(async (response: AuthResponseData) => {
+            finalize(() => {
+                this.isLoading = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        ).subscribe(async (response: AuthResponseData) => {
+            if(response.success){
+                this.accessFormData('email').clearAsyncValidators();
+                this.accessFormData('email').updateValueAndValidity();
                 this.snackBar.open(this.translateService.instant(response.message as string), null, {
                     duration: SNACK_BAR_DURATION.GENERAL,
                     panelClass: response.success ? 'app__snackbar' : 'app__snackbar-error',
                 });
-                if(response.success){
-                    this.accessFormData('email').clearAsyncValidators();
-                    this.accessFormData('email').updateValueAndValidity();
-                    await this.router.navigate(['/login']);
-                }
-            }),
-            finalize(() => this.isLoading = false),
-        ).subscribe();
+                await this.router.navigate(['/login']);
+            }
+        });
     }
 
     accessFormData(formFieldName: keyof FormData): FormControl {

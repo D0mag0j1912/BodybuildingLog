@@ -135,10 +135,11 @@
             {{ 'auth.errors.equal_passwords' | translate }}
         </span>
         <button
+            mat-raised-button
             class="submit"
             type="submit"
-            mat-raised-button
-            color="primary">
+            color="primary"
+            [class.button-spinner]="isLoading">
             {{ 'auth.signup' | translate }}
         </button>
     </form>

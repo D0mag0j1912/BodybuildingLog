@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { finalize, tap } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { SNACK_BAR_DURATION } from '../../../consts/snack-bar-duration.const';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -18,6 +18,7 @@ type FormData = {
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit, AfterViewInit {
 
@@ -31,9 +32,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private readonly emailInput: ElementRef;
 
     constructor(
+        private readonly translateService: TranslateService,
         private readonly loginService: LoginService,
         private readonly authService: AuthService,
-        private readonly translateService: TranslateService,
+        private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly snackBar: MatSnackBar,
     ) {}
 
@@ -49,9 +51,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
                 Validators.minLength(6),
                 Validators.maxLength(20),
             ]),
-        }, {
-            asyncValidators: AuthCustomValidators.passwordFitsEmail(this.loginService),
-        });
+        }, { asyncValidators: AuthCustomValidators.passwordFitsEmail(this.loginService) });
+
+        //TODO: riješiti problem change detectiona prilikom unosa email-a i disablea login buttona
     }
 
     ngAfterViewInit(): void {
@@ -61,29 +63,31 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
 
     onSubmit(): void {
-        this.isLoading = true;
-
         if(!this.form.valid){
-            this.snackBar.open('All fields needs to be correctly filled.', null, {
+            this.snackBar.open(this.translateService.instant('auth.errors.invalid_form'), null, {
                 duration: SNACK_BAR_DURATION.GENERAL,
                 panelClass: 'app__snackbar-error',
             });
-            this.isLoading = false;
             return;
         }
+        this.isLoading = true;
 
         this.authService.login(
             this.accessFormData('email').value as string,
             this.accessFormData('password').value as string,
         ).pipe(
-            tap((response: AuthResponseData) => {
+            finalize(() => {
+                this.isLoading = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        ).subscribe((response: AuthResponseData) => {
+            if(response) {
                 this.snackBar.open(this.translateService.instant(response.message as string), null, {
                     duration: SNACK_BAR_DURATION.GENERAL,
                     panelClass: response.token ? 'app__snackbar' : 'app__snackbar-error',
                 });
-            }),
-            finalize(() => this.isLoading = false),
-        ).subscribe();
+            }
+        });
     }
 
     accessFormData(formFieldName: keyof FormData): FormControl {

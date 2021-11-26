@@ -59,6 +59,7 @@
             type="submit"
             mat-raised-button
             color="primary"
+            [class.button-spinner]="isLoading"
             [disabled]="!form.valid">
             {{ 'auth.login' | translate }}
         </button>
