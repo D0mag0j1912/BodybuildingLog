@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize, tap } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
+import { SNACK_BAR_DURATION } from '../../../consts/snack-bar-duration.const';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SignupService } from '../../../services/auth/signup.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
@@ -75,7 +76,7 @@ export class SignupComponent implements OnInit {
 
         if(!this.form.valid){
             this.snackBar.open('All fields needs to be correctly filled.', null, {
-                duration: 3000,
+                duration: SNACK_BAR_DURATION.GENERAL,
                 panelClass: 'app__snackbar-error',
             });
             this.isLoading = false;
@@ -91,7 +92,7 @@ export class SignupComponent implements OnInit {
         ).pipe(
             tap(async (response: AuthResponseData) => {
                 this.snackBar.open(this.translateService.instant(response.message as string), null, {
-                    duration: 3000,
+                    duration: SNACK_BAR_DURATION.GENERAL,
                     panelClass: response.success ? 'app__snackbar' : 'app__snackbar-error',
                 });
                 if(response.success){

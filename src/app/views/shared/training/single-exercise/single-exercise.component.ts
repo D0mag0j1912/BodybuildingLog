@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
+import { SNACK_BAR_DURATION } from '../../../../consts/snack-bar-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
@@ -344,7 +345,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     ).pipe(
                         tap((response: GeneralResponseData) => {
                             this.snackBar.open(this.translateService.instant(response.message as string), null, {
-                                duration: 3000,
+                                duration: SNACK_BAR_DURATION.GENERAL,
                                 panelClass: 'app__snackbar',
                             });
                         }),
@@ -354,7 +355,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     return this.newTrainingService.addTraining(this.formTrainingState as NewTraining).pipe(
                         tap((response: GeneralResponseData) => {
                             this.snackBar.open(this.translateService.instant(response.message as string), null, {
-                                duration: 3000,
+                                duration: SNACK_BAR_DURATION.GENERAL,
                                 panelClass: 'app__snackbar',
                             });
                         }),

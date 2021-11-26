@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { captureException } from '@sentry/minimal';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { SNACK_BAR_DURATION } from '../consts/snack-bar-duration.const';
 import { ErrorMessage } from '../models/training/past-trainings/past-trainings-response.model';
 
 @Injectable()
@@ -45,7 +46,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                     errorMessage = this.translateService.instant('common.errors.unknown_error');
                 }
                 this.snackBar.open(errorMessage, null, {
-                    duration: 3000,
+                    duration: SNACK_BAR_DURATION.GENERAL,
                     panelClass: 'app__snackbar-error',
                 });
                 return throwError(error as HttpErrorResponse);
