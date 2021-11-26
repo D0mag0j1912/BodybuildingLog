@@ -22,17 +22,15 @@ export function allSetsFilled(): ValidatorFn {
 export function isFirstSetValid(): ValidatorFn {
     return (array: AbstractControl): ValidationErrors | null => {
         if (array) {
-            let isSet: boolean = false;
-            (array as FormArray).controls.forEach((set: AbstractControl) => {
-                if (set.get('weightLifted').value && set.get('weightLifted').valid
-                    && set.get('reps').value && set.get('reps').valid) {
-                    isSet = true;
-                }
-            });
-            if(isSet){
-                return null;
+            const weightLifted: AbstractControl = (array as FormArray).controls[0]?.get('weightLifted');
+            const reps: AbstractControl = (array as FormArray).controls[0]?.get('reps');
+            if(!weightLifted?.value || !reps?.value){
+                return { 'firstSetNotEntered': true };
             }
-            return { 'firstSetInvalid': true };
+            if(!weightLifted?.valid || !reps?.valid) {
+                return { 'firstSetNotValid': true };
+            }
+            return null;
         }
         return null;
     };

@@ -67,7 +67,7 @@
                 (formStateChanged)="onSetFormChange($event)"></app-sets>
             <!--TODO: setFormErrors?.indexExercise === i nadodati ispod uvjet-->
             <span
-                *ngIf="setErrors.includes('firstSetInvalid') && isSubmitted"
+                *ngIf="setErrors.includes('firstSetNotValid') && isSubmitted"
                 class="total-error">
                 {{ 'training.new_training.errors.at_least_one_set' | translate }}
             </span>

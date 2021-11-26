@@ -7,6 +7,7 @@ import { getControlValueAccessor } from '../../../../helpers/control-value-acces
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { FormSetData } from '../../../../models/training/shared/set.model';
+import { SetFormValidationErrors } from '../../../../models/training/shared/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as CommonValidators from '../../../../validators/shared/common.validators';
 import * as SetValidators from '../../../../validators/shared/set.validators';
@@ -46,7 +47,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     readonly setDeleted: EventEmitter<Partial<SetStateChanged>> = new EventEmitter<Partial<SetStateChanged>>();
 
     @Output()
-    readonly formStateChanged: EventEmitter<string[]> = new EventEmitter<string[]>();
+    readonly formStateChanged: EventEmitter<SetFormValidationErrors[]> = new EventEmitter<SetFormValidationErrors[]>();
 
     constructor(
         private readonly translateService: TranslateService,
@@ -187,14 +188,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         return total;
     }
 
-    get formErrors(): string[] {
-        let errors: string[] = [];
+    get formErrors(): SetFormValidationErrors[] {
+        let errors: SetFormValidationErrors[] = [];
         if(this.form.errors){
-            errors = errors.concat(Object.keys(this.form.errors));
+            const mappedKeys: SetFormValidationErrors[] = Object.keys(this.form.errors).map((key: string) => key as SetFormValidationErrors);
+            errors = errors.concat(mappedKeys);
         }
         this.form.controls.forEach((group: AbstractControl) => {
             if(group?.errors){
-                errors = errors.concat(Object.keys(group.errors));
+                const mappedKeys: SetFormValidationErrors[] = Object.keys(group.errors).map((key: string) => key as SetFormValidationErrors);
+                errors = errors.concat(mappedKeys);
             }
         });
         return errors;

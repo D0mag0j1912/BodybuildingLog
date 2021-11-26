@@ -10,7 +10,7 @@ import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
-import { createInitialSet, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
+import { createInitialSet, SetFormValidationErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import { FormSingleExerciseData } from '../../../../models/training/shared/single-exercise.model';
@@ -39,7 +39,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
 
     form: FormArray = new FormArray([]);
-    setErrors: string[] = [];
+    setErrors: SetFormValidationErrors[] = [];
 
     readonly exercises$: Observable<Exercise[]>;
     private formTrainingState: NewTraining;
@@ -280,7 +280,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         return this.form.at(indexExercise).get(formField);
     }
 
-    onSetFormChange($event: string[]): void {
+    onSetFormChange($event: SetFormValidationErrors[]): void {
         this.setErrors = $event;
         this.changeDetectorRef.markForCheck();
     }
@@ -297,8 +297,11 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 if(!this.accessFormField('name', this.getExercises().length - 1)?.value) {
                     return this.translateService.stream('training.new_training.errors.pick_current_exercise');
                 }
-                else if(this.setErrors.includes('firstSetInvalid')) {
+                else if(this.setErrors.includes('firstSetNotEntered') && !this.setErrors.includes('firstSetNotValid')) {
                     return this.translateService.stream('training.new_training.errors.first_set_required');
+                }
+                else if(this.setErrors.includes('firstSetNotValid')) {
+                    return this.translateService.stream('training.new_training.errors.first_set_invalid');
                 }
                 else {
                     return of('');
@@ -317,7 +320,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         if(this.getExercises().length > 0) {
             return (currentExercisesLength >= allExercisesLength)
                 || ((!this.accessFormField('name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
-                || this.setErrors.includes('firstSetInvalid');
+                || this.setErrors.includes('firstSetNotEntered')
+                || this.setErrors.includes('firstSetNotValid');
         }
         else {
             return false;

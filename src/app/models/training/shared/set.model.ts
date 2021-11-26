@@ -36,7 +36,8 @@ export function createInitialSet(): Set[] {
 
 export type SetFormValidationErrors =
     'setNotFilled' |
-    'firstSetInvalid' |
+    'firstSetNotEntered' |
+    'firstSetNotValid' |
     'repsRequired' |
     'weightLiftedRequired' |
     'min' |
