@@ -55,12 +55,12 @@
             {{ 'auth.errors.password_wrong_email' | translate }}
         </span>
         <button
+            mat-raised-button
             class="submit"
             type="submit"
-            mat-raised-button
             color="primary"
-            [class.button-spinner]="isLoading"
-            [disabled]="!form.valid">
+            [disabled]="!form.valid || isLoading"
+            [class.button-spinner]="isLoading">
             {{ 'auth.login' | translate }}
         </button>
     </form>

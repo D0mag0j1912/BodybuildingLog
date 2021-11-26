@@ -49,16 +49,10 @@
     margin-left: 20px;
 }
 
-.error,
-.error-custom {
+.error {
     font-size: 11px;
     color: $dark-red;
     font-family: $poppins;
-}
-
-.error-custom {
-    align-self: flex-start;
-    margin-left: 20px;
 }
 
 .submit,
@@ -72,10 +66,6 @@
 
     .wrapper {
         width: 400px;
-    }
-
-    .error-custom {
-        margin-left: 50px;
     }
 
 }

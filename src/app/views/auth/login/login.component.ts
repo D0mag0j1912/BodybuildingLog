@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -18,9 +18,9 @@ type FormData = {
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    //TODO: onPush change detection
 })
-export class LoginComponent implements OnInit, AfterViewInit {
+export class LoginComponent implements AfterViewInit {
 
     isLoading: boolean = false;
 
@@ -37,10 +37,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         private readonly authService: AuthService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly snackBar: MatSnackBar,
-    ) {}
-
-    ngOnInit(): void {
-
+    ) {
         this.form = new FormGroup({
             'email': new FormControl(null, [
                 Validators.required,
@@ -53,7 +50,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
             ]),
         }, { asyncValidators: AuthCustomValidators.passwordFitsEmail(this.loginService) });
 
-        //TODO: riješiti problem change detectiona prilikom unosa email-a i disablea login buttona
     }
 
     ngAfterViewInit(): void {
@@ -76,10 +72,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
             this.accessFormData('email').value as string,
             this.accessFormData('password').value as string,
         ).pipe(
-            finalize(() => {
-                this.isLoading = false;
-                this.changeDetectorRef.markForCheck();
-            }),
+            finalize(() => this.isLoading = false),
         ).subscribe((response: AuthResponseData) => {
             if(response) {
                 this.snackBar.open(this.translateService.instant(response.message as string), null, {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_RADIO_DEFAULT_OPTIONS } from '@angular/material/radio';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -31,7 +31,7 @@ type FormData = {
         },
     }],
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent {
 
     form: FormGroup;
 
@@ -45,17 +45,13 @@ export class SignupComponent implements OnInit {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly snackBar: MatSnackBar,
         private readonly router: Router,
-    ) { }
-
-    ngOnInit(): void {
-
+    ) {
         this.form = new FormGroup({
             'language': new FormControl('en', [Validators.required]),
             'weightFormat': new FormControl('kg', [Validators.required]),
             'email': new FormControl(null, [
                 Validators.required,
-                Validators.email,
-            ], [AuthCustomValidators.isEmailAvailable(this.signupService)]),
+                Validators.email]),
             'password': new FormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
@@ -66,12 +62,12 @@ export class SignupComponent implements OnInit {
                 Validators.minLength(6),
                 Validators.maxLength(20),
             ]),
-        }, { validators: AuthCustomValidators.samePasswords() });
+        }, { validators: AuthCustomValidators.samePasswords(), asyncValidators: AuthCustomValidators.isEmailAvailable(this.signupService) });
     }
 
     onSubmit(): void {
         this.isSubmitted = true;
-        //TODO: fixati kad mi nakon drugog klika na 'Sign up' izbaciva donji error
+        //TODO: fixati kad mi nakon drugog klika na 'Sign up' izbaciva donji error (pokušavam riješit problem tako što ću stavit async validator na form group cijeli)
         if(!this.form.valid){
             this.snackBar.open(this.translateService.instant('auth.errors.invalid_form'), null, {
                 duration: SNACK_BAR_DURATION.GENERAL,
@@ -88,11 +84,12 @@ export class SignupComponent implements OnInit {
             this.accessFormData('password').value as string,
             this.accessFormData('confirmPassword').value as string,
         ).pipe(
-            finalize(() => {
+            finalize(async () => {
                 this.isLoading = false;
                 this.changeDetectorRef.markForCheck();
+                await this.router.navigate(['/login']);
             }),
-        ).subscribe(async (response: AuthResponseData) => {
+        ).subscribe((response: AuthResponseData) => {
             if(response.success){
                 this.accessFormData('email').clearAsyncValidators();
                 this.accessFormData('email').updateValueAndValidity();
@@ -100,7 +97,6 @@ export class SignupComponent implements OnInit {
                     duration: SNACK_BAR_DURATION.GENERAL,
                     panelClass: response.success ? 'app__snackbar' : 'app__snackbar-error',
                 });
-                await this.router.navigate(['/login']);
             }
         });
     }
