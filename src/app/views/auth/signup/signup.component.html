@@ -76,11 +76,11 @@
                 class="error">
                 {{ 'auth.errors.invalid_email' | translate }}
             </mat-error>
-            <mat-hint
-                *ngIf="form.errors?.availableEmail"
+            <mat-error
+                *ngIf="accessFormData('email').errors?.availableEmail"
                 class="error">
                 {{ 'auth.errors.email_already_registered' | translate }}
-            </mat-hint>
+            </mat-error>
         </mat-form-field>
         <mat-form-field
             class="form-field"

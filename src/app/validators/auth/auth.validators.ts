@@ -1,6 +1,6 @@
 import { AbstractControl, AsyncValidatorFn, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { of, timer } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { SignupService } from 'src/app/services/auth/signup.service';
 import { LoginService } from '../../services/auth/login.service';
 
@@ -21,6 +21,7 @@ export function passwordFitsEmail(loginService: LoginService): AsyncValidatorFn 
                             }
                             return null;
                         }),
+                        catchError(_ => of(null)),
                     );
                 }
                 else {
@@ -31,11 +32,11 @@ export function passwordFitsEmail(loginService: LoginService): AsyncValidatorFn 
 }
 
 export function isEmailAvailable(signupService: SignupService): AsyncValidatorFn {
-    return (group: AbstractControl) =>
+    return (control: AbstractControl) =>
         timer(350).pipe(
             switchMap(_ => {
-                if(group) {
-                    const email: string = group.get('email')?.value;
+                if(control) {
+                    const email: string = control?.value;
                     if(!email) {
                         return of(null);
                     }
@@ -46,6 +47,7 @@ export function isEmailAvailable(signupService: SignupService): AsyncValidatorFn
                             }
                             return null;
                         }),
+                        catchError(_ => of(null)),
                     );
                 }
                 else {

@@ -36,7 +36,6 @@ export class SignupComponent {
     form: FormGroup;
 
     isLoading: boolean = false;
-    isSubmitted: boolean = false;
 
     constructor(
         private readonly authService: AuthService,
@@ -51,23 +50,20 @@ export class SignupComponent {
             'weightFormat': new FormControl('kg', [Validators.required]),
             'email': new FormControl(null, [
                 Validators.required,
-                Validators.email]),
+                Validators.email],
+                [AuthCustomValidators.isEmailAvailable(this.signupService)]),
             'password': new FormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
-                Validators.maxLength(20),
-            ]),
+                Validators.maxLength(20)]),
             'confirmPassword': new FormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
-                Validators.maxLength(20),
-            ]),
-        }, { validators: AuthCustomValidators.samePasswords(), asyncValidators: AuthCustomValidators.isEmailAvailable(this.signupService) });
+                Validators.maxLength(20)]),
+        }, { validators: AuthCustomValidators.samePasswords() });
     }
 
     onSubmit(): void {
-        this.isSubmitted = true;
-        //TODO: fixati kad mi nakon drugog klika na 'Sign up' izbaciva donji error (pokušavam riješit problem tako što ću stavit async validator na form group cijeli)
         if(!this.form.valid){
             this.snackBar.open(this.translateService.instant('auth.errors.invalid_form'), null, {
                 duration: SNACK_BAR_DURATION.GENERAL,
@@ -84,19 +80,17 @@ export class SignupComponent {
             this.accessFormData('password').value as string,
             this.accessFormData('confirmPassword').value as string,
         ).pipe(
-            finalize(async () => {
+            finalize(() => {
                 this.isLoading = false;
                 this.changeDetectorRef.markForCheck();
-                await this.router.navigate(['/login']);
             }),
-        ).subscribe((response: AuthResponseData) => {
+        ).subscribe(async (response: AuthResponseData) => {
             if(response.success){
-                this.accessFormData('email').clearAsyncValidators();
-                this.accessFormData('email').updateValueAndValidity();
                 this.snackBar.open(this.translateService.instant(response.message as string), null, {
                     duration: SNACK_BAR_DURATION.GENERAL,
                     panelClass: response.success ? 'app__snackbar' : 'app__snackbar-error',
                 });
+                await this.router.navigate(['/login']);
             }
         });
     }

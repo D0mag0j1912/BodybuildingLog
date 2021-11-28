@@ -46,7 +46,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                     errorMessage = this.translateService.instant('common.errors.unknown_error');
                 }
                 this.snackBar.open(errorMessage, null, {
-                    duration: SNACK_BAR_DURATION.GENERAL,
+                    duration: SNACK_BAR_DURATION.ERROR,
                     panelClass: 'app__snackbar-error',
                 });
                 return throwError(error as HttpErrorResponse);
