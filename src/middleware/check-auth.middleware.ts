@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
+import { JWT_TOKEN } from '../consts/jwt-web-token';
 
 interface VerifiedToken {
     readonly email: string;
@@ -17,7 +18,7 @@ export class CheckAuthMiddleware implements NestMiddleware {
     ): void {
         try {
             const token: string = request.headers.authorization.split(' ')[1];
-            const userData: VerifiedToken = verify(token, 'secret_this_should_be_longer');
+            const userData: VerifiedToken = verify(token, JWT_TOKEN);
             request.headers.userId = userData._id;
             next();
         }

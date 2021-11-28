@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
@@ -8,6 +9,7 @@ async function bootstrap(): Promise<void> {
         allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'authorization'],
         methods: ['GET', 'POST', 'DELETE', 'OPTIONS', 'PUT'],
     });
+    app.useGlobalPipes(new ValidationPipe({ skipMissingProperties: true }));
     await app.listen(3000);
 }
 bootstrap();

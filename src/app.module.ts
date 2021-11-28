@@ -1,5 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/common';
-import { APP_PIPE } from '@nestjs/core';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -30,13 +29,7 @@ const SERVICES = [AppService];
         ...MY_IMPORTS,
     ],
     controllers: [ ...CONTROLLERS ],
-    providers: [
-        ...SERVICES,
-        {
-            provide: APP_PIPE,
-            useClass: ValidationPipe,
-        },
-    ],
+    providers: [ ...SERVICES ],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer): void {

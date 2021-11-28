@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { AuthResponse } from 'src/models/auth/auth-response.model';
 import { Login } from 'src/models/auth/login.model';
 import { Preferences } from 'src/models/preferences/preferences.model';
+import { JWT_TOKEN } from '../../consts/jwt-web-token';
 
 @Injectable()
 export class AuthService {
@@ -65,7 +66,7 @@ export class AuthService {
             const token: string = sign({
                 email: user.email,
                 _id: user._id,
-            }, 'secret_this_should_be_longer', {
+            }, JWT_TOKEN, {
                 expiresIn: '3h',
             });
             // tslint:disable-next-line: await-promise
