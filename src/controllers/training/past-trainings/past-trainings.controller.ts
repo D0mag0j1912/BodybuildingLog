@@ -1,9 +1,11 @@
-import { BadRequestException, Controller, Get, Param, Query, Req } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { NewTraining } from 'src/models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings-response.model';
 import { PastTrainingsService } from 'src/services/training/past-trainings.service';
+import { AuthenticationGuard } from '../../../guards/authentication.guard';
 @Controller('past_trainings')
+@UseGuards(AuthenticationGuard)
 export class PastTrainingsController {
 
     constructor(

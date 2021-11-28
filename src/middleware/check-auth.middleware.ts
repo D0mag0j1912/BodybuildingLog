@@ -9,7 +9,6 @@ interface VerifiedToken {
     readonly iat: number;
     readonly exp: number;
 }
-
 export class CheckAuthMiddleware implements NestMiddleware {
     use(
         request: Request,

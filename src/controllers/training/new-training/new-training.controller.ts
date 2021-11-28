@@ -5,13 +5,16 @@ import {
     Param,
     Post,
     Put,
-    Req } from '@nestjs/common';
+    Req,
+    UseGuards} from '@nestjs/common';
 import { Request } from 'express';
 import { GeneralResponseData } from 'src/app.service';
 import { NewTraining } from 'src/models/training/new-training/new-training.model';
 import { NewTrainingService } from 'src/services/training/new-training.service';
+import { AuthenticationGuard } from '../../../guards/authentication.guard';
 
 @Controller('handle_training')
+@UseGuards(AuthenticationGuard)
 export class NewTrainingController {
 
     constructor(

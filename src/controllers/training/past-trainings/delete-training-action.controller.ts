@@ -1,9 +1,11 @@
-import { BadRequestException, Controller, Delete, Param, Query, Req } from '@nestjs/common';
+import { BadRequestException, Controller, Delete, Param, Query, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings-response.model';
 import { DeleteTrainingActionService } from 'src/services/training/training-actions/delete-training-action.service';
+import { AuthenticationGuard } from '../../../guards/authentication.guard';
 
 @Controller('delete_training')
+@UseGuards(AuthenticationGuard)
 export class DeleteTrainingActionController {
 
     constructor(
