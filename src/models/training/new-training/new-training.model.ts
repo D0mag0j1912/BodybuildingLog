@@ -3,6 +3,7 @@ import {
     IsBoolean,
     IsDateString,
     IsDefined,
+    IsMongoId,
     IsNotEmpty,
     IsNumber,
     IsOptional,
@@ -35,6 +36,7 @@ export class NewTraining {
     @IsOptional()
     @IsString({ message: '@training.new_training.errors.error_save_training' })
     @IsDefined({ message: '@training.new_training.errors.error_save_training' })
+    @IsMongoId()
     _id: string;
 
     @ValidateNested({ each: true })
@@ -69,8 +71,5 @@ export class NewTraining {
     })
     updatedAt: Date;
 
-    @IsNotEmpty({
-        message: '@common.errors.not_authenticated',
-    })
-    userId: string;
+    @IsNotEmpty({ message: '@common.errors.not_authenticated' }) userId: string;
 }

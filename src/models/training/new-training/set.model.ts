@@ -1,4 +1,5 @@
 import {
+    IsMongoId,
     IsNumber,
     IsOptional,
     IsString,
@@ -26,6 +27,7 @@ export class Set {
     
     @IsOptional()
     @IsString()
+    @IsMongoId()
     _id: string;
 
     @Min(1,

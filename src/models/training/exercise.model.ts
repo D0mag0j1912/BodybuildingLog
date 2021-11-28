@@ -1,5 +1,6 @@
 import {
     IsDefined,
+    IsMongoId,
     IsOptional,
     IsString } from 'class-validator';
 import { Schema } from 'mongoose';
@@ -23,6 +24,7 @@ export class Exercise {
 
     @IsOptional()
     @IsString()
+    @IsMongoId()
     _id: number;
 
     @IsDefined()

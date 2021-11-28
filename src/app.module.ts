@@ -38,7 +38,7 @@ const SERVICES = [AppService];
         },
     ],
 })
-export class AppModule implements NestModule{
+export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer): void {
         consumer
             .apply(CheckAuthMiddleware)

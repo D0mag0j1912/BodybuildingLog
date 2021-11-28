@@ -1,6 +1,7 @@
 import {
     IsDefined,
     IsEmail,
+    IsMongoId,
     IsNotEmpty,
     IsOptional,
     IsString,
@@ -12,12 +13,12 @@ export const USER_SCHEMA = new Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
     },
     password: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 });
 
 USER_SCHEMA.plugin(uniqueValidator);
@@ -26,24 +27,25 @@ export class Login {
 
     @IsOptional()
     @IsDefined()
+    @IsMongoId()
     _id: string;
     
     @IsEmail({}, {
-        message: 'auth.errors.invalid_email'
+        message: 'auth.errors.invalid_email',
     })
     @IsNotEmpty({
-        message: 'auth.errors.email_required'
+        message: 'auth.errors.email_required',
     })
     email: string;
 
     @Length(6, 20, {
-        message: 'auth.errors.password_length'
+        message: 'auth.errors.password_length',
     })
     @IsString({
-        message: 'auth.errors.password_string'
+        message: 'auth.errors.password_string',
     })
     @IsNotEmpty({
-        message: 'auth.errors.password_required'
+        message: 'auth.errors.password_required',
     })
     password: string;
 }

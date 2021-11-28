@@ -3,6 +3,7 @@ import {
     IsBoolean,
     IsDefined,
     IsInt,
+    IsMongoId,
     IsNotEmpty,
     IsNumber,
     IsOptional,
@@ -45,6 +46,7 @@ export class SingleExercise {
 
     @IsOptional()
     @IsString()
+    @IsMongoId()
     _id: string;
 
     @IsInt({ message: '@training.new_training.errors.error_save_training' })
