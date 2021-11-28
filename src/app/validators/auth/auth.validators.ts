@@ -36,7 +36,10 @@ export function passwordFitsEmail(
         );
 }
 
-export function isEmailAvailable(signupService: SignupService): AsyncValidatorFn {
+export function isEmailAvailable(
+    signupService: SignupService,
+    changeDetectorRef: ChangeDetectorRef,
+): AsyncValidatorFn {
     return (control: AbstractControl) =>
         timer(350).pipe(
             switchMap(_ => {
@@ -53,6 +56,7 @@ export function isEmailAvailable(signupService: SignupService): AsyncValidatorFn
                             return null;
                         }),
                         catchError(_ => of(null)),
+                        finalize(() => changeDetectorRef.markForCheck()),
                     );
                 }
                 else {

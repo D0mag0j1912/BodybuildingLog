@@ -51,7 +51,10 @@ export class SignupComponent {
             'email': new FormControl(null, [
                 Validators.required,
                 Validators.email],
-                [AuthCustomValidators.isEmailAvailable(this.signupService)],
+                [AuthCustomValidators.isEmailAvailable(
+                    this.signupService,
+                    this.changeDetectorRef,
+                )],
             ),
             'password': new FormControl(null, [
                 Validators.required,

@@ -1,8 +1,8 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
-import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { switchMap, take, takeUntil } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { NewTraining } from 'src/app/models/training/new-training/new-training.model';
 import { NavigationService } from 'src/app/services/shared/navigation.service';
@@ -17,6 +17,7 @@ import { AuthService } from '../../../services/auth/auth.service';
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
 export class HeaderComponent implements OnInit {
@@ -52,19 +53,16 @@ export class HeaderComponent implements OnInit {
     goToPastTraining(): void {
         this.sharedService.pastTrainingId$$.pipe(
             take(1),
-            switchMap((_id: string) =>
-                this.pastTrainingsService.getPastTraining(_id).pipe(
-                    tap(async (training: NewTraining) => {
-                        await this.router.navigate(['/past-trainings'], {
-                            queryParams: {
-                                startDate: format(this.constructDates(new Date(training.createdAt)).startDate, 'dd-MM-yyyy'),
-                                endDate: format(this.constructDates(new Date(training.createdAt)).endDate, 'dd-MM-yyyy'),
-                            },
-                        });
-                    }),
-                )),
+            switchMap((_id: string) => this.pastTrainingsService.getPastTraining(_id)),
             takeUntil(this.unsubsService),
-        ).subscribe();
+        ).subscribe(async (training: NewTraining) => {
+            await this.router.navigate(['/past-trainings'], {
+                queryParams: {
+                    startDate: format(this.constructDates(new Date(training.createdAt)).startDate, 'dd-MM-yyyy'),
+                    endDate: format(this.constructDates(new Date(training.createdAt)).endDate, 'dd-MM-yyyy'),
+                },
+            });
+        });
     }
 
     async goToPastTrainings(): Promise<void> {

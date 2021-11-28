@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
@@ -12,6 +12,7 @@ import { NewTrainingService } from 'src/app/services/training/new-training.servi
     selector: 'app-side-nav',
     templateUrl: './side-nav.component.html',
     styleUrls: ['./side-nav.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
 export class SideNavComponent implements OnInit {
@@ -63,14 +64,10 @@ export class SideNavComponent implements OnInit {
                     userData._id,
                     language,
                     'kg',
-                ).pipe(
-                    tap(_ => {
-                        this.onCloseSideNav();
-                    }),
                 ),
             ),
             takeUntil(this.unsubsService),
-        ).subscribe();
+        ).subscribe(_ => this.onCloseSideNav());
     }
 
     onCloseSideNav(): void {

@@ -330,6 +330,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     }
 
     onSubmit(): void {
+        console.log(this.setErrors.includes('firstSetNotValid'))
         this.isSubmitted = true;
         if(!this.form.valid || this.setErrors.length > 0) {
             return;
