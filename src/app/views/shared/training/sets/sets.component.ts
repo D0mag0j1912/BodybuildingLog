@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
@@ -52,12 +52,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     constructor(
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
+        private readonly changeDetectorRef: ChangeDetectorRef,
     ){}
 
     ngOnInit(): void {
         this.form.setValidators([SetValidators.allSetsFilled(), SetValidators.isFirstSetValid()]);
         this.form.updateValueAndValidity();
-        /* this.formStateChanged.emit(this.formErrors); */
+        this.formStateChanged.emit(this.formErrors);
 
         this.exerciseNameControl.valueChanges.pipe(
             takeUntil(this.unsubscribeService),
@@ -82,6 +83,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         this.form.valueChanges.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((formValue: Partial<Set[]>) => {
+            console.log('tu sam');
             this.formStateChanged.emit(this.formErrors);
             fn(formValue as Partial<Set[]>);
         });
@@ -130,10 +132,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         let total: number = 0;
         let isWeightLiftedValid: boolean = false;
         let isRepsValid: boolean = false;
-        if(this.accessFormField('weightLifted', indexSet).valid && this.accessFormField('weightLifted', indexSet).value){
+        if(this.accessFormField('weightLifted', indexSet)?.valid && this.accessFormField('weightLifted', indexSet)?.value) {
             isWeightLiftedValid = true;
         }
-        if(this.accessFormField('reps', indexSet).valid && this.accessFormField('reps', indexSet).value){
+        if(this.accessFormField('reps', indexSet)?.valid && this.accessFormField('reps', indexSet)?.value) {
             isRepsValid = true;
         }
         if(isWeightLiftedValid && isRepsValid){
@@ -191,12 +193,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     get formErrors(): SetFormValidationErrors[] {
         let errors: SetFormValidationErrors[] = [];
         if(this.form.errors){
-            const mappedKeys: SetFormValidationErrors[] = Object.keys(this.form.errors).map((key: string) => key as SetFormValidationErrors);
+            const mappedKeys: SetFormValidationErrors[] =
+                Object.keys(this.form.errors)
+                    .map((key: string) => key as SetFormValidationErrors);
             errors = errors.concat(mappedKeys);
         }
         this.form.controls.forEach((group: AbstractControl) => {
             if(group?.errors){
-                const mappedKeys: SetFormValidationErrors[] = Object.keys(group.errors).map((key: string) => key as SetFormValidationErrors);
+                const mappedKeys: SetFormValidationErrors[] =
+                    Object.keys(group.errors)
+                        .map((key: string) => key as SetFormValidationErrors);
                 errors = errors.concat(mappedKeys);
             }
         });

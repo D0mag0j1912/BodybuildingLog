@@ -2,15 +2,15 @@ import { AbstractControl, FormArray, ValidationErrors, ValidatorFn } from '@angu
 
 export function allSetsFilled(): ValidatorFn {
     return (array: AbstractControl): ValidationErrors | null => {
-        if(array){
+        if(array) {
             let isSetFilled: boolean = true;
             (array as FormArray).controls.forEach((set: AbstractControl) => {
                 if(!set.get('weightLifted').value || !set.get('reps').value
-                    || set.get('weightLifted').errors || set.get('reps').errors){
+                    || set.get('weightLifted').errors || set.get('reps').errors) {
                     isSetFilled = false;
                 }
             });
-            if(isSetFilled){
+            if(isSetFilled) {
                 return null;
             }
             return { 'setNotFilled': true };
@@ -24,11 +24,13 @@ export function isFirstSetValid(): ValidatorFn {
         if (array) {
             const weightLifted: AbstractControl = (array as FormArray).controls[0]?.get('weightLifted');
             const reps: AbstractControl = (array as FormArray).controls[0]?.get('reps');
-            if(!weightLifted?.value || !reps?.value){
-                return { 'firstSetNotEntered': true };
-            }
-            if(!weightLifted?.valid || !reps?.valid) {
-                return { 'firstSetNotValid': true };
+            if(weightLifted && reps){
+                if(!weightLifted.value || !reps.value) {
+                    return { 'firstSetNotEntered': true };
+                }
+                if(!weightLifted.valid || !reps.valid) {
+                    return { 'firstSetNotValid': true };
+                }
             }
             return null;
         }
@@ -38,11 +40,11 @@ export function isFirstSetValid(): ValidatorFn {
 
 export function bothValuesRequired(): ValidatorFn {
     return (group: AbstractControl): ValidationErrors | null => {
-        if(group){
-            if(group.get('weightLifted').value && !group.get('reps').value){
+        if(group) {
+            if(group.get('weightLifted').value && !group.get('reps').value) {
                 return { 'repsRequired': true };
             }
-            else if(!group.get('weightLifted').value && group.get('reps').value){
+            else if(!group.get('weightLifted').value && group.get('reps').value) {
                 return { 'weightLiftedRequired': true };
             }
             else {

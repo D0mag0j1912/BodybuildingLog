@@ -9,11 +9,11 @@ import { ShowAllExercisesModule } from 'src/app/pipes/training/past-trainings/sh
 import { MaterialModule } from '../../material.module';
 import { NewTrainingService } from '../../services/training/new-training.service';
 import { PastTrainingsService } from '../../services/training/past-trainings.service';
-import { SharedModule } from '../shared/shared.module';
-import { NewTrainingComponent } from './new-training/new-training.component';
-import { PastTrainingsComponent } from './past-trainings/past-trainings.component';
-import { TrainingItemActionsComponent } from './past-trainings/training-item/training-item-actions/training-item-actions.component';
-import { TrainingItemComponent } from './past-trainings/training-item/training-item.component';
+import { NewTrainingComponent } from '../../views/training/new-training/new-training.component';
+import { PastTrainingsComponent } from '../../views/training/past-trainings/past-trainings.component';
+import { TrainingItemActionsComponent } from '../../views/training/past-trainings/training-item/training-item-actions/training-item-actions.component';
+import { TrainingItemComponent } from '../../views/training/past-trainings/training-item/training-item.component';
+import { SharedModule } from '../shared.module';
 import { TrainingRoutingModule } from './training-routing.module';
 
 const SERVICES = [

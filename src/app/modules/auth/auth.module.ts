@@ -6,10 +6,10 @@ import { MaterialModule } from '../../material.module';
 import { AuthService } from '../../services/auth/auth.service';
 import { LoginService } from '../../services/auth/login.service';
 import { SignupService } from '../../services/auth/signup.service';
-import { SharedModule } from '../shared/shared.module';
+import { LoginComponent } from '../../views/auth/login/login.component';
+import { SignupComponent } from '../../views/auth/signup/signup.component';
+import { SharedModule } from '../shared.module';
 import { AuthRoutingModule } from './auth-routing.module';
-import { LoginComponent } from './login/login.component';
-import { SignupComponent } from './signup/signup.component';
 
 const COMPONENTS = [
     SignupComponent,

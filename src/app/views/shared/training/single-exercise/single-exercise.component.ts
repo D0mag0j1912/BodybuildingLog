@@ -258,6 +258,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     const updatedTraining: NewTraining = this.newTrainingService.setsChanged(trainingData as SetTrainingData);
                     this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal.toString()+ ` ${WEIGHT_FORMAT}`);
             }
+            else {
+                this.accessFormField('total', $event.indexExercise).patchValue(`0 ${WEIGHT_FORMAT}`);
+            }
         });
     }
 
@@ -282,6 +285,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     }
 
     onSetFormChange($event: SetFormValidationErrors[]): void {
+        console.log($event);
         this.setErrors = $event;
         this.changeDetectorRef.markForCheck();
     }
