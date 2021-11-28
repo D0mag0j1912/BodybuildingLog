@@ -51,22 +51,25 @@ export class SignupComponent {
             'email': new FormControl(null, [
                 Validators.required,
                 Validators.email],
-                [AuthCustomValidators.isEmailAvailable(this.signupService)]),
+                [AuthCustomValidators.isEmailAvailable(this.signupService)],
+            ),
             'password': new FormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
-                Validators.maxLength(20)]),
+                Validators.maxLength(20)],
+            ),
             'confirmPassword': new FormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
-                Validators.maxLength(20)]),
+                Validators.maxLength(20)],
+            ),
         }, { validators: AuthCustomValidators.samePasswords() });
     }
 
     onSubmit(): void {
         if(!this.form.valid){
             this.snackBar.open(this.translateService.instant('auth.errors.invalid_form'), null, {
-                duration: SNACK_BAR_DURATION.GENERAL,
+                duration: SNACK_BAR_DURATION.ERROR,
                 panelClass: 'app__snackbar-error',
             });
             return;

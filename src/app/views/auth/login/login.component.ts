@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -18,7 +18,7 @@ type FormData = {
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
-    //TODO: onPush change detection
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements AfterViewInit {
 
@@ -48,20 +48,20 @@ export class LoginComponent implements AfterViewInit {
                 Validators.minLength(6),
                 Validators.maxLength(20),
             ]),
-        }, { asyncValidators: AuthCustomValidators.passwordFitsEmail(this.loginService) });
-
+        }, { asyncValidators: AuthCustomValidators.passwordFitsEmail(
+            this.loginService,
+            this.changeDetectorRef,
+        ) });
     }
 
     ngAfterViewInit(): void {
-        setTimeout(() => {
-            (<HTMLInputElement>this.emailInput.nativeElement).focus();
-        });
+        setTimeout(() => (<HTMLInputElement>this.emailInput.nativeElement).focus());
     }
 
     onSubmit(): void {
         if(!this.form.valid){
             this.snackBar.open(this.translateService.instant('auth.errors.invalid_form'), null, {
-                duration: SNACK_BAR_DURATION.GENERAL,
+                duration: SNACK_BAR_DURATION.ERROR,
                 panelClass: 'app__snackbar-error',
             });
             return;
@@ -72,7 +72,10 @@ export class LoginComponent implements AfterViewInit {
             this.accessFormData('email').value as string,
             this.accessFormData('password').value as string,
         ).pipe(
-            finalize(() => this.isLoading = false),
+            finalize(() => {
+                this.isLoading = false;
+                this.changeDetectorRef.markForCheck();
+            }),
         ).subscribe((response: AuthResponseData) => {
             if(response) {
                 this.snackBar.open(this.translateService.instant(response.message as string), null, {

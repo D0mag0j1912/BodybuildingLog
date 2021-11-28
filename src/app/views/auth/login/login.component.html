@@ -6,28 +6,32 @@
         <mat-form-field
             class="main-form-field"
             appearance="fill">
-            <mat-label class="label">{{ 'auth.email' | translate }}</mat-label>
+            <mat-label class="label">
+                {{ 'auth.email' | translate }}
+            </mat-label>
             <input
                 matInput
                 type="email"
                 formControlName="email"
                 #emailRef>
             <mat-error
-                class="error"
-                *ngIf="accessFormData('email').errors?.required">
+                *ngIf="accessFormData('email').errors?.required"
+                class="error">
                 {{ 'auth.errors.email_required' | translate }}
             </mat-error>
             <mat-error
-                class="error"
                 *ngIf="accessFormData('email').errors?.email
-                    && !accessFormData('email').errors?.required">
+                    && !accessFormData('email').errors?.required"
+                class="error">
                 {{ 'auth.errors.invalid_email' | translate }}
             </mat-error>
         </mat-form-field>
         <mat-form-field
             class="main-form-field"
             appearance="fill">
-            <mat-label class="label">{{ 'auth.password' | translate }}</mat-label>
+            <mat-label class="label">
+                {{ 'auth.password' | translate }}
+            </mat-label>
             <input
                 #inputPassword
                 matInput
@@ -35,23 +39,23 @@
                 formControlName="password">
             <mat-hint>{{ inputPassword.value?.length || 0 }} / 6</mat-hint>
             <mat-error
-                class="error"
-                *ngIf="accessFormData('password').errors?.required">
+                *ngIf="accessFormData('password').errors?.required"
+                class="error">
                 {{ 'auth.errors.password_required' | translate }}
             </mat-error>
             <mat-error
-                class="error"
-                *ngIf="accessFormData('password').errors?.minlength ||
-                    accessFormData('password').errors?.maxlength">
+                *ngIf="accessFormData('password').errors?.minlength
+                    || accessFormData('password').errors?.maxlength"
+                class="error">
                 {{ 'auth.errors.password_length' | translate }}
             </mat-error>
         </mat-form-field>
         <span
-            class="error-custom"
             *ngIf="form.errors?.passwordFitsEmail
                 && !accessFormData('password').errors?.required
                 && !accessFormData('password').errors?.minlength
-                && !accessFormData('password').errors?.maxlength">
+                && !accessFormData('password').errors?.maxlength"
+            class="error-custom">
             {{ 'auth.errors.password_wrong_email' | translate }}
         </span>
         <button
