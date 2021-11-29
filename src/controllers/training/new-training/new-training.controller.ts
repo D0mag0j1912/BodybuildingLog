@@ -1,5 +1,4 @@
 import {
-    BadRequestException,
     Body,
     Controller,
     Param,
@@ -12,6 +11,7 @@ import { GeneralResponseData } from 'src/app.service';
 import { NewTraining } from 'src/models/training/new-training/new-training.model';
 import { NewTrainingService } from 'src/services/training/new-training.service';
 import { AuthenticationGuard } from '../../../guards/authentication.guard';
+import { TrainingGuard } from '../../../guards/training.guard';
 
 @Controller('handle_training')
 @UseGuards(AuthenticationGuard)
@@ -27,14 +27,12 @@ export class NewTrainingController {
     }
 
     @Put(':trainingId')
+    @UseGuards(new TrainingGuard('training.new_training.errors.error_update_training'))
     async updateTraining(
         @Req() request: Request,
         @Param('trainingId') trainingId: string,
         @Body('updatedTrainingData') updatedTrainingData: NewTraining,
     ): Promise<GeneralResponseData> {
-        if(!trainingId){
-            throw new BadRequestException('training.new_training.errors.error_update_training');
-        }
         return this.newTrainingService.editTraining(
             trainingId as string,
             updatedTrainingData as NewTraining,
