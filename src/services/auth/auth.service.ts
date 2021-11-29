@@ -6,7 +6,7 @@ import { Model } from 'mongoose';
 import { AuthResponse } from 'src/models/auth/auth-response.model';
 import { Login } from 'src/models/auth/login.model';
 import { Preferences } from 'src/models/preferences/preferences.model';
-import { JWT_TOKEN } from '../../consts/jwt-web-token';
+import { JWT_TOKEN } from '../../constants/jwt-web-token';
 
 @Injectable()
 export class AuthService {

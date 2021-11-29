@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
-import { JWT_TOKEN } from '../consts/jwt-web-token';
+import { JWT_TOKEN } from '../constants/jwt-web-token';
 
 interface VerifiedToken {
     readonly email: string;

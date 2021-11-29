@@ -2,6 +2,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { PreferencesController } from './controllers/preferences/preferences.controller';
 import { GetExercisesController } from './controllers/training/new-training/get-exercises.controller';
 import { NewTrainingController } from './controllers/training/new-training/new-training.controller';
 import { DeleteTrainingActionController } from './controllers/training/past-trainings/delete-training-action.controller';
@@ -36,6 +37,7 @@ export class AppModule implements NestModule {
         consumer
             .apply(CheckAuthMiddleware)
             .forRoutes(
+                PreferencesController,
                 GetExercisesController,
                 NewTrainingController,
                 PastTrainingsController,
