@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { captureException } from '@sentry/minimal';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { SNACK_BAR_DURATION } from '../consts/snack-bar-duration.const';
+import { SNACK_BAR_DURATION } from '../constants/snack-bar-duration.const';
 import { ErrorMessage } from '../models/training/past-trainings/past-trainings-response.model';
 
 @Injectable()

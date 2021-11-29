@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { SNACK_BAR_DURATION } from '../../consts/snack-bar-duration.const';
+import { SNACK_BAR_DURATION } from '../../constants/snack-bar-duration.const';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Preferences } from '../../models/preferences.model';
 import { AuthService } from '../auth/auth.service';

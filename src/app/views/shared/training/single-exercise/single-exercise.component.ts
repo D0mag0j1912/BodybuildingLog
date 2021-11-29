@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
-import { SNACK_BAR_DURATION } from '../../../../consts/snack-bar-duration.const';
+import { SNACK_BAR_DURATION } from '../../../../constants/snack-bar-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
@@ -240,7 +240,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     onChangeSets($event: SetStateChanged): void {
         of(null).pipe(
-            delay(1000),
             takeUntil(this.unsubscribeService),
         ).subscribe(_ => {
             if($event.isWeightLiftedValid
