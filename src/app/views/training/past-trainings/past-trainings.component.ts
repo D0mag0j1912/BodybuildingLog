@@ -83,11 +83,11 @@ export class PastTrainingsComponent implements OnInit {
             return this.translateService.stream('training.past_trainings.disabled_next_week');
         }
     }
-
+    //TODO: popraviti
     tryAgain(): void {
         this.isLoading = true;
         this.initializePastTrainings(this.getLocalDateTime()).subscribe((response: PastTrainingsResponse) => {
-            if(response){
+            if (response) {
                 this.isError = false;
             }
         });

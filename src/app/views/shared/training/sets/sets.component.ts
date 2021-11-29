@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
@@ -11,7 +11,6 @@ import { SetFormValidationErrors } from '../../../../models/training/shared/set.
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as CommonValidators from '../../../../validators/shared/common.validators';
 import * as SetValidators from '../../../../validators/shared/set.validators';
-
 @Component({
     selector: 'app-sets',
     templateUrl: './sets.component.html',
@@ -22,11 +21,14 @@ import * as SetValidators from '../../../../validators/shared/set.validators';
         UnsubscribeService,
     ],
 })
-export class SetsComponent implements ControlValueAccessor, OnInit {
+export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     readonly form: FormArray = new FormArray([]);
 
     onTouched: () => void;
+
+    @Input()
+    exerciseStateChanged$: Observable<void> = of(null);
 
     @Input()
     exerciseNameControl: AbstractControl | null;
@@ -52,7 +54,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     constructor(
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
-        private readonly changeDetectorRef: ChangeDetectorRef,
     ){}
 
     ngOnInit(): void {
@@ -66,6 +67,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             value ? this.accessFormField('weightLifted', 0).enable() : this.accessFormField('weightLifted', 0).disable();
             value ? this.accessFormField('reps', 0).enable() : this.accessFormField('reps', 0).disable();
         });
+    }
+
+    ngOnChanges(): void {
+        this.form.updateValueAndValidity({ emitEvent: true });
     }
 
     writeValue(value: Set[]): void {
@@ -83,7 +88,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         this.form.valueChanges.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((formValue: Partial<Set[]>) => {
-            console.log('tu sam');
             this.formStateChanged.emit(this.formErrors);
             fn(formValue as Partial<Set[]>);
         });

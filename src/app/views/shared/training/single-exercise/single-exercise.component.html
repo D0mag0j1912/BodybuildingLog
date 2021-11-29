@@ -58,6 +58,7 @@
             </div>
             <app-sets
                 formControlName="sets"
+                [exerciseStateChanged$]="exerciseStateChanged$$.asObservable()"
                 [exerciseNameControl]="accessFormField('name', i)"
                 [indexExercise]="i"
                 [isLoading]="isLoading"
@@ -67,7 +68,7 @@
                 (formStateChanged)="onSetFormChange($event)"></app-sets>
             <!--TODO: setFormErrors?.indexExercise === i nadodati ispod uvjet-->
             <span
-                *ngIf="setErrors.includes('firstSetNotValid') && isSubmitted"
+                *ngIf="(setErrors.includes('firstSetNotEntered') || this.setErrors.includes('firstSetNotValid')) && isSubmitted"
                 class="total-error">
                 {{ 'training.new_training.errors.at_least_one_set' | translate }}
             </span>
