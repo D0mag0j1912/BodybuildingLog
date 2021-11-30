@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { forkJoin, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of, Subject } from 'rxjs';
 import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { SNACK_BAR_DURATION } from '../../../../constants/snack-bar-duration.const';
@@ -38,15 +38,16 @@ const WEIGHT_FORMAT: WeightFormat = 'kg';
 export class SingleExerciseComponent implements ControlValueAccessor {
 
     readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
+    private readonly isSubmitted$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    readonly isSubmitted$: Observable<boolean> = this.isSubmitted$$.asObservable();
+    readonly exercises$: Observable<Exercise[]>;
 
     form: FormArray = new FormArray([]);
     setErrors: SetFormValidationErrors[] = [];
 
-    readonly exercises$: Observable<Exercise[]>;
     private formTrainingState: NewTraining;
 
     exerciseChanged: boolean = false;
-    isSubmitted: boolean = false;
 
     onTouched: () => void;
 
@@ -331,7 +332,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     }
 
     onSubmit(): void {
-        this.isSubmitted = true;
+        this.isSubmitted$$.next(true);
         if (!this.form.valid || this.setErrors.length > 0) {
             return;
         }

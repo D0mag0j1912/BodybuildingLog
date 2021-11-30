@@ -40,11 +40,11 @@ export function isFirstSetValid(): ValidatorFn {
 
 export function bothValuesRequired(): ValidatorFn {
     return (group: AbstractControl): ValidationErrors | null => {
-        if(group) {
-            if(group.get('weightLifted').value && !group.get('reps').value) {
+        if (group) {
+            if (group.get('weightLifted').value && !group.get('reps').value) {
                 return { 'repsRequired': true };
             }
-            else if(!group.get('weightLifted').value && group.get('reps').value) {
+            else if (!group.get('weightLifted').value && group.get('reps').value) {
                 return { 'weightLiftedRequired': true };
             }
             else {

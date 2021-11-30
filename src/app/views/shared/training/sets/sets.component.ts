@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
@@ -11,6 +11,7 @@ import { SetFormValidationErrors } from '../../../../models/training/shared/set.
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as CommonValidators from '../../../../validators/shared/common.validators';
 import * as SetValidators from '../../../../validators/shared/set.validators';
+
 @Component({
     selector: 'app-sets',
     templateUrl: './sets.component.html',
@@ -26,6 +27,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     readonly form: FormArray = new FormArray([]);
 
     onTouched: () => void;
+
+    @Input()
+    isExerciseFormSubmitted$: Observable<boolean> = of(false);
 
     @Input()
     exerciseStateChanged$: Observable<void> = of(null);
@@ -54,6 +58,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     constructor(
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
+        private readonly changeDetectorRef: ChangeDetectorRef,
     ){}
 
     ngOnInit(): void {
@@ -183,7 +188,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         formField: keyof FormSetData,
         indexSet: number,
     ): AbstractControl {
-        return this.form.at(indexSet).get(formField);
+        return this.form.at(indexSet)?.get(formField);
     }
 
     private calculateTotal(): number {

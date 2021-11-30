@@ -14,36 +14,33 @@
                         matInput
                         type="text"
                         formControlName="weightLifted"
-                        (input)="onChangeSets(j);"
+                        (input)="onChangeSets(j)"
                         (blur)="onTouched()">
-                    <mat-error *ngIf="set.get('weightLifted').errors?.required
-                            && exerciseNameControl.value && j === 0">
+                    <mat-error *ngIf="set.errors?.weightLiftedRequired
+                        && exerciseNameControl?.value && j === 0 && (isExerciseFormSubmitted$ | async)">
                         {{ 'training.new_training.errors.weight_lifted_required' | translate }}
                     </mat-error>
-                    <mat-hint
+                    <!-- <mat-hint
                         *ngIf="j > 0 && set.errors?.weightLiftedRequired
                             && !set.get('reps').errors?.pattern"
                         class="sets-weight-lifted--error">
                         {{ 'training.new_training.errors.weight_lifted_required' | translate }}
-                    </mat-hint>
-                    <mat-hint
-                        *ngIf="accessFormField('weightLifted', j).value && accessFormField('weightLifted', j).valid
+                    </mat-hint> -->
+                    <mat-hint *ngIf="accessFormField('weightLifted', j).value && accessFormField('weightLifted', j).valid
                             && accessFormField('reps', j).value && accessFormField('reps', j).valid && !editMode"
                         class="sets-success">
                         {{ 'training.new_training.set_saved' | translate }}
                     </mat-hint>
-                    <mat-error
-                        *ngIf="set.get('weightLifted').errors?.onlyNumbers
-                            && !set.get('weightLifted').errors?.min">
+                    <mat-error *ngIf="accessFormField('weightLifted', j).errors?.onlyNumbers
+                            && !accessFormField('weightLifted', j).errors?.min">
                         {{ 'training.new_training.errors.only_numbers' | translate }}
                     </mat-error>
-                    <mat-error
-                        *ngIf="set.get('weightLifted').errors?.min
-                            && !set.get('weightLifted').errors?.onlyNumbers">
+                    <mat-error *ngIf="accessFormField('weightLifted', j).errors?.min
+                            && !accessFormField('weightLifted', j).errors?.onlyNumbers">
                         {{ 'training.new_training.errors.weight_lifted_min' | translate }}
                     </mat-error>
-                    <mat-error *ngIf="set.get('weightLifted').errors?.max
-                            && !set.get('weightLifted').errors?.onlyNumbers">
+                    <mat-error *ngIf="accessFormField('weightLifted', j).errors?.max
+                            && !accessFormField('weightLifted', j).errors?.onlyNumbers">
                         {{ 'training.new_training.errors.weight_lifted_max' | translate }}
                     </mat-error>
                 </mat-form-field>

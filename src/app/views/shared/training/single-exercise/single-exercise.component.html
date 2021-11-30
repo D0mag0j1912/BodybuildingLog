@@ -34,9 +34,8 @@
                             </mat-option>
                         </mat-optgroup>
                     </mat-select>
-                    <mat-error *ngIf="(accessFormField('name', i).touched || accessFormField('name', i).dirty) || isSubmitted">
-                        <mat-error
-                            *ngIf="accessFormField('name', i).errors?.required"
+                    <mat-error *ngIf="(accessFormField('name', i).touched || accessFormField('name', i).dirty) || (isSubmitted$ | async)">
+                        <mat-error *ngIf="accessFormField('name', i).errors?.required"
                             class="error">
                             {{ 'training.new_training.errors.exercise_name_required' | translate }}
                         </mat-error>
@@ -58,6 +57,7 @@
             </div>
             <app-sets
                 formControlName="sets"
+                [isExerciseFormSubmitted$]="isSubmitted$"
                 [exerciseStateChanged$]="exerciseStateChanged$$.asObservable()"
                 [exerciseNameControl]="accessFormField('name', i)"
                 [indexExercise]="i"
@@ -66,12 +66,6 @@
                 (setAdded)="onChangeSets($event)"
                 (setDeleted)="deleteSet($event)"
                 (formStateChanged)="onSetFormChange($event)"></app-sets>
-            <!--TODO: setFormErrors?.indexExercise === i nadodati ispod uvjet-->
-            <span
-                *ngIf="(setErrors.includes('firstSetNotEntered') || this.setErrors.includes('firstSetNotValid')) && isSubmitted"
-                class="total-error">
-                {{ 'training.new_training.errors.at_least_one_set' | translate }}
-            </span>
             <app-total-weight formControlName="total"></app-total-weight>
         </ng-container>
     </ng-container>
