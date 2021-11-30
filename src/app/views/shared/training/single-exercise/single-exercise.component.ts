@@ -114,7 +114,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 if(exercise.exerciseName){
                     this.accessFormField('name', indexExercise).patchValue(exercise.exerciseName as string);
                     this.accessFormField('sets', indexExercise).patchValue(exercise.sets as Set[]);
-                    this.accessFormField('total', indexExercise).patchValue(exercise.total ? exercise.total.toString() + ` ${WEIGHT_FORMAT}` : `0${WEIGHT_FORMAT}`);
+                    this.accessFormField('total', indexExercise).patchValue(exercise.total ? exercise.total.toString() + ` ${WEIGHT_FORMAT}` : `0 ${WEIGHT_FORMAT}`);
                     this.accessFormField('disabledTooltip', indexExercise).patchValue(exercise.disabledTooltip as boolean);
                 }
             });

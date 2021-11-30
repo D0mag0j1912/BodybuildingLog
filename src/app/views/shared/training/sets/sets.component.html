@@ -24,7 +24,8 @@
                         {{ 'training.new_training.errors.weight_lifted_required' | translate }}
                     </mat-hint>
                     <mat-hint
-                        *ngIf="form.errors?.firstSetNotEntered && (isExerciseFormSubmitted$ | async) && !set.errors?.weightLiftedRequired"
+                        *ngIf="form.errors?.firstSetNotEntered && (isExerciseFormSubmitted$ | async) && !set.errors?.weightLiftedRequired
+                            && !set.errors?.weightLiftedRequired && !set.errors?.repsRequired"
                         class="sets-weight-lifted--error">
                         {{ 'training.new_training.errors.first_set_required' | translate }}
                     </mat-hint>
@@ -64,20 +65,24 @@
                         class="sets-reps--error">
                         {{ 'training.new_training.errors.reps_required' | translate }}
                     </mat-hint>
-                    <mat-error *ngIf="accessFormField('reps', j).errors?.pattern
-                            && !accessFormField('reps', j).errors?.onlyNumbers">
+                    <mat-error
+                        *ngIf="accessFormField('reps', j).errors?.pattern
+                            && !accessFormField('reps', j).errors?.onlyNumbers"
+                        class="sets-reps--error">
                         {{ 'training.new_training.errors.only_positive' | translate }}
                     </mat-error>
                     <mat-error
                         *ngIf="accessFormField('reps', j).errors?.min
                             && !accessFormField('reps', j).errors?.onlyNumbers
-                            && !accessFormField('reps', j).errors?.pattern">
+                            && !accessFormField('reps', j).errors?.pattern"
+                        class="sets-reps--error">
                         {{ 'training.new_training.errors.reps_min' | translate }}
                     </mat-error>
                     <mat-error
                         *ngIf="accessFormField('reps', j).errors?.max
                             && !accessFormField('reps', j).errors?.onlyNumbers
-                            && !accessFormField('reps', j).errors?.pattern">
+                            && !accessFormField('reps', j).errors?.pattern"
+                        class="sets-reps--error">
                         {{ 'training.new_training.errors.reps_max' | translate }}
                     </mat-error>
                 </mat-form-field>
