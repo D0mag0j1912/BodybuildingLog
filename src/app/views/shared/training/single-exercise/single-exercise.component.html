@@ -34,7 +34,7 @@
                             </mat-option>
                         </mat-optgroup>
                     </mat-select>
-                    <mat-error *ngIf="(accessFormField('name', i).touched || accessFormField('name', i).dirty) || (isSubmitted$ | async)">
+                    <mat-error *ngIf="(accessFormField('name', i).touched || accessFormField('name', i).dirty) || (isSubmitted$$ | async)">
                         <mat-error *ngIf="accessFormField('name', i).errors?.required"
                             class="error">
                             {{ 'training.new_training.errors.exercise_name_required' | translate }}
@@ -57,7 +57,7 @@
             </div>
             <app-sets
                 formControlName="sets"
-                [isExerciseFormSubmitted$]="isSubmitted$"
+                [isExerciseFormSubmitted$]="isSubmitted$$.asObservable()"
                 [exerciseStateChanged$]="exerciseStateChanged$$.asObservable()"
                 [exerciseNameControl]="accessFormField('name', i)"
                 [indexExercise]="i"

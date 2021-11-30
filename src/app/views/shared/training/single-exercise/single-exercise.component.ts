@@ -38,8 +38,7 @@ const WEIGHT_FORMAT: WeightFormat = 'kg';
 export class SingleExerciseComponent implements ControlValueAccessor {
 
     readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
-    private readonly isSubmitted$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    readonly isSubmitted$: Observable<boolean> = this.isSubmitted$$.asObservable();
+    readonly isSubmitted$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     readonly exercises$: Observable<Exercise[]>;
 
     form: FormArray = new FormArray([]);
