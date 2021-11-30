@@ -26,11 +26,11 @@ export class NewTrainingController {
         return this.newTrainingService.addTraining(trainingData as NewTraining);
     }
 
-    @Put(':trainingId')
+    @Put(':id')
     @UseGuards(new TrainingGuard('training.new_training.errors.error_update_training'))
     async updateTraining(
         @Req() request: Request,
-        @Param('trainingId') trainingId: string,
+        @Param('id') trainingId: string,
         @Body('updatedTrainingData') updatedTrainingData: NewTraining,
     ): Promise<GeneralResponseData> {
         return this.newTrainingService.editTraining(
