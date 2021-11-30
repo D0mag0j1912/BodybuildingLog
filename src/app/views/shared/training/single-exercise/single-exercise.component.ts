@@ -385,7 +385,12 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
                             const formSetData: Set[] = [];
                             (this.accessFormField('sets', indexExercise).value as Set[]).forEach((set: Set) => {
-                                formSetData.push(set);
+                                const apiSet: Set = {
+                                    setNumber: +set.setNumber as number,
+                                    weightLifted: +set.weightLifted as number,
+                                    reps: +set.reps as number,
+                                };
+                                formSetData.push(apiSet);
                             });
                             exerciseFormData[indexExercise].sets = formSetData;
                         });
