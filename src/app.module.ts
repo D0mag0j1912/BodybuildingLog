@@ -1,7 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { PreferencesController } from './controllers/preferences/preferences.controller';
 import { GetExercisesController } from './controllers/training/new-training/get-exercises.controller';
 import { NewTrainingController } from './controllers/training/new-training/new-training.controller';
@@ -18,10 +16,6 @@ const MY_IMPORTS = [
     TrainingModule,
 ];
 
-const CONTROLLERS = [AppController];
-
-const SERVICES = [AppService];
-
 @Module({
     imports: [
         MongooseModule.forRoot(
@@ -29,8 +23,8 @@ const SERVICES = [AppService];
         ),
         ...MY_IMPORTS,
     ],
-    controllers: [ ...CONTROLLERS ],
-    providers: [ ...SERVICES ],
+    controllers: [],
+    providers: [],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer): void {
