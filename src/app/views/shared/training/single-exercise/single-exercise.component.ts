@@ -194,6 +194,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         return this.newTrainingService.currentTrainingChanged$.pipe(
                             take(1),
                             switchMap((currentTrainingState: NewTraining) =>
+                            //FACT: ovdje dobivam isti rezultat kao u servisu
                                 this.newTrainingService.deleteExercise(
                                     indexExercise as number,
                                     currentTrainingState as NewTraining,
@@ -335,7 +336,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         if (!this.form.valid || this.setErrors.length > 0) {
             return;
         }
-        this.isLoading = true;
+        /* this.isLoading = true;
 
         this.gatherAllFormData().pipe(
             switchMap(_ => {
@@ -358,7 +359,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 duration: SNACK_BAR_DURATION.GENERAL,
                 panelClass: 'app__snackbar',
             });
-        });
+        }); */
     }
 
     private gatherAllFormData(): Observable<Exercise[]> {

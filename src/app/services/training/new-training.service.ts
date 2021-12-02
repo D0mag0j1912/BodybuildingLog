@@ -111,16 +111,21 @@ export class NewTrainingService {
         currentTrainingState: NewTraining,
         deletedExerciseName?: string,
     ): Observable<[NewTraining, Exercise[]]> {
-        const updatedTraining: NewTraining = { ...currentTrainingState };
-        updatedTraining.exercise = updatedTraining.exercise
-            .filter((exercise: SingleExercise) => exercise.formArrayIndex !== deletedIndex)
-            .map((exercise: SingleExercise) => {
-                if(exercise.formArrayIndex > deletedIndex){
-                    exercise.formArrayIndex--;
-                }
-                return exercise;
-            });
-        if(deletedExerciseName) {
+        //TODO: ja nigdje ne vidim da BRIŠEM SingleExercise objekt iz Subjecta...
+        let updatedExercises: SingleExercise[] = currentTrainingState.exercise;
+        console.log(updatedExercises)
+        updatedExercises = updatedExercises.map((exercise: SingleExercise) => {
+            if (exercise.formArrayIndex > deletedIndex) {
+                exercise.formArrayIndex--;
+            }
+            return exercise;
+        });
+        const updatedTraining: NewTraining = {
+            ...currentTrainingState,
+            exercise: updatedExercises,
+        };
+        console.log(updatedTraining)
+        if (deletedExerciseName) {
             return this.allExercisesChanged$.pipe(
                 take(1),
                 map((allExercises: Exercise[]) =>
@@ -144,7 +149,7 @@ export class NewTrainingService {
         const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
         const indexFoundSet = updatedTraining.exercise[trainingData.formArrayIndex].sets.findIndex(set => set.setNumber === trainingData.setNumber);
 
-        if(indexFoundSet > -1) {
+        if (indexFoundSet > -1) {
             updatedTraining.exercise[trainingData.formArrayIndex].sets[indexFoundSet] = {
                 ...updatedTraining.exercise[trainingData.formArrayIndex].sets[indexFoundSet],
                 weightLifted: trainingData.weightLifted,
