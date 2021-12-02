@@ -7,11 +7,11 @@ import {
     Req,
     UseGuards} from '@nestjs/common';
 import { Request } from 'express';
-import { GeneralResponseData } from 'src/app.service';
-import { NewTraining } from 'src/models/training/new-training/new-training.model';
-import { NewTrainingService } from 'src/services/training/new-training.service';
 import { AuthenticationGuard } from '../../../guards/authentication.guard';
 import { TrainingGuard } from '../../../guards/training.guard';
+import { GeneralResponseData } from '../../../models/common/response.model';
+import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import { NewTrainingService } from '../../../services/training/new-training.service';
 
 @Controller('handle_training')
 @UseGuards(AuthenticationGuard)

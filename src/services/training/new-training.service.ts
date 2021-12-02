@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { GeneralResponseData } from 'src/app.service';
-import { Exercise } from 'src/models/training/exercise.model';
+import { GeneralResponseData } from '../../models/common/response.model';
 import { Error } from '../../models/errors/error';
+import { Exercise } from '../../models/training/exercise.model';
 import { NewTraining } from '../../models/training/new-training/new-training.model';
 
 @Injectable()

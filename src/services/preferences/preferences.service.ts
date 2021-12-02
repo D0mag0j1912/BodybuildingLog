@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Preferences } from 'src/models/preferences/preferences.model';
-import { GeneralResponseData } from '../../app.service';
+import { GeneralResponseData } from '../../models/common/response.model';
+import { Preferences } from '../../models/preferences/preferences.model';
 
 @Injectable()
 export class PreferencesService {

@@ -1,8 +1,8 @@
 import { Body, Controller, Param, Put, UseGuards } from '@nestjs/common';
-import { GeneralResponseData } from 'src/app.service';
-import { Preferences } from 'src/models/preferences/preferences.model';
-import { PreferencesService } from 'src/services/preferences/preferences.service';
 import { AuthenticationGuard } from '../../guards/authentication.guard';
+import { GeneralResponseData } from '../../models/common/response.model';
+import { Preferences } from '../../models/preferences/preferences.model';
+import { PreferencesService } from '../../services/preferences/preferences.service';
 
 @Controller('preferences')
 @UseGuards(AuthenticationGuard)
