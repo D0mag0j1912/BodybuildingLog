@@ -8,6 +8,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { init } from '@sentry/angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AuthGuard } from './guards/auth.guard';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { MaterialModule } from './material.module';
@@ -47,18 +48,20 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         }),
     ],
     providers: [{
-        provide: HTTP_INTERCEPTORS,
-        useClass: AuthInterceptor,
-        multi: true,
-    }, {
-        provide: HTTP_INTERCEPTORS,
-        useClass: ErrorInterceptor,
-        multi: true,
-    }, {
-        provide: ErrorHandler,
-        useClass: SentryService,
-    },
-    HttpClient],
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true,
+        }, {
+            provide: HTTP_INTERCEPTORS,
+            useClass: ErrorInterceptor,
+            multi: true,
+        }, {
+            provide: ErrorHandler,
+            useClass: SentryService,
+        },
+        HttpClient,
+        AuthGuard,
+    ],
     bootstrap: [AppComponent],
 })
 export class AppModule { }
