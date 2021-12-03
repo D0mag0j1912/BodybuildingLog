@@ -31,10 +31,11 @@ const routes: Routes = [
         path: 'page-not-found',
         component: NotFoundComponent,
     },
-    {
+    //TODO: ispravno implementirati (da ne blokira login)
+    /* {
         path: '**',
         component: NotFoundComponent,
-    },
+    }, */
 ];
 
 @NgModule({
