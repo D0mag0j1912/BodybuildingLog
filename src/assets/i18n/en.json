@@ -1,5 +1,6 @@
 {
     "common": {
+        "page_not_found": "Page not found",
         "exercises":"Exercises: ",
         "change_preference_registration": "Your preferences can be changed during application use anytime.",
         "did_you_know": "Did you know?",

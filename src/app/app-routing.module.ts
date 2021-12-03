@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
+import { NotFoundComponent } from './views/shared/not-found/not-found.component';
 import { NewTrainingComponent } from './views/training/new-training/new-training.component';
 import { PastTrainingsComponent } from './views/training/past-trainings/past-trainings.component';
 
@@ -25,6 +26,14 @@ const routes: Routes = [
         path: 'past-trainings',
         component: PastTrainingsComponent,
         canActivate: [AuthGuard],
+    },
+    {
+        path: 'page-not-found',
+        component: NotFoundComponent,
+    },
+    {
+        path: '**',
+        component: NotFoundComponent,
     },
 ];
 

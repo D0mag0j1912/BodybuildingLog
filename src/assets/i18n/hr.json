@@ -1,5 +1,6 @@
 {
     "common": {
+        "page_not_found": "Stranica nije pronađena",
         "exercises":"Vježbe: ",
         "language": "Jezik",
         "change_preference_registration": "Vaše preference možete promijeniti bilo kada tijekom korištenja aplikacije.",

@@ -9,6 +9,7 @@ import { NavigationService } from '../services/shared/navigation.service';
 import { SharedService } from '../services/shared/shared.service';
 import { DeleteTrainingActionService } from '../services/training/training-actions/delete-training-action.service';
 import { DialogComponent } from '../views/shared/dialog/dialog.component';
+import { NotFoundComponent } from '../views/shared/not-found/not-found.component';
 import { SetsComponent } from '../views/shared/training/sets/sets.component';
 import { SingleExerciseComponent } from '../views/shared/training/single-exercise/single-exercise.component';
 import { TotalWeightComponent } from '../views/shared/training/total-weight/total-weight.component';
@@ -20,6 +21,7 @@ const COMPONENTS = [
     SingleExerciseComponent,
     SetsComponent,
     TotalWeightComponent,
+    NotFoundComponent,
 ];
 
 const ACTION_COMPONENTS = [
