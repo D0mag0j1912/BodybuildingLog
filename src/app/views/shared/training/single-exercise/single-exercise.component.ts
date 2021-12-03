@@ -110,7 +110,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         if(data.exercise.length > 0) {
             (data.exercise as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
                 this.addExercise();
-                this.accessFormField('formArrayIndex', indexExercise).patchValue(indexExercise);
                 if(exercise.exerciseName){
                     this.accessFormField('name', indexExercise).patchValue(exercise.exerciseName as string);
                     this.accessFormField('sets', indexExercise).patchValue(exercise.sets as Set[]);
@@ -158,7 +157,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     addExercise(clicked?: MouseEvent): void {
         this.form.push(new FormGroup({
-            'formArrayIndex': new FormControl(clicked ? this.getExercises().length : null, [Validators.required]),
             'name': new FormControl(null, [Validators.required]),
             'sets': new FormControl(createInitialSet()),
             'total': new FormControl(INITIAL_WEIGHT.toString() + ` ${WEIGHT_FORMAT}`, [Validators.required]),
@@ -166,10 +164,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         }));
 
         if(clicked) {
-            this.newTrainingService.addNewExercise(
-                this.getAlreadyUsedExercises() as string[],
-                this.getExercises().length - 1 as number,
-            );
+            this.newTrainingService.addNewExercise(this.getAlreadyUsedExercises() as string[]);
             this.exerciseStateChanged$$.next();
         }
     }
@@ -194,9 +189,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         return this.newTrainingService.currentTrainingChanged$.pipe(
                             take(1),
                             switchMap((currentTrainingState: NewTraining) =>
-                            //FACT: ovdje dobivam isti rezultat kao u servisu
                                 this.newTrainingService.deleteExercise(
-                                    indexExercise as number,
                                     currentTrainingState as NewTraining,
                                     exerciseName as string,
                                 ),
@@ -228,7 +221,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 take(1),
                 switchMap((currentTrainingState: NewTraining) =>
                     this.newTrainingService.deleteExercise(
-                        indexExercise as number,
                         currentTrainingState as NewTraining,
                     ),
                 ),
@@ -246,7 +238,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 && $event.isRepsValid
                 && this.accessFormField('name', $event.indexExercise).value) {
                     const trainingData: SetTrainingData = {
-                        formArrayIndex: this.accessFormField('formArrayIndex', $event.indexExercise).value as number,
                         exerciseName: this.accessFormField('name', $event.indexExercise).value as string,
                         setNumber: $event.newSet.setNumber as number,
                         weightLifted: $event.newSet.weightLifted as number,
@@ -336,7 +327,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         if (!this.form.valid || this.setErrors.length > 0) {
             return;
         }
-        /* this.isLoading = true;
+        this.isLoading = true;
 
         this.gatherAllFormData().pipe(
             switchMap(_ => {
@@ -359,7 +350,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 duration: SNACK_BAR_DURATION.GENERAL,
                 panelClass: 'app__snackbar',
             });
-        }); */
+        });
     }
 
     private gatherAllFormData(): Observable<Exercise[]> {
@@ -375,7 +366,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         this.getExercises().forEach((exercise: AbstractControl, indexExercise: number) => {
                             const splittedTotal: string[] = (this.accessFormField('total', indexExercise).value as string).split(' ');
                             exerciseFormData.push({
-                                formArrayIndex: +this.accessFormField('formArrayIndex', indexExercise).value as number,
                                 exerciseName: this.accessFormField('name', indexExercise).value as string,
                                 sets: [],
                                 total: +(splittedTotal[0] as string),

@@ -38,7 +38,6 @@ export class NewTrainingService {
                         tap((authResponseData: AuthResponseData) => {
                             this.updateTrainingState(
                                 exercises,
-                                0,
                                 true,
                                 authResponseData._id,
                             );
@@ -107,24 +106,15 @@ export class NewTrainingService {
     }
 
     deleteExercise(
-        deletedIndex: number,
         currentTrainingState: NewTraining,
         deletedExerciseName?: string,
     ): Observable<[NewTraining, Exercise[]]> {
-        //TODO: ja nigdje ne vidim da BRIŠEM SingleExercise objekt iz Subjecta...
-        let updatedExercises: SingleExercise[] = currentTrainingState.exercise;
-        console.log(updatedExercises)
-        updatedExercises = updatedExercises.map((exercise: SingleExercise) => {
-            if (exercise.formArrayIndex > deletedIndex) {
-                exercise.formArrayIndex--;
-            }
-            return exercise;
-        });
+        let updatedExercises: SingleExercise[] = [ ...currentTrainingState.exercise ];
+        updatedExercises = updatedExercises.filter((exercise: SingleExercise) => exercise.exerciseName !== deletedExerciseName);
         const updatedTraining: NewTraining = {
             ...currentTrainingState,
             exercise: updatedExercises,
         };
-        console.log(updatedTraining)
         if (deletedExerciseName) {
             return this.allExercisesChanged$.pipe(
                 take(1),
@@ -147,38 +137,33 @@ export class NewTrainingService {
 
     setsChanged(trainingData: SetTrainingData): NewTraining {
         const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
-        const indexFoundSet = updatedTraining.exercise[trainingData.formArrayIndex].sets.findIndex(set => set.setNumber === trainingData.setNumber);
+        const indexOfChangedExercise: number = updatedTraining.exercise.findIndex((singleExercise: SingleExercise) => singleExercise.exerciseName === trainingData.exerciseName);
+        const indexFoundSet = updatedTraining.exercise[indexOfChangedExercise].sets.findIndex(set => set.setNumber === trainingData.setNumber);
 
         if (indexFoundSet > -1) {
-            updatedTraining.exercise[trainingData.formArrayIndex].sets[indexFoundSet] = {
-                ...updatedTraining.exercise[trainingData.formArrayIndex].sets[indexFoundSet],
+            updatedTraining.exercise[indexOfChangedExercise].sets[indexFoundSet] = {
+                ...updatedTraining.exercise[indexOfChangedExercise].sets[indexFoundSet],
                 weightLifted: trainingData.weightLifted,
                 reps: trainingData.reps,
             };
-            updatedTraining.exercise[trainingData.formArrayIndex].total = trainingData.total;
+            updatedTraining.exercise[indexOfChangedExercise].total = trainingData.total;
         }
         else {
-            updatedTraining.exercise[trainingData.formArrayIndex].sets.push({
+            updatedTraining.exercise[indexOfChangedExercise].sets.push({
                 setNumber: trainingData.setNumber,
                 weightLifted: trainingData.weightLifted,
                 reps: trainingData.reps,
             });
-            updatedTraining.exercise[trainingData.formArrayIndex].total = trainingData.total;
+            updatedTraining.exercise[indexOfChangedExercise].total = trainingData.total;
         }
         this.saveTrainingData({ ...updatedTraining } as NewTraining);
         return { ...updatedTraining };
     }
 
-    addNewExercise(
-        alreadyUsedExercises: string[],
-        nextFormArrayIndex: number,
-    ): void {
+    addNewExercise(alreadyUsedExercises: string[]): void {
         const allExercises: Exercise[] = [ ...this.allExercisesChanged$$.getValue() ];
         const availableExercises: Exercise[] = allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1);
-        this.updateTrainingState(
-            availableExercises,
-            nextFormArrayIndex,
-        );
+        this.updateTrainingState(availableExercises);
     }
 
     updateExerciseChoices(
@@ -210,7 +195,6 @@ export class NewTrainingService {
 
     updateTrainingState(
         exercises: Exercise[],
-        nextFormArrayIndex: number,
         restartAll?: boolean,
         userId?: string,
     ): void {
@@ -224,18 +208,13 @@ export class NewTrainingService {
         updatedTraining.exercise.push(
             this.returnEmptyExercise(
                 exercises,
-                nextFormArrayIndex,
             ),
         );
         this.saveTrainingData({ ...updatedTraining } as NewTraining);
     }
 
-    returnEmptyExercise(
-        exercises: Exercise[],
-        nextFormArrayIndex: number,
-    ): SingleExercise {
+    returnEmptyExercise(exercises: Exercise[]): SingleExercise {
         return {
-            formArrayIndex: nextFormArrayIndex,
             exerciseName: null,
             sets: [],
             total: null,

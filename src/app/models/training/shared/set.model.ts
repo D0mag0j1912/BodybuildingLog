@@ -16,7 +16,6 @@ export interface SetStateChanged {
 }
 
 export interface SetTrainingData {
-    formArrayIndex: number;
     exerciseName: string;
     setNumber: number;
     weightLifted: number;

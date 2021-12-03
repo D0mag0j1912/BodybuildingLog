@@ -109,7 +109,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                         if(currentTrainingState.editMode && !this.editMode) {
                                             this.newTrainingService.updateTrainingState(
                                                 data[0] as Exercise[],
-                                                0,
                                                 true,
                                                 currentTrainingState.userId as string,
                                             );
