@@ -1,8 +1,6 @@
 import { Type } from 'class-transformer';
 import {
     IsBoolean,
-    IsDefined,
-    IsInt,
     IsMongoId,
     IsNotEmpty,
     IsNumber,
@@ -16,10 +14,6 @@ import { SET_SCHEMA } from './set.model';
 import { Set } from './set.model';
 
 export const SINGLE_EXERCISE_SCHEMA = new Schema({
-    formArrayIndex: {
-        type: Number,
-        required: true,
-    },
     exerciseName: {
         type: String,
         required: true,
@@ -48,10 +42,6 @@ export class SingleExercise {
     @IsString()
     @IsMongoId()
     _id: string;
-
-    @IsInt({ message: '@training.new_training.errors.error_save_training' })
-    @IsDefined({ message: '@training.new_training.errors.error_save_training' })
-    formArrayIndex: number;
 
     @IsString({ message: '@training.new_training.errors.exercise_name_string' })
     @IsNotEmpty({ message: '@training.new_training.errors.exercise_name_required' })
