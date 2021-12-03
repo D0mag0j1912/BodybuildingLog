@@ -36,4 +36,4 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatRadioModule,
     ],
 })
-export class MaterialModule{}
+export class MaterialModule {}

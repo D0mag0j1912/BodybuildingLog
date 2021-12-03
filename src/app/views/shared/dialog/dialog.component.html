@@ -1,18 +1,18 @@
 
 <div
-    mat-dialog-title
-    *ngIf="data.message">
+    *ngIf="data.message"
+    mat-dialog-title>
     <p class="message">{{ data.message }}</p>
 </div>
 
 <div
-    mat-dialog-title
-    *ngIf="(data.deleteExercise.message$ | async) as message">
+    *ngIf="(data.deleteExercise.message$ | async) as message"
+    mat-dialog-title>
     <p class="message">{{ message }}</p>
 </div>
 <div
-    mat-dialog-content
-    *ngIf="data.deleteExercise">
+    *ngIf="data.deleteExercise"
+    mat-dialog-content>
     <p class="mat-subheading-1 message">
         {{ 'training.new_training.exercise_name' | translate }}
         <strong>{{ data.deleteExercise.exerciseName | translate }}</strong>
@@ -20,18 +20,18 @@
 </div>
 <mat-dialog-actions class="actions">
     <button
-        type="button"
-        [mat-dialog-close]="false"
         mat-raised-button
-        [color]="data.isError ? 'primary' : ''">
+        type="button"
+        [color]="data.isError ? 'primary' : ''"
+        [mat-dialog-close]="false">
         {{ 'common.actions.close' | translate }}
     </button>
     <button
-        type="button"
-        [mat-dialog-close]="true"
+        *ngIf="data.deleteExercise"
         mat-raised-button
+        type="button"
         color="primary"
-        *ngIf="data.deleteExercise">
+        [mat-dialog-close]="true">
         {{ 'common.actions.delete' | translate }}
     </button>
 </mat-dialog-actions>
