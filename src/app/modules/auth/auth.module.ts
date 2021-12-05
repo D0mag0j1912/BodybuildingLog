@@ -24,7 +24,7 @@ const EXTERNAL_IMPORTS = [
 
 const MY_IMPORTS = [
     MaterialModule,
-    AuthRoutingModule,
+    /* AuthRoutingModule, */
     SharedModule,
 ];
 

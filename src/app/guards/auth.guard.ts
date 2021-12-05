@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Route, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AuthService } from '../services/auth/auth.service';
@@ -10,17 +10,27 @@ export class AuthGuard implements CanActivate {
     constructor(
         private readonly authService: AuthService,
         private readonly router: Router,
-    ){}
+    ) {}
 
     canActivate(
         route: ActivatedRouteSnapshot,
         state: RouterStateSnapshot,
-    ): Observable<boolean> {
+    ): Observable<boolean> | UrlTree {
         return this.authService.isAuth$.pipe(
-            tap(async (isAuth: boolean) => {
+            tap((isAuth: boolean) => {
                 if (!isAuth) {
-                    await this.router.navigate(['/not-found']);
-                    return false;
+                    return this.router.createUrlTree(['/auth/login']);
+                }
+                return true;
+            }),
+        );
+    }
+
+    canLoad(route: Route): Observable<boolean> | UrlTree {
+        return this.authService.isAuth$.pipe(
+            tap((isAuth: boolean) => {
+                if (!isAuth) {
+                    return this.router.createUrlTree(['/auth/login']);
                 }
                 return true;
             }),
