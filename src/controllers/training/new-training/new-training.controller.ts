@@ -10,7 +10,7 @@ import { Request } from 'express';
 import { AuthenticationGuard } from '../../../guards/authentication.guard';
 import { TrainingGuard } from '../../../guards/training.guard';
 import { GeneralResponseData } from '../../../models/common/response.model';
-import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
 @Controller('handle_training')
@@ -19,11 +19,11 @@ export class NewTrainingController {
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
-    ){}
+    ) {}
 
     @Post()
-    async addTraining( @Body('trainingData') trainingData: NewTraining ): Promise<GeneralResponseData> {
-        return this.newTrainingService.addTraining(trainingData as NewTraining);
+    async addTraining(@Body('trainingData') trainingData: NewTrainingDto): Promise<GeneralResponseData> {
+        return this.newTrainingService.addTraining(trainingData as NewTrainingDto);
     }
 
     @Put(':id')
@@ -31,11 +31,11 @@ export class NewTrainingController {
     async updateTraining(
         @Req() request: Request,
         @Param('id') trainingId: string,
-        @Body('updatedTrainingData') updatedTrainingData: NewTraining,
+        @Body('updatedTrainingData') updatedTrainingData: NewTrainingDto,
     ): Promise<GeneralResponseData> {
         return this.newTrainingService.editTraining(
             trainingId as string,
-            updatedTrainingData as NewTraining,
+            updatedTrainingData as NewTrainingDto,
             request.headers.userId as string,
         );
     }

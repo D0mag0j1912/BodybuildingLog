@@ -31,7 +31,7 @@ export const NEW_TRAINING_SCHEMA = new Schema({
     },
 }, { timestamps: true });
 
-export class NewTraining {
+export class NewTrainingDto {
 
     @IsOptional()
     @IsString({ message: '@training.new_training.errors.error_save_training' })

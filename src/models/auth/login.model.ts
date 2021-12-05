@@ -23,7 +23,7 @@ export const USER_SCHEMA = new Schema({
 
 USER_SCHEMA.plugin(uniqueValidator);
 
-export class Login {
+export class LoginDto {
 
     @IsOptional()
     @IsDefined()

@@ -9,7 +9,7 @@ export class GetExercisesController {
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
-    ){}
+    ) {}
 
     @Get()
     async getExercises(): Promise<Exercise[]> {

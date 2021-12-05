@@ -4,50 +4,47 @@ import { compare, hash } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { Model } from 'mongoose';
 import { AuthResponse } from 'src/models/auth/auth-response.model';
-import { Login } from 'src/models/auth/login.model';
-import { Preferences } from 'src/models/preferences/preferences.model';
+import { LoginDto } from 'src/models/auth/login.model';
+import { PreferencesDto } from 'src/models/preferences/preferences.model';
 import { JWT_TOKEN } from '../../constants/jwt-web-token';
+import { SignupDto } from '../../models/auth/signup.model';
 
 @Injectable()
 export class AuthService {
 
     constructor(
-        @InjectModel('User') private readonly userModel: Model<Login>,
-        @InjectModel('Preferences') private readonly preferencesModel: Model<Preferences>,
-    ){}
+        @InjectModel('User') private readonly userModel: Model<LoginDto>,
+        @InjectModel('Preferences') private readonly preferencesModel: Model<PreferencesDto>,
+    ) {}
 
-    async passwordFitsEmail(
-        email: string,
-        password: string,
-    ): Promise<boolean> {
+    async passwordFitsEmail(loginDto: LoginDto): Promise<boolean> {
         try {
+            const { email, password } = loginDto;
             // tslint:disable-next-line: await-promise
-            const user: Login = await this.userModel.findOne({ email: email });
-            if(!user){
+            const user: LoginDto = await this.userModel.findOne({ email: email });
+            if (!user) {
                 return false;
             }
             const comparison: boolean = await compare(
                 password,
                 user.password,
             );
-            if(comparison){
+            if (comparison) {
                 return true;
             }
             return false;
         }
-        catch(error: unknown) {
+        catch (error: unknown) {
             return false;
         }
     }
 
-    async login(
-        email: string,
-        password: string,
-    ): Promise<AuthResponse> {
+    async login(loginDto: LoginDto): Promise<AuthResponse> {
         try {
+            const { email, password } = loginDto;
             // tslint:disable-next-line: await-promise
-            const user: Login = await this.userModel.findOne({ email: email });
-            if(!user){
+            const user: LoginDto = await this.userModel.findOne({ email: email });
+            if (!user) {
                 return {
                     success: false,
                     message: 'auth.errors.email_not_registered',
@@ -57,7 +54,7 @@ export class AuthService {
                 password,
                 user.password,
             );
-            if(!comparison){
+            if (!comparison) {
                 return {
                     success: false,
                     message: 'auth.errors.password_wrong_email',
@@ -70,7 +67,7 @@ export class AuthService {
                 expiresIn: '3h',
             });
             // tslint:disable-next-line: await-promise
-            const preferences: Preferences = await this.preferencesModel.findOne({ userId: user._id });
+            const preferences: PreferencesDto = await this.preferencesModel.findOne({ userId: user._id });
             return {
                 token: token,
                 expiresIn: 10800,
@@ -79,7 +76,7 @@ export class AuthService {
                 preferences: preferences,
             } as AuthResponse;
         }
-        catch(error: unknown) {
+        catch (error: unknown) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
                 message: 'auth.errors.login_error',
@@ -87,8 +84,7 @@ export class AuthService {
         }
     }
 
-    async getAllEmails(email: string)
-        : Promise<boolean> {
+    async getAllEmails(email: string): Promise<boolean> {
         try {
             const result: {
                 _id: string,
@@ -98,41 +94,41 @@ export class AuthService {
                 { email: email },
                 'password',
             );
-            if(!result){
+            if (!result) {
                 return true;
             }
             return false;
         }
-        catch(error: unknown) {
+        catch (error: unknown) {
             return false;
         }
     }
 
     async signup(
-        language: string,
-        weightFormat: string,
-        email: string,
-        password: string,
+        preferencesDto: PreferencesDto,
+        signupDto: SignupDto,
     ): Promise<AuthResponse> {
         try {
+            const { language, weightFormat } = preferencesDto;
+            const { email, password, confirmPassword } = signupDto;
             const encryptedPassword: string = await hash(password, 10);
             const user = new this.userModel({
                 email: email,
                 password: encryptedPassword,
             });
-            const savedUser: Login = await user.save();
-            const preferences: Preferences = {
+            const savedUser: LoginDto = await user.save();
+            const preferences: PreferencesDto = {
                 userId: savedUser._id,
                 language: language,
                 weightFormat: weightFormat,
-            } as Preferences;
+            } as PreferencesDto;
             await this.preferencesModel.create(preferences);
             return {
                 success: true,
                 message: 'auth.signup_success',
             } as AuthResponse;
         }
-        catch(error: unknown) {
+        catch (error: unknown) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
                 message: 'auth.errors.signup_error',

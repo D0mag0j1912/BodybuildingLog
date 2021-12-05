@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { NewTraining } from 'src/models/training/new-training/new-training.model';
+import { NewTrainingDto } from 'src/models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings-response.model';
 import { Error } from '../../../models/errors/error';
 import { PastTrainingsService } from '../past-trainings.service';
@@ -10,9 +10,9 @@ import { PastTrainingsService } from '../past-trainings.service';
 export class DeleteTrainingActionService {
 
     constructor(
-        @InjectModel('Training') private readonly trainingModel: Model<NewTraining>,
+        @InjectModel('Training') private readonly trainingModel: Model<NewTrainingDto>,
         private readonly pastTrainingService: PastTrainingsService,
-    ){}
+    ) {}
 
     async deleteTraining(
         trainingId: string,
@@ -20,7 +20,7 @@ export class DeleteTrainingActionService {
         currentDate: Date,
     ): Promise<PastTrainingsResponse> {
         try {
-            const trainingToBeRemoved: NewTraining = await Promise.resolve(this.trainingModel.findById(trainingId as string));
+            const trainingToBeRemoved: NewTrainingDto = await Promise.resolve(this.trainingModel.findById(trainingId as string));
             if(loggedUserId.toString() !== trainingToBeRemoved.userId.toString()){
                 throw new HttpException({
                     status: HttpStatus.UNAUTHORIZED,

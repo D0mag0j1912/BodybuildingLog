@@ -2,21 +2,21 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { GeneralResponseData } from '../../models/common/response.model';
-import { Preferences } from '../../models/preferences/preferences.model';
+import { PreferencesDto } from '../../models/preferences/preferences.model';
 
 @Injectable()
 export class PreferencesService {
 
     constructor(
-        @InjectModel('Preferences') private readonly preferencesModel: Model<Preferences>,
-    ){}
+        @InjectModel('Preferences') private readonly preferencesModel: Model<PreferencesDto>,
+    ) {}
 
     async setPreferences(
         userId: string,
-        language: string,
-        weightFormat: string,
+        preferencesDto: PreferencesDto,
     ): Promise<GeneralResponseData> {
         try {
+            const { language, weightFormat } = preferencesDto;
             // tslint:disable-next-line: await-promise
             const preferences = await this.preferencesModel.findOne({ userId: userId });
             preferences.language = language;
@@ -24,7 +24,7 @@ export class PreferencesService {
             await preferences.save();
             return { message: 'preferences.language_changed' } as GeneralResponseData;
         }
-        catch(error: unknown) {
+        catch (error: unknown) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
                 message: 'preferences.errors.language_change',

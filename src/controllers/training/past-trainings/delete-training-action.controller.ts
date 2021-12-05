@@ -11,7 +11,7 @@ export class DeleteTrainingActionController {
 
     constructor(
         private readonly deleteTrainingActionService: DeleteTrainingActionService,
-    ){}
+    ) {}
 
     @Delete(':id')
     @UseGuards(new TrainingGuard('training.past_trainings.actions.errors.error_delete_training'))

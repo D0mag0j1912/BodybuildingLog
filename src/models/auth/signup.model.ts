@@ -4,7 +4,7 @@ import {
     IsString,
     Length} from 'class-validator';
 
-export class Signup {
+export class SignupDto {
 
     @IsEmail({}, {
         message: 'auth.errors.invalid_email',

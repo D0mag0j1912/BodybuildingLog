@@ -1,4 +1,4 @@
-import { Preferences } from '../preferences/preferences.model';
+import { PreferencesDto } from '../preferences/preferences.model';
 
 export interface AuthResponse {
     readonly message: string;
@@ -6,5 +6,5 @@ export interface AuthResponse {
     readonly token?: string;
     readonly expiresIn?: number;
     readonly _id?: string;
-    readonly preferences?: Preferences;
+    readonly preferences?: PreferencesDto;
 }

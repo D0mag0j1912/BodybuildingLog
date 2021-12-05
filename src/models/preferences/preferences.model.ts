@@ -17,7 +17,7 @@ export const PREFERENCES_SCHEMA = new Schema({
     },
 });
 
-export class Preferences {
+export class PreferencesDto {
 
     @IsOptional()
     @IsDefined({ message: '@common.errors.something_went_wrong' })

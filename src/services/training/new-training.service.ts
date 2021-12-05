@@ -4,25 +4,25 @@ import { Model } from 'mongoose';
 import { GeneralResponseData } from '../../models/common/response.model';
 import { Error } from '../../models/errors/error';
 import { Exercise } from '../../models/training/exercise.model';
-import { NewTraining } from '../../models/training/new-training/new-training.model';
+import { NewTrainingDto } from '../../models/training/new-training/new-training.model';
 
 @Injectable()
 export class NewTrainingService {
 
     constructor(
         @InjectModel('Exercise') private readonly exerciseModel: Model<Exercise>,
-        @InjectModel('Training') private readonly trainingModel: Model<NewTraining>,
-    ){}
+        @InjectModel('Training') private readonly trainingModel: Model<NewTrainingDto>,
+    ) {}
 
     async editTraining(
         trainingId: string,
-        updatedTrainingData: NewTraining,
+        updatedTrainingData: NewTrainingDto,
         loggedUserId: string,
     ): Promise<GeneralResponseData> {
         try {
             // tslint:disable-next-line: await-promise
-            const trainingToBeUpdated: NewTraining = await this.trainingModel.findById(trainingId);
-            if(trainingToBeUpdated.userId.toString() !== loggedUserId.toString()) {
+            const trainingToBeUpdated: NewTrainingDto = await this.trainingModel.findById(trainingId);
+            if (trainingToBeUpdated.userId.toString() !== loggedUserId.toString()) {
                 throw new UnauthorizedException('common.errors.not_authorized');
             }
             // tslint:disable-next-line: await-promise
@@ -31,8 +31,8 @@ export class NewTrainingService {
                 message: 'training.new_training.training_updated',
             } as GeneralResponseData;
         }
-        catch(error: unknown) {
-            switch((error as Error).status) {
+        catch (error: unknown) {
+            switch ((error as Error).status) {
                 case 500:
                     throw new HttpException({
                         status: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -49,12 +49,12 @@ export class NewTrainingService {
         }
     }
 
-    async addTraining(trainingData: NewTraining): Promise<GeneralResponseData> {
+    async addTraining(trainingData: NewTrainingDto): Promise<GeneralResponseData> {
         try {
             await this.trainingModel.create(trainingData);
             return { message: 'training.new_training.training_saved' } as GeneralResponseData;
         }
-        catch(error: unknown) {
+        catch (error: unknown) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
                 message: 'training.new_training.errors.error_save_training',
@@ -66,7 +66,7 @@ export class NewTrainingService {
         try {
             // tslint:disable-next-line: await-promise
             const exercises: Exercise[] = await this.exerciseModel.find();
-            if(exercises.length === 0){
+            if (exercises.length === 0) {
                 throw new HttpException({
                     status: HttpStatus.INTERNAL_SERVER_ERROR,
                     message: 'training.new_training.errors.exercises_not_available',
@@ -74,7 +74,7 @@ export class NewTrainingService {
             }
             return exercises;
         }
-        catch(error: unknown) {
+        catch (error: unknown) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
                 message: 'training.new_training.errors.exercises_not_available',

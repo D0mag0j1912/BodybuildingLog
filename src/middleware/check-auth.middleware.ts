@@ -21,7 +21,7 @@ export class CheckAuthMiddleware implements NestMiddleware {
             request.headers.userId = userData._id;
             next();
         }
-        catch(error: unknown) {
+        catch (error: unknown) {
             throw new HttpException({
                 status: HttpStatus.UNAUTHORIZED,
                 message: 'common.errors.not_authenticated',

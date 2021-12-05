@@ -6,7 +6,7 @@ export class GetEmailsController {
 
     constructor(
         private readonly authService: AuthService,
-    ){}
+    ) {}
 
     @Get()
     async getEmails(@Query() params: { email: string }): Promise<boolean> {
