@@ -10,15 +10,15 @@ export class PastTrainingsService {
 
     constructor(
         private readonly http: HttpClient,
-    ){}
+    ) {}
 
     getPastTrainings(currentDate: Date): Observable<PastTrainingsResponse> {
         const params: string = `?currentDate=${currentDate}`;
-        return this.http.get<PastTrainingsResponse>(environment.BACKEND + '/past_trainings' + params);
+        return this.http.get<PastTrainingsResponse>(environment.BACKEND + '/training/past_trainings' + params);
     }
 
     getPastTraining(id: string): Observable<NewTraining> {
-        return this.http.get<NewTraining>(environment.BACKEND + `/past_trainings/${id}`);
+        return this.http.get<NewTraining>(environment.BACKEND + `/training/past_trainings/${id}`);
     }
 
 }

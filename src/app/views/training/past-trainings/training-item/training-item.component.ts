@@ -70,7 +70,7 @@ export class TrainingItemComponent implements OnInit {
     }
 
     async trainingClicked(): Promise<void> {
-        await this.router.navigate(['/new-training', this.training._id]);
+        await this.router.navigate(['/training/new-training', this.training._id]);
     }
 
 }

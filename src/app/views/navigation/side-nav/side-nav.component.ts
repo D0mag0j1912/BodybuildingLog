@@ -48,7 +48,7 @@ export class SideNavComponent implements OnInit {
         const endDate: Date = endOfWeek(new Date(), {
             weekStartsOn: 1,
         });
-        await this.router.navigate(['/past-trainings'], {
+        await this.router.navigate(['/training/past-trainings'], {
             queryParams: {
                 startDate: format(startDate, 'dd-MM-yyyy'),
                 endDate: format(endDate, 'dd-MM-yyyy'),

@@ -14,6 +14,6 @@ export class LoginService {
         password: string,
     ): Observable<boolean> {
         const params = `?email=${email}&password=${password}`;
-        return this.http.get<boolean>(environment.BACKEND + '/check_pass' + params);
+        return this.http.get<boolean>(environment.BACKEND + '/auth/check_pass' + params);
     }
 }

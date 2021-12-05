@@ -1,41 +1,29 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './guards/auth.guard';
 import { NotFoundComponent } from './views/shared/not-found/not-found.component';
-import { NewTrainingComponent } from './views/training/new-training/new-training.component';
-import { PastTrainingsComponent } from './views/training/past-trainings/past-trainings.component';
 
 const routes: Routes = [
     {
         path: '',
-        redirectTo: '/login',
+        redirectTo: '/auth/login',
         pathMatch: 'full',
     },
     {
-        path: 'new-training',
-        /* loadChildren: () => import('./training/training.module').then(module => module.TrainingModule) */
-        component: NewTrainingComponent,
-        canActivate: [AuthGuard],
+        path: 'auth',
+        loadChildren: () => import('./modules/auth/auth.module').then(module => module.AuthModule),
     },
     {
-        path: 'new-training/:id',
-        component: NewTrainingComponent,
-        canActivate: [AuthGuard],
+        path: 'training',
+        loadChildren: () => import('./modules/training/training.module').then(module => module.TrainingModule),
     },
     {
-        path: 'past-trainings',
-        component: PastTrainingsComponent,
-        canActivate: [AuthGuard],
-    },
-    {
-        path: 'page-not-found',
+        path: 'not-found',
         component: NotFoundComponent,
     },
-    //TODO: ispravno implementirati (da ne blokira login)
-    /* {
+    {
         path: '**',
-        component: NotFoundComponent,
-    }, */
+        redirectTo: '/not-found',
+    },
 ];
 
 @NgModule({
@@ -44,6 +32,4 @@ const routes: Routes = [
     })],
     exports: [RouterModule],
 })
-export class AppRoutingModule{
-
-}
+export class AppRoutingModule {}

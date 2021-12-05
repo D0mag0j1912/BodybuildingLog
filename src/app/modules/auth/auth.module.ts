@@ -40,11 +40,7 @@ const SERVICES = [
         ...EXTERNAL_IMPORTS,
         ...MY_IMPORTS,
     ],
-    exports: [
-        SignupComponent,
-        LoginComponent,
-        AuthRoutingModule,
-    ],
+    exports: [ ...COMPONENTS ],
     providers: [ ...SERVICES ],
 })
 export class AuthModule {}

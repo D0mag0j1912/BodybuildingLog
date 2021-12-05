@@ -45,17 +45,13 @@ const IMPORTS = [
 const PIPES_MODULES = [ShowAllExercisesModule];
 
 @NgModule({
-    declarations: [
-        ...COMPONENTS,
-    ],
+    declarations: [ ...COMPONENTS ],
     imports: [
         ...EXTERNAL_IMPORTS,
         ...IMPORTS,
         ...PIPES_MODULES,
     ],
-    exports: [
-        ...COMPONENTS,
-    ],
+    exports: [ ...COMPONENTS ],
     providers: [
         ...SERVICES,
         {

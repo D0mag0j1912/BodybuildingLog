@@ -12,5 +12,5 @@ export class NotFoundComponent {
 
     isAuth$: Observable<boolean> = this.authService.isAuth$;
 
-    constructor(private readonly authService: AuthService){}
+    constructor(private readonly authService: AuthService) {}
 }

@@ -56,7 +56,7 @@ export class HeaderComponent implements OnInit {
             switchMap((_id: string) => this.pastTrainingsService.getPastTraining(_id)),
             takeUntil(this.unsubsService),
         ).subscribe(async (training: NewTraining) => {
-            await this.router.navigate(['/past-trainings'], {
+            await this.router.navigate(['/training/past-trainings'], {
                 queryParams: {
                     startDate: format(this.constructDates(new Date(training.createdAt)).startDate, 'dd-MM-yyyy'),
                     endDate: format(this.constructDates(new Date(training.createdAt)).endDate, 'dd-MM-yyyy'),
@@ -66,7 +66,7 @@ export class HeaderComponent implements OnInit {
     }
 
     async goToPastTrainings(): Promise<void> {
-        await this.router.navigate(['/past-trainings'], {
+        await this.router.navigate(['/training/past-trainings'], {
             queryParams: {
                 startDate: format(this.constructDates(new Date()).startDate, 'dd-MM-yyyy'),
                 endDate: format(this.constructDates(new Date()).endDate, 'dd-MM-yyyy'),

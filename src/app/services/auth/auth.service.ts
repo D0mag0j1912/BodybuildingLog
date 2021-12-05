@@ -58,7 +58,7 @@ export class AuthService {
             language: language,
             weightFormat: weightFormat,
         };
-        return this.http.post<AuthResponseData>(environment.BACKEND + '/signup', {
+        return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/signup', {
             signupData: signupData,
             preferences: preferences,
         });
@@ -72,7 +72,7 @@ export class AuthService {
             email: email,
             password: password,
         };
-        return this.http.post<AuthResponseData>(environment.BACKEND + '/login', authData).pipe(
+        return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/login', authData).pipe(
             tap(async (response: AuthResponseData) => {
                 if(response.token){
                     this.loggedUser$$.next(response);
@@ -88,7 +88,7 @@ export class AuthService {
                         response._id,
                         response.preferences,
                     );
-                    await this.router.navigate(['/new-training']);
+                    await this.router.navigate(['/training/new-training']);
                 }
             }),
             mergeMap((response: AuthResponseData) =>
@@ -127,7 +127,7 @@ export class AuthService {
         this.isAuth$$.next(false);
         clearTimeout(this.tokenTimer);
         this.clearLS();
-        await this.router.navigate(['/login']);
+        await this.router.navigate(['/auth/login']);
     }
 
     private setAuthTimer(duration: number): void {

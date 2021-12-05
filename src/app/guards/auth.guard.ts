@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
         return this.authService.isAuth$.pipe(
             tap(async (isAuth: boolean) => {
                 if (!isAuth) {
-                    await this.router.navigate(['/page-not-found']);
+                    await this.router.navigate(['/not-found']);
                     return false;
                 }
                 return true;

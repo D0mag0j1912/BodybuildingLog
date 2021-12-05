@@ -26,10 +26,10 @@ export class NewTrainingService {
     constructor(
         private readonly http: HttpClient,
         private readonly authService: AuthService,
-    ){}
+    ) {}
 
     getExercises(): Observable<AuthResponseData | ExerciseFetch> {
-        return this.http.get<Exercise[]>(environment.BACKEND + '/get_exercises').pipe(
+        return this.http.get<Exercise[]>(environment.BACKEND + '/training/get_exercises').pipe(
             switchMap((exercises: Exercise[]) => {
                 const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
                 if(!trainingState) {
@@ -54,14 +54,14 @@ export class NewTrainingService {
     }
 
     addTraining(trainingData: NewTraining): Observable<GeneralResponseData> {
-        return this.http.post<GeneralResponseData>(environment.BACKEND + '/handle_training', { trainingData: trainingData });
+        return this.http.post<GeneralResponseData>(environment.BACKEND + '/training/handle_training', { trainingData: trainingData });
     }
 
     updateTraining(
         trainingData: NewTraining,
         trainingId: string,
     ): Observable<GeneralResponseData> {
-        return this.http.put<GeneralResponseData>(environment.BACKEND + `/handle_training/${trainingId}`, { updatedTrainingData: trainingData });
+        return this.http.put<GeneralResponseData>(environment.BACKEND + `/training/handle_training/${trainingId}`, { updatedTrainingData: trainingData });
     }
 
     /**************************************** */
