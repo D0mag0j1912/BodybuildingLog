@@ -27,7 +27,7 @@ export class NewTrainingPipe implements PipeTransform {
         return this.newTrainingService.currentTrainingChanged$.pipe(
             take(1),
             switchMap((data: NewTraining) => {
-                value = of(data.exercise[index].availableExercises);
+                value = of(data.exercise[index]?.availableExercises);
                 return value as Observable<Exercise[]>;
             }),
         );

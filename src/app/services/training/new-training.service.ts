@@ -186,7 +186,7 @@ export class NewTrainingService {
         const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
         const allExercises: Exercise[] = JSON.parse(localStorage.getItem('allExercises'));
 
-        if(!trainingState || !allExercises) {
+        if (!trainingState || !allExercises) {
             return;
         }
         this.currentTrainingChanged$$.next({ ...trainingState });

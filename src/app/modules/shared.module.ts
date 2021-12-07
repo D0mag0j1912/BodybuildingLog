@@ -6,6 +6,7 @@ import { MaterialModule } from '../material.module';
 import { PipesModule } from '../pipes/pipes.module';
 import { ShowAllExercisesModule } from '../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NavigationService } from '../services/shared/navigation.service';
+import { NotFoundResolverService } from '../services/shared/not-found-resolver.service';
 import { SharedService } from '../services/shared/shared.service';
 import { NewTrainingService } from '../services/training/new-training.service';
 import { PastTrainingsService } from '../services/training/past-trainings.service';
@@ -65,6 +66,9 @@ const SERVICES = [
         DialogComponent,
         DeleteTrainingActionComponent,
     ],
-    providers: [ ...SERVICES ],
+    providers: [
+        ...SERVICES,
+        NotFoundResolverService,
+    ],
 })
 export class SharedModule {}

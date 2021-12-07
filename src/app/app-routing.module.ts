@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
+import { NotFoundResolverService } from './services/shared/not-found-resolver.service';
 import { LoginComponent } from './views/auth/login/login.component';
 import { SignupComponent } from './views/auth/signup/signup.component';
 import { NotFoundComponent } from './views/shared/not-found/not-found.component';
@@ -27,6 +28,7 @@ const routes: Routes = [
     {
         path: 'not-found',
         component: NotFoundComponent,
+        resolve: [NotFoundResolverService],
     },
     {
         path: '**',
