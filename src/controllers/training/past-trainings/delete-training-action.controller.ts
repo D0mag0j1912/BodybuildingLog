@@ -5,7 +5,7 @@ import { DeleteTrainingActionService } from 'src/services/training/training-acti
 import { AuthenticationGuard } from '../../../guards/authentication.guard';
 import { TrainingGuard } from '../../../guards/training.guard';
 
-@Controller('delete_training')
+@Controller('training/delete_training')
 @UseGuards(AuthenticationGuard)
 export class DeleteTrainingActionController {
 

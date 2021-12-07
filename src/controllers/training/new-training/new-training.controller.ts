@@ -13,7 +13,7 @@ import { GeneralResponseData } from '../../../models/common/response.model';
 import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
-@Controller('handle_training')
+@Controller('training/handle_training')
 @UseGuards(AuthenticationGuard)
 export class NewTrainingController {
 

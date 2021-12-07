@@ -3,7 +3,7 @@ import { Exercise } from 'src/models/training/exercise.model';
 import { NewTrainingService } from 'src/services/training/new-training.service';
 import { AuthenticationGuard } from '../../../guards/authentication.guard';
 
-@Controller('get_exercises')
+@Controller('training/get_exercises')
 @UseGuards(AuthenticationGuard)
 export class GetExercisesController {
 

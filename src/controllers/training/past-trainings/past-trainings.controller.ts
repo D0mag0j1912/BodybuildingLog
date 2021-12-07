@@ -5,7 +5,7 @@ import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-t
 import { PastTrainingsService } from 'src/services/training/past-trainings.service';
 import { AuthenticationGuard } from '../../../guards/authentication.guard';
 import { TrainingGuard } from '../../../guards/training.guard';
-@Controller('past_trainings')
+@Controller('training/past_trainings')
 @UseGuards(AuthenticationGuard)
 export class PastTrainingsController {
 
