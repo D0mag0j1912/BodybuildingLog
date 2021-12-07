@@ -19,10 +19,6 @@ const routes: Routes = [
         path: 'signup',
         component: SignupComponent,
     },
-    /* {
-        path: 'auth',
-        loadChildren: () => import('./modules/auth/auth.module').then(module => module.AuthModule),
-    }, */
     {
         path: 'training',
         loadChildren: () => import('./modules/training/training.module').then(module => module.TrainingModule),

@@ -9,7 +9,6 @@ import { SignupService } from '../../services/auth/signup.service';
 import { LoginComponent } from '../../views/auth/login/login.component';
 import { SignupComponent } from '../../views/auth/signup/signup.component';
 import { SharedModule } from '../shared.module';
-import { AuthRoutingModule } from './auth-routing.module';
 
 const COMPONENTS = [
     SignupComponent,
@@ -24,7 +23,6 @@ const EXTERNAL_IMPORTS = [
 
 const MY_IMPORTS = [
     MaterialModule,
-    /* AuthRoutingModule, */
     SharedModule,
 ];
 

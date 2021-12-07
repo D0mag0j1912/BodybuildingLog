@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from 'src/app/material.module';
 import { HeaderComponent } from '../views/navigation/header/header.component';
@@ -17,6 +18,7 @@ const EXTERNAL_IMPORTS = [
     TranslateModule,
     MaterialModule,
     FlexLayoutModule,
+    RouterModule,
 ];
 
 const IMPORTS = [AuthModule];
