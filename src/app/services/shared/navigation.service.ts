@@ -8,9 +8,10 @@ import { environment } from 'src/environments/environment';
 import { SNACK_BAR_DURATION } from '../../constants/snack-bar-duration.const';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Preferences } from '../../models/preferences.model';
+import { Language } from '../../models/preferences.model';
 import { AuthService } from '../auth/auth.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class NavigationService {
 
     constructor(
@@ -18,15 +19,15 @@ export class NavigationService {
         private readonly authService: AuthService,
         private readonly translateService: TranslateService,
         private readonly snackBar: MatSnackBar,
-    ){}
+    ) {}
 
     setPreferences(
         userId: string,
-        language: string,
+        language: Language,
         weightFormat: string,
     ): Observable<GeneralResponseData> {
         const preferences: Preferences = {
-            language: language,
+            language: language as Language,
             weightFormat: weightFormat,
         };
         return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${userId}`, { preferences: preferences }).pipe(

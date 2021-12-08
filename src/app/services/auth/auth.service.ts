@@ -8,6 +8,7 @@ import { Preferences } from 'src/app/models/preferences.model';
 import { environment } from '../../../environments/environment';
 import { Login, Signup } from '../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../models/auth/auth-data.model';
+import { Language } from '../../models/preferences.model';
 @Injectable()
 export class AuthService {
 
@@ -55,7 +56,7 @@ export class AuthService {
             confirmPassword,
         };
         const preferences: Preferences = {
-            language: language,
+            language: language as Language,
             weightFormat: weightFormat,
         };
         return this.http.post<AuthResponseData>(environment.BACKEND + '/signup', {

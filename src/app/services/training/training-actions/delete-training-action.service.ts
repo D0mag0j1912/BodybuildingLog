@@ -22,7 +22,7 @@ export class DeleteTrainingActionService implements TrainingActions {
         private readonly dialog: MatDialog,
         private readonly datePipe: DatePipe,
         private readonly translateService: TranslateService,
-    ){}
+    ) {}
 
     perform(data: DeleteTrainingActionData): void {
         this.openDeleteTrainingDialog(data);

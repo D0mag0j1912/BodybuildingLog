@@ -1,8 +1,8 @@
 <mat-nav-list>
     <a
         *ngIf="!(isAuthenticated$ | async)"
-        routerLink="/login"
         mat-list-item
+        routerLink="/login"
         (click)="onCloseSideNav()">
         <mat-icon class="icon">login</mat-icon>
         <span class="caption">
@@ -11,8 +11,8 @@
     </a>
     <a
         *ngIf="!(isAuthenticated$ | async)"
-        routerLink="/signup"
         mat-list-item
+        routerLink="/signup"
         (click)="onCloseSideNav()">
         <mat-icon class="icon">app_registration</mat-icon>
         <span class="caption">
@@ -21,8 +21,8 @@
     </a>
     <a
         *ngIf="isAuthenticated$ | async"
-        routerLink="/training/new-training"
         mat-list-item
+        routerLink="/training/new-training"
         (click)="onCloseSideNav()">
         <mat-icon class="icon">fitness_center</mat-icon>
         <span class="caption">
@@ -32,7 +32,7 @@
     <a
         *ngIf="isAuthenticated$ | async"
         mat-list-item
-        (click)="goToPastTrainings();onCloseSideNav()">
+        (click)="goToPastTrainings(); onCloseSideNav()">
         <mat-icon class="icon">history</mat-icon>
         <span class="caption">
             {{ 'navigation.past_trainings' | translate }}
@@ -49,11 +49,11 @@
             </span>
             <mat-menu #languages="matMenu">
                 <button
+                    mat-menu-item
                     class="menu-item"
                     [class.chosenLanguage]="userData?.preferences?.language === 'hr'"
-                    mat-menu-item
-                    (click)="changeLanguage('hr')"
-                    [disabled]="userData?.preferences?.language === 'hr'">
+                    [disabled]="userData?.preferences?.language === 'hr'"
+                    (click)="changeLanguage('hr')">
                     <img
                         src="../../../../assets/images/flags/croatia.png"
                         height="40"
@@ -63,11 +63,11 @@
                     </span>
                 </button>
                 <button
+                    mat-menu-item
                     class="menu-item"
                     [class.chosenLanguage]="userData?.preferences?.language === 'en'"
-                    mat-menu-item
-                    (click)="changeLanguage('en')"
-                    [disabled]="userData?.preferences?.language === 'en'">
+                    [disabled]="userData?.preferences?.language === 'en'"
+                    (click)="changeLanguage('en')">
                     <img
                         src="../../../../assets/images/flags/united-kingdom.png"
                         height="24"
@@ -80,9 +80,9 @@
         </a>
     </ng-container>
     <a
+        *ngIf="isAuthenticated$ | async"
         mat-list-item
-        (click)="onCloseSideNav();onLogout()"
-        *ngIf="isAuthenticated$ | async">
+        (click)="onCloseSideNav(); onLogout();">
         <mat-icon class="icon">logout</mat-icon>
         <span class="caption">
             {{ 'navigation.logout' | translate }}

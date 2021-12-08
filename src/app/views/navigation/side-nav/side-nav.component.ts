@@ -2,12 +2,13 @@ import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from
 import { Router } from '@angular/router';
 import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
-import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { switchMap, take, takeUntil } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { NavigationService } from 'src/app/services/shared/navigation.service';
 import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service';
 import { NewTrainingService } from 'src/app/services/training/new-training.service';
+import { Language } from '../../../models/preferences.model';
 @Component({
     selector: 'app-side-nav',
     templateUrl: './side-nav.component.html',
@@ -56,7 +57,7 @@ export class SideNavComponent implements OnInit {
         });
     }
 
-    changeLanguage(language: string): void {
+    changeLanguage(language: Language): void {
         this.authService.loggedUser$.pipe(
             take(1),
             switchMap((userData: AuthResponseData) =>

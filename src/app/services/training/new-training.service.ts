@@ -14,7 +14,7 @@ import { Set } from '../../models/training/shared/set.model';
 import { SingleExercise } from '../../models/training/shared/single-exercise.model';
 import { AuthService } from '../auth/auth.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class NewTrainingService {
 
     private readonly allExercisesChanged$$: BehaviorSubject<Exercise[]> = new BehaviorSubject<Exercise[]>([]);
@@ -32,7 +32,7 @@ export class NewTrainingService {
         return this.http.get<Exercise[]>(environment.BACKEND + '/training/get_exercises').pipe(
             switchMap((exercises: Exercise[]) => {
                 const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
-                if(!trainingState) {
+                if (!trainingState) {
                     return this.authService.loggedUser$.pipe(
                         take(1),
                         tap((authResponseData: AuthResponseData) => {
@@ -82,7 +82,7 @@ export class NewTrainingService {
         const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
         updatedTraining.exercise[indexExercise].sets.splice(indexSet, 1);
         updatedTraining.exercise[indexExercise].sets.map((set: Set) => {
-            if(set.setNumber > (indexSet + 1)) {
+            if (set.setNumber > (indexSet + 1)) {
                 set.setNumber--;
             }
         });
@@ -97,7 +97,7 @@ export class NewTrainingService {
         const updatedTraining: NewTraining = { ...currentTrainingState };
         updatedTraining.exercise.map((exercise: SingleExercise) => {
             const isDeletedExerciseInAE: Exercise = exercise.availableExercises.find((exercise: Exercise) => exercise._id === toBeAddedExercise[0]._id);
-            if(!isDeletedExerciseInAE) {
+            if (!isDeletedExerciseInAE) {
                 exercise.availableExercises.push(toBeAddedExercise[0] as Exercise);
                 exercise.availableExercises.sort(this.compare);
             }
@@ -175,7 +175,7 @@ export class NewTrainingService {
         updatedTraining.exercise[selectedIndex].exerciseName = selectedExercise;
         updatedTraining.exercise[selectedIndex].disabledTooltip = disabledTooltip;
         updatedTraining.exercise.forEach((exercise: SingleExercise, index: number) => {
-            if(index !== selectedIndex){
+            if (index !== selectedIndex){
                 exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.name !== selectedExercise);
             }
         });
@@ -199,7 +199,7 @@ export class NewTrainingService {
         userId?: string,
     ): void {
         let updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
-        if(restartAll) {
+        if (restartAll) {
             updatedTraining = {
                 ...EMPTY_TRAINING,
                 userId: userId,
@@ -240,10 +240,10 @@ export class NewTrainingService {
         a: Exercise,
         b: Exercise,
     ): number {
-        if(a.name < b.name) {
+        if (a.name < b.name) {
             return -1;
         }
-        if(a.name > b.name) {
+        if (a.name > b.name) {
             return 1;
         }
         return 0;
