@@ -8,7 +8,7 @@ import { Preferences } from 'src/app/models/preferences.model';
 import { environment } from '../../../environments/environment';
 import { Login, Signup } from '../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../models/auth/auth-data.model';
-import { Language } from '../../models/preferences.model';
+import { Language, WeightFormat } from '../../models/preferences.model';
 @Injectable()
 export class AuthService {
 
@@ -34,18 +34,21 @@ export class AuthService {
     updateUserData(preferences?: Preferences): void {
         //TODO: Ovdje treba pokupiti podatke iz Subjecta, a ne LS
         const userData: AuthResponseData = JSON.parse(localStorage.getItem('userData'));
-        const updatedUserData: AuthResponseData = {...userData, preferences: {
-            userId: preferences.userId,
-            language: preferences.language,
-            weightFormat: 'kg',
-        }};
+        const updatedUserData: AuthResponseData = {
+            ...userData,
+            preferences: {
+                userId: preferences.userId,
+                language: preferences.language,
+                weightFormat: 'kg',
+            } as Preferences,
+        };
         this.loggedUser$$.next({ ...updatedUserData });
         localStorage.setItem('userData', JSON.stringify({ ...updatedUserData }));
     }
 
     signup(
         language: Language,
-        weightFormat: string,
+        weightFormat: WeightFormat,
         email: string,
         password: string,
         confirmPassword: string,
@@ -55,7 +58,7 @@ export class AuthService {
             password,
             confirmPassword,
         };
-        const preferences: Preferences = {
+        const preferences: Partial<Preferences> = {
             language: language,
             weightFormat: weightFormat,
         };

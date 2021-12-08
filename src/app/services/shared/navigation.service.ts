@@ -7,7 +7,7 @@ import { switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { SNACK_BAR_DURATION } from '../../constants/snack-bar-duration.const';
 import { GeneralResponseData } from '../../models/general-response.model';
-import { Preferences } from '../../models/preferences.model';
+import { Preferences, WeightFormat } from '../../models/preferences.model';
 import { Language } from '../../models/preferences.model';
 import { AuthService } from '../auth/auth.service';
 
@@ -24,9 +24,9 @@ export class NavigationService {
     setPreferences(
         userId: string,
         language: Language,
-        weightFormat: string,
+        weightFormat: WeightFormat,
     ): Observable<GeneralResponseData> {
-        const preferences: Preferences = {
+        const preferences: Partial<Preferences> = {
             language: language,
             weightFormat: weightFormat,
         };

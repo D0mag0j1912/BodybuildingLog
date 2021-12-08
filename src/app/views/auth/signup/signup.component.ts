@@ -7,14 +7,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { SNACK_BAR_DURATION } from '../../../constants/snack-bar-duration.const';
-import { Language } from '../../../models/preferences.model';
+import { Language, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SignupService } from '../../../services/auth/signup.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
 
 type FormData = {
     language?: Language;
-    weightFormat?: string;
+    weightFormat?: WeightFormat;
     email?: string;
     password?: string;
     confirmPassword?: string;
@@ -82,7 +82,7 @@ export class SignupComponent {
 
         this.authService.signup(
             this.accessFormData('language').value as Language,
-            this.accessFormData('weightFormat').value as string,
+            this.accessFormData('weightFormat').value as WeightFormat,
             this.accessFormData('email').value as string,
             this.accessFormData('password').value as string,
             this.accessFormData('confirmPassword').value as string,
