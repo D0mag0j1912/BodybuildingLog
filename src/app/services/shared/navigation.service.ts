@@ -27,7 +27,7 @@ export class NavigationService {
         weightFormat: string,
     ): Observable<GeneralResponseData> {
         const preferences: Preferences = {
-            language: language as Language,
+            language: language,
             weightFormat: weightFormat,
         };
         return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${userId}`, { preferences: preferences }).pipe(

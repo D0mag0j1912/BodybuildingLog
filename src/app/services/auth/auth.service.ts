@@ -44,7 +44,7 @@ export class AuthService {
     }
 
     signup(
-        language: string,
+        language: Language,
         weightFormat: string,
         email: string,
         password: string,
@@ -56,7 +56,7 @@ export class AuthService {
             confirmPassword,
         };
         const preferences: Preferences = {
-            language: language as Language,
+            language: language,
             weightFormat: weightFormat,
         };
         return this.http.post<AuthResponseData>(environment.BACKEND + '/signup', {
