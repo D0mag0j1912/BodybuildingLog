@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { AuthResponse } from 'src/models/auth/auth-response.model';
 import { LoginDto } from 'src/models/auth/login.model';
 import { AuthService } from 'src/services/auth/auth.service';
@@ -11,6 +11,8 @@ export class LoginController {
         private readonly authService: AuthService,
     ) {}
 
+    //TODO
+    /* @ApiCreatedResponse({ type: LoginDto }) */
     @Post()
     async login(@Body() loginDto: LoginDto): Promise<AuthResponse> {
         return this.authService.login(loginDto);

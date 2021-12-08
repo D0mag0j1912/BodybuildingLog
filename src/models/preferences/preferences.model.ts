@@ -3,6 +3,7 @@ import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 
 export type Language = 'hr' | 'en';
+export type WeightFormat = 'lbs' | 'kg';
 
 export const PREFERENCES_SCHEMA = new Schema({
     language: {
@@ -36,5 +37,5 @@ export class PreferencesDto {
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.weight_format_required' })
-    weightFormat: string;
+    weightFormat: WeightFormat;
 }
