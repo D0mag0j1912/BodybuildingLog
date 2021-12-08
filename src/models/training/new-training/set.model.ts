@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
     IsMongoId,
     IsNumber,
@@ -25,11 +26,13 @@ export const SET_SCHEMA = new Schema({
 
 export class Set {
     
+    @ApiProperty({ required: false })
     @IsOptional()
     @IsString()
     @IsMongoId()
     _id: string;
 
+    @ApiProperty()
     @Min(1,
         { message: '@training.new_training.errors.error_save_training' },
     )
@@ -44,6 +47,7 @@ export class Set {
     )
     setNumber: number;
 
+    @ApiProperty()
     @Min(1, {
         message: '@training.new_training.errors.weight_lifted_min',
     })
@@ -58,6 +62,7 @@ export class Set {
     })
     weightLifted: number;
 
+    @ApiProperty()
     @Min(1, {
         message: '@training.new_training.errors.reps_min',
     })

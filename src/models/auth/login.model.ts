@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
     IsDefined,
     IsEmail,
@@ -24,12 +25,14 @@ export const USER_SCHEMA = new Schema({
 USER_SCHEMA.plugin(uniqueValidator);
 
 export class LoginDto {
-
+    
+    @ApiProperty({ required: false })
     @IsOptional()
     @IsDefined()
     @IsMongoId()
     _id: string;
     
+    @ApiProperty()
     @IsEmail({}, {
         message: 'auth.errors.invalid_email',
     })
@@ -38,6 +41,7 @@ export class LoginDto {
     })
     email: string;
 
+    @ApiProperty()
     @Length(6, 20, {
         message: 'auth.errors.password_length',
     })

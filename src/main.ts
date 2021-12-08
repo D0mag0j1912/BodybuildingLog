@@ -1,5 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap(): Promise<void> {
@@ -10,6 +11,15 @@ async function bootstrap(): Promise<void> {
         methods: ['GET', 'POST', 'DELETE', 'OPTIONS', 'PUT'],
     });
     app.useGlobalPipes(new ValidationPipe({ skipMissingProperties: true }));
+    /*Swagger documentation */
+    const config: Omit<OpenAPIObject, 'paths'> = new DocumentBuilder()
+        .setTitle('NestJS API')
+        .setDescription('Description for API of my training log application')
+        .setVersion('1.0')
+        .build();
+    const document: OpenAPIObject = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('/', app, document);
+    
     await app.listen(3000);
 }
 bootstrap();

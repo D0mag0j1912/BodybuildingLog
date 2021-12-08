@@ -1,3 +1,3 @@
 export interface GeneralResponseData {
-    message: string;
+    readonly message: string;
 }

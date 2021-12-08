@@ -6,6 +6,7 @@ import {
     Put,
     Req,
     UseGuards} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthenticationGuard } from '../../../guards/authentication.guard';
 import { TrainingGuard } from '../../../guards/training.guard';
@@ -13,6 +14,7 @@ import { GeneralResponseData } from '../../../models/common/response.model';
 import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
+@ApiTags('Training')
 @Controller('training/handle_training')
 @UseGuards(AuthenticationGuard)
 export class NewTrainingController {

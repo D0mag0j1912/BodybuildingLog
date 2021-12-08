@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
     IsDefined,
     IsMongoId,
@@ -22,19 +23,23 @@ export const EXERCISE_SCHEMA = new Schema({
 
 export class Exercise {
 
+    @ApiProperty({ required: false })
     @IsOptional()
     @IsString()
     @IsMongoId()
     _id: number;
 
+    @ApiProperty()
     @IsDefined()
     @IsString()
     name: string;
 
+    @ApiProperty()
     @IsDefined()
     @IsString()
     imageUrl: string;
 
+    @ApiProperty()
     @IsDefined()
     @IsString()
     primaryMuscleGroup: string;

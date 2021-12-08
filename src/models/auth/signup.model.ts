@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
     IsEmail,
     IsNotEmpty,
@@ -6,6 +7,7 @@ import {
 
 export class SignupDto {
 
+    @ApiProperty()
     @IsEmail({}, {
         message: 'auth.errors.invalid_email',
     })
@@ -14,6 +16,7 @@ export class SignupDto {
     })
     email: string;
 
+    @ApiProperty()
     @Length(6, 20, {
         message: 'auth.errors.password_length',
     })
@@ -25,6 +28,7 @@ export class SignupDto {
     })
     password: string;
 
+    @ApiProperty()
     @Length(6, 20, {
         message: 'auth.errors.confirm_password_length',
     })

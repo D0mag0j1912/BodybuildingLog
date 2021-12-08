@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
     IsBoolean,
@@ -33,20 +34,24 @@ export const NEW_TRAINING_SCHEMA = new Schema({
 
 export class NewTrainingDto {
 
+    @ApiProperty({ required: false })
     @IsOptional()
     @IsString({ message: '@training.new_training.errors.error_save_training' })
     @IsDefined({ message: '@training.new_training.errors.error_save_training' })
     @IsMongoId()
     _id: string;
 
+    @ApiProperty()
     @ValidateNested({ each: true })
     @Type(() => SingleExercise)
     exercise: SingleExercise[];
 
+    @ApiProperty()
     @IsBoolean({ message: '@training.new_training.errors.error_save_training' })
     @IsDefined()
     editMode: boolean;
 
+    @ApiProperty({ required: false })
     @IsOptional()
     @IsNumber({}, {
         message: '@training.new_training.errors.bodyweight_number',
@@ -59,17 +64,21 @@ export class NewTrainingDto {
     })
     bodyweight: number;
 
+    @ApiProperty({ required: false })
     @IsOptional()
     @IsDateString({}, {
         message: '@common.errors.invalid_date',
     })
     createdAt: Date;
 
+    @ApiProperty({ required: false })
     @IsOptional()
     @IsDateString({}, {
         message: '@common.errors.invalid_date',
     })
     updatedAt: Date;
 
-    @IsNotEmpty({ message: '@common.errors.not_authenticated' }) userId: string;
+    @ApiProperty()
+    @IsNotEmpty({ message: '@common.errors.not_authenticated' })
+    userId: string;
 }

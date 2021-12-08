@@ -1,10 +1,12 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthResponse } from 'src/models/auth/auth-response.model';
 import { SignupDto } from 'src/models/auth/signup.model';
 import { PreferencesDto } from 'src/models/preferences/preferences.model';
 import { AuthService } from 'src/services/auth/auth.service';
 import { ConfirmPasswordGuard } from '../../../guards/confirm-password.guard';
 
+@ApiTags('Authentication')
 @Controller('signup')
 export class SignupController {
 

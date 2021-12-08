@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
     IsBoolean,
@@ -38,30 +39,35 @@ export const SINGLE_EXERCISE_SCHEMA = new Schema({
 
 export class SingleExercise {
 
+    @ApiProperty({ required: false })
     @IsOptional()
     @IsString()
     @IsMongoId()
     _id: string;
 
+    @ApiProperty()
     @IsString({ message: '@training.new_training.errors.exercise_name_string' })
     @IsNotEmpty({ message: '@training.new_training.errors.exercise_name_required' })
     exerciseName: string;
 
+    @ApiProperty()
     @ValidateNested({ each: true })
     @Type(() => Set)
     sets: Set[];
 
-    @IsNumber(
-        {},
+    @ApiProperty()
+    @IsNumber({},
         { message: '@training.new_training.errors.total_numerical' },
     )
     @IsNotEmpty({ message: '@training.new_training.errors.error_save_training' })
     total: number;
 
+    @ApiProperty()
     @IsBoolean({ message: '@training.new_training.errors.error_save_training' })
     @IsNotEmpty({ message: '@training.new_training.errors.error_save_training' })
     disabledTooltip: boolean;
 
+    @ApiProperty()
     @ValidateNested({ each: true })
     @Type(() => Exercise)
     availableExercises: Exercise[];
