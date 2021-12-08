@@ -2,6 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 
+export type Language = 'hr' | 'en';
+
 export const PREFERENCES_SCHEMA = new Schema({
     language: {
         type: String,
@@ -29,7 +31,7 @@ export class PreferencesDto {
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.language_required' })
-    language: string;
+    language: Language;
 
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
