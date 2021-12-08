@@ -1,5 +1,5 @@
 import { BadRequestException, Controller, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { NewTrainingDto } from 'src/models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings-response.model';
@@ -29,6 +29,7 @@ export class PastTrainingsController {
         );
     }
 
+    @ApiCreatedResponse({ type: NewTrainingDto })
     @Get(':id')
     @UseGuards(new TrainingGuard('training.past_trainings.errors.get_training_error'))
     async getPastTraining(@Param('id') trainingId: string): Promise<NewTrainingDto> {
