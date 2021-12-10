@@ -10,7 +10,7 @@ import { FormSetData } from '../../../../models/training/shared/set.model';
 import { SetFormValidationErrors } from '../../../../models/training/shared/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as CommonValidators from '../../../../validators/shared/common.validators';
-import * as SetValidators from '../../../../validators/shared/set.validators';
+import * as SetValidators from '../../../../validators/training/set.validators';
 
 @Component({
     selector: 'app-sets',
