@@ -3,10 +3,10 @@ import { AbstractControl, FormArray, ValidationErrors, ValidatorFn } from '@angu
 export function checkDuplicateExerciseName(array: FormArray): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
         if (control) {
-            const exerciseName: string = (control.value as string).trim();
+            const exerciseName: string = (control.value as string)?.trim();
             for (const group of (array as FormArray).controls) {
-                if ((group.get('name').value as string).trim() === exerciseName) {
-                    return { 'duplicate': true };
+                if ((group.get('name').value as string)?.trim() === exerciseName) {
+                    return { 'duplicateExerciseName': true };
                 }
             }
             return null;

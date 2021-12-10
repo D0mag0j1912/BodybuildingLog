@@ -18,6 +18,7 @@ import { SingleExercise } from '../../../../models/training/shared/single-exerci
 import { FormSingleExerciseData } from '../../../../models/training/shared/single-exercise.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../../services/training/new-training.service';
+import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { EditData } from '../../../../views/training/new-training/new-training.component';
 import { DeleteExerciseDialogData, DialogComponent, DialogData } from '../../dialog/dialog.component';
 
@@ -157,11 +158,14 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     addExercise(clicked?: MouseEvent): void {
         this.form.push(new FormGroup({
-            'name': new FormControl(null, [Validators.required]),
+            'name': new FormControl(null),
             'sets': new FormControl(createInitialSet()),
             'total': new FormControl(INITIAL_WEIGHT.toString() + ` ${WEIGHT_FORMAT}`, [Validators.required]),
             'disabledTooltip': new FormControl(true, [Validators.required]),
         }));
+        const lastAddedIndex: number = this.getExercises().length - 1;
+        this.accessFormField('name', lastAddedIndex).setValidators([Validators.required, SingleExerciseValidators.checkDuplicateExerciseName(this.form)]);
+        this.accessFormField('name', lastAddedIndex).updateValueAndValidity();
 
         if(clicked) {
             this.newTrainingService.addNewExercise(this.getAlreadyUsedExercises() as string[]);

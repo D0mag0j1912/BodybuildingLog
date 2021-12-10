@@ -90,6 +90,7 @@
                 "bodyweight_max": "Bodyweight needs to be less than 300.",
                 "exercise_name_required": "Exercise name is required.",
                 "exercise_name_string": "Exercise name must be text.",
+                "exercise_name_duplicate": "Exercise name must be unique value.",
                 "at_least_one_set": "At least one set is required.",
                 "weight_lifted_required": "Weight lifted value is required.",
                 "weight_lifted_number": "Weight lifted value must be number.",
