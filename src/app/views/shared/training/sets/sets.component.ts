@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
@@ -57,16 +57,28 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     @Output()
     readonly formStateChanged: EventEmitter<SetFormValidationErrors[]> = new EventEmitter<SetFormValidationErrors[]>();
 
+    @ViewChild('submitBtn', {
+        read: ElementRef,
+    })
+    submitBtn: ElementRef;
+
     constructor(
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
-        private readonly changeDetectorRef: ChangeDetectorRef,
     ) {}
 
     ngOnInit(): void {
         this.form.setValidators([SetValidators.allSetsFilled(), SetValidators.isFirstSetValid()]);
         this.form.updateValueAndValidity();
         this.formStateChanged.emit(this.formErrors);
+
+        this.isExerciseFormSubmitted$.pipe(
+            takeUntil(this.unsubscribeService),
+        ).subscribe((isSubmitted: boolean) => {
+            if (isSubmitted) {
+                (this.submitBtn?.nativeElement as HTMLButtonElement).click();
+            }
+        });
 
         this.exerciseNameControl.valueChanges.pipe(
             takeUntil(this.unsubscribeService),

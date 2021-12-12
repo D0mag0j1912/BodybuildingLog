@@ -44,9 +44,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     readonly exercises$: Observable<Exercise[]>;
 
     readonly form: FormArray = new FormArray([]);
-    setErrors: SetFormValidationErrors[] = [];
     readonly formErrorStateMatcher: FormErrorStateMatcher = new FormErrorStateMatcher();
-
+    setErrors: SetFormValidationErrors[] = [];
     private formTrainingState: NewTraining;
 
     exerciseChanged: boolean = false;
