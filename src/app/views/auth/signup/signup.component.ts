@@ -36,7 +36,7 @@ type FormData = {
 export class SignupComponent {
 
     form: FormGroup;
-    formErrorStateMatcher: FormErrorStateMatcher = new FormErrorStateMatcher();
+    readonly formErrorStateMatcher: FormErrorStateMatcher = new FormErrorStateMatcher();
 
     isLoading: boolean = false;
 

@@ -16,13 +16,14 @@
                         matInput
                         type="text"
                         formControlName="weightLifted"
+                        [errorStateMatcher]="formErrorStateMatcher"
                         (input)="onChangeSets(j)"
                         (blur)="onTouched()">
-                    <mat-hint
-                        *ngIf="set.errors?.weightLiftedRequired && exerciseNameControl?.value && (isExerciseFormSubmitted$ | async)"
+                    <mat-error
+                        *ngIf="(set.errors?.weightLiftedRequired && exerciseNameControl?.value) || (isExerciseFormSubmitted$ | async)"
                         class="sets-weight-lifted--error">
                         {{ 'training.new_training.errors.weight_lifted_required' | translate }}
-                    </mat-hint>
+                    </mat-error>
                     <mat-hint
                         *ngIf="form.errors?.firstSetNotEntered && (isExerciseFormSubmitted$ | async) && !set.errors?.weightLiftedRequired
                             && !set.errors?.weightLiftedRequired && !set.errors?.repsRequired"
@@ -61,7 +62,7 @@
                         (input)="onChangeSets(j);"
                         (blur)="onTouched()">
                     <mat-hint
-                        *ngIf="set.errors?.repsRequired && exerciseNameControl?.value && j === 0 && (isExerciseFormSubmitted$ | async)"
+                        *ngIf="(set.errors?.repsRequired && exerciseNameControl?.value) || (isExerciseFormSubmitted$ | async)"
                         class="sets-reps--error">
                         {{ 'training.new_training.errors.reps_required' | translate }}
                     </mat-hint>
