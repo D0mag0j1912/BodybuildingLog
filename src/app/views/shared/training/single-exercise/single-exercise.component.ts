@@ -9,6 +9,7 @@ import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from
 import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { SNACK_BAR_DURATION } from '../../../../constants/snack-bar-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
+import { FormErrorStateMatcher } from '../../../../helpers/form-error-state-matcher.helper';
 import { WeightFormat } from '../../../../models/preferences.model';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
@@ -44,6 +45,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     form: FormArray = new FormArray([]);
     setErrors: SetFormValidationErrors[] = [];
+    formErrorStateMatcher: FormErrorStateMatcher = new FormErrorStateMatcher();
 
     private formTrainingState: NewTraining;
 
@@ -67,7 +69,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         read: MatSelect,
     })
     set exerciseNameChoice(exerciseName: MatSelect) {
-        if(exerciseName) {
+        if (exerciseName) {
             this.newTrainingService.currentTrainingChanged$.pipe(
                 take(1),
                 switchMap((currentTrainingState: NewTraining) =>
@@ -105,13 +107,16 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly dialog: MatDialog,
         private readonly snackBar: MatSnackBar,
-    ) {}
+    ) {
+        this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName()]);
+        this.form.updateValueAndValidity();
+    }
 
     writeValue(data: NewTraining): void {
-        if(data.exercise.length > 0) {
+        if (data.exercise.length > 0) {
             (data.exercise as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
                 this.addExercise();
-                if(exercise.exerciseName){
+                if (exercise.exerciseName){
                     this.accessFormField('name', indexExercise).patchValue(exercise.exerciseName as string);
                     this.accessFormField('sets', indexExercise).patchValue(exercise.sets as Set[]);
                     this.accessFormField('total', indexExercise).patchValue(exercise.total ? exercise.total.toString() + ` ${WEIGHT_FORMAT}` : `0 ${WEIGHT_FORMAT}`);
@@ -139,7 +144,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         indexExercise: number,
         element: MatSelect,
     ): void {
-        if($event.value) {
+        if ($event.value) {
             this.exerciseChanged = !this.exerciseChanged;
             this.exerciseStateChanged$$.next();
             this.setExerciseNameTooltip(
@@ -158,16 +163,13 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     addExercise(clicked?: MouseEvent): void {
         this.form.push(new FormGroup({
-            'name': new FormControl(null),
+            'name': new FormControl(null, [Validators.required]),
             'sets': new FormControl(createInitialSet()),
             'total': new FormControl(INITIAL_WEIGHT.toString() + ` ${WEIGHT_FORMAT}`, [Validators.required]),
             'disabledTooltip': new FormControl(true, [Validators.required]),
         }));
-        const lastAddedIndex: number = this.getExercises().length - 1;
-        this.accessFormField('name', lastAddedIndex).setValidators([Validators.required, SingleExerciseValidators.checkDuplicateExerciseName(this.form)]);
-        this.accessFormField('name', lastAddedIndex).updateValueAndValidity();
 
-        if(clicked) {
+        if (clicked) {
             this.newTrainingService.addNewExercise(this.getAlreadyUsedExercises() as string[]);
             this.exerciseStateChanged$$.next();
         }
@@ -333,7 +335,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         }
         this.isLoading = true;
 
-        this.gatherAllFormData().pipe(
+        /* this.gatherAllFormData().pipe(
             switchMap(_ => {
                 if (this.editMode) {
                     return this.newTrainingService.updateTraining(
@@ -354,7 +356,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 duration: SNACK_BAR_DURATION.GENERAL,
                 panelClass: 'app__snackbar',
             });
-        });
+        }); */
     }
 
     private gatherAllFormData(): Observable<Exercise[]> {

@@ -1,12 +1,15 @@
 import { AbstractControl, FormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export function checkDuplicateExerciseName(array: FormArray): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-        if (control) {
-            const exerciseName: string = (control.value as string)?.trim();
+export function checkDuplicateExerciseName(): ValidatorFn {
+    return (array: AbstractControl): ValidationErrors | null => {
+        if (array) {
+            const exerciseNames: string[] = [];
             for (const group of (array as FormArray).controls) {
-                if ((group.get('name').value as string)?.trim() === exerciseName) {
-                    return { 'duplicateExerciseName': true };
+                if (exerciseNames.indexOf(group.get('name')?.value) !== -1) {
+                    return { 'duplicateExerciseName': group.get('name').value };
+                }
+                else {
+                    exerciseNames.push(group.get('name')?.value);
                 }
             }
             return null;

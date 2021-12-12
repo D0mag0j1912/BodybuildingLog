@@ -34,17 +34,17 @@
                             </mat-option>
                         </mat-optgroup>
                     </mat-select>
-                    <mat-error *ngIf="(accessFormField('name', i).touched || accessFormField('name', i).dirty) || (isSubmitted$$ | async)">
+                    <mat-error>
                         <mat-error
                             *ngIf="accessFormField('name', i).errors?.required"
                             class="error">
                             {{ 'training.new_training.errors.exercise_name_required' | translate }}
                         </mat-error>
-                        <mat-error
-                            *ngIf="!accessFormField('name', i).errors?.required && accessFormField('name', i).errors?.duplicateExerciseName"
-                            class="error">
-                            {{ 'training.new_training.errors.exercise_name_duplicate' | translate }}
-                        </mat-error>
+                    </mat-error>
+                    <mat-error
+                        *ngIf="form.errors?.duplicateExerciseName && form.errors?.duplicateExerciseName === accessFormField('name', i).value"
+                        class="error">
+                        {{ 'training.new_training.errors.exercise_name_duplicate' | translate }}
                     </mat-error>
                 </mat-form-field>
                 <div

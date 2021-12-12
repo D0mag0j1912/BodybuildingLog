@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { SNACK_BAR_DURATION } from '../../../constants/snack-bar-duration.const';
+import { FormErrorStateMatcher } from '../../../helpers/form-error-state-matcher.helper';
 import { Language, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SignupService } from '../../../services/auth/signup.service';
@@ -35,6 +36,7 @@ type FormData = {
 export class SignupComponent {
 
     form: FormGroup;
+    formErrorStateMatcher: FormErrorStateMatcher = new FormErrorStateMatcher();
 
     isLoading: boolean = false;
 
@@ -71,7 +73,7 @@ export class SignupComponent {
     }
 
     onSubmit(): void {
-        if(!this.form.valid){
+        if (!this.form.valid) {
             this.snackBar.open(this.translateService.instant('auth.errors.invalid_form'), null, {
                 duration: SNACK_BAR_DURATION.ERROR,
                 panelClass: 'app__snackbar-error',
@@ -92,7 +94,7 @@ export class SignupComponent {
                 this.changeDetectorRef.markForCheck();
             }),
         ).subscribe(async (response: AuthResponseData) => {
-            if(response.success){
+            if (response.success) {
                 this.snackBar.open(this.translateService.instant(response.message as string), null, {
                     duration: SNACK_BAR_DURATION.GENERAL,
                     panelClass: response.success ? 'app__snackbar' : 'app__snackbar-error',

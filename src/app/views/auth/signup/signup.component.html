@@ -116,7 +116,8 @@
                 matInput
                 type="password"
                 formControlName="confirmPassword"
-                #inputConfirmPassword>
+                #inputConfirmPassword
+                [errorStateMatcher]="formErrorStateMatcher">
             <mat-hint>{{ inputConfirmPassword.value?.length || 0 }} / 6</mat-hint>
             <mat-error
                 *ngIf="accessFormData('confirmPassword').errors?.required"
@@ -129,14 +130,13 @@
                 class="error">
                 {{ 'auth.errors.password_length' | translate }}
             </mat-error>
-            <mat-hint
-                align="end"
+            <mat-error
                 *ngIf="form.errors?.equalPass
                     && !accessFormData('confirmPassword').errors?.minlength
                     && !accessFormData('confirmPassword').errors?.maxlength"
                 class="error">
                 {{ 'auth.errors.equal_passwords' | translate }}
-            </mat-hint>
+            </mat-error>
         </mat-form-field>
         <button
             mat-raised-button
