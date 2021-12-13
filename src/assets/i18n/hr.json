@@ -91,7 +91,7 @@
                 "bodyweight_max": "Tjelesna težina mora biti manja od 300.",
                 "exercise_name_required": "Naziv vježbe je obvezan za unos.",
                 "exercise_name_string": "Naziv vježbe mora biti tekstualnog formata.",
-                "exercise_name_duplicate": "Naziv vježbe mora biti jedinstvena vrijednost.",
+                "exercise_name_duplicate": "Naziv vježbe je dupliciran.",
                 "at_least_one_set": "Morate unijeti barem jedan set.",
                 "weight_lifted_required": "Kilaža je obvezna za unos.",
                 "weight_lifted_number": "Vrijednost kilaže mora biti broj.",

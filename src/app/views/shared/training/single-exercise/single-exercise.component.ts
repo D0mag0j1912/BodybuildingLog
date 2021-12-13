@@ -143,9 +143,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         indexExercise: number,
         element: MatSelect,
     ): void {
+        if (this.form?.errors?.duplicateExerciseName) {
+            return;
+        }
         if ($event.value) {
-            this.exerciseChanged = !this.exerciseChanged;
-            this.exerciseStateChanged$$.next();
             this.setExerciseNameTooltip(
                 element as MatSelect,
                 indexExercise as number,
@@ -155,6 +156,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     indexExercise as number,
                     this.accessFormField('disabledTooltip', indexExercise).value as boolean,
                 );
+                this.exerciseChanged = !this.exerciseChanged;
+                this.exerciseStateChanged$$.next();
                 this.changeDetectorRef.markForCheck();
             });
         }
@@ -334,7 +337,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         }
         this.isLoading = true;
 
-        /* this.gatherAllFormData().pipe(
+        this.gatherAllFormData().pipe(
             switchMap(_ => {
                 if (this.editMode) {
                     return this.newTrainingService.updateTraining(
@@ -355,7 +358,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 duration: SNACK_BAR_DURATION.GENERAL,
                 panelClass: 'app__snackbar',
             });
-        }); */
+        });
     }
 
     private gatherAllFormData(): Observable<Exercise[]> {
@@ -420,7 +423,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 }
                 else {
                     const width: number = ((element._elementRef.nativeElement as HTMLParagraphElement).querySelector('.mat-select-value-text') as HTMLSpanElement)?.offsetWidth;
-
                     if (width > MAX_EXERCISE_NAME_WIDTH) {
                         this.accessFormField('disabledTooltip', indexExercise ? indexExercise : 0)?.patchValue(false);
                     }
@@ -428,6 +430,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         this.accessFormField('disabledTooltip', indexExercise ? indexExercise : 0)?.patchValue(true);
                     }
                 }
+                this.changeDetectorRef.markForCheck();
             }),
         );
     }

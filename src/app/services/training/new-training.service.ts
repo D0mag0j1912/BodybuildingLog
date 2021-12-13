@@ -175,7 +175,7 @@ export class NewTrainingService {
         updatedTraining.exercise[selectedIndex].exerciseName = selectedExercise;
         updatedTraining.exercise[selectedIndex].disabledTooltip = disabledTooltip;
         updatedTraining.exercise.forEach((exercise: SingleExercise, index: number) => {
-            if (index !== selectedIndex){
+            if (index !== selectedIndex) {
                 exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.name !== selectedExercise);
             }
         });

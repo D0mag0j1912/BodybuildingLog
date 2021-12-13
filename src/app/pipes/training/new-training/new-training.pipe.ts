@@ -24,36 +24,27 @@ export class NewTrainingPipe implements PipeTransform {
         index: number,
         exerciseChanged: boolean)
         : Observable<Exercise[]> {
-        return this.newTrainingService.currentTrainingChanged$.pipe(
-            take(1),
-            switchMap((data: NewTraining) => {
-                value = of(data.exercise[index]?.availableExercises);
-                return value as Observable<Exercise[]>;
-            }),
-        );
-        /* return this.route.params.pipe(
+        return this.route.params.pipe(
             switchMap((params: Params) => {
-                if(!params['id']){
+                if (!params['id']) {
                     return this.newTrainingService.currentTrainingChanged$.pipe(
                         take(1),
                         switchMap((data: NewTraining) => {
                             value = of(data.exercise[index].availableExercises);
                             return value;
-                        })
+                        }),
                     );
                 }
                 else {
                     return this.pastTrainingService.getPastTraining(params['id']).pipe(
-                        switchMap((response: PastTrainingByIdResponse) => {
-                            console.log(response.training.exercise);
-                            console.log(index);
-                            value = of(response.training.exercise[index].availableExercises);
+                        switchMap((response: NewTraining) => {
+                            value = of(response.exercise[index]?.availableExercises);
                             return value;
-                        })
+                        }),
                     );
                 }
-            })
-        ); */
+            }),
+        );
     }
 
 }
