@@ -143,23 +143,28 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         indexExercise: number,
         element: MatSelect,
     ): void {
-        if (this.form?.errors?.duplicateExerciseName) {
-            return;
-        }
         if ($event.value) {
-            this.setExerciseNameTooltip(
-                element as MatSelect,
-                indexExercise as number,
-            ).subscribe(_ => {
-                this.newTrainingService.updateExerciseChoices(
-                    $event.value as string,
+            if (this.form?.errors?.duplicateExerciseName) {
+                this.setExerciseNameTooltip(
+                    element as MatSelect,
                     indexExercise as number,
-                    this.accessFormField('disabledTooltip', indexExercise).value as boolean,
-                );
-                this.exerciseChanged = !this.exerciseChanged;
-                this.exerciseStateChanged$$.next();
-                this.changeDetectorRef.markForCheck();
-            });
+                ).subscribe();
+            }
+            else {
+                this.setExerciseNameTooltip(
+                    element as MatSelect,
+                    indexExercise as number,
+                ).subscribe(_ => {
+                    this.newTrainingService.updateExerciseChoices(
+                        $event.value as string,
+                        indexExercise as number,
+                        this.accessFormField('disabledTooltip', indexExercise).value as boolean,
+                    );
+                    this.exerciseChanged = !this.exerciseChanged;
+                    this.exerciseStateChanged$$.next();
+                    this.changeDetectorRef.markForCheck();
+                });
+            }
         }
     }
 
