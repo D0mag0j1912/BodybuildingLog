@@ -18,7 +18,7 @@
                     <mat-select
                         #exerciseNameChoice
                         formControlName="name"
-                        [errorStateMatcher]="singleExerciseErrorHelper"
+                        [errorStateMatcher]="form.errors?.duplicateExerciseName === accessFormField('name', i).value ? singleExerciseErrorHelper : null"
                         (selectionChange)="onExerciseNameChange($event, i, exerciseNameChoice)">
                         <mat-optgroup
                             *ngFor="let exercise of exercises$ | newTraining:i:exerciseChanged | async"
