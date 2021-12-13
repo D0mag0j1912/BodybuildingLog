@@ -9,7 +9,7 @@ import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from
 import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { SNACK_BAR_DURATION } from '../../../../constants/snack-bar-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { FormErrorStateMatcher } from '../../../../helpers/form-error-state-matcher.helper';
+import { SingleExerciseErrorHelper } from '../../../../helpers/mat-error/single-exercise-error.helper';
 import { WeightFormat } from '../../../../models/preferences.model';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
@@ -44,7 +44,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     readonly exercises$: Observable<Exercise[]>;
 
     readonly form: FormArray = new FormArray([]);
-    readonly formErrorStateMatcher: FormErrorStateMatcher = new FormErrorStateMatcher();
+    readonly singleExerciseErrorHelper: SingleExerciseErrorHelper = new SingleExerciseErrorHelper();
     setErrors: SetFormValidationErrors[] = [];
     private formTrainingState: NewTraining;
 

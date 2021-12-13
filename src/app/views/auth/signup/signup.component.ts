@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { SNACK_BAR_DURATION } from '../../../constants/snack-bar-duration.const';
-import { FormErrorStateMatcher } from '../../../helpers/form-error-state-matcher.helper';
+import { FormErrorStateMatcher } from '../../../helpers/mat-error/form-error-state-matcher.helper';
 import { Language, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SignupService } from '../../../services/auth/signup.service';
