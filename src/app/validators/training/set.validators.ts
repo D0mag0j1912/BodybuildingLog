@@ -19,22 +19,24 @@ export function allSetsFilled(): ValidatorFn {
     };
 }
 
-export function isFirstSetValid(): ValidatorFn {
-    return (array: AbstractControl): ValidationErrors | null => {
-        if (array) {
-            const weightLifted: AbstractControl = (array as FormArray).controls[0]?.get('weightLifted');
-            const reps: AbstractControl = (array as FormArray).controls[0]?.get('reps');
-            if(weightLifted && reps){
-                if(!weightLifted.value || !reps.value) {
-                    return { 'firstSetNotEntered': true };
+export function isSetValid(): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+        if (group) {
+            const weightLifted: AbstractControl = group?.get('weightLifted');
+            const reps: AbstractControl = group?.get('reps');
+            if (weightLifted && reps) {
+                if (!weightLifted.value || !reps.value) {
+                    return { 'setNotEntered': true };
                 }
-                if(!weightLifted.valid || !reps.valid) {
-                    return { 'firstSetNotValid': true };
+                if (!weightLifted.valid || !reps.valid) {
+                    return { 'setNotValid': true };
                 }
             }
             return null;
         }
-        return null;
+        else {
+            return null;
+        }
     };
 }
 

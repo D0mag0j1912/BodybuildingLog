@@ -113,8 +113,8 @@
                 "no_more_exercises_available": "No more exercises available.",
                 "pick_current_exercise": "Current exercise needs to be selected first.",
                 "delete_first_set": "First set cannot be deleted.",
-                "first_set_required": "First set is required.",
-                "first_set_invalid": "Error happened while entering first set."
+                "set_required": "Set is required.",
+                "set_invalid": "Error happened while entering set."
             },
             "buttons": {
                 "add_set": "Add new set",

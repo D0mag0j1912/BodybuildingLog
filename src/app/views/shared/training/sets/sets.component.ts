@@ -68,17 +68,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     ) {}
 
     ngOnInit(): void {
-        this.form.setValidators([SetValidators.allSetsFilled(), SetValidators.isFirstSetValid()]);
+        this.form.setValidators([SetValidators.allSetsFilled()]);
         this.form.updateValueAndValidity();
         this.formStateChanged.emit(this.formErrors);
-
-        this.isExerciseFormSubmitted$.pipe(
-            takeUntil(this.unsubscribeService),
-        ).subscribe((isSubmitted: boolean) => {
-            if (isSubmitted) {
-                (this.submitBtn?.nativeElement as HTMLButtonElement).click();
-            }
-        });
 
         this.exerciseNameControl.valueChanges.pipe(
             takeUntil(this.unsubscribeService),
@@ -137,7 +129,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                     Validators.max(1000),
                     Validators.pattern('^[0-9]*$')]),
             }, {
-                validators: [SetValidators.bothValuesRequired()],
+                validators: [SetValidators.bothValuesRequired(), SetValidators.isSetValid()],
             }),
         );
     }

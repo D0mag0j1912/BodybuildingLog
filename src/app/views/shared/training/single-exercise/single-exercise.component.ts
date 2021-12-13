@@ -276,7 +276,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         formField: keyof FormSingleExerciseData,
         indexExercise: number,
     ): AbstractControl {
-        return this.form.at(indexExercise).get(formField);
+        return this.form.at(indexExercise)?.get(formField);
     }
 
     onSetFormChange($event: SetFormValidationErrors[]): void {
@@ -296,11 +296,11 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 if (!this.accessFormField('name', this.getExercises().length - 1)?.value) {
                     return this.translateService.stream('training.new_training.errors.pick_current_exercise');
                 }
-                else if (this.setErrors.includes('firstSetNotEntered') && !this.setErrors.includes('firstSetNotValid')) {
-                    return this.translateService.stream('training.new_training.errors.first_set_required');
+                else if (this.setErrors.includes('setNotEntered') && !this.setErrors.includes('setNotValid')) {
+                    return this.translateService.stream('training.new_training.errors.set_required');
                 }
-                else if (this.setErrors.includes('firstSetNotValid')) {
-                    return this.translateService.stream('training.new_training.errors.first_set_invalid');
+                else if (this.setErrors.includes('setNotValid')) {
+                    return this.translateService.stream('training.new_training.errors.set_invalid');
                 }
                 else {
                     return of('');
@@ -319,8 +319,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         if (this.getExercises().length > 0) {
             return (currentExercisesLength >= allExercisesLength)
                 || ((!this.accessFormField('name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
-                || this.setErrors.includes('firstSetNotEntered')
-                || this.setErrors.includes('firstSetNotValid');
+                || this.setErrors.includes('setNotEntered')
+                || this.setErrors.includes('setNotValid');
         }
         else {
             return false;
@@ -415,17 +415,17 @@ export class SingleExerciseComponent implements ControlValueAccessor {
             tap(_ => {
                 if (currentTrainingState) {
                     currentTrainingState.exercise.forEach((value: SingleExercise, index: number) => {
-                        this.accessFormField('disabledTooltip', index).patchValue(value.disabledTooltip as boolean);
+                        this.accessFormField('disabledTooltip', index)?.patchValue(value.disabledTooltip as boolean);
                     });
                 }
                 else {
                     const width: number = ((element._elementRef.nativeElement as HTMLParagraphElement).querySelector('.mat-select-value-text') as HTMLSpanElement)?.offsetWidth;
 
                     if (width > MAX_EXERCISE_NAME_WIDTH) {
-                        this.accessFormField('disabledTooltip', indexExercise ? indexExercise : 0).patchValue(false);
+                        this.accessFormField('disabledTooltip', indexExercise ? indexExercise : 0)?.patchValue(false);
                     }
                     else {
-                        this.accessFormField('disabledTooltip', indexExercise ? indexExercise : 0).patchValue(true);
+                        this.accessFormField('disabledTooltip', indexExercise ? indexExercise : 0)?.patchValue(true);
                     }
                 }
             }),
