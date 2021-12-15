@@ -16,14 +16,13 @@ export class NewTrainingPipe implements PipeTransform {
         private readonly newTrainingService: NewTrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly route: ActivatedRoute,
-    ){}
+    ) {}
 
-    //TODO: fixati Pipe da ispravno prikazuje kada je edit mode
     transform(
         value: Observable<Exercise[]>,
         index: number,
-        exerciseChanged: boolean)
-        : Observable<Exercise[]> {
+        exerciseChanged: boolean,
+    ): Observable<Exercise[]> {
         return this.route.params.pipe(
             switchMap((params: Params) => {
                 if (!params['id']) {

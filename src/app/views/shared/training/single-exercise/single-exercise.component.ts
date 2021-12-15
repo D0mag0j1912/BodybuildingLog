@@ -46,7 +46,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     readonly form: FormArray = new FormArray([]);
     readonly singleExerciseErrorHelper: SingleExerciseErrorHelper = new SingleExerciseErrorHelper();
     setErrors: SetFormValidationErrors[] = [];
-    private formTrainingState: NewTraining;
 
     exerciseChanged: boolean = false;
 
@@ -343,15 +342,15 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         this.isLoading = true;
 
         this.gatherAllFormData().pipe(
-            switchMap(_ => {
+            switchMap((apiNewTraining: NewTraining) => {
                 if (this.editMode) {
                     return this.newTrainingService.updateTraining(
-                        this.formTrainingState as NewTraining,
+                        apiNewTraining as NewTraining,
                         this.editData._id as string,
                     );
                 }
                 else {
-                    return this.newTrainingService.addTraining(this.formTrainingState as NewTraining);
+                    return this.newTrainingService.addTraining(apiNewTraining as NewTraining);
                 }
             }),
             finalize(() => {
@@ -366,49 +365,42 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         });
     }
 
-    private gatherAllFormData(): Observable<Exercise[]> {
+    private gatherAllFormData(): Observable<NewTraining> {
         return this.newTrainingService.currentTrainingChanged$.pipe(
             take(1),
-            switchMap((currentTrainingState: NewTraining) =>
-                this.newTrainingService.allExercisesChanged$.pipe(
-                    take(1),
-                    tap((allExercises: Exercise[]) => {
-                        const exerciseFormData: SingleExercise[] = [];
-                        const alreadyUsedExercises: string[] = [];
+            map((currentTrainingState: NewTraining) => {
+                const exerciseFormData: SingleExercise[] = [];
 
-                        this.getExercises().forEach((exercise: AbstractControl, indexExercise: number) => {
-                            const splittedTotal: string[] = (this.accessFormField('total', indexExercise).value as string).split(' ');
-                            exerciseFormData.push({
-                                exerciseName: this.accessFormField('name', indexExercise).value as string,
-                                sets: [],
-                                total: +(splittedTotal[0] as string),
-                                disabledTooltip: this.accessFormField('disabledTooltip', indexExercise).value as boolean,
-                                availableExercises: allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1),
-                            });
-                            alreadyUsedExercises.push(this.accessFormField('name', indexExercise).value as string);
+                this.getExercises().forEach((_exercise: AbstractControl, indexExercise: number) => {
+                    const splittedTotal: string[] = (this.accessFormField('total', indexExercise).value as string).split(' ');
+                    exerciseFormData.push({
+                        exerciseName: this.accessFormField('name', indexExercise).value as string,
+                        sets: [],
+                        total: +(splittedTotal[0] as string),
+                        disabledTooltip: this.accessFormField('disabledTooltip', indexExercise).value as boolean,
+                        availableExercises: (currentTrainingState.exercise as SingleExercise[])[indexExercise]?.availableExercises || [],
+                    });
 
-                            const formSetData: Set[] = [];
-                            (this.accessFormField('sets', indexExercise).value as Set[]).forEach((set: Set) => {
-                                const apiSet: Set = {
-                                    setNumber: +set.setNumber as number,
-                                    weightLifted: +set.weightLifted as number,
-                                    reps: +set.reps as number,
-                                };
-                                formSetData.push(apiSet);
-                            });
-                            exerciseFormData[indexExercise].sets = formSetData;
-                        });
+                    const formSetData: Set[] = [];
+                    (this.accessFormField('sets', indexExercise).value as Set[]).forEach((set: Set) => {
+                        const apiSet: Set = {
+                            setNumber: +set.setNumber as number,
+                            weightLifted: +set.weightLifted as number,
+                            reps: +set.reps as number,
+                        };
+                        formSetData.push(apiSet);
+                    });
+                    exerciseFormData[indexExercise].sets = formSetData;
+                });
 
-                        this.formTrainingState = {
-                            createdAt: this.editMode ? this.editData.editedDate : new Date(),
-                            exercise: exerciseFormData as SingleExercise[],
-                            bodyweight: this.bodyweight.value ? +this.bodyweight.value as number : null,
-                            editMode: this.editMode as boolean,
-                            userId: currentTrainingState.userId as string,
-                        } as NewTraining;
-                    }),
-                ),
-            ),
+                return {
+                    createdAt: this.editMode ? this.editData.editedDate : new Date(),
+                    exercise: exerciseFormData as SingleExercise[],
+                    bodyweight: this.bodyweight.value ? +this.bodyweight.value as number : null,
+                    editMode: this.editMode as boolean,
+                    userId: currentTrainingState.userId as string,
+                } as NewTraining;
+            }),
             takeUntil(this.unsubscribeService),
         );
     }
