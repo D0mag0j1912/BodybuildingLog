@@ -1,6 +1,6 @@
 import { BadRequestException, CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Request } from 'express';
-import { SignupDto } from '../models/auth/signup.model';
+import { SignupDto } from '../../models/auth/signup.model';
 
 @Injectable()
 export class ConfirmPasswordGuard implements CanActivate {

@@ -3,8 +3,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings-response.model';
 import { DeleteTrainingActionService } from 'src/services/training/training-actions/delete-training-action.service';
-import { AuthenticationGuard } from '../../../guards/authentication.guard';
-import { TrainingGuard } from '../../../guards/training.guard';
+import { AuthenticationGuard } from '../../../guards/auth/authentication.guard';
+import { TrainingGuard } from '../../../guards/training/training.guard';
 
 @ApiTags('Training')
 @Controller('training/delete_training')

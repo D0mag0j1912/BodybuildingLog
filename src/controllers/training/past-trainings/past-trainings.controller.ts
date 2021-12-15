@@ -4,8 +4,8 @@ import { Request } from 'express';
 import { NewTrainingDto } from 'src/models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings-response.model';
 import { PastTrainingsService } from 'src/services/training/past-trainings.service';
-import { AuthenticationGuard } from '../../../guards/authentication.guard';
-import { TrainingGuard } from '../../../guards/training.guard';
+import { AuthenticationGuard } from '../../../guards/auth/authentication.guard';
+import { TrainingGuard } from '../../../guards/training/training.guard';
 @ApiTags('Training')
 @Controller('training/past_trainings')
 @UseGuards(AuthenticationGuard)
