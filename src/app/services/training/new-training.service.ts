@@ -135,7 +135,7 @@ export class NewTrainingService {
         }
     }
 
-    setsChanged(trainingData: SetTrainingData): NewTraining {
+    setsChanged(trainingData: SetTrainingData): void {
         const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
         const indexOfChangedExercise: number = updatedTraining.exercise.findIndex((singleExercise: SingleExercise) => singleExercise.exerciseName === trainingData.exerciseName);
         const indexFoundSet = updatedTraining.exercise[indexOfChangedExercise].sets.findIndex(set => set.setNumber === trainingData.setNumber);
@@ -157,7 +157,6 @@ export class NewTrainingService {
             updatedTraining.exercise[indexOfChangedExercise].total = trainingData.total;
         }
         this.saveTrainingData({ ...updatedTraining } as NewTraining);
-        return { ...updatedTraining };
     }
 
     addNewExercise(alreadyUsedExercises: string[]): void {

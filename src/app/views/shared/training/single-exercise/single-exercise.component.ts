@@ -256,8 +256,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         reps: $event.newSet.reps as number,
                         total: $event.newTotal as number,
                     };
-                    //TODO: fixati
-                    const updatedTraining: NewTraining = this.newTrainingService.setsChanged(trainingData as SetTrainingData);
+
+                    this.newTrainingService.setsChanged(trainingData as SetTrainingData);
                     this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal.toString()+ ` ${WEIGHT_FORMAT}`);
             }
             else {
