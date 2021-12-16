@@ -3,23 +3,23 @@
     class="spinner"
     [diameter]="50"></mat-spinner>
 <ng-container *ngIf="!isLoading && !isError">
-    <section
-        class="main-section">
-        <mat-card
-            class="card-info-wrapper">
-            <mat-card-title
-                class="week-title">
+    <section class="main-section">
+        <mat-card class="card-info-wrapper">
+            <mat-card-title class="week-title">
                 <strong class="week-title--txt">
                     {{ 'common.week' | translate }}
                 </strong>
-                {{ ' (' + (startDate | date: 'dd.MM.yyyy') + ' - ' + (endDate | date: 'dd.MM.yyyy') + ')'}}</mat-card-title>
-            <mat-card-subtitle
-                class="food-subtitle">
-                <strong class="food-subtitle--txt">
-                    {{ ('common.food' | translate) + ': ' }}
-                </strong>
-                {{ food + ' ' + ('common.kcal' | translate) }}
-            </mat-card-subtitle>
+                <span>{{ ' (' + (startDate | date: 'dd.MM.yyyy') + ' - ' + (endDate | date: 'dd.MM.yyyy') + ')' }}</span>
+            </mat-card-title>
+            <div class="footer">
+
+                <div class="food-subtitle">
+                    <strong class="food-subtitle--txt">
+                        {{ ('common.food' | translate) + ': ' }}
+                    </strong>
+                    <span>{{ food + ' ' + ('common.kcal' | translate) }}</span>
+                </div>
+            </div>
         </mat-card>
 
         <div

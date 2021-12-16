@@ -16,8 +16,8 @@ import { PastTrainingsService } from '../../../services/training/past-trainings.
     selector: 'app-past-trainings',
     templateUrl: './past-trainings.component.html',
     styleUrls: ['./past-trainings.component.scss'],
-    providers: [UnsubscribeService],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [UnsubscribeService],
 })
 export class PastTrainingsComponent implements OnInit {
 
@@ -27,12 +27,12 @@ export class PastTrainingsComponent implements OnInit {
     isError: boolean = false;
     isNextWeekDisabled: boolean = true;
 
-    startDate: Date;
-    endDate: Date;
+    startDate: Date | undefined;
+    endDate: Date | undefined;
 
-    trainingsPerPage: number;
+    trainingsPerPage: number = 0;
 
-    trainings$: Observable<NewTraining[]>;
+    trainings$: Observable<NewTraining[]> = of(null);
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
@@ -76,7 +76,7 @@ export class PastTrainingsComponent implements OnInit {
     }
 
     setNextWeekTooltip(): Observable<string> {
-        if(!this.isNextWeekDisabled){
+        if (!this.isNextWeekDisabled) {
             return this.translateService.stream('training.past_trainings.buttons.next_week');
         }
         else {
@@ -86,7 +86,8 @@ export class PastTrainingsComponent implements OnInit {
     //TODO: popraviti
     tryAgain(): void {
         this.isLoading = true;
-        this.initializePastTrainings(this.getLocalDateTime()).subscribe((response: PastTrainingsResponse) => {
+        this.initializePastTrainings(this.getLocalDateTime())
+        .subscribe((response: PastTrainingsResponse) => {
             if (response) {
                 this.isError = false;
             }
@@ -100,7 +101,7 @@ export class PastTrainingsComponent implements OnInit {
         return this.pastTrainingsService.getPastTrainings(orientationDate as Date).pipe(
             tap(async (result: PastTrainingsResponse) => {
                 this.fillTemplateVariables(result);
-                if(isArrow){
+                if (isArrow) {
                     await this.router.navigate([], {
                         relativeTo: this.route,
                         queryParams: {
