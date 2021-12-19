@@ -4,10 +4,11 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { PipesModule } from 'src/app/pipes/pipes.module';
-import { ShowAllExercisesModule } from 'src/app/pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { MaterialModule } from '../../material.module';
+import { PipesModule } from '../../pipes/pipes.module';
+import { ShowAllExercisesModule } from '../../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NewTrainingComponent } from '../../views/training/new-training/new-training.component';
+import { PastTrainingsFiltersComponent } from '../../views/training/past-trainings/past-trainings-filters/past-trainings-filters.component';
 import { PastTrainingsComponent } from '../../views/training/past-trainings/past-trainings.component';
 import { TrainingItemActionsComponent } from '../../views/training/past-trainings/training-item/training-item-actions/training-item-actions.component';
 import { TrainingItemComponent } from '../../views/training/past-trainings/training-item/training-item.component';
@@ -19,6 +20,7 @@ const COMPONENTS = [
     PastTrainingsComponent,
     TrainingItemComponent,
     TrainingItemActionsComponent,
+    PastTrainingsFiltersComponent,
 ];
 
 const EXTERNAL_IMPORTS = [

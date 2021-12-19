@@ -45,9 +45,7 @@ export class PastTrainingsComponent implements OnInit {
     ) {
         this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
-        ).subscribe((response: PastTrainingsResponse) => {
-            this.fillTemplateVariables(response);
-        });
+        ).subscribe((response: PastTrainingsResponse) => this.fillTemplateVariables(response));
     }
 
     ngOnInit(): void {
@@ -64,8 +62,7 @@ export class PastTrainingsComponent implements OnInit {
                     utcToZonedTime(
                         this.startDate as Date,
                         environment.TIMEZONE as string,
-                    )
-                    , 7) as Date
+                    ), 7) as Date
                 : addDays(
                     utcToZonedTime(
                         this.startDate as Date,
