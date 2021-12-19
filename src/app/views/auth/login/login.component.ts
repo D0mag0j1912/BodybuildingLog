@@ -16,7 +16,7 @@ type FormData = {
 };
 
 @Component({
-    selector: 'app-login',
+    selector: 'bl-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

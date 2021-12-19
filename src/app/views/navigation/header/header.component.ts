@@ -15,7 +15,7 @@ import { DateData } from '../../../models/training/past-trainings/past-trainings
 import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
-    selector: 'app-header',
+    selector: 'bl-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,7 +38,7 @@ export class HeaderComponent implements OnInit {
         private readonly navigationService: NavigationService,
         private readonly unsubsService: UnsubscribeService,
         private readonly router: Router,
-    ) { }
+    ) {}
 
     ngOnInit(): void {
         this.isAuthenticated$ = this.authService.isAuth$;

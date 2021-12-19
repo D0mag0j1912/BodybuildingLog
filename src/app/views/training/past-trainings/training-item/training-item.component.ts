@@ -8,7 +8,7 @@ import { SharedService } from '../../../../services/shared/shared.service';
 const MAX_EXERCISE_NAME_WIDTH: number = 200;
 
 @Component({
-    selector: 'app-training-item',
+    selector: 'bl-training-item',
     templateUrl: './training-item.component.html',
     styleUrls: ['./training-item.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

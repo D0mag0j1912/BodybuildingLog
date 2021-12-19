@@ -13,7 +13,7 @@ import { UnsubscribeService } from '../../../services/shared/unsubscribe.service
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
 @Component({
-    selector: 'app-past-trainings',
+    selector: 'bl-past-trainings',
     templateUrl: './past-trainings.component.html',
     styleUrls: ['./past-trainings.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

@@ -5,7 +5,7 @@ import { TrainingItemActions } from '../../../../../models/training/past-trainin
 import { DeleteTrainingActionData } from '../../../../../models/training/past-trainings/training-actions/training-actions.model';
 
 @Component({
-    selector: 'app-training-item-actions',
+    selector: 'bl-training-item-actions',
     templateUrl: './training-item-actions.component.html',
     styleUrls: ['./training-item-actions.component.scss'],
 })

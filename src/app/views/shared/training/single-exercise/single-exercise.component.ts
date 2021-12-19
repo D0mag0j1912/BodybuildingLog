@@ -28,7 +28,7 @@ const MAX_EXERCISE_NAME_WIDTH: number = 181;
 const WEIGHT_FORMAT: WeightFormat = 'kg';
 
 @Component({
-    selector: 'app-single-exercise',
+    selector: 'bl-single-exercise',
     templateUrl: './single-exercise.component.html',
     styleUrls: ['./single-exercise.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

@@ -5,7 +5,7 @@ import { AuthService } from './services/auth/auth.service';
 import { NewTrainingService } from './services/training/new-training.service';
 
 @Component({
-    selector: 'app-root',
+    selector: 'bl-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

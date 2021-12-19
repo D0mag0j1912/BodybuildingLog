@@ -60,7 +60,7 @@
                     </button>
                 </div>
             </div>
-            <app-sets
+            <bl-sets
                 formControlName="sets"
                 [isExerciseFormSubmitted$]="isSubmitted$$.asObservable()"
                 [exerciseStateChanged$]="exerciseStateChanged$$.asObservable()"
@@ -70,8 +70,8 @@
                 [editMode]="editMode"
                 (setAdded)="onChangeSets($event)"
                 (setDeleted)="deleteSet($event)"
-                (formStateChanged)="onSetFormChange($event)"></app-sets>
-            <app-total-weight formControlName="total"></app-total-weight>
+                (formStateChanged)="onSetFormChange($event)"></bl-sets>
+            <bl-total-weight formControlName="total"></bl-total-weight>
         </ng-container>
     </ng-container>
     <div class="add-exercise">

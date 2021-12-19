@@ -26,9 +26,9 @@
             class="training-item-wrapper"
             [class.no-trainings]="trainingsPerPage === 0"
             *ngIf="trainingsPerPage > 0; else noTrainings">
-            <app-training-item
+            <bl-training-item
                 *ngFor="let training of (trainings$ | async)"
-                [training]="training"></app-training-item>
+                [training]="training"></bl-training-item>
         </div>
     </section>
     <div

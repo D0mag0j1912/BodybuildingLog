@@ -10,7 +10,7 @@ import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service'
 import { NewTrainingService } from 'src/app/services/training/new-training.service';
 import { Language } from '../../../models/preferences.model';
 @Component({
-    selector: 'app-side-nav',
+    selector: 'bl-side-nav',
     templateUrl: './side-nav.component.html',
     styleUrls: ['./side-nav.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

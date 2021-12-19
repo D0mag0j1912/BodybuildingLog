@@ -22,7 +22,7 @@ type FormData = {
 };
 
 @Component({
-    selector: 'app-signup',
+    selector: 'bl-signup',
     templateUrl: './signup.component.html',
     styleUrls: ['./signup.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

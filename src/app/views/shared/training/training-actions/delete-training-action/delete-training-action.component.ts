@@ -38,7 +38,7 @@ export class DeleteTrainingActionComponent {
         private readonly snackBar: MatSnackBar,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
-    ){}
+    ) {}
 
     deleteTraining(trainingId: string): void {
         this.isLoading = true;
@@ -52,7 +52,7 @@ export class DeleteTrainingActionComponent {
         ).pipe(
             catchError(_ => of(null)),
             tap((response: PastTrainingsResponse) => {
-                if(response){
+                if (response) {
                     this.dialogRef.close();
                     this.sharedService.deletedTraining$$.next(response as PastTrainingsResponse);
                     this.snackBar.open(this.translateService.instant(response.message as string), null, {

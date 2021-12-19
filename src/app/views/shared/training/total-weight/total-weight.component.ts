@@ -3,7 +3,7 @@ import { ControlValueAccessor } from '@angular/forms';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 
 @Component({
-    selector: 'app-total-weight',
+    selector: 'bl-total-weight',
     templateUrl: './total-weight.component.html',
     styleUrls: ['./total-weight.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

@@ -3,12 +3,12 @@
         class="sidenav"
         #sidenav
         role="navigation">
-        <app-side-nav
-            (closeSideNav)="sidenav.close()"></app-side-nav>
+        <bl-side-nav
+            (closeSideNav)="sidenav.close()"></bl-side-nav>
     </mat-sidenav>
     <mat-sidenav-content class="sidenav-content">
-        <app-header
-            (toggleSideNav)="sidenav.toggle()"></app-header>
+        <bl-header
+            (toggleSideNav)="sidenav.toggle()"></bl-header>
         <router-outlet></router-outlet>
     </mat-sidenav-content>
 </mat-sidenav-container>

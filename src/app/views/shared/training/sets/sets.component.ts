@@ -14,7 +14,7 @@ import * as CommonValidators from '../../../../validators/shared/common.validato
 import * as SetValidators from '../../../../validators/training/set.validators';
 
 @Component({
-    selector: 'app-sets',
+    selector: 'bl-sets',
     templateUrl: './sets.component.html',
     styleUrls: ['./sets.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

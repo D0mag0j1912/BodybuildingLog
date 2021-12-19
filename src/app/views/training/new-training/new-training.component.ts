@@ -20,7 +20,7 @@ export type EditData = {
 };
 
 @Component({
-    selector: 'app-new-training',
+    selector: 'bl-new-training',
     templateUrl: './new-training.component.html',
     styleUrls: ['./new-training.component.scss'],
     providers: [UnsubscribeService],

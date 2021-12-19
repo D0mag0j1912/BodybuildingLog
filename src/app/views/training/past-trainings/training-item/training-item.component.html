@@ -47,12 +47,12 @@
         </span>
     </div>
     <div class="actions">
-        <app-training-item-actions
+        <bl-training-item-actions
             *ngFor="let action of actions"
             [action]="action"
             [training]="training"
             [weekDays]="weekDays"
             [dayIndex]="dayIndex"
-            [timeCreated]="timeCreated"></app-training-item-actions>
+            [timeCreated]="timeCreated"></bl-training-item-actions>
     </div>
 </mat-card>
