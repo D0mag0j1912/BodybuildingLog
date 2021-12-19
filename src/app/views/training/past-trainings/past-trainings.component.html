@@ -4,6 +4,7 @@
     [diameter]="50"></mat-spinner>
 <ng-container *ngIf="!isLoading && !isError">
     <section class="main-section">
+        <bl-past-trainings-filters></bl-past-trainings-filters>
         <mat-card class="card-info-wrapper">
             <mat-card-title class="week-title">
                 <strong class="week-title--txt">
@@ -12,7 +13,6 @@
                 <span>{{ ' (' + (startDate | date: 'dd.MM.yyyy') + ' - ' + (endDate | date: 'dd.MM.yyyy') + ')' }}</span>
             </mat-card-title>
             <div class="footer">
-
                 <div class="food-subtitle">
                     <strong class="food-subtitle--txt">
                         {{ ('common.food' | translate) + ': ' }}
@@ -21,7 +21,6 @@
                 </div>
             </div>
         </mat-card>
-
         <div
             class="training-item-wrapper"
             [class.no-trainings]="trainingsPerPage === 0"

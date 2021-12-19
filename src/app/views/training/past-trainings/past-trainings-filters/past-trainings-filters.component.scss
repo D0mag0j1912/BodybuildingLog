@@ -1,0 +1,14 @@
+@import '../../../../../../styles/default-pallette';
+
+.filters-wrapper {
+    display: flex;
+    margin-top: 8px;
+    border: 2px solid $army-green;
+    box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+    .filters-wrapper {
+        width: 850px;
+    }
+}
