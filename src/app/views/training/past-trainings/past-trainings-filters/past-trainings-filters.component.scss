@@ -11,11 +11,20 @@
 
     .search-wrapper {
         display: flex;
+        align-items: center;
+        column-gap: 10px;
         padding-top: 15px;
         width: 90%;
 
+        .search-icon {
+            color: $army-green;
+        }
+
         .filters-input {
             flex-basis: 90%;
+            /* border-radius: 6px;
+            border: 2px solid $army-green;
+            height: 20px; */
         }
     }
 
