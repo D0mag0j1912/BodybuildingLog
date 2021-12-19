@@ -14,6 +14,7 @@
         "bodyweight": "Tjelesna težina",
         "created_at_time": "Vrijeme izrade",
         "here": "ovdje.",
+        "or": "ILI",
         "errors": {
             "something_went_wrong": "Došlo je do greške. Pokušajte ponovno.",
             "invalid_date": "Pogrešan format datuma.",
@@ -131,6 +132,9 @@
             "training_number": "Broj treninga: ",
             "disabled_next_week": "Idući tjedni nisu dostupni.",
             "created_at": "Trening kreiran: ",
+            "filters": {
+                "enter_search_term": "Unesite Vašu pretragu"
+            },
             "errors": {
                 "error_load_training": "Greška pri učitavanju treninga.",
                 "get_training_error": "Traženi trening nije dostupan.",

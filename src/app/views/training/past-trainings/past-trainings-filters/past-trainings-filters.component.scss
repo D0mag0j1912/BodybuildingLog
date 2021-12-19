@@ -2,13 +2,32 @@
 
 .filters-wrapper {
     display: flex;
-    margin-top: 8px;
+    flex-direction: column;
+    margin: 8px 0;
     border: 2px solid $army-green;
     box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+
+    .search-wrapper {
+        display: flex;
+        padding-top: 15px;
+        width: 90%;
+
+        .filters-input {
+            flex-basis: 90%;
+        }
+    }
+
+    .or {
+        color: $army-green;
+        font-weight: 600;
+    }
 }
 
 @media (min-width: 640px) {
     .filters-wrapper {
         width: 850px;
+        margin-bottom: 0;
     }
 }

@@ -1,3 +1,10 @@
 <div class="filters-wrapper">
-
+    <div class="search-wrapper">
+        <mat-icon>search</mat-icon>
+        <input
+            type="text"
+            class="filters-input"
+            [placeholder]="'training.past_trainings.filters.enter_search_term' | translate">
+    </div>
+    <span class="or">{{ 'common.or' | translate }}</span>
 </div>
