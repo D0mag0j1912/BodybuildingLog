@@ -16,6 +16,7 @@
                         {{ 'training.new_training.pick_exercise' | translate }}
                     </mat-label>
                     <mat-select
+                        disableRipple
                         #exerciseNameChoice
                         formControlName="name"
                         [errorStateMatcher]="form.errors?.duplicateExerciseName === accessFormField('name', i).value ? singleExerciseErrorHelper : null"
