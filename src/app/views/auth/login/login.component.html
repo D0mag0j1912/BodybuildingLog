@@ -36,8 +36,8 @@
                 #inputPassword
                 matInput
                 type="password"
-                formControlName="password">
-            <mat-hint>{{ inputPassword.value?.length || 0 }} / 6</mat-hint>
+                formControlName="password"
+                [errorStateMatcher]="formErrorStateMatcher">
             <mat-error
                 *ngIf="accessFormData('password').errors?.required"
                 class="error">
@@ -49,15 +49,15 @@
                 class="error">
                 {{ 'auth.errors.password_length' | translate }}
             </mat-error>
+            <mat-error
+                *ngIf="form.errors?.passwordFitsEmail
+                    && !accessFormData('password').errors?.required
+                    && !accessFormData('password').errors?.minlength
+                    && !accessFormData('password').errors?.maxlength"
+                class="error">
+                {{ 'auth.errors.password_wrong_email' | translate }}
+            </mat-error>
         </mat-form-field>
-        <span
-            *ngIf="form.errors?.passwordFitsEmail
-                && !accessFormData('password').errors?.required
-                && !accessFormData('password').errors?.minlength
-                && !accessFormData('password').errors?.maxlength"
-            class="error-custom">
-            {{ 'auth.errors.password_wrong_email' | translate }}
-        </span>
         <button
             mat-raised-button
             class="submit"

@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { SNACK_BAR_DURATION } from '../../../constants/snack-bar-duration.const';
+import { FormErrorStateMatcher } from '../../../helpers/mat-error/form-error-state-matcher.helper';
 import { AuthService } from '../../../services/auth/auth.service';
 import { LoginService } from '../../../services/auth/login.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
@@ -25,6 +26,7 @@ export class LoginComponent implements AfterViewInit {
     isLoading: boolean = false;
 
     form: FormGroup;
+    formErrorStateMatcher: FormErrorStateMatcher = new FormErrorStateMatcher();
 
     @ViewChild('emailRef', {
         read: ElementRef,
