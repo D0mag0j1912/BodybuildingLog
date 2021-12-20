@@ -6,4 +6,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     styleUrls: ['./past-trainings-filters.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PastTrainingsFiltersComponent {}
+export class PastTrainingsFiltersComponent {
+
+    isSearch: boolean = false;
+
+    openFilterDialog(): void {}
+}
