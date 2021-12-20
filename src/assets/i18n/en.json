@@ -132,7 +132,8 @@
             "created_at": "Training created: ",
             "filters": {
                 "enter_search_term": "Please enter your search term",
-                "choose_custom_query": "Choose custom query"
+                "choose_custom_query": "Choose custom query",
+                "apply_filters": "Apply filters"
             },
             "errors": {
                 "error_load_training": "Error while loading training.",

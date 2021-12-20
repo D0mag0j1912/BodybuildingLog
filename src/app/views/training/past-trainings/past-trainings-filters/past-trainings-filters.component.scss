@@ -2,30 +2,16 @@
 
 .filters-wrapper {
     display: flex;
-    flex-direction: column;
-    margin: 8px 0;
-    border: 2px solid $army-green;
-    box-sizing: border-box;
     align-items: center;
     justify-content: center;
+    column-gap: 10px;
+    margin: 8px 0;
+    padding: 5px 0;
+    border: 2px solid $army-green;
+    box-sizing: border-box;
 
-    .search-wrapper {
-        display: flex;
-        align-items: center;
-        column-gap: 10px;
-        padding-top: 15px;
-        width: 90%;
-
-        .search-icon {
-            color: $army-green;
-        }
-
-        .filters-input {
-            flex-basis: 90%;
-            border-radius: 4px;
-            border: 2px solid $army-green;
-            height: 20px;
-        }
+    .search-icon {
+        color: $army-green;
     }
 
     .or {

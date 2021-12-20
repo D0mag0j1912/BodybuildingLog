@@ -1,16 +1,10 @@
 <div class="filters-wrapper">
-    <div class="search-wrapper">
-        <mat-icon class="search-icon">search</mat-icon>
-        <input
-            matInput
-            type="text"
-            class="filters-input"
-            [placeholder]="'training.past_trainings.filters.enter_search_term' | translate">
-    </div>
+    <mat-icon class="search-icon">search</mat-icon>
     <span class="or">{{ 'common.or' | translate }}</span>
-    <input
-        list="filter-queries"
-        class="filters-input"
-        [placeholder]="'training.past_trainings.filters.choose_custom_query' | translate">
-    <datalist id="filter-queries"></datalist>
+    <button
+        mat-raised-button
+        type="button"
+        class="apply-filters-btn">
+        {{ 'training.past_trainings.filters.apply_filters' | translate }}
+    </button>
 </div>
