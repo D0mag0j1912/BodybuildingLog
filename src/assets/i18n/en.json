@@ -131,7 +131,8 @@
             "disabled_next_week": "Future weeks are not available.",
             "created_at": "Training created: ",
             "filters": {
-                "enter_search_term": "Please enter your search term"
+                "enter_search_term": "Please enter your search term",
+                "choose_custom_query": "Choose custom query"
             },
             "errors": {
                 "error_load_training": "Error while loading training.",
