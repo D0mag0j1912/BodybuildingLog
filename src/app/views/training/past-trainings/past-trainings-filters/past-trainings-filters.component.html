@@ -1,19 +1,14 @@
 <div class="filters-wrapper">
     <div class="search-wrapper">
-        <mat-icon class="search-icon">search</mat-icon>
         <input
             type="text"
-            class="search-input">
+            class="search-input"
+            [placeholder]="'training.past_trainings.filters.enter_search_term' | translate"
+            (input)="onSearch($event)">
+        <mat-icon class="search-icon">search</mat-icon>
     </div>
     <div class="or-wrapper">
         <span class="or">{{ 'common.or' | translate }}</span>
         <mat-icon class="search-icon">filter_list</mat-icon>
     </div>
-    <!-- <button
-        mat-raised-button
-        type="button"
-        class="apply-filters-btn"
-        (click)="openFilterDialog()">
-        {{ 'training.past_trainings.filters.apply_filters' | translate }}
-    </button> -->
 </div>

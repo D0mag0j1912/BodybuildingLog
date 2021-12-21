@@ -9,7 +9,7 @@ import { environment } from '../../../environments/environment';
 import { Login, Signup } from '../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../models/auth/auth-data.model';
 import { Language, WeightFormat } from '../../models/preferences.model';
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthService {
 
     private readonly loggedUser$$: BehaviorSubject<AuthResponseData> = new BehaviorSubject<AuthResponseData>(null);
