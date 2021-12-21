@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { switchMap, take, takeUntil } from 'rxjs/operators';
-import { AuthResponseData } from '../../../../models/auth/auth-data.model';
+import { fromEvent } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../../services/training/past-trainings.service';
@@ -23,20 +23,20 @@ export class PastTrainingsFiltersComponent {
     openFilterDialog(): void {}
 
     onSearch($event: Event): void {
-        const value: string = ($event.target as HTMLInputElement).value.trim();
-        if (value === '') {
-            return;
-        }
-        this.authService.loggedUser$
+        fromEvent($event?.target, 'keyup')
             .pipe(
-                take(1),
-                switchMap((loggedUserData: AuthResponseData) =>
+                filter((event: Event) => (event.target as HTMLInputElement)?.value !== ''),
+                map((event: Event) => (event.target as HTMLInputElement)?.value.trim()),
+                debounceTime(150),
+                distinctUntilChanged(),
+                switchMap((value: string) =>
                     this.pastTrainingsService.searchPastTrainings(
-                        value as string,
-                        loggedUserData._id as string,
+                        value,
+                        this.authService.getLoggedInUserId(),
                     ),
                 ),
                 takeUntil(this.unsubscribeService),
-            ).subscribe();
+            )
+            .subscribe();
     }
 }

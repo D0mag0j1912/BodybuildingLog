@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { NewTraining } from 'src/app/models/training/new-training/new-training.model';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../environments/environment';
+import { NewTraining } from '../../models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from '../../models/training/past-trainings/past-trainings-response.model';
 
 const ROUTE_PREFIX: string = '/training/';
@@ -18,7 +18,8 @@ export class PastTrainingsService {
         searchValue: string,
         loggedInUserId: string,
     ): Observable<unknown> {
-        return this.http.get<unknown>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings/${loggedInUserId}`);
+        const params: HttpParams = new HttpParams().append('searchValue', searchValue);
+        return this.http.get<unknown>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings/${loggedInUserId}/${params}`);
     }
 
     getPastTrainings(currentDate: Date): Observable<PastTrainingsResponse> {
