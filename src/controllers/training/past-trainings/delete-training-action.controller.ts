@@ -1,7 +1,7 @@
 import { Controller, Delete, Param, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings-response.model';
+import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings.model';
 import { DeleteTrainingActionService } from 'src/services/training/training-actions/delete-training-action.service';
 import { AuthenticationGuard } from '../../../guards/auth/authentication.guard';
 import { TrainingGuard } from '../../../guards/training/training.guard';

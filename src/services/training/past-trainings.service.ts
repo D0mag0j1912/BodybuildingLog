@@ -4,7 +4,8 @@ import { Model } from 'mongoose';
 import { getIntervalDate } from 'src/helpers/date.helper';
 import { DateInterval } from 'src/helpers/date.helper';
 import { NewTrainingDto } from 'src/models/training/new-training/new-training.model';
-import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings-response.model';
+import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings.model';
+import { SearchTrainingsDto } from '../../models/training/past-trainings/past-trainings.model';
 
 @Injectable()
 export class PastTrainingsService {
@@ -12,6 +13,18 @@ export class PastTrainingsService {
     constructor(
         @InjectModel('Training') private readonly trainingModel: Model<NewTrainingDto>,
     ) {}
+
+    async searchTrainings(searchValue: SearchTrainingsDto): Promise<NewTrainingDto[]> {
+        try {
+            return this.trainingModel.find({
+                name: {
+                    $regex: searchValue,
+                    $options: 'i',
+                },
+            });
+        }
+        catch (error: unknown) {}
+    }
 
     async getPastTraining(trainingId: string): Promise<NewTrainingDto> {
         try {

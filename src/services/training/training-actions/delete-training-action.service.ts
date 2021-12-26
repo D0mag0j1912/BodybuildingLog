@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { NewTrainingDto } from 'src/models/training/new-training/new-training.model';
-import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings-response.model';
+import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings.model';
 import { Error } from '../../../models/errors/error';
 import { PastTrainingsService } from '../past-trainings.service';
 
