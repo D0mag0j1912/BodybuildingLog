@@ -135,7 +135,11 @@
             "filters": {
                 "enter_search_term": "Unesite Vašu pretragu",
                 "choose_custom_query": "Izaberite Vaš upit",
-                "apply_filters": "Primjenite filtere"
+                "apply_filters": "Primjenite filtere",
+                "errors": {
+                    "search_empty": "Morate unijeti vrijednost u pretrazi",
+                    "search_error": "Greška pri pretraživanju treninga"
+                }
             },
             "errors": {
                 "error_load_training": "Greška pri učitavanju treninga.",

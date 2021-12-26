@@ -14,7 +14,7 @@ export class PastTrainingsService {
         private readonly http: HttpClient,
     ) {}
 
-    //http://localhost:3000/training/search-trainings/615a8735632e533ba8d0eb01?searchValue=test
+    //http://localhost:3000/training/search-trainings?searchValue=test
     searchPastTrainings(searchValue: string): Observable<unknown> {
         const params: HttpParams = new HttpParams().append('searchValue', searchValue);
         return this.http.get<unknown>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings/${params}`);
