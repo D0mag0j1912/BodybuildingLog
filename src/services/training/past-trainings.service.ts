@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { getIntervalDate } from 'src/helpers/date.helper';
@@ -21,22 +21,20 @@ export class PastTrainingsService {
                     $regex: searchValue,
                     $options: 'i',
                 },
-            });
+            }).limit(5);
         }
-        catch (error: unknown) {}
+        catch (error: unknown) {
+            throw new InternalServerErrorException('training.past_trainings.filters.errors.search_error');
+        }
     }
 
     async getPastTraining(trainingId: string): Promise<NewTrainingDto> {
         try {
             // tslint:disable-next-line: await-promise
-            const training: NewTrainingDto = await this.trainingModel.findById(trainingId);
-            return training as NewTrainingDto;
+            return this.trainingModel.findById(trainingId);
         }
         catch (error: unknown) {
-            throw new HttpException({
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'training.past_trainings.errors.error_load_training',
-            }, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new InternalServerErrorException('training.past_trainings.errors.error_load_training');
         }
     }
 
@@ -72,10 +70,7 @@ export class PastTrainingsService {
             } as PastTrainingsResponse;
         }
         catch (error: unknown) {
-            throw new HttpException({
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'training.past_trainings.errors.past_trainings_error_title',
-            }, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new InternalServerErrorException('training.past_trainings.errors.past_trainings_error_title');
         }
     }
 }

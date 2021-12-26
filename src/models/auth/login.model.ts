@@ -24,7 +24,7 @@ export const USER_SCHEMA = new Schema({
 
 USER_SCHEMA.plugin(uniqueValidator);
 
-export class LoginDto {
+export class UserDto {
     
     @ApiProperty({ required: false })
     @IsOptional()

@@ -4,12 +4,12 @@ import {
     Param,
     Post,
     Put,
-    Req,
     UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
-import { AuthenticationGuard } from '../../../guards/auth/authentication.guard';
+import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
+import { UserDto } from '../../../models/auth/login.model';
 import { GeneralResponseData } from '../../../models/common/response.model';
 import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
 import { DuplicateExercisePipe } from '../../../pipes/training/duplicate-exercise.pipe';
@@ -17,7 +17,7 @@ import { NewTrainingService } from '../../../services/training/new-training.serv
 
 @ApiTags('Training')
 @Controller('training/handle_training')
-@UseGuards(AuthenticationGuard)
+@UseGuards(AuthGuard())
 export class NewTrainingController {
 
     constructor(
@@ -32,14 +32,14 @@ export class NewTrainingController {
     @Put(':id')
     @UseGuards(new TrainingGuard('training.new_training.errors.error_update_training'))
     async updateTraining(
-        @Req() request: Request,
+        @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
         @Body('updatedTrainingData', DuplicateExercisePipe) updatedTrainingData: NewTrainingDto,
     ): Promise<GeneralResponseData> {
         return this.newTrainingService.editTraining(
             trainingId as string,
             updatedTrainingData as NewTrainingDto,
-            request.headers.userId as string,
+            user._id as string,
         );
     }
 }

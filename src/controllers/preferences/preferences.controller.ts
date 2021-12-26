@@ -1,13 +1,13 @@
 import { Body, Controller, Param, Put, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthenticationGuard } from '../../guards/auth/authentication.guard';
 import { GeneralResponseData } from '../../models/common/response.model';
 import { PreferencesDto } from '../../models/preferences/preferences.model';
 import { PreferencesService } from '../../services/preferences/preferences.service';
 
 @ApiTags('Preferences')
 @Controller('preferences')
-@UseGuards(AuthenticationGuard)
+@UseGuards(AuthGuard())
 export class PreferencesController {
 
     constructor(

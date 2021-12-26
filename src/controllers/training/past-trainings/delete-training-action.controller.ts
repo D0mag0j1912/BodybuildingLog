@@ -1,14 +1,15 @@
-import { Controller, Delete, Param, Query, Req, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Param, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
 import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings.model';
 import { DeleteTrainingActionService } from 'src/services/training/training-actions/delete-training-action.service';
-import { AuthenticationGuard } from '../../../guards/auth/authentication.guard';
+import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
+import { UserDto } from '../../../models/auth/login.model';
 
 @ApiTags('Training')
 @Controller('training/delete_training')
-@UseGuards(AuthenticationGuard)
+@UseGuards(AuthGuard())
 export class DeleteTrainingActionController {
 
     constructor(
@@ -18,13 +19,13 @@ export class DeleteTrainingActionController {
     @Delete(':id')
     @UseGuards(new TrainingGuard('training.past_trainings.actions.errors.error_delete_training'))
     async deleteTraining(
-        @Req() request: Request,
+        @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
         @Query('currentDate') currentDate: Date,
     ): Promise<PastTrainingsResponse> {
         return this.deleteTrainingActionService.deleteTraining(
             trainingId as string,
-            request.headers.userId as string,
+            user._id as string,
             currentDate as Date,
         );
     }

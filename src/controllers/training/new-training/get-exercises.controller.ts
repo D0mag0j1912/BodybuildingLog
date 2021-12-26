@@ -1,12 +1,12 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { Exercise } from 'src/models/training/exercise.model';
 import { NewTrainingService } from 'src/services/training/new-training.service';
-import { AuthenticationGuard } from '../../../guards/auth/authentication.guard';
 
 @ApiTags('Training')
 @Controller('training/get_exercises')
-@UseGuards(AuthenticationGuard)
+@UseGuards(AuthGuard())
 export class GetExercisesController {
 
     constructor(

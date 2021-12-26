@@ -1,12 +1,12 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthenticationGuard } from '../../../guards/auth/authentication.guard';
 import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
 import { SearchTrainingsDto } from '../../../models/training/past-trainings/past-trainings.model';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
 @ApiTags('Training')
-@UseGuards(AuthenticationGuard)
+@UseGuards(AuthGuard())
 @Controller('training/search_trainings')
 export class SearchTrainingsController {
 

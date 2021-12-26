@@ -1,14 +1,15 @@
-import { BadRequestException, Controller, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
 import { NewTrainingDto } from 'src/models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings.model';
 import { PastTrainingsService } from 'src/services/training/past-trainings.service';
-import { AuthenticationGuard } from '../../../guards/auth/authentication.guard';
+import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
+import { UserDto } from '../../../models/auth/login.model';
 @ApiTags('Training')
 @Controller('training/past_trainings')
-@UseGuards(AuthenticationGuard)
+@UseGuards(AuthGuard())
 export class PastTrainingsController {
 
     constructor(
@@ -17,7 +18,7 @@ export class PastTrainingsController {
 
     @Get()
     async getPastTrainings(
-        @Req() request: Request,
+        @GET_USER() user: UserDto,
         @Query('currentDate') currentDate: Date,
     ): Promise<PastTrainingsResponse> {
         if (!currentDate) {
@@ -25,7 +26,7 @@ export class PastTrainingsController {
         }
         return this.pastTrainingsService.getPastTrainings(
             currentDate as Date,
-            request.headers.userId as string,
+            user._id as string,
         );
     }
 

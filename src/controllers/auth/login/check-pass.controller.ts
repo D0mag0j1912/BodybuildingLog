@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { LoginDto } from 'src/models/auth/login.model';
+import { UserDto } from 'src/models/auth/login.model';
 import { AuthService } from 'src/services/auth/auth.service';
 
 @ApiTags('Authentication')
@@ -12,7 +12,7 @@ export class CheckPassController {
     ) {}
 
     @Get()
-    async passwordFitsEmail(@Query() loginDto: LoginDto): Promise<boolean> {
-        return this.authService.passwordFitsEmail(loginDto);
+    async passwordFitsEmail(@Query() userDto: UserDto): Promise<boolean> {
+        return this.authService.passwordFitsEmail(userDto);
     }
 }

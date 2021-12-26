@@ -11,6 +11,7 @@ import { SINGLE_EXERCISE_SCHEMA } from 'src/models/training/new-training/single-
 import { NewTrainingService } from 'src/services/training/new-training.service';
 import { PastTrainingsService } from 'src/services/training/past-trainings.service';
 import { DeleteTrainingActionService } from 'src/services/training/training-actions/delete-training-action.service';
+import { AuthModule } from '../auth/auth.module';
 
 const CONTROLLERS = [
     GetExercisesController,
@@ -24,6 +25,8 @@ const SERVICES = [
     PastTrainingsService,
     DeleteTrainingActionService,
 ];
+
+const IMPORTS = [AuthModule];
 
 @Module({
     imports: [
@@ -40,6 +43,7 @@ const SERVICES = [
             name: 'Training',
             schema: NEW_TRAINING_SCHEMA,
         }]),
+        ...IMPORTS,
     ],
     controllers: [ ...CONTROLLERS ],
     providers: [ ...SERVICES ],

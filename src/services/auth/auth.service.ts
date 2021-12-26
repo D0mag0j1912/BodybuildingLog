@@ -1,27 +1,28 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { compare, hash } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
 import { Model } from 'mongoose';
 import { AuthResponse } from 'src/models/auth/auth-response.model';
-import { LoginDto } from 'src/models/auth/login.model';
+import { UserDto } from 'src/models/auth/login.model';
 import { PreferencesDto } from 'src/models/preferences/preferences.model';
-import { JWT_TOKEN } from '../../constants/jwt-web-token';
+import { JwtPayload } from '../../models/auth/jwt-payload.model';
 import { SignupDto } from '../../models/auth/signup.model';
 
 @Injectable()
 export class AuthService {
 
     constructor(
-        @InjectModel('User') private readonly userModel: Model<LoginDto>,
+        @InjectModel('User') private readonly userModel: Model<UserDto>,
         @InjectModel('Preferences') private readonly preferencesModel: Model<PreferencesDto>,
+        private readonly jwtService: JwtService,
     ) {}
 
-    async passwordFitsEmail(loginDto: LoginDto): Promise<boolean> {
+    async passwordFitsEmail(userDto: UserDto): Promise<boolean> {
         try {
-            const { email, password } = loginDto;
+            const { email, password } = userDto;
             // tslint:disable-next-line: await-promise
-            const user: LoginDto = await this.userModel.findOne({ email: email });
+            const user: UserDto = await this.userModel.findOne({ email: email });
             if (!user) {
                 return false;
             }
@@ -39,11 +40,11 @@ export class AuthService {
         }
     }
 
-    async login(loginDto: LoginDto): Promise<AuthResponse> {
+    async login(userDto: UserDto): Promise<AuthResponse> {
         try {
-            const { email, password } = loginDto;
+            const { email, password } = userDto;
             // tslint:disable-next-line: await-promise
-            const user: LoginDto = await this.userModel.findOne({ email: email });
+            const user: UserDto = await this.userModel.findOne({ email: email });
             if (!user) {
                 return {
                     success: false,
@@ -60,16 +61,16 @@ export class AuthService {
                     message: 'auth.errors.password_wrong_email',
                 } as AuthResponse;
             }
-            const token: string = sign({
+            const payload: JwtPayload = {
                 email: user.email,
                 _id: user._id,
-            }, JWT_TOKEN, {
-                expiresIn: '3h',
-            });
+            };
+            // tslint:disable-next-line: await-promise
+            const accessToken: string = await this.jwtService.sign(payload);
             // tslint:disable-next-line: await-promise
             const preferences: PreferencesDto = await this.preferencesModel.findOne({ userId: user._id });
             return {
-                token: token,
+                token: accessToken,
                 expiresIn: 10800,
                 _id: user._id,
                 message: 'auth.login_success',
@@ -77,10 +78,7 @@ export class AuthService {
             } as AuthResponse;
         }
         catch (error: unknown) {
-            throw new HttpException({
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'auth.errors.login_error',
-            }, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new InternalServerErrorException('auth.errors.login_error');
         }
     }
 
@@ -116,7 +114,7 @@ export class AuthService {
                 email: email,
                 password: encryptedPassword,
             });
-            const savedUser: LoginDto = await user.save();
+            const savedUser: UserDto = await user.save();
             const preferences: PreferencesDto = {
                 userId: savedUser._id,
                 language: language,
@@ -129,10 +127,7 @@ export class AuthService {
             } as AuthResponse;
         }
         catch (error: unknown) {
-            throw new HttpException({
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'auth.errors.signup_error',
-            }, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new InternalServerErrorException('auth.errors.signup_error');
         }
     }
 }
