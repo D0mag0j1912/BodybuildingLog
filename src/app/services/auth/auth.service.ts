@@ -31,11 +31,6 @@ export class AuthService {
         return this.token;
     }
 
-    getLoggedInUserId(): string {
-        const loggedUserData: AuthResponseData = this.loggedUser$$.getValue();
-        return loggedUserData._id;
-    }
-
     updateUserData(preferences?: Preferences): void {
         //TODO: Ovdje treba pokupiti podatke iz Subjecta, a ne LS
         const userData: AuthResponseData = JSON.parse(localStorage.getItem('userData'));

@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
-import { AuthService } from '../../../../services/auth/auth.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../../services/training/past-trainings.service';
 
@@ -15,7 +14,6 @@ import { PastTrainingsService } from '../../../../services/training/past-trainin
 export class PastTrainingsFiltersComponent {
 
     constructor(
-        private readonly authService: AuthService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly pastTrainingsService: PastTrainingsService,
     ) {}
@@ -30,10 +28,7 @@ export class PastTrainingsFiltersComponent {
                 debounceTime(150),
                 distinctUntilChanged(),
                 switchMap((value: string) =>
-                    this.pastTrainingsService.searchPastTrainings(
-                        value,
-                        this.authService.getLoggedInUserId(),
-                    ),
+                    this.pastTrainingsService.searchPastTrainings(value),
                 ),
                 takeUntil(this.unsubscribeService),
             )

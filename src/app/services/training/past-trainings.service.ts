@@ -14,12 +14,10 @@ export class PastTrainingsService {
         private readonly http: HttpClient,
     ) {}
 
-    searchPastTrainings(
-        searchValue: string,
-        loggedInUserId: string,
-    ): Observable<unknown> {
+    //http://localhost:3000/training/search-trainings/615a8735632e533ba8d0eb01?searchValue=test
+    searchPastTrainings(searchValue: string): Observable<unknown> {
         const params: HttpParams = new HttpParams().append('searchValue', searchValue);
-        return this.http.get<unknown>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings/${loggedInUserId}/${params}`);
+        return this.http.get<unknown>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings/${params}`);
     }
 
     getPastTrainings(currentDate: Date): Observable<PastTrainingsResponse> {
