@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { GeneralResponseData } from '../../models/common/response.model';
@@ -25,10 +25,7 @@ export class PreferencesService {
             return { message: 'preferences.language_changed' } as GeneralResponseData;
         }
         catch (error: unknown) {
-            throw new HttpException({
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: 'preferences.errors.language_change',
-            }, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new InternalServerErrorException('preferences.errors.language_change');
         }
     }
 }

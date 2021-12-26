@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { NewTrainingDto } from 'src/models/training/new-training/new-training.model';
@@ -22,10 +22,7 @@ export class DeleteTrainingActionService {
         try {
             const trainingToBeRemoved: NewTrainingDto = await Promise.resolve(this.trainingModel.findById(trainingId as string));
             if(loggedUserId.toString() !== trainingToBeRemoved.userId.toString()){
-                throw new HttpException({
-                    status: HttpStatus.UNAUTHORIZED,
-                    message: 'common.errors.not_authorized',
-                }, HttpStatus.UNAUTHORIZED);
+                throw new UnauthorizedException('common.errors.not_authorized');
             }
             await Promise.resolve(this.trainingModel.findByIdAndRemove(trainingId));
             const pastTrainings: PastTrainingsResponse = await this.pastTrainingService.getPastTrainings(
@@ -40,20 +37,11 @@ export class DeleteTrainingActionService {
         catch(error: unknown) {
             switch((error as Error).status) {
                 case 500:
-                    throw new HttpException({
-                        status: HttpStatus.INTERNAL_SERVER_ERROR,
-                        message: 'training.past_trainings.actions.errors.error_delete_training',
-                    }, HttpStatus.INTERNAL_SERVER_ERROR);
+                    throw new InternalServerErrorException('training.past_trainings.actions.errors.error_delete_training');
                 case 401:
-                    throw new HttpException({
-                        status: HttpStatus.UNAUTHORIZED,
-                        message: 'common.errors.not_authorized',
-                    }, HttpStatus.UNAUTHORIZED);
+                    throw new UnauthorizedException('common.errors.not_authorized');
                 default:
-                    throw new HttpException({
-                        status: HttpStatus.INTERNAL_SERVER_ERROR,
-                        message: 'training.past_trainings.actions.errors.error_delete_training',
-                    }, HttpStatus.INTERNAL_SERVER_ERROR);
+                    throw new InternalServerErrorException('training.past_trainings.actions.errors.error_delete_training');
             }
         }
     }
