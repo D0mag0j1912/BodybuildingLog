@@ -133,7 +133,7 @@
             "disabled_next_week": "Idući tjedni nisu dostupni.",
             "created_at": "Trening kreiran: ",
             "filters": {
-                "enter_search_term": "Unesite Vašu pretragu",
+                "enter_search_term": "Pretražite po nazivu vježbe",
                 "choose_custom_query": "Izaberite Vaš upit",
                 "apply_filters": "Primjenite filtere",
                 "errors": {

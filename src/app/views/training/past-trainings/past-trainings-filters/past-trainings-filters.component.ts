@@ -27,7 +27,7 @@ export class PastTrainingsFiltersComponent {
     onSearch($event: Event): void {
         fromEvent($event?.target, 'keyup')
             .pipe(
-                filter((event: Event) => (event.target as HTMLInputElement)?.value !== ''),
+                filter((event: Event) => (event.target as HTMLInputElement)?.value !== '' && (event.target as HTMLInputElement)?.value.length <= 50),
                 map((event: Event) => (event.target as HTMLInputElement)?.value.trim()),
                 debounceTime(200),
                 distinctUntilChanged(),
