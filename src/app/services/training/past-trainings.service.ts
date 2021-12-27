@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -14,10 +14,9 @@ export class PastTrainingsService {
         private readonly http: HttpClient,
     ) {}
 
-    //http://localhost:3000/training/search-trainings?searchValue=test
-    searchPastTrainings(searchValue: string): Observable<unknown> {
-        const params: HttpParams = new HttpParams().append('searchValue', searchValue);
-        return this.http.get<unknown>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings/${params}`);
+    searchPastTrainings(searchValue: string): Observable<NewTraining[]> {
+        const params: string = `?searchValue=${searchValue}`;
+        return this.http.get<NewTraining[]>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings${params}`);
     }
 
     getPastTrainings(currentDate: Date): Observable<PastTrainingsResponse> {

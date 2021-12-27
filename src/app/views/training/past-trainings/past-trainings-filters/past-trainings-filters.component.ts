@@ -25,7 +25,7 @@ export class PastTrainingsFiltersComponent {
             .pipe(
                 filter((event: Event) => (event.target as HTMLInputElement)?.value !== ''),
                 map((event: Event) => (event.target as HTMLInputElement)?.value.trim()),
-                debounceTime(150),
+                debounceTime(200),
                 distinctUntilChanged(),
                 switchMap((value: string) =>
                     this.pastTrainingsService.searchPastTrainings(value),
