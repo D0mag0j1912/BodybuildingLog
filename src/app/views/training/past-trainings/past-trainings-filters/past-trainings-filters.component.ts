@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
-import { EMPTY, fromEvent } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, filter, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { Training } from '../../../../models/training/new-training/new-training.model';
 import { SharedService } from '../../../../services/shared/shared.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
@@ -37,10 +37,11 @@ export class PastTrainingsFiltersComponent {
                 switchMap((value: string) =>
                     this.pastTrainingsService.searchPastTrainings(value),
                 ),
-                catchError(_ => EMPTY),
-                finalize(() => this.sharedService.setLoading(false)),
                 takeUntil(this.unsubscribeService),
             )
-            .subscribe((trainings: Training[]) => this.trainingEmitted.emit(trainings));
+            .subscribe((trainings: Training[]) => {
+                this.trainingEmitted.emit(trainings);
+                this.sharedService.setLoading(false);
+            });
     }
 }
