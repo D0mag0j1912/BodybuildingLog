@@ -1,60 +1,61 @@
 @import '../../../../../styles/default-pallette';
 
-.spinner {
-    position: absolute;
-    left: 42.5%;
-    top: 45%;
-}
-
 .main-section {
-    margin: 4rem 1rem 0 1rem;
-}
+    margin: 64px 16px 0 16px;
 
-.card-info-wrapper {
-    border: 2px solid $army-green;
-}
+    .card-info-wrapper {
+        border: 2px solid $army-green;
 
-.week-title {
-    font-size: 20px;
-    padding-bottom: 10px;
-    text-align: center;
-    font-family: $poppins;
+        .week-title {
+            font-size: 20px;
+            padding-bottom: 10px;
+            text-align: center;
+            font-family: $poppins;
 
-    &--txt {
-        color: $army-green;
-    }
-}
+            &--txt {
+                color: $army-green;
+            }
+        }
 
-.footer {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
+        .footer {
+            display: flex;
+            justify-content: center;
+            width: 100%;
 
-.food-subtitle {
-    font-size: 16px;
-    text-align: center;
-    color: black;
-    font-family: $poppins;
+            .food-subtitle {
+                font-size: 16px;
+                text-align: center;
+                color: black;
+                font-family: $poppins;
 
-    &--txt {
-        color: $army-green;
-    }
-}
-
-.training-item-wrapper {
-    display: block;
-    margin: 10px 0;
-    max-height: 400px;
-    overflow: auto;
-
-    &::-webkit-scrollbar {
-        width: 6px;
+                &--txt {
+                    color: $army-green;
+                }
+            }
+        }
     }
 
-    &::-webkit-scrollbar-thumb {
-        background-color: $light-periwinkle;
-        border-radius: 6px;
+    .spinner-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 200px;
+    }
+
+    .training-item-wrapper {
+        display: block;
+        margin: 10px 0;
+        max-height: 400px;
+        overflow: auto;
+
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: $light-periwinkle;
+            border-radius: 6px;
+        }
     }
 }
 

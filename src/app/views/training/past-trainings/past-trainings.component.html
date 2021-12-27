@@ -1,47 +1,49 @@
-<mat-spinner
-    *ngIf="isLoading$ | async"
-    class="spinner"
-    [diameter]="50"></mat-spinner>
-<ng-container *ngIf="!(isLoading$ | async) && !isError">
+<ng-container *ngIf="!isError">
     <section class="main-section">
         <bl-past-trainings-filters
             (trainingEmitted)="searchEmitted($event)"></bl-past-trainings-filters>
-        <mat-card class="card-info-wrapper">
-            <mat-card-title class="week-title">
-                <strong class="week-title--txt">
-                    {{ 'common.week' | translate }}
-                </strong>
-                <span>{{ ' (' + (startDate | date: 'dd.MM.yyyy') + ' - ' + (endDate | date: 'dd.MM.yyyy') + ')' }}</span>
-            </mat-card-title>
-            <div class="footer">
-                <div class="food-subtitle">
-                    <strong class="food-subtitle--txt">
-                        {{ ('common.food' | translate) + ': ' }}
+        <ng-container *ngIf="!(isLoading$ | async); else loading">
+            <mat-card class="card-info-wrapper">
+                <mat-card-title class="week-title">
+                    <strong class="week-title--txt">
+                        {{ 'common.week' | translate }}
                     </strong>
-                    <span>{{ food + ' ' + ('common.kcal' | translate) }}</span>
+                    <span>{{ ' (' + (startDate | date: 'dd.MM.yyyy') + ' - ' + (endDate | date: 'dd.MM.yyyy') + ')' }}</span>
+                </mat-card-title>
+                <div class="footer">
+                    <div class="food-subtitle">
+                        <strong class="food-subtitle--txt">
+                            {{ ('common.food' | translate) + ': ' }}
+                        </strong>
+                        <span>{{ food + ' ' + ('common.kcal' | translate) }}</span>
+                    </div>
                 </div>
+            </mat-card>
+            <div
+                *ngIf="trainingsPerPage > 0; else noTrainings"
+                class="training-item-wrapper"
+                [class.no-trainings]="trainingsPerPage === 0">
+                <bl-training-item
+                    *ngFor="let training of (trainings$ | async)"
+                    [training]="training"></bl-training-item>
             </div>
-        </mat-card>
-        <div
-            class="training-item-wrapper"
-            [class.no-trainings]="trainingsPerPage === 0"
-            *ngIf="trainingsPerPage > 0; else noTrainings">
-            <bl-training-item
-                *ngFor="let training of (trainings$ | async)"
-                [training]="training"></bl-training-item>
-        </div>
+        </ng-container>
+        <ng-template #loading>
+            <div class="spinner-wrapper">
+                <mat-spinner
+                    class="spinner"
+                    [diameter]="40"></mat-spinner>
+            </div>
+        </ng-template>
     </section>
-    <div
-        class="training-paginator">
-        <span
-            class="training-paginator--label">
+    <div class="training-paginator">
+        <span class="training-paginator--label">
             {{ 'training.past_trainings.training_number' | translate }}
             <strong class="training-paginator--label-count">
                 {{ trainingsPerPage }}
             </strong>
         </span>
-        <div
-            class="training-paginator--button-wrapper">
+        <div class="training-paginator--button-wrapper">
             <div
                 matTooltipPosition="above"
                 matTooltipClass="tooltip"
@@ -50,6 +52,7 @@
                     mat-raised-button
                     type="button"
                     class="training-paginator--previous"
+                    [disabled]="isLoading$ | async"
                     (click)="loadWeekTraining('Previous week')">
                     <mat-icon class="training-paginator--icon">navigate_before</mat-icon>
                 </button>
@@ -62,7 +65,7 @@
                     mat-raised-button
                     type="button"
                     class="training-paginator--next"
-                    [disabled]="isNextWeekDisabled"
+                    [disabled]="isNextWeekDisabled || (isLoading$ | async)"
                     (click)="loadWeekTraining('Next week')">
                     <mat-icon class="training-paginator--icon">navigate_next</mat-icon>
                 </button>
