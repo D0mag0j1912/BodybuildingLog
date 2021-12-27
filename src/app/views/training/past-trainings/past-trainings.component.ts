@@ -23,7 +23,6 @@ export class PastTrainingsComponent implements OnInit {
 
     food: number = 3000;
 
-    isLoading: boolean = false;
     isError: boolean = false;
     isNextWeekDisabled: boolean = true;
 
@@ -33,6 +32,7 @@ export class PastTrainingsComponent implements OnInit {
     trainingsPerPage: number = 0;
 
     trainings$: Observable<Training[]> = of(null);
+    isLoading$: Observable<boolean> = this.sharedService.isLoading$;
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
@@ -49,7 +49,7 @@ export class PastTrainingsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.isLoading = true;
+        this.sharedService.setLoading(true);
         this.initializePastTrainings(this.getLocalDateTime()).subscribe();
     }
 
@@ -59,7 +59,7 @@ export class PastTrainingsComponent implements OnInit {
     }
 
     loadWeekTraining(previousOrNextWeek: Week): void {
-        this.isLoading = true;
+        this.sharedService.setLoading(true);
 
         this.initializePastTrainings(
             previousOrNextWeek === 'Previous week'
@@ -87,7 +87,7 @@ export class PastTrainingsComponent implements OnInit {
     }
     //TODO: popraviti
     tryAgain(): void {
-        this.isLoading = true;
+        this.sharedService.setLoading(true);
         this.initializePastTrainings(this.getLocalDateTime())
         .subscribe((response: PastTrainingsResponse) => {
             if (response) {
@@ -126,7 +126,7 @@ export class PastTrainingsComponent implements OnInit {
                 return of(null);
             }),
             finalize(() => {
-                this.isLoading = false;
+                this.sharedService.setLoading(false);
                 this.changeDetectorRef.markForCheck();
             }),
         );

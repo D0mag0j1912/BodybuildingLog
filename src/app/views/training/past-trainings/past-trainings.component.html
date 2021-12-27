@@ -1,8 +1,8 @@
 <mat-spinner
-    *ngIf="isLoading"
+    *ngIf="isLoading$ | async"
     class="spinner"
     [diameter]="50"></mat-spinner>
-<ng-container *ngIf="!isLoading && !isError">
+<ng-container *ngIf="!(isLoading$ | async) && !isError">
     <section class="main-section">
         <bl-past-trainings-filters
             (trainingEmitted)="searchEmitted($event)"></bl-past-trainings-filters>
@@ -87,7 +87,7 @@
     </ng-template>
 </ng-container>
 
-<ng-container *ngIf="!isLoading && isError">
+<ng-container *ngIf="!(isLoading$ | async) && isError">
     <div class="error-wrapper">
         <img
             class="error-image"
