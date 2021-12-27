@@ -8,7 +8,7 @@ import { GeneralResponseData } from '../../models/general-response.model';
 import { Exercise } from '../../models/training/exercise.model';
 import { ExerciseFetch } from '../../models/training/exercise.model';
 import { EMPTY_TRAINING } from '../../models/training/new-training/empty-training.model';
-import { NewTraining } from '../../models/training/new-training/new-training.model';
+import { Training } from '../../models/training/new-training/new-training.model';
 import { SetTrainingData } from '../../models/training/shared/set.model';
 import { Set } from '../../models/training/shared/set.model';
 import { SingleExercise } from '../../models/training/shared/single-exercise.model';
@@ -20,8 +20,8 @@ export class NewTrainingService {
     private readonly allExercisesChanged$$: BehaviorSubject<Exercise[]> = new BehaviorSubject<Exercise[]>([]);
     readonly allExercisesChanged$: Observable<Exercise[]> = this.allExercisesChanged$$.asObservable();
 
-    private readonly currentTrainingChanged$$: BehaviorSubject<NewTraining> = new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
-    readonly currentTrainingChanged$: Observable<NewTraining> = this.currentTrainingChanged$$.asObservable();
+    private readonly currentTrainingChanged$$: BehaviorSubject<Training> = new BehaviorSubject<Training>(EMPTY_TRAINING);
+    readonly currentTrainingChanged$: Observable<Training> = this.currentTrainingChanged$$.asObservable();
 
     constructor(
         private readonly http: HttpClient,
@@ -31,7 +31,7 @@ export class NewTrainingService {
     getExercises(): Observable<AuthResponseData | ExerciseFetch> {
         return this.http.get<Exercise[]>(environment.BACKEND + '/training/get_exercises').pipe(
             switchMap((exercises: Exercise[]) => {
-                const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
+                const trainingState: Training = JSON.parse(localStorage.getItem('trainingState'));
                 if (!trainingState) {
                     return this.authService.loggedUser$.pipe(
                         take(1),
@@ -53,12 +53,12 @@ export class NewTrainingService {
         );
     }
 
-    addTraining(trainingData: NewTraining): Observable<GeneralResponseData> {
+    addTraining(trainingData: Training): Observable<GeneralResponseData> {
         return this.http.post<GeneralResponseData>(environment.BACKEND + '/training/handle_training', { trainingData: trainingData });
     }
 
     updateTraining(
-        trainingData: NewTraining,
+        trainingData: Training,
         trainingId: string,
     ): Observable<GeneralResponseData> {
         return this.http.put<GeneralResponseData>(environment.BACKEND + `/training/handle_training/${trainingId}`, { updatedTrainingData: trainingData });
@@ -67,11 +67,11 @@ export class NewTrainingService {
     /**************************************** */
 
     addBodyweightToStorage(value: string): void {
-        const updatedTraining: NewTraining = {
+        const updatedTraining: Training = {
             ...this.currentTrainingChanged$$.getValue(),
             bodyweight: +value,
-        } as NewTraining;
-        this.saveTrainingData({ ...updatedTraining } as NewTraining);
+        } as Training;
+        this.saveTrainingData({ ...updatedTraining } as Training);
     }
 
     deleteSet(
@@ -79,7 +79,7 @@ export class NewTrainingService {
         indexSet: number,
         newTotal: number,
     ): void {
-        const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
+        const updatedTraining: Training = { ...this.currentTrainingChanged$$.getValue() };
         updatedTraining.exercise[indexExercise].sets.splice(indexSet, 1);
         updatedTraining.exercise[indexExercise].sets.map((set: Set) => {
             if (set.setNumber > (indexSet + 1)) {
@@ -87,14 +87,14 @@ export class NewTrainingService {
             }
         });
         updatedTraining.exercise[indexExercise].total = newTotal;
-        this.saveTrainingData({ ...updatedTraining } as NewTraining);
+        this.saveTrainingData({ ...updatedTraining } as Training);
     }
 
     pushToAvailableExercises(
-        currentTrainingState: NewTraining,
+        currentTrainingState: Training,
         toBeAddedExercise: Exercise[],
     ): void {
-        const updatedTraining: NewTraining = { ...currentTrainingState };
+        const updatedTraining: Training = { ...currentTrainingState };
         updatedTraining.exercise.map((exercise: SingleExercise) => {
             const isDeletedExerciseInAE: Exercise = exercise.availableExercises.find((exercise: Exercise) => exercise._id === toBeAddedExercise[0]._id);
             if (!isDeletedExerciseInAE) {
@@ -102,16 +102,16 @@ export class NewTrainingService {
                 exercise.availableExercises.sort(this.compare);
             }
         });
-        this.saveTrainingData({ ...updatedTraining } as NewTraining);
+        this.saveTrainingData({ ...updatedTraining } as Training);
     }
 
     deleteExercise(
-        currentTrainingState: NewTraining,
+        currentTrainingState: Training,
         deletedExerciseName?: string,
-    ): Observable<[NewTraining, Exercise[]]> {
+    ): Observable<[Training, Exercise[]]> {
         let updatedExercises: SingleExercise[] = [ ...currentTrainingState.exercise ];
         updatedExercises = updatedExercises.filter((exercise: SingleExercise) => exercise.exerciseName !== deletedExerciseName);
-        const updatedTraining: NewTraining = {
+        const updatedTraining: Training = {
             ...currentTrainingState,
             exercise: updatedExercises,
         };
@@ -127,7 +127,7 @@ export class NewTrainingService {
             );
         }
         else {
-            this.saveTrainingData({ ...updatedTraining } as NewTraining);
+            this.saveTrainingData({ ...updatedTraining } as Training);
             return of([
                 updatedTraining,
                 null,
@@ -136,7 +136,7 @@ export class NewTrainingService {
     }
 
     setsChanged(trainingData: SetTrainingData): void {
-        const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
+        const updatedTraining: Training = { ...this.currentTrainingChanged$$.getValue() };
         const indexOfChangedExercise: number = updatedTraining.exercise.findIndex((singleExercise: SingleExercise) => singleExercise.exerciseName === trainingData.exerciseName);
         const indexFoundSet = updatedTraining.exercise[indexOfChangedExercise].sets.findIndex(set => set.setNumber === trainingData.setNumber);
 
@@ -156,7 +156,7 @@ export class NewTrainingService {
             });
             updatedTraining.exercise[indexOfChangedExercise].total = trainingData.total;
         }
-        this.saveTrainingData({ ...updatedTraining } as NewTraining);
+        this.saveTrainingData({ ...updatedTraining } as Training);
     }
 
     addNewExercise(alreadyUsedExercises: string[]): void {
@@ -170,7 +170,7 @@ export class NewTrainingService {
         selectedIndex: number,
         disabledTooltip: boolean,
     ): void {
-        const updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
+        const updatedTraining: Training = { ...this.currentTrainingChanged$$.getValue() };
         updatedTraining.exercise[selectedIndex].exerciseName = selectedExercise;
         updatedTraining.exercise[selectedIndex].disabledTooltip = disabledTooltip;
         updatedTraining.exercise.forEach((exercise: SingleExercise, index: number) => {
@@ -178,11 +178,11 @@ export class NewTrainingService {
                 exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.name !== selectedExercise);
             }
         });
-        this.saveTrainingData({ ...updatedTraining } as NewTraining);
+        this.saveTrainingData({ ...updatedTraining } as Training);
     }
 
     keepTrainingState(): void {
-        const trainingState: NewTraining = JSON.parse(localStorage.getItem('trainingState'));
+        const trainingState: Training = JSON.parse(localStorage.getItem('trainingState'));
         const allExercises: Exercise[] = JSON.parse(localStorage.getItem('allExercises'));
 
         if (!trainingState || !allExercises) {
@@ -197,7 +197,7 @@ export class NewTrainingService {
         restartAll?: boolean,
         userId?: string,
     ): void {
-        let updatedTraining: NewTraining = { ...this.currentTrainingChanged$$.getValue() };
+        let updatedTraining: Training = { ...this.currentTrainingChanged$$.getValue() };
         if (restartAll) {
             updatedTraining = {
                 ...EMPTY_TRAINING,
@@ -209,7 +209,7 @@ export class NewTrainingService {
                 exercises,
             ),
         );
-        this.saveTrainingData({ ...updatedTraining } as NewTraining);
+        this.saveTrainingData({ ...updatedTraining } as Training);
     }
 
     returnEmptyExercise(exercises: Exercise[]): SingleExercise {
@@ -222,12 +222,12 @@ export class NewTrainingService {
         } as SingleExercise;
     }
 
-    private saveTrainingData(updatedTraining: NewTraining): void {
+    private saveTrainingData(updatedTraining: Training): void {
         this.currentTrainingChanged$$.next({ ...updatedTraining });
         localStorage.setItem('trainingState', JSON.stringify({ ...updatedTraining }));
     }
 
-    updateTrainingData(editTraining: NewTraining): void {
+    updateTrainingData(editTraining: Training): void {
         this.saveTrainingData({ ...editTraining });
     }
 

@@ -4,7 +4,8 @@
     [diameter]="50"></mat-spinner>
 <ng-container *ngIf="!isLoading && !isError">
     <section class="main-section">
-        <bl-past-trainings-filters></bl-past-trainings-filters>
+        <bl-past-trainings-filters
+            (trainingEmitted)="searchEmitted($event)"></bl-past-trainings-filters>
         <mat-card class="card-info-wrapper">
             <mat-card-title class="week-title">
                 <strong class="week-title--txt">

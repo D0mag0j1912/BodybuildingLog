@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
-import { NewTraining } from 'src/app/models/training/new-training/new-training.model';
+import { Training } from 'src/app/models/training/new-training/new-training.model';
 import { environment } from '../../../../environments/environment';
 import { TrainingActions } from '../../../models/training/past-trainings/training-actions/training-actions.model';
 import { DeleteTrainingActionData } from '../../../models/training/past-trainings/training-actions/training-actions.model';
@@ -36,7 +36,7 @@ export class DeleteTrainingActionService implements TrainingActions {
                     map((value: { [key: string]: string }) => `${value} (${this.datePipe.transform(data.training.createdAt as Date, 'dd.MM.yyyy')})`),
                 ) as Observable<string>,
                 timeCreated$: of(data.timeCreated) as Observable<string>,
-                training$: of(data.training as NewTraining),
+                training$: of(data.training as Training),
                 deleteTrainingFn: (
                     trainingId: string,
                     currentDate: Date,

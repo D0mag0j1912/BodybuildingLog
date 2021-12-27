@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { format } from 'date-fns';
-import { NewTraining } from '../../../../models/training/new-training/new-training.model';
+import { Training } from '../../../../models/training/new-training/new-training.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
 import { SharedService } from '../../../../services/shared/shared.service';
 
@@ -37,7 +37,7 @@ export class TrainingItemComponent implements OnInit {
     isTooltipDisabled: boolean = true;
 
     @Input()
-    training: NewTraining;
+    training: Training;
 
     @ViewChildren('exerciseNameEl', {
         read: ElementRef,

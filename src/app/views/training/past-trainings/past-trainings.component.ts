@@ -7,7 +7,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
-import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import { Training } from '../../../models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from '../../../models/training/past-trainings/past-trainings-response.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
@@ -32,7 +32,7 @@ export class PastTrainingsComponent implements OnInit {
 
     trainingsPerPage: number = 0;
 
-    trainings$: Observable<NewTraining[]> = of(null);
+    trainings$: Observable<Training[]> = of(null);
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
@@ -51,6 +51,11 @@ export class PastTrainingsComponent implements OnInit {
     ngOnInit(): void {
         this.isLoading = true;
         this.initializePastTrainings(this.getLocalDateTime()).subscribe();
+    }
+
+    searchEmitted(trainings: Training[]): void {
+        this.trainings$ = of(trainings);
+        this.changeDetectorRef.markForCheck();
     }
 
     loadWeekTraining(previousOrNextWeek: string): void {
@@ -134,7 +139,7 @@ export class PastTrainingsComponent implements OnInit {
         this.endDate = utcToZonedTime(
             response.dates.endDate as Date,
             environment.TIMEZONE as string) as Date;
-        this.trainings$ = of(response.trainings as NewTraining[]);
+        this.trainings$ = of(response.trainings as Training[]);
         this.trainingsPerPage = +response.trainingsPerPage as number;
         this.disableNextWeek();
         this.changeDetectorRef.markForCheck();

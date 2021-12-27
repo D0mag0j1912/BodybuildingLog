@@ -12,7 +12,7 @@ import { getControlValueAccessor } from '../../../../helpers/control-value-acces
 import { SingleExerciseErrorHelper } from '../../../../helpers/mat-error/single-exercise-error.helper';
 import { WeightFormat } from '../../../../models/preferences.model';
 import { Exercise } from '../../../../models/training/exercise.model';
-import { NewTraining } from '../../../../models/training/new-training/new-training.model';
+import { Training } from '../../../../models/training/new-training/new-training.model';
 import { createInitialSet, SetFormValidationErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
@@ -70,11 +70,11 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         if (exerciseName) {
             this.newTrainingService.currentTrainingChanged$.pipe(
                 take(1),
-                switchMap((currentTrainingState: NewTraining) =>
+                switchMap((currentTrainingState: Training) =>
                     this.setExerciseNameTooltip(
                         exerciseName as MatSelect,
                         null,
-                        currentTrainingState as NewTraining,
+                        currentTrainingState as Training,
                     )),
                 takeUntil(this.unsubscribeService),
             ).subscribe();
@@ -88,7 +88,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 forkJoin([
                     this.newTrainingService.currentTrainingChanged$.pipe(
                         take(1),
-                        map((currentTrainingState: NewTraining) => currentTrainingState.exercise),
+                        map((currentTrainingState: Training) => currentTrainingState.exercise),
                     ),
                     this.newTrainingService.allExercisesChanged$.pipe(
                         take(1),
@@ -110,7 +110,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         this.form.updateValueAndValidity();
     }
 
-    writeValue(data: NewTraining): void {
+    writeValue(data: Training): void {
         if (data.exercise.length > 0) {
             (data.exercise as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
                 this.addExercise();
@@ -200,9 +200,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     if (response) {
                         return this.newTrainingService.currentTrainingChanged$.pipe(
                             take(1),
-                            switchMap((currentTrainingState: NewTraining) =>
+                            switchMap((currentTrainingState: Training) =>
                                 this.newTrainingService.deleteExercise(
-                                    currentTrainingState as NewTraining,
+                                    currentTrainingState as Training,
                                     exerciseName as string,
                                 ),
                             ),
@@ -217,12 +217,12 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     this.changeDetectorRef.markForCheck();
                 }),
                 takeUntil(this.unsubscribeService),
-            ).subscribe((data: [NewTraining, Exercise[]]) => {
+            ).subscribe((data: [Training, Exercise[]]) => {
                 if (data) {
                     this.exerciseChanged = !this.exerciseChanged;
                     this.form.removeAt(indexExercise);
                     this.newTrainingService.pushToAvailableExercises(
-                        data[0] as NewTraining,
+                        data[0] as Training,
                         data[1] as Exercise[],
                     );
                 }
@@ -231,9 +231,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         else {
             this.newTrainingService.currentTrainingChanged$.pipe(
                 take(1),
-                switchMap((currentTrainingState: NewTraining) =>
+                switchMap((currentTrainingState: Training) =>
                     this.newTrainingService.deleteExercise(
-                        currentTrainingState as NewTraining,
+                        currentTrainingState as Training,
                     ),
                 ),
                 finalize(() => this.exerciseStateChanged$$.next()),
@@ -342,15 +342,15 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         this.isLoading = true;
 
         this.gatherAllFormData().pipe(
-            switchMap((apiNewTraining: NewTraining) => {
+            switchMap((apiNewTraining: Training) => {
                 if (this.editMode) {
                     return this.newTrainingService.updateTraining(
-                        apiNewTraining as NewTraining,
+                        apiNewTraining as Training,
                         this.editData._id as string,
                     );
                 }
                 else {
-                    return this.newTrainingService.addTraining(apiNewTraining as NewTraining);
+                    return this.newTrainingService.addTraining(apiNewTraining as Training);
                 }
             }),
             finalize(() => {
@@ -365,10 +365,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         });
     }
 
-    private gatherAllFormData(): Observable<NewTraining> {
+    private gatherAllFormData(): Observable<Training> {
         return this.newTrainingService.currentTrainingChanged$.pipe(
             take(1),
-            map((currentTrainingState: NewTraining) => {
+            map((currentTrainingState: Training) => {
                 const exerciseFormData: SingleExercise[] = [];
 
                 this.getExercises().forEach((_exercise: AbstractControl, indexExercise: number) => {
@@ -399,7 +399,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     bodyweight: this.bodyweight.value ? +this.bodyweight.value as number : null,
                     editMode: this.editMode as boolean,
                     userId: currentTrainingState.userId as string,
-                } as NewTraining;
+                } as Training;
             }),
             takeUntil(this.unsubscribeService),
         );
@@ -408,7 +408,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     private setExerciseNameTooltip(
         element: MatSelect,
         indexExercise?: number,
-        currentTrainingState?: NewTraining,
+        currentTrainingState?: Training,
     ): Observable<void> {
         return of(null).pipe(
             delay(0),

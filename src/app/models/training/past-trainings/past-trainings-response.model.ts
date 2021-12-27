@@ -1,6 +1,6 @@
-import { NewTraining } from '../new-training/new-training.model';
+import { Training } from '../new-training/new-training.model';
 export interface PastTrainingsResponse {
-    readonly trainings: [NewTraining];
+    readonly trainings: [Training];
     readonly dates: {
         startDate: Date,
         endDate: Date

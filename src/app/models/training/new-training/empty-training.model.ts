@@ -1,6 +1,6 @@
-import { NewTraining } from './new-training.model';
+import { Training } from './new-training.model';
 
-export const EMPTY_TRAINING: NewTraining = {
+export const EMPTY_TRAINING: Training = {
     exercise: [],
     _id: '',
     bodyweight: null,

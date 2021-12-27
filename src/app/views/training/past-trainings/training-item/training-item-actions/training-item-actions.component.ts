@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { NewTraining } from 'src/app/models/training/new-training/new-training.model';
+import { Training } from 'src/app/models/training/new-training/new-training.model';
 import { DeleteTrainingActionService } from 'src/app/services/training/training-actions/delete-training-action.service';
 import { TrainingItemActions } from '../../../../../models/training/past-trainings/training-actions/training-actions.model';
 import { DeleteTrainingActionData } from '../../../../../models/training/past-trainings/training-actions/training-actions.model';
@@ -15,7 +15,7 @@ export class TrainingItemActionsComponent {
     action: TrainingItemActions;
 
     @Input()
-    training: NewTraining;
+    training: Training;
 
     @Input()
     dayIndex: number;
@@ -35,7 +35,7 @@ export class TrainingItemActionsComponent {
             weekDays: this.weekDays as ReadonlyArray<string>,
             timeCreated: this.timeCreated as string,
             dayIndex: this.dayIndex as number,
-            training: this.training as NewTraining,
+            training: this.training as Training,
         };
         switch(action) {
             case 'delete':
