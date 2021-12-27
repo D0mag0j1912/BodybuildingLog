@@ -8,7 +8,7 @@ import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { Training } from '../../../models/training/new-training/new-training.model';
-import { PastTrainingsResponse } from '../../../models/training/past-trainings/past-trainings-response.model';
+import { PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
@@ -58,7 +58,7 @@ export class PastTrainingsComponent implements OnInit {
         this.changeDetectorRef.markForCheck();
     }
 
-    loadWeekTraining(previousOrNextWeek: string): void {
+    loadWeekTraining(previousOrNextWeek: Week): void {
         this.isLoading = true;
 
         this.initializePastTrainings(

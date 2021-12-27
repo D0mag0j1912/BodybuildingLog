@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Training } from '../../models/training/new-training/new-training.model';
-import { PastTrainingsResponse } from '../../models/training/past-trainings/past-trainings-response.model';
+import { PastTrainingsResponse } from '../../models/training/past-trainings/past-trainings.model';
 
 const ROUTE_PREFIX: string = '/training/';
 

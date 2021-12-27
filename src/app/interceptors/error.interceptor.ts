@@ -6,7 +6,7 @@ import { captureException } from '@sentry/minimal';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { SNACK_BAR_DURATION } from '../constants/snack-bar-duration.const';
-import { ErrorMessage } from '../models/training/past-trainings/past-trainings-response.model';
+import { ErrorMessage } from '../models/training/past-trainings/past-trainings.model';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {

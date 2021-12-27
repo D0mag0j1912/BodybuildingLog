@@ -11,7 +11,7 @@ import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service'
 import { NewTrainingService } from 'src/app/services/training/new-training.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { Language } from '../../../models/preferences.model';
-import { DateData } from '../../../models/training/past-trainings/past-trainings-response.model';
+import { DateData } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({

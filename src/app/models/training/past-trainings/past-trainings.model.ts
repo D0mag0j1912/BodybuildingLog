@@ -17,3 +17,5 @@ export interface DateData {
     readonly startDate: Date;
     readonly endDate: Date;
 }
+
+export type Week = 'Previous week' | 'Next week';
