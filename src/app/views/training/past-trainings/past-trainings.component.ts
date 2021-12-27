@@ -7,6 +7,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
+import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import { Training } from '../../../models/training/new-training/new-training.model';
 import { PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
@@ -46,6 +47,10 @@ export class PastTrainingsComponent implements OnInit {
         this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((response: PastTrainingsResponse) => this.fillTemplateVariables(response));
+    }
+
+    get spinnerSize(): number {
+        return SPINNER_SIZE;
     }
 
     ngOnInit(): void {
