@@ -19,13 +19,12 @@ export class PastTrainingsService {
         loggedInUserId: string,
     ): Promise<NewTrainingDto[]> {
         try {
-            //TODO: fix query
             return this.trainingModel.find({
-                name: {
+                'exercise.exerciseName': {
                     $regex: searchValue,
                     $options: 'i',
                 },
-                userId: loggedInUserId,
+                'userId': loggedInUserId,
             }).limit(5);
         }
         catch (error: unknown) {
