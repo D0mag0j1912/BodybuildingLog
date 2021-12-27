@@ -14,13 +14,18 @@ export class PastTrainingsService {
         @InjectModel('Training') private readonly trainingModel: Model<NewTrainingDto>,
     ) {}
 
-    async searchTrainings(searchValue: SearchTrainingsDto): Promise<NewTrainingDto[]> {
+    async searchTrainings(
+        searchValue: SearchTrainingsDto,
+        loggedInUserId: string,
+    ): Promise<NewTrainingDto[]> {
         try {
+            //TODO: fix query
             return this.trainingModel.find({
                 name: {
                     $regex: searchValue,
                     $options: 'i',
                 },
+                userId: loggedInUserId,
             }).limit(5);
         }
         catch (error: unknown) {

@@ -1,6 +1,8 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
+import { GET_USER } from 'src/decorators/get-user.decorator';
+import { UserDto } from '../../../models/auth/login.model';
 import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
 import { SearchTrainingsDto } from '../../../models/training/past-trainings/past-trainings.model';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
@@ -14,8 +16,14 @@ export class SearchTrainingsController {
         private readonly pastTrainingsService: PastTrainingsService,
     ) {}
 
-    @Get(':id')
-    async searchTrainings(@Query('searchValue') searchValue: SearchTrainingsDto): Promise<NewTrainingDto[]> {
-        return this.pastTrainingsService.searchTrainings(searchValue);
+    @Get()
+    async searchTrainings(
+        @GET_USER() user: UserDto,
+        @Query('searchValue') searchValue: SearchTrainingsDto,
+    ): Promise<NewTrainingDto[]> {
+        return this.pastTrainingsService.searchTrainings(
+            searchValue,
+            user._id,
+        );
     }
 }

@@ -11,6 +11,7 @@ import { SINGLE_EXERCISE_SCHEMA } from 'src/models/training/new-training/single-
 import { NewTrainingService } from 'src/services/training/new-training.service';
 import { PastTrainingsService } from 'src/services/training/past-trainings.service';
 import { DeleteTrainingActionService } from 'src/services/training/training-actions/delete-training-action.service';
+import { SearchTrainingsController } from '../../controllers/training/past-trainings/search-trainings.controller';
 import { AuthModule } from '../auth/auth.module';
 
 const CONTROLLERS = [
@@ -18,6 +19,7 @@ const CONTROLLERS = [
     NewTrainingController,
     PastTrainingsController,
     DeleteTrainingActionController,
+    SearchTrainingsController,
 ];
 
 const SERVICES = [
