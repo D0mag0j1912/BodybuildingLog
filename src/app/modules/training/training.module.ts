@@ -1,7 +1,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '../../material.module';
@@ -25,6 +25,7 @@ const COMPONENTS = [
 
 const EXTERNAL_IMPORTS = [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     FlexLayoutModule,
     MaterialModule,
