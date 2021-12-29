@@ -33,7 +33,7 @@ export class PastTrainingsComponent implements OnInit {
     trainingsPerPage: number = 0;
 
     trainings$: Observable<Training[]> = of(null);
-    isLoading$: Observable<boolean> = this.sharedService.isLoading$;
+    readonly isLoading$: Observable<boolean> = this.sharedService.isLoading$;
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,

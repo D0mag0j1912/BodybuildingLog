@@ -28,6 +28,7 @@ export class PastTrainingsFiltersComponent {
 
     onSearch($event: Event): void {
         this.sharedService.setLoading(true);
+        //TODO: fix going to backend
         fromEvent($event?.target, 'keyup')
             .pipe(
                 filter((event: Event) => (event.target as HTMLInputElement)?.value !== '' && (event.target as HTMLInputElement)?.value.length <= 50),
@@ -39,9 +40,6 @@ export class PastTrainingsFiltersComponent {
                 ),
                 takeUntil(this.unsubscribeService),
             )
-            .subscribe((trainings: Training[]) => {
-                this.trainingEmitted.emit(trainings);
-                this.sharedService.setLoading(false);
-            });
+            .subscribe(_ => this.sharedService.setLoading(false));
     }
 }
