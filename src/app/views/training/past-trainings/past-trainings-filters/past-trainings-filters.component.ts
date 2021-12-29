@@ -31,9 +31,10 @@ export class PastTrainingsFiltersComponent {
         //TODO: fix going to backend
         fromEvent($event?.target, 'keyup')
             .pipe(
-                filter((event: Event) => (event.target as HTMLInputElement)?.value !== '' && (event.target as HTMLInputElement)?.value.length <= 50),
-                map((event: Event) => (event.target as HTMLInputElement)?.value.trim()),
-                debounceTime(200),
+                map((event: Event) => (event.target as HTMLInputElement)?.value),
+                map((value: string) => value.trim()),
+                filter((value: string) => value !== '' && value.length <= 50),
+                debounceTime(1000),
                 distinctUntilChanged(),
                 switchMap((value: string) =>
                     this.pastTrainingsService.searchPastTrainings(value),
