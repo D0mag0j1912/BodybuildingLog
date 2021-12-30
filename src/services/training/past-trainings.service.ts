@@ -5,7 +5,6 @@ import { getIntervalDate } from 'src/helpers/date.helper';
 import { DateInterval } from 'src/helpers/date.helper';
 import { NewTrainingDto } from 'src/models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings.model';
-import { SearchTrainingsDto } from '../../models/training/past-trainings/past-trainings.model';
 
 @Injectable()
 export class PastTrainingsService {
@@ -15,7 +14,7 @@ export class PastTrainingsService {
     ) {}
 
     async searchTrainings(
-        searchValue: SearchTrainingsDto,
+        searchValue: string,
         loggedInUserId: string,
     ): Promise<NewTrainingDto[]> {
         try {

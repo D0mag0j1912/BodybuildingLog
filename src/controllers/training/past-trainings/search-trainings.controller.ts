@@ -19,11 +19,11 @@ export class SearchTrainingsController {
     @Get()
     async searchTrainings(
         @GET_USER() user: UserDto,
-        @Query('searchValue') searchValue: SearchTrainingsDto,
+        @Query() searchValue: SearchTrainingsDto,
     ): Promise<NewTrainingDto[]> {
         return this.pastTrainingsService.searchTrainings(
-            searchValue,
-            user._id,
+            searchValue.searchValue as string,
+            user._id as string,
         );
     }
 }
