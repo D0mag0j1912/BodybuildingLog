@@ -3,6 +3,7 @@ import { NgModel } from '@angular/forms';
 import { EMPTY } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { Training } from '../../../../models/training/new-training/new-training.model';
+import { PastTrainingsResponse } from '../../../../models/training/past-trainings/past-trainings.model';
 import { SharedService } from '../../../../services/shared/shared.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../../services/training/past-trainings.service';
@@ -44,7 +45,10 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
                     ),
                 ),
                 takeUntil(this.unsubscribeService),
-            ).subscribe(_ => this.sharedService.setLoading(false));
+            ).subscribe((response: PastTrainingsResponse) => {
+                this.trainingEmitted.emit(response.trainings);
+                this.sharedService.setLoading(false);
+            });
         }
     }
 

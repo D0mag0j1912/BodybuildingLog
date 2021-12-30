@@ -14,9 +14,9 @@ export class PastTrainingsService {
         private readonly http: HttpClient,
     ) {}
 
-    searchPastTrainings(searchValue: string): Observable<Training[]> {
+    searchPastTrainings(searchValue: string): Observable<PastTrainingsResponse> {
         const params: string = `?searchValue=${searchValue}`;
-        return this.http.get<Training[]>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings${params}`);
+        return this.http.get<PastTrainingsResponse>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings${params}`);
     }
 
     getPastTrainings(currentDate: Date): Observable<PastTrainingsResponse> {

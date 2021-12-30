@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { Observable, of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
@@ -58,9 +58,10 @@ export class PastTrainingsComponent implements OnInit {
         this.initializePastTrainings(this.getLocalDateTime()).subscribe();
     }
 
+    //TODO
     searchEmitted(trainings: Training[]): void {
-        this.trainings$ = of(trainings);
-        this.changeDetectorRef.markForCheck();
+        /* this.trainings$ = of(trainings);
+        this.changeDetectorRef.markForCheck(); */
     }
 
     loadWeekTraining(previousOrNextWeek: Week): void {
@@ -128,7 +129,7 @@ export class PastTrainingsComponent implements OnInit {
             }),
             catchError(_ => {
                 this.isError = true;
-                return of(null);
+                return EMPTY;
             }),
             finalize(() => {
                 this.sharedService.setLoading(false);
