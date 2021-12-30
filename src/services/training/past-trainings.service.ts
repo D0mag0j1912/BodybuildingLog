@@ -16,15 +16,32 @@ export class PastTrainingsService {
     async searchTrainings(
         searchValue: string,
         loggedInUserId: string,
-    ): Promise<NewTrainingDto[]> {
+    ): Promise<PastTrainingsResponse> {
         try {
-            return this.trainingModel.find({
+            
+            // tslint:disable-next-line: await-promise
+            const trainings: NewTrainingDto[] = await this.trainingModel.find({
                 'exercise.exerciseName': {
                     $regex: searchValue,
                     $options: 'i',
                 },
-                'userId': loggedInUserId,
-            }).limit(5);
+                userId: loggedInUserId,
+            });
+
+            // tslint:disable-next-line: await-promise
+            const trainingsPerPage: number = await this.trainingModel.countDocuments({
+                'exercise.exerciseName': {
+                    $regex: searchValue,
+                    $options: 'i',
+                },
+                userId: loggedInUserId,
+            });
+
+            return {
+                trainings: trainings,
+                dates: null,
+                trainingsPerPage: trainingsPerPage,
+            } as PastTrainingsResponse;
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.past_trainings.filters.errors.search_error');
@@ -33,7 +50,6 @@ export class PastTrainingsService {
 
     async getPastTraining(trainingId: string): Promise<NewTrainingDto> {
         try {
-            // tslint:disable-next-line: await-promise
             return this.trainingModel.findById(trainingId);
         }
         catch (error: unknown) {
