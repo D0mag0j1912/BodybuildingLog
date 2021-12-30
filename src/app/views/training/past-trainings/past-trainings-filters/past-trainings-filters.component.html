@@ -1,20 +1,20 @@
 <div class="filters-wrapper">
-    <form #form="ngForm">
-        <div class="search-wrapper">
-            <input
-                #input
-                ngModel
-                maxlength="50"
-                name="search"
-                type="text"
-                class="search-input"
-                [placeholder]="'training.past_trainings.filters.enter_search_term' | translate">
-            <span
-                *ngIf="input?.value.length > 2"
-                class="search-max-error">
-                {{ 'training.past_trainings.filters.errors.search_max_length' | translate }}
-            </span>
-        </div>
+    <form
+        #form="ngForm"
+        class="search-wrapper"
+        autocomplete="off">
+        <input
+            ngModel
+            #search="ngModel"
+            name="search"
+            type="text"
+            class="search-input"
+            [placeholder]="'training.past_trainings.filters.enter_search_term' | translate">
+        <span
+            *ngIf="search?.control?.errors?.maxlength"
+            class="search-max-error">
+            {{ 'training.past_trainings.filters.errors.search_max_length' | translate }}
+        </span>
     </form>
     <div class="or-wrapper">
         <span class="or">{{ 'common.or' | translate }}</span>

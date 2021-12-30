@@ -18,7 +18,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     @Output()
     readonly trainingEmitted: EventEmitter<Training[]> = new EventEmitter<Training[]>();
 
-    @ViewChild('input', {
+    @ViewChild('search', {
         read: NgModel,
     })
     searchInput: NgModel;

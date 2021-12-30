@@ -14,7 +14,6 @@ import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { MaterialModule } from './material.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { NavigationModule } from './modules/navigation.module';
-import { TrainingModule } from './modules/training/training.module';
 import { SentryService } from './services/errors/sentry.service';
 
 init({
