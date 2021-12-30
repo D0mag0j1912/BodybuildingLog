@@ -1,6 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { Training } from '../../../../models/training/new-training/new-training.model';
 import { SharedService } from '../../../../services/shared/shared.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
@@ -38,7 +39,9 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
                 debounceTime(500),
                 distinctUntilChanged(),
                 switchMap((value: string) =>
-                    this.pastTrainingsService.searchPastTrainings(value),
+                    this.pastTrainingsService.searchPastTrainings(value).pipe(
+                        catchError(_ => EMPTY),
+                    ),
                 ),
                 takeUntil(this.unsubscribeService),
             ).subscribe(_ => this.sharedService.setLoading(false));
