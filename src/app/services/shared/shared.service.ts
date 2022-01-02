@@ -10,7 +10,7 @@ export class SharedService {
 
     readonly deletedTraining$$: Subject<PastTrainingsResponse> = new Subject<PastTrainingsResponse>();
 
-    private readonly isLoading$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+    private readonly isLoading$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     readonly isLoading$: Observable<boolean> = this.isLoading$$.asObservable();
 
     setLoading(isLoading: boolean): void {

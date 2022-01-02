@@ -33,7 +33,6 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         if (this.searchInput) {
-            this.sharedService.setLoading(true);
             this.searchInput.valueChanges.pipe(
                 map((value: string) => value.trim()),
                 filter((value: string) => value !== '' && value.length <= 50),

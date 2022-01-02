@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays  } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { EMPTY, Observable, of } from 'rxjs';
-import { catchError, finalize, map, takeUntil, tap } from 'rxjs/operators';
+import { catchError, finalize, map, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
@@ -28,11 +28,15 @@ export class PastTrainingsComponent  {
     isNextWeekDisabled: boolean = true;
 
     //TODO: sharedService spinner
-    isLoading$: Observable<boolean> = of(false);
+    isLoading$: Observable<boolean> = this.sharedService.isLoading$;
     pastTrainings$: Observable<PastTrainingsResponse> =
         this.pastTrainingsService.getPastTrainings(this.getLocalDateTime())
             .pipe(
-                tap((response: PastTrainingsResponse) => this.handleNextWeek(response.dates)),
+                tap((response: PastTrainingsResponse) => {
+                    this.sharedService.setLoading(true);
+                    this.handleNextWeek(response.dates);
+                }),
+                finalize(() => this.sharedService.setLoading(false)),
             );
 
     constructor(
@@ -88,12 +92,12 @@ export class PastTrainingsComponent  {
                         queryParams: {
                             startDate: format(
                                 utcToZonedTime(
-                                    dateInterval.startDate as Date,
+                                    result.dates.startDate as Date,
                                     environment.TIMEZONE as string)
                                 , 'dd-MM-yyyy'),
                             endDate: format(
                                 utcToZonedTime(
-                                    dateInterval.endDate as Date,
+                                    result.dates.endDate as Date,
                                     environment.TIMEZONE as string,
                                 ), 'dd-MM-yyyy'),
                         },
