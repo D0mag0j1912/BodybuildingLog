@@ -27,35 +27,29 @@ export class PastTrainingsComponent  {
     isError: boolean = false;
     isNextWeekDisabled: boolean = true;
 
-    startDate: Date | undefined;
-    endDate: Date | undefined;
-
-    trainingsPerPage: number = 0;
-
-    trainings$: Observable<Training[]> = of(null);
     //TODO: sharedService spinner
-    isLoading$: Observable<boolean> = of(false)
+    isLoading$: Observable<boolean> = of(false);
     pastTrainings$: Observable<PastTrainingsResponse> =
         this.pastTrainingsService.getPastTrainings(this.getLocalDateTime())
             .pipe(
-                finalize(() => {
-                    this.sharedService.setLoading(false);
-                    this.changeDetectorRef.markForCheck();
-                }),
+                tap((response: PastTrainingsResponse) => this.handleNextWeek(response.dates)),
             );
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
+        private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
-        private readonly unsubscribeService: UnsubscribeService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly router: Router,
         private readonly route: ActivatedRoute,
     ) {
-        /* this.sharedService.deletedTraining$$.pipe(
+        //TODO
+        this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
-        ).subscribe((response: PastTrainingsResponse) => this.fillTemplateVariables(response)); */
+        ).subscribe((response: PastTrainingsResponse) => {
+            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getLocalDateTime());
+        });
     }
 
     get spinnerSize(): number {
@@ -88,7 +82,7 @@ export class PastTrainingsComponent  {
                 ), 7) as Date)
             .pipe(
                 tap(async (result: PastTrainingsResponse) => {
-                    this.disableNextWeek(result.dates);
+                    this.handleNextWeek(result.dates);
                     await this.router.navigate([], {
                         relativeTo: this.route,
                         queryParams: {
@@ -166,7 +160,7 @@ export class PastTrainingsComponent  {
         return of('');
     }
 
-    private disableNextWeek(dateInterval: DateInterval): void {
+    private handleNextWeek(dateInterval: DateInterval): void {
         const arrayOfDates: number[] = eachDayOfInterval({
             start: utcToZonedTime(
                 dateInterval.startDate as Date,
@@ -176,7 +170,6 @@ export class PastTrainingsComponent  {
                 environment.TIMEZONE as string),
         }).map((date: Date) => date.getTime() as number);
         this.isNextWeekDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number) as boolean;
-        this.changeDetectorRef.markForCheck();
     }
 
     private getLocalDateTime(): Date {
