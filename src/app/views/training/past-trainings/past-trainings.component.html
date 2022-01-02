@@ -55,7 +55,9 @@
                     type="button"
                     class="training-paginator--previous"
                     [disabled]="isLoading$ | async"
-                    (click)="loadWeekTraining('Previous week')">
+                    (click)="loadWeekTraining(
+                        'Previous week',
+                        pastTrainings.dates)">
                     <mat-icon class="training-paginator--icon">navigate_before</mat-icon>
                 </button>
             </div>
@@ -68,7 +70,9 @@
                     type="button"
                     class="training-paginator--next"
                     [disabled]="isNextWeekDisabled || (isLoading$ | async)"
-                    (click)="loadWeekTraining('Next week')">
+                    (click)="loadWeekTraining(
+                        'Next week',
+                        pastTrainings.dates)">
                     <mat-icon class="training-paginator--icon">navigate_next</mat-icon>
                 </button>
             </div>
