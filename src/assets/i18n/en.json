@@ -7,6 +7,8 @@
         "kilograms": "Kilograms",
         "pounds": "Pounds",
         "week": "Week",
+        "month": "Month",
+        "year": "Year",
         "food": "Food",
         "kcal": "calories",
         "try_again": "Try again",
@@ -25,6 +27,20 @@
         "actions": {
             "delete": "Delete",
             "close": "Close"
+        },
+        "months": {
+            "january": "January",
+            "february": "February",
+            "march": "March",
+            "april": "April",
+            "may": "May",
+            "june": "June",
+            "july": "July",
+            "august": "August",
+            "september": "September",
+            "october": "October",
+            "november": "November",
+            "december": "December"
         }
     },
     "auth": {

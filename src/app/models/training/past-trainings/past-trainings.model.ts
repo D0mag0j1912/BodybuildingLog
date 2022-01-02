@@ -1,6 +1,6 @@
 import { Training } from '../new-training/new-training.model';
 export interface PastTrainingsResponse {
-    readonly trainings: [Training];
+    readonly trainings: Training[];
     readonly dates: {
         startDate: Date,
         endDate: Date
@@ -13,7 +13,7 @@ export interface ErrorMessage {
     readonly statusCode?: number;
 }
 
-export interface DateData {
+export interface DateInterval {
     readonly startDate: Date;
     readonly endDate: Date;
 }

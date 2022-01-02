@@ -11,7 +11,7 @@ import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service'
 import { NewTrainingService } from 'src/app/services/training/new-training.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { Language } from '../../../models/preferences.model';
-import { DateData } from '../../../models/training/past-trainings/past-trainings.model';
+import { DateInterval } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
@@ -94,7 +94,7 @@ export class HeaderComponent implements OnInit {
         ).subscribe();
     }
 
-    private constructDates(date: Date): DateData {
+    private constructDates(date: Date): DateInterval {
         const startDate: Date = startOfWeek(date, {
             weekStartsOn: 1,
         });
@@ -104,7 +104,7 @@ export class HeaderComponent implements OnInit {
         return {
             startDate: startDate,
             endDate: endDate,
-        } as DateData;
+        } as DateInterval;
     }
 
 }

@@ -1,4 +1,4 @@
-<ng-container *ngIf="!isError">
+<ng-container *ngIf="!isError && (pastTrainings$ | async) as pastTrainings">
     <section class="main-section">
         <bl-past-trainings-filters
             (trainingEmitted)="searchEmitted($event)"></bl-past-trainings-filters>
@@ -6,9 +6,11 @@
             <mat-card class="card-info-wrapper">
                 <mat-card-title class="week-title">
                     <strong class="week-title--txt">
-                        {{ 'common.week' | translate }}
+                        {{ setTimePeriod(pastTrainings.dates) | async }}
                     </strong>
-                    <span>{{ ' (' + (startDate | date: 'dd.MM.yyyy') + ' - ' + (endDate | date: 'dd.MM.yyyy') + ')' }}</span>
+                    <span>
+                        {{ ' (' + (pastTrainings.dates.startDate | date: 'dd.MM.yyyy') + ' - ' + (pastTrainings.dates.endDate  | date: 'dd.MM.yyyy') + ')' }}
+                    </span>
                 </mat-card-title>
                 <div class="footer">
                     <div class="food-subtitle">
@@ -20,11 +22,11 @@
                 </div>
             </mat-card>
             <div
-                *ngIf="trainingsPerPage > 0; else noTrainings"
+                *ngIf="pastTrainings.trainingsPerPage > 0; else noTrainings"
                 class="training-item-wrapper"
-                [class.no-trainings]="trainingsPerPage === 0">
+                [class.no-trainings]="pastTrainings.trainingsPerPage === 0">
                 <bl-training-item
-                    *ngFor="let training of (trainings$ | async)"
+                    *ngFor="let training of pastTrainings.trainings"
                     [training]="training"></bl-training-item>
             </div>
         </ng-container>
@@ -40,7 +42,7 @@
         <span class="training-paginator--label">
             {{ 'training.past_trainings.training_number' | translate }}
             <strong class="training-paginator--label-count">
-                {{ trainingsPerPage }}
+                {{ pastTrainings.trainingsPerPage }}
             </strong>
         </span>
         <div class="training-paginator--button-wrapper">

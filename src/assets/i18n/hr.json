@@ -8,6 +8,8 @@
         "kilograms": "Kilogrami",
         "pounds": "Pounds",
         "week": "Tjedan",
+        "month": "Mjesec",
+        "year": "Godina",
         "food": "Hrana",
         "kcal": "kalorija",
         "try_again": "Pokušajte ponovno",
@@ -26,6 +28,20 @@
         "actions": {
             "delete": "Izbriši",
             "close": "Izađi"
+        },
+        "months": {
+            "january": "Siječanj",
+            "february": "Veljača",
+            "march": "Ožujak",
+            "april": "Travanj",
+            "may": "Svibanj",
+            "june": "Lipanj",
+            "july": "Srpanj",
+            "august": "Kolovoz",
+            "september": "Rujan",
+            "october": "Listopad",
+            "november": "Studeni",
+            "december": "Prosinac"
         }
     },
     "auth": {

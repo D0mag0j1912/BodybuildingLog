@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { addDays, eachDayOfInterval, format, startOfDay, subDays } from 'date-fns';
+import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays  } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { EMPTY, Observable, of } from 'rxjs';
-import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
+import { catchError, finalize, map, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import { Training } from '../../../models/training/new-training/new-training.model';
-import { PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
+import { DateInterval, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
@@ -20,7 +20,7 @@ import { PastTrainingsService } from '../../../services/training/past-trainings.
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class PastTrainingsComponent implements OnInit {
+export class PastTrainingsComponent  {
 
     food: number = 3000;
 
@@ -34,6 +34,7 @@ export class PastTrainingsComponent implements OnInit {
 
     trainings$: Observable<Training[]> = of(null);
     readonly isLoading$: Observable<boolean> = this.sharedService.isLoading$;
+    pastTrainings$: Observable<PastTrainingsResponse> = this.pastTrainingsService.getPastTrainings(this.getLocalDateTime());
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
@@ -44,6 +45,7 @@ export class PastTrainingsComponent implements OnInit {
         private readonly route: ActivatedRoute,
         private readonly changeDetectorRef: ChangeDetectorRef,
     ) {
+        this.sharedService.setLoading(true);
         this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((response: PastTrainingsResponse) => this.fillTemplateVariables(response));
@@ -51,11 +53,6 @@ export class PastTrainingsComponent implements OnInit {
 
     get spinnerSize(): number {
         return SPINNER_SIZE;
-    }
-
-    ngOnInit(): void {
-        this.sharedService.setLoading(true);
-        this.initializePastTrainings(this.getLocalDateTime()).subscribe();
     }
 
     //TODO
@@ -100,6 +97,37 @@ export class PastTrainingsComponent implements OnInit {
                 this.isError = false;
             }
         });
+    }
+
+    setTimePeriod(dateInterval: DateInterval): Observable<string> {
+        const isWeek = isSameWeek(
+            dateInterval.startDate,
+            dateInterval.endDate,
+            { weekStartsOn: 1 },
+        );
+        if (isWeek) {
+            return this.translateService.stream('common.week');
+        }
+        const isMonth = isSameMonth(
+            dateInterval.startDate,
+            dateInterval.endDate,
+        );
+        if (isMonth) {
+            const month = getMonth(dateInterval.startDate);
+            return this.translateService.stream('common.months').pipe(
+                map((data: { [key: string]: string }) =>
+                    `common.months.${Object.keys(data)[month]}`,
+                ),
+            );
+        }
+        const isYear = isSameYear(
+            dateInterval.startDate,
+            dateInterval.endDate,
+        );
+        if (isYear) {
+            return this.translateService.stream('common.year');
+        }
+        return of('');
     }
 
     private initializePastTrainings(
