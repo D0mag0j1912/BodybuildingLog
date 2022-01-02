@@ -1,15 +1,26 @@
 import { endOfWeek, startOfWeek } from 'date-fns';
+import { max, min } from 'date-fns';
+import { NewTrainingDto } from '../models/training/new-training/new-training.model';
 
 export interface DateInterval {
     readonly startDate: Date;
     readonly endDate: Date;
 }
 
-export function getIntervalDate(currentDate: Date): DateInterval {
-    const startDate: Date = startOfWeek(currentDate, { weekStartsOn: 1 });
-    const endDate: Date = endOfWeek(currentDate, { weekStartsOn: 1 });
+export function getIntervalDate(currentDateOrTrainings: Date | NewTrainingDto[]): DateInterval {
+    let minDate: Date;
+    let maxDate: Date;
+    if (Array.isArray(currentDateOrTrainings)) {
+        const dates: Date[] = currentDateOrTrainings.map((x: NewTrainingDto) => x.createdAt);
+        minDate = min(dates);
+        maxDate = max(dates);
+    }
+    else {
+        minDate = startOfWeek(currentDateOrTrainings, { weekStartsOn: 1 });
+        maxDate = endOfWeek(currentDateOrTrainings, { weekStartsOn: 1 });
+    }
     return {
-        startDate: startDate,
-        endDate: endDate,
+        startDate: minDate,
+        endDate: maxDate,
     } as DateInterval;
 }
