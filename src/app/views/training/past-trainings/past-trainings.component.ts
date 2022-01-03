@@ -30,13 +30,20 @@ export class PastTrainingsComponent  {
     //TODO: sharedService spinner
     isLoading$: Observable<boolean> = this.sharedService.isLoading$;
     pastTrainings$: Observable<PastTrainingsResponse> =
-        this.pastTrainingsService.getPastTrainings(this.getLocalDateTime())
+        this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
             .pipe(
                 tap((response: PastTrainingsResponse) => {
                     this.sharedService.setLoading(true);
                     this.handleNextWeek(response.dates);
                 }),
-                finalize(() => this.sharedService.setLoading(false)),
+                catchError(_ => {
+                    this.isError = true;
+                    return EMPTY;
+                }),
+                finalize(() => {
+                    this.sharedService.setLoading(false);
+                    this.changeDetectorRef.markForCheck();
+                }),
             );
 
     constructor(
@@ -45,14 +52,14 @@ export class PastTrainingsComponent  {
         private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly router: Router,
         private readonly route: ActivatedRoute,
+        private readonly router: Router,
     ) {
         //TODO
         this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((response: PastTrainingsResponse) => {
-            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getLocalDateTime());
+            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams());
         });
     }
 
@@ -70,7 +77,7 @@ export class PastTrainingsComponent  {
         previousOrNextWeek: Week,
         dateInterval: DateInterval,
     ): void {
-        /* this.sharedService.setLoading(true); */
+        this.sharedService.setLoading(true);
 
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
             previousOrNextWeek === 'Previous week'
@@ -124,13 +131,19 @@ export class PastTrainingsComponent  {
     }
     //TODO: popraviti
     tryAgain(): void {
-        this.sharedService.setLoading(true);
-        /* this.initializePastTrainings(this.getLocalDateTime())
-        .subscribe((response: PastTrainingsResponse) => {
-            if (response) {
-                this.isError = false;
-            }
-        }); */
+        /* this.sharedService.setLoading(true); */
+        this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
+            .pipe(
+                tap((response: PastTrainingsResponse) => {
+                    if (response) {
+                        this.isError = false;
+                    }
+                }),
+                finalize(() => {
+                    /* this.sharedService.setLoading(false); */
+                    this.changeDetectorRef.markForCheck();
+                }),
+            );
     }
 
     setTimePeriod(dateInterval: DateInterval): Observable<string> {
@@ -176,8 +189,8 @@ export class PastTrainingsComponent  {
         this.isNextWeekDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number) as boolean;
     }
 
-    private getLocalDateTime(): Date {
-        const splittedDate = (this.route.snapshot.queryParams.startDate as string).split('-');
+    private getDateTimeQueryParams(): Date {
+        const splittedDate: string[] = (this.route.snapshot.queryParams?.startDate as string).split('-');
         const utc: string = new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString();
         return utcToZonedTime(new Date(utc), environment.TIMEZONE as string);
     }

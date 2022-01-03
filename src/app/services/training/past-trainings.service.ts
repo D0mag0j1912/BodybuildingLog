@@ -28,8 +28,8 @@ export class PastTrainingsService {
                     ({
                         ...response,
                         dates: {
-                            startDate: new Date(response.dates.startDate),
-                            endDate: new Date(response.dates.endDate),
+                            startDate: new Date(response?.dates?.startDate ?? null),
+                            endDate: new Date(response?.dates?.endDate ?? null),
                         } as DateInterval,
                     }),
                 ),
