@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays  } from 'date-fns';
+import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, finalize, map, take, takeUntil, tap } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import { Training } from '../../../models/training/new-training/new-training.model';
 import { DateInterval, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
+import { DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
@@ -20,9 +21,9 @@ import { PastTrainingsService } from '../../../services/training/past-trainings.
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class PastTrainingsComponent  {
+export class PastTrainingsComponent {
 
-    food: number = 3000;
+    readonly food: number = 3000;
 
     isError: boolean = false;
     isNextWeekDisabled: boolean = true;
@@ -101,12 +102,12 @@ export class PastTrainingsComponent  {
                                 utcToZonedTime(
                                     result.dates.startDate as Date,
                                     environment.TIMEZONE as string)
-                                , 'dd-MM-yyyy'),
+                                , DATE_FORMAT),
                             endDate: format(
                                 utcToZonedTime(
                                     result.dates.endDate as Date,
                                     environment.TIMEZONE as string,
-                                ), 'dd-MM-yyyy'),
+                                ), DATE_FORMAT),
                         },
                     });
                 }),

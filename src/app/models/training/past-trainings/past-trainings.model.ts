@@ -19,3 +19,5 @@ export interface DateInterval {
 }
 
 export type Week = 'Previous week' | 'Next week';
+
+export const DATE_FORMAT: string = 'dd-MM-yyyy';
