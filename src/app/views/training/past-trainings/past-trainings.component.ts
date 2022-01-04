@@ -4,13 +4,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { EMPTY, Observable, of } from 'rxjs';
-import { catchError, finalize, map, take, takeUntil, tap } from 'rxjs/operators';
+import { catchError, finalize, map, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import { Training } from '../../../models/training/new-training/new-training.model';
 import { DateInterval, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
-import { DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
+import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
@@ -33,10 +33,7 @@ export class PastTrainingsComponent {
     pastTrainings$: Observable<PastTrainingsResponse> =
         this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
             .pipe(
-                tap((response: PastTrainingsResponse) => {
-                    this.sharedService.setLoading(true);
-                    this.handleNextWeek(response.dates);
-                }),
+                tap((response: PastTrainingsResponse) => this.handleNextWeek(response.dates)),
                 catchError(_ => {
                     this.isError = true;
                     return EMPTY;
@@ -66,6 +63,10 @@ export class PastTrainingsComponent {
 
     get spinnerSize(): number {
         return SPINNER_SIZE;
+    }
+
+    get dateFormat(): string {
+        return TEMPLATE_DATE_FORMAT;
     }
 
     //TODO
@@ -102,12 +103,12 @@ export class PastTrainingsComponent {
                                 utcToZonedTime(
                                     result.dates.startDate as Date,
                                     environment.TIMEZONE as string)
-                                , DATE_FORMAT),
+                                , QUERY_PARAMS_DATE_FORMAT),
                             endDate: format(
                                 utcToZonedTime(
                                     result.dates.endDate as Date,
                                     environment.TIMEZONE as string,
-                                ), DATE_FORMAT),
+                                ), QUERY_PARAMS_DATE_FORMAT),
                         },
                     });
                 }),

@@ -9,7 +9,7 @@
                         {{ setTimePeriod(pastTrainings.dates) | async }}
                     </strong>
                     <span>
-                        {{ ' (' + (pastTrainings.dates.startDate | date: 'dd.MM.yyyy') + ' - ' + (pastTrainings.dates.endDate  | date: 'dd.MM.yyyy') + ')' }}
+                        {{ ' (' + (pastTrainings.dates.startDate | date: dateFormat) + ' - ' + (pastTrainings.dates.endDate  | date: dateFormat) + ')' }}
                     </span>
                 </mat-card-title>
                 <div class="footer">
