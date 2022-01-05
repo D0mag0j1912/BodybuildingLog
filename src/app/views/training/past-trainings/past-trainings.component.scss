@@ -86,16 +86,8 @@
     }
 }
 
-.spinner-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 650px;
-}
-
-/******************************/
 .no-trainings {
-    margin: 4rem 1rem 1rem 2rem;
+    margin: 0 1rem 1rem 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -108,8 +100,11 @@
     }
 }
 
-.no-trainings {
-    margin-top: 0;
+.spinner-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 650px;
 }
 
 .error-wrapper {

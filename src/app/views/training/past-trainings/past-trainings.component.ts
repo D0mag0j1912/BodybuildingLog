@@ -28,7 +28,6 @@ export class PastTrainingsComponent {
     isError: boolean = false;
     isNextWeekDisabled: boolean = true;
 
-    //TODO: sharedService spinner
     isLoading$: Observable<boolean> = this.sharedService.isLoading$;
     pastTrainings$: Observable<PastTrainingsResponse> =
         this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())

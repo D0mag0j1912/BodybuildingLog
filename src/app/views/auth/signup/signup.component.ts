@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { SNACK_BAR_DURATION } from '../../../constants/snack-bar-duration.const';
+import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import { FormErrorStateMatcher } from '../../../helpers/mat-error/form-error-state-matcher.helper';
 import { Language, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -70,6 +71,10 @@ export class SignupComponent {
                 Validators.maxLength(20)],
             ),
         }, { validators: AuthCustomValidators.samePasswords() });
+    }
+
+    get spinnerSize(): number {
+        return SPINNER_SIZE;
     }
 
     onSubmit(): void {
