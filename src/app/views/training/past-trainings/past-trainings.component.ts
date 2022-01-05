@@ -133,7 +133,7 @@ export class PastTrainingsComponent {
     }
     //TODO: popraviti
     tryAgain(): void {
-        /* this.sharedService.setLoading(true); */
+        this.sharedService.setLoading(true);
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
             .pipe(
                 tap((response: PastTrainingsResponse) => {
@@ -141,8 +141,12 @@ export class PastTrainingsComponent {
                         this.isError = false;
                     }
                 }),
+                catchError(_ => {
+                    this.isError = true;
+                    return EMPTY;
+                }),
                 finalize(() => {
-                    /* this.sharedService.setLoading(false); */
+                    this.sharedService.setLoading(false);
                     this.changeDetectorRef.markForCheck();
                 }),
             );

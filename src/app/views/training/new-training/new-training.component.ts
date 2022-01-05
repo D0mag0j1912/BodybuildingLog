@@ -6,6 +6,7 @@ import { catchError, finalize, switchMap, take, takeUntil, tap } from 'rxjs/oper
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
+import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { Exercise } from '../../../models/training/exercise.model';
@@ -64,6 +65,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         private readonly route: ActivatedRoute,
         private readonly changeDetectorRef: ChangeDetectorRef,
     ) {}
+
+    get spinnerSize(): number {
+        return SPINNER_SIZE;
+    }
 
     ngOnInit(): void {
 

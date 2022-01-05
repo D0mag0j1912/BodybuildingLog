@@ -35,13 +35,6 @@
         }
     }
 
-    .spinner-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 200px;
-    }
-
     .training-item-wrapper {
         display: block;
         margin: 10px 0;
@@ -57,41 +50,47 @@
             border-radius: 6px;
         }
     }
-}
 
-.training-paginator {
-    width: 90%;
-    border-radius: 4px;
-    border: 2px solid $army-green;
-    height: 50px;
-    margin: auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+    .training-paginator {
+        border-radius: 4px;
+        border: 2px solid $army-green;
+        height: 50px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
 
-    &--label {
-        font-size: 15px;
+        &--label {
+            font-size: 15px;
 
-        &-count {
+            &-count {
+                color: $army-green;
+            }
+        }
+
+        &--button-wrapper {
+            display: flex;
+            column-gap: 10px;
+        }
+
+        &--previous:not([disabled]):hover,
+        &--previous:not([disabled]):active,
+        &--next:not([disabled]):hover,
+        &--next:not([disabled]):active {
+            background: $light-blue;
+        }
+
+        &--icon {
             color: $army-green;
         }
     }
+}
 
-    &--button-wrapper {
-        display: flex;
-        column-gap: 10px;
-    }
-
-    &--previous:not([disabled]):hover,
-    &--previous:not([disabled]):active,
-    &--next:not([disabled]):hover,
-    &--next:not([disabled]):active {
-        background: $light-blue;
-    }
-
-    &--icon {
-        color: $army-green;
-    }
+.spinner-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 650px;
 }
 
 /******************************/
