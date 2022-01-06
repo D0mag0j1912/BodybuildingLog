@@ -17,31 +17,39 @@ export class PastTrainingsService {
         loggedInUserId: string,
     ): Promise<PastTrainingsResponse> {
         try {
-            // tslint:disable-next-line: await-promise
-            const trainings: NewTrainingDto[] = await this.trainingModel
-                .find({
-                    'exercise.exerciseName': {
-                        $regex: searchValue,
-                        $options: 'i',
-                    },
-                    userId: loggedInUserId,
-                })
-                .sort({ createdAt: 'asc' });
-            // tslint:disable-next-line: await-promise
-            const trainingsPerPage: number = await this.trainingModel
-                .countDocuments({
-                    'exercise.exerciseName': {
-                        $regex: searchValue,
-                        $options: 'i',
-                    },
-                    userId: loggedInUserId,
-                });
-            const minMaxDate: DateInterval = getIntervalDate(trainings);
-            return {
-                trainings: trainings,
-                dates: minMaxDate,
-                trainingsPerPage: trainingsPerPage,
-            } as PastTrainingsResponse;
+            if (searchValue !== '') {
+                // tslint:disable-next-line: await-promise
+                const trainings: NewTrainingDto[] = await this.trainingModel
+                    .find({
+                        'exercise.exerciseName': {
+                            $regex: searchValue,
+                            $options: 'i',
+                        },
+                        userId: loggedInUserId,
+                    })
+                    .sort({ createdAt: 'asc' });
+                // tslint:disable-next-line: await-promise
+                const trainingsPerPage: number = await this.trainingModel
+                    .countDocuments({
+                        'exercise.exerciseName': {
+                            $regex: searchValue,
+                            $options: 'i',
+                        },
+                        userId: loggedInUserId,
+                    });
+                const minMaxDate: DateInterval = getIntervalDate(trainings);
+                return {
+                    trainings: trainings,
+                    dates: minMaxDate,
+                    trainingsPerPage: trainingsPerPage,
+                } as PastTrainingsResponse;
+            }
+            else {
+                return this.getPastTrainings(
+                    new Date(),
+                    loggedInUserId,
+                );
+            }
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.past_trainings.filters.errors.search_error');
