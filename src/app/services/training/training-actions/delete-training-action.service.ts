@@ -5,9 +5,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { Training } from 'src/app/models/training/new-training/new-training.model';
 import { environment } from '../../../../environments/environment';
+import { mapDateInterval } from '../../../helpers/map-past-trainings-dates.helper';
+import { PastTrainingsResponse } from '../../../models/training/past-trainings/past-trainings.model';
 import { TrainingActions } from '../../../models/training/past-trainings/training-actions/training-actions.model';
 import { DeleteTrainingActionData } from '../../../models/training/past-trainings/training-actions/training-actions.model';
 import {
@@ -49,8 +50,11 @@ export class DeleteTrainingActionService implements TrainingActions {
     deleteTraining(
         trainingId: string,
         currentDate: Date,
-    ): Observable<GeneralResponseData> {
+    ): Observable<PastTrainingsResponse> {
         const params: string = `?currentDate=${currentDate}`;
-        return this.http.delete<GeneralResponseData>(environment.BACKEND + `/training/delete_training/${trainingId}${params}`);
+        return this.http.delete<PastTrainingsResponse>(environment.BACKEND + `/training/delete_training/${trainingId}${params}`)
+            .pipe(
+                map((response: PastTrainingsResponse) => mapDateInterval(response)),
+            );
     }
 }

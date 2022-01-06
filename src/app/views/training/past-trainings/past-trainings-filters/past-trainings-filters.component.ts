@@ -21,7 +21,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     @ViewChild('search', {
         read: NgModel,
     })
-    searchInput: NgModel;
+    searchInput: NgModel | undefined;
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,

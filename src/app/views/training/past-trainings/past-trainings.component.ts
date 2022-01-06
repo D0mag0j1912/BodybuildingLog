@@ -47,11 +47,7 @@ export class PastTrainingsComponent {
         this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((response: PastTrainingsResponse) => {
-            this.pastTrainings$ =
-                of(response)
-                    .pipe(
-                        map((response: PastTrainingsResponse) => this.pastTrainingsService.mapDateInterval(response)),
-                    );
+            this.pastTrainings$ = of(response);
             this.changeDetectorRef.markForCheck();
         });
     }
@@ -67,33 +63,27 @@ export class PastTrainingsComponent {
     //TODO
     searchEmitted(searchResponse: PastTrainingsResponse): void {
         this.sharedService.setLoading(true);
-        const { startDate, endDate } = this.pastTrainingsService.mapDateInterval(searchResponse).dates;
         this.pastTrainings$ =
             of(searchResponse)
                 .pipe(
-                    map((response: PastTrainingsResponse) => ({
-                        ...response,
-                        dates: {
-                            startDate: startDate,
-                            endDate: endDate,
-                        },
-                    } as PastTrainingsResponse)),
-                    finalize(async () => {
+                    tap(async () => {
                         await this.router.navigate([], {
                             relativeTo: this.route,
                             queryParams: {
                                 startDate: format(
                                     utcToZonedTime(
-                                        startDate as Date,
+                                        searchResponse.dates.startDate as Date,
                                         environment.TIMEZONE as string)
                                     , QUERY_PARAMS_DATE_FORMAT),
                                 endDate: format(
                                     utcToZonedTime(
-                                        endDate as Date,
+                                        searchResponse.dates.endDate as Date,
                                         environment.TIMEZONE as string,
                                     ), QUERY_PARAMS_DATE_FORMAT),
                             },
                         });
+                    }),
+                    finalize(() => {
                         this.sharedService.setLoading(false);
                         this.changeDetectorRef.markForCheck();
                     }),
