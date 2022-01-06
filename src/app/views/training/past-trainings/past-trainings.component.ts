@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { EMPTY, Observable, of } from 'rxjs';
-import { catchError, finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, finalize, map, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
@@ -66,11 +66,37 @@ export class PastTrainingsComponent {
 
     //TODO
     searchEmitted(searchResponse: PastTrainingsResponse): void {
+        this.sharedService.setLoading(true);
+        const { startDate, endDate } = this.pastTrainingsService.mapDateInterval(searchResponse).dates;
         this.pastTrainings$ =
             of(searchResponse)
                 .pipe(
-                    map((response: PastTrainingsResponse) => this.pastTrainingsService.mapDateInterval(response)),
-                    finalize(() => this.changeDetectorRef.markForCheck()),
+                    map((response: PastTrainingsResponse) => ({
+                        ...response,
+                        dates: {
+                            startDate: startDate,
+                            endDate: endDate,
+                        },
+                    } as PastTrainingsResponse)),
+                    finalize(async () => {
+                        await this.router.navigate([], {
+                            relativeTo: this.route,
+                            queryParams: {
+                                startDate: format(
+                                    utcToZonedTime(
+                                        startDate as Date,
+                                        environment.TIMEZONE as string)
+                                    , QUERY_PARAMS_DATE_FORMAT),
+                                endDate: format(
+                                    utcToZonedTime(
+                                        endDate as Date,
+                                        environment.TIMEZONE as string,
+                                    ), QUERY_PARAMS_DATE_FORMAT),
+                            },
+                        });
+                        this.sharedService.setLoading(false);
+                        this.changeDetectorRef.markForCheck();
+                    }),
                 );
     }
 
