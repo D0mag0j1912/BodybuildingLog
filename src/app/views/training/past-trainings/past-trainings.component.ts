@@ -25,7 +25,6 @@ export class PastTrainingsComponent {
 
     readonly food: number = 3000;
 
-    isError: boolean = false;
     isNextWeekDisabled: boolean = true;
 
     isLoading$: Observable<boolean> = this.sharedService.isLoading$;
@@ -33,14 +32,8 @@ export class PastTrainingsComponent {
         this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
             .pipe(
                 tap((response: PastTrainingsResponse) => this.handleNextWeek(response.dates)),
-                catchError(_ => {
-                    this.isError = true;
-                    return EMPTY;
-                }),
-                finalize(() => {
-                    this.sharedService.setLoading(false);
-                    this.changeDetectorRef.markForCheck();
-                }),
+                catchError(_ => EMPTY),
+                finalize(() => this.sharedService.setLoading(false)),
             );
 
     constructor(
@@ -111,10 +104,7 @@ export class PastTrainingsComponent {
                         },
                     });
                 }),
-                catchError(_ => {
-                    this.isError = true;
-                    return EMPTY;
-                }),
+                catchError(_ => EMPTY),
                 finalize(() => {
                     this.sharedService.setLoading(false);
                     this.changeDetectorRef.markForCheck();
@@ -135,15 +125,7 @@ export class PastTrainingsComponent {
         this.sharedService.setLoading(true);
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
             .pipe(
-                tap((response: PastTrainingsResponse) => {
-                    if (response) {
-                        this.isError = false;
-                    }
-                }),
-                catchError(_ => {
-                    this.isError = true;
-                    return EMPTY;
-                }),
+                catchError(_ => EMPTY),
                 finalize(() => {
                     this.sharedService.setLoading(false);
                     this.changeDetectorRef.markForCheck();

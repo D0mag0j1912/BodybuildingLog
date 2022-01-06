@@ -6,11 +6,7 @@ export interface PastTrainingsResponse {
         endDate: Date
     };
     readonly trainingsPerPage: number;
-    readonly status: PastTrainingsStatus;
-    readonly message?: string;
 }
-
-export type PastTrainingsStatus = 'SUCCESS' | 'LOADING' | 'ERROR';
 
 export interface ErrorMessage {
     readonly message: string;

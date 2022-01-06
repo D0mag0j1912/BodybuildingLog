@@ -1,4 +1,4 @@
-<ng-container *ngIf="!isError && (pastTrainings$ | async) as pastTrainings; else loading">
+<ng-container *ngIf="pastTrainings$ | async as pastTrainings; else errorLoading">
     <section class="main-section">
         <bl-past-trainings-filters
             (trainingEmitted)="searchEmitted($event)"></bl-past-trainings-filters>
@@ -87,33 +87,32 @@
     </ng-template>
 </ng-container>
 
-<ng-template #loading>
-    <ng-container *ngIf="isLoading$ | async">
+<ng-template #errorLoading>
+    <ng-container *ngIf="!(isLoading$ | async); else loading">
+        <div class="error-wrapper">
+            <img
+                class="error-image"
+                src="../../../../assets/svgs/error1.svg">
+            <h3 class="error-title">
+                {{ 'training.past_trainings.errors.past_trainings_error_title' | translate }}
+            </h3>
+            <span class="error-description">
+                {{ 'training.past_trainings.errors.past_trainings_error_description' | translate }}
+            </span>
+            <button
+                mat-raised-button
+                color="primary"
+                type="button"
+                (click)="tryAgain()">
+                {{ 'common.try_again' | translate }}
+            </button>
+        </div>
+    </ng-container>
+    <ng-template #loading>
         <div class="spinner-wrapper">
             <mat-spinner
                 class="spinner"
                 [diameter]="spinnerSize"></mat-spinner>
         </div>
-    </ng-container>
+    </ng-template>
 </ng-template>
-
-<ng-container *ngIf="!(isLoading$ | async) && isError">
-    <div class="error-wrapper">
-        <img
-            class="error-image"
-            src="../../../../assets/svgs/error1.svg">
-        <h3 class="error-title">
-            {{ 'training.past_trainings.errors.past_trainings_error_title' | translate }}
-        </h3>
-        <span class="error-description">
-            {{ 'training.past_trainings.errors.past_trainings_error_description' | translate }}
-        </span>
-        <button
-            mat-raised-button
-            color="primary"
-            type="button"
-            (click)="tryAgain()">
-            {{ 'common.try_again' | translate }}
-        </button>
-    </div>
-</ng-container>
