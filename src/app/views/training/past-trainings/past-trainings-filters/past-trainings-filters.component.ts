@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Output
 import { NgModel } from '@angular/forms';
 import { EMPTY } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { SearchQuery } from '../../../../models/common.model';
 import { PastTrainingsResponse } from '../../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../../services/training/past-trainings.service';
@@ -16,7 +17,7 @@ import { PastTrainingsService } from '../../../../services/training/past-trainin
 export class PastTrainingsFiltersComponent implements AfterViewInit {
 
     @Output()
-    readonly trainingEmitted: EventEmitter<PastTrainingsResponse> = new EventEmitter<PastTrainingsResponse>();
+    readonly trainingEmitted: EventEmitter<SearchQuery<PastTrainingsResponse>> = new EventEmitter<SearchQuery<PastTrainingsResponse>>();
 
     @ViewChild('search', {
         read: NgModel,
@@ -41,10 +42,16 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
                     ),
                 ),
                 takeUntil(this.unsubscribeService),
-            ).subscribe((response: PastTrainingsResponse) => this.trainingEmitted.emit(response));
+            ).subscribe((response: PastTrainingsResponse) => {
+                this.trainingEmitted.emit({
+                    data: response,
+                    searchValue: (this.searchInput.value as string).trim(),
+                });
+            });
         }
     }
 
+    //TODO: open filter dialog
     openFilterDialog(): void {}
 
 }

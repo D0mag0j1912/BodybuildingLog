@@ -8,6 +8,7 @@ import { catchError, finalize, map, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
+import { SearchQuery } from '../../../models/common.model';
 import { DateInterval, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
@@ -60,11 +61,11 @@ export class PastTrainingsComponent {
         return TEMPLATE_DATE_FORMAT;
     }
 
-    //TODO
-    searchEmitted(searchResponse: PastTrainingsResponse): void {
+    //TODO: implement loading spinner while searching
+    searchEmitted($event: SearchQuery<PastTrainingsResponse>): void {
         this.sharedService.setLoading(true);
         this.pastTrainings$ =
-            of(searchResponse)
+            of($event.data)
                 .pipe(
                     tap(async () => {
                         await this.router.navigate([], {
@@ -72,14 +73,15 @@ export class PastTrainingsComponent {
                             queryParams: {
                                 startDate: format(
                                     utcToZonedTime(
-                                        searchResponse.dates.startDate as Date,
+                                        $event.data.dates.startDate as Date,
                                         environment.TIMEZONE as string)
                                     , QUERY_PARAMS_DATE_FORMAT),
                                 endDate: format(
                                     utcToZonedTime(
-                                        searchResponse.dates.endDate as Date,
+                                        $event.data.dates.endDate as Date,
                                         environment.TIMEZONE as string,
                                     ), QUERY_PARAMS_DATE_FORMAT),
+                                search: $event.searchValue,
                             },
                         });
                     }),
@@ -96,43 +98,43 @@ export class PastTrainingsComponent {
     ): void {
         this.sharedService.setLoading(true);
 
-        this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
-            previousOrNextWeek === 'Previous week'
-            ? subDays(
-                utcToZonedTime(
-                    dateInterval.startDate as Date,
-                    environment.TIMEZONE as string,
-                ), 7) as Date
-            : addDays(
-                utcToZonedTime(
-                    dateInterval.startDate as Date,
-                    environment.TIMEZONE as string,
-                ), 7) as Date)
-            .pipe(
-                tap(async (result: PastTrainingsResponse) => {
-                    this.handleNextWeek(result.dates);
-                    await this.router.navigate([], {
-                        relativeTo: this.route,
-                        queryParams: {
-                            startDate: format(
-                                utcToZonedTime(
-                                    result.dates.startDate as Date,
-                                    environment.TIMEZONE as string)
-                                , QUERY_PARAMS_DATE_FORMAT),
-                            endDate: format(
-                                utcToZonedTime(
-                                    result.dates.endDate as Date,
-                                    environment.TIMEZONE as string,
-                                ), QUERY_PARAMS_DATE_FORMAT),
-                        },
-                    });
-                }),
-                catchError(_ => EMPTY),
-                finalize(() => {
-                    this.sharedService.setLoading(false);
-                    this.changeDetectorRef.markForCheck();
-                }),
-            );
+        this.pastTrainings$ =
+            this.pastTrainingsService.getPastTrainings(previousOrNextWeek === 'Previous week'
+                ? subDays(
+                    utcToZonedTime(
+                        dateInterval.startDate as Date,
+                        environment.TIMEZONE as string,
+                    ), 7) as Date
+                : addDays(
+                    utcToZonedTime(
+                        dateInterval.startDate as Date,
+                        environment.TIMEZONE as string,
+                    ), 7) as Date)
+                .pipe(
+                    tap(async (result: PastTrainingsResponse) => {
+                        this.handleNextWeek(result.dates);
+                        await this.router.navigate([], {
+                            relativeTo: this.route,
+                            queryParams: {
+                                startDate: format(
+                                    utcToZonedTime(
+                                        result.dates.startDate as Date,
+                                        environment.TIMEZONE as string)
+                                    , QUERY_PARAMS_DATE_FORMAT),
+                                endDate: format(
+                                    utcToZonedTime(
+                                        result.dates.endDate as Date,
+                                        environment.TIMEZONE as string,
+                                    ), QUERY_PARAMS_DATE_FORMAT),
+                            },
+                        });
+                    }),
+                    catchError(_ => EMPTY),
+                    finalize(() => {
+                        this.sharedService.setLoading(false);
+                        this.changeDetectorRef.markForCheck();
+                    }),
+                );
     }
 
     setNextWeekTooltip(): Observable<string> {
@@ -184,7 +186,7 @@ export class PastTrainingsComponent {
         if (isYear) {
             return this.translateService.stream('common.year');
         }
-        return this.translateService.stream('common.interval');
+        return this.translateService.stream('common.period');
     }
 
     private handleNextWeek(dateInterval: DateInterval): void {
