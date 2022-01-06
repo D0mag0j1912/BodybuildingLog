@@ -45,11 +45,22 @@ export class PastTrainingsComponent {
         private readonly route: ActivatedRoute,
         private readonly router: Router,
     ) {
-        //TODO
         this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((response: PastTrainingsResponse) => {
-            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams());
+            this.pastTrainings$ =
+                of(response)
+                    .pipe(
+                        map((response: PastTrainingsResponse) => ({
+                                ...response,
+                                dates: {
+                                    startDate: new Date(response?.dates?.startDate ?? null),
+                                    endDate: new Date(response?.dates?.endDate ?? null),
+                                } as DateInterval,
+                            }),
+                        ),
+                    );
+            this.changeDetectorRef.markForCheck();
         });
     }
 
@@ -120,7 +131,7 @@ export class PastTrainingsComponent {
             return this.translateService.stream('training.past_trainings.disabled_next_week');
         }
     }
-    //TODO: popraviti
+
     tryAgain(): void {
         this.sharedService.setLoading(true);
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
