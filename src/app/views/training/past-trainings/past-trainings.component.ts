@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
@@ -77,6 +77,13 @@ export class PastTrainingsComponent {
         return TEMPLATE_DATE_FORMAT;
     }
 
+    get isSearch(): Observable<boolean> {
+        return this.route.queryParamMap
+            .pipe(
+                map((params: ParamMap) => !!params?.get('search')),
+            );
+    }
+
     //TODO: implement loading spinner while searching
     searchEmitted($event: SearchQuery<PastTrainingsResponse>): void {
         this.sharedService.setLoading(true);
@@ -84,21 +91,22 @@ export class PastTrainingsComponent {
             of($event.data)
                 .pipe(
                     tap(async () => {
+                        const queryParams: PastTrainingsQueryParams = {
+                            startDate: format(
+                                utcToZonedTime(
+                                    $event.data.dates.startDate as Date,
+                                    environment.TIMEZONE as string)
+                                , QUERY_PARAMS_DATE_FORMAT),
+                            endDate: format(
+                                utcToZonedTime(
+                                    $event.data.dates.endDate as Date,
+                                    environment.TIMEZONE as string,
+                                ), QUERY_PARAMS_DATE_FORMAT),
+                            search: $event?.searchValue !== '' ? $event.searchValue : undefined,
+                        };
                         await this.router.navigate([], {
                             relativeTo: this.route,
-                            queryParams: {
-                                startDate: format(
-                                    utcToZonedTime(
-                                        $event.data.dates.startDate as Date,
-                                        environment.TIMEZONE as string)
-                                    , QUERY_PARAMS_DATE_FORMAT),
-                                endDate: format(
-                                    utcToZonedTime(
-                                        $event.data.dates.endDate as Date,
-                                        environment.TIMEZONE as string,
-                                    ), QUERY_PARAMS_DATE_FORMAT),
-                                search: $event?.searchValue,
-                            } as PastTrainingsQueryParams,
+                            queryParams: queryParams,
                         });
                     }),
                     finalize(() => {

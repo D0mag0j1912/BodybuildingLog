@@ -72,17 +72,30 @@
 
     <ng-template #noTrainings>
         <section class="no-trainings">
-            <h1 class="no-trainings-title">
-                {{ 'training.past_trainings.no_trainings' | translate }}
-            </h1>
-            <button
-                mat-raised-button
-                class="no-trainings-button"
-                type="button"
-                routerLink="/training/new-training"
-                color="primary">
-                {{ 'training.past_trainings.log_training' | translate }}
-            </button>
+            <ng-container *ngIf="!(isSearch | async); else searchNoResults">
+                <h1 class="no-trainings-title">
+                    {{ 'training.past_trainings.no_trainings' | translate }}
+                </h1>
+                <button
+                    mat-raised-button
+                    class="no-trainings-button"
+                    type="button"
+                    routerLink="/training/new-training"
+                    color="primary">
+                    {{ 'training.past_trainings.log_training' | translate }}
+                </button>
+            </ng-container>
+            <ng-template #searchNoResults>
+                <img
+                    class="search-not-found-img"
+                    src="../../../../assets/svgs/not-found.svg">
+                <span class="search-not-found-title">
+                    {{ 'training.past_trainings.filters.search_no_result_title' | translate }}
+                </span>
+                <span class="search-not-found-description">
+                    {{ 'training.past_trainings.filters.search_no_result_description' | translate }}
+                </span>
+            </ng-template>
         </section>
     </ng-template>
 </ng-container>

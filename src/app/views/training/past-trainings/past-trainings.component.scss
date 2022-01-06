@@ -99,6 +99,23 @@
         font-weight: normal;
         text-align: center;
     }
+
+    .search-not-found-img {
+        width: 150px;
+        height: 150px;
+    }
+
+    .search-not-found-title {
+        font-size: 16px;
+        font-weight: 600;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .search-not-found-description {
+        font-size: 14px;
+        color: $blue-grey;
+    }
 }
 
 .spinner-wrapper {

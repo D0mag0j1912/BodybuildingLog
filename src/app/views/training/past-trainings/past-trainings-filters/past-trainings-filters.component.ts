@@ -33,7 +33,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
         if (this.searchInput) {
             this.searchInput.valueChanges.pipe(
                 map((value: string) => value.trim()),
-                filter((value: string) => value !== '' && value.length <= 50),
+                filter((value: string) => value.length <= 50),
                 debounceTime(500),
                 distinctUntilChanged(),
                 switchMap((value: string) =>
