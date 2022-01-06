@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
@@ -9,7 +9,7 @@ import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import { SearchQuery } from '../../../models/common.model';
-import { DateInterval, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
+import { DateInterval, PastTrainingsQueryParams, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
@@ -28,13 +28,7 @@ export class PastTrainingsComponent {
     isNextWeekDisabled: boolean = true;
 
     isLoading$: Observable<boolean> = this.sharedService.isLoading$;
-    pastTrainings$: Observable<PastTrainingsResponse> =
-        this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
-            .pipe(
-                tap((response: PastTrainingsResponse) => this.handleNextWeek(response.dates)),
-                catchError(_ => EMPTY),
-                finalize(() => this.sharedService.setLoading(false)),
-            );
+    pastTrainings$: Observable<PastTrainingsResponse> = undefined;
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
@@ -51,6 +45,28 @@ export class PastTrainingsComponent {
             this.pastTrainings$ = of(response);
             this.changeDetectorRef.markForCheck();
         });
+
+        this.sharedService.setLoading(true);
+        const searchFilter = this.route.snapshot.queryParamMap?.get('search');
+        if (searchFilter) {
+            //TODO: implement API search all
+            this.pastTrainings$ =
+                //TODO: implement query param check on backend (security)
+                this.pastTrainingsService.searchPastTrainings((searchFilter as string).trim())
+                    .pipe(
+                        catchError(_ => EMPTY),
+                        finalize(() => this.sharedService.setLoading(false)),
+                    );
+        }
+        else {
+            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
+                .pipe(
+                    tap((response: PastTrainingsResponse) => this.handleNextWeek(response.dates)),
+                    catchError(_ => EMPTY),
+                    finalize(() => this.sharedService.setLoading(false)),
+                );
+        }
+
     }
 
     get spinnerSize(): number {
@@ -81,8 +97,8 @@ export class PastTrainingsComponent {
                                         $event.data.dates.endDate as Date,
                                         environment.TIMEZONE as string,
                                     ), QUERY_PARAMS_DATE_FORMAT),
-                                search: $event.searchValue,
-                            },
+                                search: $event?.searchValue,
+                            } as PastTrainingsQueryParams,
                         });
                     }),
                     finalize(() => {
@@ -126,7 +142,7 @@ export class PastTrainingsComponent {
                                         result.dates.endDate as Date,
                                         environment.TIMEZONE as string,
                                     ), QUERY_PARAMS_DATE_FORMAT),
-                            },
+                            } as PastTrainingsQueryParams,
                         });
                     }),
                     catchError(_ => EMPTY),

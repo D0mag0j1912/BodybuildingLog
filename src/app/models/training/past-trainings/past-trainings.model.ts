@@ -9,9 +9,10 @@ export interface PastTrainingsResponse {
     readonly message?: string;
 }
 
-export interface ErrorMessage {
-    readonly message: string;
-    readonly statusCode?: number;
+export interface PastTrainingsQueryParams {
+    startDate?: string;
+    endDate?: string;
+    search?: string;
 }
 
 export interface DateInterval {
