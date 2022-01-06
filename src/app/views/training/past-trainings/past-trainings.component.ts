@@ -4,11 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { EMPTY, Observable, of } from 'rxjs';
-import { catchError, finalize, map, takeUntil, tap } from 'rxjs/operators';
+import { catchError, finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
-import { Training } from '../../../models/training/new-training/new-training.model';
 import { DateInterval, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
@@ -51,14 +50,7 @@ export class PastTrainingsComponent {
             this.pastTrainings$ =
                 of(response)
                     .pipe(
-                        map((response: PastTrainingsResponse) => ({
-                                ...response,
-                                dates: {
-                                    startDate: new Date(response?.dates?.startDate ?? null),
-                                    endDate: new Date(response?.dates?.endDate ?? null),
-                                } as DateInterval,
-                            }),
-                        ),
+                        map((response: PastTrainingsResponse) => this.pastTrainingsService.mapDateInterval(response)),
                     );
             this.changeDetectorRef.markForCheck();
         });
@@ -73,9 +65,13 @@ export class PastTrainingsComponent {
     }
 
     //TODO
-    searchEmitted(trainings: Training[]): void {
-        /* this.trainings$ = of(trainings);
-        this.changeDetectorRef.markForCheck(); */
+    searchEmitted(searchResponse: PastTrainingsResponse): void {
+        this.pastTrainings$ =
+            of(searchResponse)
+                .pipe(
+                    map((response: PastTrainingsResponse) => this.pastTrainingsService.mapDateInterval(response)),
+                    finalize(() => this.changeDetectorRef.markForCheck()),
+                );
     }
 
     loadWeekTraining(
@@ -172,7 +168,7 @@ export class PastTrainingsComponent {
         if (isYear) {
             return this.translateService.stream('common.year');
         }
-        return of('');
+        return this.translateService.stream('common.interval');
     }
 
     private handleNextWeek(dateInterval: DateInterval): void {

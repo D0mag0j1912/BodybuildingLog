@@ -9,6 +9,7 @@
         "week": "Week",
         "month": "Month",
         "year": "Year",
+        "interval": "Interval",
         "food": "Food",
         "kcal": "calories",
         "try_again": "Try again",

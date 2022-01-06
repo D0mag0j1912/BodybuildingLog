@@ -24,20 +24,22 @@ export class PastTrainingsService {
         const params: string = `?currentDate=${currentDate}`;
         return this.http.get<PastTrainingsResponse>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings${params}`)
             .pipe(
-                map((response: PastTrainingsResponse) =>
-                    ({
-                        ...response,
-                        dates: {
-                            startDate: new Date(response?.dates?.startDate ?? null),
-                            endDate: new Date(response?.dates?.endDate ?? null),
-                        } as DateInterval,
-                    }),
-                ),
+                map((response: PastTrainingsResponse) => this.mapDateInterval(response)),
             );
     }
 
     getPastTraining(id: string): Observable<Training> {
         return this.http.get<Training>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings/${id}`);
+    }
+
+    mapDateInterval(response: PastTrainingsResponse): PastTrainingsResponse {
+        return {
+            ...response,
+            dates: {
+                startDate: new Date(response?.dates?.startDate ?? null),
+                endDate: new Date(response?.dates?.endDate ?? null),
+            } as DateInterval,
+        } as PastTrainingsResponse;
     }
 
 }
