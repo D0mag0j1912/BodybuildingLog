@@ -1,6 +1,6 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { EMPTY } from 'rxjs';
+import { EMPTY, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { SearchQuery } from '../../../../models/common.model';
 import { PastTrainingsResponse } from '../../../../models/training/past-trainings/past-trainings.model';
@@ -14,7 +14,9 @@ import { PastTrainingsService } from '../../../../services/training/past-trainin
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class PastTrainingsFiltersComponent implements AfterViewInit {
+export class PastTrainingsFiltersComponent {
+
+    private readonly keyUp$$: Subject<KeyboardEvent> = new Subject<KeyboardEvent>();
 
     @Output()
     readonly trainingEmitted: EventEmitter<SearchQuery<PastTrainingsResponse>> = new EventEmitter<SearchQuery<PastTrainingsResponse>>();
@@ -27,14 +29,13 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
         private readonly unsubscribeService: UnsubscribeService,
-    ) {}
-
-    ngAfterViewInit(): void {
-        if (this.searchInput) {
-            this.searchInput.valueChanges.pipe(
+    ) {
+        this.keyUp$$
+            .pipe(
+                map((event: Event) => (event.target as HTMLInputElement).value),
                 map((value: string) => value.trim()),
                 filter((value: string) => value.length <= 50),
-                debounceTime(500),
+                debounceTime(750),
                 distinctUntilChanged(),
                 switchMap((value: string) =>
                     this.pastTrainingsService.searchPastTrainings(value).pipe(
@@ -42,13 +43,17 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
                     ),
                 ),
                 takeUntil(this.unsubscribeService),
-            ).subscribe((response: PastTrainingsResponse) => {
+            )
+            .subscribe((response: PastTrainingsResponse) => {
                 this.trainingEmitted.emit({
                     data: response,
                     searchValue: (this.searchInput.value as string).trim(),
                 });
             });
-        }
+    }
+
+    emitKeyboardEvent($event: KeyboardEvent): void {
+        this.keyUp$$.next($event);
     }
 
     //TODO: open filter dialog

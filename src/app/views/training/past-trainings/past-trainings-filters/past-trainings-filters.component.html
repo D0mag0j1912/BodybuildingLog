@@ -10,7 +10,8 @@
             name="search"
             type="text"
             class="search-input"
-            [placeholder]="'training.past_trainings.filters.enter_search_term' | translate">
+            [placeholder]="'training.past_trainings.filters.enter_search_term' | translate"
+            (keyup)="emitKeyboardEvent($event)">
         <span
             *ngIf="search?.control?.errors?.maxlength"
             class="search-max-error">
