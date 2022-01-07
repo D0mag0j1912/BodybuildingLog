@@ -3,7 +3,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { EMPTY, Observable, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
 import { catchError, finalize, map, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
@@ -28,6 +28,7 @@ export class PastTrainingsComponent {
     isNextWeekDisabled: boolean = true;
 
     isLoading$: Observable<boolean> = this.sharedService.isLoading$;
+    isError$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     pastTrainings$: Observable<PastTrainingsResponse> = undefined;
 
     constructor(
@@ -54,7 +55,10 @@ export class PastTrainingsComponent {
                 //TODO: implement query param check on backend (security)
                 this.pastTrainingsService.searchPastTrainings((searchFilter as string).trim())
                     .pipe(
-                        catchError(_ => EMPTY),
+                        catchError(_ => {
+                            this.isError$.next(true);
+                            return EMPTY;
+                        }),
                         finalize(() => this.sharedService.setLoading(false)),
                     );
         }
@@ -62,7 +66,10 @@ export class PastTrainingsComponent {
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
                 .pipe(
                     tap((response: PastTrainingsResponse) => this.handleNextWeek(response.dates)),
-                    catchError(_ => EMPTY),
+                    catchError(_ => {
+                        this.isError$.next(true);
+                        return EMPTY;
+                    }),
                     finalize(() => this.sharedService.setLoading(false)),
                 );
         }
@@ -153,7 +160,10 @@ export class PastTrainingsComponent {
                             } as PastTrainingsQueryParams,
                         });
                     }),
-                    catchError(_ => EMPTY),
+                    catchError(_ => {
+                        this.isError$.next(true);
+                        return EMPTY;
+                    }),
                     finalize(() => {
                         this.sharedService.setLoading(false);
                         this.changeDetectorRef.markForCheck();
@@ -174,7 +184,10 @@ export class PastTrainingsComponent {
         this.sharedService.setLoading(true);
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
             .pipe(
-                catchError(_ => EMPTY),
+                catchError(_ => {
+                    this.isError$.next(true);
+                    return EMPTY;
+                }),
                 finalize(() => {
                     this.sharedService.setLoading(false);
                     this.changeDetectorRef.markForCheck();
