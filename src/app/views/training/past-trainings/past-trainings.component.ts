@@ -4,11 +4,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
-import { catchError, finalize, map, takeUntil, tap } from 'rxjs/operators';
+import { catchError, endWith, finalize, map, startWith, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import { SearchQuery } from '../../../models/common.model';
+import { Data } from '../../../models/common.model';
 import { DateInterval, PastTrainingsQueryParams, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
@@ -29,7 +30,7 @@ export class PastTrainingsComponent {
 
     isLoading$: Observable<boolean> = this.sharedService.isLoading$;
     isError$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    pastTrainings$: Observable<PastTrainingsResponse> = undefined;
+    pastTrainings$: Observable<Data<PastTrainingsResponse>> = undefined;
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
@@ -40,18 +41,17 @@ export class PastTrainingsComponent {
         private readonly route: ActivatedRoute,
         private readonly router: Router,
     ) {
-        this.sharedService.deletedTraining$$.pipe(
+        /* this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((response: PastTrainingsResponse) => {
             this.pastTrainings$ = of(response);
             this.changeDetectorRef.markForCheck();
-        });
+        }); */
 
         this.sharedService.setLoading(true);
         const searchFilter = this.route.snapshot.queryParamMap?.get('search');
         if (searchFilter) {
-            //TODO: implement API search all
-            this.pastTrainings$ =
+            /* this.pastTrainings$ =
                 //TODO: implement query param check on backend (security)
                 this.pastTrainingsService.searchPastTrainings((searchFilter as string).trim())
                     .pipe(
@@ -60,17 +60,34 @@ export class PastTrainingsComponent {
                             return EMPTY;
                         }),
                         finalize(() => this.sharedService.setLoading(false)),
-                    );
+                    ); */
         }
         else {
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
                 .pipe(
-                    tap((response: PastTrainingsResponse) => this.handleNextWeek(response.dates)),
+                    map((response: Data<PastTrainingsResponse>) => ({
+                        isLoading: false,
+                        value: response.value,
+                        isError: false,
+                    } as Data<PastTrainingsResponse>)),
+                    catchError(_ => of({
+                        isLoading: false,
+                        isError: true,
+                    } as Data<PastTrainingsResponse>)),
+                    startWith({
+                        isLoading: true,
+                        isError: false,
+                    } as Data<PastTrainingsResponse>),
+                    /* tap((response: PastTrainingsResponse) => this.handleNextWeek(response.dates)),
                     catchError(_ => {
                         this.isError$.next(true);
                         return EMPTY;
                     }),
-                    finalize(() => this.sharedService.setLoading(false)),
+                    //TODO: shut down spinner on stream completion
+                    endWith({
+                        ...tempPastTrainings,
+                        isLoading: false,
+                    }), */
                 );
         }
 
@@ -84,7 +101,7 @@ export class PastTrainingsComponent {
         return TEMPLATE_DATE_FORMAT;
     }
 
-    get isSearch(): Observable<boolean> {
+    get isSearch$(): Observable<boolean> {
         return this.route.queryParamMap
             .pipe(
                 map((params: ParamMap) => !!params?.get('search')),
@@ -93,7 +110,7 @@ export class PastTrainingsComponent {
 
     //TODO: implement loading spinner while searching
     searchEmitted($event: SearchQuery<PastTrainingsResponse>): void {
-        this.sharedService.setLoading(true);
+        /* this.sharedService.setLoading(true);
         this.pastTrainings$ =
             of($event.data)
                 .pipe(
@@ -120,14 +137,14 @@ export class PastTrainingsComponent {
                         this.sharedService.setLoading(false);
                         this.changeDetectorRef.markForCheck();
                     }),
-                );
+                ); */
     }
 
     loadWeekTraining(
         previousOrNextWeek: Week,
         dateInterval: DateInterval,
     ): void {
-        this.sharedService.setLoading(true);
+        /* this.sharedService.setLoading(true);
 
         this.pastTrainings$ =
             this.pastTrainingsService.getPastTrainings(previousOrNextWeek === 'Previous week'
@@ -168,7 +185,7 @@ export class PastTrainingsComponent {
                         this.sharedService.setLoading(false);
                         this.changeDetectorRef.markForCheck();
                     }),
-                );
+                ); */
     }
 
     setNextWeekTooltip(): Observable<string> {

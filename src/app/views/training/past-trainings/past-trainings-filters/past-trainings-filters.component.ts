@@ -3,6 +3,7 @@ import { NgModel } from '@angular/forms';
 import { EMPTY, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { SearchQuery } from '../../../../models/common.model';
+import { Data } from '../../../../models/common.model';
 import { PastTrainingsResponse } from '../../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../../services/training/past-trainings.service';
@@ -44,9 +45,9 @@ export class PastTrainingsFiltersComponent {
                 ),
                 takeUntil(this.unsubscribeService),
             )
-            .subscribe((response: PastTrainingsResponse) => {
+            .subscribe((response: Data<PastTrainingsResponse>) => {
                 this.trainingEmitted.emit({
-                    data: response,
+                    data: response?.value,
                     searchValue: (this.searchInput.value as string).trim(),
                 });
             });
