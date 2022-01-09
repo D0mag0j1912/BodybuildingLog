@@ -6,6 +6,7 @@ import { DeleteTrainingActionService } from 'src/services/training/training-acti
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login.model';
+import { Data } from '../../../models/common/response.model';
 
 @ApiTags('Training')
 @Controller('training/delete_training')
@@ -22,7 +23,7 @@ export class DeleteTrainingActionController {
         @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
         @Query('currentDate') currentDate: Date,
-    ): Promise<PastTrainingsResponse> {
+    ): Promise<Data<PastTrainingsResponse>> {
         return this.deleteTrainingActionService.deleteTraining(
             trainingId as string,
             user._id as string,

@@ -7,6 +7,8 @@ import { PastTrainingsService } from 'src/services/training/past-trainings.servi
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login.model';
+import { Data } from '../../../models/common/response.model';
+
 @ApiTags('Training')
 @Controller('training/past_trainings')
 @UseGuards(AuthGuard())
@@ -20,7 +22,7 @@ export class PastTrainingsController {
     async getPastTrainings(
         @GET_USER() user: UserDto,
         @Query('currentDate') currentDate: Date,
-    ): Promise<PastTrainingsResponse> {
+    ): Promise<Data<PastTrainingsResponse>> {
         if (!currentDate) {
             throw new BadRequestException('training.past_trainings.errors.past_trainings_error_title');
         }

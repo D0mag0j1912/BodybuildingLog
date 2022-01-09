@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { DateInterval, getIntervalDate } from '../../helpers/date.helper';
+import { Data } from '../../models/common/response.model';
 import { NewTrainingDto } from '../../models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from '../../models/training/past-trainings/past-trainings.model';
 
@@ -15,9 +16,9 @@ export class PastTrainingsService {
     async searchTrainings(
         searchValue: string,
         loggedInUserId: string,
-    ): Promise<PastTrainingsResponse> {
+    ): Promise<Data<PastTrainingsResponse>> {
         try {
-            if (searchValue !== '') {
+            if (searchValue !== '' && searchValue) {
                 // tslint:disable-next-line: await-promise
                 const trainings: NewTrainingDto[] = await this.trainingModel
                     .find({
@@ -39,10 +40,14 @@ export class PastTrainingsService {
                     });
                 const minMaxDate: DateInterval = getIntervalDate(trainings);
                 return {
-                    trainings: trainings,
-                    dates: minMaxDate,
-                    trainingsPerPage: trainingsPerPage,
-                } as PastTrainingsResponse;
+                    isLoading: true,
+                    value: {
+                        trainings: trainings,
+                        dates: minMaxDate,
+                        trainingsPerPage: trainingsPerPage,
+                    } as PastTrainingsResponse,
+                    isError: false,
+                } as Data<PastTrainingsResponse>;
             }
             else {
                 return this.getPastTrainings(
@@ -68,7 +73,7 @@ export class PastTrainingsService {
     async getPastTrainings(
         currentDate: Date,
         loggedUserId: string,
-    ): Promise<PastTrainingsResponse> {
+    ): Promise<Data<PastTrainingsResponse>> {
         try {
             const dates: DateInterval = getIntervalDate(new Date(currentDate));
             // tslint:disable-next-line: await-promise
@@ -88,10 +93,14 @@ export class PastTrainingsService {
                 },
             });
             return {
-                trainings: trainings,
-                dates: dates,
-                trainingsPerPage: trainingsPerPage,
-            } as PastTrainingsResponse;
+                isLoading: true,
+                value: {
+                    trainings: trainings,
+                    dates: dates,
+                    trainingsPerPage: trainingsPerPage,
+                } as PastTrainingsResponse,
+                isError: false,
+            } as Data<PastTrainingsResponse>;
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.past_trainings.errors.past_trainings_error_title');
