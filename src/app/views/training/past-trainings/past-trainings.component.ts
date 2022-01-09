@@ -28,8 +28,6 @@ export class PastTrainingsComponent {
 
     isNextWeekDisabled: boolean = true;
 
-    isLoading$: Observable<boolean> = this.sharedService.isLoading$;
-    isError$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     pastTrainings$: Observable<Data<PastTrainingsResponse>> = undefined;
 
     constructor(
@@ -201,10 +199,7 @@ export class PastTrainingsComponent {
         this.sharedService.setLoading(true);
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
             .pipe(
-                catchError(_ => {
-                    this.isError$.next(true);
-                    return EMPTY;
-                }),
+                catchError(_ => EMPTY),
                 finalize(() => {
                     this.sharedService.setLoading(false);
                     this.changeDetectorRef.markForCheck();
