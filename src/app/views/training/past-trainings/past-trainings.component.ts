@@ -3,8 +3,8 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
-import { catchError, endWith, finalize, map, startWith, takeUntil, tap } from 'rxjs/operators';
+import { asyncScheduler, BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
+import { catchError, endWith, finalize, map, observeOn, startWith, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
@@ -106,20 +106,19 @@ export class PastTrainingsComponent {
 
     //TODO: implement loading spinner while searching
     searchEmitted($event: SearchQuery<Data<PastTrainingsResponse>>): void {
-        console.log($event)
         this.pastTrainings$ =
             of($event.data)
                 .pipe(
-                    tap(async () => {
+                    tap(async (x: Data<PastTrainingsResponse>) => {
                         const queryParams: PastTrainingsQueryParams = {
                             startDate: format(
                                 utcToZonedTime(
-                                    $event.data?.value?.dates?.startDate as Date,
+                                    x?.value?.dates?.startDate as Date,
                                     environment.TIMEZONE as string)
                                 , QUERY_PARAMS_DATE_FORMAT),
                             endDate: format(
                                 utcToZonedTime(
-                                    $event.data?.value?.dates?.endDate as Date,
+                                    x?.value?.dates?.endDate as Date,
                                     environment.TIMEZONE as string,
                                 ), QUERY_PARAMS_DATE_FORMAT),
                             search: $event?.searchValue !== '' ? $event.searchValue : undefined,
@@ -129,11 +128,14 @@ export class PastTrainingsComponent {
                             queryParams: queryParams,
                         });
                     }),
+                    tap((x: Data<PastTrainingsResponse>) => console.log(x)),
+                    observeOn(asyncScheduler),
                     map((x: Data<PastTrainingsResponse>) => ({
                         isLoading: false,
                         value: x?.value,
                         isError: false,
                     })),
+                    tap((x: Data<PastTrainingsResponse>) => console.log(x)),
                     catchError(_ => of({
                         isLoading: false,
                         isError: true,

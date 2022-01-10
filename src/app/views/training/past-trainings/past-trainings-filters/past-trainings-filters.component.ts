@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output, ViewChild } from '@angular/core';
-import { NgModel } from '@angular/forms';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EMPTY, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
@@ -17,7 +16,7 @@ import { PastTrainingsService } from '../../../../services/training/past-trainin
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class PastTrainingsFiltersComponent {
+export class PastTrainingsFiltersComponent implements AfterViewInit {
 
     private readonly keyUp$$: Subject<KeyboardEvent> = new Subject<KeyboardEvent>();
 
@@ -27,9 +26,9 @@ export class PastTrainingsFiltersComponent {
     searchValue: string = '';
 
     @ViewChild('search', {
-        read: NgModel,
+        read: ElementRef,
     })
-    searchInput: NgModel | undefined;
+    searchInput: ElementRef | undefined;
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
@@ -69,6 +68,10 @@ export class PastTrainingsFiltersComponent {
 
     get inputMaxLength(): number {
         return INPUT_MAX_LENGTH;
+    }
+
+    ngAfterViewInit(): void {
+        setTimeout(() => (this.searchInput.nativeElement as HTMLInputElement).focus());
     }
 
     emitKeyboardEvent($event: KeyboardEvent): void {

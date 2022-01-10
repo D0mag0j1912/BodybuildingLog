@@ -4,7 +4,7 @@
         class="search-wrapper"
         autocomplete="off">
         <input
-            #search
+            #search="ngModel"
             name="search"
             type="text"
             class="search-input"
@@ -12,9 +12,8 @@
             [placeholder]="'training.past_trainings.filters.enter_search_term' | translate"
             [(ngModel)]="searchValue"
             (keyup)="emitKeyboardEvent($event)">
-        <!-- TODO: fix validation message -->
         <span
-            *ngIf="searchInput?.control?.errors?.maxlength"
+            *ngIf="search?.control?.errors?.maxlength"
             class="search-max-error">
             {{ 'training.past_trainings.filters.errors.search_max_length' | translate }}
         </span>
