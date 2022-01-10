@@ -8,6 +8,7 @@
             name="search"
             type="text"
             class="search-input"
+            [maxlength]="inputMaxLength"
             [placeholder]="'training.past_trainings.filters.enter_search_term' | translate"
             [(ngModel)]="searchValue"
             (keyup)="emitKeyboardEvent($event)">

@@ -3,8 +3,9 @@ import { NgModel } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { EMPTY, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
-import { SearchQuery } from '../../../../models/common.model';
-import { Data } from '../../../../models/common.model';
+import { INPUT_MAX_LENGTH } from '../../../../constants/input-maxlength.const';
+import { SearchQuery } from '../../../../models/common/interfaces/common.model';
+import { Data } from '../../../../models/common/interfaces/common.model';
 import { PastTrainingsResponse } from '../../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../../services/training/past-trainings.service';
@@ -64,6 +65,10 @@ export class PastTrainingsFiltersComponent {
                     searchValue: this.searchValue.trim(),
                 });
             });
+    }
+
+    get inputMaxLength(): number {
+        return INPUT_MAX_LENGTH;
     }
 
     emitKeyboardEvent($event: KeyboardEvent): void {

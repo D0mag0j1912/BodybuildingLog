@@ -8,8 +8,8 @@ import { catchError, endWith, finalize, map, startWith, takeUntil, tap } from 'r
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
-import { SearchQuery } from '../../../models/common.model';
-import { Data } from '../../../models/common.model';
+import { SearchQuery } from '../../../models/common/interfaces/common.model';
+import { Data } from '../../../models/common/interfaces/common.model';
 import { DateInterval, PastTrainingsQueryParams, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';

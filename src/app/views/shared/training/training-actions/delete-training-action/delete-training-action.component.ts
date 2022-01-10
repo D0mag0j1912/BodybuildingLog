@@ -7,7 +7,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { Training } from 'src/app/models/training/new-training/new-training.model';
 import { SNACK_BAR_DURATION } from '../../../../../constants/snack-bar-duration.const';
-import { Data } from '../../../../../models/common.model';
+import { Data } from '../../../../../models/common/interfaces/common.model';
 import { PastTrainingsResponse } from '../../../../../models/training/past-trainings/past-trainings.model';
 import { SharedService } from '../../../../../services/shared/shared.service';
 
