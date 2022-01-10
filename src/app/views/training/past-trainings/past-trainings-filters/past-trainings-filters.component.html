@@ -4,16 +4,16 @@
         class="search-wrapper"
         autocomplete="off">
         <input
-            ngModel
-            #search="ngModel"
-            maxlength="50"
+            #search
             name="search"
             type="text"
             class="search-input"
             [placeholder]="'training.past_trainings.filters.enter_search_term' | translate"
+            [(ngModel)]="searchValue"
             (keyup)="emitKeyboardEvent($event)">
+        <!-- TODO: fix validation message -->
         <span
-            *ngIf="search?.control?.errors?.maxlength"
+            *ngIf="searchInput?.control?.errors?.maxlength"
             class="search-max-error">
             {{ 'training.past_trainings.filters.errors.search_max_length' | translate }}
         </span>

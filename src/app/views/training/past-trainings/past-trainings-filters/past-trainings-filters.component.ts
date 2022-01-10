@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { EMPTY, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { SearchQuery } from '../../../../models/common.model';
@@ -20,7 +21,9 @@ export class PastTrainingsFiltersComponent {
     private readonly keyUp$$: Subject<KeyboardEvent> = new Subject<KeyboardEvent>();
 
     @Output()
-    readonly trainingEmitted: EventEmitter<SearchQuery<PastTrainingsResponse>> = new EventEmitter<SearchQuery<PastTrainingsResponse>>();
+    readonly trainingEmitted: EventEmitter<SearchQuery<Data<PastTrainingsResponse>>> = new EventEmitter<SearchQuery<Data<PastTrainingsResponse>>>();
+
+    searchValue: string = '';
 
     @ViewChild('search', {
         read: NgModel,
@@ -30,7 +33,13 @@ export class PastTrainingsFiltersComponent {
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
         private readonly unsubscribeService: UnsubscribeService,
+        private readonly route: ActivatedRoute,
     ) {
+        const searchQueryParam = this.route.snapshot.queryParamMap?.get('search');
+        if (searchQueryParam) {
+            this.searchValue = searchQueryParam;
+        }
+
         this.keyUp$$
             .pipe(
                 map((event: Event) => (event.target as HTMLInputElement).value),
@@ -47,8 +56,12 @@ export class PastTrainingsFiltersComponent {
             )
             .subscribe((response: Data<PastTrainingsResponse>) => {
                 this.trainingEmitted.emit({
-                    data: response?.value,
-                    searchValue: (this.searchInput.value as string).trim(),
+                    data: {
+                        isLoading: response.isLoading,
+                        isError: response.isError,
+                        value: response?.value,
+                    } as Data<PastTrainingsResponse>,
+                    searchValue: this.searchValue.trim(),
                 });
             });
     }

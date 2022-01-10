@@ -46,23 +46,31 @@ export class PastTrainingsComponent {
             this.changeDetectorRef.markForCheck();
         }); */
 
-        this.sharedService.setLoading(true);
         const searchFilter = this.route.snapshot.queryParamMap?.get('search');
         if (searchFilter) {
-            /* this.pastTrainings$ =
+            this.pastTrainings$ =
                 //TODO: implement query param check on backend (security)
                 this.pastTrainingsService.searchPastTrainings((searchFilter as string).trim())
                     .pipe(
-                        catchError(_ => {
-                            this.isError$.next(true);
-                            return EMPTY;
-                        }),
-                        finalize(() => this.sharedService.setLoading(false)),
-                    ); */
+                        map((response: Data<PastTrainingsResponse>) => ({
+                            isLoading: false,
+                            value: response.value,
+                            isError: false,
+                        } as Data<PastTrainingsResponse>)),
+                        catchError(_ => of({
+                            isLoading: false,
+                            isError: true,
+                        } as Data<PastTrainingsResponse>)),
+                        startWith({
+                            isLoading: true,
+                            isError: false,
+                        } as Data<PastTrainingsResponse>),
+                    );
         }
         else {
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
                 .pipe(
+                    tap((response: Data<PastTrainingsResponse>) => this.handleNextWeek(response?.value?.dates)),
                     map((response: Data<PastTrainingsResponse>) => ({
                         isLoading: false,
                         value: response.value,
@@ -76,16 +84,6 @@ export class PastTrainingsComponent {
                         isLoading: true,
                         isError: false,
                     } as Data<PastTrainingsResponse>),
-                    /* tap((response: PastTrainingsResponse) => this.handleNextWeek(response.dates)),
-                    catchError(_ => {
-                        this.isError$.next(true);
-                        return EMPTY;
-                    }),
-                    //TODO: shut down spinner on stream completion
-                    endWith({
-                        ...tempPastTrainings,
-                        isLoading: false,
-                    }), */
                 );
         }
 
@@ -107,8 +105,8 @@ export class PastTrainingsComponent {
     }
 
     //TODO: implement loading spinner while searching
-    searchEmitted($event: SearchQuery<PastTrainingsResponse>): void {
-        /* this.sharedService.setLoading(true);
+    searchEmitted($event: SearchQuery<Data<PastTrainingsResponse>>): void {
+        console.log($event)
         this.pastTrainings$ =
             of($event.data)
                 .pipe(
@@ -116,12 +114,12 @@ export class PastTrainingsComponent {
                         const queryParams: PastTrainingsQueryParams = {
                             startDate: format(
                                 utcToZonedTime(
-                                    $event.data.dates.startDate as Date,
+                                    $event.data?.value?.dates?.startDate as Date,
                                     environment.TIMEZONE as string)
                                 , QUERY_PARAMS_DATE_FORMAT),
                             endDate: format(
                                 utcToZonedTime(
-                                    $event.data.dates.endDate as Date,
+                                    $event.data?.value?.dates?.endDate as Date,
                                     environment.TIMEZONE as string,
                                 ), QUERY_PARAMS_DATE_FORMAT),
                             search: $event?.searchValue !== '' ? $event.searchValue : undefined,
@@ -131,11 +129,20 @@ export class PastTrainingsComponent {
                             queryParams: queryParams,
                         });
                     }),
-                    finalize(() => {
-                        this.sharedService.setLoading(false);
-                        this.changeDetectorRef.markForCheck();
-                    }),
-                ); */
+                    map((x: Data<PastTrainingsResponse>) => ({
+                        isLoading: false,
+                        value: x?.value,
+                        isError: false,
+                    })),
+                    catchError(_ => of({
+                        isLoading: false,
+                        isError: true,
+                    } as Data<PastTrainingsResponse>)),
+                    startWith({
+                        isLoading: true,
+                        isError: false,
+                    } as Data<PastTrainingsResponse>),
+                );
     }
 
     loadWeekTraining(
