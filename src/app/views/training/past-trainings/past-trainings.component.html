@@ -1,11 +1,9 @@
 <ng-container *ngIf="pastTrainings$ | async as pastTrainings">
     <section class="main-section">
         <ng-container *ngIf="pastTrainings.isLoading; else valueOrError">
-            <div class="spinner-wrapper">
-                <mat-spinner
-                    class="spinner"
-                    [diameter]="spinnerSize"></mat-spinner>
-            </div>
+            <mat-spinner
+                class="spinner"
+                [diameter]="spinnerSize"></mat-spinner>
         </ng-container>
         <ng-template #valueOrError>
             <ng-container *ngIf="pastTrainings.isError; else value">

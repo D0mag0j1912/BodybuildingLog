@@ -3,8 +3,8 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { asyncScheduler, BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
-import { catchError, endWith, finalize, map, observeOn, startWith, takeUntil, tap } from 'rxjs/operators';
+import { asyncScheduler, EMPTY, Observable, of } from 'rxjs';
+import { catchError, delay, finalize, map, observeOn, startWith, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
@@ -106,10 +106,11 @@ export class PastTrainingsComponent {
 
     //TODO: implement loading spinner while searching
     searchEmitted($event: SearchQuery<Data<PastTrainingsResponse>>): void {
+        const x = $event?.data;
         this.pastTrainings$ =
-            of($event.data)
+            of(null)
                 .pipe(
-                    tap(async (x: Data<PastTrainingsResponse>) => {
+                    tap(async () => {
                         const queryParams: PastTrainingsQueryParams = {
                             startDate: format(
                                 utcToZonedTime(
@@ -128,14 +129,11 @@ export class PastTrainingsComponent {
                             queryParams: queryParams,
                         });
                     }),
-                    tap((x: Data<PastTrainingsResponse>) => console.log(x)),
-                    observeOn(asyncScheduler),
-                    map((x: Data<PastTrainingsResponse>) => ({
+                    map(_ => ({
                         isLoading: false,
                         value: x?.value,
                         isError: false,
                     })),
-                    tap((x: Data<PastTrainingsResponse>) => console.log(x)),
                     catchError(_ => of({
                         isLoading: false,
                         isError: true,
@@ -151,8 +149,6 @@ export class PastTrainingsComponent {
         previousOrNextWeek: Week,
         dateInterval: DateInterval,
     ): void {
-        /* this.sharedService.setLoading(true);
-
         this.pastTrainings$ =
             this.pastTrainingsService.getPastTrainings(previousOrNextWeek === 'Previous week'
                 ? subDays(
@@ -166,33 +162,39 @@ export class PastTrainingsComponent {
                         environment.TIMEZONE as string,
                     ), 7) as Date)
                 .pipe(
-                    tap(async (result: PastTrainingsResponse) => {
-                        this.handleNextWeek(result.dates);
+                    tap(async (result: Data<PastTrainingsResponse>) => {
+                        const trainingData = result?.value;
+                        this.handleNextWeek(result?.value?.dates);
                         await this.router.navigate([], {
                             relativeTo: this.route,
                             queryParams: {
                                 startDate: format(
                                     utcToZonedTime(
-                                        result.dates.startDate as Date,
+                                        trainingData?.dates?.startDate as Date,
                                         environment.TIMEZONE as string)
                                     , QUERY_PARAMS_DATE_FORMAT),
                                 endDate: format(
                                     utcToZonedTime(
-                                        result.dates.endDate as Date,
+                                        trainingData?.dates?.endDate as Date,
                                         environment.TIMEZONE as string,
                                     ), QUERY_PARAMS_DATE_FORMAT),
                             } as PastTrainingsQueryParams,
                         });
                     }),
-                    catchError(_ => {
-                        this.isError$.next(true);
-                        return EMPTY;
-                    }),
-                    finalize(() => {
-                        this.sharedService.setLoading(false);
-                        this.changeDetectorRef.markForCheck();
-                    }),
-                ); */
+                    map((x: Data<PastTrainingsResponse>) => ({
+                        isLoading: false,
+                        value: x?.value,
+                        isError: false,
+                    })),
+                    catchError(_ => of({
+                        isLoading: false,
+                        isError: true,
+                    } as Data<PastTrainingsResponse>)),
+                    startWith({
+                        isLoading: true,
+                        isError: false,
+                    } as Data<PastTrainingsResponse>),
+                );
     }
 
     setNextWeekTooltip(): Observable<string> {
