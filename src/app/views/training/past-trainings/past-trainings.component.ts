@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { asyncScheduler, Observable, of } from 'rxjs';
-import { catchError, delay, finalize, map, observeOn, startWith, takeUntil, tap } from 'rxjs/operators';
+import { catchError, delay, finalize, map, observeOn, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
@@ -45,19 +45,7 @@ export class PastTrainingsComponent {
             this.pastTrainings$ =
                 of(response)
                     .pipe(
-                        map((x: TrainingData<PastTrainingsResponse>) => ({
-                            isLoading: false,
-                            value: x?.value,
-                            isError: false,
-                        } as TrainingData<PastTrainingsResponse>)),
-                        catchError(_ => of({
-                            isLoading: false,
-                            isError: true,
-                        } as TrainingData<PastTrainingsResponse>)),
-                        startWith({
-                            isLoading: true,
-                            isError: false,
-                        } as TrainingData<PastTrainingsResponse>),
+                        switchMap((trainingData: TrainingData<PastTrainingsResponse>) => this.mapTrainingData$(trainingData)),
                     );
         });
 
@@ -67,38 +55,14 @@ export class PastTrainingsComponent {
                 //TODO: implement query param check on backend (security). Cuz user can type whatever manually in query params
                 this.pastTrainingsService.searchPastTrainings((searchFilter as string).trim())
                     .pipe(
-                        map((response: TrainingData<PastTrainingsResponse>) => ({
-                            isLoading: false,
-                            value: response.value,
-                            isError: false,
-                        } as TrainingData<PastTrainingsResponse>)),
-                        catchError(_ => of({
-                            isLoading: false,
-                            isError: true,
-                        } as TrainingData<PastTrainingsResponse>)),
-                        startWith({
-                            isLoading: true,
-                            isError: false,
-                        } as TrainingData<PastTrainingsResponse>),
+                        switchMap((trainingData: TrainingData<PastTrainingsResponse>) => this.mapTrainingData$(trainingData)),
                     );
         }
         else {
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
                 .pipe(
                     tap((response: TrainingData<PastTrainingsResponse>) => this.handleNextWeek(response?.value?.dates)),
-                    map((response: TrainingData<PastTrainingsResponse>) => ({
-                        isLoading: false,
-                        value: response.value,
-                        isError: false,
-                    } as TrainingData<PastTrainingsResponse>)),
-                    catchError(_ => of({
-                        isLoading: false,
-                        isError: true,
-                    } as TrainingData<PastTrainingsResponse>)),
-                    startWith({
-                        isLoading: true,
-                        isError: false,
-                    } as TrainingData<PastTrainingsResponse>),
+                    switchMap((trainingData: TrainingData<PastTrainingsResponse>) => this.mapTrainingData$(trainingData)),
                 );
         }
 
@@ -123,18 +87,18 @@ export class PastTrainingsComponent {
     searchEmitted($event: SearchQuery<TrainingData<PastTrainingsResponse>>): void {
         const x = $event?.data;
         this.pastTrainings$ =
-            of(null)
+            of(x)
                 .pipe(
-                    tap(async () => {
+                    tap(async (trainingData: TrainingData<PastTrainingsResponse>) => {
                         const queryParams: PastTrainingsQueryParams = {
                             startDate: format(
                                 utcToZonedTime(
-                                    x?.value?.dates?.startDate as Date,
+                                    trainingData?.value?.dates?.startDate as Date,
                                     environment.TIMEZONE as string)
                                 , QUERY_PARAMS_DATE_FORMAT),
                             endDate: format(
                                 utcToZonedTime(
-                                    x?.value?.dates?.endDate as Date,
+                                    trainingData?.value?.dates?.endDate as Date,
                                     environment.TIMEZONE as string,
                                 ), QUERY_PARAMS_DATE_FORMAT),
                             search: $event?.searchValue !== '' ? $event.searchValue : undefined,
@@ -144,19 +108,7 @@ export class PastTrainingsComponent {
                             queryParams: queryParams,
                         });
                     }),
-                    map(_ => ({
-                        isLoading: false,
-                        value: x?.value,
-                        isError: false,
-                    })),
-                    catchError(_ => of({
-                        isLoading: false,
-                        isError: true,
-                    } as TrainingData<PastTrainingsResponse>)),
-                    startWith({
-                        isLoading: true,
-                        isError: false,
-                    } as TrainingData<PastTrainingsResponse>),
+                    switchMap((trainingData: TrainingData<PastTrainingsResponse>) => this.mapTrainingData$(trainingData)),
                 );
     }
 
@@ -196,19 +148,7 @@ export class PastTrainingsComponent {
                             } as PastTrainingsQueryParams,
                         });
                     }),
-                    map((x: TrainingData<PastTrainingsResponse>) => ({
-                        isLoading: false,
-                        value: x?.value,
-                        isError: false,
-                    })),
-                    catchError(_ => of({
-                        isLoading: false,
-                        isError: true,
-                    } as TrainingData<PastTrainingsResponse>)),
-                    startWith({
-                        isLoading: true,
-                        isError: false,
-                    } as TrainingData<PastTrainingsResponse>),
+                    switchMap((trainingData: TrainingData<PastTrainingsResponse>) => this.mapTrainingData$(trainingData)),
                 );
     }
 
@@ -224,19 +164,7 @@ export class PastTrainingsComponent {
     tryAgain(): void {
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
             .pipe(
-                map((x: TrainingData<PastTrainingsResponse>) => ({
-                    isLoading: false,
-                    value: x?.value,
-                    isError: false,
-                })),
-                catchError(_ => of({
-                    isLoading: false,
-                    isError: true,
-                } as TrainingData<PastTrainingsResponse>)),
-                startWith({
-                    isLoading: true,
-                    isError: false,
-                } as TrainingData<PastTrainingsResponse>),
+                switchMap((trainingData: TrainingData<PastTrainingsResponse>) => this.mapTrainingData$(trainingData)),
             );
     }
 
@@ -269,6 +197,25 @@ export class PastTrainingsComponent {
             return this.translateService.stream('common.year');
         }
         return this.translateService.stream('common.period');
+    }
+
+    private mapTrainingData$(response: TrainingData<PastTrainingsResponse>): Observable<TrainingData<PastTrainingsResponse>> {
+        return of(response)
+            .pipe(
+                map((x: TrainingData<PastTrainingsResponse>) => ({
+                    isLoading: false,
+                    value: x?.value,
+                    isError: false,
+                })),
+                catchError(_ => of({
+                    isLoading: false,
+                    isError: true,
+                } as TrainingData<PastTrainingsResponse>)),
+                startWith({
+                    isLoading: true,
+                    isError: false,
+                } as TrainingData<PastTrainingsResponse>),
+            );
     }
 
     private handleNextWeek(dateInterval: DateInterval): void {
