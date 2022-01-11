@@ -3,7 +3,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { asyncScheduler, EMPTY, Observable, of } from 'rxjs';
+import { asyncScheduler, Observable, of } from 'rxjs';
 import { catchError, delay, finalize, map, observeOn, startWith, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
@@ -39,17 +39,32 @@ export class PastTrainingsComponent {
         private readonly route: ActivatedRoute,
         private readonly router: Router,
     ) {
-        /* this.sharedService.deletedTraining$$.pipe(
+        this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
-        ).subscribe((response: PastTrainingsResponse) => {
-            this.pastTrainings$ = of(response);
-            this.changeDetectorRef.markForCheck();
-        }); */
+        ).subscribe((response: Data<PastTrainingsResponse>) => {
+            this.pastTrainings$ =
+                of(response)
+                    .pipe(
+                        map((x: Data<PastTrainingsResponse>) => ({
+                            isLoading: false,
+                            value: x?.value,
+                            isError: false,
+                        } as Data<PastTrainingsResponse>)),
+                        catchError(_ => of({
+                            isLoading: false,
+                            isError: true,
+                        } as Data<PastTrainingsResponse>)),
+                        startWith({
+                            isLoading: true,
+                            isError: false,
+                        } as Data<PastTrainingsResponse>),
+                    );
+        });
 
         const searchFilter = this.route.snapshot.queryParamMap?.get('search');
         if (searchFilter) {
             this.pastTrainings$ =
-                //TODO: implement query param check on backend (security)
+                //TODO: implement query param check on backend (security). Cuz user can type whatever manually in query params
                 this.pastTrainingsService.searchPastTrainings((searchFilter as string).trim())
                     .pipe(
                         map((response: Data<PastTrainingsResponse>) => ({
@@ -207,14 +222,21 @@ export class PastTrainingsComponent {
     }
 
     tryAgain(): void {
-        this.sharedService.setLoading(true);
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
             .pipe(
-                catchError(_ => EMPTY),
-                finalize(() => {
-                    this.sharedService.setLoading(false);
-                    this.changeDetectorRef.markForCheck();
-                }),
+                map((x: Data<PastTrainingsResponse>) => ({
+                    isLoading: false,
+                    value: x?.value,
+                    isError: false,
+                })),
+                catchError(_ => of({
+                    isLoading: false,
+                    isError: true,
+                } as Data<PastTrainingsResponse>)),
+                startWith({
+                    isLoading: true,
+                    isError: false,
+                } as Data<PastTrainingsResponse>),
             );
     }
 

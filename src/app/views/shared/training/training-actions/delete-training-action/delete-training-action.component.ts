@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { Training } from 'src/app/models/training/new-training/new-training.model';
 import { SNACK_BAR_DURATION } from '../../../../../constants/snack-bar-duration.const';
@@ -51,17 +51,17 @@ export class DeleteTrainingActionComponent {
                 ${this.getSplittedCurrentDate()[0]}
             `) as Date,
         ).pipe(
-            catchError(_ => of(null)),
-            tap((response: PastTrainingsResponse) => {
+            tap((response: Data<PastTrainingsResponse>) => {
                 if (response) {
                     this.dialogRef.close();
-                    this.sharedService.deletedTraining$$.next(response as PastTrainingsResponse);
-                    this.snackBar.open(this.translateService.instant(response.message as string), null, {
+                    this.sharedService.deletedTraining$$.next(response);
+                    this.snackBar.open(this.translateService.instant(response?.value?.message), null, {
                         duration: SNACK_BAR_DURATION.GENERAL,
                         panelClass: 'app__snackbar',
                     });
                 }
             }),
+            catchError(_ => EMPTY),
             finalize(() => {
                 this.isLoading = false;
                 this.changeDetectorRef.markForCheck();
