@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { DateInterval, getIntervalDate } from '../../helpers/date.helper';
-import { Data } from '../../models/common/response.model';
+import { TrainingData } from '../../models/common/response.model';
 import { NewTrainingDto } from '../../models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from '../../models/training/past-trainings/past-trainings.model';
 
@@ -16,7 +16,7 @@ export class PastTrainingsService {
     async searchTrainings(
         searchValue: string,
         loggedInUserId: string,
-    ): Promise<Data<PastTrainingsResponse>> {
+    ): Promise<TrainingData<PastTrainingsResponse>> {
         try {
             if (searchValue !== '' && searchValue) {
                 // tslint:disable-next-line: await-promise
@@ -47,7 +47,7 @@ export class PastTrainingsService {
                         trainingsPerPage: trainingsPerPage,
                     } as PastTrainingsResponse,
                     isError: false,
-                } as Data<PastTrainingsResponse>;
+                } as TrainingData<PastTrainingsResponse>;
             }
             else {
                 return this.getPastTrainings(
@@ -73,7 +73,7 @@ export class PastTrainingsService {
     async getPastTrainings(
         currentDate: Date,
         loggedUserId: string,
-    ): Promise<Data<PastTrainingsResponse>> {
+    ): Promise<TrainingData<PastTrainingsResponse>> {
         try {
             const dates: DateInterval = getIntervalDate(new Date(currentDate));
             // tslint:disable-next-line: await-promise
@@ -100,7 +100,7 @@ export class PastTrainingsService {
                     trainingsPerPage: trainingsPerPage,
                 } as PastTrainingsResponse,
                 isError: false,
-            } as Data<PastTrainingsResponse>;
+            } as TrainingData<PastTrainingsResponse>;
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.past_trainings.errors.past_trainings_error_title');

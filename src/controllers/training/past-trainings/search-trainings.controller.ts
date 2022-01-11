@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { GET_USER } from 'src/decorators/get-user.decorator';
 import { UserDto } from '../../../models/auth/login.model';
-import { Data } from '../../../models/common/response.model';
+import { TrainingData } from '../../../models/common/response.model';
 import { PastTrainingsResponse, SearchTrainingsDto } from '../../../models/training/past-trainings/past-trainings.model';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
@@ -20,7 +20,7 @@ export class SearchTrainingsController {
     async searchTrainings(
         @GET_USER() user: UserDto,
         @Query() searchValue: SearchTrainingsDto,
-    ): Promise<Data<PastTrainingsResponse>> {
+    ): Promise<TrainingData<PastTrainingsResponse>> {
         return this.pastTrainingsService.searchTrainings(
             searchValue.searchValue as string,
             user._id as string,

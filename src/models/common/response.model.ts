@@ -2,7 +2,7 @@ export interface GeneralResponseData {
     readonly message: string;
 }
 
-export interface Data<T> {
+export interface TrainingData<T> {
     isLoading: boolean;
     isError: boolean;
     value?: T;
