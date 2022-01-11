@@ -9,7 +9,7 @@ import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import { SearchQuery } from '../../../models/common/interfaces/common.model';
-import { Data } from '../../../models/common/interfaces/common.model';
+import { TrainingData } from '../../../models/common/interfaces/common.model';
 import { DateInterval, PastTrainingsQueryParams, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
@@ -28,7 +28,7 @@ export class PastTrainingsComponent {
 
     isNextWeekDisabled: boolean = true;
 
-    pastTrainings$: Observable<Data<PastTrainingsResponse>> = undefined;
+    pastTrainings$: Observable<TrainingData<PastTrainingsResponse>> = undefined;
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
@@ -41,23 +41,23 @@ export class PastTrainingsComponent {
     ) {
         this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
-        ).subscribe((response: Data<PastTrainingsResponse>) => {
+        ).subscribe((response: TrainingData<PastTrainingsResponse>) => {
             this.pastTrainings$ =
                 of(response)
                     .pipe(
-                        map((x: Data<PastTrainingsResponse>) => ({
+                        map((x: TrainingData<PastTrainingsResponse>) => ({
                             isLoading: false,
                             value: x?.value,
                             isError: false,
-                        } as Data<PastTrainingsResponse>)),
+                        } as TrainingData<PastTrainingsResponse>)),
                         catchError(_ => of({
                             isLoading: false,
                             isError: true,
-                        } as Data<PastTrainingsResponse>)),
+                        } as TrainingData<PastTrainingsResponse>)),
                         startWith({
                             isLoading: true,
                             isError: false,
-                        } as Data<PastTrainingsResponse>),
+                        } as TrainingData<PastTrainingsResponse>),
                     );
         });
 
@@ -67,38 +67,38 @@ export class PastTrainingsComponent {
                 //TODO: implement query param check on backend (security). Cuz user can type whatever manually in query params
                 this.pastTrainingsService.searchPastTrainings((searchFilter as string).trim())
                     .pipe(
-                        map((response: Data<PastTrainingsResponse>) => ({
+                        map((response: TrainingData<PastTrainingsResponse>) => ({
                             isLoading: false,
                             value: response.value,
                             isError: false,
-                        } as Data<PastTrainingsResponse>)),
+                        } as TrainingData<PastTrainingsResponse>)),
                         catchError(_ => of({
                             isLoading: false,
                             isError: true,
-                        } as Data<PastTrainingsResponse>)),
+                        } as TrainingData<PastTrainingsResponse>)),
                         startWith({
                             isLoading: true,
                             isError: false,
-                        } as Data<PastTrainingsResponse>),
+                        } as TrainingData<PastTrainingsResponse>),
                     );
         }
         else {
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
                 .pipe(
-                    tap((response: Data<PastTrainingsResponse>) => this.handleNextWeek(response?.value?.dates)),
-                    map((response: Data<PastTrainingsResponse>) => ({
+                    tap((response: TrainingData<PastTrainingsResponse>) => this.handleNextWeek(response?.value?.dates)),
+                    map((response: TrainingData<PastTrainingsResponse>) => ({
                         isLoading: false,
                         value: response.value,
                         isError: false,
-                    } as Data<PastTrainingsResponse>)),
+                    } as TrainingData<PastTrainingsResponse>)),
                     catchError(_ => of({
                         isLoading: false,
                         isError: true,
-                    } as Data<PastTrainingsResponse>)),
+                    } as TrainingData<PastTrainingsResponse>)),
                     startWith({
                         isLoading: true,
                         isError: false,
-                    } as Data<PastTrainingsResponse>),
+                    } as TrainingData<PastTrainingsResponse>),
                 );
         }
 
@@ -120,7 +120,7 @@ export class PastTrainingsComponent {
     }
 
     //TODO: implement loading spinner while searching
-    searchEmitted($event: SearchQuery<Data<PastTrainingsResponse>>): void {
+    searchEmitted($event: SearchQuery<TrainingData<PastTrainingsResponse>>): void {
         const x = $event?.data;
         this.pastTrainings$ =
             of(null)
@@ -152,11 +152,11 @@ export class PastTrainingsComponent {
                     catchError(_ => of({
                         isLoading: false,
                         isError: true,
-                    } as Data<PastTrainingsResponse>)),
+                    } as TrainingData<PastTrainingsResponse>)),
                     startWith({
                         isLoading: true,
                         isError: false,
-                    } as Data<PastTrainingsResponse>),
+                    } as TrainingData<PastTrainingsResponse>),
                 );
     }
 
@@ -177,7 +177,7 @@ export class PastTrainingsComponent {
                         environment.TIMEZONE as string,
                     ), 7) as Date)
                 .pipe(
-                    tap(async (result: Data<PastTrainingsResponse>) => {
+                    tap(async (result: TrainingData<PastTrainingsResponse>) => {
                         const trainingData = result?.value;
                         this.handleNextWeek(result?.value?.dates);
                         await this.router.navigate([], {
@@ -196,7 +196,7 @@ export class PastTrainingsComponent {
                             } as PastTrainingsQueryParams,
                         });
                     }),
-                    map((x: Data<PastTrainingsResponse>) => ({
+                    map((x: TrainingData<PastTrainingsResponse>) => ({
                         isLoading: false,
                         value: x?.value,
                         isError: false,
@@ -204,11 +204,11 @@ export class PastTrainingsComponent {
                     catchError(_ => of({
                         isLoading: false,
                         isError: true,
-                    } as Data<PastTrainingsResponse>)),
+                    } as TrainingData<PastTrainingsResponse>)),
                     startWith({
                         isLoading: true,
                         isError: false,
-                    } as Data<PastTrainingsResponse>),
+                    } as TrainingData<PastTrainingsResponse>),
                 );
     }
 
@@ -224,7 +224,7 @@ export class PastTrainingsComponent {
     tryAgain(): void {
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
             .pipe(
-                map((x: Data<PastTrainingsResponse>) => ({
+                map((x: TrainingData<PastTrainingsResponse>) => ({
                     isLoading: false,
                     value: x?.value,
                     isError: false,
@@ -232,11 +232,11 @@ export class PastTrainingsComponent {
                 catchError(_ => of({
                     isLoading: false,
                     isError: true,
-                } as Data<PastTrainingsResponse>)),
+                } as TrainingData<PastTrainingsResponse>)),
                 startWith({
                     isLoading: true,
                     isError: false,
-                } as Data<PastTrainingsResponse>),
+                } as TrainingData<PastTrainingsResponse>),
             );
     }
 

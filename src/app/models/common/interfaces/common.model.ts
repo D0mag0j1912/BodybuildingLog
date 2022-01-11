@@ -9,7 +9,7 @@ export interface ErrorMessage {
     readonly statusCode?: number;
 }
 
-export interface Data<T> {
+export interface TrainingData<T> {
     isLoading: boolean;
     isError: boolean;
     value?: T;

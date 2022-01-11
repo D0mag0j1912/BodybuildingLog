@@ -1,7 +1,7 @@
-import { Data } from '../models/common/interfaces/common.model';
+import { TrainingData } from '../models/common/interfaces/common.model';
 import { DateInterval, PastTrainingsResponse } from '../models/training/past-trainings/past-trainings.model';
 
-export function mapDateInterval(response: Data<PastTrainingsResponse>): Data<PastTrainingsResponse> {
+export function mapDateInterval(response: TrainingData<PastTrainingsResponse>): TrainingData<PastTrainingsResponse> {
     return {
         ...response,
         value: {
@@ -11,5 +11,5 @@ export function mapDateInterval(response: Data<PastTrainingsResponse>): Data<Pas
                 endDate: new Date(response.value?.dates?.endDate ?? null),
             } as DateInterval,
         } as PastTrainingsResponse,
-    } as Data<PastTrainingsResponse>;
+    } as TrainingData<PastTrainingsResponse>;
 }

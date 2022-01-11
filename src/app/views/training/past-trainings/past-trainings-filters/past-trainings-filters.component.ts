@@ -4,7 +4,7 @@ import { EMPTY, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { INPUT_MAX_LENGTH } from '../../../../constants/input-maxlength.const';
 import { SearchQuery } from '../../../../models/common/interfaces/common.model';
-import { Data } from '../../../../models/common/interfaces/common.model';
+import { TrainingData } from '../../../../models/common/interfaces/common.model';
 import { PastTrainingsResponse } from '../../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../../services/training/past-trainings.service';
@@ -21,7 +21,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     private readonly keyUp$$: Subject<KeyboardEvent> = new Subject<KeyboardEvent>();
 
     @Output()
-    readonly trainingEmitted: EventEmitter<SearchQuery<Data<PastTrainingsResponse>>> = new EventEmitter<SearchQuery<Data<PastTrainingsResponse>>>();
+    readonly trainingEmitted: EventEmitter<SearchQuery<TrainingData<PastTrainingsResponse>>> = new EventEmitter<SearchQuery<TrainingData<PastTrainingsResponse>>>();
 
     searchValue: string = '';
 
@@ -54,13 +54,13 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
                 ),
                 takeUntil(this.unsubscribeService),
             )
-            .subscribe((response: Data<PastTrainingsResponse>) => {
+            .subscribe((response: TrainingData<PastTrainingsResponse>) => {
                 this.trainingEmitted.emit({
                     data: {
                         isLoading: response.isLoading,
                         isError: response.isError,
                         value: response?.value,
-                    } as Data<PastTrainingsResponse>,
+                    } as TrainingData<PastTrainingsResponse>,
                     searchValue: this.searchValue.trim(),
                 });
             });

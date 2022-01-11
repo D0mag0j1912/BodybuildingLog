@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 import { Training } from 'src/app/models/training/new-training/new-training.model';
 import { environment } from '../../../../environments/environment';
 import { mapDateInterval } from '../../../helpers/map-past-trainings-dates.helper';
-import { Data } from '../../../models/common/interfaces/common.model';
+import { TrainingData } from '../../../models/common/interfaces/common.model';
 import { PastTrainingsResponse } from '../../../models/training/past-trainings/past-trainings.model';
 import { TrainingActions } from '../../../models/training/past-trainings/training-actions/training-actions.model';
 import { DeleteTrainingActionData } from '../../../models/training/past-trainings/training-actions/training-actions.model';
@@ -51,11 +51,11 @@ export class DeleteTrainingActionService implements TrainingActions {
     deleteTraining(
         trainingId: string,
         currentDate: Date,
-    ): Observable<Data<PastTrainingsResponse>> {
+    ): Observable<TrainingData<PastTrainingsResponse>> {
         const params: string = `?currentDate=${currentDate}`;
-        return this.http.delete<Data<PastTrainingsResponse>>(environment.BACKEND + `/training/delete_training/${trainingId}${params}`)
+        return this.http.delete<TrainingData<PastTrainingsResponse>>(environment.BACKEND + `/training/delete_training/${trainingId}${params}`)
             .pipe(
-                map((response: Data<PastTrainingsResponse>) => mapDateInterval(response)),
+                map((response: TrainingData<PastTrainingsResponse>) => mapDateInterval(response)),
             );
     }
 }
