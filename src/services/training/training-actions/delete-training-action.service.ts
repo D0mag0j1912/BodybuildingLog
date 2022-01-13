@@ -31,12 +31,12 @@ export class DeleteTrainingActionService {
                 loggedUserId as string,
             );
             return {
-                isLoading: true,
-                value: {
-                    ...pastTrainings.value,
+                IsLoading: true,
+                Value: {
+                    ...pastTrainings.Value,
                     message: 'training.past_trainings.actions.delete_success',
                 } as PastTrainingsResponse,
-                isError: false,
+                IsError: false,
             } as TrainingData<PastTrainingsResponse>;
         }
         catch(error: unknown) {

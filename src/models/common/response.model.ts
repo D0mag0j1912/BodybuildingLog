@@ -3,7 +3,7 @@ export interface GeneralResponseData {
 }
 
 export interface TrainingData<T> {
-    isLoading: boolean;
-    isError: boolean;
-    value?: T;
+    IsLoading: boolean;
+    IsError: boolean;
+    Value?: T;
 }

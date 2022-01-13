@@ -40,13 +40,13 @@ export class PastTrainingsService {
                     });
                 const minMaxDate: DateInterval = getIntervalDate(trainings);
                 return {
-                    isLoading: true,
-                    value: {
+                    IsLoading: true,
+                    Value: {
                         trainings: trainings,
                         dates: minMaxDate,
                         trainingsPerPage: trainingsPerPage,
                     } as PastTrainingsResponse,
-                    isError: false,
+                    IsError: false,
                 } as TrainingData<PastTrainingsResponse>;
             }
             else {
@@ -93,13 +93,13 @@ export class PastTrainingsService {
                 },
             });
             return {
-                isLoading: true,
-                value: {
+                IsLoading: true,
+                Value: {
                     trainings: trainings,
                     dates: dates,
                     trainingsPerPage: trainingsPerPage,
                 } as PastTrainingsResponse,
-                isError: false,
+                IsError: false,
             } as TrainingData<PastTrainingsResponse>;
         }
         catch (error: unknown) {
