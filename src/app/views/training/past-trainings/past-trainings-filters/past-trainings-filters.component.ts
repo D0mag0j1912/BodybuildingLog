@@ -57,9 +57,9 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
             .subscribe((response: TrainingData<PastTrainingsResponse>) => {
                 this.trainingEmitted.emit({
                     data: {
-                        isLoading: response.isLoading,
-                        isError: response.isError,
-                        value: response?.value,
+                        IsLoading: response.IsLoading,
+                        IsError: response.IsError,
+                        Value: response?.Value,
                     } as TrainingData<PastTrainingsResponse>,
                     searchValue: this.searchValue.trim(),
                 });

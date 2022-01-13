@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { asyncScheduler, Observable, of } from 'rxjs';
-import { catchError, delay, finalize, map, observeOn, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, finalize, map, observeOn, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
@@ -45,7 +45,20 @@ export class PastTrainingsComponent {
             this.pastTrainings$ =
                 of(response)
                     .pipe(
-                        switchMap((trainingData: TrainingData<PastTrainingsResponse>) => this.mapTrainingData$(trainingData)),
+                        //TODO: Create shared code for operators
+                        map((trainingData: TrainingData<PastTrainingsResponse>) => ({
+                            IsLoading: false,
+                            Value: trainingData?.Value,
+                            IsError: false,
+                        })),
+                        catchError(_ => of({
+                            IsLoading: false,
+                            IsError: true,
+                        } as TrainingData<PastTrainingsResponse>)),
+                        startWith({
+                            IsLoading: true,
+                            IsError: false,
+                        } as TrainingData<PastTrainingsResponse>),
                     );
         });
 
@@ -55,14 +68,40 @@ export class PastTrainingsComponent {
                 //TODO: implement query param check on backend (security). Cuz user can type whatever manually in query params
                 this.pastTrainingsService.searchPastTrainings((searchFilter as string).trim())
                     .pipe(
-                        switchMap((trainingData: TrainingData<PastTrainingsResponse>) => this.mapTrainingData$(trainingData)),
+                        //TODO: Create shared code for operators
+                        map((trainingData: TrainingData<PastTrainingsResponse>) => ({
+                            IsLoading: false,
+                            Value: trainingData?.Value,
+                            IsError: false,
+                        })),
+                        catchError(_ => of({
+                            IsLoading: false,
+                            IsError: true,
+                        } as TrainingData<PastTrainingsResponse>)),
+                        startWith({
+                            IsLoading: true,
+                            IsError: false,
+                        } as TrainingData<PastTrainingsResponse>),
                     );
         }
         else {
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
                 .pipe(
-                    tap((response: TrainingData<PastTrainingsResponse>) => this.handleNextWeek(response?.value?.dates)),
-                    switchMap((trainingData: TrainingData<PastTrainingsResponse>) => this.mapTrainingData$(trainingData)),
+                    tap((response: TrainingData<PastTrainingsResponse>) => this.handleNextWeek(response?.Value?.dates)),
+                    //TODO: Create shared code for operators
+                    map((trainingData: TrainingData<PastTrainingsResponse>) => ({
+                        IsLoading: false,
+                        Value: trainingData?.Value,
+                        IsError: false,
+                    })),
+                    catchError(_ => of({
+                        IsLoading: false,
+                        IsError: true,
+                    } as TrainingData<PastTrainingsResponse>)),
+                    startWith({
+                        IsLoading: true,
+                        IsError: false,
+                    } as TrainingData<PastTrainingsResponse>),
                 );
         }
 
@@ -85,20 +124,35 @@ export class PastTrainingsComponent {
 
     //TODO: implement loading spinner while searching
     searchEmitted($event: SearchQuery<TrainingData<PastTrainingsResponse>>): void {
+        console.log($event.data);
         const x = $event?.data;
         this.pastTrainings$ =
             of(x)
                 .pipe(
+                    //TODO: Create shared code for operators
+                    map((trainingData: TrainingData<PastTrainingsResponse>) => ({
+                        IsLoading: false,
+                        Value: trainingData?.Value,
+                        IsError: false,
+                    })),
+                    catchError(_ => of({
+                        IsLoading: false,
+                        IsError: true,
+                    } as TrainingData<PastTrainingsResponse>)),
+                    startWith({
+                        IsLoading: true,
+                        IsError: false,
+                    } as TrainingData<PastTrainingsResponse>),
                     tap(async (trainingData: TrainingData<PastTrainingsResponse>) => {
                         const queryParams: PastTrainingsQueryParams = {
                             startDate: format(
                                 utcToZonedTime(
-                                    trainingData?.value?.dates?.startDate as Date,
+                                    trainingData?.Value?.dates?.startDate as Date,
                                     environment.TIMEZONE as string)
                                 , QUERY_PARAMS_DATE_FORMAT),
                             endDate: format(
                                 utcToZonedTime(
-                                    trainingData?.value?.dates?.endDate as Date,
+                                    trainingData?.Value?.dates?.endDate as Date,
                                     environment.TIMEZONE as string,
                                 ), QUERY_PARAMS_DATE_FORMAT),
                             search: $event?.searchValue !== '' ? $event.searchValue : undefined,
@@ -108,7 +162,6 @@ export class PastTrainingsComponent {
                             queryParams: queryParams,
                         });
                     }),
-                    switchMap((trainingData: TrainingData<PastTrainingsResponse>) => this.mapTrainingData$(trainingData)),
                 );
     }
 
@@ -130,8 +183,8 @@ export class PastTrainingsComponent {
                     ), 7) as Date)
                 .pipe(
                     tap(async (result: TrainingData<PastTrainingsResponse>) => {
-                        const trainingData = result?.value;
-                        this.handleNextWeek(result?.value?.dates);
+                        const trainingData = result?.Value;
+                        this.handleNextWeek(result?.Value?.dates);
                         await this.router.navigate([], {
                             relativeTo: this.route,
                             queryParams: {
@@ -148,23 +201,44 @@ export class PastTrainingsComponent {
                             } as PastTrainingsQueryParams,
                         });
                     }),
-                    switchMap((trainingData: TrainingData<PastTrainingsResponse>) => this.mapTrainingData$(trainingData)),
+                    //TODO: Create shared code for operators
+                    map((trainingData: TrainingData<PastTrainingsResponse>) => ({
+                        IsLoading: false,
+                        Value: trainingData?.Value,
+                        IsError: false,
+                    })),
+                    catchError(_ => of({
+                        IsLoading: false,
+                        IsError: true,
+                    } as TrainingData<PastTrainingsResponse>)),
+                    startWith({
+                        IsLoading: true,
+                        IsError: false,
+                    } as TrainingData<PastTrainingsResponse>),
                 );
     }
 
     setNextWeekTooltip(): Observable<string> {
-        if (!this.isNextWeekDisabled) {
-            return this.translateService.stream('training.past_trainings.buttons.next_week');
-        }
-        else {
-            return this.translateService.stream('training.past_trainings.disabled_next_week');
-        }
+        return this.translateService.stream(`training.past_trainings.${!this.isNextWeekDisabled ? 'buttons.next_week' : 'disabled_next_week'}`);
     }
 
     tryAgain(): void {
+        //TODO: Create shared code for operators
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
             .pipe(
-                switchMap((trainingData: TrainingData<PastTrainingsResponse>) => this.mapTrainingData$(trainingData)),
+                map((trainingData: TrainingData<PastTrainingsResponse>) => ({
+                    IsLoading: false,
+                    Value: trainingData?.Value,
+                    IsError: false,
+                })),
+                catchError(_ => of({
+                    IsLoading: false,
+                    IsError: true,
+                } as TrainingData<PastTrainingsResponse>)),
+                startWith({
+                    IsLoading: true,
+                    IsError: false,
+                } as TrainingData<PastTrainingsResponse>),
             );
     }
 
@@ -197,25 +271,6 @@ export class PastTrainingsComponent {
             return this.translateService.stream('common.year');
         }
         return this.translateService.stream('common.period');
-    }
-
-    private mapTrainingData$(response: TrainingData<PastTrainingsResponse>): Observable<TrainingData<PastTrainingsResponse>> {
-        return of(response)
-            .pipe(
-                map((x: TrainingData<PastTrainingsResponse>) => ({
-                    isLoading: false,
-                    value: x?.value,
-                    isError: false,
-                })),
-                catchError(_ => of({
-                    isLoading: false,
-                    isError: true,
-                } as TrainingData<PastTrainingsResponse>)),
-                startWith({
-                    isLoading: true,
-                    isError: false,
-                } as TrainingData<PastTrainingsResponse>),
-            );
     }
 
     private handleNextWeek(dateInterval: DateInterval): void {

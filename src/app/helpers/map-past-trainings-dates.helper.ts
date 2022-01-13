@@ -4,11 +4,11 @@ import { DateInterval, PastTrainingsResponse } from '../models/training/past-tra
 export function mapDateInterval(response: TrainingData<PastTrainingsResponse>): TrainingData<PastTrainingsResponse> {
     return {
         ...response,
-        value: {
-            ...response.value,
+        Value: {
+            ...response.Value,
             dates: {
-                startDate: new Date(response.value?.dates?.startDate ?? null),
-                endDate: new Date(response.value?.dates?.endDate ?? null),
+                startDate: new Date(response.Value?.dates?.startDate ?? null),
+                endDate: new Date(response.Value?.dates?.endDate ?? null),
             } as DateInterval,
         } as PastTrainingsResponse,
     } as TrainingData<PastTrainingsResponse>;
