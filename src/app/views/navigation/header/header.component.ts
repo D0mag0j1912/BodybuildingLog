@@ -59,8 +59,8 @@ export class HeaderComponent implements OnInit {
         ).subscribe(async (training: Training) => {
             await this.router.navigate(['/training/past-trainings'], {
                 queryParams: {
-                    startDate: format(this.constructDates(new Date(training.createdAt)).startDate, 'dd-MM-yyyy'),
-                    endDate: format(this.constructDates(new Date(training.createdAt)).endDate, 'dd-MM-yyyy'),
+                    startDate: format(this.constructDates(new Date(training.createdAt)).StartDate, 'dd-MM-yyyy'),
+                    endDate: format(this.constructDates(new Date(training.createdAt)).EndDate, 'dd-MM-yyyy'),
                 },
             });
         });
@@ -69,8 +69,8 @@ export class HeaderComponent implements OnInit {
     async goToPastTrainings(): Promise<void> {
         await this.router.navigate(['/training/past-trainings'], {
             queryParams: {
-                startDate: format(this.constructDates(new Date()).startDate, 'dd-MM-yyyy'),
-                endDate: format(this.constructDates(new Date()).endDate, 'dd-MM-yyyy'),
+                startDate: format(this.constructDates(new Date()).StartDate, 'dd-MM-yyyy'),
+                endDate: format(this.constructDates(new Date()).EndDate, 'dd-MM-yyyy'),
             },
         });
     }
@@ -102,8 +102,8 @@ export class HeaderComponent implements OnInit {
             weekStartsOn: 1,
         });
         return {
-            startDate: startDate,
-            endDate: endDate,
+            StartDate: startDate,
+            EndDate: endDate,
         } as DateInterval;
     }
 

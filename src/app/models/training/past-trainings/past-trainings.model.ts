@@ -1,13 +1,12 @@
 import { Training } from '../new-training/new-training.model';
 export interface PastTrainingsResponse {
-    readonly trainings: Training[];
-    readonly dates: {
-        startDate: Date,
-        endDate: Date
+    readonly Trainings: Training[];
+    readonly Dates: {
+        StartDate: Date,
+        EndDate: Date
     };
-    readonly trainingsPerPage: number;
-    readonly isLoading: boolean;
-    readonly message?: string;
+    readonly TrainingsPerPage: number;
+    readonly Message?: string;
 }
 
 export interface PastTrainingsQueryParams {
@@ -17,8 +16,8 @@ export interface PastTrainingsQueryParams {
 }
 
 export interface DateInterval {
-    readonly startDate: Date;
-    readonly endDate: Date;
+    readonly StartDate: Date;
+    readonly EndDate: Date;
 }
 
 export type Week = 'Previous week' | 'Next week';

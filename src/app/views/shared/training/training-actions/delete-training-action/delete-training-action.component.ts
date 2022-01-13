@@ -55,7 +55,7 @@ export class DeleteTrainingActionComponent {
                 if (response) {
                     this.dialogRef.close();
                     this.sharedService.deletedTraining$$.next(response);
-                    this.snackBar.open(this.translateService.instant(response?.Value?.message), null, {
+                    this.snackBar.open(this.translateService.instant(response?.Value?.Message), null, {
                         duration: SNACK_BAR_DURATION.GENERAL,
                         panelClass: 'app__snackbar',
                     });

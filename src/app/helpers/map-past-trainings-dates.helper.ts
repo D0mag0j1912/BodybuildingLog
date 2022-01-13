@@ -6,9 +6,9 @@ export function mapDateInterval(response: TrainingData<PastTrainingsResponse>): 
         ...response,
         Value: {
             ...response.Value,
-            dates: {
-                startDate: new Date(response.Value?.dates?.startDate ?? null),
-                endDate: new Date(response.Value?.dates?.endDate ?? null),
+            Dates: {
+                StartDate: new Date(response.Value?.Dates?.StartDate ?? null),
+                EndDate: new Date(response.Value?.Dates?.EndDate ?? null),
             } as DateInterval,
         } as PastTrainingsResponse,
     } as TrainingData<PastTrainingsResponse>;

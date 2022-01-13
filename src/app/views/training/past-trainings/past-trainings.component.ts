@@ -87,7 +87,7 @@ export class PastTrainingsComponent {
         else {
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
                 .pipe(
-                    tap((response: TrainingData<PastTrainingsResponse>) => this.handleNextWeek(response?.Value?.dates)),
+                    tap((response: TrainingData<PastTrainingsResponse>) => this.handleNextWeek(response?.Value?.Dates)),
                     //TODO: Create shared code for operators
                     map((trainingData: TrainingData<PastTrainingsResponse>) => ({
                         IsLoading: false,
@@ -124,7 +124,6 @@ export class PastTrainingsComponent {
 
     //TODO: implement loading spinner while searching
     searchEmitted($event: SearchQuery<TrainingData<PastTrainingsResponse>>): void {
-        console.log($event.data);
         const x = $event?.data;
         this.pastTrainings$ =
             of(x)
@@ -147,12 +146,12 @@ export class PastTrainingsComponent {
                         const queryParams: PastTrainingsQueryParams = {
                             startDate: format(
                                 utcToZonedTime(
-                                    trainingData?.Value?.dates?.startDate as Date,
+                                    trainingData?.Value?.Dates?.StartDate as Date,
                                     environment.TIMEZONE as string)
                                 , QUERY_PARAMS_DATE_FORMAT),
                             endDate: format(
                                 utcToZonedTime(
-                                    trainingData?.Value?.dates?.endDate as Date,
+                                    trainingData?.Value?.Dates?.EndDate as Date,
                                     environment.TIMEZONE as string,
                                 ), QUERY_PARAMS_DATE_FORMAT),
                             search: $event?.searchValue !== '' ? $event.searchValue : undefined,
@@ -173,29 +172,29 @@ export class PastTrainingsComponent {
             this.pastTrainingsService.getPastTrainings(previousOrNextWeek === 'Previous week'
                 ? subDays(
                     utcToZonedTime(
-                        dateInterval.startDate as Date,
+                        dateInterval.StartDate as Date,
                         environment.TIMEZONE as string,
                     ), 7) as Date
                 : addDays(
                     utcToZonedTime(
-                        dateInterval.startDate as Date,
+                        dateInterval.StartDate as Date,
                         environment.TIMEZONE as string,
                     ), 7) as Date)
                 .pipe(
                     tap(async (result: TrainingData<PastTrainingsResponse>) => {
                         const trainingData = result?.Value;
-                        this.handleNextWeek(result?.Value?.dates);
+                        this.handleNextWeek(result?.Value?.Dates);
                         await this.router.navigate([], {
                             relativeTo: this.route,
                             queryParams: {
                                 startDate: format(
                                     utcToZonedTime(
-                                        trainingData?.dates?.startDate as Date,
+                                        trainingData?.Dates?.StartDate as Date,
                                         environment.TIMEZONE as string)
                                     , QUERY_PARAMS_DATE_FORMAT),
                                 endDate: format(
                                     utcToZonedTime(
-                                        trainingData?.dates?.endDate as Date,
+                                        trainingData?.Dates?.EndDate as Date,
                                         environment.TIMEZONE as string,
                                     ), QUERY_PARAMS_DATE_FORMAT),
                             } as PastTrainingsQueryParams,
@@ -244,19 +243,19 @@ export class PastTrainingsComponent {
 
     setTimePeriod(dateInterval: DateInterval): Observable<string> {
         const isWeek = isSameWeek(
-            dateInterval.startDate,
-            dateInterval.endDate,
+            dateInterval.StartDate,
+            dateInterval.EndDate,
             { weekStartsOn: 1 },
         );
         if (isWeek) {
             return this.translateService.stream('common.week');
         }
         const isMonth = isSameMonth(
-            dateInterval.startDate,
-            dateInterval.endDate,
+            dateInterval.StartDate,
+            dateInterval.EndDate,
         );
         if (isMonth) {
-            const month = getMonth(dateInterval.startDate);
+            const month = getMonth(dateInterval.StartDate);
             return this.translateService.stream('common.months').pipe(
                 map((data: { [key: string]: string }) =>
                     `common.months.${Object.keys(data)[month]}`,
@@ -264,8 +263,8 @@ export class PastTrainingsComponent {
             );
         }
         const isYear = isSameYear(
-            dateInterval.startDate,
-            dateInterval.endDate,
+            dateInterval.StartDate,
+            dateInterval.EndDate,
         );
         if (isYear) {
             return this.translateService.stream('common.year');
@@ -276,10 +275,10 @@ export class PastTrainingsComponent {
     private handleNextWeek(dateInterval: DateInterval): void {
         const arrayOfDates: number[] = eachDayOfInterval({
             start: utcToZonedTime(
-                dateInterval.startDate as Date,
+                dateInterval.StartDate as Date,
                 environment.TIMEZONE as string),
             end: utcToZonedTime(
-                dateInterval.endDate as Date,
+                dateInterval.EndDate as Date,
                 environment.TIMEZONE as string),
         }).map((date: Date) => date.getTime() as number);
         this.isNextWeekDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number) as boolean;

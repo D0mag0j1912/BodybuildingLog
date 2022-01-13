@@ -1,6 +1,5 @@
 <ng-container *ngIf="pastTrainings$ | async as pastTrainings">
     <section class="main-section">
-        {{ pastTrainings.IsLoading }}
         <ng-container *ngIf="pastTrainings.IsLoading; else valueOrError">
             <mat-spinner
                 class="spinner"
@@ -31,7 +30,7 @@
                 <ng-container *ngIf="pastTrainings?.Value">
                     <bl-past-trainings-filters (trainingEmitted)="searchEmitted($event)"></bl-past-trainings-filters>
                     <!-- TODO: write logic for search no results -->
-                    <ng-container *ngIf="(isSearch$ | async) && pastTrainings.Value?.trainingsPerPage === 0; else otherCases">
+                    <ng-container *ngIf="(isSearch$ | async) && pastTrainings.Value?.TrainingsPerPage === 0; else otherCases">
                         <div class="search-no-result-wrapper">
                             <img
                                 class="search-not-found-img"
@@ -48,10 +47,10 @@
                         <mat-card class="card-info-wrapper">
                             <mat-card-title class="week-title">
                                 <strong class="week-title--txt">
-                                    {{ setTimePeriod(pastTrainings.Value?.dates) | async }}
+                                    {{ setTimePeriod(pastTrainings.Value?.Dates) | async }}
                                 </strong>
                                 <span>
-                                    {{ ' (' + (pastTrainings.Value?.dates?.startDate | date: dateFormat) + ' - ' + (pastTrainings.Value?.dates?.endDate  | date: dateFormat) + ')' }}
+                                    {{ ' (' + (pastTrainings.Value?.Dates?.StartDate | date: dateFormat) + ' - ' + (pastTrainings.Value?.Dates?.EndDate  | date: dateFormat) + ')' }}
                                 </span>
                             </mat-card-title>
                             <div class="footer">
@@ -65,16 +64,16 @@
                         </mat-card>
                         <!-- TODO: check no-trainings class -->
                         <div
-                            *ngIf="pastTrainings.Value?.trainingsPerPage > 0; else noTrainings"
+                            *ngIf="pastTrainings.Value?.TrainingsPerPage > 0; else noTrainings"
                             class="training-item-wrapper"
-                            [class.no-trainings]="pastTrainings.Value?.trainingsPerPage === 0">
+                            [class.no-trainings]="pastTrainings.Value?.TrainingsPerPage === 0">
                             <bl-training-item
-                                *ngFor="let training of pastTrainings.Value?.trainings"
+                                *ngFor="let training of pastTrainings.Value?.Trainings"
                                 [training]="training"></bl-training-item>
                         </div>
                         <ng-template #noTrainings>
                             <section class="no-trainings">
-                                <ng-container *ngIf="!(isSearch$ | async) && pastTrainings.Value?.trainingsPerPage === 0;">
+                                <ng-container *ngIf="!(isSearch$ | async) && pastTrainings.Value?.TrainingsPerPage === 0;">
                                     <h1 class="no-trainings-title">
                                         {{ 'training.past_trainings.no_trainings' | translate }}
                                     </h1>
@@ -93,7 +92,7 @@
                             <span class="training-paginator--label">
                                 {{ 'training.past_trainings.training_number' | translate }}
                                 <strong class="training-paginator--label-count">
-                                    {{ pastTrainings.Value?.trainingsPerPage }}
+                                    {{ pastTrainings.Value?.TrainingsPerPage }}
                                 </strong>
                             </span>
                             <div class="training-paginator--button-wrapper">
@@ -108,7 +107,7 @@
                                         [disabled]="pastTrainings.IsLoading"
                                         (click)="loadWeekTraining(
                                             'Previous week',
-                                            pastTrainings.Value?.dates)">
+                                            pastTrainings.Value?.Dates)">
                                         <mat-icon class="training-paginator--icon">navigate_before</mat-icon>
                                     </button>
                                 </div>
@@ -123,7 +122,7 @@
                                         [disabled]="isNextWeekDisabled || pastTrainings.IsLoading"
                                         (click)="loadWeekTraining(
                                             'Next week',
-                                            pastTrainings.Value?.dates)">
+                                            pastTrainings.Value?.Dates)">
                                         <mat-icon class="training-paginator--icon">navigate_next</mat-icon>
                                     </button>
                                 </div>
