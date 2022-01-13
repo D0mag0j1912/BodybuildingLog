@@ -34,7 +34,7 @@ export class DeleteTrainingActionService {
                 IsLoading: true,
                 Value: {
                     ...pastTrainings.Value,
-                    message: 'training.past_trainings.actions.delete_success',
+                    Message: 'training.past_trainings.actions.delete_success',
                 } as PastTrainingsResponse,
                 IsError: false,
             } as TrainingData<PastTrainingsResponse>;

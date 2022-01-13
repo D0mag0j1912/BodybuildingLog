@@ -3,13 +3,13 @@ import { IsOptional, IsString, MaxLength } from 'class-validator';
 import { NewTrainingDto } from '../new-training/new-training.model';
 
 export interface PastTrainingsResponse {
-    readonly trainings: NewTrainingDto[];
-    readonly dates: {
-        startDate: Date;
-        endDate: Date;
+    readonly Trainings: NewTrainingDto[];
+    readonly Dates: {
+        StartDate: Date;
+        EndDate: Date;
     };
-    readonly trainingsPerPage: number;
-    readonly message?: string;
+    readonly TrainingsPerPage: number;
+    readonly Message?: string;
 }
 
 export class SearchTrainingsDto {

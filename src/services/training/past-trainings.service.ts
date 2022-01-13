@@ -42,9 +42,9 @@ export class PastTrainingsService {
                 return {
                     IsLoading: true,
                     Value: {
-                        trainings: trainings,
-                        dates: minMaxDate,
-                        trainingsPerPage: trainingsPerPage,
+                        Trainings: trainings,
+                        Dates: minMaxDate,
+                        TrainingsPerPage: trainingsPerPage,
                     } as PastTrainingsResponse,
                     IsError: false,
                 } as TrainingData<PastTrainingsResponse>;
@@ -80,24 +80,24 @@ export class PastTrainingsService {
             const trainings: NewTrainingDto[] = await this.trainingModel.find({
                 userId: loggedUserId,
                 createdAt: {
-                    $gte: dates.startDate,
-                    $lt: dates.endDate,
+                    $gte: dates.StartDate,
+                    $lt: dates.EndDate,
                 },
             }).sort({ createdAt: 'asc' });
             // tslint:disable-next-line: await-promise
             const trainingsPerPage: number = await this.trainingModel.countDocuments({
                 userId: loggedUserId,
                 createdAt: {
-                    $gte: dates.startDate,
-                    $lt: dates.endDate,
+                    $gte: dates.StartDate,
+                    $lt: dates.EndDate,
                 },
             });
             return {
                 IsLoading: true,
                 Value: {
-                    trainings: trainings,
-                    dates: dates,
-                    trainingsPerPage: trainingsPerPage,
+                    Trainings: trainings,
+                    Dates: dates,
+                    TrainingsPerPage: trainingsPerPage,
                 } as PastTrainingsResponse,
                 IsError: false,
             } as TrainingData<PastTrainingsResponse>;

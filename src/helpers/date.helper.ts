@@ -3,8 +3,8 @@ import { max, min } from 'date-fns';
 import { NewTrainingDto } from '../models/training/new-training/new-training.model';
 
 export interface DateInterval {
-    readonly startDate: Date;
-    readonly endDate: Date;
+    readonly StartDate: Date;
+    readonly EndDate: Date;
 }
 
 export function getIntervalDate(currentDateOrTrainings: Date | NewTrainingDto[]): DateInterval {
@@ -20,7 +20,7 @@ export function getIntervalDate(currentDateOrTrainings: Date | NewTrainingDto[])
         maxDate = endOfWeek(currentDateOrTrainings, { weekStartsOn: 1 });
     }
     return {
-        startDate: minDate,
-        endDate: maxDate,
+        StartDate: minDate,
+        EndDate: maxDate,
     } as DateInterval;
 }
