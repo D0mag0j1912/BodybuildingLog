@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY, Observable } from 'rxjs';
-import { catchError, finalize, tap } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 import { Training } from 'src/app/models/training/new-training/new-training.model';
 import { SNACK_BAR_DURATION } from '../../../../../constants/snack-bar-duration.const';
 import { TrainingData } from '../../../../../models/common/interfaces/common.model';
@@ -51,22 +51,19 @@ export class DeleteTrainingActionComponent {
                 ${this.getSplittedCurrentDate()[0]}
             `) as Date,
         ).pipe(
-            tap((response: TrainingData<PastTrainingsResponse>) => {
-                if (response) {
-                    this.dialogRef.close();
-                    this.sharedService.deletedTraining$$.next(response);
-                    this.snackBar.open(this.translateService.instant(response?.Value?.Message), null, {
-                        duration: SNACK_BAR_DURATION.GENERAL,
-                        panelClass: 'app__snackbar',
-                    });
-                }
-            }),
             catchError(_ => EMPTY),
             finalize(() => {
                 this.isLoading = false;
                 this.changeDetectorRef.markForCheck();
             }),
-        ).subscribe();
+        ).subscribe((trainingData: TrainingData<PastTrainingsResponse>) => {
+            this.sharedService.deletedTraining$$.next(trainingData);
+            this.snackBar.open(this.translateService.instant(trainingData?.Value?.Message), null, {
+                duration: SNACK_BAR_DURATION.GENERAL,
+                panelClass: 'app__snackbar',
+            });
+            this.dialogRef.close();
+        });
     }
 
     private getSplittedCurrentDate(): string[] {

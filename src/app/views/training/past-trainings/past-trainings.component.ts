@@ -38,6 +38,7 @@ export class PastTrainingsComponent {
         private readonly route: ActivatedRoute,
         private readonly router: Router,
     ) {
+        //TODO: refresh a view after training deletion
         this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((response: TrainingData<PastTrainingsResponse>) => {

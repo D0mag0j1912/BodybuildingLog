@@ -262,7 +262,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform($event.newTotal));
             }
             else {
-                //TODO: Test
                 this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform(0));
             }
         });
