@@ -70,6 +70,6 @@ export class DeleteTrainingActionComponent {
     }
 
     private getSplittedCurrentDate(): string[] {
-        return (this.route.snapshot.queryParams.startDate as string).split('-');
+        return (this.route.snapshot.queryParams.startDate as string)?.split('-');
     }
 }

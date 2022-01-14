@@ -28,7 +28,6 @@
                     [diameter]="spinnerSize"></mat-spinner>
             </ng-container>
             <ng-template #value>
-                <!-- TODO: write logic for search no results -->
                 <ng-container *ngIf="(isSearch$ | async) && pastTrainings.Value?.TrainingsPerPage === 0; else otherCases">
                     <div class="search-no-result-wrapper">
                         <img
@@ -61,7 +60,6 @@
                             </div>
                         </div>
                     </mat-card>
-                    <!-- TODO: check no-trainings class -->
                     <div
                         *ngIf="pastTrainings.Value?.TrainingsPerPage > 0; else noTrainings"
                         class="training-item-wrapper"

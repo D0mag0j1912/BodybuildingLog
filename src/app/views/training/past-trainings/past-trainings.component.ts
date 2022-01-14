@@ -50,14 +50,6 @@ export class PastTrainingsComponent {
                             Value: trainingData?.Value,
                             IsError: false,
                         })),
-                        catchError(_ => of({
-                            IsLoading: false,
-                            IsError: true,
-                        } as TrainingData<PastTrainingsResponse>)),
-                        startWith({
-                            IsLoading: true,
-                            IsError: false,
-                        } as TrainingData<PastTrainingsResponse>),
                     );
         });
 
@@ -283,6 +275,7 @@ export class PastTrainingsComponent {
                 environment.TIMEZONE as string),
         }).map((date: Date) => date.getTime() as number);
         this.isNextWeekDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number) as boolean;
+        this.changeDetectorRef.markForCheck();
     }
 
     private getDateTimeQueryParams(): Date {
