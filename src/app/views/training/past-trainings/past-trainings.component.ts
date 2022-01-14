@@ -38,7 +38,6 @@ export class PastTrainingsComponent {
         private readonly route: ActivatedRoute,
         private readonly router: Router,
     ) {
-        //TODO: refresh a view after training deletion
         this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((response: TrainingData<PastTrainingsResponse>) => {
@@ -52,6 +51,7 @@ export class PastTrainingsComponent {
                             IsError: false,
                         })),
                     );
+            this.changeDetectorRef.markForCheck();
         });
 
         const searchFilter = this.route.snapshot.queryParamMap?.get('search');
