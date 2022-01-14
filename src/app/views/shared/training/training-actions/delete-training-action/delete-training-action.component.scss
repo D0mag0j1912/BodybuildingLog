@@ -19,6 +19,7 @@
     &-key {
         display: block;
         margin-bottom: 10px;
+        text-align: center;
     }
 
     &-value {
@@ -34,16 +35,22 @@
     row-gap: 5px;
     justify-content: flex-start;
 
+    .title {
+        align-self: center;
+    }
+
     .exercise {
         &-value {
             color: $army-green;
             width: fit-content;
             border-bottom: 2px solid $light-blue;
+            align-self: center;
         }
     }
 }
 
 .actions {
+    padding-top: 15px;
     justify-content: flex-end;
 
     .delete-btn {
