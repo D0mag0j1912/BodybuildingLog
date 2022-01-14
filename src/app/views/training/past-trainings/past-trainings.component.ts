@@ -3,12 +3,11 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { asyncScheduler, Observable, of } from 'rxjs';
-import { catchError, finalize, map, observeOn, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
-import { SearchQuery } from '../../../models/common/interfaces/common.model';
 import { TrainingData } from '../../../models/common/interfaces/common.model';
 import { DateInterval, PastTrainingsQueryParams, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
@@ -122,45 +121,47 @@ export class PastTrainingsComponent {
             );
     }
 
-    //TODO: implement loading spinner while searching
-    searchEmitted($event: SearchQuery<TrainingData<PastTrainingsResponse>>): void {
-        const x = $event?.data;
+    searchEmitted($event: string): void {
         this.pastTrainings$ =
-            of(x)
+            of($event)
                 .pipe(
-                    //TODO: Create shared code for operators
-                    map((trainingData: TrainingData<PastTrainingsResponse>) => ({
-                        IsLoading: false,
-                        Value: trainingData?.Value,
-                        IsError: false,
-                    })),
-                    catchError(_ => of({
-                        IsLoading: false,
-                        IsError: true,
-                    } as TrainingData<PastTrainingsResponse>)),
-                    startWith({
-                        IsLoading: true,
-                        IsError: false,
-                    } as TrainingData<PastTrainingsResponse>),
-                    tap(async (trainingData: TrainingData<PastTrainingsResponse>) => {
-                        const queryParams: PastTrainingsQueryParams = {
-                            startDate: format(
-                                utcToZonedTime(
-                                    trainingData?.Value?.Dates?.StartDate as Date,
-                                    environment.TIMEZONE as string)
-                                , QUERY_PARAMS_DATE_FORMAT),
-                            endDate: format(
-                                utcToZonedTime(
-                                    trainingData?.Value?.Dates?.EndDate as Date,
-                                    environment.TIMEZONE as string,
-                                ), QUERY_PARAMS_DATE_FORMAT),
-                            search: $event?.searchValue !== '' ? $event.searchValue : undefined,
-                        };
-                        await this.router.navigate([], {
-                            relativeTo: this.route,
-                            queryParams: queryParams,
-                        });
-                    }),
+                    switchMap((value: string) =>
+                        this.pastTrainingsService.searchPastTrainings(value).pipe(
+                            tap(async (trainingData: TrainingData<PastTrainingsResponse>) => {
+                                const queryParams: PastTrainingsQueryParams = {
+                                    startDate: format(
+                                        utcToZonedTime(
+                                            trainingData?.Value?.Dates?.StartDate as Date,
+                                            environment.TIMEZONE as string)
+                                        , QUERY_PARAMS_DATE_FORMAT),
+                                    endDate: format(
+                                        utcToZonedTime(
+                                            trainingData?.Value?.Dates?.EndDate as Date,
+                                            environment.TIMEZONE as string,
+                                        ), QUERY_PARAMS_DATE_FORMAT),
+                                    search: $event.trim() !== '' ? $event.trim() : undefined,
+                                };
+                                await this.router.navigate([], {
+                                    relativeTo: this.route,
+                                    queryParams: queryParams,
+                                });
+                            }),
+                            //TODO: Create shared code for operators
+                            map((trainingData: TrainingData<PastTrainingsResponse>) => ({
+                                IsLoading: false,
+                                Value: trainingData?.Value,
+                                IsError: false,
+                            })),
+                            catchError(_ => of({
+                                IsLoading: false,
+                                IsError: true,
+                            } as TrainingData<PastTrainingsResponse>)),
+                            startWith({
+                                IsLoading: true,
+                                IsError: false,
+                            } as TrainingData<PastTrainingsResponse>),
+                        ),
+                    ),
                 );
     }
 

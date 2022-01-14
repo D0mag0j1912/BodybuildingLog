@@ -1,135 +1,133 @@
 <ng-container *ngIf="pastTrainings$ | async as pastTrainings">
     <section class="main-section">
-        <ng-container *ngIf="pastTrainings.IsLoading; else valueOrError">
-            <mat-spinner
-                class="spinner"
-                [diameter]="spinnerSize"></mat-spinner>
+        <ng-container *ngIf="pastTrainings.IsError; else valueOrLoading">
+            <div class="error-wrapper">
+                <img
+                    class="error-image"
+                    src="../../../../assets/svgs/error1.svg">
+                <h3 class="error-title">
+                    {{ 'training.past_trainings.errors.past_trainings_error_title' | translate }}
+                </h3>
+                <span class="error-description">
+                    {{ 'training.past_trainings.errors.past_trainings_error_description' | translate }}
+                </span>
+                <button
+                    mat-raised-button
+                    color="primary"
+                    type="button"
+                    (click)="tryAgain()">
+                    {{ 'common.try_again' | translate }}
+                </button>
+            </div>
         </ng-container>
-        <ng-template #valueOrError>
-            <ng-container *ngIf="pastTrainings.IsError; else value">
-                <div class="error-wrapper">
-                    <img
-                        class="error-image"
-                        src="../../../../assets/svgs/error1.svg">
-                    <h3 class="error-title">
-                        {{ 'training.past_trainings.errors.past_trainings_error_title' | translate }}
-                    </h3>
-                    <span class="error-description">
-                        {{ 'training.past_trainings.errors.past_trainings_error_description' | translate }}
-                    </span>
-                    <button
-                        mat-raised-button
-                        color="primary"
-                        type="button"
-                        (click)="tryAgain()">
-                        {{ 'common.try_again' | translate }}
-                    </button>
-                </div>
+        <ng-template #valueOrLoading>
+            <bl-past-trainings-filters (trainingEmitted)="searchEmitted($event)"></bl-past-trainings-filters>
+            <ng-container *ngIf="pastTrainings?.IsLoading; else value">
+                <mat-spinner
+                    class="spinner"
+                    [diameter]="spinnerSize"></mat-spinner>
             </ng-container>
             <ng-template #value>
-                <ng-container *ngIf="pastTrainings?.Value">
-                    <bl-past-trainings-filters (trainingEmitted)="searchEmitted($event)"></bl-past-trainings-filters>
-                    <!-- TODO: write logic for search no results -->
-                    <ng-container *ngIf="(isSearch$ | async) && pastTrainings.Value?.TrainingsPerPage === 0; else otherCases">
-                        <div class="search-no-result-wrapper">
-                            <img
-                                class="search-not-found-img"
-                                src="../../../../assets/svgs/not-found.svg">
-                            <span class="search-not-found-title">
-                                {{ 'training.past_trainings.filters.search_no_result_title' | translate }}
-                            </span>
-                            <span class="search-not-found-description">
-                                {{ 'training.past_trainings.filters.search_no_result_description' | translate }}
-                            </span>
-                        </div>
-                    </ng-container>
-                    <ng-template #otherCases>
-                        <mat-card class="card-info-wrapper">
-                            <mat-card-title class="week-title">
-                                <strong class="week-title--txt">
-                                    {{ setTimePeriod(pastTrainings.Value?.Dates) | async }}
-                                </strong>
-                                <span>
-                                    {{ ' (' + (pastTrainings.Value?.Dates?.StartDate | date: dateFormat) + ' - ' + (pastTrainings.Value?.Dates?.EndDate  | date: dateFormat) + ')' }}
-                                </span>
-                            </mat-card-title>
-                            <div class="footer">
-                                <div class="food-subtitle">
-                                    <strong class="food-subtitle--txt">
-                                        {{ ('common.food' | translate) + ': ' }}
-                                    </strong>
-                                    <span>{{ food + ' ' + ('common.kcal' | translate) }}</span>
-                                </div>
-                            </div>
-                        </mat-card>
-                        <!-- TODO: check no-trainings class -->
-                        <div
-                            *ngIf="pastTrainings.Value?.TrainingsPerPage > 0; else noTrainings"
-                            class="training-item-wrapper"
-                            [class.no-trainings]="pastTrainings.Value?.TrainingsPerPage === 0">
-                            <bl-training-item
-                                *ngFor="let training of pastTrainings.Value?.Trainings"
-                                [training]="training"></bl-training-item>
-                        </div>
-                        <ng-template #noTrainings>
-                            <section class="no-trainings">
-                                <ng-container *ngIf="!(isSearch$ | async) && pastTrainings.Value?.TrainingsPerPage === 0;">
-                                    <h1 class="no-trainings-title">
-                                        {{ 'training.past_trainings.no_trainings' | translate }}
-                                    </h1>
-                                    <button
-                                        mat-raised-button
-                                        class="no-trainings-button"
-                                        type="button"
-                                        routerLink="/training/new-training"
-                                        color="primary">
-                                        {{ 'training.past_trainings.log_training' | translate }}
-                                    </button>
-                                </ng-container>
-                            </section>
-                        </ng-template>
-                        <div class="training-paginator">
-                            <span class="training-paginator--label">
-                                {{ 'training.past_trainings.training_number' | translate }}
-                                <strong class="training-paginator--label-count">
-                                    {{ pastTrainings.Value?.TrainingsPerPage }}
-                                </strong>
-                            </span>
-                            <div class="training-paginator--button-wrapper">
-                                <div
-                                    matTooltipPosition="above"
-                                    matTooltipClass="tooltip"
-                                    [matTooltip]="'training.past_trainings.buttons.previous_week' | translate">
-                                    <button
-                                        mat-raised-button
-                                        type="button"
-                                        class="training-paginator--previous"
-                                        [disabled]="pastTrainings.IsLoading"
-                                        (click)="loadWeekTraining(
-                                            'Previous week',
-                                            pastTrainings.Value?.Dates)">
-                                        <mat-icon class="training-paginator--icon">navigate_before</mat-icon>
-                                    </button>
-                                </div>
-                                <div
-                                    matTooltipPosition="above"
-                                    [matTooltip]="setNextWeekTooltip() | async"
-                                    [matTooltipClass]="isNextWeekDisabled ? 'tooltip-error' : 'tooltip'">
-                                    <button
-                                        mat-raised-button
-                                        type="button"
-                                        class="training-paginator--next"
-                                        [disabled]="isNextWeekDisabled || pastTrainings.IsLoading"
-                                        (click)="loadWeekTraining(
-                                            'Next week',
-                                            pastTrainings.Value?.Dates)">
-                                        <mat-icon class="training-paginator--icon">navigate_next</mat-icon>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </ng-template>
+                <!-- TODO: write logic for search no results -->
+                <ng-container *ngIf="(isSearch$ | async) && pastTrainings.Value?.TrainingsPerPage === 0; else otherCases">
+                    <div class="search-no-result-wrapper">
+                        <img
+                            class="search-not-found-img"
+                            src="../../../../assets/svgs/not-found.svg">
+                        <span class="search-not-found-title">
+                            {{ 'training.past_trainings.filters.search_no_result_title' | translate }}
+                        </span>
+                        <span class="search-not-found-description">
+                            {{ 'training.past_trainings.filters.search_no_result_description' | translate }}
+                        </span>
+                    </div>
                 </ng-container>
+                <ng-template #otherCases>
+                    <mat-card class="card-info-wrapper">
+                        <mat-card-title class="week-title">
+                            <strong class="week-title--txt">
+                                {{ setTimePeriod(pastTrainings.Value?.Dates) | async }}
+                            </strong>
+                            <span>
+                                {{ ' (' + (pastTrainings.Value?.Dates?.StartDate | date: dateFormat) + ' - ' + (pastTrainings.Value?.Dates?.EndDate  | date: dateFormat) + ')' }}
+                            </span>
+                        </mat-card-title>
+                        <div class="footer">
+                            <div class="food-subtitle">
+                                <strong class="food-subtitle--txt">
+                                    {{ ('common.food' | translate) + ': ' }}
+                                </strong>
+                                <span>{{ food + ' ' + ('common.kcal' | translate) }}</span>
+                            </div>
+                        </div>
+                    </mat-card>
+                    <!-- TODO: check no-trainings class -->
+                    <div
+                        *ngIf="pastTrainings.Value?.TrainingsPerPage > 0; else noTrainings"
+                        class="training-item-wrapper"
+                        [class.no-trainings]="pastTrainings.Value?.TrainingsPerPage === 0">
+                        <bl-training-item
+                            *ngFor="let training of pastTrainings.Value?.Trainings"
+                            [training]="training"></bl-training-item>
+                    </div>
+                    <ng-template #noTrainings>
+                        <section class="no-trainings">
+                            <ng-container *ngIf="!(isSearch$ | async) && pastTrainings.Value?.TrainingsPerPage === 0;">
+                                <h1 class="no-trainings-title">
+                                    {{ 'training.past_trainings.no_trainings' | translate }}
+                                </h1>
+                                <button
+                                    mat-raised-button
+                                    class="no-trainings-button"
+                                    type="button"
+                                    routerLink="/training/new-training"
+                                    color="primary">
+                                    {{ 'training.past_trainings.log_training' | translate }}
+                                </button>
+                            </ng-container>
+                        </section>
+                    </ng-template>
+                    <div class="training-paginator">
+                        <span class="training-paginator--label">
+                            {{ 'training.past_trainings.training_number' | translate }}
+                            <strong class="training-paginator--label-count">
+                                {{ pastTrainings.Value?.TrainingsPerPage }}
+                            </strong>
+                        </span>
+                        <div class="training-paginator--button-wrapper">
+                            <div
+                                matTooltipPosition="above"
+                                matTooltipClass="tooltip"
+                                [matTooltip]="'training.past_trainings.buttons.previous_week' | translate">
+                                <button
+                                    mat-raised-button
+                                    type="button"
+                                    class="training-paginator--previous"
+                                    [disabled]="pastTrainings.IsLoading"
+                                    (click)="loadWeekTraining(
+                                        'Previous week',
+                                        pastTrainings.Value?.Dates)">
+                                    <mat-icon class="training-paginator--icon">navigate_before</mat-icon>
+                                </button>
+                            </div>
+                            <div
+                                matTooltipPosition="above"
+                                [matTooltip]="setNextWeekTooltip() | async"
+                                [matTooltipClass]="isNextWeekDisabled ? 'tooltip-error' : 'tooltip'">
+                                <button
+                                    mat-raised-button
+                                    type="button"
+                                    class="training-paginator--next"
+                                    [disabled]="isNextWeekDisabled || pastTrainings.IsLoading"
+                                    (click)="loadWeekTraining(
+                                        'Next week',
+                                        pastTrainings.Value?.Dates)">
+                                    <mat-icon class="training-paginator--icon">navigate_next</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
             </ng-template>
         </ng-template>
     </section>
