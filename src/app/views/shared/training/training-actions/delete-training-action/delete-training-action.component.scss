@@ -22,6 +22,7 @@
     }
 
     &-value {
+        display: block;
         color: $army-green;
         font-weight: 600;
     }
@@ -37,6 +38,7 @@
         &-value {
             color: $army-green;
             width: fit-content;
+            border-bottom: 2px solid $light-blue;
         }
     }
 }
