@@ -8,3 +8,5 @@ export interface Preferences {
 export type Language = 'en' | 'hr';
 
 export type WeightFormat = 'lbs' | 'kg';
+
+export const DEFAULT_WEIGHT_FORMAT: WeightFormat = 'kg';

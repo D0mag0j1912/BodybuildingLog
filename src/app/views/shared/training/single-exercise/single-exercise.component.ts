@@ -10,13 +10,14 @@ import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { SNACK_BAR_DURATION } from '../../../../constants/snack-bar-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { SingleExerciseErrorHelper } from '../../../../helpers/mat-error/single-exercise-error.helper';
-import { WeightFormat } from '../../../../models/preferences.model';
+import { DEFAULT_WEIGHT_FORMAT } from '../../../../models/preferences.model';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { Training } from '../../../../models/training/new-training/new-training.model';
 import { createInitialSet, SetFormValidationErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import { FormSingleExerciseData } from '../../../../models/training/shared/single-exercise.model';
+import { RoundTotalWeightPipe } from '../../../../pipes/training/new-training/round-total-weight/round-total-weight.pipe';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../../services/training/new-training.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
@@ -25,7 +26,6 @@ import { DeleteExerciseDialogData, DialogComponent, DialogData } from '../../dia
 
 const INITIAL_WEIGHT: number = 0;
 const MAX_EXERCISE_NAME_WIDTH: number = 181;
-const WEIGHT_FORMAT: WeightFormat = 'kg';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -103,8 +103,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly dialog: MatDialog,
         private readonly snackBar: MatSnackBar,
+        private readonly dialog: MatDialog,
+        private readonly roundTotalWeightPipe: RoundTotalWeightPipe,
     ) {
         this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName()]);
         this.form.updateValueAndValidity();
@@ -117,7 +118,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 if (exercise.exerciseName){
                     this.accessFormField('name', indexExercise).patchValue(exercise.exerciseName as string);
                     this.accessFormField('sets', indexExercise).patchValue(exercise.sets as Set[]);
-                    this.accessFormField('total', indexExercise).patchValue(exercise.total ? exercise.total.toString() + ` ${WEIGHT_FORMAT}` : `0 ${WEIGHT_FORMAT}`);
+                    this.accessFormField('total', indexExercise).patchValue(exercise.total ? this.roundTotalWeightPipe.transform(exercise.total) : `0 ${DEFAULT_WEIGHT_FORMAT}`);
                     this.accessFormField('disabledTooltip', indexExercise).patchValue(exercise.disabledTooltip as boolean);
                 }
             });
@@ -171,7 +172,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         this.form.push(new FormGroup({
             'name': new FormControl(null, [Validators.required]),
             'sets': new FormControl(createInitialSet()),
-            'total': new FormControl(INITIAL_WEIGHT.toString() + ` ${WEIGHT_FORMAT}`, [Validators.required]),
+            'total': new FormControl(this.roundTotalWeightPipe.transform(INITIAL_WEIGHT), [Validators.required]),
             'disabledTooltip': new FormControl(true, [Validators.required]),
         }));
 
@@ -258,16 +259,17 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     };
 
                     this.newTrainingService.setsChanged(trainingData as SetTrainingData);
-                    this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal.toString()+ ` ${WEIGHT_FORMAT}`);
+                    this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform($event.newTotal));
             }
             else {
-                this.accessFormField('total', $event.indexExercise).patchValue(`0 ${WEIGHT_FORMAT}`);
+                //TODO: Test
+                this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform(0));
             }
         });
     }
 
     deleteSet($event: Partial<SetStateChanged>): void {
-        this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal.toString() + ` ${WEIGHT_FORMAT}`);
+        this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform($event.newTotal));
         this.newTrainingService.deleteSet(
             $event.indexExercise as number,
             $event.indexSet as number,

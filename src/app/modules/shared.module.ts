@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '../material.module';
 import { PipesModule } from '../pipes/pipes.module';
+import { RoundTotalWeightModule } from '../pipes/training/new-training/round-total-weight/round-total-weight.module';
 import { ShowAllExercisesModule } from '../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NotFoundResolverService } from '../services/shared/not-found-resolver.service';
 import { DeleteTrainingActionService } from '../services/training/training-actions/delete-training-action.service';
@@ -38,6 +39,7 @@ const EXTERNAL_IMPORTS = [
 const IMPORTS = [
     ShowAllExercisesModule,
     PipesModule,
+    RoundTotalWeightModule,
 ];
 
 @NgModule({
