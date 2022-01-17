@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { mapDateInterval } from '../../helpers/map-past-trainings-dates.helper';
+import { mapDateInterval } from '../../helpers/training/past-trainings/map-past-trainings-dates.helper';
 import { TrainingData } from '../../models/common/interfaces/common.model';
 import { Training } from '../../models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from '../../models/training/past-trainings/past-trainings.model';

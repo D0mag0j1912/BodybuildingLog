@@ -7,7 +7,7 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Training } from 'src/app/models/training/new-training/new-training.model';
 import { environment } from '../../../../environments/environment';
-import { mapDateInterval } from '../../../helpers/map-past-trainings-dates.helper';
+import { mapDateInterval } from '../../../helpers/training/past-trainings/map-past-trainings-dates.helper';
 import { TrainingData } from '../../../models/common/interfaces/common.model';
 import { PastTrainingsResponse } from '../../../models/training/past-trainings/past-trainings.model';
 import { TrainingActions } from '../../../models/training/past-trainings/training-actions/training-actions.model';
