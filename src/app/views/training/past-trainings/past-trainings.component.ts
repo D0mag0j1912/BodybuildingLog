@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Observable, of } from 'rxjs';
-import { catchError, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
@@ -45,20 +45,7 @@ export class PastTrainingsComponent {
             this.pastTrainings$ =
                 of(response)
                     .pipe(
-                        //TODO: Create shared code for operators
-                        map((trainingData: TrainingData<PastTrainingsResponse>) => ({
-                            IsLoading: false,
-                            Value: trainingData?.Value,
-                            IsError: false,
-                        })),
-                        catchError(_ => of({
-                            IsLoading: false,
-                            IsError: true,
-                        } as TrainingData<PastTrainingsResponse>)),
-                        startWith({
-                            IsLoading: true,
-                            IsError: false,
-                        } as TrainingData<PastTrainingsResponse>),
+                        mapPastTrainingsTemplate(),
                     );
             this.changeDetectorRef.markForCheck();
         });
