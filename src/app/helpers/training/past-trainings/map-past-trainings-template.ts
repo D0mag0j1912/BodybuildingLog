@@ -14,9 +14,9 @@ export const mapPastTrainingsTemplate = () =>
             catchError(_ => of({
                 IsLoading: false,
                 IsError: true,
-            } as TrainingData<PastTrainingsResponse>)),
+            })),
             startWith({
                 IsLoading: true,
                 IsError: false,
-            } as TrainingData<PastTrainingsResponse>),
+            }),
         );
