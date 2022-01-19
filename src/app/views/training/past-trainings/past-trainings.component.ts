@@ -53,7 +53,6 @@ export class PastTrainingsComponent {
         const searchFilter = this.route.snapshot.queryParamMap?.get('search');
         if (searchFilter) {
             this.pastTrainings$ =
-                //TODO: implement query param check on backend (security). Cuz user can type whatever manually in query params
                 this.pastTrainingsService.searchPastTrainings((searchFilter as string).trim())
                     .pipe(
                         mapPastTrainingsTemplate(),
@@ -160,7 +159,6 @@ export class PastTrainingsComponent {
     }
 
     tryAgain(): void {
-        //TODO: Create shared code for operators
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
             .pipe(
                 mapPastTrainingsTemplate(),

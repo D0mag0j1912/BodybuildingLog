@@ -29,7 +29,6 @@
                         *ngIf="set.errors?.setNotEntered
                             && (isExerciseFormSubmitted$ | async)
                             && !set.errors?.weightLiftedRequired
-                            && !set.errors?.weightLiftedRequired
                             && !set.errors?.repsRequired"
                         class="error">
                         {{ 'training.new_training.errors.set_required' | translate }}

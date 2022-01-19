@@ -12,7 +12,7 @@ interface TrainingItemActionsProperties {
 
 export class MapTrainingItemActionsPipe implements PipeTransform {
 
-    private readonly actionToIcon: {[key: string]: TrainingItemActionsProperties} = {
+    private readonly actionToIcon: { [key: string]: TrainingItemActionsProperties } = {
         'delete': {
             icon: 'delete',
             tooltip: 'training.past_trainings.buttons.delete_training',
@@ -27,7 +27,7 @@ export class MapTrainingItemActionsPipe implements PipeTransform {
         action: TrainingItemActions,
         purpose: string,
     ): string {
-        if(purpose === 'icon'){
+        if (purpose === 'icon') {
             return this.actionToIcon[action].icon as string;
         }
         else {

@@ -12,10 +12,10 @@ export class ShowAllExercisesPipe implements PipeTransform {
 
     constructor(
         private readonly translateService: TranslateService,
-    ){}
+    ) {}
 
     transform(training: Training): Observable<string> {
-        return this.translateService.stream(training.exercise.map((x: SingleExercise) => x.exerciseName) as string[]).pipe(
+        return this.translateService.stream(training.exercise?.map((x: SingleExercise) => x?.exerciseName) ?? []).pipe(
             map((value: {[key: string]: string}) => {
                 let exercisesToConcat: string = '';
                 Object.values(value).forEach((exerciseName: string, index: number) => {
