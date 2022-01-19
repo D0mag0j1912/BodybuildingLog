@@ -77,7 +77,7 @@
     </ng-container>
     <div class="add-exercise">
         <div
-            *ngIf="(isAddingExercisesAllowed$ | async) as isAddingExercisesAllowed"
+            *ngIf="(addExercisesAllowed$ | async) as isAddingExercisesAllowed"
             [matTooltip]="(showAddExerciseTooltip(isAddingExercisesAllowed[0].length, isAddingExercisesAllowed[1].length)) | async"
             [matTooltipClass]="'tooltip-error'">
             <button
@@ -99,7 +99,8 @@
             color="primary"
             matTooltipPosition="above"
             matTooltipClass="tooltip"
-            [matTooltip]="'training.new_training.finish_training' | translate">
+            [matTooltip]="'training.new_training.finish_training' | translate"
+            [disabled]="!(finishTrainingAllowed$ | async)">
             <mat-icon class="finish-training-icon">done</mat-icon>
         </button>
     </div>

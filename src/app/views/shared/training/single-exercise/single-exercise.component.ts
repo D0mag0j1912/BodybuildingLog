@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, forkJoin, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subject } from 'rxjs';
 import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { GeneralResponseData } from 'src/app/models/general-response.model';
 import { SNACK_BAR_DURATION } from '../../../../constants/snack-bar-duration.const';
@@ -81,21 +81,33 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         }
     }
 
-    readonly isAddingExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> =
+    readonly finishTrainingAllowed$: Observable<boolean> =
+        this.exerciseStateChanged$$.pipe(
+            startWith(undefined as void),
+            switchMap(_ =>
+                this.newTrainingService.currentTrainingChanged$
+                    .pipe(
+                        take(1),
+                        map((training: Training) => training?.exercise?.length > 0),
+                    ),
+            ),
+        );
+
+    readonly addExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> =
         this.exerciseStateChanged$$.pipe(
             startWith(undefined as void),
             switchMap(_ =>
                 forkJoin([
-                    this.newTrainingService.currentTrainingChanged$.pipe(
-                        take(1),
-                        map((currentTrainingState: Training) => currentTrainingState.exercise),
-                    ),
-                    this.newTrainingService.allExercisesChanged$.pipe(
-                        take(1),
-                    ),
+                    this.newTrainingService.currentTrainingChanged$
+                        .pipe(
+                            take(1),
+                            map((currentTrainingState: Training) => currentTrainingState.exercise),
+                        ),
+                        this.newTrainingService.allExercisesChanged$.pipe(
+                            take(1),
+                        ),
                 ]),
             ),
-            takeUntil(this.unsubscribeService),
         );
 
     constructor(
@@ -210,7 +222,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         );
                     }
                     else {
-                        return of(null);
+                        return EMPTY;
                     }
                 }),
                 finalize(() => {
@@ -219,14 +231,12 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 }),
                 takeUntil(this.unsubscribeService),
             ).subscribe((data: [Training, Exercise[]]) => {
-                if (data) {
-                    this.exerciseChanged = !this.exerciseChanged;
-                    this.form.removeAt(indexExercise);
-                    this.newTrainingService.pushToAvailableExercises(
-                        data[0] as Training,
-                        data[1] as Exercise[],
-                    );
-                }
+                this.exerciseChanged = !this.exerciseChanged;
+                this.form.removeAt(indexExercise);
+                this.newTrainingService.pushToAvailableExercises(
+                    data[0] as Training,
+                    data[1] as Exercise[],
+                );
             });
         }
         else {
@@ -237,7 +247,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         currentTrainingState as Training,
                     ),
                 ),
-                finalize(() => this.exerciseStateChanged$$.next()),
+                finalize(() => {
+                    this.exerciseStateChanged$$.next();
+                    this.changeDetectorRef.markForCheck();
+                }),
                 takeUntil(this.unsubscribeService),
             ).subscribe(_ => this.form.removeAt(indexExercise));
         }

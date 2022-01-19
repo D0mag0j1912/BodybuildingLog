@@ -29,7 +29,7 @@ export class NewTrainingPipe implements PipeTransform {
                     return this.newTrainingService.currentTrainingChanged$.pipe(
                         take(1),
                         switchMap((data: Training) => {
-                            value = of(data.exercise[index].availableExercises);
+                            value = of(data.exercise[index]?.availableExercises ?? []);
                             return value;
                         }),
                     );
@@ -37,7 +37,7 @@ export class NewTrainingPipe implements PipeTransform {
                 else {
                     return this.pastTrainingService.getPastTraining(params['id']).pipe(
                         switchMap((response: Training) => {
-                            value = of(response.exercise[index]?.availableExercises);
+                            value = of(response.exercise[index]?.availableExercises ?? []);
                             return value;
                         }),
                     );

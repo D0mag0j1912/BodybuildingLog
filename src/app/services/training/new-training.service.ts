@@ -41,8 +41,8 @@ export class NewTrainingService {
                                 true,
                                 authResponseData._id,
                             );
-                            this.allExercisesChanged$$.next(exercises as Exercise[]);
-                            localStorage.setItem('allExercises', JSON.stringify(exercises as Exercise[]));
+                            this.allExercisesChanged$$.next(exercises);
+                            localStorage.setItem('allExercises', JSON.stringify(exercises));
                         }),
                     );
                 }
@@ -67,11 +67,11 @@ export class NewTrainingService {
     /**************************************** */
 
     addBodyweightToStorage(value: string): void {
-        const updatedTraining: Training = {
+        const updatedTraining = {
             ...this.currentTrainingChanged$$.getValue(),
             bodyweight: +value,
-        } as Training;
-        this.saveTrainingData({ ...updatedTraining } as Training);
+        };
+        this.saveTrainingData({ ...updatedTraining });
     }
 
     deleteSet(
@@ -87,7 +87,7 @@ export class NewTrainingService {
             }
         });
         updatedTraining.exercise[indexExercise].total = newTotal;
-        this.saveTrainingData({ ...updatedTraining } as Training);
+        this.saveTrainingData({ ...updatedTraining });
     }
 
     pushToAvailableExercises(
@@ -98,11 +98,11 @@ export class NewTrainingService {
         updatedTraining.exercise.map((exercise: SingleExercise) => {
             const isDeletedExerciseInAE: Exercise = exercise.availableExercises.find((exercise: Exercise) => exercise._id === toBeAddedExercise[0]._id);
             if (!isDeletedExerciseInAE) {
-                exercise.availableExercises.push(toBeAddedExercise[0] as Exercise);
+                exercise.availableExercises.push(toBeAddedExercise[0]);
                 exercise.availableExercises.sort(this.compare);
             }
         });
-        this.saveTrainingData({ ...updatedTraining } as Training);
+        this.saveTrainingData({ ...updatedTraining });
     }
 
     deleteExercise(
@@ -111,7 +111,7 @@ export class NewTrainingService {
     ): Observable<[Training, Exercise[]]> {
         let updatedExercises: SingleExercise[] = [ ...currentTrainingState.exercise ];
         updatedExercises = updatedExercises.filter((exercise: SingleExercise) => exercise.exerciseName !== deletedExerciseName);
-        const updatedTraining: Training = {
+        const updatedTraining = {
             ...currentTrainingState,
             exercise: updatedExercises,
         };
@@ -127,7 +127,7 @@ export class NewTrainingService {
             );
         }
         else {
-            this.saveTrainingData({ ...updatedTraining } as Training);
+            this.saveTrainingData({ ...updatedTraining });
             return of([
                 updatedTraining,
                 null,
@@ -156,7 +156,7 @@ export class NewTrainingService {
             });
             updatedTraining.exercise[indexOfChangedExercise].total = trainingData.total;
         }
-        this.saveTrainingData({ ...updatedTraining } as Training);
+        this.saveTrainingData({ ...updatedTraining });
     }
 
     addNewExercise(alreadyUsedExercises: string[]): void {
@@ -178,7 +178,7 @@ export class NewTrainingService {
                 exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.name !== selectedExercise);
             }
         });
-        this.saveTrainingData({ ...updatedTraining } as Training);
+        this.saveTrainingData({ ...updatedTraining });
     }
 
     keepTrainingState(): void {
@@ -209,7 +209,7 @@ export class NewTrainingService {
                 exercises,
             ),
         );
-        this.saveTrainingData({ ...updatedTraining } as Training);
+        this.saveTrainingData({ ...updatedTraining });
     }
 
     returnEmptyExercise(exercises: Exercise[]): SingleExercise {
@@ -219,7 +219,7 @@ export class NewTrainingService {
             total: null,
             disabledTooltip: true,
             availableExercises: [ ...exercises ],
-        } as SingleExercise;
+        };
     }
 
     private saveTrainingData(updatedTraining: Training): void {
