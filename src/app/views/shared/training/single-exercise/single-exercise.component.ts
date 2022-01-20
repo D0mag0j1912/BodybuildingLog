@@ -245,12 +245,11 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 switchMap((currentTrainingState: Training) =>
                     this.newTrainingService.deleteExercise(
                         currentTrainingState as Training,
+                        null,
+                        indexExercise,
                     ),
                 ),
-                finalize(() => {
-                    this.exerciseStateChanged$$.next();
-                    this.changeDetectorRef.markForCheck();
-                }),
+                finalize(() => this.exerciseStateChanged$$.next()),
                 takeUntil(this.unsubscribeService),
             ).subscribe(_ => this.form.removeAt(indexExercise));
         }

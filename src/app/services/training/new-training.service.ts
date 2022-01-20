@@ -108,16 +108,20 @@ export class NewTrainingService {
     deleteExercise(
         currentTrainingState: Training,
         deletedExerciseName?: string,
+        indexExercise?: number,
     ): Observable<[Training, Exercise[]]> {
         let updatedExercises: SingleExercise[] = [ ...currentTrainingState.exercise ];
-        updatedExercises = updatedExercises.filter((exercise: SingleExercise) => exercise.exerciseName !== deletedExerciseName);
-        const updatedTraining = {
-            ...currentTrainingState,
-            exercise: updatedExercises,
-        };
+        let updatedTraining: Training;
         if (deletedExerciseName) {
             return this.allExercisesChanged$.pipe(
                 take(1),
+                tap(_ => {
+                    updatedExercises = updatedExercises.filter((exercise: SingleExercise) => exercise.exerciseName !== deletedExerciseName);
+                    updatedTraining = {
+                        ...currentTrainingState,
+                        exercise: updatedExercises,
+                    };
+                }),
                 map((allExercises: Exercise[]) =>
                     [
                         updatedTraining,
@@ -127,7 +131,12 @@ export class NewTrainingService {
             );
         }
         else {
-            this.saveTrainingData({ ...updatedTraining });
+            updatedExercises = updatedExercises.filter((_exercise: SingleExercise, index: number) => index !== indexExercise);
+            updatedTraining = {
+                ...currentTrainingState,
+                exercise: updatedExercises,
+            };
+            this.saveTrainingData(updatedTraining);
             return of([
                 updatedTraining,
                 null,
