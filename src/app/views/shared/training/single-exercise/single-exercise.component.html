@@ -75,35 +75,41 @@
             <bl-total-weight formControlName="total"></bl-total-weight>
         </ng-container>
     </ng-container>
-    <div class="add-exercise">
+    <div
+        *ngIf="(currentExerciseState$ | async) as currentExerciseState"
+        class="add-exercise">
         <div
-            *ngIf="(addExercisesAllowed$ | async) as isAddingExercisesAllowed"
-            [matTooltip]="(showAddExerciseTooltip(isAddingExercisesAllowed[0].length, isAddingExercisesAllowed[1].length)) | async"
-            [matTooltipClass]="'tooltip-error'">
+            matTooltipClass="tooltip-error"
+            [matTooltip]="showAddExerciseTooltip(
+                currentExerciseState[0].length,
+                currentExerciseState[1].length) | async">
             <button
                 mat-raised-button
                 type="button"
                 color="primary"
                 class="add-exercise-button"
                 [disabled]="isAddingExercisesDisabled(
-                    isAddingExercisesAllowed[0].length,
-                    isAddingExercisesAllowed[1].length)"
+                    currentExerciseState[0].length,
+                    currentExerciseState[1].length)"
                 (click)="addExercise($event)">
                 {{ 'training.new_training.buttons.add_exercise' | translate }}
             </button>
         </div>
-        <ng-container *ngIf="(finishTrainingAllowed$ | async) as finishTrainingAllowed">
+        <div
+            matTooltipClass="tooltip-error"
+            matTooltipPosition="below"
+            [matTooltip]="currentExerciseState[0]?.length === 0 ? ('training.new_training.errors.at_least_one_exercise' | translate) : ''">
             <button
                 mat-raised-button
                 class="finish-training"
                 type="submit"
                 color="primary"
-                matTooltipPosition="above"
                 matTooltipClass="tooltip"
-                [matTooltip]="'training.new_training.finish_training' | translate"
-                [disabled]="!finishTrainingAllowed">
+                matTooltipPosition="above"
+                [matTooltip]="currentExerciseState[0]?.length > 0 ? ('training.new_training.finish_training' | translate) : ''"
+                [disabled]="currentExerciseState[0]?.length === 0">
                 <mat-icon class="finish-training-icon">done</mat-icon>
             </button>
-        </ng-container>
+        </div>
     </div>
 </form>

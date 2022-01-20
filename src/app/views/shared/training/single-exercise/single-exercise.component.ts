@@ -81,19 +81,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         }
     }
 
-    readonly finishTrainingAllowed$: Observable<boolean> =
-        this.exerciseStateChanged$$.pipe(
-            startWith(undefined as void),
-            switchMap(_ =>
-                this.newTrainingService.currentTrainingChanged$
-                    .pipe(
-                        take(1),
-                        map((training: Training) => training?.exercise?.length > 0),
-                    ),
-            ),
-        );
-
-    readonly addExercisesAllowed$: Observable<[SingleExercise[], Exercise[]]> =
+    readonly currentExerciseState$: Observable<[SingleExercise[], Exercise[]]> =
         this.exerciseStateChanged$$.pipe(
             startWith(undefined as void),
             switchMap(_ =>
