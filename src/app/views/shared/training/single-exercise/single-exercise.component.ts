@@ -107,7 +107,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         private readonly dialog: MatDialog,
         private readonly roundTotalWeightPipe: RoundTotalWeightPipe,
     ) {
-        this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName()]);
+        this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName(), SingleExerciseValidators.checkExerciseNumber()]);
         this.form.updateValueAndValidity();
     }
 

@@ -1,5 +1,19 @@
 import { AbstractControl, FormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
 
+//TODO: create no empty training validator (exercises.length === 0)
+export function checkExerciseNumber(): ValidatorFn {
+    return (array: AbstractControl): ValidationErrors | null => {
+        if (array) {
+            const exerciseNumber = (array as FormArray)?.controls?.length;
+            if (exerciseNumber) {
+                return null;
+            }
+            return { 'emptyTraining': true };
+        }
+        return null;
+    };
+}
+
 export function checkDuplicateExerciseName(): ValidatorFn {
     return (array: AbstractControl): ValidationErrors | null => {
         if (array) {
@@ -14,8 +28,6 @@ export function checkDuplicateExerciseName(): ValidatorFn {
             }
             return null;
         }
-        else {
-            return null;
-        }
+        return null;
     };
 }
