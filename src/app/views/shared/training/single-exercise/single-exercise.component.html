@@ -92,16 +92,18 @@
                 {{ 'training.new_training.buttons.add_exercise' | translate }}
             </button>
         </div>
-        <button
-            mat-raised-button
-            class="finish-training"
-            type="submit"
-            color="primary"
-            matTooltipPosition="above"
-            matTooltipClass="tooltip"
-            [matTooltip]="'training.new_training.finish_training' | translate"
-            [disabled]="!(finishTrainingAllowed$ | async)">
-            <mat-icon class="finish-training-icon">done</mat-icon>
-        </button>
+        <ng-container *ngIf="(finishTrainingAllowed$ | async) as finishTrainingAllowed">
+            <button
+                mat-raised-button
+                class="finish-training"
+                type="submit"
+                color="primary"
+                matTooltipPosition="above"
+                matTooltipClass="tooltip"
+                [matTooltip]="'training.new_training.finish_training' | translate"
+                [disabled]="!finishTrainingAllowed">
+                <mat-icon class="finish-training-icon">done</mat-icon>
+            </button>
+        </ng-container>
     </div>
 </form>
