@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
-import { NewTrainingDto } from '../../models/training/new-training/new-training.model';
+import { Training } from '../../models/training/new-training/new-training.model';
 import { SingleExercise } from '../../models/training/new-training/single-exercise.model';
 
 @Injectable()
 export class DuplicateExercisePipe implements PipeTransform {
 
-    transform(newTraining: NewTrainingDto): NewTrainingDto {
+    transform(newTraining: Training): Training {
         const exerciseNames: string[] = [];
         for (const exercise of (newTraining.exercise as SingleExercise[])) {
             if (exerciseNames.indexOf(exercise.exerciseName) !== -1) {

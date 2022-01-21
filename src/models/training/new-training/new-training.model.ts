@@ -32,7 +32,7 @@ export const NEW_TRAINING_SCHEMA = new Schema({
     },
 }, { timestamps: true });
 
-export class NewTrainingDto {
+export class Training {
 
     @ApiProperty({ required: false })
     @IsOptional()
@@ -48,7 +48,7 @@ export class NewTrainingDto {
 
     @ApiProperty()
     @IsBoolean({ message: '@training.new_training.errors.error_save_training' })
-    @IsDefined()
+    @IsNotEmpty()
     editMode: boolean;
 
     @ApiProperty({ required: false })

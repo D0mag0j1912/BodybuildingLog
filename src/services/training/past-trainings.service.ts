@@ -3,16 +3,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { DateInterval, getIntervalDate } from '../../helpers/date.helper';
 import { TrainingData } from '../../models/common/response.model';
-import { NewTrainingDto } from '../../models/training/new-training/new-training.model';
+import { Training } from '../../models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from '../../models/training/past-trainings/past-trainings.model';
 
 @Injectable()
 export class PastTrainingsService {
 
     constructor(
-        @InjectModel('Training') private readonly trainingModel: Model<NewTrainingDto>,
+        @InjectModel('Training') private readonly trainingModel: Model<Training>,
     ) {}
-    //TODO: one method for getting past trainings
+    
     async searchTrainings(
         searchValue: string,
         loggedInUserId: string,
@@ -20,7 +20,7 @@ export class PastTrainingsService {
         try {
             if (searchValue !== '' && searchValue) {
                 // tslint:disable-next-line: await-promise
-                const trainings: NewTrainingDto[] = await this.trainingModel
+                const trainings: Training[] = await this.trainingModel
                     .find({
                         'exercise.exerciseName': {
                             $regex: searchValue,
@@ -61,7 +61,7 @@ export class PastTrainingsService {
         }
     }
 
-    async getPastTraining(trainingId: string): Promise<NewTrainingDto> {
+    async getPastTraining(trainingId: string): Promise<Training> {
         try {
             return this.trainingModel.findById(trainingId);
         }
@@ -77,7 +77,7 @@ export class PastTrainingsService {
         try {
             const dates: DateInterval = getIntervalDate(new Date(currentDate));
             // tslint:disable-next-line: await-promise
-            const trainings: NewTrainingDto[] = await this.trainingModel.find({
+            const trainings: Training[] = await this.trainingModel.find({
                 userId: loggedUserId,
                 createdAt: {
                     $gte: dates.StartDate,

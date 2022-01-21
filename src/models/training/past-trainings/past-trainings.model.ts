@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, MaxLength } from 'class-validator';
-import { NewTrainingDto } from '../new-training/new-training.model';
+import { Training } from '../new-training/new-training.model';
 
 export interface PastTrainingsResponse {
-    readonly Trainings: NewTrainingDto[];
+    readonly Trainings: Training[];
     readonly Dates: {
         StartDate: Date;
         EndDate: Date;

@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { NewTrainingDto } from 'src/models/training/new-training/new-training.model';
+import { Training } from 'src/models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings.model';
 import { TrainingData } from '../../../models/common/response.model';
 import { Error } from '../../../models/errors/error';
@@ -11,7 +11,7 @@ import { PastTrainingsService } from '../past-trainings.service';
 export class DeleteTrainingActionService {
 
     constructor(
-        @InjectModel('Training') private readonly trainingModel: Model<NewTrainingDto>,
+        @InjectModel('Training') private readonly trainingModel: Model<Training>,
         private readonly pastTrainingService: PastTrainingsService,
     ) {}
 
@@ -21,11 +21,11 @@ export class DeleteTrainingActionService {
         currentDate: Date,
     ): Promise<TrainingData<PastTrainingsResponse>> {
         try {
-            const trainingToBeRemoved: NewTrainingDto = await Promise.resolve(this.trainingModel.findById(trainingId as string));
+            const trainingToBeRemoved: Training = await Promise.resolve(this.trainingModel.findById(trainingId as string));
             if(loggedUserId.toString() !== trainingToBeRemoved.userId.toString()){
                 throw new UnauthorizedException('common.errors.not_authorized');
             }
-            await Promise.resolve(this.trainingModel.findByIdAndRemove(trainingId));
+            await Promise.resolve(this.trainingModel.findByIdAndRemove(trainingId, { useFindAndModify: false }));
             const pastTrainings: TrainingData<PastTrainingsResponse> = await this.pastTrainingService.getPastTrainings(
                 currentDate as Date,
                 loggedUserId as string,
