@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, switchMap, take } from 'rxjs/operators';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { Exercise } from '../../../models/training/exercise.model';
 import { Training } from '../../../models/training/new-training/new-training.model';
@@ -23,26 +23,23 @@ export class NewTrainingPipe implements PipeTransform {
         index: number,
         exerciseChanged: boolean,
     ): Observable<Exercise[]> {
-        return this.route.params.pipe(
-            switchMap((params: Params) => {
-                if (!params['id']) {
-                    return this.newTrainingService.currentTrainingChanged$.pipe(
-                        take(1),
-                        switchMap((data: Training) => {
-                            value = of(data.exercise[index]?.availableExercises ?? []);
-                            return value;
-                        }),
-                    );
-                }
-                else {
-                    return this.pastTrainingService.getPastTraining(params['id']).pipe(
-                        switchMap((response: Training) => {
-                            value = of(response.exercise[index]?.availableExercises ?? []);
-                            return value;
-                        }),
-                    );
-                }
-            }),
+        return this.route.params
+            .pipe(
+                switchMap((params: Params) => {
+                    if (!params['id']) {
+                        return this.newTrainingService.currentTrainingChanged$
+                            .pipe(
+                                take(1),
+                                map((training: Training) => training.exercise[index]?.availableExercises ?? []),
+                        );
+                    }
+                    else {
+                        return this.pastTrainingService.getPastTraining(params['id'])
+                            .pipe(
+                                map((training: Training) => training.exercise[index]?.availableExercises ?? []),
+                        );
+                    }
+                }),
         );
     }
 
