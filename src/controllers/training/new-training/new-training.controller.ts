@@ -4,8 +4,7 @@ import {
     Param,
     Post,
     Put,
-    UseGuards,
-    UsePipes } from '@nestjs/common';
+    UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { GET_USER } from '../../../decorators/get-user.decorator';
@@ -20,7 +19,6 @@ import { NewTrainingService } from '../../../services/training/new-training.serv
 @ApiTags('Training')
 @Controller('training/handle_training')
 @UseGuards(AuthGuard())
-@UsePipes(new EmptyTrainingPipe(), new DuplicateExercisePipe())
 export class NewTrainingController {
 
     constructor(
@@ -28,7 +26,7 @@ export class NewTrainingController {
     ) {}
 
     @Post()
-    async addTraining(@Body('trainingData') trainingData: Training): Promise<GeneralResponseData> {
+    async addTraining(@Body('trainingData', EmptyTrainingPipe, DuplicateExercisePipe) trainingData: Training): Promise<GeneralResponseData> {
         return this.newTrainingService.addTraining(trainingData);
     }
 
@@ -37,7 +35,7 @@ export class NewTrainingController {
     async updateTraining(
         @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
-        @Body('updatedTrainingData') updatedTrainingData: Training,
+        @Body('updatedTrainingData', EmptyTrainingPipe, DuplicateExercisePipe) updatedTrainingData: Training,
     ): Promise<GeneralResponseData> {
         return this.newTrainingService.editTraining(
             trainingId as string,
