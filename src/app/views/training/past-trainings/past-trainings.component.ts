@@ -8,7 +8,7 @@ import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
-import { mapPastTrainingsTemplate } from '../../../helpers/training/past-trainings/map-past-trainings-template';
+import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { TrainingData } from '../../../models/common/interfaces/common.model';
 import { DateInterval, PastTrainingsQueryParams, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
@@ -45,7 +45,7 @@ export class PastTrainingsComponent {
             this.pastTrainings$ =
                 of(response)
                     .pipe(
-                        mapPastTrainingsTemplate(),
+                        mapStreamData(),
                     );
             this.changeDetectorRef.markForCheck();
         });
@@ -55,14 +55,14 @@ export class PastTrainingsComponent {
             this.pastTrainings$ =
                 this.pastTrainingsService.searchPastTrainings((searchFilter as string).trim())
                     .pipe(
-                        mapPastTrainingsTemplate(),
+                        mapStreamData(),
                     );
         }
         else {
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
                 .pipe(
                     tap((response: TrainingData<PastTrainingsResponse>) => this.handleNextWeek(response?.Value?.Dates)),
-                    mapPastTrainingsTemplate(),
+                    mapStreamData(),
                 );
         }
 
@@ -108,7 +108,7 @@ export class PastTrainingsComponent {
                                     queryParams: queryParams,
                                 });
                             }),
-                            mapPastTrainingsTemplate(),
+                            mapStreamData(),
                         ),
                     ),
                 );
@@ -150,7 +150,7 @@ export class PastTrainingsComponent {
                             } as PastTrainingsQueryParams,
                         });
                     }),
-                    mapPastTrainingsTemplate(),
+                    mapStreamData(),
                 );
     }
 
@@ -161,7 +161,7 @@ export class PastTrainingsComponent {
     tryAgain(): void {
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
             .pipe(
-                mapPastTrainingsTemplate(),
+                mapStreamData(),
             );
     }
 

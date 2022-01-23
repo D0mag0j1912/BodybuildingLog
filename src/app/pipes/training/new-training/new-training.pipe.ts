@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { Exercise } from '../../../models/training/exercise.model';
@@ -34,10 +34,12 @@ export class NewTrainingPipe implements PipeTransform {
                         );
                     }
                     else {
-                        return this.pastTrainingService.getPastTraining(params['id'])
+                        //TODO: Rewrite this. Too many HTTP req
+                        return of(null);
+                        /* return this.pastTrainingService.getPastTraining(params['id'])
                             .pipe(
                                 map((training: Training) => training.exercise[index]?.availableExercises ?? []),
-                        );
+                        ); */
                     }
                 }),
         );

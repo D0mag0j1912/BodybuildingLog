@@ -4,5 +4,3 @@ export interface Exercise {
     readonly imageUrl?: string;
     readonly primaryMuscleGroup?: string;
 }
-
-export type ExerciseFetch = 'alreadyFetched';

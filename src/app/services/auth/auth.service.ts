@@ -78,7 +78,7 @@ export class AuthService {
         };
         return this.http.post<AuthResponseData>(environment.BACKEND + '/login', authData).pipe(
             tap(async (response: AuthResponseData) => {
-                if(response.token){
+                if (response.token) {
                     this.loggedUser$$.next(response);
                     this.isAuth$$.next(true);
                     this.token = response.token as string;
@@ -104,9 +104,9 @@ export class AuthService {
     }
 
     autoLogin(): void {
-        if(JSON.parse(localStorage.getItem('userData'))){
+        if (JSON.parse(localStorage.getItem('userData'))) {
             const userData: AuthResponseData = JSON.parse(localStorage.getItem('userData'));
-            if(!userData.token || !userData.expirationDate){
+            if (!userData.token || !userData.expirationDate) {
                 return;
             }
             const authData: AuthResponseData = {
@@ -117,7 +117,7 @@ export class AuthService {
             };
             const now: Date = new Date();
             const expiresIn: number = authData.expirationDate.getTime() - now.getTime();
-            if(expiresIn > 0){
+            if (expiresIn > 0) {
                 this.token = userData.token;
                 this.setAuthTimer(expiresIn / 1000);
                 this.isAuth$$.next(true);

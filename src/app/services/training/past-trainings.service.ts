@@ -33,8 +33,8 @@ export class PastTrainingsService {
             );
     }
 
-    getPastTraining(id: string): Observable<Training> {
-        return this.http.get<Training>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings/${id}`);
+    getPastTraining(id: string): Observable<TrainingData<Training>> {
+        return this.http.get<TrainingData<Training>>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings/${id}`);
     }
 
 }

@@ -4,9 +4,9 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { environment } from '../../../environments/environment';
+import { TrainingData } from '../../models/common/interfaces/common.model';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Exercise } from '../../models/training/exercise.model';
-import { ExerciseFetch } from '../../models/training/exercise.model';
 import { EMPTY_TRAINING } from '../../models/training/new-training/empty-training.model';
 import { Training } from '../../models/training/new-training/new-training.model';
 import { SetTrainingData } from '../../models/training/shared/set.model';
@@ -28,26 +28,27 @@ export class NewTrainingService {
         private readonly authService: AuthService,
     ) {}
 
-    getExercises(): Observable<AuthResponseData | ExerciseFetch> {
-        return this.http.get<Exercise[]>(environment.BACKEND + '/training/get_exercises').pipe(
-            switchMap((exercises: Exercise[]) => {
+    getExercises(): Observable<TrainingData<Training>> {
+        return this.http.get<TrainingData<Exercise[]>>(environment.BACKEND + '/training/get_exercises').pipe(
+            switchMap((response: TrainingData<Exercise[]>) => {
                 const trainingState: Training = JSON.parse(localStorage.getItem('trainingState'));
                 if (!trainingState) {
                     return this.authService.loggedUser$.pipe(
                         take(1),
                         tap((authResponseData: AuthResponseData) => {
                             this.updateTrainingState(
-                                exercises,
+                                response.Value,
                                 true,
                                 authResponseData._id,
                             );
-                            this.allExercisesChanged$$.next(exercises);
-                            localStorage.setItem('allExercises', JSON.stringify(exercises));
+                            this.allExercisesChanged$$.next(response.Value);
+                            localStorage.setItem('allExercises', JSON.stringify(response.Value));
                         }),
+                        switchMap(_ => of(response)),
                     );
                 }
                 else {
-                    return of('alreadyFetched' as ExerciseFetch);
+                    return of(null);
                 }
             }),
         );

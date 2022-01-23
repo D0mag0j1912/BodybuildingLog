@@ -8,7 +8,9 @@ import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service'
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
+import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
+import { TrainingData } from '../../../models/common/interfaces/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { Training } from '../../../models/training/new-training/new-training.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
@@ -48,7 +50,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     @ViewChild('bodyweightRef', {
         read: ElementRef,
     })
-    set bodyweightInput(bodyweight: ElementRef){
+    set bodyweightInput(bodyweight: ElementRef) {
         if (bodyweight && this.focusCounter === 0) {
             setTimeout(() => {
                 (bodyweight.nativeElement as HTMLInputElement).focus();
@@ -78,25 +80,19 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     this.editData._id = params['id'];
                     this.sharedService.pastTrainingId$$.next(this.editData._id);
                     this.editMode = true;
-                    return this.pastTrainingService.getPastTraining(this.editData._id).pipe(
-                        tap((training: Training) => {
-                            this.editData = {
-                                editedDate: training?.updatedAt ?? new Date(),
-                                editTraining: {
-                                    ...training,
-                                    editMode: true,
-                                },
-                            };
-                            this.newTrainingService.updateTrainingData(this.editData.editTraining);
-                        }),
-                        catchError(_ => {
-                            this.isError = true;
-                            return of(null);
-                        }),
-                        finalize(() => {
-                            this.isLoading = false;
-                            this.changeDetectorRef.markForCheck();
-                        }),
+                    return this.pastTrainingService.getPastTraining(this.editData._id)
+                        .pipe(
+                            tap((response: TrainingData<Training>) => {
+                                this.editData = {
+                                    editedDate: response?.Value?.updatedAt ?? new Date(),
+                                    editTraining: {
+                                        ...response?.Value,
+                                        editMode: true,
+                                    },
+                                };
+                                this.newTrainingService.updateTrainingData(this.editData.editTraining);
+                            }),
+                            mapStreamData(),
                     );
                 }
                 else {
@@ -131,15 +127,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             tap(_ => this.sharedService.editingTraining$$.next(this.editMode)),
             switchMap(_ =>
                 this.newTrainingService.getExercises().pipe(
-                    catchError(_ => {
-                        this.isError = true;
-                        return of(null);
-                    }),
+                    mapStreamData(),
                     switchMap(_ => this.formInit()),
-                    finalize(() => {
-                        this.isLoading = false;
-                        this.changeDetectorRef.markForCheck();
-                    }),
                 ),
             ),
             takeUntil(this.unsubscribeService),
@@ -156,47 +145,25 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     }
 
     tryAgain(): void {
-        this.isLoading = true;
         if (this.editData.editTraining) {
-            this.pastTrainingService.getPastTraining(this.editData._id).pipe(
-                catchError(_ => {
-                    this.isError = true;
-                    return of(null);
-                }),
-                finalize(() => {
-                    this.isLoading = false;
-                    this.changeDetectorRef.markForCheck();
-                }),
-            ).subscribe((training: Training) => {
-                if (training) {
-                    this.editData = {
-                        editedDate: training?.updatedAt ?? new Date(),
-                        editTraining: {
-                            ...training,
-                            editMode: this.editMode,
-                        },
-                    };
-                    this.newTrainingService.updateTrainingData(this.editData.editTraining);
-                    this.isError = false;
-                }
+            this.pastTrainingService.getPastTraining(this.editData._id)
+                .pipe(
+                    mapStreamData(),
+            ).subscribe((response: TrainingData<Training>) => {
+                this.editData = {
+                    editedDate: response?.Value?.updatedAt ?? new Date(),
+                    editTraining: {
+                        ...response?.Value,
+                        editMode: this.editMode,
+                    },
+                };
+                this.newTrainingService.updateTrainingData(this.editData.editTraining);
             });
         }
         else {
             this.newTrainingService.getExercises().pipe(
-                catchError(_ => {
-                    this.isError = true;
-                    return of(null);
-                }),
-                tap((response: AuthResponseData) => {
-                    if (response) {
-                        this.isError = false;
-                    }
-                }),
+                mapStreamData(),
                 switchMap(() => this.formInit()),
-                finalize(() => {
-                    this.isLoading = false;
-                    this.changeDetectorRef.markForCheck();
-                }),
             ).subscribe();
         }
     }

@@ -10,6 +10,7 @@ import { SharedService } from 'src/app/services/shared/shared.service';
 import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service';
 import { NewTrainingService } from 'src/app/services/training/new-training.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
+import { TrainingData } from '../../../models/common/interfaces/common.model';
 import { Language } from '../../../models/preferences.model';
 import { DateInterval } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -56,11 +57,11 @@ export class HeaderComponent implements OnInit {
             take(1),
             switchMap((_id: string) => this.pastTrainingsService.getPastTraining(_id)),
             takeUntil(this.unsubsService),
-        ).subscribe(async (training: Training) => {
+        ).subscribe(async (response: TrainingData<Training>) => {
             await this.router.navigate(['/training/past-trainings'], {
                 queryParams: {
-                    startDate: format(this.constructDates(new Date(training.createdAt)).StartDate, 'dd-MM-yyyy'),
-                    endDate: format(this.constructDates(new Date(training.createdAt)).EndDate, 'dd-MM-yyyy'),
+                    startDate: format(this.constructDates(new Date(response?.Value?.createdAt))?.StartDate ?? new Date(), 'dd-MM-yyyy'),
+                    endDate: format(this.constructDates(new Date(response?.Value?.createdAt))?.EndDate ?? new Date(), 'dd-MM-yyyy'),
                 },
             });
         });
