@@ -19,9 +19,9 @@ export class NewTrainingPipe implements PipeTransform {
     ) {}
 
     transform(
-        value: Observable<Exercise[]>,
+        _value: Observable<Exercise[]>,
         index: number,
-        exerciseChanged: boolean,
+        _exerciseChanged: boolean,
     ): Observable<Exercise[]> {
         return this.route.params
             .pipe(

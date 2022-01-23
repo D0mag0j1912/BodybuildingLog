@@ -49,7 +49,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         read: ElementRef,
     })
     set bodyweightInput(bodyweight: ElementRef){
-        if(bodyweight && this.focusCounter === 0) {
+        if (bodyweight && this.focusCounter === 0) {
             setTimeout(() => {
                 (bodyweight.nativeElement as HTMLInputElement).focus();
                 this.focusCounter++;
@@ -74,18 +74,20 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
         this.route.params.pipe(
             switchMap((params: Params) => {
-                if(params['id']) {
-                    this.editData._id = params['id'] as string;
-                    this.sharedService.pastTrainingId$$.next(this.editData._id as string);
+                if (params['id']) {
+                    this.editData._id = params['id'];
+                    this.sharedService.pastTrainingId$$.next(this.editData._id);
                     this.editMode = true;
-                    return this.pastTrainingService.getPastTraining(this.editData._id as string).pipe(
+                    return this.pastTrainingService.getPastTraining(this.editData._id).pipe(
                         tap((training: Training) => {
-                            this.editData.editedDate = training.updatedAt as Date;
-                            this.editData.editTraining = {
-                                ...training as Training,
-                                editMode: true,
-                            } as Training;
-                            this.newTrainingService.updateTrainingData(this.editData.editTraining as Training);
+                            this.editData = {
+                                editedDate: training?.updatedAt ?? new Date(),
+                                editTraining: {
+                                    ...training,
+                                    editMode: true,
+                                },
+                            };
+                            this.newTrainingService.updateTrainingData(this.editData.editTraining);
                         }),
                         catchError(_ => {
                             this.isError = true;
@@ -110,8 +112,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             ]).pipe(
                                 tap((data: [Exercise[], Training]) => {
                                     const currentTrainingState: Training = ((data[1] as Training));
-                                    if(currentTrainingState) {
-                                        if(currentTrainingState.editMode && !this.editMode) {
+                                    if (currentTrainingState) {
+                                        if (currentTrainingState.editMode && !this.editMode) {
                                             this.newTrainingService.updateTrainingState(
                                                 data[0] as Exercise[],
                                                 true,
@@ -126,7 +128,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     );
                 }
             }),
-            tap(_ => this.sharedService.editingTraining$$.next(this.editMode as boolean)),
+            tap(_ => this.sharedService.editingTraining$$.next(this.editMode)),
             switchMap(_ =>
                 this.newTrainingService.getExercises().pipe(
                     catchError(_ => {
@@ -155,8 +157,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     tryAgain(): void {
         this.isLoading = true;
-        if(this.editData.editTraining as Training) {
-            this.pastTrainingService.getPastTraining(this.editData._id as string).pipe(
+        if (this.editData.editTraining) {
+            this.pastTrainingService.getPastTraining(this.editData._id).pipe(
                 catchError(_ => {
                     this.isError = true;
                     return of(null);
@@ -166,13 +168,15 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     this.changeDetectorRef.markForCheck();
                 }),
             ).subscribe((training: Training) => {
-                if(training) {
-                    this.editData.editedDate = training.updatedAt as Date;
-                    this.editData.editTraining = {
-                        ...training as Training,
-                        editMode: this.editMode,
-                    } as Training;
-                    this.newTrainingService.updateTrainingData(this.editData.editTraining as Training);
+                if (training) {
+                    this.editData = {
+                        editedDate: training?.updatedAt ?? new Date(),
+                        editTraining: {
+                            ...training,
+                            editMode: this.editMode,
+                        },
+                    };
+                    this.newTrainingService.updateTrainingData(this.editData.editTraining);
                     this.isError = false;
                 }
             });
@@ -184,7 +188,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     return of(null);
                 }),
                 tap((response: AuthResponseData) => {
-                    if(response) {
+                    if (response) {
                         this.isError = false;
                     }
                 }),
@@ -209,7 +213,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         ),
                         [CommonValidators.isBroj(), Validators.min(30), Validators.max(300)],
                     ),
-                    'exercise': new FormControl(data as Training),
+                    'exercise': new FormControl(data),
                 });
             }),
             takeUntil(this.unsubscribeService),
