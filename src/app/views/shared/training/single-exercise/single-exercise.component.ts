@@ -8,7 +8,7 @@ import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subject } from 'rxjs'
 import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SNACK_BAR_DURATION } from '../../../../constants/snack-bar-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { SingleExerciseErrorHelper } from '../../../../helpers/mat-error/single-exercise-error.helper';
+import { ExerciseNameErrorHelper } from '../../../../helpers/error-matchers/exercise-name-error-state-matcher.helper';
 import { GeneralResponseData } from '../../../../models/general-response.model';
 import { DEFAULT_WEIGHT_FORMAT } from '../../../../models/preferences.model';
 import { Exercise } from '../../../../models/training/exercise.model';
@@ -41,10 +41,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
     readonly isSubmitted$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    readonly exercises$: Observable<Exercise[]>;
+    readonly exercises$: Observable<Exercise[]> | undefined = undefined;
 
     readonly form: FormArray = new FormArray([]);
-    readonly singleExerciseErrorHelper: SingleExerciseErrorHelper = new SingleExerciseErrorHelper();
+    readonly exerciseNameErrorStateMatcher: ExerciseNameErrorHelper = new ExerciseNameErrorHelper();
     setErrors: SetFormValidationErrors[] = [];
 
     exerciseChanged: boolean = false;

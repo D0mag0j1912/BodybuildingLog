@@ -19,7 +19,7 @@
                         disableRipple
                         #exerciseNameChoice
                         formControlName="name"
-                        [errorStateMatcher]="form.errors?.duplicateExerciseName === accessFormField('name', i).value ? singleExerciseErrorHelper : null"
+                        [errorStateMatcher]="exerciseNameErrorStateMatcher"
                         (selectionChange)="onExerciseNameChange($event, i, exerciseNameChoice)">
                         <mat-optgroup
                             *ngFor="let exercise of exercises$ | newTraining:i:exerciseChanged | async"
