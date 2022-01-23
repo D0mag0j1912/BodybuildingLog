@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { GeneralResponseData } from '../../models/common/response.model';
+import { GeneralResponseData, TrainingData } from '../../models/common/response.model';
 import { Error } from '../../models/errors/error';
 import { Exercise } from '../../models/training/exercise.model';
 import { Training } from '../../models/training/new-training/new-training.model';
@@ -51,14 +51,18 @@ export class NewTrainingService {
         }
     }
 
-    async getExercises(): Promise<Exercise[]> {
+    async getExercises(): Promise<TrainingData<Exercise[]>> {
         try {
             // tslint:disable-next-line: await-promise
             const exercises: Exercise[] = await this.exerciseModel.find();
             if (exercises.length === 0) {
                 throw new InternalServerErrorException('training.new_training.errors.exercises_not_available');
             }
-            return exercises;
+            return {
+                IsLoading: true,
+                IsError: false,
+                Value: exercises,
+            } as TrainingData<Exercise[]>;
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.new_training.errors.exercises_not_available');

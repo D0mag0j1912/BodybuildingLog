@@ -35,7 +35,7 @@ export class PastTrainingsController {
     @ApiCreatedResponse({ type: Training })
     @Get(':id')
     @UseGuards(new TrainingGuard('training.past_trainings.errors.get_training_error'))
-    async getPastTraining(@Param('id') trainingId: string): Promise<Training> {
+    async getPastTraining(@Param('id') trainingId: string): Promise<TrainingData<Training>> {
         return this.pastTrainingsService.getPastTraining(trainingId as string);
     }
 }

@@ -61,9 +61,15 @@ export class PastTrainingsService {
         }
     }
 
-    async getPastTraining(trainingId: string): Promise<Training> {
+    async getPastTraining(trainingId: string): Promise<TrainingData<Training>> {
         try {
-            return this.trainingModel.findById(trainingId);
+            // tslint:disable-next-line: await-promise
+            const training =  await this.trainingModel.findById(trainingId);
+            return {
+                IsLoading: true,
+                IsError: false,
+                Value: training,
+            } as TrainingData<Training>;
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.past_trainings.errors.error_load_training');
