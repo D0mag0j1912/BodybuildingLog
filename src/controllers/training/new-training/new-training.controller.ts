@@ -13,6 +13,7 @@ import { UserDto } from '../../../models/auth/login.model';
 import { GeneralResponseData } from '../../../models/common/response.model';
 import { Training } from '../../../models/training/new-training/new-training.model';
 import { DuplicateExercisePipe } from '../../../pipes/training/duplicate-exercise.pipe';
+import { EmptySetPipe } from '../../../pipes/training/empty-set.pipe';
 import { EmptyTrainingPipe } from '../../../pipes/training/empty-training.pipe';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
@@ -26,7 +27,7 @@ export class NewTrainingController {
     ) {}
 
     @Post()
-    async addTraining(@Body('trainingData', EmptyTrainingPipe, DuplicateExercisePipe) trainingData: Training): Promise<GeneralResponseData> {
+    async addTraining(@Body('trainingData', EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe) trainingData: Training): Promise<GeneralResponseData> {
         return this.newTrainingService.addTraining(trainingData);
     }
 
@@ -35,7 +36,7 @@ export class NewTrainingController {
     async updateTraining(
         @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
-        @Body('updatedTrainingData', EmptyTrainingPipe, DuplicateExercisePipe) updatedTrainingData: Training,
+        @Body('updatedTrainingData', EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe) updatedTrainingData: Training,
     ): Promise<GeneralResponseData> {
         return this.newTrainingService.editTraining(
             trainingId as string,
