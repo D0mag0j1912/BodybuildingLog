@@ -1,7 +1,7 @@
 import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 
-export class ExerciseNameErrorHelper implements ErrorStateMatcher {
+export class ExerciseNameErrorStateMatcher implements ErrorStateMatcher {
 
     isErrorState(
         control: FormControl,
@@ -9,6 +9,6 @@ export class ExerciseNameErrorHelper implements ErrorStateMatcher {
     ): boolean {
         const isSubmitted = form?.submitted;
         return (form?.invalid && isSubmitted) ||
-            (control?.invalid && (control.dirty || control.touched || isSubmitted));
+            (control?.invalid && (control?.dirty || control?.touched || isSubmitted));
     }
 }

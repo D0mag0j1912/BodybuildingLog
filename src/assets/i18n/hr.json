@@ -60,14 +60,14 @@
         "errors": {
             "signup_error": "Greška pri registraciji",
             "login_error": "Greška pri prijavi",
-            "email_required": "Email je obvezan za unos",
+            "email_required": "Email je obvezan",
             "invalid_email": "Pogrešan format email-a",
             "email_already_registered": "Email je već registriran",
             "email_not_registered": "Email nije registriran",
-            "password_required": "Lozinka je obvezna za unos",
+            "password_required": "Lozinka je obvezna",
             "password_string": "Lozinka mora biti u tekstualnom formatu",
             "password_length": "Duljina lozinke treba biti između 6 i 20 znakova",
-            "confirm_password_required": "Potvrda lozinke je obvezna za unos",
+            "confirm_password_required": "Potvrda lozinke je obvezna",
             "confirm_password_string": "Potvrda lozinke mora biti u tekstualnom formatu",
             "confirm_password_length": "Duljina potvrde lozinke treba biti između 6 i 20 znakova",
             "equal_passwords": "Lozinke moraju biti iste",
@@ -103,20 +103,20 @@
             "training_saved": "Trening spremljen",
             "finish_training": "Završi trening",
             "errors": {
-                "date_required": "Datum je obvezan za unos",
+                "date_required": "Datum je obvezan",
                 "bodyweight_number": "Tjelesna težina mora biti numerička vrijednost",
                 "bodyweight_min": "Tjelesna težina mora biti veća od 30",
                 "bodyweight_max": "Tjelesna težina mora biti manja od 300",
-                "exercise_name_required": "Naziv vježbe je obvezan za unos",
+                "exercise_name_required": "Naziv vježbe je obvezan",
                 "exercise_name_string": "Naziv vježbe mora biti tekstualnog formata",
                 "exercise_name_duplicate": "Naziv vježbe je dupliciran",
                 "at_least_one_exercise": "Morate unijeti barem jednu vježbu",
                 "at_least_one_set": "Morate unijeti barem jedan set",
-                "weight_lifted_required": "Kilaža je obvezna za unos",
+                "weight_lifted_required": "Kilaža je obvezna",
                 "weight_lifted_number": "Vrijednost kilaže mora biti broj",
                 "weight_lifted_min": "Minimalna vrijednost kilaže je 1",
                 "weight_lifted_max": "Maksimalna vrijednost kilaže je 1000",
-                "reps_required": "Broj ponavljanja je obvezan za unos",
+                "reps_required": "Broj ponavljanja je obvezan",
                 "reps_number": "Broj ponavljanja mora biti broj",
                 "reps_min": "Minimalna vrijednost broja ponavljanja je 1",
                 "reps_max": "Maksimalna vrijednost broja ponavljanja je 1000",
@@ -133,7 +133,7 @@
                 "no_more_exercises_available": "Nema više dostupnih vježbi",
                 "pick_current_exercise": "Prvo morate izabrati trenutnu vježbu",
                 "delete_first_set": "Prvi set ne može biti izbrisan",
-                "set_required": "Set je obvezan za unos",
+                "set_required": "Set je obvezan",
                 "set_invalid": "Dogodila se greška pri unosu seta"
             },
             "buttons": {
@@ -189,9 +189,9 @@
     "preferences": {
         "language_changed": "Jezik je uspješno promijenjen",
         "errors": {
-            "language_required": "Jezik je obvezan za unos",
+            "language_required": "Jezik je obvezan",
             "language_change": "Došlo je do greške pri promjeni jezika",
-            "weight_format_required": "Format težine je obvezan za unos"
+            "weight_format_required": "Format težine je obvezan"
         }
     },
     "weekdays": {

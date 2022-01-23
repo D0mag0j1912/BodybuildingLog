@@ -20,8 +20,7 @@
                         (input)="onChangeSets(j)"
                         (blur)="onTouched()">
                     <mat-error
-                        *ngIf="(set.errors?.weightLiftedRequired && exerciseNameControl?.value)
-                            || (set.errors?.weightLiftedRequired && exerciseNameControl?.value && (isExerciseFormSubmitted$ | async))"
+                        *ngIf="(set.errors?.weightLiftedRequired && ((isExerciseFormSubmitted$ | async) || exerciseNameControl?.value))"
                         class="error">
                         {{ 'training.new_training.errors.weight_lifted_required' | translate }}
                     </mat-error>
@@ -77,8 +76,7 @@
                         (input)="onChangeSets(j)"
                         (blur)="onTouched()">
                     <mat-error
-                        *ngIf="(set.errors?.repsRequired && exerciseNameControl?.value)
-                            || (set.errors?.repsRequired && exerciseNameControl?.value && (isExerciseFormSubmitted$ | async))"
+                        *ngIf="(set.errors?.repsRequired && ((isExerciseFormSubmitted$ | async) || exerciseNameControl?.value))"
                         class="error">
                         {{ 'training.new_training.errors.reps_required' | translate }}
                     </mat-error>

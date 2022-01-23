@@ -8,7 +8,7 @@ import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subject } from 'rxjs'
 import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SNACK_BAR_DURATION } from '../../../../constants/snack-bar-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { ExerciseNameErrorHelper } from '../../../../helpers/error-matchers/exercise-name-error-state-matcher.helper';
+import { ExerciseNameErrorStateMatcher } from '../../../../helpers/error-matchers/exercise-name-error-state-matcher.helper';
 import { GeneralResponseData } from '../../../../models/general-response.model';
 import { DEFAULT_WEIGHT_FORMAT } from '../../../../models/preferences.model';
 import { Exercise } from '../../../../models/training/exercise.model';
@@ -44,7 +44,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
 
     readonly form: FormArray = new FormArray([]);
-    readonly exerciseNameErrorStateMatcher: ExerciseNameErrorHelper = new ExerciseNameErrorHelper();
+    readonly exerciseNameErrorStateMatcher: ExerciseNameErrorStateMatcher = new ExerciseNameErrorStateMatcher();
     setErrors: SetFormValidationErrors[] = [];
 
     exerciseChanged: boolean = false;
@@ -109,6 +109,16 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     ) {
         this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName(), SingleExerciseValidators.checkExerciseNumber()]);
         this.form.updateValueAndValidity();
+    }
+
+    setErrorMatcher(index: number): ExerciseNameErrorStateMatcher {
+        if (this.accessFormField('name', index)?.value) {
+            if (this.form?.errors?.duplicateExerciseName === this.accessFormField('name', index).value) {
+                return this.exerciseNameErrorStateMatcher;
+            }
+            return null;
+        }
+        return this.exerciseNameErrorStateMatcher;
     }
 
     writeValue(data: Training): void {
