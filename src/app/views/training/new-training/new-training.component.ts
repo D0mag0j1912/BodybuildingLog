@@ -2,14 +2,13 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDe
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 import { forkJoin, Observable, of } from 'rxjs';
-import { catchError, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { TrainingData } from '../../../models/common/interfaces/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { Training } from '../../../models/training/new-training/new-training.model';
@@ -34,18 +33,12 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     form: FormGroup;
 
     editData: EditData = {
-        _id: '',
+        _id: null,
         editedDate: null,
         editTraining: null,
     };
 
     private focusCounter: number = 0;
-
-    isLoading: boolean = true;
-
-    isError: boolean = false;
-
-    editMode: boolean = false;
 
     @ViewChild('bodyweightRef', {
         read: ElementRef,
@@ -58,6 +51,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             });
         }
     }
+
+    trainingStream$: Observable<TrainingData<Training>> | undefined = undefined;
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
@@ -74,65 +69,64 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
 
-        this.route.params.pipe(
-            switchMap((params: Params) => {
-                if (params['id']) {
-                    this.editData._id = params['id'];
-                    this.sharedService.pastTrainingId$$.next(this.editData._id);
-                    this.editMode = true;
-                    return this.pastTrainingService.getPastTraining(this.editData._id)
-                        .pipe(
-                            tap((response: TrainingData<Training>) => {
-                                this.editData = {
-                                    editedDate: response?.Value?.updatedAt ?? new Date(),
-                                    editTraining: {
-                                        ...response?.Value,
-                                        editMode: true,
-                                    },
-                                };
-                                this.newTrainingService.updateTrainingData(this.editData.editTraining);
-                            }),
-                            mapStreamData(),
-                    );
-                }
-                else {
-                    return of(null).pipe(
-                        switchMap(_ =>
-                            forkJoin([
-                                this.newTrainingService.allExercisesChanged$.pipe(
-                                    take(1),
-                                ),
-                                this.newTrainingService.currentTrainingChanged$.pipe(
-                                    take(1),
-                                ),
-                            ]).pipe(
-                                tap((data: [Exercise[], Training]) => {
-                                    const currentTrainingState: Training = ((data[1] as Training));
-                                    if (currentTrainingState) {
-                                        if (currentTrainingState.editMode && !this.editMode) {
-                                            this.newTrainingService.updateTrainingState(
-                                                data[0] as Exercise[],
-                                                true,
-                                                currentTrainingState.userId as string,
-                                            );
-                                        }
-                                    }
+        this.route.params
+            .pipe(
+                switchMap((params: Params) => {
+                    if (params['id']) {
+                        this.editData._id = params['id'];
+                        this.sharedService.pastTrainingId$$.next(this.editData._id);
+                        return this.pastTrainingService.getPastTraining(this.editData._id)
+                            .pipe(
+                                tap((response: TrainingData<Training>) => {
+                                    this.editData = {
+                                        editedDate: response?.Value?.updatedAt ?? new Date(),
+                                        editTraining: {
+                                            ...response?.Value,
+                                            editMode: true,
+                                        },
+                                    };
+                                    this.newTrainingService.updateTrainingData(this.editData.editTraining);
                                 }),
-                                takeUntil(this.unsubscribeService),
+                                mapStreamData(),
+                        );
+                    }
+                    else {
+                        return of(null).pipe(
+                            switchMap(_ =>
+                                forkJoin([
+                                    this.newTrainingService.allExercisesChanged$.pipe(
+                                        take(1),
+                                    ),
+                                    this.newTrainingService.currentTrainingChanged$.pipe(
+                                        take(1),
+                                    ),
+                                ]).pipe(
+                                    tap((data: [Exercise[], Training]) => {
+                                        const currentTrainingState: Training = ((data[1] as Training));
+                                        if (currentTrainingState) {
+                                            if (currentTrainingState.editMode && !this.editData?._id) {
+                                                this.newTrainingService.updateTrainingState(
+                                                    data[0] as Exercise[],
+                                                    true,
+                                                    currentTrainingState.userId as string,
+                                                );
+                                            }
+                                        }
+                                    }),
+                                ),
                             ),
-                        ),
-                    );
-                }
-            }),
-            tap(_ => this.sharedService.editingTraining$$.next(this.editMode)),
-            switchMap(_ =>
-                this.newTrainingService.getExercises().pipe(
-                    mapStreamData(),
-                    switchMap(_ => this.formInit()),
+                        );
+                    }
+                }),
+                tap(_ => this.sharedService.editingTraining$$.next(!!this.editData?._id)),
+                switchMap(_ =>
+                    this.newTrainingService.getExercises().pipe(
+                        mapStreamData(),
+                        switchMap(_ => this.formInit()),
+                    ),
                 ),
-            ),
-            takeUntil(this.unsubscribeService),
-        ).subscribe();
+                takeUntil(this.unsubscribeService),
+            ).subscribe();
 
     }
 
@@ -154,7 +148,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     editedDate: response?.Value?.updatedAt ?? new Date(),
                     editTraining: {
                         ...response?.Value,
-                        editMode: this.editMode,
+                        editMode: !!this.editData?._id,
                     },
                 };
                 this.newTrainingService.updateTrainingData(this.editData.editTraining);
@@ -163,7 +157,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         else {
             this.newTrainingService.getExercises().pipe(
                 mapStreamData(),
-                switchMap(() => this.formInit()),
+                //TODO: check if i need here formInit() again
+                /* switchMap(() => this.formInit()), */
             ).subscribe();
         }
     }

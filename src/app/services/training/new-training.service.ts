@@ -28,7 +28,7 @@ export class NewTrainingService {
         private readonly authService: AuthService,
     ) {}
 
-    getExercises(): Observable<TrainingData<Training>> {
+    getExercises(): Observable<TrainingData<Exercise[]>> {
         return this.http.get<TrainingData<Exercise[]>>(environment.BACKEND + '/training/get_exercises').pipe(
             switchMap((response: TrainingData<Exercise[]>) => {
                 const trainingState: Training = JSON.parse(localStorage.getItem('trainingState'));

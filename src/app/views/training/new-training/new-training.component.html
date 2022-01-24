@@ -1,78 +1,80 @@
-<mat-spinner
-    *ngIf="isLoading"
-    class="spinner"
-    [diameter]="spinnerSize"></mat-spinner>
-<section
-    *ngIf="!isError && !isLoading"
-    class="section">
-    <form
-        *ngIf="form"
-        class="main-form"
-        autocomplete="off"
-        [formGroup]="form">
-        <mat-form-field
-            appearance="outline"
-            class="bodyweight">
-            <mat-label class="label">
-                {{ 'training.new_training.pick_bodyweight' | translate }}
-            </mat-label>
-            <input
-                #bodyweightRef
-                matInput
-                type="number"
-                formControlName="bodyweight"
-                (input)="onBodyweightChange(bodyweightRef.value)">
-            <mat-error *ngIf="(bodyweight.touched || bodyweight.dirty) && !bodyweight.valid">
-                <mat-error
-                    *ngIf="bodyweight.errors?.onlyNumbers"
-                    class="bodyweight-error">
-                    {{ 'training.new_training.errors.only_numbers' | translate }}
+<ng-container *ngIf="(trainingStream$ | async) as trainingData">
+    <mat-spinner
+        *ngIf="trainingData.IsLoading"
+        class="spinner"
+        [diameter]="spinnerSize"></mat-spinner>
+    <section
+        *ngIf="trainingData.Value"
+        class="section">
+        <form
+            *ngIf="form"
+            class="main-form"
+            autocomplete="off"
+            [formGroup]="form">
+            <mat-form-field
+                appearance="outline"
+                class="bodyweight">
+                <mat-label class="label">
+                    {{ 'training.new_training.pick_bodyweight' | translate }}
+                </mat-label>
+                <input
+                    #bodyweightRef
+                    matInput
+                    type="number"
+                    formControlName="bodyweight"
+                    (input)="onBodyweightChange(bodyweightRef.value)">
+                <mat-error *ngIf="(bodyweight.touched || bodyweight.dirty) && !bodyweight.valid">
+                    <mat-error
+                        *ngIf="bodyweight.errors?.onlyNumbers"
+                        class="bodyweight-error">
+                        {{ 'training.new_training.errors.only_numbers' | translate }}
+                    </mat-error>
+                    <mat-error
+                        *ngIf="bodyweight.errors?.min"
+                        class="bodyweight-error">
+                        {{ 'training.new_training.errors.bodyweight_min' | translate }}
+                    </mat-error>
+                    <mat-error
+                        *ngIf="bodyweight.errors?.max"
+                        class="bodyweight-error">
+                        {{ 'training.new_training.errors.bodyweight_max' | translate }}
+                    </mat-error>
                 </mat-error>
-                <mat-error
-                    *ngIf="bodyweight.errors?.min"
-                    class="bodyweight-error">
-                    {{ 'training.new_training.errors.bodyweight_min' | translate }}
-                </mat-error>
-                <mat-error
-                    *ngIf="bodyweight.errors?.max"
-                    class="bodyweight-error">
-                    {{ 'training.new_training.errors.bodyweight_max' | translate }}
-                </mat-error>
-            </mat-error>
-        </mat-form-field>
-        <bl-single-exercise
-            formControlName="exercise"
-            [bodyweight]="bodyweight"
-            [editData]="editData"
-            [isLoading]="isLoading"
-            [editMode]="editMode"></bl-single-exercise>
-    </form>
-</section>
+            </mat-form-field>
+            <bl-single-exercise
+                formControlName="exercise"
+                [bodyweight]="bodyweight"
+                [editData]="editData"
+                [isLoading]="trainingData.IsLoading"
+                [editMode]="!!editData?._id"></bl-single-exercise>
+        </form>
+    </section>
 
-<ng-container *ngIf="isError && !isLoading">
-    <div class="error-wrapper">
-        <img
-            class="error-image"
-            src="../../../../assets/svgs/error1.svg">
-        <h3 class="error-title">
-            {{ 'training.new_training.errors.new_training_error_title' | translate }}
-        </h3>
-        <span
-            *ngIf="editMode"
-            class="error-description">
-            {{ 'training.new_training.errors.new_training_error_description' | translate }}
-        </span>
-        <span
-            *ngIf="!editMode"
-            class="error-description">
-            {{ 'training.new_training.errors.new_training_error_load' | translate }}
-        </span>
-        <button
-            mat-raised-button
-            color="primary"
-            type="button"
-            (click)="tryAgain()">
-            {{ 'common.try_again' | translate }}
-        </button>
-    </div>
+    <ng-container *ngIf="trainingData.IsError">
+        <div class="error-wrapper">
+            <img
+                class="error-image"
+                src="../../../../assets/svgs/error1.svg">
+            <h3 class="error-title">
+                {{ 'training.new_training.errors.new_training_error_title' | translate }}
+            </h3>
+            <span
+                *ngIf="!!editData?._id"
+                class="error-description">
+                {{ 'training.new_training.errors.new_training_error_description' | translate }}
+            </span>
+            <span
+                *ngIf="!editData?._id"
+                class="error-description">
+                {{ 'training.new_training.errors.new_training_error_load' | translate }}
+            </span>
+            <button
+                mat-raised-button
+                color="primary"
+                type="button"
+                (click)="tryAgain()">
+                {{ 'common.try_again' | translate }}
+            </button>
+        </div>
+    </ng-container>
 </ng-container>
