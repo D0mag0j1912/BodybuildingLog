@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 import { forkJoin, Observable, of } from 'rxjs';
-import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { switchMap, take, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
-import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
@@ -25,10 +24,9 @@ export type EditData = {
     selector: 'bl-new-training',
     templateUrl: './new-training.component.html',
     styleUrls: ['./new-training.component.scss'],
-    providers: [UnsubscribeService],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NewTrainingComponent implements OnInit, OnDestroy {
+export class NewTrainingComponent implements OnDestroy {
 
     form: FormGroup;
 
@@ -52,24 +50,16 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
-    trainingStream$: Observable<TrainingData<Training>> | undefined = undefined;
+    trainingStream$: Observable<TrainingData<Exercise[]>> | undefined = undefined;
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
-        private readonly unsubscribeService: UnsubscribeService,
         private readonly route: ActivatedRoute,
         private readonly changeDetectorRef: ChangeDetectorRef,
-    ) {}
-
-    get spinnerSize(): number {
-        return SPINNER_SIZE;
-    }
-
-    ngOnInit(): void {
-
-        this.route.params
+    ) {
+        this.trainingStream$ = this.route.params
             .pipe(
                 switchMap((params: Params) => {
                     if (params['id']) {
@@ -120,14 +110,17 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 }),
                 tap(_ => this.sharedService.editingTraining$$.next(!!this.editData?._id)),
                 switchMap(_ =>
-                    this.newTrainingService.getExercises().pipe(
-                        mapStreamData(),
-                        switchMap(_ => this.formInit()),
-                    ),
+                    this.newTrainingService.getExercises()
+                        .pipe(
+                            tap(_ => this.formInit()),
+                            mapStreamData(),
+                        ),
                 ),
-                takeUntil(this.unsubscribeService),
-            ).subscribe();
+            );
+    }
 
+    get spinnerSize(): number {
+        return SPINNER_SIZE;
     }
 
     ngOnDestroy(): void {
@@ -163,23 +156,18 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
-    private formInit(): Observable<Training> {
-        return this.newTrainingService.currentTrainingChanged$.pipe(
-            take(1),
-            tap((data: Training) => {
-                this.form = new FormGroup({
-                    'bodyweight': new FormControl(
-                        NewTrainingHandler.fillBodyweight(
-                            data.bodyweight,
-                            this.editData?.editTraining ? this.editData.editTraining.bodyweight : null,
-                        ),
-                        [CommonValidators.isBroj(), Validators.min(30), Validators.max(300)],
-                    ),
-                    'exercise': new FormControl(data),
-                });
-            }),
-            takeUntil(this.unsubscribeService),
-        );
+    private formInit(): void {
+        const currentTrainingState = { ...this.newTrainingService.getCurrentTrainingState() };
+        this.form = new FormGroup({
+            'bodyweight': new FormControl(
+                NewTrainingHandler.fillBodyweight(
+                    currentTrainingState.bodyweight,
+                    this.editData?.editTraining ? this.editData.editTraining?.bodyweight : null,
+                ),
+                [CommonValidators.isBroj(), Validators.min(30), Validators.max(300)],
+            ),
+            'exercise': new FormControl(currentTrainingState),
+        });
     }
 
     get bodyweight(): FormControl {

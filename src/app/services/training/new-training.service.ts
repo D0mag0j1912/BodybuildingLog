@@ -67,6 +67,10 @@ export class NewTrainingService {
 
     /**************************************** */
 
+    getCurrentTrainingState(): Training {
+        return this.currentTrainingChanged$$.getValue();
+    }
+
     addBodyweightToStorage(value: string): void {
         const updatedTraining = {
             ...this.currentTrainingChanged$$.getValue(),
