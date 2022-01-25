@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
@@ -48,66 +48,62 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
         private readonly route: ActivatedRoute,
-        private readonly changeDetectorRef: ChangeDetectorRef,
     ) {
-        this.trainingStream$ = this.route.params
-            .pipe(
-                switchMap((params: Params) => {
-                    if (params['id']) {
-                        this.editData._id = params['id'];
-                        this.sharedService.pastTrainingId$$.next(this.editData._id);
-                        return this.pastTrainingService.getPastTraining(this.editData._id)
-                            .pipe(
-                                tap((response: TrainingData<Training>) => {
-                                    this.editData = {
-                                        editedDate: response?.Value?.updatedAt ?? new Date(),
-                                        editTraining: {
-                                            ...response?.Value,
-                                            editMode: true,
-                                        },
-                                    };
-                                    this.newTrainingService.updateTrainingData(this.editData.editTraining);
-                                }),
-                                mapStreamData(),
-                        );
-                    }
-                    else {
-                        return of(null).pipe(
-                            switchMap(_ =>
-                                forkJoin([
-                                    this.newTrainingService.allExercisesChanged$.pipe(
-                                        take(1),
-                                    ),
-                                    this.newTrainingService.currentTrainingChanged$.pipe(
-                                        take(1),
-                                    ),
-                                ]).pipe(
-                                    tap((data: [Exercise[], Training]) => {
-                                        const currentTrainingState: Training = ((data[1] as Training));
-                                        if (currentTrainingState) {
-                                            if (currentTrainingState.editMode && !this.editData?._id) {
-                                                this.newTrainingService.updateTrainingState(
-                                                    data[0] as Exercise[],
-                                                    true,
-                                                    currentTrainingState.userId as string,
-                                                );
-                                            }
-                                        }
+        this.trainingStream$ =
+            this.route.params
+                .pipe(
+                    switchMap((params: Params) => {
+                        if (params['id']) {
+                            this.editData._id = params['id'];
+                            this.sharedService.pastTrainingId$$.next(this.editData._id);
+                            return this.pastTrainingService.getPastTraining(this.editData._id)
+                                .pipe(
+                                    tap((response: TrainingData<Training>) => {
+                                        this.editData = {
+                                            editedDate: response?.Value?.updatedAt ?? new Date(),
+                                            editTraining: {
+                                                ...response?.Value,
+                                                editMode: true,
+                                            },
+                                        };
+                                        this.newTrainingService.updateTrainingData(this.editData.editTraining);
                                     }),
+                                    mapStreamData(),
+                            );
+                        }
+                        else {
+                            return forkJoin([
+                                this.newTrainingService.allExercisesChanged$.pipe(
+                                    take(1),
                                 ),
+                                this.newTrainingService.currentTrainingChanged$.pipe(
+                                    take(1),
+                                ),
+                            ]).pipe(
+                                tap(([exercises, training]: [Exercise[], Training]) => {
+                                    const currentTrainingState: Training = training;
+                                    if (currentTrainingState) {
+                                        if (currentTrainingState.editMode && !this.editData?._id) {
+                                            this.newTrainingService.updateTrainingState(
+                                                exercises,
+                                                true,
+                                                currentTrainingState.userId as string,
+                                            );
+                                        }
+                                    }
+                                }),
+                            );
+                        }
+                    }),
+                    tap(_ => this.sharedService.editingTraining$$.next(!!this.editData?._id)),
+                    switchMap(_ =>
+                        this.newTrainingService.getExercises()
+                            .pipe(
+                                tap(_ => this.formInit()),
+                                mapStreamData(),
                             ),
-                        );
-                    }
-                }),
-                tap(_ => this.sharedService.editingTraining$$.next(!!this.editData?._id)),
-                switchMap(_ =>
-                    this.newTrainingService.getExercises()
-                        .pipe(
-                            tap(_ => this.formInit()),
-                            mapStreamData(),
-                        ),
-                ),
-            );
+                    ),
+                );
     }
 
     get spinnerSize(): number {
@@ -125,7 +121,7 @@ export class NewTrainingComponent implements OnDestroy {
     onBodyweightChange(bodyweight: string): void {
         this.newTrainingService.addBodyweightToStorage(bodyweight);
     }
-
+    //TODO: fix edit mode
     tryAgain(): void {
         if (this.editData.editTraining) {
             this.pastTrainingService.getPastTraining(this.editData._id)

@@ -48,7 +48,7 @@ export class NewTrainingService {
                     );
                 }
                 else {
-                    return of(null);
+                    return of(response);
                 }
             }),
         );

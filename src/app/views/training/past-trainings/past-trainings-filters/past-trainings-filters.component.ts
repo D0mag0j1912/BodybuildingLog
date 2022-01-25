@@ -21,9 +21,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
 
     searchValue: string = '';
 
-    @ViewChild('search', {
-        read: ElementRef,
-    })
+    @ViewChild('search', { read: ElementRef })
     searchInput: ElementRef | undefined;
 
     constructor(
