@@ -26,6 +26,7 @@ export class NewTrainingComponent implements OnDestroy {
     form: FormGroup;
 
     editData: EditNewTrainingData = EMPTY_TRAINING_EDIT;
+    editMode: boolean = false;
 
     private focusCounter: number = 0;
 
@@ -54,6 +55,7 @@ export class NewTrainingComponent implements OnDestroy {
                 .pipe(
                     switchMap((params: Params) => {
                         if (params['id']) {
+                            this.editMode = true;
                             this.editData._id = params['id'];
                             this.sharedService.pastTrainingId$$.next(this.editData._id);
                             return this.pastTrainingService.getPastTraining(this.editData._id)
@@ -81,9 +83,9 @@ export class NewTrainingComponent implements OnDestroy {
                                 ),
                             ]).pipe(
                                 tap(([exercises, training]: [Exercise[], Training]) => {
-                                    const currentTrainingState: Training = training;
+                                    const currentTrainingState: Training = { ...training };
                                     if (currentTrainingState) {
-                                        if (currentTrainingState.editMode && !this.editData?._id) {
+                                        if (currentTrainingState.editMode && !this.editMode) {
                                             this.newTrainingService.updateTrainingState(
                                                 exercises,
                                                 true,
@@ -95,7 +97,7 @@ export class NewTrainingComponent implements OnDestroy {
                             );
                         }
                     }),
-                    tap(_ => this.sharedService.editingTraining$$.next(!!this.editData?._id)),
+                    tap(_ => this.sharedService.editingTraining$$.next(this.editMode)),
                     switchMap(_ =>
                         this.newTrainingService.getExercises()
                             .pipe(
@@ -132,7 +134,7 @@ export class NewTrainingComponent implements OnDestroy {
                     editedDate: response?.Value?.updatedAt ?? new Date(),
                     editTraining: {
                         ...response?.Value,
-                        editMode: !!this.editData?._id,
+                        editMode: this.editMode,
                     },
                 };
                 this.newTrainingService.updateTrainingData(this.editData.editTraining);

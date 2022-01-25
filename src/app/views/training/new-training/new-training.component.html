@@ -47,7 +47,7 @@
                     [bodyweight]="bodyweight"
                     [editData]="editData"
                     [isLoading]="trainingData.IsLoading"
-                    [editMode]="!!editData?._id"></bl-single-exercise>
+                    [editMode]="editMode"></bl-single-exercise>
             </form>
         </section>
         <ng-container *ngIf="trainingData?.IsError">
@@ -59,12 +59,12 @@
                     {{ 'training.new_training.errors.new_training_error_title' | translate }}
                 </h3>
                 <span
-                    *ngIf="!!editData?._id"
+                    *ngIf="editMode"
                     class="error-description">
                     {{ 'training.new_training.errors.new_training_error_description' | translate }}
                 </span>
                 <span
-                    *ngIf="!editData?._id"
+                    *ngIf="!editMode"
                     class="error-description">
                     {{ 'training.new_training.errors.new_training_error_load' | translate }}
                 </span>
