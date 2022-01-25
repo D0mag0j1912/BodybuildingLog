@@ -10,15 +10,10 @@ import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { TrainingData } from '../../../models/common/interfaces/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
+import { EditNewTrainingData, EMPTY_TRAINING_EDIT } from '../../../models/training/new-training/empty-training.model';
 import { Training } from '../../../models/training/new-training/new-training.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as CommonValidators from '../../../validators/shared/common.validators';
-
-export type EditData = {
-    _id?: string;
-    editedDate?: Date;
-    editTraining?: Training;
-};
 
 @Component({
     selector: 'bl-new-training',
@@ -30,11 +25,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     form: FormGroup;
 
-    editData: EditData = {
-        _id: null,
-        editedDate: null,
-        editTraining: null,
-    };
+    editData: EditNewTrainingData = EMPTY_TRAINING_EDIT;
 
     private focusCounter: number = 0;
 
@@ -123,6 +114,10 @@ export class NewTrainingComponent implements OnDestroy {
         return SPINNER_SIZE;
     }
 
+    get bodyweight(): FormControl {
+        return this.form.get('bodyweight') as FormControl;
+    }
+
     ngOnDestroy(): void {
         this.sharedService.editingTraining$$.next(false);
     }
@@ -148,11 +143,10 @@ export class NewTrainingComponent implements OnDestroy {
             });
         }
         else {
-            this.newTrainingService.getExercises().pipe(
-                mapStreamData(),
-                //TODO: check if i need here formInit() again
-                /* switchMap(() => this.formInit()), */
-            ).subscribe();
+            this.trainingStream$ = this.newTrainingService.getExercises()
+                .pipe(
+                    mapStreamData(),
+                );
         }
     }
 
@@ -168,10 +162,6 @@ export class NewTrainingComponent implements OnDestroy {
             ),
             'exercise': new FormControl(currentTrainingState),
         });
-    }
-
-    get bodyweight(): FormControl {
-        return this.form.get('bodyweight') as FormControl;
     }
 
 }

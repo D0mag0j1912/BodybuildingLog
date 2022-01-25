@@ -26,17 +26,17 @@
                         (input)="onBodyweightChange(bodyweightRef.value)">
                     <mat-error *ngIf="(bodyweight.touched || bodyweight.dirty) && !bodyweight.valid">
                         <mat-error
-                            *ngIf="bodyweight.errors?.onlyNumbers"
+                            *ngIf="bodyweight?.errors?.onlyNumbers"
                             class="bodyweight-error">
                             {{ 'training.new_training.errors.only_numbers' | translate }}
                         </mat-error>
                         <mat-error
-                            *ngIf="bodyweight.errors?.min"
+                            *ngIf="bodyweight?.errors?.min"
                             class="bodyweight-error">
                             {{ 'training.new_training.errors.bodyweight_min' | translate }}
                         </mat-error>
                         <mat-error
-                            *ngIf="bodyweight.errors?.max"
+                            *ngIf="bodyweight?.errors?.max"
                             class="bodyweight-error">
                             {{ 'training.new_training.errors.bodyweight_max' | translate }}
                         </mat-error>

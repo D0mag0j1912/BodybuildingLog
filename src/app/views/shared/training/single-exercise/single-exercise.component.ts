@@ -12,6 +12,7 @@ import { ExerciseNameErrorStateMatcher } from '../../../../helpers/error-matcher
 import { GeneralResponseData } from '../../../../models/general-response.model';
 import { DEFAULT_WEIGHT_FORMAT } from '../../../../models/preferences.model';
 import { Exercise } from '../../../../models/training/exercise.model';
+import { EditNewTrainingData, EMPTY_TRAINING_EDIT } from '../../../../models/training/new-training/empty-training.model';
 import { Training } from '../../../../models/training/new-training/new-training.model';
 import { createInitialSet, SetFormValidationErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
@@ -21,7 +22,6 @@ import { RoundTotalWeightPipe } from '../../../../pipes/training/new-training/ro
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../../services/training/new-training.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
-import { EditData } from '../../../../views/training/new-training/new-training.component';
 import { DeleteExerciseDialogData, DialogComponent, DialogData } from '../../dialog/dialog.component';
 
 const INITIAL_WEIGHT: number = 0;
@@ -52,7 +52,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     onTouched: () => void;
 
     @Input()
-    editData: EditData | null;
+    editData: EditNewTrainingData = EMPTY_TRAINING_EDIT;
 
     @Input()
     bodyweight: AbstractControl | null;
