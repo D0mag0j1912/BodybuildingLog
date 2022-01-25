@@ -357,7 +357,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 if (this.editMode) {
                     return this.newTrainingService.updateTraining(
                         apiNewTraining as Training,
-                        this.editData._id as string,
+                        this.editData.editTraining?._id as string,
                     );
                 }
                 else {
