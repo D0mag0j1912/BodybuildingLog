@@ -70,7 +70,6 @@ export class NewTrainingComponent implements OnDestroy {
                                         };
                                         this.newTrainingService.updateTrainingData(this.editData.editTraining);
                                     }),
-                                    mapStreamData(),
                             );
                         }
                         else {
