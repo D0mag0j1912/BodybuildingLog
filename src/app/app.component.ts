@@ -19,8 +19,8 @@ export class AppComponent implements OnInit {
         private readonly translateService: TranslateService,
     ){
         this.translateService.setDefaultLang('en');
-        const language: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
-        this.translateService.use(language?.preferences.language || 'en').subscribe();
+        const authData: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
+        this.translateService.use(authData?.preferences?.language || 'en').subscribe();
     }
 
     ngOnInit(): void {

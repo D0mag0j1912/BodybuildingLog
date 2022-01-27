@@ -356,12 +356,12 @@ export class SingleExerciseComponent implements ControlValueAccessor {
             switchMap((apiNewTraining: Training) => {
                 if (this.editMode) {
                     return this.newTrainingService.updateTraining(
-                        apiNewTraining as Training,
-                        this.editData.editTraining?._id as string,
+                        apiNewTraining,
+                        this.editData.editTraining?._id,
                     );
                 }
                 else {
-                    return this.newTrainingService.addTraining(apiNewTraining as Training);
+                    return this.newTrainingService.addTraining(apiNewTraining);
                 }
             }),
             finalize(() => {
@@ -369,7 +369,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 this.changeDetectorRef.markForCheck();
             }),
         ).subscribe((response: GeneralResponseData) => {
-            this.snackBar.open(this.translateService.instant(response.message as string), null, {
+            this.snackBar.open(this.translateService.instant(response.Message), null, {
                 duration: SNACK_BAR_DURATION.GENERAL,
                 panelClass: 'app__snackbar',
             });

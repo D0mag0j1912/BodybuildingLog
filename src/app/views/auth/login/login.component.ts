@@ -60,7 +60,7 @@ export class LoginComponent implements AfterViewInit {
     }
 
     onSubmit(): void {
-        if(!this.form.valid){
+        if (!this.form.valid) {
             this.snackBar.open(this.translateService.instant('auth.errors.invalid_form'), null, {
                 duration: SNACK_BAR_DURATION.ERROR,
                 panelClass: 'app__snackbar-error',

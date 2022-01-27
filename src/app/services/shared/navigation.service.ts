@@ -41,7 +41,7 @@ export class NavigationService {
             switchMap((response: GeneralResponseData) =>
                 this.translateService.use(language).pipe(
                     tap(_ => {
-                        this.snackBar.open(this.translateService.instant(response.message), null, {
+                        this.snackBar.open(this.translateService.instant(response.Message), null, {
                             duration: SNACK_BAR_DURATION.GENERAL,
                             panelClass: 'app__snackbar',
                         });
