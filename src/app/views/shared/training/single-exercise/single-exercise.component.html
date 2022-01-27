@@ -90,7 +90,7 @@
                 class="add-exercise-button"
                 [disabled]="isAddingExercisesDisabled(
                     currentExerciseState[0].length,
-                    currentExerciseState[1].length)"
+                    currentExerciseState[1].length) || isLoading"
                 (click)="addExercise($event)">
                 {{ 'training.new_training.buttons.add_exercise' | translate }}
             </button>
@@ -107,7 +107,8 @@
                 matTooltipClass="tooltip"
                 matTooltipPosition="above"
                 [matTooltip]="currentExerciseState[0]?.length > 0 ? ('training.new_training.finish_training' | translate) : ''"
-                [disabled]="currentExerciseState[0]?.length === 0">
+                [class.button-spinner]="isLoading"
+                [disabled]="currentExerciseState[0]?.length === 0 || isLoading">
                 <mat-icon class="finish-training-icon">done</mat-icon>
             </button>
         </div>
