@@ -5,6 +5,7 @@ import { map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { environment } from '../../../environments/environment';
 import { TrainingData } from '../../models/common/interfaces/common.model';
+import { LocalStorageItems } from '../../models/common/interfaces/common.model';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Exercise } from '../../models/training/exercise.model';
 import { createEmptyExercise, EMPTY_TRAINING } from '../../models/training/new-training/empty-training.model';
@@ -31,7 +32,7 @@ export class NewTrainingService {
     getExercises(): Observable<TrainingData<Exercise[]>> {
         return this.http.get<TrainingData<Exercise[]>>(environment.BACKEND + '/training/get_exercises').pipe(
             switchMap((response: TrainingData<Exercise[]>) => {
-                const trainingState: Training = JSON.parse(localStorage.getItem('trainingState'));
+                const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
                 if (!trainingState) {
                     return this.authService.loggedUser$.pipe(
                         take(1),
@@ -42,7 +43,7 @@ export class NewTrainingService {
                                 authResponseData._id,
                             );
                             this.allExercisesChanged$$.next(response.Value);
-                            localStorage.setItem('allExercises', JSON.stringify(response.Value));
+                            localStorage.setItem(LocalStorageItems.ALL_EXERCISES, JSON.stringify(response.Value));
                         }),
                         switchMap(_ => of(response)),
                     );
@@ -196,8 +197,8 @@ export class NewTrainingService {
     }
 
     keepTrainingState(): void {
-        const trainingState: Training = JSON.parse(localStorage.getItem('trainingState'));
-        const allExercises: Exercise[] = JSON.parse(localStorage.getItem('allExercises'));
+        const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
+        const allExercises: Exercise[] = JSON.parse(localStorage.getItem(LocalStorageItems.ALL_EXERCISES));
 
         if (!trainingState || !allExercises) {
             return;
@@ -211,7 +212,7 @@ export class NewTrainingService {
         restartAll?: boolean,
         userId?: string,
     ): void {
-        let updatedTraining: Training = { ...this.currentTrainingChanged$$.getValue() };
+        let updatedTraining: Training = this.currentTrainingChanged$$.getValue();
         if (restartAll) {
             updatedTraining = {
                 ...EMPTY_TRAINING,
@@ -219,7 +220,7 @@ export class NewTrainingService {
             };
         }
         updatedTraining.exercise.push(createEmptyExercise(exercises));
-        this.saveTrainingData({ ...updatedTraining });
+        this.saveTrainingData(updatedTraining);
     }
 
     updateTrainingData(editTraining: Training): void {
@@ -232,7 +233,7 @@ export class NewTrainingService {
 
     private saveTrainingData(updatedTraining: Training): void {
         this.currentTrainingChanged$$.next({ ...updatedTraining });
-        localStorage.setItem('trainingState', JSON.stringify({ ...updatedTraining }));
+        localStorage.setItem(LocalStorageItems.TRAINING_STATE, JSON.stringify({ ...updatedTraining }));
     }
 
     private compare(

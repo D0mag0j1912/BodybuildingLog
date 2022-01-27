@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthResponseData } from './models/auth/auth-data.model';
+import { LocalStorageItems } from './models/common/interfaces/common.model';
 import { AuthService } from './services/auth/auth.service';
 import { NewTrainingService } from './services/training/new-training.service';
 
@@ -18,7 +19,7 @@ export class AppComponent implements OnInit {
         private readonly translateService: TranslateService,
     ){
         this.translateService.setDefaultLang('en');
-        const language: AuthResponseData = JSON.parse(localStorage.getItem('userData'));
+        const language: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
         this.translateService.use(language?.preferences.language || 'en').subscribe();
     }
 

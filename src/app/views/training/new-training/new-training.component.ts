@@ -74,12 +74,14 @@ export class NewTrainingComponent implements OnDestroy {
                         }
                         else {
                             return forkJoin([
-                                this.newTrainingService.allExercisesChanged$.pipe(
-                                    take(1),
-                                ),
-                                this.newTrainingService.currentTrainingChanged$.pipe(
-                                    take(1),
-                                ),
+                                this.newTrainingService.allExercisesChanged$
+                                    .pipe(
+                                        take(1),
+                                    ),
+                                this.newTrainingService.currentTrainingChanged$
+                                    .pipe(
+                                        take(1),
+                                    ),
                             ]).pipe(
                                 tap(([exercises, training]: [Exercise[], Training]) => {
                                     const currentTrainingState: Training = { ...training };

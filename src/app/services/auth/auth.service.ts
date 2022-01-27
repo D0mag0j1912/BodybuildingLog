@@ -8,6 +8,7 @@ import { Preferences } from 'src/app/models/preferences.model';
 import { environment } from '../../../environments/environment';
 import { Login, Signup } from '../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../models/auth/auth-data.model';
+import { LocalStorageItems } from '../../models/common/interfaces/common.model';
 import { Language, WeightFormat } from '../../models/preferences.model';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -33,7 +34,7 @@ export class AuthService {
 
     updateUserData(preferences?: Preferences): void {
         //TODO: Ovdje treba pokupiti podatke iz Subjecta, a ne LS
-        const userData: AuthResponseData = JSON.parse(localStorage.getItem('userData'));
+        const userData: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
         const updatedUserData: AuthResponseData = {
             ...userData,
             preferences: {
@@ -43,7 +44,7 @@ export class AuthService {
             } as Preferences,
         };
         this.loggedUser$$.next({ ...updatedUserData });
-        localStorage.setItem('userData', JSON.stringify({ ...updatedUserData }));
+        localStorage.setItem(LocalStorageItems.USER_DATA, JSON.stringify({ ...updatedUserData }));
     }
 
     signup(
@@ -104,8 +105,8 @@ export class AuthService {
     }
 
     autoLogin(): void {
-        if (JSON.parse(localStorage.getItem('userData'))) {
-            const userData: AuthResponseData = JSON.parse(localStorage.getItem('userData'));
+        if (JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA))) {
+            const userData: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
             if (!userData.token || !userData.expirationDate) {
                 return;
             }
@@ -152,12 +153,12 @@ export class AuthService {
             _id: userId,
             preferences: preferences,
         };
-        localStorage.setItem('userData', JSON.stringify(userData));
+        localStorage.setItem(LocalStorageItems.USER_DATA, JSON.stringify(userData));
     }
 
     private clearLS(): void {
-        localStorage.removeItem('userData');
-        localStorage.removeItem('trainingState');
-        localStorage.removeItem('allExercises');
+        localStorage.removeItem(LocalStorageItems.USER_DATA);
+        localStorage.removeItem(LocalStorageItems.TRAINING_STATE);
+        localStorage.removeItem(LocalStorageItems.ALL_EXERCISES);
     }
 }
