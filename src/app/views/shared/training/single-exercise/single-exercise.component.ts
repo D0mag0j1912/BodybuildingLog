@@ -125,7 +125,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         if (data.exercise.length > 0) {
             (data.exercise as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
                 this.addExercise();
-                if (exercise.exerciseName){
+                if (exercise.exerciseName) {
                     this.accessFormField('name', indexExercise).patchValue(exercise.exerciseName as string);
                     this.accessFormField('sets', indexExercise).patchValue(exercise.sets as Set[]);
                     this.accessFormField('total', indexExercise).patchValue(exercise.total ? this.roundTotalWeightPipe.transform(exercise.total) : `0 ${DEFAULT_WEIGHT_FORMAT}`);
