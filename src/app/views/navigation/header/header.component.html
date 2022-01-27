@@ -33,6 +33,7 @@
             <li
                 *ngIf="!(isAuthenticated$ | async)"
                 class="nav-item">
+                <mat-icon class="icon">login</mat-icon>
                 <a
                     class="nav-item-txt"
                     routerLink="/login">
@@ -42,6 +43,7 @@
             <li
                 *ngIf="!(isAuthenticated$ | async)"
                 class="nav-item">
+                <mat-icon class="icon">app_registration</mat-icon>
                 <a
                     class="nav-item-txt"
                     routerLink="/signup">
@@ -51,6 +53,7 @@
             <li
                 *ngIf="isAuthenticated$ | async"
                 class="nav-item">
+                <mat-icon class="icon">fitness_center</mat-icon>
                 <a
                     class="nav-item-txt"
                     routerLink="/training/new-training">
@@ -60,6 +63,7 @@
             <li
                 *ngIf="isAuthenticated$ | async"
                 class="nav-item">
+                <mat-icon class="icon">history</mat-icon>
                 <a
                     class="nav-item-txt"
                     (click)="goToPastTrainings()">

@@ -39,6 +39,10 @@
 }
 
 .nav-item {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+
     &--icon {
         color: $army-green;
     }
