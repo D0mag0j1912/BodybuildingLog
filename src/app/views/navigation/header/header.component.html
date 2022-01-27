@@ -36,7 +36,8 @@
                 <mat-icon class="icon">login</mat-icon>
                 <a
                     class="nav-item-txt"
-                    routerLink="/login">
+                    routerLink="/login"
+                    [routerLinkActive]="'route-active'">
                     {{ 'navigation.login' | translate }}
                 </a>
             </li>
@@ -46,7 +47,8 @@
                 <mat-icon class="icon">app_registration</mat-icon>
                 <a
                     class="nav-item-txt"
-                    routerLink="/signup">
+                    routerLink="/signup"
+                    [routerLinkActive]="'route-active'">
                     {{ 'navigation.signup' | translate }}
                 </a>
             </li>
@@ -56,7 +58,8 @@
                 <mat-icon class="icon">fitness_center</mat-icon>
                 <a
                     class="nav-item-txt"
-                    routerLink="/training/new-training">
+                    routerLink="/training/new-training"
+                    [routerLinkActive]="'route-active'">
                     {{ 'navigation.new_training' | translate }}
                 </a>
             </li>
@@ -66,7 +69,8 @@
                 <mat-icon class="icon">history</mat-icon>
                 <a
                     class="nav-item-txt"
-                    (click)="goToPastTrainings()">
+                    (click)="goToPastTrainings()"
+                    [routerLinkActive]="'route-active'">
                     {{ 'navigation.past_trainings' | translate }}
                 </a>
             </li>

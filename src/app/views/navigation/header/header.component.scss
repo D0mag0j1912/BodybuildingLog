@@ -1,5 +1,8 @@
 @import '../../../../../styles/default-pallette.scss';
 
+.route-active {
+    border-bottom: 2px solid white;
+}
 
 .toolbar {
     padding-right:0;
