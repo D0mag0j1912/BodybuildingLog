@@ -10,7 +10,7 @@ import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { TrainingData } from '../../../models/common/interfaces/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
-import { EditNewTrainingData, EMPTY_TRAINING_EDIT } from '../../../models/training/new-training/empty-training.model';
+import { createEmptyExercise, EditNewTrainingData, EMPTY_TRAINING, EMPTY_TRAINING_EDIT } from '../../../models/training/new-training/empty-training.model';
 import { Training } from '../../../models/training/new-training/new-training.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as CommonValidators from '../../../validators/shared/common.validators';
@@ -87,11 +87,11 @@ export class NewTrainingComponent implements OnDestroy {
                                     const currentTrainingState: Training = { ...training };
                                     if (currentTrainingState) {
                                         if (currentTrainingState.editMode && !this.editMode) {
-                                            this.newTrainingService.updateTrainingState(
-                                                exercises,
-                                                true,
-                                                currentTrainingState.userId as string,
-                                            );
+                                            this.newTrainingService.updateTrainingData({
+                                                ...EMPTY_TRAINING,
+                                                exercise: [createEmptyExercise(exercises)],
+                                                userId: currentTrainingState?.userId ?? '',
+                                            });
                                         }
                                     }
                                 }),
