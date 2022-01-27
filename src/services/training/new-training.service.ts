@@ -27,7 +27,7 @@ export class NewTrainingService {
             }
             // tslint:disable-next-line: await-promise
             await this.trainingModel.updateOne({ _id: trainingId }, { $set: updatedTrainingData });
-            return { message: 'training.new_training.training_updated' } as GeneralResponseData;
+            return { Message: 'training.new_training.training_updated' } as GeneralResponseData;
         }
         catch (error: unknown) {
             switch ((error as Error).status) {
@@ -44,7 +44,7 @@ export class NewTrainingService {
     async addTraining(trainingData: Training): Promise<GeneralResponseData> {
         try {
             await this.trainingModel.create(trainingData);
-            return { message: 'training.new_training.training_saved' } as GeneralResponseData;
+            return { Message: 'training.new_training.training_saved' } as GeneralResponseData;
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.new_training.errors.error_save_training');

@@ -47,8 +47,8 @@ export class AuthService {
             const user: UserDto = await this.userModel.findOne({ email: email });
             if (!user) {
                 return {
-                    success: false,
-                    message: 'auth.errors.email_not_registered',
+                    Success: false,
+                    Message: 'auth.errors.email_not_registered',
                 } as AuthResponse;
             }
             const comparison: boolean = await compare(
@@ -57,8 +57,8 @@ export class AuthService {
             );
             if (!comparison) {
                 return {
-                    success: false,
-                    message: 'auth.errors.password_wrong_email',
+                    Success: false,
+                    Message: 'auth.errors.password_wrong_email',
                 } as AuthResponse;
             }
             const payload: JwtPayload = {
@@ -70,11 +70,11 @@ export class AuthService {
             // tslint:disable-next-line: await-promise
             const preferences: PreferencesDto = await this.preferencesModel.findOne({ userId: user._id });
             return {
-                token: accessToken,
-                expiresIn: 10800,
+                Token: accessToken,
+                ExpiresIn: 10800,
                 _id: user._id,
-                message: 'auth.login_success',
-                preferences: preferences,
+                Message: 'auth.login_success',
+                Preferences: preferences,
             } as AuthResponse;
         }
         catch (error: unknown) {
@@ -122,8 +122,8 @@ export class AuthService {
             } as PreferencesDto;
             await this.preferencesModel.create(preferences);
             return {
-                success: true,
-                message: 'auth.signup_success',
+                Success: true,
+                Message: 'auth.signup_success',
             } as AuthResponse;
         }
         catch (error: unknown) {

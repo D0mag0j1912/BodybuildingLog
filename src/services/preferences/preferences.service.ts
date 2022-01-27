@@ -22,7 +22,7 @@ export class PreferencesService {
             preferences.language = language;
             preferences.weightFormat = weightFormat;
             await preferences.save();
-            return { message: 'preferences.language_changed' } as GeneralResponseData;
+            return { Message: 'preferences.language_changed' } as GeneralResponseData;
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('preferences.errors.language_change');

@@ -1,5 +1,5 @@
 export interface GeneralResponseData {
-    readonly message: string;
+    readonly Message: string;
 }
 
 export interface TrainingData<T> {
