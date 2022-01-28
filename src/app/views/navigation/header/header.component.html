@@ -69,8 +69,9 @@
                 <mat-icon class="icon">history</mat-icon>
                 <a
                     class="nav-item-txt"
-                    (click)="goToPastTrainings()"
-                    [routerLinkActive]="'route-active'">
+                    routerLink="/training/past-trainings"
+                    [routerLinkActive]="'route-active'"
+                    [queryParams]="{ startDate: StartDate, endDate: EndDate }">
                     {{ 'navigation.past_trainings' | translate }}
                 </a>
             </li>

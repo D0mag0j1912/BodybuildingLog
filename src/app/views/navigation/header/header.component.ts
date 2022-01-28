@@ -41,6 +41,14 @@ export class HeaderComponent implements OnInit {
         private readonly router: Router,
     ) {}
 
+    get StartDate(): string {
+        return format(this.constructDates(new Date()).StartDate, 'dd-MM-yyyy');
+    }
+
+    get EndDate(): string {
+        return format(this.constructDates(new Date()).EndDate, 'dd-MM-yyyy');
+    }
+
     ngOnInit(): void {
         this.isAuthenticated$ = this.authService.isAuth$;
         this.loggedUserData$ = this.authService.loggedUser$;
@@ -64,15 +72,6 @@ export class HeaderComponent implements OnInit {
                     endDate: format(this.constructDates(new Date(response?.Value?.createdAt))?.EndDate ?? new Date(), 'dd-MM-yyyy'),
                 },
             });
-        });
-    }
-
-    async goToPastTrainings(): Promise<void> {
-        await this.router.navigate(['/training/past-trainings'], {
-            queryParams: {
-                startDate: format(this.constructDates(new Date()).StartDate, 'dd-MM-yyyy'),
-                endDate: format(this.constructDates(new Date()).EndDate, 'dd-MM-yyyy'),
-            },
         });
     }
 
