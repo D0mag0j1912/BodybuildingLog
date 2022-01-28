@@ -8,7 +8,7 @@ export interface PastTrainingsResponse {
         StartDate: Date;
         EndDate: Date;
     };
-    readonly TrainingsPerPage: number;
+    readonly TotalTrainings: number;
     readonly Message?: string;
 }
 

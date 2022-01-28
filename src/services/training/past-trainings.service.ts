@@ -28,9 +28,10 @@ export class PastTrainingsService {
                         },
                         userId: loggedInUserId,
                     })
-                    .sort({ createdAt: 'asc' });
+                    .sort({ createdAt: 'asc' })
+                    .limit(5);
                 // tslint:disable-next-line: await-promise
-                const trainingsPerPage: number = await this.trainingModel
+                const totalTrainings: number = await this.trainingModel
                     .countDocuments({
                         'exercise.exerciseName': {
                             $regex: searchValue,
@@ -44,7 +45,7 @@ export class PastTrainingsService {
                     Value: {
                         Trainings: trainings,
                         Dates: minMaxDate,
-                        TrainingsPerPage: trainingsPerPage,
+                        TotalTrainings: totalTrainings,
                     } as PastTrainingsResponse,
                     IsError: false,
                 } as TrainingData<PastTrainingsResponse>;
@@ -91,7 +92,7 @@ export class PastTrainingsService {
                 },
             }).sort({ createdAt: 'asc' });
             // tslint:disable-next-line: await-promise
-            const trainingsPerPage: number = await this.trainingModel.countDocuments({
+            const totalTrainings = await this.trainingModel.countDocuments({
                 userId: loggedUserId,
                 createdAt: {
                     $gte: dates.StartDate,
@@ -103,7 +104,7 @@ export class PastTrainingsService {
                 Value: {
                     Trainings: trainings,
                     Dates: dates,
-                    TrainingsPerPage: trainingsPerPage,
+                    TotalTrainings: totalTrainings,
                 } as PastTrainingsResponse,
                 IsError: false,
             } as TrainingData<PastTrainingsResponse>;
