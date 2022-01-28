@@ -104,10 +104,10 @@
                     <mat-menu #languages="matMenu">
                         <button
                             class="nav-item--menu-items nested-items"
-                            [class.chosenLanguage]="userData?.preferences?.language === 'hr'"
+                            [class.chosenLanguage]="userData?.Preferences?.language === 'hr'"
                             mat-menu-item
                             (click)="changeLanguage('hr')"
-                            [disabled]="userData?.preferences?.language === 'hr'">
+                            [disabled]="userData?.Preferences?.language === 'hr'">
                             <img
                                 src="../../../../assets/images/flags/croatia.png"
                                 height="40"
@@ -118,11 +118,11 @@
                         </button>
                         <button
                             class="nav-item--menu-items nested-items"
-                            [class.chosenLanguage]="userData?.preferences?.language === 'en'"
-                            [class.alignEn]="userData?.preferences?.language === 'hr'"
+                            [class.chosenLanguage]="userData?.Preferences?.language === 'en'"
+                            [class.alignEn]="userData?.Preferences?.language === 'hr'"
                             mat-menu-item
                             (click)="changeLanguage('en')"
-                            [disabled]="userData?.preferences?.language === 'en'">
+                            [disabled]="userData?.Preferences?.language === 'en'">
                             <img
                                 src="../../../../assets/images/flags/united-kingdom.png"
                                 height="24"

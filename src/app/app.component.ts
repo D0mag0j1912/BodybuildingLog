@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
     ){
         this.translateService.setDefaultLang('en');
         const authData: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
-        this.translateService.use(authData?.preferences?.language || 'en').subscribe();
+        this.translateService.use(authData?.Preferences?.language || 'en').subscribe();
     }
 
     ngOnInit(): void {

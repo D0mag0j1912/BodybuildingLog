@@ -12,11 +12,11 @@ export interface Login {
 }
 
 export interface AuthResponseData {
-    readonly message?: string;
-    readonly success?: boolean;
-    readonly token?: string;
-    readonly expiresIn?: number;
-    readonly expirationDate?: Date;
+    readonly Message?: string;
+    readonly Success?: boolean;
+    readonly Token?: string;
+    readonly ExpiresIn?: number;
+    readonly ExpirationDate?: Date;
     readonly _id?: string;
-    readonly preferences?: Preferences;
+    readonly Preferences?: Preferences;
 }

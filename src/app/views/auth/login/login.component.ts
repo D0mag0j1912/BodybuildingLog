@@ -79,9 +79,9 @@ export class LoginComponent implements AfterViewInit {
             }),
         ).subscribe((response: AuthResponseData) => {
             if(response) {
-                this.snackBar.open(this.translateService.instant(response.message as string), null, {
+                this.snackBar.open(this.translateService.instant(response.Message as string), null, {
                     duration: SNACK_BAR_DURATION.GENERAL,
-                    panelClass: response.token ? 'app__snackbar' : 'app__snackbar-error',
+                    panelClass: response.Token ? 'app__snackbar' : 'app__snackbar-error',
                 });
             }
         });

@@ -51,8 +51,8 @@
                 <button
                     mat-menu-item
                     class="menu-item"
-                    [class.chosenLanguage]="userData?.preferences?.language === 'hr'"
-                    [disabled]="userData?.preferences?.language === 'hr'"
+                    [class.chosenLanguage]="userData?.Preferences?.language === 'hr'"
+                    [disabled]="userData?.Preferences?.language === 'hr'"
                     (click)="changeLanguage('hr')">
                     <img
                         src="../../../../assets/images/flags/croatia.png"
@@ -65,8 +65,8 @@
                 <button
                     mat-menu-item
                     class="menu-item"
-                    [class.chosenLanguage]="userData?.preferences?.language === 'en'"
-                    [disabled]="userData?.preferences?.language === 'en'"
+                    [class.chosenLanguage]="userData?.Preferences?.language === 'en'"
+                    [disabled]="userData?.Preferences?.language === 'en'"
                     (click)="changeLanguage('en')">
                     <img
                         src="../../../../assets/images/flags/united-kingdom.png"

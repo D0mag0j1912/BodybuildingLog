@@ -99,10 +99,10 @@ export class SignupComponent {
                 this.changeDetectorRef.markForCheck();
             }),
         ).subscribe(async (response: AuthResponseData) => {
-            if (response.success) {
-                this.snackBar.open(this.translateService.instant(response.message as string), null, {
+            if (response.Success) {
+                this.snackBar.open(this.translateService.instant(response.Message as string), null, {
                     duration: SNACK_BAR_DURATION.GENERAL,
-                    panelClass: response.success ? 'app__snackbar' : 'app__snackbar-error',
+                    panelClass: response.Success ? 'app__snackbar' : 'app__snackbar-error',
                 });
                 await this.router.navigate(['/login']);
             }

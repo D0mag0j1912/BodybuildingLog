@@ -37,7 +37,7 @@ export class AuthService {
         const userData: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
         const updatedUserData: AuthResponseData = {
             ...userData,
-            preferences: {
+            Preferences: {
                 userId: preferences.userId,
                 language: preferences.language,
                 weightFormat: 'kg',
@@ -79,11 +79,11 @@ export class AuthService {
         };
         return this.http.post<AuthResponseData>(environment.BACKEND + '/login', authData).pipe(
             tap(async (response: AuthResponseData) => {
-                if (response.token) {
+                if (response.Token) {
                     this.loggedUser$$.next(response);
                     this.isAuth$$.next(true);
-                    this.token = response.token as string;
-                    const expiresInDuration: number = response.expiresIn as number;
+                    this.token = response.Token as string;
+                    const expiresInDuration: number = response.ExpiresIn as number;
                     this.setAuthTimer(expiresInDuration);
                     const now: Date = new Date();
                     const expirationDate: Date = new Date(now.getTime() + expiresInDuration * 1000);
@@ -91,13 +91,13 @@ export class AuthService {
                         this.token,
                         expirationDate,
                         response._id,
-                        response.preferences,
+                        response.Preferences,
                     );
                     await this.router.navigate(['/training/new-training']);
                 }
             }),
             mergeMap((response: AuthResponseData) =>
-                this.translateService.use(response.preferences.language).pipe(
+                this.translateService.use(response.Preferences.language).pipe(
                     switchMap(_ => of(response)),
                 ),
             ),
@@ -107,19 +107,19 @@ export class AuthService {
     autoLogin(): void {
         if (JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA))) {
             const userData: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
-            if (!userData.token || !userData.expirationDate) {
+            if (!userData.Token || !userData.ExpirationDate) {
                 return;
             }
             const authData: AuthResponseData = {
-                token: userData.token,
-                expirationDate: new Date(userData.expirationDate),
+                Token: userData.Token,
+                ExpirationDate: new Date(userData.ExpirationDate),
                 _id: userData._id,
-                preferences: userData.preferences,
+                Preferences: userData.Preferences,
             };
             const now: Date = new Date();
-            const expiresIn: number = authData.expirationDate.getTime() - now.getTime();
+            const expiresIn: number = authData.ExpirationDate.getTime() - now.getTime();
             if (expiresIn > 0) {
-                this.token = userData.token;
+                this.token = userData.Token;
                 this.setAuthTimer(expiresIn / 1000);
                 this.isAuth$$.next(true);
                 this.loggedUser$$.next(authData);
@@ -148,10 +148,10 @@ export class AuthService {
         preferences: Preferences,
     ): void {
         const userData: AuthResponseData = {
-            token: token,
-            expirationDate: expirationDate,
+            Token: token,
+            ExpirationDate: expirationDate,
             _id: userId,
-            preferences: preferences,
+            Preferences: preferences,
         };
         localStorage.setItem(LocalStorageItems.USER_DATA, JSON.stringify(userData));
     }
