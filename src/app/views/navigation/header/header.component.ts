@@ -3,17 +3,18 @@ import { Router } from '@angular/router';
 import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
 import { switchMap, take, takeUntil } from 'rxjs/operators';
-import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
-import { Training } from 'src/app/models/training/new-training/new-training.model';
-import { NavigationService } from 'src/app/services/shared/navigation.service';
-import { SharedService } from 'src/app/services/shared/shared.service';
-import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service';
-import { NewTrainingService } from 'src/app/services/training/new-training.service';
-import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
+import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { TrainingData } from '../../../models/common/interfaces/common.model';
 import { Language } from '../../../models/preferences.model';
+import { Training } from '../../../models/training/new-training/new-training.model';
 import { DateInterval } from '../../../models/training/past-trainings/past-trainings.model';
+import { QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
+import { NavigationService } from '../../../services/shared/navigation.service';
+import { SharedService } from '../../../services/shared/shared.service';
+import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
+import { NewTrainingService } from '../../../services/training/new-training.service';
+import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
 interface IsActiveMatchOptions {
     matrixParams: 'exact' | 'subset' | 'ignored';
@@ -43,7 +44,7 @@ export class HeaderComponent implements OnInit {
     loggedUserData$: Observable<AuthResponseData>;
 
     @Output()
-    toggleSideNav: EventEmitter<void> = new EventEmitter<void>();
+    readonly toggleSideNav: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
@@ -56,11 +57,11 @@ export class HeaderComponent implements OnInit {
     ) {}
 
     get StartDate(): string {
-        return format(this.constructDates(new Date()).StartDate, 'dd-MM-yyyy');
+        return format(this.constructDates(new Date())?.StartDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
     }
 
     get EndDate(): string {
-        return format(this.constructDates(new Date()).EndDate, 'dd-MM-yyyy');
+        return format(this.constructDates(new Date())?.EndDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
     }
 
     ngOnInit(): void {
@@ -82,8 +83,8 @@ export class HeaderComponent implements OnInit {
         ).subscribe(async (response: TrainingData<Training>) => {
             await this.router.navigate(['/training/past-trainings'], {
                 queryParams: {
-                    startDate: format(this.constructDates(new Date(response?.Value?.createdAt))?.StartDate ?? new Date(), 'dd-MM-yyyy'),
-                    endDate: format(this.constructDates(new Date(response?.Value?.createdAt))?.EndDate ?? new Date(), 'dd-MM-yyyy'),
+                    startDate: format(this.constructDates(new Date(response?.Value?.createdAt))?.StartDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT),
+                    endDate: format(this.constructDates(new Date(response?.Value?.createdAt))?.EndDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT),
                 },
             });
         });

@@ -3,12 +3,14 @@ import { Router } from '@angular/router';
 import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
 import { switchMap, take, takeUntil } from 'rxjs/operators';
-import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { NavigationService } from 'src/app/services/shared/navigation.service';
-import { UnsubscribeService } from 'src/app/services/shared/unsubscribe.service';
-import { NewTrainingService } from 'src/app/services/training/new-training.service';
+import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { Language } from '../../../models/preferences.model';
+import { QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
+import { AuthService } from '../../../services/auth/auth.service';
+import { NavigationService } from '../../../services/shared/navigation.service';
+import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
+import { NewTrainingService } from '../../../services/training/new-training.service';
+
 @Component({
     selector: 'bl-side-nav',
     templateUrl: './side-nav.component.html',
@@ -19,7 +21,7 @@ import { Language } from '../../../models/preferences.model';
 export class SideNavComponent implements OnInit {
 
     @Output()
-    closeSideNav: EventEmitter<void> = new EventEmitter<void>();
+    readonly closeSideNav: EventEmitter<void> = new EventEmitter<void>();
 
     isAuthenticated$: Observable<boolean>;
     loggedUserData$: Observable<AuthResponseData>;
@@ -51,8 +53,8 @@ export class SideNavComponent implements OnInit {
         });
         await this.router.navigate(['/training/past-trainings'], {
             queryParams: {
-                startDate: format(startDate, 'dd-MM-yyyy'),
-                endDate: format(endDate, 'dd-MM-yyyy'),
+                startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
+                endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
             },
         });
     }
