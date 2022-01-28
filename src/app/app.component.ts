@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
         private readonly authService: AuthService,
         private readonly newTrainingService: NewTrainingService,
         private readonly translateService: TranslateService,
-    ){
+    ) {
         this.translateService.setDefaultLang('en');
         const authData: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
         this.translateService.use(authData?.Preferences?.language || 'en').subscribe();

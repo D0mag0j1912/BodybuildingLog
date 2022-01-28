@@ -10,7 +10,7 @@ import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { TrainingData } from '../../../models/common/interfaces/common.model';
-import { DateInterval, PastTrainingsQueryParams, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
+import { DateInterval, MAX_TRAININGS_PER_PAGE, PastTrainingsQueryParams, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
@@ -26,9 +26,10 @@ export class PastTrainingsComponent {
 
     readonly food: number = 3000;
 
-    isNextWeekDisabled: boolean = true;
+    isNextDisabled: boolean = true;
+    isPreviousDisabled: boolean = false;
 
-    pastTrainings$: Observable<TrainingData<PastTrainingsResponse>> = undefined;
+    pastTrainings$: Observable<TrainingData<PastTrainingsResponse>> | undefined = undefined;
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
@@ -55,6 +56,7 @@ export class PastTrainingsComponent {
             this.pastTrainings$ =
                 this.pastTrainingsService.searchPastTrainings((searchFilter as string).trim())
                     .pipe(
+                        tap((x: TrainingData<PastTrainingsResponse>) => this.handleArrows(x)),
                         mapStreamData(),
                     );
         }
@@ -76,6 +78,10 @@ export class PastTrainingsComponent {
         return TEMPLATE_DATE_FORMAT;
     }
 
+    get maxTrainingsPerPage(): number {
+        return MAX_TRAININGS_PER_PAGE;
+    }
+
     get isSearch$(): Observable<boolean> {
         return this.route.queryParamMap
             .pipe(
@@ -90,6 +96,7 @@ export class PastTrainingsComponent {
                     switchMap((value: string) =>
                         this.pastTrainingsService.searchPastTrainings(value).pipe(
                             tap(async (trainingData: TrainingData<PastTrainingsResponse>) => {
+                                this.handleArrows(trainingData);
                                 const queryParams: PastTrainingsQueryParams = {
                                     startDate: format(
                                         utcToZonedTime(
@@ -154,8 +161,13 @@ export class PastTrainingsComponent {
                 );
     }
 
-    setNextWeekTooltip(): Observable<string> {
-        return this.translateService.stream(`training.past_trainings.${!this.isNextWeekDisabled ? 'buttons.next_week' : 'disabled_next_week'}`);
+    setNextWeekTooltip(isSearch: boolean): Observable<string> {
+        if (isSearch) {
+            return this.translateService.stream('common.next_page');
+        }
+        else {
+            return this.translateService.stream(`training.past_trainings.${!this.isNextDisabled ? 'buttons.next_week' : 'disabled_next_week'}`);
+        }
     }
 
     tryAgain(): void {
@@ -196,6 +208,17 @@ export class PastTrainingsComponent {
         return this.translateService.stream('common.period');
     }
 
+    private handleArrows(x: TrainingData<PastTrainingsResponse>): void {
+        if (x?.Value?.TotalTrainings <= MAX_TRAININGS_PER_PAGE) {
+            this.isNextDisabled = true;
+            this.isPreviousDisabled = true;
+        }
+        else {
+            this.isPreviousDisabled = true;
+            this.isNextDisabled = false;
+        }
+    }
+
     private handleNextWeek(dateInterval: DateInterval): void {
         const arrayOfDates: number[] = eachDayOfInterval({
             start: utcToZonedTime(
@@ -205,7 +228,7 @@ export class PastTrainingsComponent {
                 dateInterval.EndDate as Date,
                 environment.TIMEZONE as string),
         }).map((date: Date) => date.getTime() as number);
-        this.isNextWeekDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number) as boolean;
+        this.isNextDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number) as boolean;
         this.changeDetectorRef.markForCheck();
     }
 

@@ -5,7 +5,7 @@ export interface PastTrainingsResponse {
         StartDate: Date,
         EndDate: Date
     };
-    readonly TrainingsPerPage: number;
+    readonly TotalTrainings: number;
     readonly Message?: string;
 }
 
@@ -24,3 +24,4 @@ export type Week = 'Previous week' | 'Next week';
 
 export const QUERY_PARAMS_DATE_FORMAT: string = 'dd-MM-yyyy';
 export const TEMPLATE_DATE_FORMAT: string = 'dd.MM.yyyy';
+export const MAX_TRAININGS_PER_PAGE: number = 5;

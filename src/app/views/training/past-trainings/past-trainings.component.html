@@ -28,7 +28,7 @@
                     [diameter]="spinnerSize"></mat-spinner>
             </ng-container>
             <ng-template #value>
-                <ng-container *ngIf="(isSearch$ | async) && pastTrainings?.Value?.TrainingsPerPage === 0; else otherCases">
+                <ng-container *ngIf="(isSearch$ | async) && pastTrainings?.Value?.TotalTrainings === 0; else otherCases">
                     <div class="search-no-result-wrapper">
                         <img
                             class="search-not-found-img"
@@ -61,16 +61,16 @@
                         </div>
                     </mat-card>
                     <div
-                        *ngIf="pastTrainings.Value?.TrainingsPerPage > 0; else noTrainings"
+                        *ngIf="pastTrainings.Value?.TotalTrainings > 0; else noTrainings"
                         class="training-item-wrapper"
-                        [class.no-trainings]="pastTrainings.Value?.TrainingsPerPage === 0">
+                        [class.no-trainings]="pastTrainings.Value?.TotalTrainings === 0">
                         <bl-training-item
                             *ngFor="let training of pastTrainings.Value?.Trainings"
                             [training]="training"></bl-training-item>
                     </div>
                     <ng-template #noTrainings>
                         <section class="no-trainings">
-                            <ng-container *ngIf="!(isSearch$ | async) && pastTrainings.Value?.TrainingsPerPage === 0;">
+                            <ng-container *ngIf="!(isSearch$ | async) && pastTrainings.Value?.TotalTrainings === 0;">
                                 <h1 class="no-trainings-title">
                                     {{ 'training.past_trainings.no_trainings' | translate }}
                                 </h1>
@@ -89,19 +89,19 @@
                         <span class="training-paginator--label">
                             {{ 'training.past_trainings.training_number' | translate }}
                             <strong class="training-paginator--label-count">
-                                {{ pastTrainings.Value?.TrainingsPerPage }}
+                                {{ pastTrainings.Value?.TotalTrainings }}
                             </strong>
                         </span>
                         <div class="training-paginator--button-wrapper">
                             <div
                                 matTooltipPosition="above"
                                 matTooltipClass="tooltip"
-                                [matTooltip]="'training.past_trainings.buttons.previous_week' | translate">
+                                [matTooltip]="(isSearch$ | async) ? ('common.previous_page' | translate) : ('training.past_trainings.buttons.previous_week' | translate)">
                                 <button
                                     mat-raised-button
                                     type="button"
                                     class="training-paginator--previous"
-                                    [disabled]="pastTrainings.IsLoading"
+                                    [disabled]="pastTrainings.IsLoading || (isPreviousDisabled && (isSearch$ | async))"
                                     (click)="loadWeekTraining(
                                         'Previous week',
                                         pastTrainings.Value?.Dates)">
@@ -110,13 +110,13 @@
                             </div>
                             <div
                                 matTooltipPosition="above"
-                                [matTooltip]="setNextWeekTooltip() | async"
-                                [matTooltipClass]="isNextWeekDisabled ? 'tooltip-error' : 'tooltip'">
+                                [matTooltip]="setNextWeekTooltip(isSearch$ | async) | async"
+                                [matTooltipClass]="isNextDisabled ? 'tooltip-error' : 'tooltip'">
                                 <button
                                     mat-raised-button
                                     type="button"
                                     class="training-paginator--next"
-                                    [disabled]="isNextWeekDisabled || pastTrainings.IsLoading"
+                                    [disabled]="pastTrainings.IsLoading || isNextDisabled"
                                     (click)="loadWeekTraining(
                                         'Next week',
                                         pastTrainings.Value?.Dates)">

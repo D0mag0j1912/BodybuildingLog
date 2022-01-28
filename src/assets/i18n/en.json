@@ -17,6 +17,8 @@
         "created_at_time": "Time created",
         "here": "here",
         "or": "OR",
+        "next_page": "Next",
+        "previous_page": "Previous",
         "errors": {
             "something_went_wrong": "Something went wrong Please try again",
             "invalid_date": "Invalid date format",
