@@ -71,6 +71,7 @@
                     class="nav-item-txt"
                     routerLink="/training/past-trainings"
                     [routerLinkActive]="'route-active'"
+                    [routerLinkActiveOptions]="myMatchOptions"
                     [queryParams]="{ startDate: StartDate, endDate: EndDate }">
                     {{ 'navigation.past_trainings' | translate }}
                 </a>

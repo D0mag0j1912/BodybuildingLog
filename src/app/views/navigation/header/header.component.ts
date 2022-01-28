@@ -15,6 +15,13 @@ import { Language } from '../../../models/preferences.model';
 import { DateInterval } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
 
+interface IsActiveMatchOptions {
+    matrixParams: 'exact' | 'subset' | 'ignored';
+    queryParams: 'exact' | 'subset' | 'ignored';
+    paths: 'exact' | 'subset';
+    fragment: 'exact' | 'ignored';
+}
+
 @Component({
     selector: 'bl-header',
     templateUrl: './header.component.html',
@@ -23,6 +30,13 @@ import { AuthService } from '../../../services/auth/auth.service';
     providers: [UnsubscribeService],
 })
 export class HeaderComponent implements OnInit {
+
+    readonly myMatchOptions: IsActiveMatchOptions = {
+        queryParams: 'ignored',
+        matrixParams: 'exact',
+        paths: 'exact',
+        fragment: 'exact',
+    };
 
     isAuthenticated$: Observable<boolean>;
     isEditing$: Observable<boolean>;
