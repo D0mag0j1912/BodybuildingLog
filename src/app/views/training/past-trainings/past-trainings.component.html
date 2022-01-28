@@ -110,8 +110,8 @@
                             </div>
                             <div
                                 matTooltipPosition="above"
-                                [matTooltip]="setNextWeekTooltip(isSearch$ | async) | async"
-                                [matTooltipClass]="isNextDisabled ? 'tooltip-error' : 'tooltip'">
+                                [matTooltip]="setNextPageTooltip(isSearch$ | async) | async"
+                                [matTooltipClass]="setNextPageTooltipClass(isSearch$ | async)">
                                 <button
                                     mat-raised-button
                                     type="button"

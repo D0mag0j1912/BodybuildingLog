@@ -161,12 +161,21 @@ export class PastTrainingsComponent {
                 );
     }
 
-    setNextWeekTooltip(isSearch: boolean): Observable<string> {
+    setNextPageTooltip(isSearch: boolean): Observable<string> {
         if (isSearch) {
             return this.translateService.stream('common.next_page');
         }
         else {
             return this.translateService.stream(`training.past_trainings.${!this.isNextDisabled ? 'buttons.next_week' : 'disabled_next_week'}`);
+        }
+    }
+
+    setNextPageTooltipClass(isSearch: boolean): string {
+        if (isSearch) {
+            return 'tooltip';
+        }
+        else {
+            return this.isNextDisabled ? 'tooltip-error' : 'tooltip';
         }
     }
 
