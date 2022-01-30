@@ -1,5 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsOptional, IsString, MaxLength } from 'class-validator';
 import { Training } from '../new-training/new-training.model';
 
 export interface PastTrainingsResponse {
@@ -10,23 +8,4 @@ export interface PastTrainingsResponse {
     };
     readonly TotalTrainings: number;
     readonly Message?: string;
-}
-
-export class SearchTrainingsDto {
-
-    @ApiProperty({ required: false })
-    @IsOptional()
-    @IsString({ message: 'training.past_trainings.filters.errors.search_error' })
-    @MaxLength(50, { message: 'training.past_trainings.filters.errors.search_max_length' })
-    searchValue: string;
-
-    @ApiProperty({ required: false })
-    @IsOptional()
-    @IsInt({ message: 'training.past_trainings.filters.errors.search_error' })
-    pageSize: number;
-
-    @ApiProperty({ required: false })
-    @IsOptional()
-    @IsInt({ message: 'training.past_trainings.filters.errors.search_error' })
-    currentPage: number;
 }
