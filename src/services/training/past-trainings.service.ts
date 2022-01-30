@@ -14,11 +14,13 @@ export class PastTrainingsService {
     ) {}
     
     async searchTrainings(
-        searchValue: string,
         loggedInUserId: string,
+        searchValue: string,
+        pageSize: number,
+        currentPage: number,
     ): Promise<TrainingData<PastTrainingsResponse>> {
         try {
-            if (searchValue !== '' && searchValue) {
+            if (searchValue !== '' && searchValue && pageSize && currentPage) {
                 // tslint:disable-next-line: await-promise
                 const trainings: Training[] = await this.trainingModel
                     .find({
@@ -28,8 +30,9 @@ export class PastTrainingsService {
                         },
                         userId: loggedInUserId,
                     })
-                    .sort({ createdAt: 'asc' })
-                    .limit(5);
+                    .skip(pageSize * (currentPage - 1))
+                    .limit(pageSize)
+                    .sort({ createdAt: 'asc' });
                 // tslint:disable-next-line: await-promise
                 const totalTrainings: number = await this.trainingModel
                     .countDocuments({
@@ -50,12 +53,10 @@ export class PastTrainingsService {
                     IsError: false,
                 } as TrainingData<PastTrainingsResponse>;
             }
-            else {
-                return this.getPastTrainings(
-                    new Date(),
-                    loggedInUserId,
-                );
-            }
+            return this.getPastTrainings(
+                new Date(),
+                loggedInUserId,
+            );
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.past_trainings.filters.errors.search_error');

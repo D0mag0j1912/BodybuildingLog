@@ -1,10 +1,10 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { GET_USER } from 'src/decorators/get-user.decorator';
 import { UserDto } from '../../../models/auth/login.model';
 import { TrainingData } from '../../../models/common/response.model';
-import { PastTrainingsResponse, SearchTrainingsDto } from '../../../models/training/past-trainings/past-trainings.model';
+import { PastTrainingsResponse } from '../../../models/training/past-trainings/past-trainings.model';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
 @ApiTags('Training')
@@ -19,11 +19,15 @@ export class SearchTrainingsController {
     @Get()
     async searchTrainings(
         @GET_USER() user: UserDto,
-        @Query() searchValue: SearchTrainingsDto,
+        @Query('searchValue') searchValue: string,
+        @Query('pageSize', ParseIntPipe) pageSize: number,
+        @Query('currentPage', ParseIntPipe) currentPage: number,
     ): Promise<TrainingData<PastTrainingsResponse>> {
         return this.pastTrainingsService.searchTrainings(
-            searchValue.searchValue as string,
             user._id as string,
+            searchValue,
+            pageSize,
+            currentPage,
         );
     }
 }
