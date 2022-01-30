@@ -3,6 +3,7 @@ export interface Preferences {
     userId?: string;
     language?: Language;
     weightFormat?: WeightFormat;
+    //TODO: Training: { showTrainingsBy?: 'week' | 'day' }
 }
 
 export type Language = 'en' | 'hr';

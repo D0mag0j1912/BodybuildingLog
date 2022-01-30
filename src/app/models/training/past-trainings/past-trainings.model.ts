@@ -13,6 +13,8 @@ export interface PastTrainingsQueryParams {
     startDate?: string;
     endDate?: string;
     search?: string;
+    pageSize?: string;
+    page?: string;
 }
 
 export interface DateInterval {
@@ -20,7 +22,7 @@ export interface DateInterval {
     readonly EndDate: Date;
 }
 
-export type Week = 'Previous week' | 'Next week';
+export type Page = 'Previous' | 'Next';
 
 export const QUERY_PARAMS_DATE_FORMAT: string = 'dd-MM-yyyy';
 export const TEMPLATE_DATE_FORMAT: string = 'dd.MM.yyyy';

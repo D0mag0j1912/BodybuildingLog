@@ -102,8 +102,8 @@
                                     type="button"
                                     class="training-paginator--previous"
                                     [disabled]="pastTrainings.IsLoading || (isPreviousDisabled && (isSearch$ | async))"
-                                    (click)="loadWeekTraining(
-                                        'Previous week',
+                                    (click)="loadNewPage(
+                                        'Previous',
                                         pastTrainings.Value?.Dates)">
                                     <mat-icon class="training-paginator--icon">navigate_before</mat-icon>
                                 </button>
@@ -117,8 +117,8 @@
                                     type="button"
                                     class="training-paginator--next"
                                     [disabled]="pastTrainings.IsLoading || isNextDisabled"
-                                    (click)="loadWeekTraining(
-                                        'Next week',
+                                    (click)="loadNewPage(
+                                        'Next',
                                         pastTrainings.Value?.Dates)">
                                     <mat-icon class="training-paginator--icon">navigate_next</mat-icon>
                                 </button>

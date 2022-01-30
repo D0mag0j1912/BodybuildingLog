@@ -17,8 +17,12 @@ export class PastTrainingsService {
         private readonly http: HttpClient,
     ) {}
 
-    searchPastTrainings(searchValue: string): Observable<TrainingData<PastTrainingsResponse>> {
-        const params: string = `?searchValue=${searchValue}`;
+    searchPastTrainings(
+        searchValue: string,
+        pageSize: number,
+        currentPage: number,
+    ): Observable<TrainingData<PastTrainingsResponse>> {
+        const params: string = `?searchValue=${searchValue}&pageSize=${pageSize.toString()}&currentPage=${currentPage.toString()}`;
         return this.http.get<TrainingData<PastTrainingsResponse>>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings${params}`)
             .pipe(
                 map((response: TrainingData<PastTrainingsResponse>) => mapDateInterval(response)),

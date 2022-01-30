@@ -4,13 +4,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Observable, of } from 'rxjs';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
+import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { TrainingData } from '../../../models/common/interfaces/common.model';
-import { DateInterval, MAX_TRAININGS_PER_PAGE, PastTrainingsQueryParams, PastTrainingsResponse, Week } from '../../../models/training/past-trainings/past-trainings.model';
+import { DateInterval, MAX_TRAININGS_PER_PAGE, Page, PastTrainingsQueryParams, PastTrainingsResponse } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
@@ -25,6 +26,9 @@ import { PastTrainingsService } from '../../../services/training/past-trainings.
 export class PastTrainingsComponent {
 
     readonly food: number = 3000;
+    trainingsPerPage: number = MAX_TRAININGS_PER_PAGE;
+    currentPage: number = 1;
+    pageSizeOptions: number[] = [1, 2, 5, 10];
 
     isNextDisabled: boolean = true;
     isPreviousDisabled: boolean = false;
@@ -52,10 +56,15 @@ export class PastTrainingsComponent {
         });
 
         const searchFilter = this.route.snapshot.queryParamMap?.get('search');
+        const currentPage = +this.route.snapshot.queryParamMap?.get('page') ?? 1;
         if (searchFilter) {
             this.pastTrainings$ =
-                this.pastTrainingsService.searchPastTrainings((searchFilter as string).trim())
-                    .pipe(
+                //TODO: proceed correct page size and current page
+                this.pastTrainingsService.searchPastTrainings(
+                    (searchFilter as string).trim(),
+                    this.trainingsPerPage,
+                    currentPage,
+                ).pipe(
                         tap((x: TrainingData<PastTrainingsResponse>) => this.handleArrows(x)),
                         mapStreamData(),
                     );
@@ -94,7 +103,11 @@ export class PastTrainingsComponent {
             of($event)
                 .pipe(
                     switchMap((value: string) =>
-                        this.pastTrainingsService.searchPastTrainings(value).pipe(
+                        this.pastTrainingsService.searchPastTrainings(
+                            value,
+                            this.trainingsPerPage,
+                            this.currentPage,
+                        ).pipe(
                             tap(async (trainingData: TrainingData<PastTrainingsResponse>) => {
                                 this.handleArrows(trainingData);
                                 const queryParams: PastTrainingsQueryParams = {
@@ -121,44 +134,85 @@ export class PastTrainingsComponent {
                 );
     }
 
-    loadWeekTraining(
-        previousOrNextWeek: Week,
+    loadNewPage(
+        previousOrNext: Page,
         dateInterval: DateInterval,
     ): void {
-        this.pastTrainings$ =
-            this.pastTrainingsService.getPastTrainings(previousOrNextWeek === 'Previous week'
-                ? subDays(
-                    utcToZonedTime(
-                        dateInterval.StartDate as Date,
-                        environment.TIMEZONE as string,
-                    ), 7) as Date
-                : addDays(
-                    utcToZonedTime(
-                        dateInterval.StartDate as Date,
-                        environment.TIMEZONE as string,
-                    ), 7) as Date)
-                .pipe(
-                    tap(async (result: TrainingData<PastTrainingsResponse>) => {
-                        const trainingData = result?.Value;
-                        this.handleNextWeek(result?.Value?.Dates);
-                        await this.router.navigate([], {
-                            relativeTo: this.route,
-                            queryParams: {
-                                startDate: format(
+        this.isSearch$
+            .pipe(
+                take(1),
+                tap((isSearch: boolean) => {
+                    if (isSearch) {
+                        previousOrNext === 'Next' ? this.currentPage++ : this.currentPage--;
+                        const currentSearchValue = this.route.snapshot.queryParamMap?.get('search');
+                        this.pastTrainings$ =
+                            this.pastTrainingsService.searchPastTrainings(
+                                currentSearchValue,
+                                this.trainingsPerPage,
+                                this.currentPage,
+                            ).pipe(
+                                tap(async (trainingData: TrainingData<PastTrainingsResponse>) => {
+                                    await this.router.navigate([], {
+                                        relativeTo: this.route,
+                                        queryParams: {
+                                            startDate: format(
+                                                utcToZonedTime(
+                                                    trainingData?.Value?.Dates?.StartDate as Date,
+                                                    environment.TIMEZONE as string)
+                                                , QUERY_PARAMS_DATE_FORMAT),
+                                            endDate: format(
+                                                utcToZonedTime(
+                                                    trainingData?.Value?.Dates?.EndDate as Date,
+                                                    environment.TIMEZONE as string,
+                                                ), QUERY_PARAMS_DATE_FORMAT),
+                                            search: currentSearchValue ?? '',
+                                            pageSize: this.trainingsPerPage.toString(),
+                                            page: this.currentPage.toString(),
+                                        } as PastTrainingsQueryParams,
+                                    });
+                                }),
+                                mapStreamData(),
+                            );
+                    }
+                    else {
+                        this.pastTrainings$ =
+                            this.pastTrainingsService.getPastTrainings(previousOrNext === 'Previous'
+                                ? subDays(
                                     utcToZonedTime(
-                                        trainingData?.Dates?.StartDate as Date,
-                                        environment.TIMEZONE as string)
-                                    , QUERY_PARAMS_DATE_FORMAT),
-                                endDate: format(
-                                    utcToZonedTime(
-                                        trainingData?.Dates?.EndDate as Date,
+                                        dateInterval.StartDate as Date,
                                         environment.TIMEZONE as string,
-                                    ), QUERY_PARAMS_DATE_FORMAT),
-                            } as PastTrainingsQueryParams,
-                        });
-                    }),
-                    mapStreamData(),
-                );
+                                    ), 7) as Date
+                                : addDays(
+                                    utcToZonedTime(
+                                        dateInterval.StartDate as Date,
+                                        environment.TIMEZONE as string,
+                                    ), 7) as Date)
+                                .pipe(
+                                    tap(async (result: TrainingData<PastTrainingsResponse>) => {
+                                        const trainingData = result?.Value;
+                                        this.handleNextWeek(result?.Value?.Dates);
+                                        await this.router.navigate([], {
+                                            relativeTo: this.route,
+                                            queryParams: {
+                                                startDate: format(
+                                                    utcToZonedTime(
+                                                        trainingData?.Dates?.StartDate as Date,
+                                                        environment.TIMEZONE as string)
+                                                    , QUERY_PARAMS_DATE_FORMAT),
+                                                endDate: format(
+                                                    utcToZonedTime(
+                                                        trainingData?.Dates?.EndDate as Date,
+                                                        environment.TIMEZONE as string,
+                                                    ), QUERY_PARAMS_DATE_FORMAT),
+                                            } as PastTrainingsQueryParams,
+                                        });
+                                    }),
+                                    mapStreamData(),
+                                );
+                    }
+                }),
+            )
+            .subscribe();
     }
 
     setNextPageTooltip(isSearch: boolean): Observable<string> {
@@ -201,11 +255,7 @@ export class PastTrainingsComponent {
         );
         if (isMonth) {
             const month = getMonth(dateInterval.StartDate);
-            return this.translateService.stream('common.months').pipe(
-                map((data: { [key: string]: string }) =>
-                    `common.months.${Object.keys(data)[month]}`,
-                ),
-            );
+            return this.translateService.stream(`common.months.${ALL_MONTHS[month]}`);
         }
         const isYear = isSameYear(
             dateInterval.StartDate,
