@@ -59,7 +59,6 @@ export class PastTrainingsComponent {
         const currentPage = +this.route.snapshot.queryParamMap?.get('page') ?? 1;
         if (searchFilter) {
             this.pastTrainings$ =
-                //TODO: proceed correct page size and current page
                 this.pastTrainingsService.searchPastTrainings(
                     (searchFilter as string).trim(),
                     this.trainingsPerPage,
@@ -110,22 +109,12 @@ export class PastTrainingsComponent {
                         ).pipe(
                             tap(async (trainingData: TrainingData<PastTrainingsResponse>) => {
                                 this.handleArrows(trainingData);
-                                const queryParams: PastTrainingsQueryParams = {
-                                    startDate: format(
-                                        utcToZonedTime(
-                                            trainingData?.Value?.Dates?.StartDate as Date,
-                                            environment.TIMEZONE as string)
-                                        , QUERY_PARAMS_DATE_FORMAT),
-                                    endDate: format(
-                                        utcToZonedTime(
-                                            trainingData?.Value?.Dates?.EndDate as Date,
-                                            environment.TIMEZONE as string,
-                                        ), QUERY_PARAMS_DATE_FORMAT),
-                                    search: $event.trim() !== '' ? $event.trim() : undefined,
-                                };
                                 await this.router.navigate([], {
                                     relativeTo: this.route,
-                                    queryParams: queryParams,
+                                    queryParams: this.handleQueryParams(
+                                        trainingData,
+                                        $event.trim() !== '' ? $event.trim() : undefined,
+                                    ),
                                 });
                             }),
                             mapStreamData(),
@@ -154,21 +143,10 @@ export class PastTrainingsComponent {
                                 tap(async (trainingData: TrainingData<PastTrainingsResponse>) => {
                                     await this.router.navigate([], {
                                         relativeTo: this.route,
-                                        queryParams: {
-                                            startDate: format(
-                                                utcToZonedTime(
-                                                    trainingData?.Value?.Dates?.StartDate as Date,
-                                                    environment.TIMEZONE as string)
-                                                , QUERY_PARAMS_DATE_FORMAT),
-                                            endDate: format(
-                                                utcToZonedTime(
-                                                    trainingData?.Value?.Dates?.EndDate as Date,
-                                                    environment.TIMEZONE as string,
-                                                ), QUERY_PARAMS_DATE_FORMAT),
-                                            search: currentSearchValue ?? '',
-                                            pageSize: this.trainingsPerPage.toString(),
-                                            page: this.currentPage.toString(),
-                                        } as PastTrainingsQueryParams,
+                                        queryParams: this.handleQueryParams(
+                                            trainingData,
+                                            currentSearchValue,
+                                        ),
                                     });
                                 }),
                                 mapStreamData(),
@@ -189,22 +167,10 @@ export class PastTrainingsComponent {
                                     ), 7) as Date)
                                 .pipe(
                                     tap(async (result: TrainingData<PastTrainingsResponse>) => {
-                                        const trainingData = result?.Value;
                                         this.handleNextWeek(result?.Value?.Dates);
                                         await this.router.navigate([], {
                                             relativeTo: this.route,
-                                            queryParams: {
-                                                startDate: format(
-                                                    utcToZonedTime(
-                                                        trainingData?.Dates?.StartDate as Date,
-                                                        environment.TIMEZONE as string)
-                                                    , QUERY_PARAMS_DATE_FORMAT),
-                                                endDate: format(
-                                                    utcToZonedTime(
-                                                        trainingData?.Dates?.EndDate as Date,
-                                                        environment.TIMEZONE as string,
-                                                    ), QUERY_PARAMS_DATE_FORMAT),
-                                            } as PastTrainingsQueryParams,
+                                            queryParams: this.handleQueryParams(result),
                                         });
                                     }),
                                     mapStreamData(),
@@ -265,6 +231,27 @@ export class PastTrainingsComponent {
             return this.translateService.stream('common.year');
         }
         return this.translateService.stream('common.period');
+    }
+
+    private handleQueryParams(
+        trainingData: TrainingData<PastTrainingsResponse>,
+        searchValue?: string,
+    ): PastTrainingsQueryParams {
+        return {
+            startDate: format(
+                utcToZonedTime(
+                    trainingData?.Value?.Dates?.StartDate as Date,
+                    environment.TIMEZONE as string)
+                , QUERY_PARAMS_DATE_FORMAT),
+            endDate: format(
+                utcToZonedTime(
+                    trainingData?.Value?.Dates?.EndDate as Date,
+                    environment.TIMEZONE as string,
+                ), QUERY_PARAMS_DATE_FORMAT),
+            search: searchValue ?? undefined,
+            page: searchValue ? this.currentPage.toString() : undefined,
+            pageSize: searchValue ? this.trainingsPerPage.toString(): undefined,
+        } as PastTrainingsQueryParams;
     }
 
     private handleArrows(x: TrainingData<PastTrainingsResponse>): void {

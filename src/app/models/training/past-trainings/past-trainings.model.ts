@@ -10,11 +10,11 @@ export interface PastTrainingsResponse {
 }
 
 export interface PastTrainingsQueryParams {
-    startDate?: string;
-    endDate?: string;
+    startDate: string;
+    endDate: string;
     search?: string;
-    pageSize?: string;
     page?: string;
+    pageSize?: string;
 }
 
 export interface DateInterval {
