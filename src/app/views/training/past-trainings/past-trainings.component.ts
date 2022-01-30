@@ -60,7 +60,7 @@ export class PastTrainingsComponent {
         if (searchFilter) {
             this.pastTrainings$ =
                 this.pastTrainingsService.searchPastTrainings(
-                    (searchFilter as string).trim(),
+                    searchFilter.trim(),
                     this.trainingsPerPage,
                     currentPage,
                 ).pipe(
@@ -157,14 +157,14 @@ export class PastTrainingsComponent {
                             this.pastTrainingsService.getPastTrainings(previousOrNext === 'Previous'
                                 ? subDays(
                                     utcToZonedTime(
-                                        dateInterval.StartDate as Date,
-                                        environment.TIMEZONE as string,
-                                    ), 7) as Date
+                                        dateInterval.StartDate,
+                                        environment.TIMEZONE,
+                                    ), 7)
                                 : addDays(
                                     utcToZonedTime(
-                                        dateInterval.StartDate as Date,
-                                        environment.TIMEZONE as string,
-                                    ), 7) as Date)
+                                        dateInterval.StartDate,
+                                        environment.TIMEZONE,
+                                    ), 7))
                                 .pipe(
                                     tap(async (result: TrainingData<PastTrainingsResponse>) => {
                                         this.handleNextWeek(result?.Value?.Dates);
@@ -240,13 +240,13 @@ export class PastTrainingsComponent {
         return {
             startDate: format(
                 utcToZonedTime(
-                    trainingData?.Value?.Dates?.StartDate as Date,
-                    environment.TIMEZONE as string)
+                    trainingData?.Value?.Dates?.StartDate,
+                    environment.TIMEZONE)
                 , QUERY_PARAMS_DATE_FORMAT),
             endDate: format(
                 utcToZonedTime(
-                    trainingData?.Value?.Dates?.EndDate as Date,
-                    environment.TIMEZONE as string,
+                    trainingData?.Value?.Dates?.EndDate,
+                    environment.TIMEZONE,
                 ), QUERY_PARAMS_DATE_FORMAT),
             search: searchValue ?? undefined,
             page: searchValue ? this.currentPage.toString() : undefined,
@@ -268,19 +268,19 @@ export class PastTrainingsComponent {
     private handleNextWeek(dateInterval: DateInterval): void {
         const arrayOfDates: number[] = eachDayOfInterval({
             start: utcToZonedTime(
-                dateInterval.StartDate as Date,
-                environment.TIMEZONE as string),
+                dateInterval.StartDate,
+                environment.TIMEZONE),
             end: utcToZonedTime(
-                dateInterval.EndDate as Date,
-                environment.TIMEZONE as string),
-        }).map((date: Date) => date.getTime() as number);
-        this.isNextDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime() as number) as boolean;
+                dateInterval.EndDate,
+                environment.TIMEZONE),
+        }).map((date: Date) => date.getTime());
+        this.isNextDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime());
         this.changeDetectorRef.markForCheck();
     }
 
     private getDateTimeQueryParams(): Date {
-        const splittedDate: string[] = (this.route.snapshot.queryParams?.startDate as string).split('-');
+        const splittedDate: string[] = (this.route.snapshot.queryParams?.startDate).split('-');
         const utc: string = new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString();
-        return utcToZonedTime(new Date(utc), environment.TIMEZONE as string);
+        return utcToZonedTime(new Date(utc), environment.TIMEZONE);
     }
 }
