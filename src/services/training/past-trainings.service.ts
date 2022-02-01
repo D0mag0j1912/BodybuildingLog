@@ -22,6 +22,15 @@ export class PastTrainingsService {
         try {
             if (searchValue !== '' && searchValue && pageSize && currentPage) {
                 // tslint:disable-next-line: await-promise
+                const totalTrainings: number = await this.trainingModel
+                    .countDocuments({
+                        'exercise.exerciseName': {
+                            $regex: searchValue,
+                            $options: 'i',
+                        },
+                        userId: loggedInUserId,
+                    });
+                // tslint:disable-next-line: await-promise
                 const trainings: Training[] = await this.trainingModel
                     .find({
                         'exercise.exerciseName': {
@@ -33,15 +42,6 @@ export class PastTrainingsService {
                     .skip(pageSize * (currentPage - 1))
                     .limit(pageSize)
                     .sort({ createdAt: 'asc' });
-                // tslint:disable-next-line: await-promise
-                const totalTrainings: number = await this.trainingModel
-                    .countDocuments({
-                        'exercise.exerciseName': {
-                            $regex: searchValue,
-                            $options: 'i',
-                        },
-                        userId: loggedInUserId,
-                    });
                 const minMaxDate: DateInterval = getIntervalDate(trainings);
                 return {
                     IsLoading: true,

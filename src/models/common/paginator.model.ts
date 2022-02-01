@@ -1,0 +1,30 @@
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+
+export interface Paginator<T> {
+    Results: T;
+    Next?: PaginatorParams;
+    Previous?: PaginatorParams;
+}
+
+export interface PaginatorParams {
+    readonly Page: number;
+    readonly Size: number;
+}
+
+export const DEFAULT_PAGE = 1;
+export const DEFAULT_SIZE = 5;
+
+export class PaginateDto {
+
+    @IsInt()
+    @IsNotEmpty()
+    page: number;
+
+    @IsInt()
+    @IsNotEmpty()
+    size: number;
+
+    @IsOptional()
+    @IsString()
+    searchValue: string;
+}
