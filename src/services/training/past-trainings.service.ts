@@ -21,7 +21,6 @@ export class PastTrainingsService {
     ): Promise<TrainingData<PastTrainingsResponse>> {
         try {
             if (searchValue !== '' && searchValue && pageSize && currentPage) {
-                // tslint:disable-next-line: await-promise
                 const totalTrainings: number = await this.trainingModel
                     .countDocuments({
                         'exercise.exerciseName': {
@@ -29,8 +28,8 @@ export class PastTrainingsService {
                             $options: 'i',
                         },
                         userId: loggedInUserId,
-                    });
-                // tslint:disable-next-line: await-promise
+                    })
+                    .exec();
                 const trainings: Training[] = await this.trainingModel
                     .find({
                         'exercise.exerciseName': {
@@ -41,7 +40,8 @@ export class PastTrainingsService {
                     })
                     .skip(pageSize * (currentPage - 1))
                     .limit(pageSize)
-                    .sort({ createdAt: 'asc' });
+                    .sort({ createdAt: 'asc' })
+                    .exec();
                 const minMaxDate: DateInterval = getIntervalDate(trainings);
                 return {
                     IsLoading: true,
@@ -65,8 +65,7 @@ export class PastTrainingsService {
 
     async getPastTraining(trainingId: string): Promise<TrainingData<Training>> {
         try {
-            // tslint:disable-next-line: await-promise
-            const training =  await this.trainingModel.findById(trainingId);
+            const training =  await this.trainingModel.findById(trainingId).exec();
             return {
                 IsLoading: true,
                 IsError: false,
@@ -84,22 +83,25 @@ export class PastTrainingsService {
     ): Promise<TrainingData<PastTrainingsResponse>> {
         try {
             const dates: DateInterval = getIntervalDate(new Date(currentDate));
-            // tslint:disable-next-line: await-promise
-            const trainings: Training[] = await this.trainingModel.find({
-                userId: loggedUserId,
-                createdAt: {
-                    $gte: dates.StartDate,
-                    $lt: dates.EndDate,
-                },
-            }).sort({ createdAt: 'asc' });
-            // tslint:disable-next-line: await-promise
-            const totalTrainings = await this.trainingModel.countDocuments({
-                userId: loggedUserId,
-                createdAt: {
-                    $gte: dates.StartDate,
-                    $lt: dates.EndDate,
-                },
-            });
+            const trainings: Training[] = await this.trainingModel
+                .find({
+                    userId: loggedUserId,
+                    createdAt: {
+                        $gte: dates.StartDate,
+                        $lt: dates.EndDate,
+                    },
+                })
+                .sort({ createdAt: 'asc' })
+                .exec();
+            const totalTrainings = await this.trainingModel
+                .countDocuments({
+                    userId: loggedUserId,
+                    createdAt: {
+                        $gte: dates.StartDate,
+                        $lt: dates.EndDate,
+                    },
+                })
+                .exec();
             return {
                 IsLoading: true,
                 Value: {

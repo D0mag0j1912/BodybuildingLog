@@ -21,11 +21,11 @@ export class DeleteTrainingActionService {
         currentDate: Date,
     ): Promise<TrainingData<PastTrainingsResponse>> {
         try {
-            const trainingToBeRemoved: Training = await Promise.resolve(this.trainingModel.findById(trainingId as string));
+            const trainingToBeRemoved: Training = await this.trainingModel.findById(trainingId as string).exec();
             if(loggedUserId.toString() !== trainingToBeRemoved.userId.toString()){
                 throw new UnauthorizedException('common.errors.not_authorized');
             }
-            await Promise.resolve(this.trainingModel.findByIdAndRemove(trainingId, { useFindAndModify: false }));
+            await this.trainingModel.findByIdAndRemove(trainingId, { useFindAndModify: false }).exec();
             const pastTrainings: TrainingData<PastTrainingsResponse> = await this.pastTrainingService.getPastTrainings(
                 currentDate as Date,
                 loggedUserId as string,

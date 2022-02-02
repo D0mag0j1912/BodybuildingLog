@@ -1,11 +1,10 @@
+import { Model } from 'mongoose';
 import { Paginator, PaginatorParams } from '../models/common/paginator.model';
-import { PastTrainingsResponse } from '../models/training/past-trainings/past-trainings.model';
 // U => PastTrainingsResponse
-export const paginate = async <T extends Paginator<U>, U extends PastTrainingsResponse, K>(
+export const paginate = async <T extends Paginator<U>, U, K extends Model<K>>(
     query: PaginatorParams,
-    totalCount: number,
     model: K,
-): Paginator<T> => {
+): Promise<Paginator<T>> => {
     const page = +query.Page;
     const size = +query.Size;
 
@@ -14,7 +13,7 @@ export const paginate = async <T extends Paginator<U>, U extends PastTrainingsRe
 
     const results: Partial<Paginator<U>> = {};
 
-    if (endIndex < totalCount) {
+    if (endIndex < await model.countDocuments().exec()) {
         results.Next = {
             Page: page + 1,
             Size: size,
@@ -32,7 +31,8 @@ export const paginate = async <T extends Paginator<U>, U extends PastTrainingsRe
         .find()
         .limit(size)
         .skip(startIndex)
-        .sort({ createdAt: 'asc' });
+        .sort({ createdAt: 'asc' })
+        .exec();
 
     return results;
 };

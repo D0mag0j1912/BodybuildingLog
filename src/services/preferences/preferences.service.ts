@@ -17,8 +17,7 @@ export class PreferencesService {
     ): Promise<GeneralResponseData> {
         try {
             const { language, weightFormat } = preferencesDto;
-            // tslint:disable-next-line: await-promise
-            const preferences = await this.preferencesModel.findOne({ userId: userId });
+            const preferences = await this.preferencesModel.findOne({ userId: userId }).exec();
             preferences.language = language;
             preferences.weightFormat = weightFormat;
             await preferences.save();

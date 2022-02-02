@@ -20,13 +20,11 @@ export class NewTrainingService {
         loggedUserId: string,
     ): Promise<GeneralResponseData> {
         try {
-            // tslint:disable-next-line: await-promise
-            const trainingToBeUpdated: Training = await this.trainingModel.findById(trainingId);
+            const trainingToBeUpdated: Training = await this.trainingModel.findById(trainingId).exec();
             if (trainingToBeUpdated.userId.toString() !== loggedUserId.toString()) {
                 throw new UnauthorizedException('common.errors.not_authorized');
             }
-            // tslint:disable-next-line: await-promise
-            await this.trainingModel.updateOne({ _id: trainingId }, { $set: updatedTrainingData });
+            await this.trainingModel.updateOne({ _id: trainingId }, { $set: updatedTrainingData }).exec();
             return { Message: 'training.new_training.training_updated' } as GeneralResponseData;
         }
         catch (error: unknown) {
@@ -53,8 +51,7 @@ export class NewTrainingService {
 
     async getExercises(): Promise<TrainingData<Exercise[]>> {
         try {
-            // tslint:disable-next-line: await-promise
-            const exercises: Exercise[] = await this.exerciseModel.find();
+            const exercises: Exercise[] = await this.exerciseModel.find().exec();
             if (exercises.length === 0) {
                 throw new InternalServerErrorException('training.new_training.errors.exercises_not_available');
             }
