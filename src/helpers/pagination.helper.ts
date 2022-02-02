@@ -1,9 +1,12 @@
-import { Model } from 'mongoose';
+import { InternalServerErrorException } from '@nestjs/common';
+import { FilterQuery, Model } from 'mongoose';
 import { Paginator, PaginatorParams } from '../models/common/paginator.model';
-// U => PastTrainingsResponse
-export const paginate = async <T extends Paginator<U>, U, K extends Model<K>>(
+import { Training } from '../models/training/new-training/new-training.model';
+
+export const paginate = async <T extends Training, U extends Model<T>>(
     query: PaginatorParams,
-    model: K,
+    model: U,
+    condition: FilterQuery<T>,
 ): Promise<Paginator<T>> => {
     const page = +query.Page;
     const size = +query.Size;
@@ -11,9 +14,10 @@ export const paginate = async <T extends Paginator<U>, U, K extends Model<K>>(
     const startIndex = (page - 1) * size;
     const endIndex = page * size;
 
-    const results: Partial<Paginator<U>> = {};
-
-    if (endIndex < await model.countDocuments().exec()) {
+    const results: Partial<Paginator<T>> = {};
+    results.TotalCount = await model.countDocuments(condition).exec();
+    
+    if (endIndex < results.TotalCount) {
         results.Next = {
             Page: page + 1,
             Size: size,
@@ -26,13 +30,18 @@ export const paginate = async <T extends Paginator<U>, U, K extends Model<K>>(
             Size: size,
         };
     }
-
-    results.Results.Trainings = await model
-        .find()
-        .limit(size)
-        .skip(startIndex)
-        .sort({ createdAt: 'asc' })
-        .exec();
+    
+    try {
+        results.Results = await model
+            .find(condition)
+            .limit(size)
+            .skip(startIndex)
+            .sort({ createdAt: 'asc' })
+            .exec();
+    }
+    catch (error) {
+        throw new InternalServerErrorException('training.past_trainings.filters.errors.search_error');
+    }
 
     return results;
 };

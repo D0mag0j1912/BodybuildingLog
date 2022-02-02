@@ -1,7 +1,9 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { DateInterval, getIntervalDate } from '../../helpers/date.helper';
+import { paginate } from '../../helpers/pagination.helper';
+import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
 import { TrainingData } from '../../models/common/response.model';
 import { Training } from '../../models/training/new-training/new-training.model';
 import { PastTrainingsResponse } from '../../models/training/past-trainings/past-trainings.model';
@@ -16,39 +18,30 @@ export class PastTrainingsService {
     async searchTrainings(
         loggedInUserId: string,
         searchValue: string,
-        pageSize: number,
-        currentPage: number,
+        size: number,
+        page: number,
     ): Promise<TrainingData<PastTrainingsResponse>> {
         try {
-            if (searchValue !== '' && searchValue && pageSize && currentPage) {
-                const totalTrainings: number = await this.trainingModel
-                    .countDocuments({
-                        'exercise.exerciseName': {
-                            $regex: searchValue,
-                            $options: 'i',
-                        },
-                        userId: loggedInUserId,
-                    })
-                    .exec();
-                const trainings: Training[] = await this.trainingModel
-                    .find({
-                        'exercise.exerciseName': {
-                            $regex: searchValue,
-                            $options: 'i',
-                        },
-                        userId: loggedInUserId,
-                    })
-                    .skip(pageSize * (currentPage - 1))
-                    .limit(pageSize)
-                    .sort({ createdAt: 'asc' })
-                    .exec();
-                const minMaxDate: DateInterval = getIntervalDate(trainings);
+            if (searchValue !== '' && searchValue && size && page) {
+                const query: PaginatorParams = {
+                    Page: page,
+                    Size: size,
+                };
+                const condition: FilterQuery<Training> = {
+                    'exercise.exerciseName': {
+                        $regex: searchValue,
+                        $options: 'i',
+                    },
+                    userId: loggedInUserId,
+                };
+                const results: Paginator<Training> = await paginate(query, this.trainingModel, condition);
+                const minMaxDate: DateInterval = getIntervalDate(results?.Results);
                 return {
                     IsLoading: true,
                     Value: {
-                        Trainings: trainings,
+                        Trainings: results?.Results ?? [],
                         Dates: minMaxDate,
-                        TotalTrainings: totalTrainings,
+                        TotalTrainings: results.TotalCount || 0,
                     } as PastTrainingsResponse,
                     IsError: false,
                 } as TrainingData<PastTrainingsResponse>;
