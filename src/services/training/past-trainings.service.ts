@@ -20,7 +20,7 @@ export class PastTrainingsService {
         searchValue: string,
         size: number,
         page: number,
-    ): Promise<TrainingData<PastTrainingsResponse>> {
+    ): Promise<TrainingData<Paginator<PastTrainingsResponse>>> {
         try {
             if (searchValue !== '' && searchValue && size && page) {
                 const query: PaginatorParams = {
@@ -34,22 +34,17 @@ export class PastTrainingsService {
                     },
                     userId: loggedInUserId,
                 };
-                const results: Paginator<Training> = await paginate(query, this.trainingModel, condition);
-                const minMaxDate: DateInterval = getIntervalDate(results?.Results);
+                const results: Paginator<PastTrainingsResponse> = await paginate(query, this.trainingModel, condition);
                 return {
                     IsLoading: true,
-                    Value: {
-                        Trainings: results?.Results ?? [],
-                        Dates: minMaxDate,
-                        TotalTrainings: results.TotalCount || 0,
-                    } as PastTrainingsResponse,
+                    Value: results,
                     IsError: false,
-                } as TrainingData<PastTrainingsResponse>;
+                } as TrainingData<Paginator<PastTrainingsResponse>>;
             }
-            return this.getPastTrainings(
+            /* return this.getPastTrainings(
                 new Date(),
                 loggedInUserId,
-            );
+            ); */
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.past_trainings.filters.errors.search_error');
