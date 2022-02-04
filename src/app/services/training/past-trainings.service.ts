@@ -22,7 +22,7 @@ export class PastTrainingsService {
         pageSize: number,
         currentPage: number,
     ): Observable<TrainingData<PastTrainingsResponse>> {
-        const params: string = `?searchValue=${searchValue}&pageSize=${pageSize.toString()}&currentPage=${currentPage.toString()}`;
+        const params: string = `?searchValue=${searchValue}&size=${pageSize.toString()}&page=${currentPage.toString()}`;
         return this.http.get<TrainingData<PastTrainingsResponse>>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings${params}`)
             .pipe(
                 map((response: TrainingData<PastTrainingsResponse>) => mapDateInterval(response)),

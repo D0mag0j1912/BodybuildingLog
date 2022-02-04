@@ -27,8 +27,8 @@ export class PastTrainingsComponent {
 
     readonly food: number = 3000;
     trainingsPerPage: number = MAX_TRAININGS_PER_PAGE;
-    currentPage: number = 1;
-    pageSizeOptions: number[] = [1, 2, 5, 10];
+    page: number = 1;
+    pageSizeOptions: ReadonlyArray<number> = [1, 2, 5, 10];
 
     isNextDisabled: boolean = true;
     isPreviousDisabled: boolean = false;
@@ -105,10 +105,9 @@ export class PastTrainingsComponent {
                         this.pastTrainingsService.searchPastTrainings(
                             value,
                             this.trainingsPerPage,
-                            this.currentPage,
+                            this.page,
                         ).pipe(
                             tap(async (trainingData: TrainingData<PastTrainingsResponse>) => {
-                                this.handleArrows(trainingData);
                                 await this.router.navigate([], {
                                     relativeTo: this.route,
                                     queryParams: this.handleQueryParams(
@@ -116,8 +115,10 @@ export class PastTrainingsComponent {
                                         $event.trim() !== '' ? $event.trim() : undefined,
                                     ),
                                 });
+                                this.handleArrows(trainingData);
                             }),
                             mapStreamData(),
+
                         ),
                     ),
                 );
@@ -132,13 +133,13 @@ export class PastTrainingsComponent {
                 take(1),
                 tap((isSearch: boolean) => {
                     if (isSearch) {
-                        previousOrNext === 'Next' ? this.currentPage++ : this.currentPage--;
-                        const currentSearchValue = this.route.snapshot.queryParamMap?.get('search');
+                        previousOrNext === 'Next' ? this.page++ : this.page--;
+                        const currentSearchValue = this.route.snapshot.queryParamMap?.get('search') ?? undefined;
                         this.pastTrainings$ =
                             this.pastTrainingsService.searchPastTrainings(
                                 currentSearchValue,
                                 this.trainingsPerPage,
-                                this.currentPage,
+                                this.page,
                             ).pipe(
                                 tap(async (trainingData: TrainingData<PastTrainingsResponse>) => {
                                     await this.router.navigate([], {
@@ -249,20 +250,28 @@ export class PastTrainingsComponent {
                     environment.TIMEZONE,
                 ), QUERY_PARAMS_DATE_FORMAT),
             search: searchValue ?? undefined,
-            page: searchValue ? this.currentPage.toString() : undefined,
+            page: searchValue ? this.page.toString() : undefined,
             pageSize: searchValue ? this.trainingsPerPage.toString(): undefined,
         } as PastTrainingsQueryParams;
     }
-
+    //TODO: implement correctly
     private handleArrows(x: TrainingData<PastTrainingsResponse>): void {
         if (x?.Value?.TotalTrainings <= MAX_TRAININGS_PER_PAGE) {
             this.isNextDisabled = true;
             this.isPreviousDisabled = true;
         }
         else {
-            this.isPreviousDisabled = true;
-            this.isNextDisabled = false;
+            const page = +this.route.snapshot.queryParamMap?.get('page') ?? 1;
+            if (page === 1) {
+                this.isPreviousDisabled = true;
+                this.isNextDisabled = false;
+            }
+            else {
+                this.isPreviousDisabled = false;
+                this.isNextDisabled = true;
+            }
         }
+        this.changeDetectorRef.markForCheck();
     }
 
     private handleNextWeek(dateInterval: DateInterval): void {
@@ -279,7 +288,7 @@ export class PastTrainingsComponent {
     }
 
     private getDateTimeQueryParams(): Date {
-        const splittedDate: string[] = (this.route.snapshot.queryParams?.startDate).split('-');
+        const splittedDate: string[] = (this.route.snapshot.queryParams?.startDate)?.split('-') ?? [];
         const utc: string = new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString();
         return utcToZonedTime(new Date(utc), environment.TIMEZONE);
     }
