@@ -2,8 +2,9 @@ import { Injectable, InternalServerErrorException, UnauthorizedException } from 
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Training } from 'src/models/training/new-training/new-training.model';
-import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings.model';
-import { TrainingData } from '../../../models/common/response.model';
+import { PastTrainings } from 'src/models/training/past-trainings/past-trainings.model';
+import { Paginator } from '../../../models/common/paginator.model';
+import { StreamData } from '../../../models/common/response.model';
 import { Error } from '../../../models/errors/error';
 import { PastTrainingsService } from '../past-trainings.service';
 
@@ -19,14 +20,14 @@ export class DeleteTrainingActionService {
         trainingId: string,
         loggedUserId: string,
         currentDate: Date,
-    ): Promise<TrainingData<PastTrainingsResponse>> {
+    ): Promise<StreamData<PastTrainings>> {
         try {
             const trainingToBeRemoved: Training = await this.trainingModel.findById(trainingId as string).exec();
             if(loggedUserId.toString() !== trainingToBeRemoved.userId.toString()){
                 throw new UnauthorizedException('common.errors.not_authorized');
             }
             await this.trainingModel.findByIdAndRemove(trainingId, { useFindAndModify: false }).exec();
-            const pastTrainings: TrainingData<PastTrainingsResponse> = await this.pastTrainingService.getPastTrainings(
+            const pastTrainings: StreamData<Paginator<PastTrainings>> = await this.pastTrainingService.getPastTrainings(
                 currentDate as Date,
                 loggedUserId as string,
             );
@@ -35,9 +36,9 @@ export class DeleteTrainingActionService {
                 Value: {
                     ...pastTrainings.Value,
                     Message: 'training.past_trainings.actions.delete_success',
-                } as PastTrainingsResponse,
+                } as PastTrainings,
                 IsError: false,
-            } as TrainingData<PastTrainingsResponse>;
+            } as StreamData<PastTrainings>;
         }
         catch(error: unknown) {
             switch((error as Error).status) {

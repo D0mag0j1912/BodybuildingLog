@@ -2,12 +2,13 @@ import { BadRequestException, Controller, Get, Param, Query, UseGuards } from '@
 import { AuthGuard } from '@nestjs/passport';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { Training } from 'src/models/training/new-training/new-training.model';
-import { PastTrainingsResponse } from 'src/models/training/past-trainings/past-trainings.model';
+import { PastTrainings } from 'src/models/training/past-trainings/past-trainings.model';
 import { PastTrainingsService } from 'src/services/training/past-trainings.service';
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login.model';
-import { TrainingData } from '../../../models/common/response.model';
+import { Paginator } from '../../../models/common/paginator.model';
+import { StreamData } from '../../../models/common/response.model';
 
 @ApiTags('Training')
 @Controller('training/past_trainings')
@@ -22,7 +23,8 @@ export class PastTrainingsController {
     async getPastTrainings(
         @GET_USER() user: UserDto,
         @Query('currentDate') currentDate: Date,
-    ): Promise<TrainingData<PastTrainingsResponse>> {
+    ): Promise<StreamData<Paginator<PastTrainings>>> {
+        //TODO: Create custom Pipe
         if (!currentDate) {
             throw new BadRequestException('training.past_trainings.errors.past_trainings_error_title');
         }
@@ -35,7 +37,7 @@ export class PastTrainingsController {
     @ApiCreatedResponse({ type: Training })
     @Get(':id')
     @UseGuards(new TrainingGuard('training.past_trainings.errors.get_training_error'))
-    async getPastTraining(@Param('id') trainingId: string): Promise<TrainingData<Training>> {
+    async getPastTraining(@Param('id') trainingId: string): Promise<StreamData<Training>> {
         return this.pastTrainingsService.getPastTraining(trainingId as string);
     }
 }

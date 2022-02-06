@@ -4,9 +4,9 @@ import { FilterQuery, Model } from 'mongoose';
 import { DateInterval, getIntervalDate } from '../../helpers/date.helper';
 import { paginate } from '../../helpers/pagination.helper';
 import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
-import { TrainingData } from '../../models/common/response.model';
+import { StreamData } from '../../models/common/response.model';
 import { Training } from '../../models/training/new-training/new-training.model';
-import { PastTrainingsResponse } from '../../models/training/past-trainings/past-trainings.model';
+import { PastTrainings } from '../../models/training/past-trainings/past-trainings.model';
 
 @Injectable()
 export class PastTrainingsService {
@@ -20,7 +20,7 @@ export class PastTrainingsService {
         searchValue: string,
         size: number,
         page: number,
-    ): Promise<TrainingData<Paginator<PastTrainingsResponse>>> {
+    ): Promise<StreamData<Paginator<PastTrainings>>> {
         try {
             if (searchValue !== '' && searchValue && size && page) {
                 const query: PaginatorParams = {
@@ -34,31 +34,31 @@ export class PastTrainingsService {
                     },
                     userId: loggedInUserId,
                 };
-                const results: Paginator<PastTrainingsResponse> = await paginate(query, this.trainingModel, condition);
+                const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition, query);
                 return {
                     IsLoading: true,
                     Value: results,
                     IsError: false,
-                } as TrainingData<Paginator<PastTrainingsResponse>>;
+                } as StreamData<Paginator<PastTrainings>>;
             }
-            /* return this.getPastTrainings(
+            return this.getPastTrainings(
                 new Date(),
                 loggedInUserId,
-            ); */
+            );
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.past_trainings.filters.errors.search_error');
         }
     }
 
-    async getPastTraining(trainingId: string): Promise<TrainingData<Training>> {
+    async getPastTraining(trainingId: string): Promise<StreamData<Training>> {
         try {
             const training =  await this.trainingModel.findById(trainingId).exec();
             return {
                 IsLoading: true,
                 IsError: false,
                 Value: training,
-            } as TrainingData<Training>;
+            } as StreamData<Training>;
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.past_trainings.errors.error_load_training');
@@ -68,37 +68,23 @@ export class PastTrainingsService {
     async getPastTrainings(
         currentDate: Date,
         loggedUserId: string,
-    ): Promise<TrainingData<PastTrainingsResponse>> {
+    ): Promise<StreamData<Paginator<PastTrainings>>> {
         try {
             const dates: DateInterval = getIntervalDate(new Date(currentDate));
-            const trainings: Training[] = await this.trainingModel
-                .find({
-                    userId: loggedUserId,
-                    createdAt: {
-                        $gte: dates.StartDate,
-                        $lt: dates.EndDate,
-                    },
-                })
-                .sort({ createdAt: 'asc' })
-                .exec();
-            const totalTrainings = await this.trainingModel
-                .countDocuments({
-                    userId: loggedUserId,
-                    createdAt: {
-                        $gte: dates.StartDate,
-                        $lt: dates.EndDate,
-                    },
-                })
-                .exec();
+            const condition: FilterQuery<Training> = {
+                userId: loggedUserId,
+                createdAt: {
+                    $gte: dates.StartDate,
+                    $lt: dates.EndDate,
+                },
+            };
+            const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition);
+            results.Results.Dates = dates;
             return {
                 IsLoading: true,
-                Value: {
-                    Trainings: trainings,
-                    Dates: dates,
-                    TotalTrainings: totalTrainings,
-                } as PastTrainingsResponse,
+                Value: results,
                 IsError: false,
-            } as TrainingData<PastTrainingsResponse>;
+            } as StreamData<Paginator<PastTrainings>>;
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.past_trainings.errors.past_trainings_error_title');
