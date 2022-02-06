@@ -28,7 +28,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
         private readonly unsubscribeService: UnsubscribeService,
         private readonly route: ActivatedRoute,
     ) {
-        const searchQueryParam = this.route.snapshot.queryParamMap?.get('Search');
+        const searchQueryParam = this.route.snapshot.queryParamMap?.get('search');
         if (searchQueryParam) {
             this.searchValue = searchQueryParam;
         }

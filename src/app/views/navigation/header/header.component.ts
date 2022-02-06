@@ -75,11 +75,11 @@ export class HeaderComponent implements OnInit {
             ).subscribe(async (response: PastTrainingsQueryParams) => {
                 await this.router.navigate(['/training/past-trainings'], {
                     queryParams: {
-                        StartDate: response?.StartDate ? response.StartDate : undefined,
-                        EndDate: response?.EndDate ? response.EndDate : undefined,
-                        Search: response?.Search ? response.Search : undefined,
-                        Page: response?.Page ? response.Page : undefined,
-                        Size: response?.Size ? response.Size : undefined,
+                        startDate: response?.startDate ? response.startDate : undefined,
+                        endDate: response?.endDate ? response.endDate : undefined,
+                        search: response?.search ? response.search : undefined,
+                        page: response?.page ? response.page : undefined,
+                        size: response?.size ? response.size : undefined,
                     } as PastTrainingsQueryParams,
                 });
             });
