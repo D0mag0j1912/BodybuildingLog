@@ -1,9 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { format } from 'date-fns';
+import { takeUntil, tap } from 'rxjs/operators';
 import { Training } from '../../../../models/training/new-training/new-training.model';
+import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
 import { SharedService } from '../../../../services/shared/shared.service';
+import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 
 const MAX_EXERCISE_NAME_WIDTH: number = 200;
 
@@ -12,10 +15,9 @@ const MAX_EXERCISE_NAME_WIDTH: number = 200;
     templateUrl: './training-item.component.html',
     styleUrls: ['./training-item.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [UnsubscribeService],
 })
 export class TrainingItemComponent implements OnInit {
-
-    timeCreated: string;
 
     readonly weekDays: ReadonlyArray<string> = [
         'sunday',
@@ -32,6 +34,7 @@ export class TrainingItemComponent implements OnInit {
         'more',
     ];
 
+    timeCreated: string;
     dayIndex: number;
 
     isTooltipDisabled: boolean = true;
@@ -56,9 +59,11 @@ export class TrainingItemComponent implements OnInit {
     }
 
     constructor(
+        private readonly unsubscribeService: UnsubscribeService,
         private readonly sharedService: SharedService,
-        private readonly router: Router,
         private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly route: ActivatedRoute,
+        private readonly router: Router,
     ) {}
 
     ngOnInit(): void {
@@ -70,7 +75,15 @@ export class TrainingItemComponent implements OnInit {
     }
 
     async trainingClicked(): Promise<void> {
-        await this.router.navigate(['/training/new-training', this.training._id]);
+        this.route.queryParams
+            .pipe(
+                tap(async (params: Params) => {
+                    this.sharedService.pastTrainingsQueryParams$$.next(params as PastTrainingsQueryParams);
+                    await this.router.navigate(['/training/new-training', this.training._id]);
+                }),
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe();
     }
 
 }

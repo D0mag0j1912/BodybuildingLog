@@ -2,19 +2,15 @@ import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from
 import { Router } from '@angular/router';
 import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
-import { switchMap, take, takeUntil } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
-import { StreamData } from '../../../models/common/interfaces/common.model';
 import { Language } from '../../../models/preferences.model';
-import { Training } from '../../../models/training/new-training/new-training.model';
-import { DateInterval } from '../../../models/training/past-trainings/past-trainings.model';
+import { DateInterval, PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { NavigationService } from '../../../services/shared/navigation.service';
 import { SharedService } from '../../../services/shared/shared.service';
-import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../services/training/new-training.service';
-import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
 interface IsActiveMatchOptions {
     matrixParams: 'exact' | 'subset' | 'ignored';
@@ -28,7 +24,6 @@ interface IsActiveMatchOptions {
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [UnsubscribeService],
 })
 export class HeaderComponent implements OnInit {
 
@@ -48,11 +43,9 @@ export class HeaderComponent implements OnInit {
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
-        private readonly pastTrainingsService: PastTrainingsService,
         private readonly authService: AuthService,
         private readonly sharedService: SharedService,
         private readonly navigationService: NavigationService,
-        private readonly unsubsService: UnsubscribeService,
         private readonly router: Router,
     ) {}
 
@@ -76,18 +69,20 @@ export class HeaderComponent implements OnInit {
     }
 
     goToPastTraining(): void {
-        this.sharedService.pastTrainingId$$.pipe(
-            take(1),
-            switchMap((_id: string) => this.pastTrainingsService.getPastTraining(_id)),
-            takeUntil(this.unsubsService),
-        ).subscribe(async (response: StreamData<Training>) => {
-            await this.router.navigate(['/training/past-trainings'], {
-                queryParams: {
-                    startDate: format(this.constructDates(new Date(response?.Value?.createdAt))?.StartDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT),
-                    endDate: format(this.constructDates(new Date(response?.Value?.createdAt))?.EndDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT),
-                },
+        this.sharedService.pastTrainingsQueryParams$$
+            .pipe(
+                take(1),
+            ).subscribe(async (response: PastTrainingsQueryParams) => {
+                await this.router.navigate(['/training/past-trainings'], {
+                    queryParams: {
+                        StartDate: response?.StartDate ? response.StartDate : undefined,
+                        EndDate: response?.EndDate ? response.EndDate : undefined,
+                        Search: response?.Search ? response.Search : undefined,
+                        Page: response?.Page ? response.Page : undefined,
+                        Size: response?.Size ? response.Size : undefined,
+                    } as PastTrainingsQueryParams,
+                });
             });
-        });
     }
 
     onToggle(): void {
@@ -95,7 +90,6 @@ export class HeaderComponent implements OnInit {
     }
 
     changeLanguage(language: Language): void {
-
         this.authService.loggedUser$.pipe(
             take(1),
             switchMap((userData: AuthResponseData) =>
@@ -105,7 +99,6 @@ export class HeaderComponent implements OnInit {
                     'kg',
                 ),
             ),
-            takeUntil(this.unsubsService),
         ).subscribe();
     }
 

@@ -57,7 +57,6 @@ export class NewTrainingComponent implements OnDestroy {
                         if (params['id']) {
                             this.editMode = true;
                             this.editData._id = params['id'];
-                            this.sharedService.pastTrainingId$$.next(this.editData._id);
                             return this.pastTrainingService.getPastTraining(this.editData._id)
                                 .pipe(
                                     tap((response: StreamData<Training>) => {

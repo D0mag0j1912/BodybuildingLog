@@ -56,8 +56,8 @@ export class PastTrainingsComponent {
             this.changeDetectorRef.markForCheck();
         });
 
-        const searchFilter = this.route.snapshot.queryParamMap?.get('search');
-        const currentPage = +this.route.snapshot.queryParamMap?.get('page') ?? 1;
+        const searchFilter = this.route.snapshot.queryParamMap?.get('Search');
+        const currentPage = +this.route.snapshot.queryParamMap?.get('Page') ?? 1;
         if (searchFilter) {
             this.pastTrainings$ =
                 this.pastTrainingsService.searchPastTrainings(
@@ -94,7 +94,7 @@ export class PastTrainingsComponent {
     get isSearch$(): Observable<boolean> {
         return this.route.queryParamMap
             .pipe(
-                map((params: ParamMap) => !!params?.get('search')),
+                map((params: ParamMap) => !!params?.get('Search')),
             );
     }
 
@@ -135,7 +135,7 @@ export class PastTrainingsComponent {
                 tap((isSearch: boolean) => {
                     previousOrNext === 'Next' ? this.page++ : this.page--;
                     if (isSearch) {
-                        const currentSearchValue = this.route.snapshot.queryParamMap?.get('search') ?? undefined;
+                        const currentSearchValue = this.route.snapshot.queryParamMap?.get('Search') ?? undefined;
                         this.pastTrainings$ =
                             this.pastTrainingsService.searchPastTrainings(
                                 currentSearchValue,
@@ -241,19 +241,19 @@ export class PastTrainingsComponent {
         searchValue?: string,
     ): PastTrainingsQueryParams {
         return {
-            startDate: format(
+            StartDate: format(
                 utcToZonedTime(
                     trainingData?.Value?.Results?.Dates?.StartDate ?? new Date(),
                     environment.TIMEZONE)
                 , QUERY_PARAMS_DATE_FORMAT),
-            endDate: format(
+            EndDate: format(
                 utcToZonedTime(
                     trainingData?.Value?.Results?.Dates?.EndDate ?? new Date(),
                     environment.TIMEZONE,
                 ), QUERY_PARAMS_DATE_FORMAT),
-            search: searchValue ?? undefined,
-            page: searchValue ? this.page.toString() : undefined,
-            pageSize: searchValue ? this.trainingsPerPage.toString(): undefined,
+            Search: searchValue ?? undefined,
+            Page: searchValue ? this.page.toString() : undefined,
+            Size: searchValue ? this.trainingsPerPage.toString(): undefined,
         } as PastTrainingsQueryParams;
     }
 
@@ -283,7 +283,7 @@ export class PastTrainingsComponent {
     }
 
     private getDateTimeQueryParams(): Date {
-        const splittedDate: string[] = (this.route.snapshot.queryParams?.startDate)?.split('-') ?? [];
+        const splittedDate: string[] = (this.route.snapshot.queryParams?.StartDate)?.split('-') ?? [];
         const utc: string = new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString();
         return utcToZonedTime(new Date(utc), environment.TIMEZONE);
     }
