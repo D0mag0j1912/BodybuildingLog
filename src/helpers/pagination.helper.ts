@@ -60,7 +60,6 @@ export const paginate = async <T extends Partial<PastTrainings>, U extends Model
         return results;
     }
     catch (error) {
-        console.log(error)
         throw new InternalServerErrorException('training.past_trainings.filters.errors.search_error');
     }
 };

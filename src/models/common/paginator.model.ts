@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsLowercase, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export interface Paginator<T> {
     Results?: T;
@@ -25,5 +25,6 @@ export class PaginateDto {
 
     @IsOptional()
     @IsString()
+    @IsLowercase()
     searchValue: string;
 }
