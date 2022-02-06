@@ -28,7 +28,7 @@
                     [diameter]="spinnerSize"></mat-spinner>
             </ng-container>
             <ng-template #value>
-                <ng-container *ngIf="(isSearch$ | async) && pastTrainings?.Value?.TotalTrainings === 0; else otherCases">
+                <ng-container *ngIf="(isSearch$ | async) && pastTrainings?.Value?.TotalCount === 0; else otherCases">
                     <div class="search-no-result-wrapper">
                         <img
                             class="search-not-found-img"
@@ -45,10 +45,10 @@
                     <mat-card class="card-info-wrapper">
                         <mat-card-title class="week-title">
                             <strong class="week-title--txt">
-                                {{ setTimePeriod(pastTrainings.Value?.Dates) | async }}
+                                {{ setTimePeriod(pastTrainings.Value?.Results?.Dates) | async }}
                             </strong>
                             <span>
-                                {{ ' (' + (pastTrainings.Value?.Dates?.StartDate | date: dateFormat) + ' - ' + (pastTrainings.Value?.Dates?.EndDate  | date: dateFormat) + ')' }}
+                                {{ ' (' + (pastTrainings.Value?.Results?.Dates?.StartDate | date: dateFormat) + ' - ' + (pastTrainings.Value?.Results?.Dates?.EndDate  | date: dateFormat) + ')' }}
                             </span>
                         </mat-card-title>
                         <div class="footer">
@@ -61,16 +61,16 @@
                         </div>
                     </mat-card>
                     <div
-                        *ngIf="pastTrainings.Value?.TotalTrainings > 0; else noTrainings"
+                        *ngIf="pastTrainings.Value?.TotalCount > 0; else noTrainings"
                         class="training-item-wrapper"
-                        [class.no-trainings]="pastTrainings.Value?.TotalTrainings === 0">
+                        [class.no-trainings]="pastTrainings.Value?.TotalCount === 0">
                         <bl-training-item
-                            *ngFor="let training of pastTrainings.Value?.Trainings"
+                            *ngFor="let training of pastTrainings.Value?.Results?.Trainings"
                             [training]="training"></bl-training-item>
                     </div>
                     <ng-template #noTrainings>
                         <section class="no-trainings">
-                            <ng-container *ngIf="!(isSearch$ | async) && pastTrainings.Value?.TotalTrainings === 0;">
+                            <ng-container *ngIf="!(isSearch$ | async) && pastTrainings.Value?.TotalCount === 0;">
                                 <h1 class="no-trainings-title">
                                     {{ 'training.past_trainings.no_trainings' | translate }}
                                 </h1>
@@ -89,7 +89,7 @@
                         <span class="training-paginator--label">
                             {{ 'training.past_trainings.training_number' | translate }}
                             <strong class="training-paginator--label-count">
-                                {{ pastTrainings.Value?.TotalTrainings }}
+                                {{ pastTrainings.Value?.TotalCount }}
                             </strong>
                         </span>
                         <div class="training-paginator--button-wrapper">
@@ -104,7 +104,7 @@
                                     [disabled]="pastTrainings.IsLoading || (isPreviousDisabled && (isSearch$ | async))"
                                     (click)="loadNewPage(
                                         'Previous',
-                                        pastTrainings.Value?.Dates)">
+                                        pastTrainings.Value?.Results?.Dates)">
                                     <mat-icon class="training-paginator--icon">navigate_before</mat-icon>
                                 </button>
                             </div>
@@ -119,7 +119,7 @@
                                     [disabled]="pastTrainings.IsLoading || isNextDisabled"
                                     (click)="loadNewPage(
                                         'Next',
-                                        pastTrainings.Value?.Dates)">
+                                        pastTrainings.Value?.Results?.Dates)">
                                     <mat-icon class="training-paginator--icon">navigate_next</mat-icon>
                                 </button>
                             </div>

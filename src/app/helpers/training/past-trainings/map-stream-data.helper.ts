@@ -1,11 +1,11 @@
 import { Observable, of } from 'rxjs';
 import { catchError, map, startWith } from 'rxjs/operators';
-import { TrainingData } from '../../../models/common/interfaces/common.model';
+import { StreamData } from '../../../models/common/interfaces/common.model';
 
 export const mapStreamData = <T>() =>
-    (source: Observable<TrainingData<T>>) =>
+    (source: Observable<StreamData<T>>) =>
         source.pipe(
-            map((trainingData: TrainingData<T>) => ({
+            map((trainingData: StreamData<T>) => ({
                 IsLoading: false,
                 Value: trainingData?.Value,
                 IsError: false,

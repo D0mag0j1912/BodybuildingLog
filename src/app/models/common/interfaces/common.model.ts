@@ -4,7 +4,7 @@ export interface ErrorMessage {
     readonly statusCode?: number;
 }
 
-export interface TrainingData<T> {
+export interface StreamData<T> {
     IsLoading: boolean;
     IsError: boolean;
     Value?: T;

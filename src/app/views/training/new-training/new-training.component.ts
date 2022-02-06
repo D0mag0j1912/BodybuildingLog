@@ -8,7 +8,7 @@ import { PastTrainingsService } from 'src/app/services/training/past-trainings.s
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { TrainingData } from '../../../models/common/interfaces/common.model';
+import { StreamData } from '../../../models/common/interfaces/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { createEmptyExercise, EditNewTrainingData, EMPTY_TRAINING, EMPTY_TRAINING_EDIT } from '../../../models/training/new-training/empty-training.model';
 import { Training } from '../../../models/training/new-training/new-training.model';
@@ -42,7 +42,7 @@ export class NewTrainingComponent implements OnDestroy {
         }
     }
 
-    trainingStream$: Observable<TrainingData<Exercise[]>> | undefined = undefined;
+    trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
@@ -60,7 +60,7 @@ export class NewTrainingComponent implements OnDestroy {
                             this.sharedService.pastTrainingId$$.next(this.editData._id);
                             return this.pastTrainingService.getPastTraining(this.editData._id)
                                 .pipe(
-                                    tap((response: TrainingData<Training>) => {
+                                    tap((response: StreamData<Training>) => {
                                         this.editData = {
                                             editedDate: response?.Value?.updatedAt ?? new Date(),
                                             editTraining: {
@@ -130,7 +130,7 @@ export class NewTrainingComponent implements OnDestroy {
             this.pastTrainingService.getPastTraining(this.editData._id)
                 .pipe(
                     mapStreamData(),
-            ).subscribe((response: TrainingData<Training>) => {
+            ).subscribe((response: StreamData<Training>) => {
                 this.editData = {
                     editedDate: response?.Value?.updatedAt ?? new Date(),
                     editTraining: {

@@ -8,8 +8,9 @@ import { map } from 'rxjs/operators';
 import { Training } from 'src/app/models/training/new-training/new-training.model';
 import { environment } from '../../../../environments/environment';
 import { mapDateInterval } from '../../../helpers/training/past-trainings/map-past-trainings-dates.helper';
-import { TrainingData } from '../../../models/common/interfaces/common.model';
-import { PastTrainingsResponse } from '../../../models/training/past-trainings/past-trainings.model';
+import { StreamData } from '../../../models/common/interfaces/common.model';
+import { Paginator } from '../../../models/common/interfaces/paginator.model';
+import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
 import { TrainingActions } from '../../../models/training/past-trainings/training-actions/training-actions.model';
 import { DeleteTrainingActionData } from '../../../models/training/past-trainings/training-actions/training-actions.model';
 import {
@@ -51,11 +52,11 @@ export class DeleteTrainingActionService implements TrainingActions {
     deleteTraining(
         trainingId: string,
         currentDate: Date,
-    ): Observable<TrainingData<PastTrainingsResponse>> {
+    ): Observable<StreamData<Paginator<PastTrainings>>> {
         const params: string = `?currentDate=${currentDate}`;
-        return this.http.delete<TrainingData<PastTrainingsResponse>>(environment.BACKEND + `/training/delete_training/${trainingId}${params}`)
+        return this.http.delete<StreamData<Paginator<PastTrainings>>>(environment.BACKEND + `/training/delete_training/${trainingId}${params}`)
             .pipe(
-                map((response: TrainingData<PastTrainingsResponse>) => mapDateInterval(response)),
+                map((response: StreamData<Paginator<PastTrainings>>) => mapDateInterval(response)),
             );
     }
 }

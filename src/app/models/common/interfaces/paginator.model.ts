@@ -3,6 +3,7 @@ export interface Paginator<T> {
     Results?: T;
     Next?: PaginatorParams;
     Previous?: PaginatorParams;
+    TotalCount?: number;
 }
 
 export interface PaginatorParams {

@@ -4,7 +4,7 @@ import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
 import { switchMap, take, takeUntil } from 'rxjs/operators';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
-import { TrainingData } from '../../../models/common/interfaces/common.model';
+import { StreamData } from '../../../models/common/interfaces/common.model';
 import { Language } from '../../../models/preferences.model';
 import { Training } from '../../../models/training/new-training/new-training.model';
 import { DateInterval } from '../../../models/training/past-trainings/past-trainings.model';
@@ -80,7 +80,7 @@ export class HeaderComponent implements OnInit {
             take(1),
             switchMap((_id: string) => this.pastTrainingsService.getPastTraining(_id)),
             takeUntil(this.unsubsService),
-        ).subscribe(async (response: TrainingData<Training>) => {
+        ).subscribe(async (response: StreamData<Training>) => {
             await this.router.navigate(['/training/past-trainings'], {
                 queryParams: {
                     startDate: format(this.constructDates(new Date(response?.Value?.createdAt))?.StartDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT),

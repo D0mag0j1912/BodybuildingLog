@@ -4,9 +4,10 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { mapDateInterval } from '../../helpers/training/past-trainings/map-past-trainings-dates.helper';
-import { TrainingData } from '../../models/common/interfaces/common.model';
+import { StreamData } from '../../models/common/interfaces/common.model';
+import { Paginator } from '../../models/common/interfaces/paginator.model';
 import { Training } from '../../models/training/new-training/new-training.model';
-import { PastTrainingsResponse } from '../../models/training/past-trainings/past-trainings.model';
+import { PastTrainings } from '../../models/training/past-trainings/past-trainings.model';
 
 const ROUTE_PREFIX: string = '/training/';
 
@@ -21,24 +22,24 @@ export class PastTrainingsService {
         searchValue: string,
         pageSize: number,
         currentPage: number,
-    ): Observable<TrainingData<PastTrainingsResponse>> {
+    ): Observable<StreamData<Paginator<PastTrainings>>> {
         const params: string = `?searchValue=${searchValue}&size=${pageSize.toString()}&page=${currentPage.toString()}`;
-        return this.http.get<TrainingData<PastTrainingsResponse>>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings${params}`)
+        return this.http.get<StreamData<Paginator<PastTrainings>>>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings${params}`)
             .pipe(
-                map((response: TrainingData<PastTrainingsResponse>) => mapDateInterval(response)),
+                map((response: StreamData<Paginator<PastTrainings>>) => mapDateInterval(response)),
             );
     }
 
-    getPastTrainings(currentDate: Date): Observable<TrainingData<PastTrainingsResponse>> {
+    getPastTrainings(currentDate: Date): Observable<StreamData<Paginator<PastTrainings>>> {
         const params: string = `?currentDate=${currentDate}`;
-        return this.http.get<TrainingData<PastTrainingsResponse>>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings${params}`)
+        return this.http.get<StreamData<Paginator<PastTrainings>>>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings${params}`)
             .pipe(
-                map((response: TrainingData<PastTrainingsResponse>) => mapDateInterval(response)),
+                map((response: StreamData<Paginator<PastTrainings>>) => mapDateInterval(response)),
             );
     }
 
-    getPastTraining(id: string): Observable<TrainingData<Training>> {
-        return this.http.get<TrainingData<Training>>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings/${id}`);
+    getPastTraining(id: string): Observable<StreamData<Training>> {
+        return this.http.get<StreamData<Training>>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings/${id}`);
     }
 
 }

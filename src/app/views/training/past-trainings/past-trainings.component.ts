@@ -10,8 +10,9 @@ import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { TrainingData } from '../../../models/common/interfaces/common.model';
-import { DateInterval, MAX_TRAININGS_PER_PAGE, Page, PastTrainingsQueryParams, PastTrainingsResponse } from '../../../models/training/past-trainings/past-trainings.model';
+import { StreamData } from '../../../models/common/interfaces/common.model';
+import { Paginator } from '../../../models/common/interfaces/paginator.model';
+import { DateInterval, MAX_TRAININGS_PER_PAGE, Page, PastTrainingsQueryParams, PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
@@ -33,7 +34,7 @@ export class PastTrainingsComponent {
     isNextDisabled: boolean = true;
     isPreviousDisabled: boolean = false;
 
-    pastTrainings$: Observable<TrainingData<PastTrainingsResponse>> | undefined = undefined;
+    pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
@@ -46,7 +47,7 @@ export class PastTrainingsComponent {
     ) {
         this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
-        ).subscribe((response: TrainingData<PastTrainingsResponse>) => {
+        ).subscribe((response: StreamData<Paginator<PastTrainings>>) => {
             this.pastTrainings$ =
                 of(response)
                     .pipe(
@@ -64,14 +65,14 @@ export class PastTrainingsComponent {
                     this.trainingsPerPage,
                     currentPage,
                 ).pipe(
-                        tap((x: TrainingData<PastTrainingsResponse>) => this.handleArrows(x)),
+                        tap((x: StreamData<Paginator<PastTrainings>>) => this.handleArrows(x)),
                         mapStreamData(),
                     );
         }
         else {
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
                 .pipe(
-                    tap((response: TrainingData<PastTrainingsResponse>) => this.handleNextWeek(response?.Value?.Dates)),
+                    tap((response: StreamData<Paginator<PastTrainings>>) => this.handleNextWeek(response?.Value?.Results?.Dates)),
                     mapStreamData(),
                 );
         }
@@ -107,15 +108,15 @@ export class PastTrainingsComponent {
                             this.trainingsPerPage,
                             this.page,
                         ).pipe(
-                            tap(async (trainingData: TrainingData<PastTrainingsResponse>) => {
+                            tap(async (response: StreamData<Paginator<PastTrainings>>) => {
                                 await this.router.navigate([], {
                                     relativeTo: this.route,
                                     queryParams: this.handleQueryParams(
-                                        trainingData,
+                                        response,
                                         $event.trim() !== '' ? $event.trim() : undefined,
                                     ),
                                 });
-                                this.handleArrows(trainingData);
+                                this.handleArrows(response);
                             }),
                             mapStreamData(),
 
@@ -141,11 +142,11 @@ export class PastTrainingsComponent {
                                 this.trainingsPerPage,
                                 this.page,
                             ).pipe(
-                                tap(async (trainingData: TrainingData<PastTrainingsResponse>) => {
+                                tap(async (response: StreamData<Paginator<PastTrainings>>) => {
                                     await this.router.navigate([], {
                                         relativeTo: this.route,
                                         queryParams: this.handleQueryParams(
-                                            trainingData,
+                                            response,
                                             currentSearchValue,
                                         ),
                                     });
@@ -167,8 +168,8 @@ export class PastTrainingsComponent {
                                         environment.TIMEZONE,
                                     ), 7))
                                 .pipe(
-                                    tap(async (result: TrainingData<PastTrainingsResponse>) => {
-                                        this.handleNextWeek(result?.Value?.Dates);
+                                    tap(async (result: StreamData<Paginator<PastTrainings>>) => {
+                                        this.handleNextWeek(result?.Value?.Results?.Dates);
                                         await this.router.navigate([], {
                                             relativeTo: this.route,
                                             queryParams: this.handleQueryParams(result),
@@ -235,18 +236,18 @@ export class PastTrainingsComponent {
     }
 
     private handleQueryParams(
-        trainingData: TrainingData<PastTrainingsResponse>,
+        trainingData: StreamData<Paginator<PastTrainings>>,
         searchValue?: string,
     ): PastTrainingsQueryParams {
         return {
             startDate: format(
                 utcToZonedTime(
-                    trainingData?.Value?.Dates?.StartDate,
+                    trainingData?.Value?.Results?.Dates?.StartDate ?? new Date(),
                     environment.TIMEZONE)
                 , QUERY_PARAMS_DATE_FORMAT),
             endDate: format(
                 utcToZonedTime(
-                    trainingData?.Value?.Dates?.EndDate,
+                    trainingData?.Value?.Results?.Dates?.EndDate ?? new Date(),
                     environment.TIMEZONE,
                 ), QUERY_PARAMS_DATE_FORMAT),
             search: searchValue ?? undefined,
@@ -255,8 +256,8 @@ export class PastTrainingsComponent {
         } as PastTrainingsQueryParams;
     }
     //TODO: implement correctly
-    private handleArrows(x: TrainingData<PastTrainingsResponse>): void {
-        if (x?.Value?.TotalTrainings <= MAX_TRAININGS_PER_PAGE) {
+    private handleArrows(x: StreamData<Paginator<PastTrainings>>): void {
+        /* if (x?.Value?.TotalTrainings <= MAX_TRAININGS_PER_PAGE) {
             this.isNextDisabled = true;
             this.isPreviousDisabled = true;
         }
@@ -271,7 +272,7 @@ export class PastTrainingsComponent {
                 this.isNextDisabled = true;
             }
         }
-        this.changeDetectorRef.markForCheck();
+        this.changeDetectorRef.markForCheck(); */
     }
 
     private handleNextWeek(dateInterval: DateInterval): void {

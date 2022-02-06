@@ -1,11 +1,10 @@
 import { Training } from '../new-training/new-training.model';
-export interface PastTrainingsResponse {
+export interface PastTrainings {
     readonly Trainings: Training[];
     readonly Dates: {
         StartDate: Date,
         EndDate: Date
     };
-    readonly TotalTrainings: number;
     readonly Message?: string;
 }
 

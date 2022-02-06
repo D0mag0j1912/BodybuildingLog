@@ -7,8 +7,9 @@ import { EMPTY, Observable } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { Training } from 'src/app/models/training/new-training/new-training.model';
 import { SNACK_BAR_DURATION } from '../../../../../constants/snack-bar-duration.const';
-import { TrainingData } from '../../../../../models/common/interfaces/common.model';
-import { PastTrainingsResponse } from '../../../../../models/training/past-trainings/past-trainings.model';
+import { StreamData } from '../../../../../models/common/interfaces/common.model';
+import { Paginator } from '../../../../../models/common/interfaces/paginator.model';
+import { PastTrainings } from '../../../../../models/training/past-trainings/past-trainings.model';
 import { SharedService } from '../../../../../services/shared/shared.service';
 
 export interface DeleteTrainingActionDialogData {
@@ -19,7 +20,7 @@ export interface DeleteTrainingActionDialogData {
     deleteTrainingFn(
         trainingId: string,
         currentDate: Date,
-    ): Observable<TrainingData<PastTrainingsResponse>>;
+    ): Observable<StreamData<Paginator<PastTrainings>>>;
 }
 
 @Component({
@@ -56,9 +57,9 @@ export class DeleteTrainingActionComponent {
                 this.isLoading = false;
                 this.changeDetectorRef.markForCheck();
             }),
-        ).subscribe((trainingData: TrainingData<PastTrainingsResponse>) => {
-            this.sharedService.deletedTraining$$.next(trainingData);
-            this.snackBar.open(this.translateService.instant(trainingData?.Value?.Message), null, {
+        ).subscribe((response: StreamData<Paginator<PastTrainings>>) => {
+            this.sharedService.deletedTraining$$.next(response);
+            this.snackBar.open(this.translateService.instant(response?.Value?.Results?.Message ?? ''), null, {
                 duration: SNACK_BAR_DURATION.GENERAL,
                 panelClass: 'app__snackbar',
             });

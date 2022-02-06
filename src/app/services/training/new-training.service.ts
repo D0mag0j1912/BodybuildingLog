@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { environment } from '../../../environments/environment';
-import { TrainingData } from '../../models/common/interfaces/common.model';
+import { StreamData } from '../../models/common/interfaces/common.model';
 import { LocalStorageItems } from '../../models/common/interfaces/common.model';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Exercise } from '../../models/training/exercise.model';
@@ -29,9 +29,9 @@ export class NewTrainingService {
         private readonly authService: AuthService,
     ) {}
 
-    getExercises(): Observable<TrainingData<Exercise[]>> {
-        return this.http.get<TrainingData<Exercise[]>>(environment.BACKEND + '/training/get_exercises').pipe(
-            switchMap((response: TrainingData<Exercise[]>) => {
+    getExercises(): Observable<StreamData<Exercise[]>> {
+        return this.http.get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get_exercises').pipe(
+            switchMap((response: StreamData<Exercise[]>) => {
                 const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
                 if (!trainingState) {
                     return this.authService.loggedUser$.pipe(
