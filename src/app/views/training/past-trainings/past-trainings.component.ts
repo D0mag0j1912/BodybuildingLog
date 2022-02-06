@@ -12,7 +12,7 @@ import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator } from '../../../models/common/interfaces/paginator.model';
-import { DateInterval, MAX_TRAININGS_PER_PAGE, Page, PastTrainingsQueryParams, PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
+import { DateInterval, MAX_TRAININGS_PER_PAGE, Page, PastTrainingsQueryParams, PastTrainings, INITIAL_PAGE } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
@@ -28,8 +28,8 @@ export class PastTrainingsComponent {
 
     readonly food: number = 3000;
     readonly pageSizeOptions: ReadonlyArray<number> = [1, 2, 5, 10];
-    trainingsPerPage: number = MAX_TRAININGS_PER_PAGE;
-    page: number = 1;
+    size: number = MAX_TRAININGS_PER_PAGE;
+    page: number = INITIAL_PAGE;
 
     isNextDisabled: boolean = true;
     isPreviousDisabled: boolean = false;
@@ -57,12 +57,12 @@ export class PastTrainingsComponent {
         });
 
         const searchFilter = this.route.snapshot.queryParamMap?.get('search');
-        this.page = +this.route.snapshot.queryParamMap?.get('page') ?? 1;
+        this.page = this.route.snapshot.queryParamMap?.get('page') ? +this.route.snapshot.queryParamMap.get('page') : 1;
         if (searchFilter) {
             this.pastTrainings$ =
                 this.pastTrainingsService.searchPastTrainings(
                     searchFilter.trim().toLowerCase(),
-                    this.trainingsPerPage,
+                    this.size,
                     this.page,
                 ).pipe(
                         tap((x: StreamData<Paginator<PastTrainings>>) => this.handleArrows(x)),
@@ -105,7 +105,7 @@ export class PastTrainingsComponent {
                     switchMap((value: string) =>
                         this.pastTrainingsService.searchPastTrainings(
                             value,
-                            this.trainingsPerPage,
+                            this.size,
                             this.page,
                         ).pipe(
                             tap(async (response: StreamData<Paginator<PastTrainings>>) => {
@@ -138,8 +138,8 @@ export class PastTrainingsComponent {
                         const currentSearchValue = this.route.snapshot.queryParamMap?.get('search') ?? undefined;
                         this.pastTrainings$ =
                             this.pastTrainingsService.searchPastTrainings(
-                                currentSearchValue.trim().toLowerCase(),
-                                this.trainingsPerPage,
+                                currentSearchValue?.trim()?.toLowerCase() ?? '',
+                                this.size,
                                 this.page,
                             ).pipe(
                                 tap(async (response: StreamData<Paginator<PastTrainings>>) => {
@@ -253,7 +253,7 @@ export class PastTrainingsComponent {
                 ), QUERY_PARAMS_DATE_FORMAT),
             search: searchValue ?? undefined,
             page: searchValue ? this.page.toString() : undefined,
-            size: searchValue ? this.trainingsPerPage.toString(): undefined,
+            size: searchValue ? this.size.toString(): undefined,
         } as PastTrainingsQueryParams;
     }
 

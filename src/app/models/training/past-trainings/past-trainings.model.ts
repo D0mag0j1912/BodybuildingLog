@@ -26,3 +26,4 @@ export type Page = 'Previous' | 'Next';
 export const QUERY_PARAMS_DATE_FORMAT: string = 'dd-MM-yyyy';
 export const TEMPLATE_DATE_FORMAT: string = 'dd.MM.yyyy';
 export const MAX_TRAININGS_PER_PAGE: number = 3;
+export const INITIAL_PAGE: number = 1;
