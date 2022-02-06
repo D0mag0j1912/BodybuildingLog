@@ -27,9 +27,9 @@ import { PastTrainingsService } from '../../../services/training/past-trainings.
 export class PastTrainingsComponent {
 
     readonly food: number = 3000;
+    readonly pageSizeOptions: ReadonlyArray<number> = [1, 2, 5, 10];
     trainingsPerPage: number = MAX_TRAININGS_PER_PAGE;
     page: number = 1;
-    pageSizeOptions: ReadonlyArray<number> = [1, 2, 5, 10];
 
     isNextDisabled: boolean = true;
     isPreviousDisabled: boolean = false;
@@ -133,8 +133,8 @@ export class PastTrainingsComponent {
             .pipe(
                 take(1),
                 tap((isSearch: boolean) => {
+                    previousOrNext === 'Next' ? this.page++ : this.page--;
                     if (isSearch) {
-                        previousOrNext === 'Next' ? this.page++ : this.page--;
                         const currentSearchValue = this.route.snapshot.queryParamMap?.get('search') ?? undefined;
                         this.pastTrainings$ =
                             this.pastTrainingsService.searchPastTrainings(
@@ -150,6 +150,7 @@ export class PastTrainingsComponent {
                                             currentSearchValue,
                                         ),
                                     });
+                                    this.handleArrows(response);
                                 }),
                                 mapStreamData(),
                             );
@@ -255,24 +256,17 @@ export class PastTrainingsComponent {
             pageSize: searchValue ? this.trainingsPerPage.toString(): undefined,
         } as PastTrainingsQueryParams;
     }
-    //TODO: implement correctly
+
     private handleArrows(x: StreamData<Paginator<PastTrainings>>): void {
-        /* if (x?.Value?.TotalTrainings <= MAX_TRAININGS_PER_PAGE) {
+        if (x?.Value?.TotalCount <= MAX_TRAININGS_PER_PAGE) {
             this.isNextDisabled = true;
             this.isPreviousDisabled = true;
         }
         else {
-            const page = +this.route.snapshot.queryParamMap?.get('page') ?? 1;
-            if (page === 1) {
-                this.isPreviousDisabled = true;
-                this.isNextDisabled = false;
-            }
-            else {
-                this.isPreviousDisabled = false;
-                this.isNextDisabled = true;
-            }
+            this.isPreviousDisabled = !x?.Value?.Previous;
+            this.isNextDisabled = !x?.Value?.Next;
         }
-        this.changeDetectorRef.markForCheck(); */
+        this.changeDetectorRef.markForCheck();
     }
 
     private handleNextWeek(dateInterval: DateInterval): void {
