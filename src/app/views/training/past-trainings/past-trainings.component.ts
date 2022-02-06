@@ -1,7 +1,8 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { addDays, eachDayOfInterval, format, getMonth, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
+import { addDays, eachDayOfInterval, format, getMonth, isSameDay, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
@@ -44,6 +45,7 @@ export class PastTrainingsComponent {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
+        private readonly datePipe: DatePipe,
     ) {
         this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
@@ -210,6 +212,19 @@ export class PastTrainingsComponent {
     }
 
     setTimePeriod(dateInterval: DateInterval): Observable<string> {
+        //TODO: move template span to this method
+        //' (' + (pastTrainings.Value?.Results?.Dates?.StartDate | date: dateFormat) + ' - ' + (pastTrainings.Value?.Results?.Dates?.EndDate  | date: dateFormat) + ')'
+        //class="week-title--txt"
+        const isDay = isSameDay(
+            dateInterval.StartDate,
+            dateInterval.EndDate,
+        );
+        if (isDay) {
+            return this.translateService.stream(`common.day`)
+                .pipe(
+                    map((value: string) => `${value} (${this.datePipe.transform(dateInterval.StartDate, this.dateFormat)})`)
+                );
+        }
         const isWeek = isSameWeek(
             dateInterval.StartDate,
             dateInterval.EndDate,
