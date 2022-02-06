@@ -57,13 +57,13 @@ export class PastTrainingsComponent {
         });
 
         const searchFilter = this.route.snapshot.queryParamMap?.get('Search');
-        const currentPage = +this.route.snapshot.queryParamMap?.get('Page') ?? 1;
+        this.page = +this.route.snapshot.queryParamMap?.get('Page') ?? 1;
         if (searchFilter) {
             this.pastTrainings$ =
                 this.pastTrainingsService.searchPastTrainings(
-                    searchFilter.trim(),
+                    searchFilter.trim().toLowerCase(),
                     this.trainingsPerPage,
-                    currentPage,
+                    this.page,
                 ).pipe(
                         tap((x: StreamData<Paginator<PastTrainings>>) => this.handleArrows(x)),
                         mapStreamData(),
@@ -138,7 +138,7 @@ export class PastTrainingsComponent {
                         const currentSearchValue = this.route.snapshot.queryParamMap?.get('Search') ?? undefined;
                         this.pastTrainings$ =
                             this.pastTrainingsService.searchPastTrainings(
-                                currentSearchValue,
+                                currentSearchValue.trim().toLowerCase(),
                                 this.trainingsPerPage,
                                 this.page,
                             ).pipe(

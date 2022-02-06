@@ -28,7 +28,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
         private readonly unsubscribeService: UnsubscribeService,
         private readonly route: ActivatedRoute,
     ) {
-        const searchQueryParam = this.route.snapshot.queryParamMap?.get('search');
+        const searchQueryParam = this.route.snapshot.queryParamMap?.get('Search');
         if (searchQueryParam) {
             this.searchValue = searchQueryParam;
         }
@@ -36,7 +36,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
         this.keyUp$$
             .pipe(
                 map((event: Event) => (event.target as HTMLInputElement).value),
-                map((value: string) => value.trim()),
+                map((value: string) => value.trim().toLowerCase()),
                 filter((value: string) => value.length <= 50),
                 debounceTime(500),
                 distinctUntilChanged(),
