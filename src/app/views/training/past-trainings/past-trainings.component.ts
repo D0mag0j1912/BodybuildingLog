@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { addDays, eachDayOfInterval, format, getMonth, isSameDay, isSameMonth, isSameWeek, isSameYear, startOfDay, subDays } from 'date-fns';
+import { addDays, eachDayOfInterval, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
@@ -212,9 +212,6 @@ export class PastTrainingsComponent {
     }
 
     setTimePeriod(dateInterval: DateInterval): Observable<string> {
-        //TODO: move template span to this method
-        //' (' + (pastTrainings.Value?.Results?.Dates?.StartDate | date: dateFormat) + ' - ' + (pastTrainings.Value?.Results?.Dates?.EndDate  | date: dateFormat) + ')'
-        //class="week-title--txt"
         const isDay = isSameDay(
             dateInterval.StartDate,
             dateInterval.EndDate,
@@ -222,7 +219,7 @@ export class PastTrainingsComponent {
         if (isDay) {
             return this.translateService.stream(`common.day`)
                 .pipe(
-                    map((value: string) => `${value} (${this.datePipe.transform(dateInterval.StartDate, this.dateFormat)})`)
+                    map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate)),
                 );
         }
         const isWeek = isSameWeek(
@@ -231,7 +228,10 @@ export class PastTrainingsComponent {
             { weekStartsOn: 1 },
         );
         if (isWeek) {
-            return this.translateService.stream('common.week');
+            return this.translateService.stream('common.week')
+                .pipe(
+                    map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
+                );
         }
         const isMonth = isSameMonth(
             dateInterval.StartDate,
@@ -239,16 +239,15 @@ export class PastTrainingsComponent {
         );
         if (isMonth) {
             const month = getMonth(dateInterval.StartDate);
-            return this.translateService.stream(`common.months.${ALL_MONTHS[month]}`);
+            return this.translateService.stream(`common.months.${ALL_MONTHS[month]}`)
+                .pipe(
+                    map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
+                );
         }
-        const isYear = isSameYear(
-            dateInterval.StartDate,
-            dateInterval.EndDate,
-        );
-        if (isYear) {
-            return this.translateService.stream('common.year');
-        }
-        return this.translateService.stream('common.period');
+        return this.translateService.stream('common.period')
+            .pipe(
+                map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
+            );
     }
 
     private handleQueryParams(
@@ -302,4 +301,20 @@ export class PastTrainingsComponent {
         const utc: string = new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString();
         return utcToZonedTime(new Date(utc), environment.TIMEZONE);
     }
+
+    private generateHeaderTitle(
+        period: string,
+        startDate: Date,
+        endDate?: Date,
+    ): string {
+        if (endDate) {
+            return `
+                <strong class="header-title--txt">${period}</strong>
+                (${this.datePipe.transform(startDate, this.dateFormat)} - ${this.datePipe.transform(endDate, this.dateFormat)})`;
+        }
+        else {
+            return `<strong class="header-title--txt">${period}</strong> (${this.datePipe.transform(startDate, this.dateFormat)})`;
+        }
+    }
+
 }

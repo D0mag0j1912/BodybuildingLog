@@ -43,8 +43,8 @@
                 </ng-container>
                 <ng-template #otherCases>
                     <mat-card class="card-info-wrapper">
-                        <mat-card-title class="week-title">
-                            <span [innerHTML]="setTimePeriod(pastTrainings.Value?.Results?.Dates) | async"></span>
+                        <mat-card-title class="header-title">
+                            <div [innerHTML]="setTimePeriod(pastTrainings.Value?.Results?.Dates) | async"></div>
                         </mat-card-title>
                         <div class="footer">
                             <div class="food-subtitle">

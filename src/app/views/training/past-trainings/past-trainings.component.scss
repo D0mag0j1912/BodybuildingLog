@@ -68,16 +68,12 @@
     .card-info-wrapper {
         border: 2px solid $army-green;
 
-        .week-title {
+        .header-title {
             font-size: 20px;
             padding-bottom: 10px;
             text-align: center;
             font-family: $poppins;
             white-space: nowrap;
-
-            &--txt {
-                color: $army-green;
-            }
         }
 
         .footer {
