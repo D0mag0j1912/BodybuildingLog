@@ -103,6 +103,7 @@ export class PastTrainingsComponent {
     }
 
     searchEmitted($event: string): void {
+        this.page = INITIAL_PAGE;
         this.pastTrainings$ =
             of($event)
                 .pipe(
