@@ -6,7 +6,7 @@ export class TrainingGuard implements CanActivate {
 
     constructor(
         private readonly message: string,
-    ){}
+    ) {}
 
     canActivate(context: ExecutionContext): boolean {
         const request: Request = context.switchToHttp().getRequest();
@@ -14,7 +14,6 @@ export class TrainingGuard implements CanActivate {
         if (!trainingId) {
             throw new BadRequestException(this.message);
         }
-
         return true;
     }
 }

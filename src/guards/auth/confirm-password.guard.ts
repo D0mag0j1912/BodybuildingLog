@@ -5,7 +5,9 @@ import { SignupDto } from '../../models/auth/signup.model';
 @Injectable()
 export class ConfirmPasswordGuard implements CanActivate {
 
-    constructor(private readonly responseMessage: string) {}
+    constructor(
+        private readonly responseMessage: string,
+    ) {}
 
     canActivate(context: ExecutionContext): boolean {
         const request: Request = context.switchToHttp().getRequest();
