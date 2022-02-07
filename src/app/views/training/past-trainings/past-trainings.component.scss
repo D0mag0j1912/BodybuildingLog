@@ -97,7 +97,7 @@
     .training-item-wrapper {
         display: block;
         margin: 10px 0;
-        max-height: 400px;
+        max-height: calc(100vh - 290px);
         overflow: auto;
 
         &::-webkit-scrollbar {
@@ -132,6 +132,9 @@
         display: flex;
         align-items: center;
         justify-content: space-around;
+        position: fixed;
+        bottom: 0;
+        width: 90%;
 
         &--label {
             font-size: 15px;
@@ -180,6 +183,7 @@
             flex-direction: row;
             justify-content: flex-start;
             column-gap: 18px;
+            max-height: 400px;
             width: 850px;
             overflow: auto;
 
@@ -192,6 +196,7 @@
             width: 850px;
             column-gap: 20px;
             justify-content: flex-end;
+            position: relative;
 
             &--button-wrapper {
                 margin-right: 15px;
