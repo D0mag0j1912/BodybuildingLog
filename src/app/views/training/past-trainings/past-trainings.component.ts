@@ -18,6 +18,8 @@ import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
+type QueryParam = keyof PastTrainingsQueryParams;
+
 @Component({
     selector: 'bl-past-trainings',
     templateUrl: './past-trainings.component.html',
@@ -255,20 +257,65 @@ export class PastTrainingsComponent {
         searchValue?: string,
     ): PastTrainingsQueryParams {
         return {
-            startDate: format(
-                utcToZonedTime(
-                    trainingData?.Value?.Results?.Dates?.StartDate ?? new Date(),
-                    environment.TIMEZONE)
-                , QUERY_PARAMS_DATE_FORMAT),
-            endDate: format(
-                utcToZonedTime(
-                    trainingData?.Value?.Results?.Dates?.EndDate ?? new Date(),
-                    environment.TIMEZONE,
-                ), QUERY_PARAMS_DATE_FORMAT),
+            startDate: this.handleSpecificQueryParam(searchValue, trainingData, 'startDate'),
+            endDate: this.handleSpecificQueryParam(searchValue, trainingData, 'endDate'),
             search: searchValue ?? undefined,
-            page: searchValue ? this.page.toString() : undefined,
-            size: searchValue ? this.size.toString(): undefined,
+            page: this.handleSpecificQueryParam(searchValue, trainingData, 'page'),
+            size: this.handleSpecificQueryParam(searchValue, trainingData, 'size'),
         } as PastTrainingsQueryParams;
+    }
+
+    private handleSpecificQueryParam(
+        searchValue: string | undefined,
+        trainingData: StreamData<Paginator<PastTrainings>>,
+        queryParam: QueryParam,
+    ): string | void {
+        if (searchValue) {
+            if (trainingData?.Value?.TotalCount > 0) {
+                if (queryParam === 'page') {
+                    return this.page.toString();
+                }
+                else if (queryParam === 'startDate') {
+                    return format(
+                        utcToZonedTime(
+                            trainingData?.Value?.Results?.Dates?.StartDate ?? new Date(),
+                            environment.TIMEZONE)
+                        , QUERY_PARAMS_DATE_FORMAT);
+                }
+                else if (queryParam === 'endDate') {
+                    return format(
+                        utcToZonedTime(
+                            trainingData?.Value?.Results?.Dates?.EndDate ?? new Date(),
+                            environment.TIMEZONE,
+                        ), QUERY_PARAMS_DATE_FORMAT);
+                }
+                else {
+                    return this.size.toString();
+                }
+            }
+            else {
+                return undefined;
+            }
+        }
+        else {
+            if (queryParam === 'startDate') {
+                return format(
+                    utcToZonedTime(
+                        trainingData?.Value?.Results?.Dates?.StartDate ?? new Date(),
+                        environment.TIMEZONE)
+                    , QUERY_PARAMS_DATE_FORMAT);
+            }
+            else if (queryParam === 'endDate') {
+                return format(
+                    utcToZonedTime(
+                        trainingData?.Value?.Results?.Dates?.EndDate ?? new Date(),
+                        environment.TIMEZONE,
+                    ), QUERY_PARAMS_DATE_FORMAT);
+            }
+            else {
+                return undefined;
+            }
+        }
     }
 
     private handleArrows(x: StreamData<Paginator<PastTrainings>>): void {
