@@ -21,8 +21,7 @@ export class AuthService {
     async passwordFitsEmail(userDto: UserDto): Promise<boolean> {
         try {
             const { email, password } = userDto;
-            // tslint:disable-next-line: await-promise
-            const user: UserDto = await this.userModel.findOne({ email: email });
+            const user: UserDto = await this.userModel.findOne({ email: email }).exec();
             if (!user) {
                 return false;
             }
@@ -43,8 +42,7 @@ export class AuthService {
     async login(userDto: UserDto): Promise<AuthResponse> {
         try {
             const { email, password } = userDto;
-            // tslint:disable-next-line: await-promise
-            const user: UserDto = await this.userModel.findOne({ email: email });
+            const user: UserDto = await this.userModel.findOne({ email: email }).exec();
             if (!user) {
                 return {
                     Success: false,
@@ -65,10 +63,8 @@ export class AuthService {
                 email: user.email,
                 _id: user._id,
             };
-            // tslint:disable-next-line: await-promise
             const accessToken: string = await Promise.resolve(this.jwtService.sign(payload));
-            // tslint:disable-next-line: await-promise
-            const preferences: PreferencesDto = await this.preferencesModel.findOne({ userId: user._id });
+            const preferences: PreferencesDto = await this.preferencesModel.findOne({ userId: user._id }).exec();
             return {
                 Token: accessToken,
                 ExpiresIn: 10800,
