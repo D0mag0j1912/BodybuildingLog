@@ -9,7 +9,7 @@ import { Paginator } from '../../models/common/interfaces/paginator.model';
 import { Training } from '../../models/training/new-training/new-training.model';
 import { PastTrainings } from '../../models/training/past-trainings/past-trainings.model';
 
-const ROUTE_PREFIX: string = '/training/';
+const ROUTE_PREFIX = '/training/';
 
 @Injectable({ providedIn: 'root' })
 export class PastTrainingsService {
@@ -23,7 +23,7 @@ export class PastTrainingsService {
         pageSize: number,
         currentPage: number,
     ): Observable<StreamData<Paginator<PastTrainings>>> {
-        const params: string = `?searchValue=${searchValue}&size=${pageSize.toString()}&page=${currentPage.toString()}`;
+        const params = `?searchValue=${searchValue}&size=${pageSize.toString()}&page=${currentPage.toString()}`;
         return this.http.get<StreamData<Paginator<PastTrainings>>>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings${params}`)
             .pipe(
                 map((response: StreamData<Paginator<PastTrainings>>) => mapDateInterval(response)),
@@ -31,7 +31,7 @@ export class PastTrainingsService {
     }
 
     getPastTrainings(currentDate: Date): Observable<StreamData<Paginator<PastTrainings>>> {
-        const params: string = `?currentDate=${currentDate}`;
+        const params = `?currentDate=${currentDate}`;
         return this.http.get<StreamData<Paginator<PastTrainings>>>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings${params}`)
             .pipe(
                 map((response: StreamData<Paginator<PastTrainings>>) => mapDateInterval(response)),

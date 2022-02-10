@@ -30,7 +30,7 @@ export interface DeleteTrainingActionDialogData {
 })
 export class DeleteTrainingActionComponent {
 
-    isLoading: boolean = false;
+    isLoading = false;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public readonly data: DeleteTrainingActionDialogData,

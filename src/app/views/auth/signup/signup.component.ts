@@ -39,7 +39,7 @@ export class SignupComponent {
     form: FormGroup;
     readonly formErrorStateMatcher: FormErrorStateMatcher = new FormErrorStateMatcher();
 
-    isLoading: boolean = false;
+    isLoading = false;
 
     constructor(
         private readonly authService: AuthService,

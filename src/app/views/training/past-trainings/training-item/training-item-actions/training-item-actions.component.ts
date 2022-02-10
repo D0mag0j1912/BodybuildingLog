@@ -21,7 +21,7 @@ export class TrainingItemActionsComponent {
     dayIndex: number;
 
     @Input()
-    weekDays: ReadonlyArray<string>;
+    weekDays: string[];
 
     @Input()
     timeCreated: string;
@@ -32,10 +32,10 @@ export class TrainingItemActionsComponent {
 
     performAction(action: TrainingItemActions): void {
         const data: DeleteTrainingActionData = {
-            weekDays: this.weekDays as ReadonlyArray<string>,
-            timeCreated: this.timeCreated as string,
-            dayIndex: this.dayIndex as number,
-            training: this.training as Training,
+            weekDays: this.weekDays,
+            timeCreated: this.timeCreated,
+            dayIndex: this.dayIndex,
+            training: this.training,
         };
         switch(action) {
             case 'delete':

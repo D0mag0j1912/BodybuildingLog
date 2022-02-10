@@ -2,8 +2,8 @@ import { Training } from '../new-training/new-training.model';
 export interface PastTrainings {
     readonly Trainings: Training[];
     readonly Dates: {
-        StartDate: Date,
-        EndDate: Date
+        StartDate: Date;
+        EndDate: Date;
     };
     readonly Message?: string;
 }
@@ -23,7 +23,7 @@ export interface DateInterval {
 
 export type Page = 'Previous' | 'Next';
 
-export const QUERY_PARAMS_DATE_FORMAT: string = 'dd-MM-yyyy';
-export const TEMPLATE_DATE_FORMAT: string = 'dd.MM.yyyy';
-export const MAX_TRAININGS_PER_PAGE: number = 3;
-export const INITIAL_PAGE: number = 1;
+export const QUERY_PARAMS_DATE_FORMAT = 'dd-MM-yyyy';
+export const TEMPLATE_DATE_FORMAT = 'dd.MM.yyyy';
+export const MAX_TRAININGS_PER_PAGE = 3;
+export const INITIAL_PAGE = 1;

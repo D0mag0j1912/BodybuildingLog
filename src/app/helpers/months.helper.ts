@@ -1,5 +1,5 @@
 
-export const ALL_MONTHS: ReadonlyArray<string> = [
+export const ALL_MONTHS: string[] = [
     'january',
     'february',
     'march',

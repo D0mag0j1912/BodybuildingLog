@@ -1,2 +1,2 @@
 
-export const SPINNER_SIZE: number = 40;
+export const SPINNER_SIZE = 40;

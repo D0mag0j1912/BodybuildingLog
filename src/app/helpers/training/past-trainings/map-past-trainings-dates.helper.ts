@@ -17,17 +17,3 @@ export function mapDateInterval(response: StreamData<Paginator<PastTrainings>>):
         } as Paginator<PastTrainings>,
     };
 }
-/*
-export function mapDateInterval(response: StreamData<PastTrainings>): StreamData<PastTrainings> {
-    return {
-        ...response,
-        Value: {
-            ...response.Value,
-            Dates: {
-                StartDate: new Date(response.Value?.Dates?.StartDate ?? null),
-                EndDate: new Date(response.Value?.Dates?.EndDate ?? null),
-            } as DateInterval,
-        } as PastTrainings,
-    } as StreamData<PastTrainings>;
-}
- */

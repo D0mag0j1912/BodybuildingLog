@@ -9,8 +9,7 @@ export class SignupService {
         private readonly http: HttpClient,
     ){}
 
-    getEmails(email: string)
-        : Observable<boolean> {
+    getEmails(email: string): Observable<boolean> {
         const params = `?email=${email}`;
         return this.http.get<boolean>(environment.BACKEND + '/get_all_emails' + params);
     }

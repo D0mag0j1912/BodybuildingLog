@@ -22,7 +22,7 @@ const routes: Routes = [
     },
     {
         path: 'training',
-        loadChildren: () => import('./modules/training/training.module').then(module => module.TrainingModule),
+        loadChildren: async () => import('./modules/training/training.module').then(module => module.TrainingModule),
         canActivate: [AuthGuard],
     },
     {

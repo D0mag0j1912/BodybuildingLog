@@ -23,7 +23,7 @@ type FormData = {
 })
 export class LoginComponent implements AfterViewInit {
 
-    isLoading: boolean = false;
+    isLoading = false;
 
     form: FormGroup;
     formErrorStateMatcher: FormErrorStateMatcher = new FormErrorStateMatcher();

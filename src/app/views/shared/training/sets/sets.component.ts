@@ -40,13 +40,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     exerciseNameControl: AbstractControl | null;
 
     @Input()
-    indexExercise: number = 0;
+    indexExercise = 0;
 
     @Input()
-    editMode: boolean = false;
+    editMode = false;
 
     @Input()
-    isLoading: boolean = false;
+    isLoading = false;
 
     @Output()
     readonly setAdded: EventEmitter<SetStateChanged> = new EventEmitter<SetStateChanged>();
@@ -139,9 +139,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     }
 
     onChangeSets(indexSet: number): void {
-        let total: number = 0;
-        let isWeightLiftedValid: boolean = false;
-        let isRepsValid: boolean = false;
+        let total = 0;
+        let isWeightLiftedValid = false;
+        let isRepsValid = false;
         if (this.accessFormField('weightLifted', indexSet)?.valid && this.accessFormField('weightLifted', indexSet)?.value) {
             isWeightLiftedValid = true;
         }
@@ -193,7 +193,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     }
 
     private calculateTotal(): number {
-        let total: number = 0;
+        let total = 0;
         for(const group of this.getSets()){
             total += (+group.get('weightLifted')?.value * +group.get('reps')?.value);
         }

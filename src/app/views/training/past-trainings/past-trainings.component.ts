@@ -30,12 +30,12 @@ type QueryParam = keyof PastTrainingsQueryParams;
 export class PastTrainingsComponent {
 
     readonly food: number = 3000;
-    readonly pageSizeOptions: ReadonlyArray<number> = [1, 2, 5, 10];
+    readonly pageSizeOptions: number[] = [1, 2, 5, 10];
     size: number = MAX_TRAININGS_PER_PAGE;
     page: number = INITIAL_PAGE;
 
-    isNextDisabled: boolean = true;
-    isPreviousDisabled: boolean = false;
+    isNextDisabled = true;
+    isPreviousDisabled = false;
 
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
 

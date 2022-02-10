@@ -8,7 +8,7 @@ import { TrainingItemActions } from '../../../../models/training/past-trainings/
 import { SharedService } from '../../../../services/shared/shared.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 
-const MAX_EXERCISE_NAME_WIDTH: number = 200;
+const MAX_EXERCISE_NAME_WIDTH = 200;
 
 @Component({
     selector: 'bl-training-item',
@@ -19,7 +19,7 @@ const MAX_EXERCISE_NAME_WIDTH: number = 200;
 })
 export class TrainingItemComponent implements OnInit {
 
-    readonly weekDays: ReadonlyArray<string> = [
+    readonly weekDays: string[] = [
         'sunday',
         'monday',
         'tuesday',
@@ -29,7 +29,7 @@ export class TrainingItemComponent implements OnInit {
         'saturday',
     ];
 
-    readonly actions: ReadonlyArray<TrainingItemActions> = [
+    readonly actions: TrainingItemActions[] = [
         'delete',
         'more',
     ];
@@ -37,7 +37,7 @@ export class TrainingItemComponent implements OnInit {
     timeCreated: string;
     dayIndex: number;
 
-    isTooltipDisabled: boolean = true;
+    isTooltipDisabled = true;
 
     @Input()
     training: Training;

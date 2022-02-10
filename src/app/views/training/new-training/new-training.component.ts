@@ -26,9 +26,9 @@ export class NewTrainingComponent implements OnDestroy {
     form: FormGroup;
 
     editData: EditNewTrainingData = EMPTY_TRAINING_EDIT;
-    editMode: boolean = false;
+    editMode = false;
 
-    private focusCounter: number = 0;
+    private focusCounter = 0;
 
     @ViewChild('bodyweightRef', {
         read: ElementRef,

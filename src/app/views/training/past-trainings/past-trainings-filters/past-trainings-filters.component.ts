@@ -19,7 +19,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     @Output()
     readonly trainingEmitted: EventEmitter<string> = new EventEmitter<string>();
 
-    searchValue: string = '';
+    searchValue = '';
 
     @ViewChild('search', { read: ElementRef })
     searchInput: ElementRef | undefined;
@@ -59,6 +59,8 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     }
 
     //TODO: open filter dialog
-    openFilterDialog(): void {}
+    openFilterDialog(): void {
+        //TODO
+    }
 
 }

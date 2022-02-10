@@ -13,8 +13,8 @@ export class AuthGuard implements CanActivate {
     ) {}
 
     canActivate(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot,
+        _route: ActivatedRouteSnapshot,
+        _state: RouterStateSnapshot,
     ): Observable<boolean | UrlTree>  {
         return this.authService.isAuth$.pipe(
             take(1),
@@ -27,7 +27,7 @@ export class AuthGuard implements CanActivate {
         );
     }
 
-    canLoad(route: Route): Observable<boolean | UrlTree> {
+    canLoad(_route: Route): Observable<boolean | UrlTree> {
         return this.authService.isAuth$.pipe(
             take(1),
             map((isAuth: boolean) => {

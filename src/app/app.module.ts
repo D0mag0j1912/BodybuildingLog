@@ -20,7 +20,7 @@ init({
     dsn: 'https://b4903b17554c4e40bbada176e50e4719@o997027.ingest.sentry.io/5955490',
 });
 
-export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http);
 }
 
@@ -40,7 +40,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
+                useFactory: httpLoaderFactory,
                 deps: [HttpClient],
             },
         }),

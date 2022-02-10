@@ -3,7 +3,7 @@ import { AbstractControl, FormArray, ValidationErrors, ValidatorFn } from '@angu
 export function allSetsFilled(): ValidatorFn {
     return (array: AbstractControl): ValidationErrors | null => {
         if(array) {
-            let isSetFilled: boolean = true;
+            let isSetFilled = true;
             (array as FormArray).controls.forEach((set: AbstractControl) => {
                 if(!set.get('weightLifted').value || !set.get('reps').value
                     || set.get('weightLifted').errors || set.get('reps').errors) {

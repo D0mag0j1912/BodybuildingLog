@@ -1,0 +1,49 @@
+7 ESLint rules behave differently from their TSLint counterparts:
+  * arrow-body-style:
+    - ESLint will throw an error if the function body is multiline yet has a one-line return on it.
+  * comma-dangle:
+    - ESLint does not support config property typeLiterals
+  * no-trailing-spaces:
+    - ESLint does not support ignoring template strings.
+    - ESLint does not support ignoring JSDoc.
+  * space-before-function-paren:
+    - Option "method" is not supported by ESLint.
+    - Option "constructor" is not supported by ESLint.
+  * no-underscore-dangle:
+    - Leading and trailing underscores (_) on identifiers will now be ignored.
+  * prefer-arrow/prefer-arrow-functions:
+    - ESLint does not support allowing standalone function declarations.
+  * no-invalid-this:
+    - Functions in methods will no longer be ignored.
+
+Could not resolve ESLint extension 'plugin:prettier/recommended'.: Error: Cannot find module 'C:\Development\trainingApk\plugin:prettier\recommended'
+Require stack:
+- C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\adapters\nativeImporter.js
+- C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\api\dependencies.js
+- C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\cli\main.js
+- C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\bin\tslint-to-eslint-config
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:902:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:746:27)
+    at Module.require (internal/modules/cjs/loader.js:974:19)
+    at require (internal/modules/cjs/helpers.js:93:18)
+    at C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\adapters\nativeImporter.js:25:64
+    at processTicksAndRejections (internal/process/task_queues.js:95:5)
+    at Object.nativeImporter (C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\adapters\nativeImporter.js:25:16)
+    at importFile (C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\input\importer.js:29:20)
+    at importer (C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\input\importer.js:47:28)
+    at C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\converters\lintConfigs\summarization\retrieveExtendsValues.js:51:26
+    at Function.all (<anonymous>:null:null)
+    at retrieveExtendsValues (C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\converters\lintConfigs\summarization\retrieveExtendsValues.js:37:5)
+    at summarizePackageRules (C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\converters\lintConfigs\summarization\summarizePackageRules.js:29:57)
+    at createESLintConfiguration (C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\converters\lintConfigs\createESLintConfiguration.js:8:12)
+    at convertLintConfig (C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\converters\lintConfigs\convertLintConfig.js:13:37)
+    at tryConvertConfig (C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\cli\runCli.js:62:18)
+    at runCli (C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\cli\runCli.js:48:24)
+    at Object.main (C:\Users\domag\AppData\Roaming\npm-cache\_npx\2136\node_modules\tslint-to-eslint-config\src\cli\main.js:11:30)
+
+
+
+2 rules are not known by tslint-to-eslint-config to have ESLint equivalents:
+  * tslint-to-eslint-config does not know the ESLint equivalent for TSLint's "prefer-method-signature".
+  * tslint-to-eslint-config does not know the ESLint equivalent for TSLint's "typedef".
+

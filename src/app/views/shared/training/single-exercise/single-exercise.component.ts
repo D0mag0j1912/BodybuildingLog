@@ -24,8 +24,8 @@ import { NewTrainingService } from '../../../../services/training/new-training.s
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { DeleteExerciseDialogData, DialogComponent, DialogData } from '../../dialog/dialog.component';
 
-const INITIAL_WEIGHT: number = 0;
-const MAX_EXERCISE_NAME_WIDTH: number = 181;
+const INITIAL_WEIGHT = 0;
+const MAX_EXERCISE_NAME_WIDTH = 181;
 
 @Component({
     selector: 'bl-single-exercise',
@@ -47,7 +47,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     readonly exerciseNameErrorStateMatcher: ExerciseNameErrorStateMatcher = new ExerciseNameErrorStateMatcher();
     setErrors: SetFormValidationErrors[] = [];
 
-    exerciseChanged: boolean = false;
+    exerciseChanged = false;
 
     onTouched: () => void;
 
@@ -58,10 +58,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     bodyweight: AbstractControl | null;
 
     @Input()
-    isLoading: boolean = false;
+    isLoading = false;
 
     @Input()
-    editMode: boolean = false;
+    editMode = false;
 
     @ViewChild('exerciseNameChoice', {
         read: MatSelect,
