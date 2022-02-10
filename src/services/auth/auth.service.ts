@@ -66,7 +66,7 @@ export class AuthService {
                 _id: user._id,
             };
             // tslint:disable-next-line: await-promise
-            const accessToken: string = await this.jwtService.sign(payload);
+            const accessToken: string = await Promise.resolve(this.jwtService.sign(payload));
             // tslint:disable-next-line: await-promise
             const preferences: PreferencesDto = await this.preferencesModel.findOne({ userId: user._id });
             return {
@@ -85,13 +85,12 @@ export class AuthService {
     async getAllEmails(email: string): Promise<boolean> {
         try {
             const result: {
-                _id: string,
-                password: string
-            // tslint:disable-next-line: await-promise
+                _id: string;
+                password: string;
             } = await this.userModel.findOne(
                 { email: email },
                 'password',
-            );
+            ).exec();
             if (!result) {
                 return true;
             }
