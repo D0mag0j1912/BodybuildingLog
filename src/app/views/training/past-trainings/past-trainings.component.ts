@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Observable, of } from 'rxjs';
-import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
@@ -38,8 +38,8 @@ export class PastTrainingsComponent {
     size: number = MAX_TRAININGS_PER_PAGE;
     page: number = INITIAL_PAGE;
     //TODO: rename variable names (reverse meaning)
-    isNextDisabled = true;
-    isPreviousDisabled = false;
+    isNextPage = true;
+    isPreviousPage = true;
 
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
 
@@ -100,7 +100,7 @@ export class PastTrainingsComponent {
                 .pipe(
                     tap((response: StreamData<Paginator<PastTrainings>>) => {
                         this.handleNextWeek(response?.Value?.Results?.Dates);
-                        this.isPreviousDisabled = response?.Value?.Results?.IsPreviousWeekDisabled ?? false;
+                        this.isPreviousPage = response?.Value?.Results?.IsPreviousWeek ?? false;
                         this.changeDetectorRef.markForCheck();
                     }),
                     mapStreamData(),
@@ -202,12 +202,14 @@ export class PastTrainingsComponent {
                                 .pipe(
                                     tap(async (result: StreamData<Paginator<PastTrainings>>) => {
                                         this.handleNextWeek(result?.Value?.Results?.Dates);
+                                        this.isPreviousPage = result?.Value?.Results?.IsPreviousWeek ?? false;
                                         await this.router.navigate([], {
                                             relativeTo: this.route,
                                             queryParams: this.handleQueryParams(result),
                                         });
                                     }),
                                     mapStreamData(),
+                                    finalize(() => this.changeDetectorRef.markForCheck()),
                                 );
                     }
                 }),
@@ -220,7 +222,7 @@ export class PastTrainingsComponent {
             return this.translateService.stream('common.next_page');
         }
         else {
-            return this.translateService.stream(`training.past_trainings.${!this.isNextDisabled ? 'buttons.next_week' : 'disabled_next_week'}`);
+            return this.translateService.stream(`training.past_trainings.${this.isNextPage ? 'buttons.next_week' : 'disabled_next_week'}`);
         }
     }
 
@@ -229,7 +231,7 @@ export class PastTrainingsComponent {
             return 'tooltip';
         }
         else {
-            return this.isNextDisabled ? 'tooltip-error' : 'tooltip';
+            return this.isNextPage ? 'tooltip' : 'tooltip-error';
         }
     }
 
@@ -347,12 +349,12 @@ export class PastTrainingsComponent {
 
     private handleArrows(x: StreamData<Paginator<PastTrainings>>): void {
         if (x?.Value?.TotalCount <= MAX_TRAININGS_PER_PAGE) {
-            this.isNextDisabled = true;
-            this.isPreviousDisabled = true;
+            this.isNextPage = false;
+            this.isPreviousPage = false;
         }
         else {
-            this.isPreviousDisabled = !x?.Value?.Previous;
-            this.isNextDisabled = !x?.Value?.Next;
+            this.isPreviousPage = !!x?.Value?.Previous;
+            this.isNextPage = !!x?.Value?.Next;
         }
         this.changeDetectorRef.markForCheck();
     }
@@ -366,7 +368,7 @@ export class PastTrainingsComponent {
                 dateInterval.EndDate,
                 environment.TIMEZONE),
         }).map((date: Date) => date.getTime());
-        this.isNextDisabled = arrayOfDates.includes(startOfDay(new Date()).getTime());
+        this.isNextPage = !arrayOfDates.includes(startOfDay(new Date()).getTime());
         this.changeDetectorRef.markForCheck();
     }
 

@@ -99,7 +99,7 @@
                                     mat-raised-button
                                     type="button"
                                     class="training-paginator--previous"
-                                    [disabled]="pastTrainings.IsLoading || isPreviousDisabled"
+                                    [disabled]="pastTrainings.IsLoading || !isPreviousPage"
                                     (click)="loadNewPage(
                                         'Previous',
                                         pastTrainings.Value?.Results?.Dates)">
@@ -114,7 +114,7 @@
                                     mat-raised-button
                                     type="button"
                                     class="training-paginator--next"
-                                    [disabled]="pastTrainings.IsLoading || isNextDisabled"
+                                    [disabled]="pastTrainings.IsLoading || !isNextPage"
                                     (click)="loadNewPage(
                                         'Next',
                                         pastTrainings.Value?.Results?.Dates)">
