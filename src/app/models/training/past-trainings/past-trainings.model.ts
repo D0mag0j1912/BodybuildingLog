@@ -5,6 +5,7 @@ export interface PastTrainings {
         StartDate: Date;
         EndDate: Date;
     };
+    readonly IsPreviousWeekDisabled: boolean;
     readonly Message?: string;
 }
 

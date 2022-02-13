@@ -99,7 +99,7 @@
                                     mat-raised-button
                                     type="button"
                                     class="training-paginator--previous"
-                                    [disabled]="pastTrainings.IsLoading || (isPreviousDisabled && (isSearch$ | async))"
+                                    [disabled]="pastTrainings.IsLoading || isPreviousDisabled"
                                     (click)="loadNewPage(
                                         'Previous',
                                         pastTrainings.Value?.Results?.Dates)">

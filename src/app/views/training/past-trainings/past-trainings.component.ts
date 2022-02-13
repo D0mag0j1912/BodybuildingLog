@@ -37,7 +37,7 @@ export class PastTrainingsComponent {
     readonly pageSizeOptions: number[] = [1, 2, 5, 10];
     size: number = MAX_TRAININGS_PER_PAGE;
     page: number = INITIAL_PAGE;
-
+    //TODO: rename variable names (reverse meaning)
     isNextDisabled = true;
     isPreviousDisabled = false;
 
@@ -98,7 +98,11 @@ export class PastTrainingsComponent {
         else {
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
                 .pipe(
-                    tap((response: StreamData<Paginator<PastTrainings>>) => this.handleNextWeek(response?.Value?.Results?.Dates)),
+                    tap((response: StreamData<Paginator<PastTrainings>>) => {
+                        this.handleNextWeek(response?.Value?.Results?.Dates);
+                        this.isPreviousDisabled = response?.Value?.Results?.IsPreviousWeekDisabled ?? false;
+                        this.changeDetectorRef.markForCheck();
+                    }),
                     mapStreamData(),
                 );
         }
@@ -352,7 +356,7 @@ export class PastTrainingsComponent {
         }
         this.changeDetectorRef.markForCheck();
     }
-
+    //TODO: handle on backend
     private handleNextWeek(dateInterval: DateInterval): void {
         const arrayOfDates: number[] = eachDayOfInterval({
             start: utcToZonedTime(
