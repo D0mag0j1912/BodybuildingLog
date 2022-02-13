@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { DateInterval, getIntervalDate } from '../../helpers/date.helper';
+import { DateInterval, getIntervalDate, isPreviousWeekDisabled } from '../../helpers/date.helper';
 import { paginate } from '../../helpers/pagination.helper';
 import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
 import { StreamData } from '../../models/common/response.model';
@@ -71,6 +71,7 @@ export class PastTrainingsService {
     ): Promise<StreamData<Paginator<PastTrainings>>> {
         try {
             const dates: DateInterval = getIntervalDate(new Date(currentDate));
+            const partial = await this.getMinimumDate(loggedUserId);
             const condition: FilterQuery<Training> = {
                 userId: loggedUserId,
                 createdAt: {
@@ -80,6 +81,7 @@ export class PastTrainingsService {
             };
             const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition);
             results.Results.Dates = dates;
+            results.Results.IsPreviousWeekDisabled = isPreviousWeekDisabled(partial.createdAt, dates);
             return {
                 IsLoading: true,
                 Value: results,
@@ -89,5 +91,16 @@ export class PastTrainingsService {
         catch (error: unknown) {
             throw new InternalServerErrorException('training.past_trainings.errors.past_trainings_error_title');
         }
+    }
+
+    async getMinimumDate(loggedUserId: string): Promise<Partial<Training>> {
+        const minDate = await this.trainingModel
+            .findOne({
+                userId: loggedUserId,
+            }, 'createdAt -_id')
+            .sort({ createdAt: 1 })
+            .limit(1)
+            .exec();
+        return minDate;
     }
 }

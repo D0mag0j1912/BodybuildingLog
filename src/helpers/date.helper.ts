@@ -1,4 +1,4 @@
-import { endOfWeek, startOfWeek } from 'date-fns';
+import { endOfWeek, startOfWeek, isSameWeek } from 'date-fns';
 import { max, min } from 'date-fns';
 import { Training } from '../models/training/new-training/new-training.model';
 
@@ -24,3 +24,8 @@ export function getIntervalDate(currentDateOrTrainings: Date | Training[]): Date
         EndDate: maxDate,
     } as DateInterval;
 }
+
+export const isPreviousWeekDisabled = (
+    minDate: Date,
+    dateInterval: DateInterval,
+): boolean => isSameWeek(minDate, dateInterval.StartDate, { weekStartsOn: 1 }) && isSameWeek(minDate, dateInterval.EndDate, { weekStartsOn: 1 });
