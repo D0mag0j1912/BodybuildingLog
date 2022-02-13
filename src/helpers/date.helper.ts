@@ -25,7 +25,7 @@ export function getIntervalDate(currentDateOrTrainings: Date | Training[]): Date
     } as DateInterval;
 }
 
-export const isPreviousWeekDisabled = (
+export const isPreviousWeek = (
     minDate: Date,
     dateInterval: DateInterval,
-): boolean => isSameWeek(minDate, dateInterval.StartDate, { weekStartsOn: 1 }) && isSameWeek(minDate, dateInterval.EndDate, { weekStartsOn: 1 });
+): boolean => !(isSameWeek(minDate, dateInterval.StartDate, { weekStartsOn: 1 }) && isSameWeek(minDate, dateInterval.EndDate, { weekStartsOn: 1 }));
