@@ -17,6 +17,7 @@ import { DateInterval, MAX_TRAININGS_PER_PAGE, Page, PastTrainingsQueryParams, P
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
+import { constructDates } from '../../../helpers/dates.helper';
 
 type QueryParam = keyof PastTrainingsQueryParams;
 
@@ -60,8 +61,8 @@ export class PastTrainingsComponent {
             this.changeDetectorRef.markForCheck();
         });
 
-        const searchFilter = this.route.snapshot.queryParamMap?.get('search');
         this.page = this.route.snapshot.queryParamMap?.get('page') ? +this.route.snapshot.queryParamMap.get('page') : 1;
+        const searchFilter = this.route.snapshot.queryParamMap?.get('search');
         if (searchFilter) {
             this.pastTrainings$ =
                 this.pastTrainingsService.searchPastTrainings(
@@ -345,8 +346,8 @@ export class PastTrainingsComponent {
     }
 
     private getDateTimeQueryParams(): Date {
-        const splittedDate: string[] = (this.route.snapshot.queryParams?.startDate)?.split('-') ?? [];
-        const utc: string = new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString();
+        const splittedDate = (this.route.snapshot.queryParams?.startDate as string)?.split('-') ?? [];
+        const utc = splittedDate.length > 0 ? new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString() : new Date().toUTCString();
         return utcToZonedTime(new Date(utc), environment.TIMEZONE);
     }
 
@@ -357,11 +358,12 @@ export class PastTrainingsComponent {
     ): string {
         if (endDate) {
             return `
-                <strong class="header-title--txt">${period}</strong>
-                (${this.datePipe.transform(startDate, this.dateFormat)} - ${this.datePipe.transform(endDate, this.dateFormat)})`;
+                <strong class="header-title--key">${period}</strong>
+                <span class="header-title--value">(${this.datePipe.transform(startDate, this.dateFormat)} - ${this.datePipe.transform(endDate, this.dateFormat)})</span>`;
         }
         else {
-            return `<strong class="header-title--txt">${period}</strong> (${this.datePipe.transform(startDate, this.dateFormat)})`;
+            return `<strong class="header-title--key">${period}</strong>
+                <span class="header-title--value">(${this.datePipe.transform(startDate, this.dateFormat)})</span`;
         }
     }
 

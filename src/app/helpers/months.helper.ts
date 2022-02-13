@@ -1,5 +1,5 @@
 
-export const ALL_MONTHS: string[] = [
+export const ALL_MONTHS = [
     'january',
     'february',
     'march',

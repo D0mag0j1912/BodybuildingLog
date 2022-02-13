@@ -1,16 +1,17 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { endOfWeek, format, startOfWeek } from 'date-fns';
+import { format } from 'date-fns';
 import { Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { Language } from '../../../models/preferences.model';
-import { DateInterval, PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
+import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { NavigationService } from '../../../services/shared/navigation.service';
 import { SharedService } from '../../../services/shared/shared.service';
 import { NewTrainingService } from '../../../services/training/new-training.service';
+import { constructDates } from '../../../helpers/dates.helper';
 
 interface IsActiveMatchOptions {
     matrixParams: 'exact' | 'subset' | 'ignored';
@@ -50,11 +51,11 @@ export class HeaderComponent implements OnInit {
     ) {}
 
     get StartDate(): string {
-        return format(this.constructDates(new Date())?.StartDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
+        return format(constructDates(new Date())?.StartDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
     }
 
     get EndDate(): string {
-        return format(this.constructDates(new Date())?.EndDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
+        return format(constructDates(new Date())?.EndDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
     }
 
     ngOnInit(): void {
@@ -100,19 +101,6 @@ export class HeaderComponent implements OnInit {
                 ),
             ),
         ).subscribe();
-    }
-
-    private constructDates(date: Date): DateInterval {
-        const startDate: Date = startOfWeek(date, {
-            weekStartsOn: 1,
-        });
-        const endDate: Date = endOfWeek(date, {
-            weekStartsOn: 1,
-        });
-        return {
-            StartDate: startDate,
-            EndDate: endDate,
-        } as DateInterval;
     }
 
 }
