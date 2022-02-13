@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, eachDayOfInterval, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, subDays } from 'date-fns';
@@ -17,9 +17,12 @@ import { DateInterval, MAX_TRAININGS_PER_PAGE, Page, PastTrainingsQueryParams, P
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
-import { constructDates } from '../../../helpers/dates.helper';
 
 type QueryParam = keyof PastTrainingsQueryParams;
+enum Heights {
+    LOWER_HEIGHT = 290,
+    HIGHER_HEIGHT = 320,
+}
 
 @Component({
     selector: 'bl-past-trainings',
@@ -39,6 +42,24 @@ export class PastTrainingsComponent {
     isPreviousDisabled = false;
 
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
+
+    @ViewChild('itemWrapper', { read: ElementRef })
+    trainingItemWrapper: ElementRef | undefined;
+
+    @ViewChild('timePeriod', { read: ElementRef })
+    set timePeriodEl(timePeriodElement: ElementRef) {
+        if (timePeriodElement) {
+            const trainingElement = (this.trainingItemWrapper?.nativeElement as HTMLDivElement);
+            if (trainingElement) {
+                if ((timePeriodElement.nativeElement as HTMLDivElement).offsetHeight === 30) {
+                    trainingElement.style.maxHeight = `calc(100vh - ${Heights.LOWER_HEIGHT}px)`;
+                }
+                else if ((timePeriodElement.nativeElement as HTMLDivElement).offsetHeight > 30) {
+                    trainingElement.style.maxHeight = `calc(100vh - ${Heights.HIGHER_HEIGHT}px)`;
+                }
+            }
+        }
+    }
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,

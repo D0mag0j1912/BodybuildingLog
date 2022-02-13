@@ -96,7 +96,7 @@
     .training-item-wrapper {
         display: block;
         margin: 10px 0;
-        max-height: calc(100vh - 320px);
+        /* max-height: calc(100vh - 320px); */
         overflow: auto;
 
         &::-webkit-scrollbar {
