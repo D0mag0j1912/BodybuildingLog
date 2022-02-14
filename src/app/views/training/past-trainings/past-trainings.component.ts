@@ -319,7 +319,7 @@ export class PastTrainingsComponent {
                 return earliestTrainingDate;
             }
             case 'Last': {
-                return undefined;
+                return new Date();
             }
             default:
                 return isNeverCheck(page);

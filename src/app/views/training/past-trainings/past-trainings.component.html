@@ -134,7 +134,8 @@
                                 type="button"
                                 matTooltipPosition="above"
                                 [matTooltip]="setPageTooltip((isSearch$ | async), 'Last') | async"
-                                [matTooltipClass]="setPageTooltipClass((isSearch$ | async), 'Last')">
+                                [matTooltipClass]="setPageTooltipClass((isSearch$ | async), 'Last')"
+                                (click)="loadPage('Last')">
                                 <mat-icon class="training-paginator--icon">last_page</mat-icon>
                             </button>
                         </div>
