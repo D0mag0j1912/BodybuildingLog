@@ -87,7 +87,9 @@
                         <div class="training-paginator--arrow-wrapper">
                             <button
                                 mat-raised-button
-                                type="button">
+                                type="button"
+                                matTooltipPosition="above"
+                                [matTooltip]="setPageTooltip((isSearch$ | async), 'First') | async">
                                 <mat-icon class="training-paginator--icon">first_page</mat-icon>
                             </button>
                             <div
@@ -122,7 +124,9 @@
                             </div>
                             <button
                                 mat-raised-button
-                                type="button">
+                                type="button"
+                                matTooltipPosition="above"
+                                [matTooltip]="setPageTooltip((isSearch$ | async), 'Last') | async">
                                 <mat-icon class="training-paginator--icon">last_page</mat-icon>
                             </button>
                         </div>

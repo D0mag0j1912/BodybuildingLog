@@ -69,17 +69,15 @@ export class PastTrainingsComponent {
         private readonly sharedService: SharedService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
-        private readonly router: Router,
         private readonly datePipe: DatePipe,
+        private readonly router: Router,
     ) {
         this.sharedService.deletedTraining$$.pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe((response: StreamData<Paginator<PastTrainings>>) => {
             this.pastTrainings$ =
                 of(response)
-                    .pipe(
-                        mapStreamData(),
-                    );
+                    .pipe(mapStreamData());
             this.changeDetectorRef.markForCheck();
         });
 
@@ -217,14 +215,24 @@ export class PastTrainingsComponent {
         page: Page,
     ): Observable<string> {
         if (isSearch) {
-            return this.translateService.stream(`common.${page === 'Next' ? 'next_page' : 'previous_page'}`);
-        }
-        else {
-            if (page === 'Next') {
-                return this.translateService.stream(`training.past_trainings.${this.isNextPage ? 'buttons.next_week' : 'disabled_next_week'}`);
+            if (page === 'First' || page === 'Last') {
+                return this.translateService.stream(`training.past_trainings.buttons.${page === 'First' ? 'first_page' : 'last_page'}`);
             }
             else {
-                return this.translateService.stream(`training.past_trainings.${this.isPreviousPage ? 'buttons.previous_week' : 'disabled_previous_week'}`);
+                return this.translateService.stream(`training.past_trainings.buttons.${page === 'Next' ? 'next_page' : 'previous_page'}`);
+            }
+        }
+        else {
+            if (page === 'First' || page === 'Last') {
+                return this.translateService.stream(`training.past_trainings.buttons.${page === 'First' ? 'first_week' : 'last_week'}`);
+            }
+            else {
+                if (page === 'Next') {
+                    return this.translateService.stream(`training.past_trainings.${this.isNextPage ? 'buttons.next_week' : 'disabled_next_week'}`);
+                }
+                else {
+                    return this.translateService.stream(`training.past_trainings.${this.isPreviousPage ? 'buttons.previous_week' : 'disabled_previous_week'}`);
+                }
             }
         }
     }

@@ -19,8 +19,6 @@
         "created_at_time": "Vrijeme izrade",
         "here": "ovdje",
         "or": "ILI",
-        "next_page": "Sljedeća",
-        "previous_page": "Prethodna",
         "errors": {
             "something_went_wrong": "Došlo je do greške Pokušajte ponovno",
             "invalid_date": "Pogrešan format datuma",
@@ -172,6 +170,12 @@
                 "past_trainings_error_description": "Prošli treninzi trenutno nisu dostupni. Molimo Vas pokušajte ponovno"
             },
             "buttons": {
+                "first_page": "Prva stranica",
+                "last_page": "Zadnja stranica",
+                "next_page": "Sljedeća",
+                "previous_page": "Prethodna",
+                "first_week": "Prvi tjedan",
+                "last_week": "Zadnji tjedan",
                 "previous_week": "Prošli tjedan",
                 "next_week": "Sljedeći tjedan",
                 "delete_training": "Izbriši trening"

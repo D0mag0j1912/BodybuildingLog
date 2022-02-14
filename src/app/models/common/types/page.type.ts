@@ -1,2 +1,6 @@
 
-export type Page = 'Previous' | 'Next';
+export type Page =
+    'First' |
+    'Previous' |
+    'Next' |
+    'Last';

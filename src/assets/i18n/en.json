@@ -18,8 +18,6 @@
         "created_at_time": "Time created",
         "here": "here",
         "or": "OR",
-        "next_page": "Next",
-        "previous_page": "Previous",
         "errors": {
             "something_went_wrong": "Something went wrong Please try again",
             "invalid_date": "Invalid date format",
@@ -171,6 +169,12 @@
                 "past_trainings_error_description": "Past trainings are not currently available. Please try again"
             },
             "buttons": {
+                "first_page": "First page",
+                "last_page": "Last page",
+                "next_page": "Next",
+                "previous_page": "Previous",
+                "first_week": "First week",
+                "last_week": "Last week",
                 "previous_week": "Previous week",
                 "next_week": "Next week",
                 "delete_training": "Delete training"
