@@ -18,6 +18,7 @@ import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 import { Page } from '../../../models/common/types/page.type';
+import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 
 type QueryParam = keyof PastTrainingsQueryParams;
 enum Heights {
@@ -299,7 +300,6 @@ export class PastTrainingsComponent {
         dateInterval: DateInterval,
         earliestTrainingDate: Date,
     ): Date {
-        //Add no never case
         switch (page) {
             case 'Previous': {
                 return subDays(
@@ -318,8 +318,11 @@ export class PastTrainingsComponent {
             case 'First': {
                 return earliestTrainingDate;
             }
-            default:
+            case 'Last': {
                 return undefined;
+            }
+            default:
+                return isNeverCheck(page);
         }
     }
 
