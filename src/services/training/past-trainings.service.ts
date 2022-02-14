@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { DateInterval, getIntervalDate, isPreviousWeek } from '../../helpers/date.helper';
+import { DateInterval, getIntervalDate, isNextWeek, isPreviousWeek } from '../../helpers/date.helper';
 import { paginate } from '../../helpers/pagination.helper';
 import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
 import { StreamData } from '../../models/common/response.model';
@@ -82,6 +82,7 @@ export class PastTrainingsService {
             const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition);
             results.Results.Dates = dates;
             results.Results.IsPreviousWeek = isPreviousWeek(partial.createdAt, dates);
+            results.Results.IsNextWeek = isNextWeek(dates);
             return {
                 IsLoading: true,
                 Value: results,

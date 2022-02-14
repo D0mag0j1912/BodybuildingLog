@@ -1,6 +1,8 @@
-import { endOfWeek, startOfWeek, isSameWeek } from 'date-fns';
+import { endOfWeek, startOfWeek, isSameWeek, eachDayOfInterval, startOfDay } from 'date-fns';
 import { max, min } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 import { Training } from '../models/training/new-training/new-training.model';
+import { TIMEZONE } from '../constants/timezone';
 
 export interface DateInterval {
     readonly StartDate: Date;
@@ -29,3 +31,15 @@ export const isPreviousWeek = (
     minDate: Date,
     dateInterval: DateInterval,
 ): boolean => !(isSameWeek(minDate, dateInterval.StartDate, { weekStartsOn: 1 }) && isSameWeek(minDate, dateInterval.EndDate, { weekStartsOn: 1 }));
+
+export const isNextWeek = (dateInterval: DateInterval): boolean => {
+    const arrayOfDates: number[] = eachDayOfInterval({
+        start: utcToZonedTime(
+            dateInterval.StartDate,
+            TIMEZONE),
+        end: utcToZonedTime(
+            dateInterval.EndDate,
+            TIMEZONE),
+    }).map((date: Date) => date.getTime());
+    return !arrayOfDates.includes(startOfDay(new Date()).getTime());
+};
