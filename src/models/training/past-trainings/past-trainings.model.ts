@@ -1,11 +1,9 @@
+import { DateInterval } from '../../../models/common/dates.model';
 import { Training } from '../new-training/new-training.model';
 
 export interface PastTrainings {
     Trainings: Training[];
-    Dates: {
-        StartDate: Date;
-        EndDate: Date;
-    };
+    Dates: DateInterval;
     IsPreviousWeek?: boolean;
     IsNextWeek?: boolean;
     readonly Message?: string;

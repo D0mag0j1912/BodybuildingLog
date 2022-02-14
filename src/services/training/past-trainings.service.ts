@@ -1,12 +1,13 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { DateInterval, getIntervalDate, isNextWeek, isPreviousWeek } from '../../helpers/date.helper';
+import { getIntervalDate, isNextWeek, isPreviousWeek } from '../../helpers/date.helper';
 import { paginate } from '../../helpers/pagination.helper';
 import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
 import { StreamData } from '../../models/common/response.model';
 import { Training } from '../../models/training/new-training/new-training.model';
 import { PastTrainings } from '../../models/training/past-trainings/past-trainings.model';
+import { DateInterval } from '../../models/common/dates.model';
 
 @Injectable()
 export class PastTrainingsService {

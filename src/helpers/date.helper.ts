@@ -3,11 +3,7 @@ import { max, min } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Training } from '../models/training/new-training/new-training.model';
 import { TIMEZONE } from '../constants/timezone';
-
-export interface DateInterval {
-    readonly StartDate: Date;
-    readonly EndDate: Date;
-}
+import { DateInterval } from '../models/common/dates.model';
 
 export function getIntervalDate(currentDateOrTrainings: Date | Training[]): DateInterval {
     let minDate: Date;
