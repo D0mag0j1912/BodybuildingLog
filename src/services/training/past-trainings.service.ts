@@ -72,7 +72,7 @@ export class PastTrainingsService {
     ): Promise<StreamData<Paginator<PastTrainings>>> {
         try {
             const dates: DateInterval = getIntervalDate(new Date(currentDate));
-            const partial = await this.getMinimumDate(loggedUserId);
+            const firstLoggedTrainingDate = await this.getMinimumDate(loggedUserId);
             const condition: FilterQuery<Training> = {
                 userId: loggedUserId,
                 createdAt: {
@@ -82,8 +82,9 @@ export class PastTrainingsService {
             };
             const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition);
             results.Results.Dates = dates;
-            results.Results.IsPreviousWeek = isPreviousWeek(partial.createdAt, dates);
+            results.Results.IsPreviousWeek = isPreviousWeek(firstLoggedTrainingDate.createdAt, dates);
             results.Results.IsNextWeek = isNextWeek(dates);
+            results.Results.FirstWeek = getIntervalDate(firstLoggedTrainingDate.createdAt);
             return {
                 IsLoading: true,
                 Value: results,
