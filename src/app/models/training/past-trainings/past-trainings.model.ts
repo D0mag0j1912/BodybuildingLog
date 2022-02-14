@@ -1,9 +1,11 @@
 import { Training } from '../new-training/new-training.model';
+
 export interface PastTrainings {
     readonly Trainings: Training[];
     readonly Dates: DateInterval;
     readonly IsPreviousWeek?: boolean;
     readonly IsNextWeek?: boolean;
+    readonly EarliestTrainingDate?: Date;
     readonly Message?: string;
 }
 

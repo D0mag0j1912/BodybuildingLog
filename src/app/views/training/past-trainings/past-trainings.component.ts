@@ -151,20 +151,17 @@ export class PastTrainingsComponent {
                 );
     }
 
-    goToFirstPage(): void {
-        //TODO: go to first week OR first page
-    }
-
-    loadNewPage(
-        previousOrNext: Page,
-        dateInterval: DateInterval,
+    loadPage(
+        page: Page,
+        dateInterval?: DateInterval,
+        earliestTrainingDate?: Date,
     ): void {
         this.isSearch$
             .pipe(
                 take(1),
                 tap((isSearch: boolean) => {
                     if (isSearch) {
-                        previousOrNext === 'Next' ? this.page++ : this.page--;
+                        page === 'Next' ? this.page++ : this.page--;
                         const currentSearchValue = this.route.snapshot.queryParamMap?.get('search') ?? undefined;
                         this.pastTrainings$ =
                             this.pastTrainingsService.searchPastTrainings(
@@ -187,17 +184,7 @@ export class PastTrainingsComponent {
                     }
                     else {
                         this.pastTrainings$ =
-                            this.pastTrainingsService.getPastTrainings(previousOrNext === 'Previous'
-                                ? subDays(
-                                    utcToZonedTime(
-                                        dateInterval.StartDate,
-                                        environment.TIMEZONE,
-                                    ), 7)
-                                : addDays(
-                                    utcToZonedTime(
-                                        dateInterval.StartDate,
-                                        environment.TIMEZONE,
-                                    ), 7))
+                            this.pastTrainingsService.getPastTrainings(this.calculateDate(page, dateInterval, earliestTrainingDate))
                                 .pipe(
                                     tap(async (response: StreamData<Paginator<PastTrainings>>) => {
                                         this.handleArrows(response);
@@ -305,6 +292,35 @@ export class PastTrainingsComponent {
             .pipe(
                 map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
             );
+    }
+
+    private calculateDate(
+        page: Page,
+        dateInterval: DateInterval,
+        earliestTrainingDate: Date,
+    ): Date {
+        //Add no never case
+        switch (page) {
+            case 'Previous': {
+                return subDays(
+                    utcToZonedTime(
+                        dateInterval.StartDate,
+                        environment.TIMEZONE,
+                    ), 7);
+            }
+            case 'Next': {
+                return addDays(
+                    utcToZonedTime(
+                        dateInterval.StartDate,
+                        environment.TIMEZONE,
+                    ), 7);
+            }
+            case 'First': {
+                return earliestTrainingDate;
+            }
+            default:
+                return undefined;
+        }
     }
 
     private handleQueryParams(

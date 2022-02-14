@@ -92,7 +92,10 @@
                                 matTooltipPosition="above"
                                 [matTooltip]="setPageTooltip((isSearch$ | async), 'First') | async"
                                 [matTooltipClass]="setPageTooltipClass((isSearch$ | async), 'First')"
-                                (click)="goToFirstPage()">
+                                (click)="loadPage(
+                                    'First',
+                                    undefined,
+                                    pastTrainings?.Value?.Results?.EarliestTrainingDate)">
                                 <mat-icon class="training-paginator--icon">first_page</mat-icon>
                             </button>
                             <div
@@ -104,7 +107,7 @@
                                     type="button"
                                     class="training-paginator--previous"
                                     [disabled]="pastTrainings.IsLoading || !isPreviousPage"
-                                    (click)="loadNewPage(
+                                    (click)="loadPage(
                                         'Previous',
                                         pastTrainings.Value?.Results?.Dates)">
                                     <mat-icon class="training-paginator--icon">navigate_before</mat-icon>
@@ -119,7 +122,7 @@
                                     type="button"
                                     class="training-paginator--next"
                                     [disabled]="pastTrainings.IsLoading || !isNextPage"
-                                    (click)="loadNewPage(
+                                    (click)="loadPage(
                                         'Next',
                                         pastTrainings.Value?.Results?.Dates)">
                                     <mat-icon class="training-paginator--icon">navigate_next</mat-icon>
