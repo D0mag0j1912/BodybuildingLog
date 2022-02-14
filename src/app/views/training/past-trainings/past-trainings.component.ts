@@ -21,8 +21,8 @@ import { Page } from '../../../models/common/types/page.type';
 
 type QueryParam = keyof PastTrainingsQueryParams;
 enum Heights {
-    LOWER_HEIGHT = 290,
-    HIGHER_HEIGHT = 320,
+    LOWER_HEIGHT = 305,
+    HIGHER_HEIGHT = 335,
 }
 
 @Component({

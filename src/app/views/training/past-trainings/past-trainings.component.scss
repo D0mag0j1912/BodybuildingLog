@@ -66,6 +66,7 @@
     }
 
     .card-info-wrapper {
+        padding: 10px 16px;
         border: 2px solid $army-green;
 
         .header-title {
@@ -127,9 +128,11 @@
         align-items: center;
         justify-content: space-around;
         flex-wrap: wrap;
+        row-gap: 5px;
         border-radius: 4px;
         border: 2px solid $army-green;
         margin: auto;
+        padding: 5px 0;
         position: fixed;
         bottom: 0;
         width: 90%;
@@ -145,6 +148,10 @@
         &--arrow-wrapper {
             display: flex;
             column-gap: 10px;
+
+            .mat-raised-button {
+                min-width: 0;
+            }
         }
 
         &--previous:not([disabled]):hover,
