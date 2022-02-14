@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { addDays, eachDayOfInterval, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, subDays } from 'date-fns';
+import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Observable, of } from 'rxjs';
 import { finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
@@ -37,7 +37,7 @@ export class PastTrainingsComponent {
     readonly pageSizeOptions: number[] = [1, 2, 5, 10];
     size: number = MAX_TRAININGS_PER_PAGE;
     page: number = INITIAL_PAGE;
-    //TODO: rename variable names (reverse meaning)
+
     isNextPage = true;
     isPreviousPage = true;
 
@@ -99,7 +99,7 @@ export class PastTrainingsComponent {
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
                 .pipe(
                     tap((response: StreamData<Paginator<PastTrainings>>) => {
-                        this.handleNextWeek(response?.Value?.Results?.Dates);
+                        this.isNextPage = response?.Value?.Results?.IsNextWeek ?? false;
                         this.isPreviousPage = response?.Value?.Results?.IsPreviousWeek ?? false;
                         this.changeDetectorRef.markForCheck();
                     }),
@@ -200,12 +200,12 @@ export class PastTrainingsComponent {
                                         environment.TIMEZONE,
                                     ), 7))
                                 .pipe(
-                                    tap(async (result: StreamData<Paginator<PastTrainings>>) => {
-                                        this.handleNextWeek(result?.Value?.Results?.Dates);
-                                        this.isPreviousPage = result?.Value?.Results?.IsPreviousWeek ?? false;
+                                    tap(async (response: StreamData<Paginator<PastTrainings>>) => {
+                                        this.isNextPage = response?.Value?.Results?.IsNextWeek ?? false;
+                                        this.isPreviousPage = response?.Value?.Results?.IsPreviousWeek ?? false;
                                         await this.router.navigate([], {
                                             relativeTo: this.route,
-                                            queryParams: this.handleQueryParams(result),
+                                            queryParams: this.handleQueryParams(response),
                                         });
                                     }),
                                     mapStreamData(),
@@ -356,19 +356,6 @@ export class PastTrainingsComponent {
             this.isPreviousPage = !!x?.Value?.Previous;
             this.isNextPage = !!x?.Value?.Next;
         }
-        this.changeDetectorRef.markForCheck();
-    }
-    //TODO: handle on backend
-    private handleNextWeek(dateInterval: DateInterval): void {
-        const arrayOfDates: number[] = eachDayOfInterval({
-            start: utcToZonedTime(
-                dateInterval.StartDate,
-                environment.TIMEZONE),
-            end: utcToZonedTime(
-                dateInterval.EndDate,
-                environment.TIMEZONE),
-        }).map((date: Date) => date.getTime());
-        this.isNextPage = !arrayOfDates.includes(startOfDay(new Date()).getTime());
         this.changeDetectorRef.markForCheck();
     }
 
