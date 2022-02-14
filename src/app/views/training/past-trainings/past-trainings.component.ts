@@ -13,11 +13,11 @@ import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator } from '../../../models/common/interfaces/paginator.model';
-import { DateInterval, MAX_TRAININGS_PER_PAGE, Page, PastTrainingsQueryParams, PastTrainings, INITIAL_PAGE } from '../../../models/training/past-trainings/past-trainings.model';
+import { DateInterval, MAX_TRAININGS_PER_PAGE, PastTrainingsQueryParams, PastTrainings, INITIAL_PAGE } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
-import { Pages } from '../../../models/common/types/page.type';
+import { Page } from '../../../models/common/types/page.type';
 
 type QueryParam = keyof PastTrainingsQueryParams;
 enum Heights {
@@ -214,7 +214,7 @@ export class PastTrainingsComponent {
 
     setPageTooltip(
         isSearch: boolean,
-        page: Pages,
+        page: Page,
     ): Observable<string> {
         if (isSearch) {
             return this.translateService.stream(`common.${page === 'Next' ? 'next_page' : 'previous_page'}`);
@@ -231,7 +231,7 @@ export class PastTrainingsComponent {
 
     setPageTooltipClass(
         isSearch: boolean,
-        page: Pages,
+        page: Page,
     ): string {
         if (isSearch) {
             return 'tooltip';

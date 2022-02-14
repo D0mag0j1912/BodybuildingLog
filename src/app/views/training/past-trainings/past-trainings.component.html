@@ -84,13 +84,12 @@
                         </section>
                     </ng-template>
                     <div class="training-paginator">
-                        <span class="training-paginator--label">
-                            {{ 'training.past_trainings.training_number' | translate }}
-                            <strong class="training-paginator--label-count">
-                                {{ pastTrainings.Value?.TotalCount }}
-                            </strong>
-                        </span>
-                        <div class="training-paginator--button-wrapper">
+                        <div class="training-paginator--arrow-wrapper">
+                            <button
+                                mat-raised-button
+                                type="button">
+                                <mat-icon class="training-paginator--icon">first_page</mat-icon>
+                            </button>
                             <div
                                 matTooltipPosition="above"
                                 [matTooltip]="setPageTooltip((isSearch$ | async), 'Previous') | async"
@@ -121,7 +120,18 @@
                                     <mat-icon class="training-paginator--icon">navigate_next</mat-icon>
                                 </button>
                             </div>
+                            <button
+                                mat-raised-button
+                                type="button">
+                                <mat-icon class="training-paginator--icon">last_page</mat-icon>
+                            </button>
                         </div>
+                        <span class="training-paginator--label">
+                            {{ 'training.past_trainings.training_number' | translate }}
+                            <strong class="training-paginator--label-count">
+                                {{ pastTrainings.Value?.TotalCount }}
+                            </strong>
+                        </span>
                     </div>
                 </ng-template>
             </ng-template>

@@ -1,2 +1,2 @@
 
-export type Pages = 'Previous' | 'Next';
+export type Page = 'Previous' | 'Next';
