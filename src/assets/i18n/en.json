@@ -150,6 +150,7 @@
             "log_training": "Log new training",
             "training_number": "Number of trainings: ",
             "disabled_next_week": "Future weeks are not available",
+            "disabled_previous_week": "Previous weeks are not available",
             "created_at": "Training created: ",
             "filters": {
                 "enter_search_term": "Search by exercise name",

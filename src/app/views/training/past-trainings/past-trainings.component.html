@@ -93,8 +93,8 @@
                         <div class="training-paginator--button-wrapper">
                             <div
                                 matTooltipPosition="above"
-                                matTooltipClass="tooltip"
-                                [matTooltip]="(isSearch$ | async) ? ('common.previous_page' | translate) : ('training.past_trainings.buttons.previous_week' | translate)">
+                                [matTooltip]="setPageTooltip((isSearch$ | async), 'Previous') | async"
+                                [matTooltipClass]="setPageTooltipClass((isSearch$ | async), 'Previous')">
                                 <button
                                     mat-raised-button
                                     type="button"
@@ -108,8 +108,8 @@
                             </div>
                             <div
                                 matTooltipPosition="above"
-                                [matTooltip]="setNextPageTooltip(isSearch$ | async) | async"
-                                [matTooltipClass]="setNextPageTooltipClass(isSearch$ | async)">
+                                [matTooltip]="setPageTooltip((isSearch$ | async), 'Next') | async"
+                                [matTooltipClass]="setPageTooltipClass((isSearch$ | async), 'Next')">
                                 <button
                                     mat-raised-button
                                     type="button"

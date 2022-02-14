@@ -17,6 +17,7 @@ import { DateInterval, MAX_TRAININGS_PER_PAGE, Page, PastTrainingsQueryParams, P
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
+import { Pages } from '../../../models/common/types/page.type';
 
 type QueryParam = keyof PastTrainingsQueryParams;
 enum Heights {
@@ -211,21 +212,37 @@ export class PastTrainingsComponent {
             .subscribe();
     }
 
-    setNextPageTooltip(isSearch: boolean): Observable<string> {
+    setPageTooltip(
+        isSearch: boolean,
+        page: Pages,
+    ): Observable<string> {
         if (isSearch) {
-            return this.translateService.stream('common.next_page');
+            return this.translateService.stream(`common.${page === 'Next' ? 'next_page' : 'previous_page'}`);
         }
         else {
-            return this.translateService.stream(`training.past_trainings.${this.isNextPage ? 'buttons.next_week' : 'disabled_next_week'}`);
+            if (page === 'Next') {
+                return this.translateService.stream(`training.past_trainings.${this.isNextPage ? 'buttons.next_week' : 'disabled_next_week'}`);
+            }
+            else {
+                return this.translateService.stream(`training.past_trainings.${this.isPreviousPage ? 'buttons.previous_week' : 'disabled_previous_week'}`);
+            }
         }
     }
 
-    setNextPageTooltipClass(isSearch: boolean): string {
+    setPageTooltipClass(
+        isSearch: boolean,
+        page: Pages,
+    ): string {
         if (isSearch) {
             return 'tooltip';
         }
         else {
-            return this.isNextPage ? 'tooltip' : 'tooltip-error';
+            if (page === 'Next') {
+                return this.isNextPage ? 'tooltip' : 'tooltip-error';
+            }
+            else {
+                return this.isPreviousPage ? 'tooltip' : 'tooltip-error';
+            }
         }
     }
 
