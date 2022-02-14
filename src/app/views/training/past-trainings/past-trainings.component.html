@@ -89,7 +89,8 @@
                                 mat-raised-button
                                 type="button"
                                 matTooltipPosition="above"
-                                [matTooltip]="setPageTooltip((isSearch$ | async), 'First') | async">
+                                [matTooltip]="setPageTooltip((isSearch$ | async), 'First') | async"
+                                [matTooltipClass]="setPageTooltipClass((isSearch$ | async), 'First')">
                                 <mat-icon class="training-paginator--icon">first_page</mat-icon>
                             </button>
                             <div
@@ -126,7 +127,8 @@
                                 mat-raised-button
                                 type="button"
                                 matTooltipPosition="above"
-                                [matTooltip]="setPageTooltip((isSearch$ | async), 'Last') | async">
+                                [matTooltip]="setPageTooltip((isSearch$ | async), 'Last') | async"
+                                [matTooltipClass]="setPageTooltipClass((isSearch$ | async), 'Last')">
                                 <mat-icon class="training-paginator--icon">last_page</mat-icon>
                             </button>
                         </div>

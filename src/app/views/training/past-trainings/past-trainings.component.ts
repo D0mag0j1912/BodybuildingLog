@@ -245,6 +245,9 @@ export class PastTrainingsComponent {
             return 'tooltip';
         }
         else {
+            if (page === 'First' || page === 'Last') {
+                return 'tooltip';
+            }
             if (page === 'Next') {
                 return this.isNextPage ? 'tooltip' : 'tooltip-error';
             }
