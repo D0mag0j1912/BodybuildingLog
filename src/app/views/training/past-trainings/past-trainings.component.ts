@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Observable, of } from 'rxjs';
-import { finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
@@ -98,11 +98,7 @@ export class PastTrainingsComponent {
         else {
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
                 .pipe(
-                    tap((response: StreamData<Paginator<PastTrainings>>) => {
-                        this.isNextPage = response?.Value?.Results?.IsNextWeek ?? false;
-                        this.isPreviousPage = response?.Value?.Results?.IsPreviousWeek ?? false;
-                        this.changeDetectorRef.markForCheck();
-                    }),
+                    tap((response: StreamData<Paginator<PastTrainings>>) => this.handleArrows(response)),
                     mapStreamData(),
                 );
         }
@@ -201,15 +197,13 @@ export class PastTrainingsComponent {
                                     ), 7))
                                 .pipe(
                                     tap(async (response: StreamData<Paginator<PastTrainings>>) => {
-                                        this.isNextPage = response?.Value?.Results?.IsNextWeek ?? false;
-                                        this.isPreviousPage = response?.Value?.Results?.IsPreviousWeek ?? false;
+                                        this.handleArrows(response);
                                         await this.router.navigate([], {
                                             relativeTo: this.route,
                                             queryParams: this.handleQueryParams(response),
                                         });
                                     }),
                                     mapStreamData(),
-                                    finalize(() => this.changeDetectorRef.markForCheck()),
                                 );
                     }
                 }),
@@ -355,6 +349,10 @@ export class PastTrainingsComponent {
         else {
             this.isPreviousPage = !!x?.Value?.Previous;
             this.isNextPage = !!x?.Value?.Next;
+        }
+        if (x?.Value?.Results?.IsPreviousWeek !== undefined && x?.Value?.Results?.IsNextWeek !== undefined) {
+            this.isNextPage = x.Value.Results.IsNextWeek;
+            this.isPreviousPage = x.Value.Results.IsPreviousWeek;
         }
         this.changeDetectorRef.markForCheck();
     }
