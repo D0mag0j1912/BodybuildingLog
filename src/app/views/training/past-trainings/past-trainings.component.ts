@@ -151,6 +151,10 @@ export class PastTrainingsComponent {
                 );
     }
 
+    goToFirstPage(): void {
+        //TODO: go to first week OR first page
+    }
+
     loadNewPage(
         previousOrNext: Page,
         dateInterval: DateInterval,

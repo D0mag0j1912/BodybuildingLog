@@ -91,7 +91,8 @@
                                 type="button"
                                 matTooltipPosition="above"
                                 [matTooltip]="setPageTooltip((isSearch$ | async), 'First') | async"
-                                [matTooltipClass]="setPageTooltipClass((isSearch$ | async), 'First')">
+                                [matTooltipClass]="setPageTooltipClass((isSearch$ | async), 'First')"
+                                (click)="goToFirstPage()">
                                 <mat-icon class="training-paginator--icon">first_page</mat-icon>
                             </button>
                             <div
