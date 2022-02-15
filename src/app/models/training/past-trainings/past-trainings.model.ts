@@ -9,17 +9,17 @@ export interface PastTrainings {
     readonly Message?: string;
 }
 
-export interface PastTrainingsQueryParams {
-    startDate: string;
-    endDate: string;
-    search?: string;
-    page?: string;
-    size?: string;
-}
-
 export interface DateInterval {
     readonly StartDate: Date;
     readonly EndDate: Date;
+}
+
+export interface PastTrainingsQueryParams {
+    readonly startDate: string;
+    readonly endDate: string;
+    readonly search?: string;
+    readonly page?: string;
+    readonly size?: string;
 }
 
 export const QUERY_PARAMS_DATE_FORMAT = 'dd-MM-yyyy';

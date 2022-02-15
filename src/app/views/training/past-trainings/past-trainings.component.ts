@@ -20,7 +20,6 @@ import { PastTrainingsService } from '../../../services/training/past-trainings.
 import { Page } from '../../../models/common/types/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 
-type QueryParam = keyof PastTrainingsQueryParams;
 enum Heights {
     LOWER_HEIGHT = 305,
     HIGHER_HEIGHT = 335,
@@ -156,6 +155,7 @@ export class PastTrainingsComponent {
         page: Page,
         dateInterval?: DateInterval,
         earliestTrainingDate?: Date,
+        lastPage?: number,
     ): void {
         this.isSearch$
             .pipe(
@@ -163,6 +163,9 @@ export class PastTrainingsComponent {
                 tap((isSearch: boolean) => {
                     if (isSearch) {
                         page === 'Next' ? this.page++ : this.page--;
+                        if (page === 'Last') {
+                            this.page = lastPage;
+                        }
                         const currentSearchValue = this.route.snapshot.queryParamMap?.get('search') ?? undefined;
                         this.pastTrainings$ =
                             this.pastTrainingsService.searchPastTrainings(
@@ -342,7 +345,7 @@ export class PastTrainingsComponent {
     private handleSpecificQueryParam(
         searchValue: string | undefined,
         trainingData: StreamData<Paginator<PastTrainings>>,
-        queryParam: QueryParam,
+        queryParam: keyof PastTrainingsQueryParams,
     ): string | void {
         if (searchValue) {
             if (trainingData?.Value?.TotalCount > 0) {

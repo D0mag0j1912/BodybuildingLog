@@ -1,9 +1,10 @@
 
 export interface Paginator<T> {
-    Results?: T;
-    Next?: PaginatorParams;
-    Previous?: PaginatorParams;
-    TotalCount?: number;
+    readonly Results?: T;
+    readonly Next?: PaginatorParams;
+    readonly Previous?: PaginatorParams;
+    readonly TotalCount?: number;
+    readonly LastPage?: number;
 }
 
 export interface PaginatorParams {
