@@ -151,6 +151,7 @@
 
             .mat-raised-button {
                 min-width: 0;
+                padding: 0 10px;
             }
         }
 
@@ -163,6 +164,37 @@
 
         &--icon {
             color: $army-green;
+        }
+
+        &--page-size-wrapper {
+            width: 45px;
+            overflow: hidden;
+            border: none;
+            border-radius: 4px;
+            position: relative;
+            box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+
+            &:after {
+                width: 0;
+                height: 0;
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-top: 6px solid $army-green;
+                position: absolute;
+                top: 40%;
+                right: 5px;
+                content: "";
+                z-index: 98;
+            }
+        }
+
+        &--page-size {
+            width: 65px;
+            border: 0;
+            position: relative;
+            z-index: 99;
+            background: none;
+            cursor: pointer;
         }
     }
 }

@@ -35,7 +35,7 @@ enum Heights {
 export class PastTrainingsComponent {
 
     readonly food: number = 3000;
-    readonly pageSizeOptions: number[] = [1, 2, 5, 10];
+    readonly pageSizeOptions: number[] = [1, 3, 5, 10];
     size: number = MAX_TRAININGS_PER_PAGE;
     page: number = INITIAL_PAGE;
 

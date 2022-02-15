@@ -84,6 +84,17 @@
                         </section>
                     </ng-template>
                     <div class="training-paginator">
+                        <div class="training-paginator--page-size-wrapper">
+                            <select
+                                class="training-paginator--page-size"
+                                [(ngModel)]="size">
+                                <option
+                                    *ngFor="let size of pageSizeOptions"
+                                    [value]="size">
+                                    {{ size }}
+                                </option>
+                            </select>
+                        </div>
                         <div class="training-paginator--arrow-wrapper">
                             <button
                                 *ngIf="isPreviousPage"
