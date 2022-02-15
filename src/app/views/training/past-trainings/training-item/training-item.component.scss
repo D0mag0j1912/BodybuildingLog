@@ -35,6 +35,7 @@
             align-items: center;
             align-self: flex-start;
             max-width: 120px;
+            white-space: nowrap;
 
             &--key {
                 color: $army-green;
