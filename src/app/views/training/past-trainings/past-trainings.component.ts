@@ -162,9 +162,25 @@ export class PastTrainingsComponent {
                 take(1),
                 tap((isSearch: boolean) => {
                     if (isSearch) {
-                        page === 'Next' ? this.page++ : this.page--;
-                        if (page === 'Last') {
-                            this.page = lastPage;
+                        switch (page) {
+                            case 'First': {
+                                this.page = INITIAL_PAGE;
+                                break;
+                            }
+                            case 'Previous': {
+                                this.page--;
+                                break;
+                            }
+                            case 'Next': {
+                                this.page++;
+                                break;
+                            }
+                            case 'Last': {
+                                this.page = lastPage;
+                                break;
+                            }
+                            default:
+                                isNeverCheck(page);
                         }
                         const currentSearchValue = this.route.snapshot.queryParamMap?.get('search') ?? undefined;
                         this.pastTrainings$ =
