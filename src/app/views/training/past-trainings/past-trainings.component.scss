@@ -251,11 +251,15 @@
 
             &--arrow-wrapper {
                 margin-right: 15px;
-                order: 2;
             }
 
             &--controls-wrapper {
                 order: 2;
+            }
+
+            &--label {
+                margin-right: auto;
+                margin-left: 15px;
             }
         }
     }
