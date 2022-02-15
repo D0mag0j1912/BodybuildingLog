@@ -85,7 +85,9 @@
                     </ng-template>
                     <div class="training-paginator">
                         <div class="training-paginator--controls-wrapper">
-                            <div class="training-paginator--page-size-wrapper">
+                            <div
+                                class="training-paginator--page-size-wrapper"
+                                [class.training-paginator--page-size-not-visible]="!(isSearch$ | async)">
                                 <select
                                     class="training-paginator--page-size"
                                     [(ngModel)]="size">
