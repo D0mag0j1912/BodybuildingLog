@@ -39,6 +39,7 @@ export const paginate = async <T extends Partial<PastTrainings>, U extends Model
                 Size: size,
             };
         }
+        results.LastPage = Math.ceil(results.TotalCount / size);
     }
     results.Results = Object.create({});
     try {
