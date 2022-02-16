@@ -90,7 +90,8 @@
                                 [class.training-paginator--page-size-not-visible]="!(isSearch$ | async)">
                                 <select
                                     class="training-paginator--page-size"
-                                    [(ngModel)]="size">
+                                    [(ngModel)]="size"
+                                    (change)="loadPage()">
                                     <option
                                         *ngFor="let size of pageSizeOptions"
                                         [value]="size">

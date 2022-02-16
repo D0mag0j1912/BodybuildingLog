@@ -13,7 +13,7 @@ import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator } from '../../../models/common/interfaces/paginator.model';
-import { DateInterval, MAX_TRAININGS_PER_PAGE, PastTrainingsQueryParams, PastTrainings, INITIAL_PAGE } from '../../../models/training/past-trainings/past-trainings.model';
+import { DateInterval, DEFAULT_TRAININGS_PER_PAGE, PastTrainingsQueryParams, PastTrainings, INITIAL_PAGE } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
@@ -36,7 +36,7 @@ export class PastTrainingsComponent {
 
     readonly food: number = 3000;
     readonly pageSizeOptions: number[] = [1, 3, 5, 10];
-    size: number = MAX_TRAININGS_PER_PAGE;
+    size: number = DEFAULT_TRAININGS_PER_PAGE;
     page: number = INITIAL_PAGE;
 
     isNextPage = true;
@@ -81,7 +81,8 @@ export class PastTrainingsComponent {
             this.changeDetectorRef.markForCheck();
         });
 
-        this.page = this.route.snapshot.queryParamMap?.get('page') ? +this.route.snapshot.queryParamMap.get('page') : 1;
+        this.page = this.route.snapshot.queryParamMap?.get('page') ? +this.route.snapshot.queryParamMap.get('page') : INITIAL_PAGE;
+        this.size = this.route.snapshot.queryParamMap?.get('size') ? +this.route.snapshot.queryParamMap.get('size') : DEFAULT_TRAININGS_PER_PAGE;
         const searchFilter = this.route.snapshot.queryParamMap?.get('search');
         if (searchFilter) {
             this.pastTrainings$ =
@@ -113,7 +114,7 @@ export class PastTrainingsComponent {
     }
 
     get maxTrainingsPerPage(): number {
-        return MAX_TRAININGS_PER_PAGE;
+        return DEFAULT_TRAININGS_PER_PAGE;
     }
 
     get isSearch$(): Observable<boolean> {
@@ -152,7 +153,7 @@ export class PastTrainingsComponent {
     }
 
     loadPage(
-        page: Page,
+        page?: Page,
         dateInterval?: DateInterval,
         earliestTrainingDate?: Date,
         lastPage?: number,
@@ -162,25 +163,27 @@ export class PastTrainingsComponent {
                 take(1),
                 tap((isSearch: boolean) => {
                     if (isSearch) {
-                        switch (page) {
-                            case 'First': {
-                                this.page = INITIAL_PAGE;
-                                break;
+                        if (page) {
+                            switch (page) {
+                                case 'First': {
+                                    this.page = INITIAL_PAGE;
+                                    break;
+                                }
+                                case 'Previous': {
+                                    this.page--;
+                                    break;
+                                }
+                                case 'Next': {
+                                    this.page++;
+                                    break;
+                                }
+                                case 'Last': {
+                                    this.page = lastPage;
+                                    break;
+                                }
+                                default:
+                                    isNeverCheck(page);
                             }
-                            case 'Previous': {
-                                this.page--;
-                                break;
-                            }
-                            case 'Next': {
-                                this.page++;
-                                break;
-                            }
-                            case 'Last': {
-                                this.page = lastPage;
-                                break;
-                            }
-                            default:
-                                isNeverCheck(page);
                         }
                         const currentSearchValue = this.route.snapshot.queryParamMap?.get('search') ?? undefined;
                         this.pastTrainings$ =
@@ -412,7 +415,7 @@ export class PastTrainingsComponent {
     }
 
     private handleArrows(x: StreamData<Paginator<PastTrainings>>): void {
-        if (x?.Value?.TotalCount <= MAX_TRAININGS_PER_PAGE) {
+        if (x?.Value?.TotalCount <= DEFAULT_TRAININGS_PER_PAGE) {
             this.isNextPage = false;
             this.isPreviousPage = false;
         }

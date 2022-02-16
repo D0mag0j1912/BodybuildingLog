@@ -24,5 +24,5 @@ export interface PastTrainingsQueryParams {
 
 export const QUERY_PARAMS_DATE_FORMAT = 'dd-MM-yyyy';
 export const TEMPLATE_DATE_FORMAT = 'dd.MM.yyyy';
-export const MAX_TRAININGS_PER_PAGE = 3;
+export const DEFAULT_TRAININGS_PER_PAGE = 3;
 export const INITIAL_PAGE = 1;

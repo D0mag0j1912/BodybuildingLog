@@ -205,10 +205,12 @@
             width: 65px;
             border: 0;
             position: relative;
+            top: -1px;
             z-index: 99;
             background: none;
             cursor: pointer;
             font-family: $poppins;
+            padding-left: 8px;
 
             &:focus-visible {
                 outline: none;
