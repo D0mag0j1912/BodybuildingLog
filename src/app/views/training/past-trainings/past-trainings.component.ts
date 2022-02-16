@@ -136,6 +136,7 @@ export class PastTrainingsComponent {
                             this.page,
                         ).pipe(
                             tap(async (response: StreamData<Paginator<PastTrainings>>) => {
+                                this.updateCurrentPage(response);
                                 await this.router.navigate([], {
                                     relativeTo: this.route,
                                     queryParams: this.handleQueryParams(
@@ -193,6 +194,7 @@ export class PastTrainingsComponent {
                                 this.page,
                             ).pipe(
                                 tap(async (response: StreamData<Paginator<PastTrainings>>) => {
+                                    this.updateCurrentPage(response);
                                     await this.router.navigate([], {
                                         relativeTo: this.route,
                                         queryParams: this.handleQueryParams(
@@ -315,6 +317,10 @@ export class PastTrainingsComponent {
             .pipe(
                 map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
             );
+    }
+
+    private updateCurrentPage(response: StreamData<Paginator<PastTrainings>>): void {
+        this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
     }
 
     private calculateDate(

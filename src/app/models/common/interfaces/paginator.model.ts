@@ -3,6 +3,7 @@ export interface Paginator<T> {
     readonly Results?: T;
     readonly Next?: PaginatorParams;
     readonly Previous?: PaginatorParams;
+    readonly CurrentPage?: number;
     readonly TotalCount?: number;
     readonly LastPage?: number;
 }
