@@ -23,19 +23,24 @@ export const paginate = async <T extends Partial<PastTrainings>, U extends Model
         page = +query.Page;
         size = +query.Size;
 
-        startIndex = (page - 1) * size;
-        endIndex = page * size;
+        while (page > Math.ceil(results.TotalCount / size)) {
+            page--;
+        }
+        results.CurrentPage = page;
+
+        startIndex = (results.CurrentPage - 1) * size;
+        endIndex = results.CurrentPage * size;
 
         if (endIndex < total) {
             results.Next = {
-                Page: page + 1,
+                Page: results.CurrentPage + 1,
                 Size: size,
             };
         }
 
         if (startIndex > 0) {
             results.Previous = {
-                Page: page - 1,
+                Page: results.CurrentPage - 1,
                 Size: size,
             };
         }
