@@ -138,14 +138,6 @@
         bottom: 0;
         width: 90%;
 
-        &--label {
-            font-size: 15px;
-
-            &-count {
-                color: $army-green;
-            }
-        }
-
         &--controls-wrapper {
             display: flex;
             align-items: center;
@@ -214,6 +206,21 @@
 
             &:focus-visible {
                 outline: none;
+            }
+        }
+
+        &--text-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        &--label {
+            font-size: 15px;
+
+            &-count {
+                color: $army-green;
             }
         }
     }

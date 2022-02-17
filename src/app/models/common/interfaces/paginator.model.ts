@@ -5,7 +5,7 @@ export interface Paginator<T> {
     readonly Previous?: PaginatorParams;
     readonly CurrentPage?: number;
     readonly TotalCount?: number;
-    readonly LastPage?: number;
+    readonly TotalPages?: number;
 }
 
 export interface PaginatorParams {
@@ -13,5 +13,5 @@ export interface PaginatorParams {
     readonly Size: number;
 }
 
-export const DEFAULT_PAGE = 1;
-export const DEFAULT_SIZE = 5;
+export const DEFAULT_SIZE = 3;
+export const INITIAL_PAGE = 1;

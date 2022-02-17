@@ -12,8 +12,8 @@ import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
-import { Paginator } from '../../../models/common/interfaces/paginator.model';
-import { DateInterval, DEFAULT_TRAININGS_PER_PAGE, PastTrainingsQueryParams, PastTrainings, INITIAL_PAGE } from '../../../models/training/past-trainings/past-trainings.model';
+import { Paginator, INITIAL_PAGE, DEFAULT_SIZE } from '../../../models/common/interfaces/paginator.model';
+import { DateInterval, PastTrainingsQueryParams, PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
@@ -36,7 +36,7 @@ export class PastTrainingsComponent {
 
     readonly food: number = 3000;
     readonly pageSizeOptions: number[] = [1, 3, 5, 10];
-    size: number = DEFAULT_TRAININGS_PER_PAGE;
+    size: number = DEFAULT_SIZE;
     page: number = INITIAL_PAGE;
 
     isNextPage = true;
@@ -82,7 +82,7 @@ export class PastTrainingsComponent {
         });
 
         this.page = this.route.snapshot.queryParamMap?.get('page') ? +this.route.snapshot.queryParamMap.get('page') : INITIAL_PAGE;
-        this.size = this.route.snapshot.queryParamMap?.get('size') ? +this.route.snapshot.queryParamMap.get('size') : DEFAULT_TRAININGS_PER_PAGE;
+        this.size = this.route.snapshot.queryParamMap?.get('size') ? +this.route.snapshot.queryParamMap.get('size') : DEFAULT_SIZE;
         const searchFilter = this.route.snapshot.queryParamMap?.get('search');
         if (searchFilter) {
             this.pastTrainings$ =
@@ -114,7 +114,7 @@ export class PastTrainingsComponent {
     }
 
     get maxTrainingsPerPage(): number {
-        return DEFAULT_TRAININGS_PER_PAGE;
+        return DEFAULT_SIZE;
     }
 
     get isSearch$(): Observable<boolean> {
@@ -319,6 +319,16 @@ export class PastTrainingsComponent {
             );
     }
 
+    setPageText(totalPages: number): Observable<string> {
+        return this.translateService.stream('common')
+            .pipe(
+                map(value => {
+                    console.log(value);
+                    return `${totalPages}`
+                }),
+            );
+    }
+
     private updateCurrentPage(response: StreamData<Paginator<PastTrainings>>): void {
         this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
     }
@@ -421,7 +431,7 @@ export class PastTrainingsComponent {
     }
 
     private handleArrows(x: StreamData<Paginator<PastTrainings>>): void {
-        if (x?.Value?.TotalCount <= DEFAULT_TRAININGS_PER_PAGE) {
+        if (x?.Value?.TotalCount <= DEFAULT_SIZE) {
             this.isNextPage = false;
             this.isPreviousPage = false;
         }

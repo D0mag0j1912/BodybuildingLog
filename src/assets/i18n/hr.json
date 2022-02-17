@@ -1,5 +1,7 @@
 {
     "common": {
+        "page": "Stranica",
+        "of": "od",
         "page_not_found": "Stranica nije pronađena",
         "exercises":"Vježbe: ",
         "language": "Jezik",

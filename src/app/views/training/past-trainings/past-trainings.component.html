@@ -150,17 +150,22 @@
                                     matTooltipPosition="above"
                                     [matTooltip]="setPageTooltip((isSearch$ | async), 'Last') | async"
                                     [matTooltipClass]="setPageTooltipClass((isSearch$ | async), 'Last')"
-                                    (click)="loadPage('Last', undefined, undefined, pastTrainings?.Value?.LastPage)">
+                                    (click)="loadPage('Last', undefined, undefined, pastTrainings?.Value?.TotalPages)">
                                     <mat-icon class="training-paginator--icon">last_page</mat-icon>
                                 </button>
                             </div>
                         </div>
-                        <span class="training-paginator--label">
-                            {{ 'training.past_trainings.training_number' | translate }}
-                            <strong class="training-paginator--label-count">
-                                {{ pastTrainings.Value?.TotalCount }}
-                            </strong>
-                        </span>
+                        <div class="training-paginator--text-wrapper">
+                            <span class="training-paginator--label">
+                                {{ 'training.past_trainings.training_number' | translate }}
+                                <strong class="training-paginator--label-count">
+                                    {{ pastTrainings?.Value?.TotalCount }}
+                                </strong>
+                            </span>
+                            <span class="training-paginator--label">
+                                {{ setPageText(pastTrainings?.Value?.TotalPages) | async }}
+                            </span>
+                        </div>
                     </div>
                 </ng-template>
             </ng-template>
