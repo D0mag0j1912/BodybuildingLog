@@ -18,16 +18,19 @@ export const paginate = async <T extends Partial<PastTrainings>, U extends Model
 
     const total = await model.countDocuments(condition).exec() ?? 0;
     results.TotalCount = total;
-
+    
     if (query) {
         page = +query.Page;
         size = +query.Size;
 
-        while (page > Math.ceil(results.TotalCount / size)) {
-            page--;
+        if (results.TotalCount > 0) {
+            while (page > Math.ceil(results.TotalCount / size)) {
+                page--;
+            }
         }
-        results.CurrentPage = page;
 
+        results.CurrentPage = page;
+        results.Size = size;
         startIndex = (results.CurrentPage - 1) * size;
         endIndex = results.CurrentPage * size;
 
