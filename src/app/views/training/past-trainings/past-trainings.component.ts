@@ -21,8 +21,10 @@ import { Page } from '../../../models/common/types/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 
 enum Heights {
-    LOWER_HEIGHT = 305,
-    HIGHER_HEIGHT = 335,
+    LOWER_WEEK_HEIGHT = 275,
+    HIGHER_WEEK_HEIGHT = 305,
+    LOWER_SEARCH_HEIGHT = 305,
+    HIGHER_SEARCH_HEIGHT = 335,
 }
 
 @Component({
@@ -52,12 +54,18 @@ export class PastTrainingsComponent {
         if (timePeriodElement) {
             const trainingElement = (this.trainingItemWrapper?.nativeElement as HTMLDivElement);
             if (trainingElement) {
-                if ((timePeriodElement.nativeElement as HTMLDivElement).offsetHeight === 30) {
-                    trainingElement.style.maxHeight = `calc(100vh - ${Heights.LOWER_HEIGHT}px)`;
-                }
-                else if ((timePeriodElement.nativeElement as HTMLDivElement).offsetHeight > 30) {
-                    trainingElement.style.maxHeight = `calc(100vh - ${Heights.HIGHER_HEIGHT}px)`;
-                }
+                this.isSearch$
+                .pipe(
+                    takeUntil(this.unsubscribeService),
+                )
+                .subscribe((isSearch: boolean) => {
+                    if ((timePeriodElement.nativeElement as HTMLDivElement).offsetHeight === 30) {
+                        trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? Heights.LOWER_SEARCH_HEIGHT : Heights.LOWER_WEEK_HEIGHT}px)`;
+                    }
+                    else if ((timePeriodElement.nativeElement as HTMLDivElement).offsetHeight > 30) {
+                        trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? Heights.HIGHER_SEARCH_HEIGHT : Heights.HIGHER_WEEK_HEIGHT}px)`;
+                    }
+                });
             }
         }
     }
