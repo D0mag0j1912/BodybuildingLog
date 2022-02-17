@@ -322,10 +322,13 @@ export class PastTrainingsComponent {
     setPageText(totalPages: number): Observable<string> {
         return this.translateService.stream('common')
             .pipe(
-                map(value => {
-                    console.log(value);
-                    return `${totalPages}`
-                }),
+                map((value: { [key: string]: string }) =>
+                    `
+                        ${value['page']}
+                        <strong class="primary">${this.page?.toString() ?? '1'}</strong>
+                        ${value['of']}
+                        <strong class="primary">${totalPages?.toString() ?? '1'}</strong>
+                    `),
             );
     }
 
