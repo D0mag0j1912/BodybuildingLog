@@ -3,6 +3,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { StreamData } from '../../models/common/interfaces/common.model';
 import { Paginator } from '../../models/common/interfaces/paginator.model';
 import { PastTrainings, PastTrainingsQueryParams } from '../../models/training/past-trainings/past-trainings.model';
+import { LocalStorageItems } from '../../models/common/interfaces/common.model';
 
 @Injectable({ providedIn: 'root' })
 export class SharedService {
@@ -15,5 +16,13 @@ export class SharedService {
 
     subtractTwoHours(date: Date): Date {
         return new Date(new Date(date).setHours(new Date(date).getHours() - 2));
+    }
+
+    keepQueryParams(): void {
+        const queryParams = JSON.parse(localStorage.getItem(LocalStorageItems.QUERY_PARAMS));
+        if (!queryParams) {
+            return;
+        }
+        this.pastTrainingsQueryParams$$.next(queryParams);
     }
 }

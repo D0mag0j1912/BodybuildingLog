@@ -12,6 +12,7 @@ import { NavigationService } from '../../../services/shared/navigation.service';
 import { SharedService } from '../../../services/shared/shared.service';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import { constructDates } from '../../../helpers/dates.helper';
+import { LocalStorageItems } from '../../../models/common/interfaces/common.model';
 
 interface IsActiveMatchOptions {
     matrixParams: 'exact' | 'subset' | 'ignored';
@@ -83,6 +84,7 @@ export class HeaderComponent implements OnInit {
                         size: response?.size ? response.size : undefined,
                     } as PastTrainingsQueryParams,
                 });
+                localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
             });
     }
 

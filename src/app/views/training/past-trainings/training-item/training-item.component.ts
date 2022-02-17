@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inpu
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { format } from 'date-fns';
 import { takeUntil, tap } from 'rxjs/operators';
+import { LocalStorageItems } from '../../../../models/common/interfaces/common.model';
 import { Training } from '../../../../models/training/new-training/new-training.model';
 import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
@@ -79,6 +80,7 @@ export class TrainingItemComponent implements OnInit {
             .pipe(
                 tap(async (params: Params) => {
                     this.sharedService.pastTrainingsQueryParams$$.next(params as PastTrainingsQueryParams);
+                    localStorage.setItem(LocalStorageItems.QUERY_PARAMS, JSON.stringify(params as PastTrainingsQueryParams));
                     await this.router.navigate(['/training/new-training', this.training._id]);
                 }),
                 takeUntil(this.unsubscribeService),

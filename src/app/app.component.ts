@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthResponseData } from './models/auth/auth-data.model';
 import { LocalStorageItems } from './models/common/interfaces/common.model';
 import { AuthService } from './services/auth/auth.service';
+import { SharedService } from './services/shared/shared.service';
 import { NewTrainingService } from './services/training/new-training.service';
 
 @Component({
@@ -15,6 +16,7 @@ export class AppComponent implements OnInit {
 
     constructor(
         private readonly authService: AuthService,
+        private readonly sharedService: SharedService,
         private readonly newTrainingService: NewTrainingService,
         private readonly translateService: TranslateService,
     ) {
@@ -26,5 +28,6 @@ export class AppComponent implements OnInit {
     ngOnInit(): void {
         this.authService.autoLogin();
         this.newTrainingService.keepTrainingState();
+        this.sharedService.keepQueryParams();
     }
 }
