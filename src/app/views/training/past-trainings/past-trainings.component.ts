@@ -144,7 +144,7 @@ export class PastTrainingsComponent {
                             this.page,
                         ).pipe(
                             tap(async (response: StreamData<Paginator<PastTrainings>>) => {
-                                this.updateCurrentPage(response);
+                                this.updatePageAndSize(response);
                                 await this.router.navigate([], {
                                     relativeTo: this.route,
                                     queryParams: this.handleQueryParams(
@@ -171,7 +171,7 @@ export class PastTrainingsComponent {
                     $event.Page,
                 ).pipe(
                     tap(async (response: StreamData<Paginator<PastTrainings>>) => {
-                        this.updateCurrentPage(response);
+                        this.updatePageAndSize(response);
                         await this.router.navigate([], {
                             relativeTo: this.route,
                             queryParams: this.handleQueryParams(
@@ -246,8 +246,9 @@ export class PastTrainingsComponent {
             );
     }
 
-    private updateCurrentPage(response: StreamData<Paginator<PastTrainings>>): void {
+    private updatePageAndSize(response: StreamData<Paginator<PastTrainings>>): void {
         this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
+        this.size = response?.Value?.Size ?? DEFAULT_SIZE;
         this.changeDetectorRef.markForCheck();
     }
 

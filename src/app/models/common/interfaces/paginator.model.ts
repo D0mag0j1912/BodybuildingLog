@@ -6,6 +6,7 @@ export interface Paginator<T> {
     readonly Next?: PaginatorParams;
     readonly Previous?: PaginatorParams;
     readonly CurrentPage?: number;
+    readonly Size?: number;
     readonly TotalCount?: number;
     readonly TotalPages?: number;
 }
