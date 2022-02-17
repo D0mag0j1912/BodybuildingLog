@@ -17,6 +17,15 @@
             class="search-max-error">
             {{ 'training.past_trainings.filters.errors.search_max_length' | translate }}
         </span>
+        <div class="sort-wrapper">
+            <select>
+                <option
+                    *ngFor="let option of sortOptions"
+                    [value]="option.key">
+                    {{ option.value | async }}
+                </option>
+            </select>
+        </div>
     </form>
     <div class="or-wrapper">
         <span class="or">{{ 'common.or' | translate }}</span>

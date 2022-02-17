@@ -1,9 +1,15 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 import { INPUT_MAX_LENGTH } from '../../../../constants/input-maxlength.const';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
+
+interface PeriodDropdown {
+    key: string;
+    value: Observable<string>;
+}
 
 @Component({
     selector: 'bl-past-trainings-filters',
@@ -24,8 +30,19 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     @ViewChild('search', { read: ElementRef })
     searchInput: ElementRef | undefined;
 
+    sortOptions: [PeriodDropdown, PeriodDropdown] = [
+        {
+            key: 'week',
+            value: this.translateService.stream('training.past_trainings.show_by_week'),
+        }, {
+            key: 'day',
+            value: this.translateService.stream('training.past_trainings.show_by_day'),
+        },
+    ];
+
     constructor(
         private readonly unsubscribeService: UnsubscribeService,
+        private readonly translateService: TranslateService,
         private readonly route: ActivatedRoute,
     ) {
         const searchQueryParam = this.route.snapshot.queryParamMap?.get('search');

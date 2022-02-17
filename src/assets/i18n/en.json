@@ -152,6 +152,8 @@
             "disabled_next_week": "Future weeks are not available",
             "disabled_previous_week": "Previous weeks are not available",
             "created_at": "Training created: ",
+            "show_by_week": "Show by week",
+            "show_by_day": "Show by day",
             "filters": {
                 "enter_search_term": "Search by exercise name",
                 "choose_custom_query": "Choose custom query",
@@ -163,12 +165,6 @@
                     "search_error": "Error searching training",
                     "search_max_length": "Maximum number of characters is reached"
                 }
-            },
-            "errors": {
-                "error_load_training": "Error while loading training",
-                "get_training_error": "Requested training is not available",
-                "past_trainings_error_title": "Past trainings currently not available",
-                "past_trainings_error_description": "Past trainings are not currently available. Please try again"
             },
             "buttons": {
                 "first_page": "First page",
@@ -187,6 +183,12 @@
                 "errors": {
                     "error_delete_training": "Deleting training failed"
                 }
+            },
+            "errors": {
+                "error_load_training": "Error while loading training",
+                "get_training_error": "Requested training is not available",
+                "past_trainings_error_title": "Past trainings currently not available",
+                "past_trainings_error_description": "Past trainings are not currently available. Please try again"
             }
         }
     },
