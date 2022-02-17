@@ -58,7 +58,6 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
         this.keyUp$$.next($event);
     }
 
-    //TODO: open filter dialog
     openFilterDialog(): void {
         //TODO
     }
