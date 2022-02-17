@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Observable, of } from 'rxjs';
-import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
@@ -161,79 +161,6 @@ export class PastTrainingsComponent {
                 );
     }
 
-    loadPage(
-        page?: Page,
-        dateInterval?: DateInterval,
-        earliestTrainingDate?: Date,
-        lastPage?: number,
-    ): void {
-        this.isSearch$
-            .pipe(
-                take(1),
-                tap((isSearch: boolean) => {
-                    if (isSearch) {
-                        if (page) {
-                            switch (page) {
-                                case 'First': {
-                                    this.page = INITIAL_PAGE;
-                                    break;
-                                }
-                                case 'Previous': {
-                                    this.page--;
-                                    break;
-                                }
-                                case 'Next': {
-                                    this.page++;
-                                    break;
-                                }
-                                case 'Last': {
-                                    this.page = lastPage;
-                                    break;
-                                }
-                                default:
-                                    isNeverCheck(page);
-                            }
-                        }
-                        const currentSearchValue = this.route.snapshot.queryParamMap?.get('search') ?? undefined;
-                        this.pastTrainings$ =
-                            this.pastTrainingsService.searchPastTrainings(
-                                currentSearchValue?.trim()?.toLowerCase() ?? '',
-                                this.size,
-                                this.page,
-                            ).pipe(
-                                tap(async (response: StreamData<Paginator<PastTrainings>>) => {
-                                    this.updateCurrentPage(response);
-                                    await this.router.navigate([], {
-                                        relativeTo: this.route,
-                                        queryParams: this.handleQueryParams(
-                                            response,
-                                            currentSearchValue,
-                                        ),
-                                    });
-                                    this.handleArrows(response);
-                                }),
-                                mapStreamData(),
-                            );
-                    }
-                    else {
-                        this.pastTrainings$ =
-                            this.pastTrainingsService.getPastTrainings(this.calculateDate(page, dateInterval, earliestTrainingDate))
-                                .pipe(
-                                    tap(async (response: StreamData<Paginator<PastTrainings>>) => {
-                                        this.handleArrows(response);
-                                        await this.router.navigate([], {
-                                            relativeTo: this.route,
-                                            queryParams: this.handleQueryParams(response),
-                                        });
-                                    }),
-                                    mapStreamData(),
-                                );
-                    }
-                }),
-            )
-            .subscribe();
-    }
-
     onPaginatorChanged($event: PaginatorChanged): void {
         if ($event?.IsSearch) {
             const currentSearchValue = this.route.snapshot.queryParamMap?.get('search') ?? undefined;
@@ -270,53 +197,6 @@ export class PastTrainingsComponent {
                         }),
                         mapStreamData(),
                     );
-        }
-    }
-
-    setPageTooltip(
-        isSearch: boolean,
-        page: Page,
-    ): Observable<string> {
-        if (isSearch) {
-            if (page === 'First' || page === 'Last') {
-                return this.translateService.stream(`training.past_trainings.buttons.${page === 'First' ? 'first_page' : 'last_page'}`);
-            }
-            else {
-                return this.translateService.stream(`training.past_trainings.buttons.${page === 'Next' ? 'next_page' : 'previous_page'}`);
-            }
-        }
-        else {
-            if (page === 'First' || page === 'Last') {
-                return this.translateService.stream(`training.past_trainings.buttons.${page === 'First' ? 'first_week' : 'last_week'}`);
-            }
-            else {
-                if (page === 'Next') {
-                    return this.translateService.stream(`training.past_trainings.${this.isNextPage ? 'buttons.next_week' : 'disabled_next_week'}`);
-                }
-                else {
-                    return this.translateService.stream(`training.past_trainings.${this.isPreviousPage ? 'buttons.previous_week' : 'disabled_previous_week'}`);
-                }
-            }
-        }
-    }
-
-    setPageTooltipClass(
-        isSearch: boolean,
-        page: Page,
-    ): string {
-        if (isSearch) {
-            return 'tooltip';
-        }
-        else {
-            if (page === 'First' || page === 'Last') {
-                return 'tooltip';
-            }
-            if (page === 'Next') {
-                return this.isNextPage ? 'tooltip' : 'tooltip-error';
-            }
-            else {
-                return this.isPreviousPage ? 'tooltip' : 'tooltip-error';
-            }
         }
     }
 
@@ -366,21 +246,9 @@ export class PastTrainingsComponent {
             );
     }
 
-    setPageText(totalPages: number): Observable<string> {
-        return this.translateService.stream('common')
-            .pipe(
-                map((value: { [key: string]: string }) =>
-                    `
-                        ${value['page']}
-                        <strong class="primary">${this.page?.toString() ?? '1'}</strong>
-                        ${value['of']}
-                        <strong class="primary">${totalPages?.toString() ?? '1'}</strong>
-                    `),
-            );
-    }
-
     private updateCurrentPage(response: StreamData<Paginator<PastTrainings>>): void {
         this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
+        this.changeDetectorRef.markForCheck();
     }
 
     private calculateDate(

@@ -74,15 +74,15 @@ export class PaginationComponent {
                 }
             }
             this.paginatorChanged.emit({
-                Page: this.page,
-                Size: this.size,
+                Page: +this.page,
+                Size: +this.size,
                 IsSearch: true,
             } as PaginatorChanged);
         }
         else {
             this.paginatorChanged.emit({
-                Page: this.page,
-                Size: this.size,
+                Page: +this.page,
+                Size: +this.size,
                 IsSearch: false,
                 PageType: page,
                 DateInterval: dateInterval,

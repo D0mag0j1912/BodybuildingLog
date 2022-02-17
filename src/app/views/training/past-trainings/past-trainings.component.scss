@@ -154,26 +154,5 @@
                 width: 4px;
             }
         }
-
-        .training-paginator {
-            width: 850px;
-            column-gap: 20px;
-            justify-content: flex-end;
-            flex-direction: row;
-            position: relative;
-
-            &--arrow-wrapper {
-                margin-right: 15px;
-            }
-
-            &--controls-wrapper {
-                order: 2;
-            }
-
-            &--label {
-                margin-right: auto;
-                margin-left: 15px;
-            }
-        }
     }
 }
