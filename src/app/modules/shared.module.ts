@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '../material.module';
 import { PipesModule } from '../pipes/pipes.module';
@@ -15,6 +15,7 @@ import { SingleExerciseComponent } from '../views/shared/training/single-exercis
 import { TotalWeightComponent } from '../views/shared/training/total-weight/total-weight.component';
 import { DeleteTrainingActionComponent } from '../views/shared/training/training-actions/delete-training-action/delete-training-action.component';
 import { MoreTrainingActionComponent } from '../views/shared/training/training-actions/more-training-action/more-training-action.component';
+import { PaginationComponent } from '../views/shared/pagination/pagination.component';
 
 const COMPONENTS = [
     DialogComponent,
@@ -22,6 +23,7 @@ const COMPONENTS = [
     SetsComponent,
     TotalWeightComponent,
     NotFoundComponent,
+    PaginationComponent,
 ];
 
 const ACTION_COMPONENTS = [
@@ -31,6 +33,7 @@ const ACTION_COMPONENTS = [
 
 const EXTERNAL_IMPORTS = [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     MaterialModule,
     TranslateModule,

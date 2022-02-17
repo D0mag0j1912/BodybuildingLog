@@ -1,0 +1,77 @@
+<div class="training-paginator">
+    <div class="training-paginator--controls-wrapper">
+        <div
+            class="training-paginator--page-size-wrapper"
+            [class.training-paginator--page-size-not-visible]="!isSearch">
+            <select
+                class="training-paginator--page-size"
+                [(ngModel)]="size"
+                (change)="loadPage()">
+                <option
+                    *ngFor="let size of pageSizeOptions"
+                    [value]="size">
+                    {{ size }}
+                </option>
+            </select>
+        </div>
+        <div class="training-paginator--arrow-wrapper">
+            <button
+                *ngIf="isPreviousPage"
+                mat-raised-button
+                type="button"
+                matTooltipPosition="above"
+                [matTooltip]="setPageTooltip(isSearch, 'First') | async"
+                [matTooltipClass]="setPageTooltipClass(isSearch, 'First')"
+                (click)="loadPage(
+                    'First',
+                    undefined,
+                    data?.Value?.Results?.EarliestTrainingDate)">
+                <mat-icon class="training-paginator--icon">first_page</mat-icon>
+            </button>
+            <div
+                matTooltipPosition="above"
+                [matTooltip]="setPageTooltip(isSearch, 'Previous') | async"
+                [matTooltipClass]="setPageTooltipClass(isSearch, 'Previous')">
+                <button
+                    mat-raised-button
+                    type="button"
+                    class="training-paginator--previous"
+                    [disabled]="data.IsLoading || !isPreviousPage"
+                    (click)="loadPage(
+                        'Previous',
+                        data.Value?.Results?.Dates)">
+                    <mat-icon class="training-paginator--icon">navigate_before</mat-icon>
+                </button>
+            </div>
+            <div
+                matTooltipPosition="above"
+                [matTooltip]="setPageTooltip(isSearch, 'Next') | async"
+                [matTooltipClass]="setPageTooltipClass(isSearch, 'Next')">
+                <button
+                    mat-raised-button
+                    type="button"
+                    class="training-paginator--next"
+                    [disabled]="data.IsLoading || !isNextPage"
+                    (click)="loadPage(
+                        'Next',
+                        data.Value?.Results?.Dates)">
+                    <mat-icon class="training-paginator--icon">navigate_next</mat-icon>
+                </button>
+            </div>
+            <button
+                *ngIf="isNextPage"
+                mat-raised-button
+                type="button"
+                matTooltipPosition="above"
+                [matTooltip]="setPageTooltip(isSearch, 'Last') | async"
+                [matTooltipClass]="setPageTooltipClass(isSearch, 'Last')"
+                (click)="loadPage('Last', undefined, undefined, data?.Value?.TotalPages)">
+                <mat-icon class="training-paginator--icon">last_page</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div
+        *ngIf="data?.Value?.TotalPages"
+        class="training-paginator--label"
+        [innerHTML]="setPageText(data.Value.TotalPages) | async"></div>
+</div>

@@ -12,7 +12,7 @@ import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
-import { Paginator, INITIAL_PAGE, DEFAULT_SIZE } from '../../../models/common/interfaces/paginator.model';
+import { Paginator, INITIAL_PAGE, DEFAULT_SIZE, PaginatorChanged } from '../../../models/common/interfaces/paginator.model';
 import { DateInterval, PastTrainingsQueryParams, PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
@@ -232,6 +232,45 @@ export class PastTrainingsComponent {
                 }),
             )
             .subscribe();
+    }
+
+    onPaginatorChanged($event: PaginatorChanged): void {
+        if ($event?.IsSearch) {
+            const currentSearchValue = this.route.snapshot.queryParamMap?.get('search') ?? undefined;
+            this.pastTrainings$ =
+                this.pastTrainingsService.searchPastTrainings(
+                    currentSearchValue?.trim()?.toLowerCase() ?? '',
+                    $event.Size,
+                    $event.Page,
+                ).pipe(
+                    tap(async (response: StreamData<Paginator<PastTrainings>>) => {
+                        this.updateCurrentPage(response);
+                        await this.router.navigate([], {
+                            relativeTo: this.route,
+                            queryParams: this.handleQueryParams(
+                                response,
+                                currentSearchValue,
+                            ),
+                        });
+                        this.handleArrows(response);
+                    }),
+                    mapStreamData(),
+                );
+        }
+        else {
+            this.pastTrainings$ =
+                this.pastTrainingsService.getPastTrainings(this.calculateDate($event.PageType, $event.DateInterval, $event.EarliestTrainingDate))
+                    .pipe(
+                        tap(async (response: StreamData<Paginator<PastTrainings>>) => {
+                            this.handleArrows(response);
+                            await this.router.navigate([], {
+                                relativeTo: this.route,
+                                queryParams: this.handleQueryParams(response),
+                            });
+                        }),
+                        mapStreamData(),
+                    );
+        }
     }
 
     setPageTooltip(
