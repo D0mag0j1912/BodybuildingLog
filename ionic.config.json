@@ -1,7 +1,12 @@
 {
-  "name": "trainingApk",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
+    "defaultProject": "trainingApk",
+    "projects": {
+        "trainingApk": {
+            "name": "trainingApk",
+            "integrations": {
+                "capacitor": {}
+            },
+            "type": "angular"
+        }
+    }
 }

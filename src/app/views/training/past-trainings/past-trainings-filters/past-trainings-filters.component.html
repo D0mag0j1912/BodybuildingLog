@@ -3,15 +3,14 @@
         #form="ngForm"
         class="search-wrapper"
         autocomplete="off">
-        <input
+        <ion-input
             #search="ngModel"
             name="search"
             type="text"
-            class="search-input"
             [maxlength]="inputMaxLength"
             [placeholder]="'training.past_trainings.filters.enter_search_term' | translate"
             [(ngModel)]="searchValue"
-            (keyup)="emitKeyboardEvent($event)">
+            (keyup)="emitKeyboardEvent($event)"></ion-input>
         <span
             *ngIf="search?.control?.errors?.maxlength"
             class="search-max-error">
