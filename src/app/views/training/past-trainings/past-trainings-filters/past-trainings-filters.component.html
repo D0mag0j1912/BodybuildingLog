@@ -4,6 +4,7 @@
         class="search-wrapper"
         autocomplete="off">
         <ion-input
+            ngDefaultControl
             #search="ngModel"
             name="search"
             type="text"
@@ -29,6 +30,6 @@
     </form>
     <div class="or-wrapper">
         <span class="or">{{ 'common.or' | translate }}</span>
-        <mat-icon class="search-icon">filter_list</mat-icon>
+        <ion-icon name="filter-circle-outline"></ion-icon>
     </div>
 </div>
