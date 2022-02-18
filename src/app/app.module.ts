@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { init } from '@sentry/angular';
+import { IonicModule } from '@ionic/angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './guards/auth.guard';
@@ -44,6 +45,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
                 deps: [HttpClient],
             },
         }),
+        IonicModule.forRoot(),
     ],
     providers: [{
             provide: HTTP_INTERCEPTORS,
