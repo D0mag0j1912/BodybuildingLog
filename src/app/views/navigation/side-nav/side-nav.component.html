@@ -13,7 +13,7 @@
             <ion-item>
                 <a
                     *ngIf="!(isAuthenticated$ | async)"
-                    routerLink="/login"
+                    routerLink="/auth/login"
                     (click)="onCloseSideNav()">
                     <mat-icon class="icon">login</mat-icon>
                     <span class="caption">
@@ -24,7 +24,7 @@
             <ion-item>
                 <a
                     *ngIf="!(isAuthenticated$ | async)"
-                    routerLink="/signup"
+                    routerLink="/auth/signup"
                     (click)="onCloseSideNav()">
                     <mat-icon class="icon">app_registration</mat-icon>
                     <span class="caption">

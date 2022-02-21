@@ -104,7 +104,7 @@ export class SignupComponent {
                     duration: SNACK_BAR_DURATION.GENERAL,
                     panelClass: response.Success ? 'app__snackbar' : 'app__snackbar-error',
                 });
-                await this.router.navigate(['/login']);
+                await this.router.navigate(['/auth/login']);
             }
         });
     }

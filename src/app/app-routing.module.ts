@@ -2,23 +2,17 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { NotFoundResolverService } from './services/shared/not-found-resolver.service';
-import { LoginComponent } from './views/auth/login/login.component';
-import { SignupComponent } from './views/auth/signup/signup.component';
 import { NotFoundComponent } from './views/shared/not-found/not-found.component';
 
 const routes: Routes = [
     {
         path: '',
-        redirectTo: '/login',
+        redirectTo: '/auth/login',
         pathMatch: 'full',
     },
     {
-        path: 'login',
-        component: LoginComponent,
-    },
-    {
-        path: 'signup',
-        component: SignupComponent,
+        path: 'auth',
+        loadChildren: async () => import('./modules/auth/auth.module').then(module => module.AuthModule),
     },
     {
         path: 'training',
