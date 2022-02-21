@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from 'src/app/material.module';
 import { HeaderComponent } from '../views/navigation/header/header.component';
@@ -19,6 +20,7 @@ const EXTERNAL_IMPORTS = [
     MaterialModule,
     FlexLayoutModule,
     RouterModule,
+    IonicModule,
 ];
 
 const IMPORTS = [AuthModule];

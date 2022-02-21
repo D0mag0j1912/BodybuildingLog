@@ -1,91 +1,111 @@
-<mat-nav-list>
-    <a
-        *ngIf="!(isAuthenticated$ | async)"
-        mat-list-item
-        routerLink="/login"
-        (click)="onCloseSideNav()">
-        <mat-icon class="icon">login</mat-icon>
-        <span class="caption">
-            {{ 'navigation.login' | translate }}
-        </span>
-    </a>
-    <a
-        *ngIf="!(isAuthenticated$ | async)"
-        mat-list-item
-        routerLink="/signup"
-        (click)="onCloseSideNav()">
-        <mat-icon class="icon">app_registration</mat-icon>
-        <span class="caption">
-            {{ 'navigation.signup' | translate }}
-        </span>
-    </a>
-    <a
-        *ngIf="isAuthenticated$ | async"
-        mat-list-item
-        routerLink="/training/new-training"
-        (click)="onCloseSideNav()">
-        <mat-icon class="icon">fitness_center</mat-icon>
-        <span class="caption">
-            {{ 'navigation.new_training' | translate }}
-        </span>
-    </a>
-    <a
-        *ngIf="isAuthenticated$ | async"
-        mat-list-item
-        (click)="goToPastTrainings(); onCloseSideNav()">
-        <mat-icon class="icon">history</mat-icon>
-        <span class="caption">
-            {{ 'navigation.past_trainings' | translate }}
-        </span>
-    </a>
-    <ng-container *ngIf="(loggedUserData$ | async) as userData">
-        <a
-            *ngIf="isAuthenticated$ | async"
-            mat-list-item
-            [matMenuTriggerFor]="languages">
-            <mat-icon class="icon">language</mat-icon>
-            <span class="caption">
-                {{ 'navigation.language' | translate }}
-            </span>
-            <mat-menu #languages="matMenu">
-                <button
-                    mat-menu-item
-                    class="menu-item"
-                    [class.chosenLanguage]="userData?.Preferences?.language === 'hr'"
-                    [disabled]="userData?.Preferences?.language === 'hr'"
-                    (click)="changeLanguage('hr')">
-                    <img
-                        src="../../../../assets/images/flags/croatia.png"
-                        height="40"
-                        width="40">
-                    <span class="menu-item--text">
-                        {{ 'languages.croatian' | translate }}
+<ion-menu
+    side="start"
+    menuId="custom"
+    contentId="main"
+    class="my-custom-menu">
+    <ion-header>
+        <ion-toolbar color="primary">
+            <ion-title>{{ 'navigation.title' | translate }}</ion-title>
+        </ion-toolbar>
+    </ion-header>
+    <ion-content>
+        <ion-list>
+            <ion-item>
+                <a
+                    *ngIf="!(isAuthenticated$ | async)"
+                    routerLink="/login"
+                    (click)="onCloseSideNav()">
+                    <mat-icon class="icon">login</mat-icon>
+                    <span class="caption">
+                        {{ 'navigation.login' | translate }}
                     </span>
-                </button>
-                <button
-                    mat-menu-item
-                    class="menu-item"
-                    [class.chosenLanguage]="userData?.Preferences?.language === 'en'"
-                    [disabled]="userData?.Preferences?.language === 'en'"
-                    (click)="changeLanguage('en')">
-                    <img
-                        src="../../../../assets/images/flags/united-kingdom.png"
-                        height="24"
-                        width="40">
-                    <span class="menu-item--text">
-                        {{ 'languages.english' | translate }}
+                </a>
+            </ion-item>
+            <ion-item>
+                <a
+                    *ngIf="!(isAuthenticated$ | async)"
+                    routerLink="/signup"
+                    (click)="onCloseSideNav()">
+                    <mat-icon class="icon">app_registration</mat-icon>
+                    <span class="caption">
+                        {{ 'navigation.signup' | translate }}
                     </span>
-                </button>
-            </mat-menu>
-        </a>
-    </ng-container>
-    <a
-        *ngIf="isAuthenticated$ | async"
-        mat-list-item
-        (click)="onCloseSideNav(); onLogout();">
-        <mat-icon class="icon">logout</mat-icon>
-        <span class="caption">
-            {{ 'navigation.logout' | translate }}
-        </span>
-    </a>
-</mat-nav-list>
+                </a>
+            </ion-item>
+            <ion-item>
+                <a
+                    *ngIf="isAuthenticated$ | async"
+                    routerLink="/training/new-training"
+                    (click)="onCloseSideNav()">
+                    <mat-icon class="icon">fitness_center</mat-icon>
+                    <span class="caption">
+                        {{ 'navigation.new_training' | translate }}
+                    </span>
+                </a>
+            </ion-item>
+            <ion-item>
+                <a
+                    *ngIf="isAuthenticated$ | async"
+                    (click)="goToPastTrainings(); onCloseSideNav()">
+                    <mat-icon class="icon">history</mat-icon>
+                    <span class="caption">
+                        {{ 'navigation.past_trainings' | translate }}
+                    </span>
+                </a>
+            </ion-item>
+            <ion-item>
+                <ng-container *ngIf="(loggedUserData$ | async) as userData">
+                    <a
+                        *ngIf="isAuthenticated$ | async"
+                        [matMenuTriggerFor]="languages">
+                        <mat-icon class="icon">language</mat-icon>
+                        <span class="caption">
+                            {{ 'navigation.language' | translate }}
+                        </span>
+                        <mat-menu #languages="matMenu">
+                            <button
+                                mat-menu-item
+                                class="menu-item"
+                                [class.chosenLanguage]="userData?.Preferences?.language === 'hr'"
+                                [disabled]="userData?.Preferences?.language === 'hr'"
+                                (click)="changeLanguage('hr')">
+                                <img
+                                    src="../../../../assets/images/flags/croatia.png"
+                                    height="40"
+                                    width="40">
+                                <span class="menu-item--text">
+                                    {{ 'languages.croatian' | translate }}
+                                </span>
+                            </button>
+                            <button
+                                mat-menu-item
+                                class="menu-item"
+                                [class.chosenLanguage]="userData?.Preferences?.language === 'en'"
+                                [disabled]="userData?.Preferences?.language === 'en'"
+                                (click)="changeLanguage('en')">
+                                <img
+                                    src="../../../../assets/images/flags/united-kingdom.png"
+                                    height="24"
+                                    width="40">
+                                <span class="menu-item--text">
+                                    {{ 'languages.english' | translate }}
+                                </span>
+                            </button>
+                        </mat-menu>
+                    </a>
+                </ng-container>
+            </ion-item>
+            <ion-item>
+                <a
+                    *ngIf="isAuthenticated$ | async"
+                    (click)="onCloseSideNav(); onLogout();">
+                    <mat-icon class="icon">logout</mat-icon>
+                    <span class="caption">
+                        {{ 'navigation.logout' | translate }}
+                    </span>
+                </a>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-menu>
+<ion-router-outlet id="main"></ion-router-outlet>
