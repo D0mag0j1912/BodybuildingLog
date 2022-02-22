@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '../../material.module';
 import { AuthService } from '../../services/auth/auth.service';
@@ -22,6 +23,7 @@ const EXTERNAL_IMPORTS = [
     RouterModule,
     ReactiveFormsModule,
     TranslateModule,
+    IonicModule,
 ];
 
 const MY_IMPORTS = [
