@@ -5,7 +5,6 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '../../material.module';
-import { AuthService } from '../../services/auth/auth.service';
 import { LoginService } from '../../services/auth/login.service';
 import { SignupService } from '../../services/auth/signup.service';
 import { LoginComponent } from '../../views/auth/login/login.component';
@@ -35,7 +34,6 @@ const MY_IMPORTS = [
 const SERVICES = [
     SignupService,
     LoginService,
-    AuthService,
 ];
 
 @NgModule({
