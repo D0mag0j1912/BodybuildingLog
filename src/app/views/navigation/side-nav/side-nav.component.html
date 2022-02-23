@@ -1,110 +1,113 @@
-<ion-split-pane contentId="main">
-    <ion-menu
-        side="start"
-        contentId="main">
-        <ion-header>
-            <ion-toolbar color="primary">
-                <ion-title>{{ 'navigation.title' | translate }}</ion-title>
-            </ion-toolbar>
-        </ion-header>
-        <ion-content>
-            <ion-list>
-                <ion-menu-toggle [autoHide]="false">
-                    <ion-item
-                        *ngIf="!(isAuthenticated$ | async)"
-                        routerLink="/auth/login"
-                        (click)="onCloseSideNav()">
-                        <ion-icon
-                            name="log-in-sharp"
-                            class="icon"></ion-icon>
-                        <ion-label>{{ 'navigation.login' | translate }}</ion-label>
-                    </ion-item>
-                </ion-menu-toggle>
-                <ion-menu-toggle [autoHide]="false">
-                    <ion-item
-                        *ngIf="!(isAuthenticated$ | async)"
-                        routerLink="/auth/signup"
-                        (click)="onCloseSideNav()">
-                        <ion-icon
-                            name="arrow-forward-sharp"
-                            class="icon"></ion-icon>
-                        <ion-label>{{ 'navigation.signup' | translate }}</ion-label>
-                    </ion-item>
-                </ion-menu-toggle>
-                <ion-menu-toggle [autoHide]="false">
-                    <ion-item
-                        *ngIf="isAuthenticated$ | async"
-                        routerLink="/training/new-training"
-                        (click)="onCloseSideNav()">
-                        <ion-icon
-                            name="barbell-sharp"
-                            class="icon"></ion-icon>
-                        <ion-label>{{ 'navigation.new_training' | translate }}</ion-label>
-                    </ion-item>
-                </ion-menu-toggle>
-                <ion-menu-toggle [autoHide]="false">
-                    <ion-item
-                        *ngIf="isAuthenticated$ | async"
-                        (click)="goToPastTrainings(); onCloseSideNav();">
-                        <mat-icon class="icon">history</mat-icon>
-                        <ion-label>{{ 'navigation.past_trainings' | translate }}</ion-label>
-                    </ion-item>
-                </ion-menu-toggle>
-                <ion-menu-toggle [autoHide]="false" >
-                    <ion-item>
-                        <ng-container *ngIf="(loggedUserData$ | async) as userData">
-                            <a
-                                *ngIf="isAuthenticated$ | async"
-                                [matMenuTriggerFor]="languages">
-                                <mat-icon class="icon">language</mat-icon>
-                                <span class="caption">
-                                    {{ 'navigation.language' | translate }}
-                                </span>
-                                <mat-menu #languages="matMenu">
-                                    <button
-                                        mat-menu-item
-                                        class="menu-item"
-                                        [class.chosenLanguage]="userData?.Preferences?.language === 'hr'"
-                                        [disabled]="userData?.Preferences?.language === 'hr'"
-                                        (click)="changeLanguage('hr')">
-                                        <img
-                                            src="../../../../assets/images/flags/croatia.png"
-                                            height="40"
-                                            width="40">
-                                        <span class="menu-item--text">
-                                            {{ 'languages.croatian' | translate }}
-                                        </span>
-                                    </button>
-                                    <button
-                                        mat-menu-item
-                                        class="menu-item"
-                                        [class.chosenLanguage]="userData?.Preferences?.language === 'en'"
-                                        [disabled]="userData?.Preferences?.language === 'en'"
-                                        (click)="changeLanguage('en')">
-                                        <img
-                                            src="../../../../assets/images/flags/united-kingdom.png"
-                                            height="24"
-                                            width="40">
-                                        <span class="menu-item--text">
-                                            {{ 'languages.english' | translate }}
-                                        </span>
-                                    </button>
-                                </mat-menu>
-                            </a>
-                        </ng-container>
-                    </ion-item>
-                </ion-menu-toggle>
-                <ion-menu-toggle [autoHide]="false">
-                    <ion-item
-                        *ngIf="isAuthenticated$ | async"
-                        (click)="onCloseSideNav(); onLogout();">
-                        <ion-icon
-                            name="log-out-sharp"
-                            class="icon"></ion-icon>
-                        <ion-label>{{ 'navigation.logout' | translate }}</ion-label>
-                    </ion-item>
-                </ion-menu-toggle>
-            </ion-list>
-        </ion-content>
-    </ion-menu>
-</ion-split-pane>
+<!--TODO: ion-split-pane?-->
+<ion-menu
+    side="start"
+    content-id="main">
+    <ion-header>
+        <ion-toolbar color="primary">
+            <ion-title>{{ 'navigation.title' | translate }}</ion-title>
+        </ion-toolbar>
+    </ion-header>
+    <ion-content>
+        <ion-list>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                    *ngIf="!(isAuthenticated$ | async)"
+                    routerLink="/auth/login"
+                    (click)="onCloseSideNav()">
+                    <ion-icon
+                        name="log-in-sharp"
+                        class="icon"></ion-icon>
+                    <ion-label>{{ 'navigation.login' | translate }}</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                    *ngIf="!(isAuthenticated$ | async)"
+                    routerLink="/auth/signup"
+                    (click)="onCloseSideNav()">
+                    <ion-icon
+                        name="arrow-forward-sharp"
+                        class="icon"></ion-icon>
+                    <ion-label>{{ 'navigation.signup' | translate }}</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                    *ngIf="isAuthenticated$ | async"
+                    routerLink="/training/new-training"
+                    (click)="onCloseSideNav()">
+                    <ion-icon
+                        name="barbell-sharp"
+                        class="icon"></ion-icon>
+                    <ion-label>{{ 'navigation.new_training' | translate }}</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                    *ngIf="isAuthenticated$ | async"
+                    (click)="goToPastTrainings(); onCloseSideNav();">
+                    <ion-icon
+                        name="analytics-sharp"
+                        class="icon"></ion-icon>
+                    <ion-label>{{ 'navigation.past_trainings' | translate }}</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item>
+                    <ng-container *ngIf="(loggedUserData$ | async) as userData">
+                        <a
+                            *ngIf="isAuthenticated$ | async"
+                            [matMenuTriggerFor]="languages">
+                            <ion-icon
+                                name="language-sharp"
+                                class="icon"></ion-icon>
+                            <span class="caption">
+                                {{ 'navigation.language' | translate }}
+                            </span>
+                            <mat-menu #languages="matMenu">
+                                <button
+                                    mat-menu-item
+                                    class="menu-item"
+                                    [class.chosenLanguage]="userData?.Preferences?.language === 'hr'"
+                                    [disabled]="userData?.Preferences?.language === 'hr'"
+                                    (click)="changeLanguage('hr')">
+                                    <img
+                                        src="../../../../assets/images/flags/croatia.png"
+                                        height="40"
+                                        width="40">
+                                    <span class="menu-item--text">
+                                        {{ 'languages.croatian' | translate }}
+                                    </span>
+                                </button>
+                                <button
+                                    mat-menu-item
+                                    class="menu-item"
+                                    [class.chosenLanguage]="userData?.Preferences?.language === 'en'"
+                                    [disabled]="userData?.Preferences?.language === 'en'"
+                                    (click)="changeLanguage('en')">
+                                    <img
+                                        src="../../../../assets/images/flags/united-kingdom.png"
+                                        height="24"
+                                        width="40">
+                                    <span class="menu-item--text">
+                                        {{ 'languages.english' | translate }}
+                                    </span>
+                                </button>
+                            </mat-menu>
+                        </a>
+                    </ng-container>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                    *ngIf="isAuthenticated$ | async"
+                    (click)="onCloseSideNav(); onLogout();">
+                    <ion-icon
+                        name="log-out-sharp"
+                        class="icon"></ion-icon>
+                    <ion-label>{{ 'navigation.logout' | translate }}</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+        </ion-list>
+    </ion-content>
+</ion-menu>

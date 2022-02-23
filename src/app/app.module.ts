@@ -6,7 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { init } from '@sentry/angular';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { RouteReuseStrategy } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './guards/auth.guard';
@@ -45,7 +46,8 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         }),
         IonicModule.forRoot(),
     ],
-    providers: [{
+    providers: [
+        {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,
             multi: true,
@@ -57,8 +59,13 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
             provide: ErrorHandler,
             useClass: SentryService,
         },
+        {
+            provide: RouteReuseStrategy,
+            useClass: IonicRouteStrategy,
+        },
         HttpClient,
         AuthGuard,
+
     ],
     bootstrap: [AppComponent],
 })

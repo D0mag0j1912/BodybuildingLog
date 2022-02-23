@@ -78,7 +78,7 @@ export class LoginComponent implements AfterViewInit {
                 this.changeDetectorRef.markForCheck();
             }),
         ).subscribe((response: AuthResponseData) => {
-            if(response) {
+            if (response) {
                 this.snackBar.open(this.translateService.instant(response.Message as string), null, {
                     duration: SNACK_BAR_DURATION.GENERAL,
                     panelClass: response.Token ? 'app__snackbar' : 'app__snackbar-error',
