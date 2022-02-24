@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { NotFoundResolverService } from './services/shared/not-found-resolver.service';
-import { LoginComponent } from './views/auth/login/login.component';
 import { NotFoundComponent } from './views/shared/not-found/not-found.component';
 
 const routes: Routes = [
@@ -12,10 +11,6 @@ const routes: Routes = [
         pathMatch: 'full',
     },
     {
-        path: 'auth/login',
-        component: LoginComponent,
-    },
-    /* {
         path: 'auth',
         loadChildren: async () => import('./modules/auth/auth.module').then(module => module.AuthModule),
     },
@@ -32,7 +27,7 @@ const routes: Routes = [
     {
         path: '**',
         redirectTo: '/not-found',
-    }, */
+    },
 ];
 
 @NgModule({

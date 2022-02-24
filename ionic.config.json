@@ -1,12 +1,7 @@
 {
-    "defaultProject": "trainingApk",
-    "projects": {
-        "trainingApk": {
-            "name": "trainingApk",
-            "integrations": {
-                "capacitor": {}
-            },
-            "type": "angular"
-        }
-    }
-}
+    "name": "trainingApk",
+    "integrations": {
+      "capacitor": {}
+    },
+    "type": "angular"
+  }
