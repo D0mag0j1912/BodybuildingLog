@@ -56,7 +56,7 @@ export class LoginComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        setTimeout(() => (<HTMLInputElement>this.emailInput.nativeElement).focus());
+        setTimeout(() => (<HTMLInputElement>this.emailInput?.nativeElement)?.focus());
     }
 
     onSubmit(): void {
