@@ -1,40 +1,20 @@
 @import '../../../../../styles/default-pallette.scss';
 
-.wrapper {
-    width: 90%;
-    border-radius: 6px;
-    margin-top: 6rem;
-    margin-left: auto;
-    margin-right: auto;
-    background: $light-blue;
-    text-align: center;
+span:not(:last-child) {
+    font-size: 11px;
+    color: $dark-red;
 }
 
 .spinner {
     margin: 80% auto;
 }
 
-.main-form {
-    padding-top: 16px;
+.submit-area {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    row-gap: 10px;
-
-    &-field {
-        width: 300px;
-    }
-}
-
-.error {
-    font-size: 11px;
-    color: $dark-red;
-    font-family: $font-family;
-}
-
-.error-custom {
-    align-self: flex-start;
-    margin-left: 20px;
+    margin-top: 15px;
 }
 
 .no_account_message {
@@ -50,30 +30,4 @@
     font-weight: bold;
     color: $blue-grey;
     cursor: pointer;
-}
-
-.submit,
-.label {
-    font-family: $font-family;
-}
-
-
-@media (min-width: 640px) {
-
-    .wrapper {
-        width: 400px;
-    }
-
-    .error-custom {
-        margin-left: 50px;
-    }
-
-}
-
-@media (max-width: 320px) {
-
-    .main-form-field {
-        width: 250px;
-    }
-
 }

@@ -9,85 +9,77 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <div class="wrapper">
-        <form
-            class="main-form"
-            [formGroup]="form"
-            (ngSubmit)="onSubmit()">
-            <mat-form-field
-                class="main-form-field"
-                appearance="fill">
-                <mat-label class="label">
-                    {{ 'auth.email' | translate }}
-                </mat-label>
-                <input
-                    matInput
-                    type="email"
-                    formControlName="email"
-                    #emailRef>
-                <mat-error
-                    *ngIf="accessFormData('email').errors?.required"
-                    class="error">
+    <ion-card>
+        <ion-card-content>
+            <form
+                [formGroup]="form"
+                (ngSubmit)="onSubmit()">
+                <ion-item lines="undefined">
+                    <ion-label position="floating">
+                        {{ 'auth.email' | translate }}
+                    </ion-label>
+                    <ion-input
+                        #emailRef
+                        type="email"
+                        formControlName="email"></ion-input>
+                </ion-item>
+                <span
+                    *ngIf="accessFormData('email').errors?.required && (accessFormData('email').dirty || accessFormData('email').touched)"
+                    slot="error">
                     {{ 'auth.errors.email_required' | translate }}
-                </mat-error>
-                <mat-error
-                    *ngIf="accessFormData('email').errors?.email
-                        && !accessFormData('email').errors?.required"
-                    class="error">
+                </span>
+                <span
+                    *ngIf="accessFormData('email').errors?.email &&
+                        !accessFormData('email').errors?.required"
+                    slot="error">
                     {{ 'auth.errors.invalid_email' | translate }}
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field
-                class="main-form-field"
-                appearance="fill">
-                <mat-label class="label">
-                    {{ 'auth.password' | translate }}
-                </mat-label>
-                <input
-                    #inputPassword
-                    matInput
-                    type="password"
-                    formControlName="password"
-                    [errorStateMatcher]="formErrorStateMatcher">
-                <mat-error
-                    *ngIf="accessFormData('password').errors?.required"
-                    class="error">
+                </span>
+                <ion-item lines="full">
+                    <ion-label position="floating">
+                        {{ 'auth.password' | translate }}
+                    </ion-label>
+                    <ion-input
+                        #inputPassword
+                        type="password"
+                        formControlName="password"></ion-input>
+                </ion-item>
+                <span
+                    *ngIf="accessFormData('password').errors?.required &&
+                        (accessFormData('password').dirty || accessFormData('password').touched)">
                     {{ 'auth.errors.password_required' | translate }}
-                </mat-error>
-                <mat-error
+                </span>
+                <span
                     *ngIf="accessFormData('password').errors?.minlength
-                        || accessFormData('password').errors?.maxlength"
-                    class="error">
+                        || accessFormData('password').errors?.maxlength">
                     {{ 'auth.errors.password_length' | translate }}
-                </mat-error>
-                <mat-error
+                </span>
+                <span
                     *ngIf="form.errors?.passwordFitsEmail
                         && !accessFormData('password').errors?.required
                         && !accessFormData('password').errors?.minlength
-                        && !accessFormData('password').errors?.maxlength"
-                    class="error">
+                        && !accessFormData('password').errors?.maxlength">
                     {{ 'auth.errors.password_wrong_email' | translate }}
-                </mat-error>
-            </mat-form-field>
-            <button
-                mat-raised-button
-                class="submit"
-                type="submit"
-                color="primary"
-                [disabled]="!form.valid || isLoading"
-                [class.button-spinner]="isLoading">
-                {{ 'auth.login' | translate }}
-            </button>
-        </form>
-        <span class="no_account_message">
-            {{ 'auth.no_account_message' | translate }}
-            <a
-                class="no-account-link"
-                routerLink="/auth/signup">
-                {{ 'auth.signup_link' | translate }}
-            </a>
-            {{ 'common.here' | translate }}
-        </span>
-    </div>
+                </span>
+                <div class="submit-area">
+                    <ion-button
+                        type="submit"
+                        color="primary"
+                        [disabled]="!form.valid || isLoading"
+                        [class.button-spinner]="isLoading">
+                        {{ 'auth.login' | translate }}
+                    </ion-button>
+                    <span class="no_account_message">
+                        {{ 'auth.no_account_message' | translate }}
+                        <a
+                            class="no-account-link"
+                            routerLink="/auth/signup">
+                            {{ 'auth.signup_link' | translate }}
+                        </a>
+                        {{ 'common.here' | translate }}
+                    </span>
+                </div>
+            </form>
+        </ion-card-content>
+    </ion-card>
 </ion-content>
 
