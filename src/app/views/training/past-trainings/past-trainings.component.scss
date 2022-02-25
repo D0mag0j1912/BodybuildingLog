@@ -73,7 +73,7 @@
             font-size: 20px;
             padding-bottom: 10px;
             text-align: center;
-            font-family: $poppins;
+            font-family: $font-family;
         }
 
         .footer {
@@ -85,7 +85,7 @@
                 font-size: 16px;
                 text-align: center;
                 color: black;
-                font-family: $poppins;
+                font-family: $font-family;
 
                 &--txt {
                     color: $army-green;
@@ -116,7 +116,7 @@
         align-items: center;
 
         &-title {
-            font-family: $poppins;
+            font-family: $font-family;
             font-size: 18px;
             font-weight: normal;
             text-align: center;

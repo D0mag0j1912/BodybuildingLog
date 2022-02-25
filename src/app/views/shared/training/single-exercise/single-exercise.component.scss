@@ -14,13 +14,13 @@
     width: 230px;
 
     .mat-select {
-        font-family: $poppins;
+        font-family: $font-family;
     }
 }
 
 .label,
 .error {
-    font-family: $poppins;
+    font-family: $font-family;
 }
 
 .error {
@@ -42,7 +42,7 @@
 }
 
 .exercise-text {
-    font-family: $poppins;
+    font-family: $font-family;
     font-size: 13px;
     margin: 0;
     position: absolute;
@@ -68,7 +68,7 @@
     column-gap:5px;
 
     &-button {
-        font-family: $poppins;
+        font-family: $font-family;
     }
 
     &-button:not([disabled]):hover,
