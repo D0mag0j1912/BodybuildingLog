@@ -29,11 +29,19 @@
 
 html, body {
     height: 100%;
-    font-family: $poppins;
+    font-family: $font-family;
 }
 
 body {
     margin: 0;
+}
+
+.toolbar-title {
+    text-decoration: none;
+    font-size: 25px;
+    font-family: $font-family;
+    color: white;
+    vertical-align: middle;
 }
 
 .app {
@@ -52,20 +60,20 @@ body {
 
 .mat-simple-snackbar {
     color: white;
-    font-family: $poppins;
+    font-family: $font-family;
     font-size: 14px;
 }
 
 .tooltip {
     font-size: 11px;
-    font-family: $poppins;
+    font-family: $font-family;
     white-space: pre-line;
     background-color: $army-green;
 
     &-error {
         background-color: $dark-red;
         font-size: 11px;
-        font-family: $poppins;
+        font-family: $font-family;
         white-space: pre-line;
     }
 }

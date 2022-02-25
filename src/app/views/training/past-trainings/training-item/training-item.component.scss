@@ -12,7 +12,7 @@
     .title-wrapper {
         font-size: 20px;
         font-weight: 400;
-        font-family: $poppins;
+        font-family: $font-family;
         display: flex;
         margin-bottom: 10px;
 
@@ -39,7 +39,7 @@
 
             &--key {
                 color: $army-green;
-                font-family: $poppins;
+                font-family: $font-family;
                 justify-content: center;
             }
 
@@ -70,7 +70,7 @@
         }
 
         .exercise-name {
-            font-family: $poppins;
+            font-family: $font-family;
             max-width: 90%;
             white-space: nowrap;
             overflow: hidden;
