@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { IonInput, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { finalize } from 'rxjs/operators';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { SNACK_BAR_DURATION } from '../../../constants/snack-bar-duration.const';
 import { Language, WeightFormat } from '../../../models/preferences.model';
@@ -27,16 +27,23 @@ type FormData = {
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class SignupComponent {
+export class SignupComponent implements OnInit {
 
     form: FormGroup;
 
     isLoading = false;
 
+    @ViewChild('passEl', { read: IonInput })
+    private readonly passwordEl: IonInput;
+
+    @ViewChild('confirmPassEl', { read: IonInput })
+    private readonly confirmPasswordEl: IonInput;
+
     constructor(
         private readonly authService: AuthService,
         private readonly signupService: SignupService,
         private readonly translateService: TranslateService,
+        private readonly unsubscribeService: UnsubscribeService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly toastController: ToastController,
         private readonly router: Router,
@@ -63,6 +70,19 @@ export class SignupComponent {
                 Validators.maxLength(20)],
             ),
         }, { validators: AuthCustomValidators.samePasswords() });
+    }
+
+    ngOnInit(): void {
+        this.accessFormData('email')?.valueChanges
+            .pipe(
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe(_ => {
+                //TODO: Ovdje sam stao zadnji put
+                if (this.accessFormData('email')?.valid) {
+                    this.passwordEl?.setFocus();
+                }
+            });
     }
 
     async onSubmit(): Promise<void> {
