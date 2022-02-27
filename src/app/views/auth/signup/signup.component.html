@@ -29,8 +29,9 @@
                         <ion-row class="row">
                             <ion-col>
                                 <ion-item lines="none">
-                                    <ion-label>{{ 'languages.english' | translate }}</ion-label>
+                                    <ion-label class="label">{{ 'languages.english' | translate }}</ion-label>
                                     <ion-radio
+                                        class="radio"
                                         slot="start"
                                         value="en">
                                     </ion-radio>
@@ -38,8 +39,9 @@
                             </ion-col>
                             <ion-col>
                                 <ion-item lines="none">
-                                    <ion-label>{{ 'languages.croatian' | translate }}</ion-label>
+                                    <ion-label class="label">{{ 'languages.croatian' | translate }}</ion-label>
                                     <ion-radio
+                                        class="radio"
                                         slot="start"
                                         value="hr">
                                     </ion-radio>
@@ -63,8 +65,9 @@
                         <ion-row class="row">
                             <ion-col>
                                 <ion-item lines="none">
-                                    <ion-label>{{ 'common.kilograms' | translate }}</ion-label>
+                                    <ion-label class="label">{{ 'common.kilograms' | translate }}</ion-label>
                                     <ion-radio
+                                        class="radio"
                                         slot="start"
                                         value="kg">
                                     </ion-radio>
@@ -72,8 +75,9 @@
                             </ion-col>
                             <ion-col>
                                 <ion-item lines="none">
-                                    <ion-label>{{ 'common.pounds' | translate }}</ion-label>
+                                    <ion-label class="label">{{ 'common.pounds' | translate }}</ion-label>
                                     <ion-radio
+                                        class="radio"
                                         slot="start"
                                         value="lbs">
                                     </ion-radio>
@@ -96,95 +100,95 @@
                             </span>
                         </ion-col>
                     </ion-row>
-                <mat-form-field
-                    class="form-field"
-                    appearance="fill">
-                    <mat-label class="label">{{ 'auth.email' | translate }}</mat-label>
-                    <input
-                        matInput
-                        type="email"
-                        formControlName="email">
-                    <mat-error
-                        *ngIf="accessFormData('email').errors?.required"
-                        class="error">
-                        {{ 'auth.errors.email_required' | translate }}
-                    </mat-error>
-                    <mat-error
-                        *ngIf="accessFormData('email').errors?.email"
-                        class="error">
-                        {{ 'auth.errors.invalid_email' | translate }}
-                    </mat-error>
-                    <mat-error
-                        *ngIf="accessFormData('email').errors?.availableEmail"
-                        class="error">
-                        {{ 'auth.errors.email_already_registered' | translate }}
-                    </mat-error>
-                </mat-form-field>
-                <mat-form-field
-                    class="form-field"
-                    appearance="fill">
-                    <mat-label class="label">
-                        {{ 'auth.password' | translate }}
-                    </mat-label>
-                    <input
-                        matInput
-                        type="password"
-                        formControlName="password"
-                        #inputPassword>
-                    <mat-hint>{{ inputPassword.value?.length || 0 }} / 6</mat-hint>
-                    <mat-error
-                        *ngIf="accessFormData('password').errors?.required"
-                        class="error">
-                        {{ 'auth.errors.password_required' | translate }}
-                    </mat-error>
-                    <mat-error
-                        *ngIf="accessFormData('password').errors?.minlength ||
-                            accessFormData('password').errors?.maxlength"
-                        class="error">
-                        {{ 'auth.errors.password_length' | translate }}
-                    </mat-error>
-                </mat-form-field>
-                <mat-form-field
-                    class="form-field"
-                    appearance="fill">
-                    <mat-label class="label">
-                        {{ 'auth.confirm_password' | translate }}
-                    </mat-label>
-                    <input
-                        matInput
-                        type="password"
-                        formControlName="confirmPassword"
-                        #inputConfirmPassword
-                        [errorStateMatcher]="formErrorStateMatcher">
-                    <mat-hint>{{ inputConfirmPassword.value?.length || 0 }} / 6</mat-hint>
-                    <mat-error
-                        *ngIf="accessFormData('confirmPassword').errors?.required"
-                        class="error">
-                        {{ 'auth.errors.confirm_password_required' | translate }}
-                    </mat-error>
-                    <mat-error
-                        *ngIf="accessFormData('confirmPassword').errors?.minlength ||
-                            accessFormData('confirmPassword').errors?.maxlength"
-                        class="error">
-                        {{ 'auth.errors.password_length' | translate }}
-                    </mat-error>
-                    <mat-error
-                        *ngIf="form.errors?.equalPass
-                            && !accessFormData('confirmPassword').errors?.minlength
-                            && !accessFormData('confirmPassword').errors?.maxlength"
-                        class="error">
-                        {{ 'auth.errors.equal_passwords' | translate }}
-                    </mat-error>
-                </mat-form-field>
-                <button
-                    mat-raised-button
-                    class="submit"
-                    type="submit"
-                    color="primary"
-                    [class.button-spinner]="isLoading"
-                    [disabled]="isLoading">
-                    {{ 'auth.signup' | translate }}
-                </button>
+                    <ion-row>
+                        <ion-col>
+                            <ion-item>
+                                <ion-label position="floating">{{ 'auth.email' | translate }}</ion-label>
+                                <ion-input
+                                    type="email"
+                                    formControlName="email"></ion-input>
+                            </ion-item>
+                            <span
+                                *ngIf="accessFormData('email').errors?.required"
+                                slot="error">
+                                {{ 'auth.errors.email_required' | translate }}
+                            </span>
+                            <span
+                                *ngIf="accessFormData('email').errors?.email"
+                                slot="error">
+                                {{ 'auth.errors.invalid_email' | translate }}
+                            </span>
+                            <span
+                                *ngIf="accessFormData('email').errors?.availableEmail"
+                                slot="error">
+                                {{ 'auth.errors.email_already_registered' | translate }}
+                            </span>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col>
+                            <ion-item>
+                                <ion-label position="floating">{{ 'auth.password' | translate }}</ion-label>
+                                <!--TODO: input hint-->
+                                <ion-input
+                                    #inputPassword
+                                    type="password"
+                                    formControlName="password"></ion-input>
+                            </ion-item>
+                            <span
+                                *ngIf="accessFormData('password').errors?.required"
+                                slot="error">
+                                {{ 'auth.errors.password_required' | translate }}
+                            </span>
+                            <span
+                                *ngIf="accessFormData('password').errors?.minlength ||
+                                    accessFormData('password').errors?.maxlength"
+                                slot="error">
+                                {{ 'auth.errors.password_length' | translate }}
+                            </span>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col>
+                            <ion-item>
+                                <ion-label position="floating">{{ 'auth.confirm_password' | translate }}</ion-label>
+                                <!--TODO: input hint-->
+                                <ion-input
+                                    #inputConfirmPassword
+                                    type="password"
+                                    formControlName="confirmPassword"></ion-input>
+                            </ion-item>
+                            <span
+                                *ngIf="accessFormData('confirmPassword').errors?.required"
+                                slot="error">
+                                {{ 'auth.errors.confirm_password_required' | translate }}
+                            </span>
+                            <span
+                                *ngIf="accessFormData('confirmPassword').errors?.minlength ||
+                                    accessFormData('confirmPassword').errors?.maxlength"
+                                slot="error">
+                                {{ 'auth.errors.password_length' | translate }}
+                            </span>
+                            <span
+                                *ngIf="form.errors?.equalPass
+                                    && !accessFormData('confirmPassword').errors?.minlength
+                                    && !accessFormData('confirmPassword').errors?.maxlength"
+                                slot="error">
+                                {{ 'auth.errors.equal_passwords' | translate }}
+                            </span>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col>
+                            <ion-button
+                                type="submit"
+                                color="primary"
+                                [class.button-spinner]="isLoading"
+                                [disabled]="isLoading">
+                                {{ 'auth.signup' | translate }}
+                            </ion-button>
+                        </ion-col>
+                    </ion-row>
             </form>
         </ion-card-content>
     </ion-card>
