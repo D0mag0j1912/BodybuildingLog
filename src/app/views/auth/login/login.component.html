@@ -14,7 +14,7 @@
             <form
                 [formGroup]="form"
                 (ngSubmit)="onSubmit()">
-                <ion-item lines="undefined">
+                <ion-item>
                     <ion-label position="floating">
                         {{ 'auth.email' | translate }}
                     </ion-label>
@@ -35,7 +35,7 @@
                     slot="error">
                     {{ 'auth.errors.invalid_email' | translate }}
                 </span>
-                <ion-item lines="full">
+                <ion-item>
                     <ion-label position="floating">
                         {{ 'auth.password' | translate }}
                     </ion-label>

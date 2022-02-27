@@ -7,6 +7,14 @@
 
 .row {
     flex-wrap: nowrap;
+
+    .label {
+        margin-left: 10px;
+    }
+
+    .radio {
+        margin: 0;
+    }
 }
 
 .did-you-know {
