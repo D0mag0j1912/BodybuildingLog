@@ -107,22 +107,23 @@
                                 <ion-input
                                     type="email"
                                     formControlName="email"></ion-input>
+                                <span
+                                    *ngIf="accessFormData('email').errors?.required &&
+                                        (accessFormData('email').dirty || accessFormData('email').touched)"
+                                    slot="error">
+                                    {{ 'auth.errors.email_required' | translate }}
+                                </span>
+                                <span
+                                    *ngIf="accessFormData('email').errors?.email"
+                                    slot="error">
+                                    {{ 'auth.errors.invalid_email' | translate }}
+                                </span>
+                                <span
+                                    *ngIf="accessFormData('email').errors?.availableEmail"
+                                    slot="error">
+                                    {{ 'auth.errors.email_already_registered' | translate }}
+                                </span>
                             </ion-item>
-                            <span
-                                *ngIf="accessFormData('email').errors?.required"
-                                slot="error">
-                                {{ 'auth.errors.email_required' | translate }}
-                            </span>
-                            <span
-                                *ngIf="accessFormData('email').errors?.email"
-                                slot="error">
-                                {{ 'auth.errors.invalid_email' | translate }}
-                            </span>
-                            <span
-                                *ngIf="accessFormData('email').errors?.availableEmail"
-                                slot="error">
-                                {{ 'auth.errors.email_already_registered' | translate }}
-                            </span>
                         </ion-col>
                     </ion-row>
                     <ion-row>
@@ -134,18 +135,19 @@
                                     #inputPassword
                                     type="password"
                                     formControlName="password"></ion-input>
+                                <span
+                                    *ngIf="accessFormData('password').errors?.required &&
+                                        (accessFormData('password').dirty || accessFormData('password').touched)"
+                                    slot="error">
+                                    {{ 'auth.errors.password_required' | translate }}
+                                </span>
+                                <span
+                                    *ngIf="accessFormData('password').errors?.minlength ||
+                                        accessFormData('password').errors?.maxlength"
+                                    slot="error">
+                                    {{ 'auth.errors.password_length' | translate }}
+                                </span>
                             </ion-item>
-                            <span
-                                *ngIf="accessFormData('password').errors?.required"
-                                slot="error">
-                                {{ 'auth.errors.password_required' | translate }}
-                            </span>
-                            <span
-                                *ngIf="accessFormData('password').errors?.minlength ||
-                                    accessFormData('password').errors?.maxlength"
-                                slot="error">
-                                {{ 'auth.errors.password_length' | translate }}
-                            </span>
                         </ion-col>
                     </ion-row>
                     <ion-row>
@@ -157,25 +159,26 @@
                                     #inputConfirmPassword
                                     type="password"
                                     formControlName="confirmPassword"></ion-input>
+                                <span
+                                    *ngIf="accessFormData('confirmPassword').errors?.required &&
+                                        (accessFormData('confirmPassword').dirty || accessFormData('confirmPassword').touched)"
+                                    slot="error">
+                                    {{ 'auth.errors.confirm_password_required' | translate }}
+                                </span>
+                                <span
+                                    *ngIf="accessFormData('confirmPassword').errors?.minlength ||
+                                        accessFormData('confirmPassword').errors?.maxlength"
+                                    slot="error">
+                                    {{ 'auth.errors.password_length' | translate }}
+                                </span>
+                                <span
+                                    *ngIf="form.errors?.equalPass
+                                        && !accessFormData('confirmPassword').errors?.minlength
+                                        && !accessFormData('confirmPassword').errors?.maxlength"
+                                    slot="error">
+                                    {{ 'auth.errors.equal_passwords' | translate }}
+                                </span>
                             </ion-item>
-                            <span
-                                *ngIf="accessFormData('confirmPassword').errors?.required"
-                                slot="error">
-                                {{ 'auth.errors.confirm_password_required' | translate }}
-                            </span>
-                            <span
-                                *ngIf="accessFormData('confirmPassword').errors?.minlength ||
-                                    accessFormData('confirmPassword').errors?.maxlength"
-                                slot="error">
-                                {{ 'auth.errors.password_length' | translate }}
-                            </span>
-                            <span
-                                *ngIf="form.errors?.equalPass
-                                    && !accessFormData('confirmPassword').errors?.minlength
-                                    && !accessFormData('confirmPassword').errors?.maxlength"
-                                slot="error">
-                                {{ 'auth.errors.equal_passwords' | translate }}
-                            </span>
                         </ion-col>
                     </ion-row>
                     <ion-row>
