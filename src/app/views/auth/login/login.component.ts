@@ -1,9 +1,9 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
-import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
+import { ToastController } from '@ionic/angular';
+import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { SNACK_BAR_DURATION } from '../../../constants/snack-bar-duration.const';
 import { AuthService } from '../../../services/auth/auth.service';
 import { LoginService } from '../../../services/auth/login.service';
@@ -36,7 +36,7 @@ export class LoginComponent implements AfterViewInit {
         private readonly loginService: LoginService,
         private readonly authService: AuthService,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly snackBar: MatSnackBar,
+        private readonly toastController: ToastController,
     ) {
         this.form = new FormGroup({
             'email': new FormControl(null, [
@@ -57,12 +57,15 @@ export class LoginComponent implements AfterViewInit {
         setTimeout(() => (<HTMLInputElement>this.emailInput?.nativeElement)?.focus());
     }
 
-    onSubmit(): void {
+    async onSubmit(): Promise<void> {
         if (!this.form.valid) {
-            this.snackBar.open(this.translateService.instant('auth.errors.invalid_form'), null, {
+            //TODO: test toast
+            const toast = await this.toastController.create({
+                message: this.translateService.instant('auth.errors.invalid_form'),
                 duration: SNACK_BAR_DURATION.ERROR,
-                panelClass: 'app__snackbar-error',
+                color: '#c62828',
             });
+            await toast.present();
             return;
         }
         this.isLoading = true;
@@ -75,12 +78,15 @@ export class LoginComponent implements AfterViewInit {
                 this.isLoading = false;
                 this.changeDetectorRef.markForCheck();
             }),
-        ).subscribe((response: AuthResponseData) => {
+        ).subscribe(async (response: AuthResponseData) => {
             if (response) {
-                this.snackBar.open(this.translateService.instant(response.Message as string), null, {
+                //TODO: test toast
+                const toast = await this.toastController.create({
+                    message: this.translateService.instant(response.Message),
                     duration: SNACK_BAR_DURATION.GENERAL,
-                    panelClass: response.Token ? 'app__snackbar' : 'app__snackbar-error',
+                    color: response.Token ? '#009688' : '#c62828',
                 });
+                await toast.present();
             }
         });
     }
