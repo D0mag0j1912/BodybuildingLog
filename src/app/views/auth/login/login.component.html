@@ -24,7 +24,8 @@
                         formControlName="email"></ion-input>
                 </ion-item>
                 <span
-                    *ngIf="accessFormData('email').errors?.required && (accessFormData('email').dirty || accessFormData('email').touched)"
+                    *ngIf="accessFormData('email').errors?.required &&
+                        (accessFormData('email').dirty || accessFormData('email').touched)"
                     slot="error">
                     {{ 'auth.errors.email_required' | translate }}
                 </span>
