@@ -1,32 +1,5 @@
 @import '../../../../../styles/default-pallette.scss';
 
-
-.wrapper {
-    margin-top: 6rem;
-    margin-left: auto;
-    margin-right : auto;
-    border-radius: 6px;
-    width: 90%;
-    background: $light-blue;
-}
-
-.spinner {
-    margin: 80% auto;
-}
-
-.form {
-    padding-top: 16px;
-    padding-bottom: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    row-gap: 15px;
-}
-
-.form-field {
-    width: 300px;
-}
-
 .preference-wrapper {
     width: 300px;
     display: flex;
