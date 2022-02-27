@@ -1,151 +1,163 @@
-<div class="wrapper">
-    <mat-spinner
-        *ngIf="isLoading"
-        class="spinner"
-        [diameter]="spinnerSize"></mat-spinner>
-    <form
-        *ngIf="!isLoading && form"
-        class="form"
-        [formGroup]="form"
-        (ngSubmit)="onSubmit()">
-        <div class="preference-wrapper">
-            <span class="preference-wrapper--entry-text">
-                {{ 'auth.pick_language' | translate }}
-            </span>
-            <mat-radio-group
-                formControlName="language">
-                <mat-radio-button
-                    class="preference-radio-button"
-                    value="en">
-                    {{ 'languages.english' | translate }}
-                </mat-radio-button>
-                <mat-radio-button
-                    class="preference-radio-button"
-                    value="hr">
-                    {{ 'languages.croatian' | translate }}
-                </mat-radio-button>
-            </mat-radio-group>
-            <span
-                *ngIf="accessFormData('language').errors?.required"
-                class="error">
-                {{ 'preferences.errors.language_required' | translate }}
-            </span>
-            <span class="preference-wrapper--entry-text">
-                {{ 'auth.pick_weight_format' | translate }}
-            </span>
-            <mat-radio-group
-                formControlName="weightFormat">
-                <mat-radio-button
-                    class="preference-radio-button"
-                    value="kg">
-                    {{ 'common.kilograms' | translate }}
-                </mat-radio-button>
-                <mat-radio-button
-                    class="preference-radio-button"
-                    value="lbs">
-                    {{ 'common.pounds' | translate }}
-                </mat-radio-button>
-            </mat-radio-group>
-            <span
-                *ngIf="accessFormData('weightFormat').errors?.required"
-                class="error">
-                {{ 'auth.errors.weight_format_required' | translate }}
-            </span>
-            <span
-                class="did-you-know"
-                matTooltipClass="tooltip"
-                [matTooltip]="'common.change_preference_registration' | translate">
-                {{ 'common.did_you_know' | translate }}
-            </span>
-        </div>
-        <mat-form-field
-            class="form-field"
-            appearance="fill">
-            <mat-label class="label">{{ 'auth.email' | translate }}</mat-label>
-            <input
-                matInput
-                type="email"
-                formControlName="email">
-            <mat-error
-                *ngIf="accessFormData('email').errors?.required"
-                class="error">
-                {{ 'auth.errors.email_required' | translate }}
-            </mat-error>
-            <mat-error
-                *ngIf="accessFormData('email').errors?.email"
-                class="error">
-                {{ 'auth.errors.invalid_email' | translate }}
-            </mat-error>
-            <mat-error
-                *ngIf="accessFormData('email').errors?.availableEmail"
-                class="error">
-                {{ 'auth.errors.email_already_registered' | translate }}
-            </mat-error>
-        </mat-form-field>
-        <mat-form-field
-            class="form-field"
-            appearance="fill">
-            <mat-label class="label">
-                {{ 'auth.password' | translate }}
-            </mat-label>
-            <input
-                matInput
-                type="password"
-                formControlName="password"
-                #inputPassword>
-            <mat-hint>{{ inputPassword.value?.length || 0 }} / 6</mat-hint>
-            <mat-error
-                *ngIf="accessFormData('password').errors?.required"
-                class="error">
-                {{ 'auth.errors.password_required' | translate }}
-            </mat-error>
-            <mat-error
-                *ngIf="accessFormData('password').errors?.minlength ||
-                    accessFormData('password').errors?.maxlength"
-                class="error">
-                {{ 'auth.errors.password_length' | translate }}
-            </mat-error>
-        </mat-form-field>
-        <mat-form-field
-            class="form-field"
-            appearance="fill">
-            <mat-label class="label">
-                {{ 'auth.confirm_password' | translate }}
-            </mat-label>
-            <input
-                matInput
-                type="password"
-                formControlName="confirmPassword"
-                #inputConfirmPassword
-                [errorStateMatcher]="formErrorStateMatcher">
-            <mat-hint>{{ inputConfirmPassword.value?.length || 0 }} / 6</mat-hint>
-            <mat-error
-                *ngIf="accessFormData('confirmPassword').errors?.required"
-                class="error">
-                {{ 'auth.errors.confirm_password_required' | translate }}
-            </mat-error>
-            <mat-error
-                *ngIf="accessFormData('confirmPassword').errors?.minlength ||
-                    accessFormData('confirmPassword').errors?.maxlength"
-                class="error">
-                {{ 'auth.errors.password_length' | translate }}
-            </mat-error>
-            <mat-error
-                *ngIf="form.errors?.equalPass
-                    && !accessFormData('confirmPassword').errors?.minlength
-                    && !accessFormData('confirmPassword').errors?.maxlength"
-                class="error">
-                {{ 'auth.errors.equal_passwords' | translate }}
-            </mat-error>
-        </mat-form-field>
-        <button
-            mat-raised-button
-            class="submit"
-            type="submit"
-            color="primary"
-            [class.button-spinner]="isLoading"
-            [disabled]="isLoading">
-            {{ 'auth.signup' | translate }}
-        </button>
-    </form>
-</div>
+<ion-header>
+    <ion-toolbar
+        color="primary"
+        class="toolbar-title">
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>{{ 'navigation.signup' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-card>
+        <ion-card-content>
+            <ion-spinner
+                *ngIf="isLoading"
+                name="crescent"></ion-spinner>
+            <form
+                *ngIf="!isLoading && form"
+                [formGroup]="form"
+                (ngSubmit)="onSubmit()">
+                <div class="preference-wrapper">
+                    <span class="preference-wrapper--entry-text">
+                        {{ 'auth.pick_language' | translate }}
+                    </span>
+                    <mat-radio-group
+                        formControlName="language">
+                        <mat-radio-button
+                            class="preference-radio-button"
+                            value="en">
+                            {{ 'languages.english' | translate }}
+                        </mat-radio-button>
+                        <mat-radio-button
+                            class="preference-radio-button"
+                            value="hr">
+                            {{ 'languages.croatian' | translate }}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                    <span
+                        *ngIf="accessFormData('language').errors?.required"
+                        class="error">
+                        {{ 'preferences.errors.language_required' | translate }}
+                    </span>
+                    <span class="preference-wrapper--entry-text">
+                        {{ 'auth.pick_weight_format' | translate }}
+                    </span>
+                    <mat-radio-group
+                        formControlName="weightFormat">
+                        <mat-radio-button
+                            class="preference-radio-button"
+                            value="kg">
+                            {{ 'common.kilograms' | translate }}
+                        </mat-radio-button>
+                        <mat-radio-button
+                            class="preference-radio-button"
+                            value="lbs">
+                            {{ 'common.pounds' | translate }}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                    <span
+                        *ngIf="accessFormData('weightFormat').errors?.required"
+                        class="error">
+                        {{ 'auth.errors.weight_format_required' | translate }}
+                    </span>
+                    <span
+                        class="did-you-know"
+                        matTooltipClass="tooltip"
+                        [matTooltip]="'common.change_preference_registration' | translate">
+                        {{ 'common.did_you_know' | translate }}
+                    </span>
+                </div>
+                <mat-form-field
+                    class="form-field"
+                    appearance="fill">
+                    <mat-label class="label">{{ 'auth.email' | translate }}</mat-label>
+                    <input
+                        matInput
+                        type="email"
+                        formControlName="email">
+                    <mat-error
+                        *ngIf="accessFormData('email').errors?.required"
+                        class="error">
+                        {{ 'auth.errors.email_required' | translate }}
+                    </mat-error>
+                    <mat-error
+                        *ngIf="accessFormData('email').errors?.email"
+                        class="error">
+                        {{ 'auth.errors.invalid_email' | translate }}
+                    </mat-error>
+                    <mat-error
+                        *ngIf="accessFormData('email').errors?.availableEmail"
+                        class="error">
+                        {{ 'auth.errors.email_already_registered' | translate }}
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field
+                    class="form-field"
+                    appearance="fill">
+                    <mat-label class="label">
+                        {{ 'auth.password' | translate }}
+                    </mat-label>
+                    <input
+                        matInput
+                        type="password"
+                        formControlName="password"
+                        #inputPassword>
+                    <mat-hint>{{ inputPassword.value?.length || 0 }} / 6</mat-hint>
+                    <mat-error
+                        *ngIf="accessFormData('password').errors?.required"
+                        class="error">
+                        {{ 'auth.errors.password_required' | translate }}
+                    </mat-error>
+                    <mat-error
+                        *ngIf="accessFormData('password').errors?.minlength ||
+                            accessFormData('password').errors?.maxlength"
+                        class="error">
+                        {{ 'auth.errors.password_length' | translate }}
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field
+                    class="form-field"
+                    appearance="fill">
+                    <mat-label class="label">
+                        {{ 'auth.confirm_password' | translate }}
+                    </mat-label>
+                    <input
+                        matInput
+                        type="password"
+                        formControlName="confirmPassword"
+                        #inputConfirmPassword
+                        [errorStateMatcher]="formErrorStateMatcher">
+                    <mat-hint>{{ inputConfirmPassword.value?.length || 0 }} / 6</mat-hint>
+                    <mat-error
+                        *ngIf="accessFormData('confirmPassword').errors?.required"
+                        class="error">
+                        {{ 'auth.errors.confirm_password_required' | translate }}
+                    </mat-error>
+                    <mat-error
+                        *ngIf="accessFormData('confirmPassword').errors?.minlength ||
+                            accessFormData('confirmPassword').errors?.maxlength"
+                        class="error">
+                        {{ 'auth.errors.password_length' | translate }}
+                    </mat-error>
+                    <mat-error
+                        *ngIf="form.errors?.equalPass
+                            && !accessFormData('confirmPassword').errors?.minlength
+                            && !accessFormData('confirmPassword').errors?.maxlength"
+                        class="error">
+                        {{ 'auth.errors.equal_passwords' | translate }}
+                    </mat-error>
+                </mat-form-field>
+                <button
+                    mat-raised-button
+                    class="submit"
+                    type="submit"
+                    color="primary"
+                    [class.button-spinner]="isLoading"
+                    [disabled]="isLoading">
+                    {{ 'auth.signup' | translate }}
+                </button>
+            </form>
+        </ion-card-content>
+    </ion-card>
+</ion-content>
