@@ -1,16 +1,15 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_RADIO_DEFAULT_OPTIONS } from '@angular/material/radio';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { SNACK_BAR_DURATION } from '../../../constants/snack-bar-duration.const';
-import { FormErrorStateMatcher } from '../../../helpers/error-matchers/form-error-state-matcher.helper';
 import { Language, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SignupService } from '../../../services/auth/signup.service';
+import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
 
 type FormData = {
@@ -26,17 +25,11 @@ type FormData = {
     templateUrl: './signup.component.html',
     styleUrls: ['./signup.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [{
-        provide: MAT_RADIO_DEFAULT_OPTIONS,
-        useValue: {
-            color: 'primary',
-        },
-    }],
+    providers: [UnsubscribeService],
 })
 export class SignupComponent {
 
     form: FormGroup;
-    readonly formErrorStateMatcher: FormErrorStateMatcher = new FormErrorStateMatcher();
 
     isLoading = false;
 
@@ -45,7 +38,7 @@ export class SignupComponent {
         private readonly signupService: SignupService,
         private readonly translateService: TranslateService,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly snackBar: MatSnackBar,
+        private readonly toastController: ToastController,
         private readonly router: Router,
     ) {
         this.form = new FormGroup({
@@ -72,12 +65,15 @@ export class SignupComponent {
         }, { validators: AuthCustomValidators.samePasswords() });
     }
 
-    onSubmit(): void {
+    async onSubmit(): Promise<void> {
         if (!this.form.valid) {
-            this.snackBar.open(this.translateService.instant('auth.errors.invalid_form'), null, {
+            //TODO: test toast
+            const toast = await this.toastController.create({
+                message: this.translateService.instant('auth.errors.invalid_form'),
                 duration: SNACK_BAR_DURATION.ERROR,
-                panelClass: 'app__snackbar-error',
+                color: '#c62828',
             });
+            await toast.present();
             return;
         }
         this.isLoading = true;
@@ -85,9 +81,9 @@ export class SignupComponent {
         this.authService.signup(
             this.accessFormData('language').value as Language,
             this.accessFormData('weightFormat').value as WeightFormat,
-            this.accessFormData('email').value as string,
-            this.accessFormData('password').value as string,
-            this.accessFormData('confirmPassword').value as string,
+            this.accessFormData('email').value,
+            this.accessFormData('password').value,
+            this.accessFormData('confirmPassword').value,
         ).pipe(
             finalize(() => {
                 this.isLoading = false;
@@ -95,10 +91,13 @@ export class SignupComponent {
             }),
         ).subscribe(async (response: AuthResponseData) => {
             if (response.Success) {
-                this.snackBar.open(this.translateService.instant(response.Message as string), null, {
+                //TODO: test toast
+                const toast = await this.toastController.create({
+                    message: this.translateService.instant(response.Message),
                     duration: SNACK_BAR_DURATION.GENERAL,
-                    panelClass: response.Success ? 'app__snackbar' : 'app__snackbar-error',
+                    color: response.Success ? '#009688' : '#c62828',
                 });
+                await toast.present();
                 await this.router.navigate(['/auth/login']);
             }
         });
