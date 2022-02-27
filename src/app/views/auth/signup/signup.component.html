@@ -18,56 +18,84 @@
                 *ngIf="!isLoading && form"
                 [formGroup]="form"
                 (ngSubmit)="onSubmit()">
-                <div class="preference-wrapper">
-                    <span class="preference-wrapper--entry-text">
-                        {{ 'auth.pick_language' | translate }}
-                    </span>
-                    <mat-radio-group
-                        formControlName="language">
-                        <mat-radio-button
-                            class="preference-radio-button"
-                            value="en">
-                            {{ 'languages.english' | translate }}
-                        </mat-radio-button>
-                        <mat-radio-button
-                            class="preference-radio-button"
-                            value="hr">
-                            {{ 'languages.croatian' | translate }}
-                        </mat-radio-button>
-                    </mat-radio-group>
-                    <span
-                        *ngIf="accessFormData('language').errors?.required"
-                        class="error">
-                        {{ 'preferences.errors.language_required' | translate }}
-                    </span>
-                    <span class="preference-wrapper--entry-text">
-                        {{ 'auth.pick_weight_format' | translate }}
-                    </span>
-                    <mat-radio-group
-                        formControlName="weightFormat">
-                        <mat-radio-button
-                            class="preference-radio-button"
-                            value="kg">
-                            {{ 'common.kilograms' | translate }}
-                        </mat-radio-button>
-                        <mat-radio-button
-                            class="preference-radio-button"
-                            value="lbs">
-                            {{ 'common.pounds' | translate }}
-                        </mat-radio-button>
-                    </mat-radio-group>
-                    <span
-                        *ngIf="accessFormData('weightFormat').errors?.required"
-                        class="error">
-                        {{ 'auth.errors.weight_format_required' | translate }}
-                    </span>
-                    <span
-                        class="did-you-know"
-                        matTooltipClass="tooltip"
-                        [matTooltip]="'common.change_preference_registration' | translate">
-                        {{ 'common.did_you_know' | translate }}
-                    </span>
-                </div>
+                    <ion-row>
+                        <ion-col>
+                            <span class="description">
+                                {{ 'auth.pick_language' | translate }}
+                            </span>
+                        </ion-col>
+                    </ion-row>
+                    <ion-radio-group formControlName="language">
+                        <ion-row class="row">
+                            <ion-col>
+                                <ion-item lines="none">
+                                    <ion-label>{{ 'languages.english' | translate }}</ion-label>
+                                    <ion-radio
+                                        slot="start"
+                                        value="en">
+                                    </ion-radio>
+                                </ion-item>
+                            </ion-col>
+                            <ion-col>
+                                <ion-item lines="none">
+                                    <ion-label>{{ 'languages.croatian' | translate }}</ion-label>
+                                    <ion-radio
+                                        slot="start"
+                                        value="hr">
+                                    </ion-radio>
+                                </ion-item>
+                            </ion-col>
+                        </ion-row>
+                        <span
+                            *ngIf="accessFormData('language').errors?.required"
+                            slot="error">
+                            {{ 'preferences.errors.language_required' | translate }}
+                        </span>
+                    </ion-radio-group>
+                    <ion-row>
+                        <ion-col>
+                            <span class="description">
+                                {{ 'auth.pick_weight_format' | translate }}
+                            </span>
+                        </ion-col>
+                    </ion-row>
+                    <ion-radio-group formControlName="weightFormat">
+                        <ion-row class="row">
+                            <ion-col>
+                                <ion-item lines="none">
+                                    <ion-label>{{ 'common.kilograms' | translate }}</ion-label>
+                                    <ion-radio
+                                        slot="start"
+                                        value="kg">
+                                    </ion-radio>
+                                </ion-item>
+                            </ion-col>
+                            <ion-col>
+                                <ion-item lines="none">
+                                    <ion-label>{{ 'common.pounds' | translate }}</ion-label>
+                                    <ion-radio
+                                        slot="start"
+                                        value="lbs">
+                                    </ion-radio>
+                                </ion-item>
+                            </ion-col>
+                        </ion-row>
+                        <span
+                            *ngIf="accessFormData('weightFormat').errors?.required"
+                            slot="error">
+                            {{ 'auth.errors.weight_format_required' | translate }}
+                        </span>
+                    </ion-radio-group>
+                    <ion-row>
+                        <ion-col>
+                            <span
+                                class="did-you-know"
+                                matTooltipClass="tooltip"
+                                [matTooltip]="'common.change_preference_registration' | translate">
+                                {{ 'common.did_you_know' | translate }}
+                            </span>
+                        </ion-col>
+                    </ion-row>
                 <mat-form-field
                     class="form-field"
                     appearance="fill">

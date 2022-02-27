@@ -1,61 +1,21 @@
-@import '../../../../../styles/default-pallette.scss';
 
-.preference-wrapper {
-    width: 300px;
-    display: flex;
-    flex-direction: column;
-    row-gap: 10px;
+.description {
+    font-size: 14px;
+    color: var(--ion-color-primary);
+    font-weight: 500;
+}
 
-    &--entry-text {
-        font-size: 14px;
-        color: $army-green;
-        font-weight: 500;
-    }
+.row {
+    flex-wrap: nowrap;
 }
 
 .did-you-know {
     font-size: 12px;
-    color: $blue-grey;
-}
-
-.preference-radio-button:nth-of-type(2) {
-    margin-left: 20px;
+    color: var(--ion-color-medium);
 }
 
 .error {
     font-size: 11px;
-    color: $dark-red;
-    font-family: $font-family;
-}
-
-.submit,
-.label,
-.preference-radio-button {
-    font-family: $font-family;
-}
-
-
-@media (min-width: 640px) {
-
-    .wrapper {
-        width: 400px;
-    }
-
-}
-
-@media (max-width: 320px) {
-
-    .wrapper {
-        margin-bottom: 20px;
-    }
-
-    .form-field {
-        width: 250px;
-    }
-
-    .preference-wrapper {
-        width: 250px;
-    }
-
+    color: var(--ion-color-danger);
 }
 
