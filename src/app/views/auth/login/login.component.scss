@@ -1,8 +1,7 @@
-@import '../../../../../styles/default-pallette.scss';
 
 span:not(:last-child) {
     font-size: 11px;
-    color: $dark-red;
+    color: var(--ion-color-danger)
 }
 
 .spinner {
@@ -19,15 +18,15 @@ span:not(:last-child) {
 
 .no_account_message {
     font-size: 12px;
-    color: $blue-grey;
+    color: var(--ion-color-medium);
     display: inline-block;
     margin-top: 15px;
     padding-bottom: 16px;
-}
 
-.no-account-link {
-    text-decoration: none;
-    font-weight: bold;
-    color: $blue-grey;
-    cursor: pointer;
+    .no-account-link {
+        text-decoration: none;
+        font-weight: bold;
+        color: var(--ion-color-medium);
+        cursor: pointer;
+    }
 }
