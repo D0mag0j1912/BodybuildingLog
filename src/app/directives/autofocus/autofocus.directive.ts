@@ -1,20 +1,21 @@
-import { AfterViewChecked, Directive, ElementRef } from '@angular/core';
+import { AfterViewInit, Directive } from '@angular/core';
+import { IonInput } from '@ionic/angular';
 
 @Directive({ selector: '[autofocus]' })
-export class AutofocusDirective implements AfterViewChecked {
+export class AutofocusDirective implements AfterViewInit {
 
     private firstTime = true;
 
     constructor(
-        private readonly elementRef: ElementRef,
+        private readonly ionInput: IonInput,
     ) { }
 
-    ngAfterViewChecked(): void {
+    ngAfterViewInit(): void {
         if (this.firstTime) {
             setTimeout(() => {
-                (this.elementRef?.nativeElement as HTMLInputElement)?.focus();
+                this.ionInput?.setFocus();
                 this.firstTime = false;
-            }, 300);
+            }, 400);
         }
     }
 }
