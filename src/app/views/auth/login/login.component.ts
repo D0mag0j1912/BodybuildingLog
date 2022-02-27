@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
@@ -20,16 +20,11 @@ type FormData = {
     styleUrls: ['./login.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent implements AfterViewInit {
+export class LoginComponent {
 
     isLoading = false;
 
     form: FormGroup;
-
-    @ViewChild('emailRef', {
-        read: ElementRef,
-    })
-    private readonly emailInput: ElementRef;
 
     constructor(
         private readonly translateService: TranslateService,
@@ -51,10 +46,6 @@ export class LoginComponent implements AfterViewInit {
         }, { asyncValidators: AuthCustomValidators.passwordFitsEmail(
             this.loginService,
             this.changeDetectorRef) });
-    }
-    //TODO: fix autofocus
-    ngAfterViewInit(): void {
-        setTimeout(() => (<HTMLInputElement>this.emailInput?.nativeElement)?.focus());
     }
 
     async onSubmit(): Promise<void> {
