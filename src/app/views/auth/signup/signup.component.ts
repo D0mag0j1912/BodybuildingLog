@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { IonInput, NavController, ToastController } from '@ionic/angular';
+import { IonInput, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
@@ -9,6 +9,7 @@ import { Language, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SignupService } from '../../../services/auth/signup.service';
 import { LoadingControllerService } from '../../../services/shared/loading-controller.service';
+import { ToastControllerService } from '../../../services/shared/toast-controller.service';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
 
@@ -31,6 +32,8 @@ export class SignupComponent implements OnInit {
 
     form: FormGroup;
 
+    isLoading = false;
+
     @ViewChild('passEl', { read: IonInput })
     private readonly passwordEl: IonInput;
 
@@ -43,8 +46,8 @@ export class SignupComponent implements OnInit {
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly loadingControllerService: LoadingControllerService,
+        private readonly toastControllerService: ToastControllerService,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly toastController: ToastController,
         private readonly navController: NavController,
     ) {
         this.form = new FormGroup({
@@ -83,15 +86,14 @@ export class SignupComponent implements OnInit {
 
     async onSubmit(): Promise<void> {
         if (!this.form.valid) {
-            //TODO: Create resuable shared service
-            const toast = await this.toastController.create({
-                message: this.translateService.instant('auth.errors.invalid_form'),
+            await this.toastControllerService.displayToast({
+                message: 'auth.errors.invalid_form',
                 duration: MESSAGE_DURATION.ERROR,
                 color: 'danger',
             });
-            await toast.present();
             return;
         }
+        this.isLoading = true;
         await this.loadingControllerService.displayLoader({ message: 'common.please_wait' });
 
         this.authService.signup(
@@ -103,14 +105,15 @@ export class SignupComponent implements OnInit {
         ).subscribe(async (response: AuthResponseData) => {
             if (response.Success) {
                 await this.loadingControllerService.dismissLoader();
-                const toast = await this.toastController.create({
+                await this.toastControllerService.displayToast({
                     message: this.translateService.instant(response.Message),
                     duration: MESSAGE_DURATION.GENERAL,
                     color: response.Success ? 'primary' : 'danger',
                 });
-                await toast.present();
                 await this.navController.navigateForward(['/auth/login']);
             }
+            this.isLoading = false;
+            this.changeDetectorRef.markForCheck();
         });
     }
 
