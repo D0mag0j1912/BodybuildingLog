@@ -12,6 +12,7 @@
             <ion-menu-toggle [autoHide]="false">
                 <ion-item
                     *ngIf="!(isAuthenticated$ | async)"
+                    lines="none"
                     routerLink="/auth/login"
                     (click)="onCloseSideNav()">
                     <ion-icon
@@ -23,6 +24,7 @@
             <ion-menu-toggle [autoHide]="false">
                 <ion-item
                     *ngIf="!(isAuthenticated$ | async)"
+                    lines="none"
                     routerLink="/auth/signup"
                     (click)="onCloseSideNav()">
                     <ion-icon
@@ -34,6 +36,7 @@
             <ion-menu-toggle [autoHide]="false">
                 <ion-item
                     *ngIf="isAuthenticated$ | async"
+                    lines="none"
                     routerLink="/training/new-training"
                     (click)="onCloseSideNav()">
                     <ion-icon
@@ -45,6 +48,7 @@
             <ion-menu-toggle [autoHide]="false">
                 <ion-item
                     *ngIf="isAuthenticated$ | async"
+                    lines="none"
                     (click)="goToPastTrainings(); onCloseSideNav();">
                     <ion-icon
                         name="analytics-sharp"
@@ -101,6 +105,7 @@
             <ion-menu-toggle [autoHide]="false">
                 <ion-item
                     *ngIf="isAuthenticated$ | async"
+                    lines="none"
                     (click)="onCloseSideNav(); onLogout();">
                     <ion-icon
                         name="log-out-sharp"

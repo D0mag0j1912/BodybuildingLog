@@ -87,11 +87,10 @@ export class SignupComponent implements OnInit {
 
     async onSubmit(): Promise<void> {
         if (!this.form.valid) {
-            //TODO: test toast
             const toast = await this.toastController.create({
                 message: this.translateService.instant('auth.errors.invalid_form'),
                 duration: SNACK_BAR_DURATION.ERROR,
-                color: '#c62828',
+                color: 'danger',
             });
             await toast.present();
             return;
@@ -115,7 +114,7 @@ export class SignupComponent implements OnInit {
                 const toast = await this.toastController.create({
                     message: this.translateService.instant(response.Message),
                     duration: SNACK_BAR_DURATION.GENERAL,
-                    color: response.Success ? '#009688' : '#c62828',
+                    color: response.Success ? 'primary' : 'danger',
                 });
                 await toast.present();
                 await this.router.navigate(['/auth/login']);
