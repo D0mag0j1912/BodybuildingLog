@@ -20,9 +20,9 @@
                 (ngSubmit)="onSubmit()">
                     <ion-row>
                         <ion-col>
-                            <span class="description">
+                            <ion-note class="description">
                                 {{ 'auth.pick_language' | translate }}
-                            </span>
+                            </ion-note>
                         </ion-col>
                     </ion-row>
                     <ion-radio-group formControlName="language">
@@ -48,17 +48,18 @@
                                 </ion-item>
                             </ion-col>
                         </ion-row>
-                        <span
+                        <!--Test-->
+                        <ion-note
                             *ngIf="accessFormData('language').errors?.required"
                             slot="error">
                             {{ 'preferences.errors.language_required' | translate }}
-                        </span>
+                        </ion-note>
                     </ion-radio-group>
                     <ion-row>
                         <ion-col>
-                            <span class="description">
+                            <ion-note class="description">
                                 {{ 'auth.pick_weight_format' | translate }}
-                            </span>
+                            </ion-note>
                         </ion-col>
                     </ion-row>
                     <ion-radio-group formControlName="weightFormat">
@@ -84,20 +85,21 @@
                                 </ion-item>
                             </ion-col>
                         </ion-row>
-                        <span
+                        <!--Test-->
+                        <ion-note
                             *ngIf="accessFormData('weightFormat').errors?.required"
                             slot="error">
                             {{ 'auth.errors.weight_format_required' | translate }}
-                        </span>
+                        </ion-note>
                     </ion-radio-group>
                     <ion-row>
                         <ion-col>
-                            <span
+                            <ion-note
                                 class="did-you-know"
                                 matTooltipClass="tooltip"
                                 [matTooltip]="'common.change_preference_registration' | translate">
                                 {{ 'common.did_you_know' | translate }}
-                            </span>
+                            </ion-note>
                         </ion-col>
                     </ion-row>
                     <ion-row>
@@ -171,14 +173,14 @@
                                     slot="error">
                                     {{ 'auth.errors.password_length' | translate }}
                                 </ion-note>
-                                <ion-note
-                                    *ngIf="form.errors?.equalPass
-                                        && !accessFormData('confirmPassword').errors?.minlength
-                                        && !accessFormData('confirmPassword').errors?.maxlength"
-                                    slot="error">
-                                    {{ 'auth.errors.equal_passwords' | translate }}
-                                </ion-note>
                             </ion-item>
+                            <ion-note
+                                *ngIf="form.errors?.equalPass
+                                    && !accessFormData('confirmPassword').errors?.minlength
+                                    && !accessFormData('confirmPassword').errors?.maxlength"
+                                class="error">
+                                {{ 'auth.errors.equal_passwords' | translate }}
+                            </ion-note>
                         </ion-col>
                     </ion-row>
                     <ion-row>
