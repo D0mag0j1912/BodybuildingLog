@@ -22,19 +22,19 @@
                         autofocus
                         type="email"
                         formControlName="email"></ion-input>
+                    <ion-note
+                        *ngIf="accessFormData('email').errors?.required &&
+                            (accessFormData('email').dirty || accessFormData('email').touched)"
+                        slot="error">
+                        {{ 'auth.errors.email_required' | translate }}
+                    </ion-note>
+                    <ion-note
+                        *ngIf="accessFormData('email').errors?.email &&
+                            !accessFormData('email').errors?.required"
+                        slot="error">
+                        {{ 'auth.errors.invalid_email' | translate }}
+                    </ion-note>
                 </ion-item>
-                <span
-                    *ngIf="accessFormData('email').errors?.required &&
-                        (accessFormData('email').dirty || accessFormData('email').touched)"
-                    slot="error">
-                    {{ 'auth.errors.email_required' | translate }}
-                </span>
-                <span
-                    *ngIf="accessFormData('email').errors?.email &&
-                        !accessFormData('email').errors?.required"
-                    slot="error">
-                    {{ 'auth.errors.invalid_email' | translate }}
-                </span>
                 <ion-item>
                     <ion-label position="floating">
                         {{ 'auth.password' | translate }}
@@ -43,24 +43,24 @@
                         #passwordEl
                         type="password"
                         formControlName="password"></ion-input>
+                    <ion-note
+                        *ngIf="accessFormData('password').errors?.required &&
+                            (accessFormData('password').dirty || accessFormData('password').touched)">
+                        {{ 'auth.errors.password_required' | translate }}
+                    </ion-note>
+                    <ion-note
+                        *ngIf="accessFormData('password').errors?.minlength
+                            || accessFormData('password').errors?.maxlength">
+                        {{ 'auth.errors.password_length' | translate }}
+                    </ion-note>
+                    <ion-note
+                        *ngIf="form.errors?.passwordFitsEmail
+                            && !accessFormData('password').errors?.required
+                            && !accessFormData('password').errors?.minlength
+                            && !accessFormData('password').errors?.maxlength">
+                        {{ 'auth.errors.password_wrong_email' | translate }}
+                    </ion-note>
                 </ion-item>
-                <span
-                    *ngIf="accessFormData('password').errors?.required &&
-                        (accessFormData('password').dirty || accessFormData('password').touched)">
-                    {{ 'auth.errors.password_required' | translate }}
-                </span>
-                <span
-                    *ngIf="accessFormData('password').errors?.minlength
-                        || accessFormData('password').errors?.maxlength">
-                    {{ 'auth.errors.password_length' | translate }}
-                </span>
-                <span
-                    *ngIf="form.errors?.passwordFitsEmail
-                        && !accessFormData('password').errors?.required
-                        && !accessFormData('password').errors?.minlength
-                        && !accessFormData('password').errors?.maxlength">
-                    {{ 'auth.errors.password_wrong_email' | translate }}
-                </span>
                 <div class="submit-area">
                     <ion-button
                         type="submit"
@@ -69,7 +69,7 @@
                         [class.button-spinner]="isLoading">
                         {{ 'auth.login' | translate }}
                     </ion-button>
-                    <span class="no_account_message">
+                    <ion-note class="no_account_message">
                         {{ 'auth.no_account_message' | translate }}
                         <a
                             class="no-account-link"
@@ -77,7 +77,7 @@
                             {{ 'auth.signup_link' | translate }}
                         </a>
                         {{ 'common.here' | translate }}
-                    </span>
+                    </ion-note>
                 </div>
             </form>
         </ion-card-content>
