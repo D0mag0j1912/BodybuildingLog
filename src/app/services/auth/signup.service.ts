@@ -7,7 +7,7 @@ export class SignupService {
 
     constructor(
         private readonly http: HttpClient,
-    ){}
+    ) { }
 
     getEmails(email: string): Observable<boolean> {
         const params = `?email=${email}`;

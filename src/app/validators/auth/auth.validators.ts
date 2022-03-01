@@ -12,22 +12,24 @@ export function passwordFitsEmail(
     return (group: AbstractControl) =>
         timer(350).pipe(
             switchMap(_ => {
-                if(group) {
+                if (group) {
                     const email: string = group.get('email')?.value;
                     const password: string = group.get('password')?.value;
-                    if(!email || !password){
+                    if (!email || !password) {
                         return of(null);
                     }
-                    return loginService.passwordFitsEmail(email, password).pipe(
-                        map((response: boolean) => {
-                            if(!response){
-                                return { 'passwordFitsEmail': true };
-                            }
-                            return null;
-                        }),
-                        catchError(_ => of(null)),
-                        finalize(() => changeDetectorRef.markForCheck()),
-                    );
+                    return loginService.passwordFitsEmail(email, password)
+                        .pipe(
+                            map((response: boolean) => {
+                                if (!response) {
+                                    return { 'passwordFitsEmail': true };
+                                }
+                                return null;
+                            }),
+                            catchError(_ => of(null)),
+                            //TODO: delete if works without CD
+                            /* finalize(() => changeDetectorRef.markForCheck()), */
+                        );
                 }
                 else {
                     return of(null);
@@ -36,28 +38,25 @@ export function passwordFitsEmail(
         );
 }
 
-export function isEmailAvailable(
-    signupService: SignupService,
-    changeDetectorRef: ChangeDetectorRef,
-): AsyncValidatorFn {
+export function isEmailAvailable(signupService: SignupService): AsyncValidatorFn {
     return (control: AbstractControl) =>
         timer(350).pipe(
             switchMap(_ => {
-                if(control) {
+                if (control) {
                     const email: string = control?.value;
-                    if(!email) {
+                    if (!email) {
                         return of(null);
                     }
-                    return signupService.getEmails(email).pipe(
-                        map((response: boolean) => {
-                            if(!response){
-                                return { 'availableEmail': true };
-                            }
-                            return null;
-                        }),
-                        catchError(_ => of(null)),
-                        finalize(() => changeDetectorRef.markForCheck()),
-                    );
+                    return signupService.getEmails(email)
+                        .pipe(
+                            map((response: boolean) => {
+                                if (!response) {
+                                    return { 'availableEmail': true };
+                                }
+                                return null;
+                            }),
+                            catchError(_ => of(null)),
+                        );
                 }
                 else {
                     return of(null);
@@ -68,14 +67,14 @@ export function isEmailAvailable(
 
 export function samePasswords(): ValidatorFn {
     return (group: AbstractControl): ValidationErrors | null => {
-        if(group) {
+        if (group) {
             const password: string = group.get('password')?.value;
             const confirmPassword: string = group.get('confirmPassword')?.value;
-            if(!password || !confirmPassword) {
+            if (!password || !confirmPassword) {
                 return null;
             }
             else {
-                if(password !== confirmPassword) {
+                if (password !== confirmPassword) {
                     return { 'equalPass': true };
                 }
                 else {

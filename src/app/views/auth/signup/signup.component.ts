@@ -54,10 +54,7 @@ export class SignupComponent implements OnInit {
             'email': new FormControl(null, [
                 Validators.required,
                 Validators.email],
-                [AuthCustomValidators.isEmailAvailable(
-                    this.signupService,
-                    this.changeDetectorRef,
-                )],
+                [AuthCustomValidators.isEmailAvailable(this.signupService)],
             ),
             'password': new FormControl(null, [
                 Validators.required,
@@ -78,7 +75,7 @@ export class SignupComponent implements OnInit {
                 takeUntil(this.unsubscribeService),
             )
             .subscribe(_ => {
-                //TODO: Ovdje sam stao zadnji put
+                //TODO: Focus password field automatically when email is valid
                 if (this.accessFormData('email')?.valid) {
                     this.passwordEl?.setFocus();
                 }
@@ -110,7 +107,6 @@ export class SignupComponent implements OnInit {
             }),
         ).subscribe(async (response: AuthResponseData) => {
             if (response.Success) {
-                //TODO: test toast
                 const toast = await this.toastController.create({
                     message: this.translateService.instant(response.Message),
                     duration: SNACK_BAR_DURATION.GENERAL,

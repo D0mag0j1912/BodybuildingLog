@@ -8,12 +8,13 @@
         <ion-title>{{ 'navigation.signup' | translate }}</ion-title>
     </ion-toolbar>
 </ion-header>
-<ion-content>
+<!--TODO: add skeleton loader instead of loading spinner-->
+<ion-spinner
+    *ngIf="isLoading"
+    name="crescent"></ion-spinner>
+<ion-content *ngIf="!isLoading">
     <ion-card>
         <ion-card-content>
-            <ion-spinner
-                *ngIf="isLoading"
-                name="crescent"></ion-spinner>
             <form
                 *ngIf="!isLoading && form"
                 [formGroup]="form"
