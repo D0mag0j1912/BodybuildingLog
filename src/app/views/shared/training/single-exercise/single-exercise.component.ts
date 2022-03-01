@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subject } from 'rxjs';
 import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
-import { SNACK_BAR_DURATION } from '../../../../constants/snack-bar-duration.const';
+import { MESSAGE_DURATION } from '../../../../constants/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { ExerciseNameErrorStateMatcher } from '../../../../helpers/error-matchers/exercise-name-error-state-matcher.helper';
 import { GeneralResponseData } from '../../../../models/general-response.model';
@@ -370,7 +370,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
             }),
         ).subscribe((response: GeneralResponseData) => {
             this.snackBar.open(this.translateService.instant(response.Message), null, {
-                duration: SNACK_BAR_DURATION.GENERAL,
+                duration: MESSAGE_DURATION.GENERAL,
                 panelClass: 'app__snackbar',
             });
         });

@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { SNACK_BAR_DURATION } from '../../constants/snack-bar-duration.const';
+import { MESSAGE_DURATION } from '../../constants/message-duration.const';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Preferences, WeightFormat } from '../../models/preferences.model';
 import { Language } from '../../models/preferences.model';
@@ -42,7 +42,7 @@ export class NavigationService {
                 this.translateService.use(language).pipe(
                     tap(_ => {
                         this.snackBar.open(this.translateService.instant(response.Message), null, {
-                            duration: SNACK_BAR_DURATION.GENERAL,
+                            duration: MESSAGE_DURATION.GENERAL,
                             panelClass: 'app__snackbar',
                         });
                     }),

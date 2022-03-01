@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { captureException } from '@sentry/minimal';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { SNACK_BAR_DURATION } from '../constants/snack-bar-duration.const';
+import { MESSAGE_DURATION } from '../constants/message-duration.const';
 import { ErrorMessage } from '../models/common/interfaces/common.model';
 
 @Injectable()
@@ -47,7 +47,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                 }
                 void this.toastController.create({
                     message: errorMessage,
-                    duration: SNACK_BAR_DURATION.ERROR,
+                    duration: MESSAGE_DURATION.ERROR,
                     color: 'danger',
                 }).then(async (value: HTMLIonToastElement) => value.present());
                 return throwError(error);

@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { IonInput, ToastController } from '@ionic/angular';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
-import { SNACK_BAR_DURATION } from '../../../constants/snack-bar-duration.const';
+import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { AuthService } from '../../../services/auth/auth.service';
 import { LoginService } from '../../../services/auth/login.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit {
             //TODO: test toast
             const toast = await this.toastController.create({
                 message: this.translateService.instant('auth.errors.invalid_form'),
-                duration: SNACK_BAR_DURATION.ERROR,
+                duration: MESSAGE_DURATION.ERROR,
                 color: '#c62828',
             });
             await toast.present();
@@ -91,7 +91,7 @@ export class LoginComponent implements OnInit {
                 //TODO: test toast
                 const toast = await this.toastController.create({
                     message: this.translateService.instant(response.Message),
-                    duration: SNACK_BAR_DURATION.GENERAL,
+                    duration: MESSAGE_DURATION.GENERAL,
                     color: response.Token ? '#009688' : '#c62828',
                 });
                 await toast.present();

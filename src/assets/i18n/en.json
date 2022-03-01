@@ -1,5 +1,6 @@
 {
     "common": {
+        "please_wait": "Please wait...",
         "page": "Page",
         "of": "of",
         "page_not_found": "Page not found",

@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { EMPTY, Observable } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { Training } from 'src/app/models/training/new-training/new-training.model';
-import { SNACK_BAR_DURATION } from '../../../../../constants/snack-bar-duration.const';
+import { MESSAGE_DURATION } from '../../../../../constants/message-duration.const';
 import { StreamData } from '../../../../../models/common/interfaces/common.model';
 import { Paginator } from '../../../../../models/common/interfaces/paginator.model';
 import { PastTrainings } from '../../../../../models/training/past-trainings/past-trainings.model';
@@ -60,7 +60,7 @@ export class DeleteTrainingActionComponent {
         ).subscribe((response: StreamData<Paginator<PastTrainings>>) => {
             this.sharedService.deletedTraining$$.next(response);
             this.snackBar.open(this.translateService.instant(response?.Value?.Results?.Message ?? ''), null, {
-                duration: SNACK_BAR_DURATION.GENERAL,
+                duration: MESSAGE_DURATION.GENERAL,
                 panelClass: 'app__snackbar',
             });
             this.dialogRef.close();

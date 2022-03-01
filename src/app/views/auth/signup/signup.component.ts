@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { IonInput, ToastController } from '@ionic/angular';
+import { IonInput, NavController, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { finalize, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
-import { SNACK_BAR_DURATION } from '../../../constants/snack-bar-duration.const';
+import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { Language, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SignupService } from '../../../services/auth/signup.service';
+import { LoadingControllerService } from '../../../services/shared/loading-controller.service';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
 
@@ -31,8 +31,6 @@ export class SignupComponent implements OnInit {
 
     form: FormGroup;
 
-    isLoading = false;
-
     @ViewChild('passEl', { read: IonInput })
     private readonly passwordEl: IonInput;
 
@@ -44,9 +42,10 @@ export class SignupComponent implements OnInit {
         private readonly signupService: SignupService,
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
+        private readonly loadingControllerService: LoadingControllerService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly toastController: ToastController,
-        private readonly router: Router,
+        private readonly navController: NavController,
     ) {
         this.form = new FormGroup({
             'language': new FormControl('en', [Validators.required]),
@@ -54,7 +53,7 @@ export class SignupComponent implements OnInit {
             'email': new FormControl(null, [
                 Validators.required,
                 Validators.email],
-                [AuthCustomValidators.isEmailAvailable(this.signupService)],
+                [AuthCustomValidators.isEmailAvailable(this.signupService, this.changeDetectorRef)],
             ),
             'password': new FormControl(null, [
                 Validators.required,
@@ -84,15 +83,16 @@ export class SignupComponent implements OnInit {
 
     async onSubmit(): Promise<void> {
         if (!this.form.valid) {
+            //TODO: Create resuable shared service
             const toast = await this.toastController.create({
                 message: this.translateService.instant('auth.errors.invalid_form'),
-                duration: SNACK_BAR_DURATION.ERROR,
+                duration: MESSAGE_DURATION.ERROR,
                 color: 'danger',
             });
             await toast.present();
             return;
         }
-        this.isLoading = true;
+        await this.loadingControllerService.displayLoader({ message: 'common.please_wait' });
 
         this.authService.signup(
             this.accessFormData('language').value as Language,
@@ -100,20 +100,16 @@ export class SignupComponent implements OnInit {
             this.accessFormData('email').value,
             this.accessFormData('password').value,
             this.accessFormData('confirmPassword').value,
-        ).pipe(
-            finalize(() => {
-                this.isLoading = false;
-                this.changeDetectorRef.markForCheck();
-            }),
         ).subscribe(async (response: AuthResponseData) => {
             if (response.Success) {
+                await this.loadingControllerService.dismissLoader();
                 const toast = await this.toastController.create({
                     message: this.translateService.instant(response.Message),
-                    duration: SNACK_BAR_DURATION.GENERAL,
+                    duration: MESSAGE_DURATION.GENERAL,
                     color: response.Success ? 'primary' : 'danger',
                 });
                 await toast.present();
-                await this.router.navigate(['/auth/login']);
+                await this.navController.navigateForward(['/auth/login']);
             }
         });
     }

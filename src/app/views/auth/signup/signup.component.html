@@ -8,15 +8,11 @@
         <ion-title>{{ 'navigation.signup' | translate }}</ion-title>
     </ion-toolbar>
 </ion-header>
-<!--TODO: add skeleton loader instead of loading spinner-->
-<ion-spinner
-    *ngIf="isLoading"
-    name="crescent"></ion-spinner>
-<ion-content *ngIf="!isLoading">
+<ion-content>
     <ion-card>
         <ion-card-content>
             <form
-                *ngIf="!isLoading && form"
+                *ngIf="form"
                 [formGroup]="form"
                 (ngSubmit)="onSubmit()">
                     <ion-row>
@@ -189,7 +185,6 @@
                             <ion-button
                                 type="submit"
                                 color="primary"
-                                [class.button-spinner]="isLoading"
                                 [disabled]="isLoading">
                                 {{ 'auth.signup' | translate }}
                             </ion-button>

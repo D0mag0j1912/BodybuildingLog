@@ -27,8 +27,7 @@ export function passwordFitsEmail(
                                 return null;
                             }),
                             catchError(_ => of(null)),
-                            //TODO: delete if works without CD
-                            /* finalize(() => changeDetectorRef.markForCheck()), */
+                            finalize(() => changeDetectorRef.markForCheck()),
                         );
                 }
                 else {
@@ -38,7 +37,10 @@ export function passwordFitsEmail(
         );
 }
 
-export function isEmailAvailable(signupService: SignupService): AsyncValidatorFn {
+export function isEmailAvailable(
+    signupService: SignupService,
+    cd: ChangeDetectorRef,
+): AsyncValidatorFn {
     return (control: AbstractControl) =>
         timer(350).pipe(
             switchMap(_ => {
@@ -56,6 +58,7 @@ export function isEmailAvailable(signupService: SignupService): AsyncValidatorFn
                                 return null;
                             }),
                             catchError(_ => of(null)),
+                            finalize(() => cd.markForCheck()),
                         );
                 }
                 else {
