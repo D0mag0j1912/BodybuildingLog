@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { captureException } from '@sentry/minimal';
 import { Observable, throwError } from 'rxjs';
@@ -12,25 +12,25 @@ import { ErrorMessage } from '../models/common/interfaces/common.model';
 export class ErrorInterceptor implements HttpInterceptor {
 
     constructor(
-        private readonly snackBar: MatSnackBar,
+        private readonly toastController: ToastController,
         private readonly translateService: TranslateService,
-    ){}
+    ) { }
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         return next.handle(request).pipe(
             catchError((error: HttpErrorResponse) => {
                 let errorMessage: string;
-                if(error instanceof HttpErrorResponse) {
+                if (error instanceof HttpErrorResponse) {
                     captureException(error);
-                    if(!window.navigator.onLine){
+                    if (!window.navigator.onLine) {
                         errorMessage = this.translateService.instant('common.errors.internet_required');
                     }
                     else {
-                        if((error.error as ErrorMessage).statusCode === 404) {
+                        if ((error.error as ErrorMessage).statusCode === 404) {
                             errorMessage = this.translateService.instant('common.errors.unknown_error');
                         }
                         else {
-                            if(Array.isArray((error.error as ErrorMessage).message)) {
+                            if (Array.isArray((error.error as ErrorMessage).message)) {
                                 errorMessage = this.translateService.instant((error.error as ErrorMessage).message[0].substring(
                                     (error.error as ErrorMessage).message[0].indexOf('@') + 1,
                                     (error.error as ErrorMessage).message[0].length,
@@ -45,11 +45,12 @@ export class ErrorInterceptor implements HttpInterceptor {
                 else {
                     errorMessage = this.translateService.instant('common.errors.unknown_error');
                 }
-                this.snackBar.open(errorMessage, null, {
+                void this.toastController.create({
+                    message: errorMessage,
                     duration: SNACK_BAR_DURATION.ERROR,
-                    panelClass: 'app__snackbar-error',
-                });
-                return throwError(error as HttpErrorResponse);
+                    color: 'danger',
+                }).then(async (value: HTMLIonToastElement) => value.present());
+                return throwError(error);
             }),
         );
     }

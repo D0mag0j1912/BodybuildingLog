@@ -57,7 +57,7 @@
                 </ion-item>
             </ion-menu-toggle>
             <ion-menu-toggle [autoHide]="false">
-                <ion-item>
+                <ion-item lines="none">
                     <ng-container *ngIf="(loggedUserData$ | async) as userData">
                         <a
                             *ngIf="isAuthenticated$ | async"
