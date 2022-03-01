@@ -7,7 +7,7 @@ import { AuthService } from 'src/services/auth/auth.service';
 import { ConfirmPasswordGuard } from '../../../guards/auth/confirm-password.guard';
 
 @ApiTags('Authentication')
-@Controller('signup')
+@Controller('auth/signup')
 export class SignupController {
 
     constructor(

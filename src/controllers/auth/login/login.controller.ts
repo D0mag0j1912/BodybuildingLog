@@ -4,12 +4,12 @@ import { AuthResponse } from 'src/models/auth/auth-response.model';
 import { UserDto } from 'src/models/auth/login.model';
 import { AuthService } from 'src/services/auth/auth.service';
 @ApiTags('Authentication')
-@Controller('login')
+@Controller('auth/login')
 export class LoginController {
 
     constructor(
         private readonly authService: AuthService,
-    ) {}
+    ) { }
 
     //TODO
     /* @ApiCreatedResponse({ type: LoginDto }) */

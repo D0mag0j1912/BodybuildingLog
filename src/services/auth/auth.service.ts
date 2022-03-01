@@ -16,7 +16,7 @@ export class AuthService {
         @InjectModel('User') private readonly userModel: Model<UserDto>,
         @InjectModel('Preferences') private readonly preferencesModel: Model<PreferencesDto>,
         private readonly jwtService: JwtService,
-    ) {}
+    ) { }
 
     async passwordFitsEmail(userDto: UserDto): Promise<boolean> {
         try {
