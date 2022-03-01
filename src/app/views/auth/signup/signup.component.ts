@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChil
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonInput, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { Language, WeightFormat } from '../../../models/preferences.model';
@@ -102,9 +102,15 @@ export class SignupComponent implements OnInit {
             this.accessFormData('email').value,
             this.accessFormData('password').value,
             this.accessFormData('confirmPassword').value,
-        ).subscribe(async (response: AuthResponseData) => {
-            if (response.Success) {
+        ).pipe(
+            finalize(async () => {
                 await this.loadingControllerService.dismissLoader();
+                this.isLoading = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        )
+        .subscribe(async (response: AuthResponseData) => {
+            if (response.Success) {
                 await this.toastControllerService.displayToast({
                     message: this.translateService.instant(response.Message),
                     duration: MESSAGE_DURATION.GENERAL,
@@ -112,8 +118,6 @@ export class SignupComponent implements OnInit {
                 });
                 await this.navController.navigateForward(['/auth/login']);
             }
-            this.isLoading = false;
-            this.changeDetectorRef.markForCheck();
         });
     }
 

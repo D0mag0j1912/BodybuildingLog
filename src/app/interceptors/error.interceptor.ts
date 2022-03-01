@@ -1,18 +1,18 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { captureException } from '@sentry/minimal';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../constants/message-duration.const';
 import { ErrorMessage } from '../models/common/interfaces/common.model';
+import { ToastControllerService } from '../services/shared/toast-controller.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
     constructor(
-        private readonly toastController: ToastController,
+        private readonly toastControllerService: ToastControllerService,
         private readonly translateService: TranslateService,
     ) { }
 
@@ -45,11 +45,11 @@ export class ErrorInterceptor implements HttpInterceptor {
                 else {
                     errorMessage = this.translateService.instant('common.errors.unknown_error');
                 }
-                void this.toastController.create({
+                void this.toastControllerService.displayToast({
                     message: errorMessage,
                     duration: MESSAGE_DURATION.ERROR,
                     color: 'danger',
-                }).then(async (value: HTMLIonToastElement) => value.present());
+                });
                 return throwError(error);
             }),
         );
