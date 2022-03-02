@@ -45,10 +45,9 @@
                                 </ion-item>
                             </ion-col>
                         </ion-row>
-                        <!--Test-->
                         <ion-note
                             *ngIf="accessFormData('language').errors?.required"
-                            slot="error">
+                            class="error">
                             {{ 'preferences.errors.language_required' | translate }}
                         </ion-note>
                     </ion-radio-group>
@@ -82,11 +81,10 @@
                                 </ion-item>
                             </ion-col>
                         </ion-row>
-                        <!--Test-->
                         <ion-note
                             *ngIf="accessFormData('weightFormat').errors?.required"
-                            slot="error">
-                            {{ 'auth.errors.weight_format_required' | translate }}
+                            class="error">
+                            {{ 'preferences.errors.weight_format_required' | translate }}
                         </ion-note>
                     </ion-radio-group>
                     <ion-row>
