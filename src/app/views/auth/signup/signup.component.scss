@@ -5,16 +5,12 @@
     font-weight: 500;
 }
 
-.row {
-    flex-wrap: nowrap;
+.label {
+    margin-left: 10px;
+}
 
-    .label {
-        margin-left: 10px;
-    }
-
-    .radio {
-        margin: 0;
-    }
+.radio {
+    margin: 0;
 }
 
 .did-you-know {

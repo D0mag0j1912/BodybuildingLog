@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormControlStatus, FormGroup, Validators } from '@angular/forms';
 import { IonInput, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { finalize, takeUntil } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
+import { filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { Language, WeightFormat } from '../../../models/preferences.model';
@@ -53,11 +54,11 @@ export class SignupComponent implements OnInit {
         this.form = new FormGroup({
             'language': new FormControl('en', [Validators.required]),
             'weightFormat': new FormControl('kg', [Validators.required]),
-            'email': new FormControl(null, [
-                Validators.required,
-                Validators.email],
-                [AuthCustomValidators.isEmailAvailable(this.signupService, this.changeDetectorRef)],
-            ),
+            'email': new FormControl(null, {
+                validators: [Validators.required, Validators.email],
+                asyncValidators: [AuthCustomValidators.isEmailAvailable(this.signupService, this.changeDetectorRef)],
+                updateOn: 'blur',
+            }),
             'password': new FormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
@@ -85,40 +86,44 @@ export class SignupComponent implements OnInit {
     }
 
     async onSubmit(): Promise<void> {
-        if (!this.form.valid) {
-            await this.toastControllerService.displayToast({
-                message: 'auth.errors.invalid_form',
-                duration: MESSAGE_DURATION.ERROR,
-                color: 'danger',
-            });
-            return;
-        }
-        this.isLoading = true;
-        await this.loadingControllerService.displayLoader({ message: 'common.please_wait' });
+        this.form.statusChanges
+            .pipe(
+                filter((status: FormControlStatus) => status !== 'PENDING'),
+                switchMap(async _ => {
+                    if (this.form.valid) {
+                        this.isLoading = true;
+                        await this.loadingControllerService.displayLoader({ message: 'common.please_wait' });
 
-        this.authService.signup(
-            this.accessFormData('language').value as Language,
-            this.accessFormData('weightFormat').value as WeightFormat,
-            this.accessFormData('email').value,
-            this.accessFormData('password').value,
-            this.accessFormData('confirmPassword').value,
-        ).pipe(
-            finalize(async () => {
-                await this.loadingControllerService.dismissLoader();
-                this.isLoading = false;
-                this.changeDetectorRef.markForCheck();
-            }),
-        )
-        .subscribe(async (response: AuthResponseData) => {
-            if (response.Success) {
-                await this.toastControllerService.displayToast({
-                    message: this.translateService.instant(response.Message),
-                    duration: MESSAGE_DURATION.GENERAL,
-                    color: response.Success ? 'primary' : 'danger',
-                });
-                await this.navController.navigateForward(['/auth/login']);
-            }
-        });
+                        return this.authService.signup(
+                            this.accessFormData('language').value as Language,
+                            this.accessFormData('weightFormat').value as WeightFormat,
+                            this.accessFormData('email').value,
+                            this.accessFormData('password').value,
+                            this.accessFormData('confirmPassword').value,
+                        ).pipe(
+                            tap(async (response: AuthResponseData) => {
+                                if (response.Success) {
+                                    await this.toastControllerService.displayToast({
+                                        message: this.translateService.instant(response.Message),
+                                        duration: MESSAGE_DURATION.GENERAL,
+                                        color: response.Success ? 'primary' : 'danger',
+                                    });
+                                    await this.navController.navigateForward(['/auth/login']);
+                                }
+                            }),
+                            finalize(async () => {
+                                await this.loadingControllerService.dismissLoader();
+                                this.isLoading = false;
+                                this.changeDetectorRef.markForCheck();
+                            }),
+                        );
+                    }
+                    else {
+                        return EMPTY;
+                    }
+                }),
+            )
+            .subscribe();
     }
 
     accessFormData(formFieldName: keyof FormData): FormControl {
