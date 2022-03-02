@@ -92,7 +92,7 @@ export class SignupComponent implements OnInit {
                 switchMap(async _ => {
                     if (this.form.valid) {
                         this.isLoading = true;
-                        await this.loadingControllerService.displayLoader({ message: 'common.please_wait' });
+                        await this.loadingControllerService.displayLoader({ message: 'auth.signing_in' });
 
                         return this.authService.signup(
                             this.accessFormData('language').value as Language,

@@ -57,6 +57,7 @@
         "signup": "Sign up",
         "signup_link": "Sign up",
         "signup_success": "User registered successfully",
+        "signing_in": "Signing in...",
         "login": "Login",
         "no_account_message": "Don't have an account?",
         "login_success": "Login successful",

@@ -58,6 +58,7 @@
         "signup": "Registracija",
         "signup_link": "Registrirajte ste",
         "signup_success": "Korisnik uspješno registriran",
+        "signing_in": "Registracija u tijeku...",
         "login": "Prijava",
         "no_account_message": "Nemate korisnički račun?",
         "login_success": "Prijava uspješna",
