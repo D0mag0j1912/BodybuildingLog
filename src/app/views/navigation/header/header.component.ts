@@ -93,16 +93,17 @@ export class HeaderComponent implements OnInit {
     }
 
     changeLanguage(language: Language): void {
-        this.authService.loggedUser$.pipe(
-            take(1),
-            switchMap((userData: AuthResponseData) =>
-                this.navigationService.setPreferences(
-                    userData._id,
-                    language,
-                    'kg',
+        this.authService.loggedUser$
+            .pipe(
+                take(1),
+                switchMap((userData: AuthResponseData) =>
+                    this.navigationService.setPreferences(
+                        userData._id,
+                        language,
+                        'kg',
+                    ),
                 ),
-            ),
-        ).subscribe();
+            ).subscribe();
     }
 
 }

@@ -3,8 +3,7 @@ import { FormControl, FormControlStatus, FormGroup, Validators } from '@angular/
 import { IonInput, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY } from 'rxjs';
-import { filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
+import { filter, finalize, first, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { Language, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -89,6 +88,7 @@ export class SignupComponent implements OnInit {
         this.form.statusChanges
             .pipe(
                 filter((status: FormControlStatus) => status !== 'PENDING'),
+                first(),
                 switchMap(async _ => {
                     if (this.form.valid) {
                         this.isLoading = true;
@@ -101,7 +101,7 @@ export class SignupComponent implements OnInit {
                             this.accessFormData('password').value,
                             this.accessFormData('confirmPassword').value,
                         ).pipe(
-                            tap(async (response: AuthResponseData) => {
+                            tap(async response => {
                                 if (response.Success) {
                                     await this.toastControllerService.displayToast({
                                         message: this.translateService.instant(response.Message),

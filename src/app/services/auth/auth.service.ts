@@ -97,9 +97,10 @@ export class AuthService {
                 }
             }),
             mergeMap((response: AuthResponseData) =>
-                this.translateService.use(response.Preferences.language).pipe(
-                    switchMap(_ => of(response)),
-                ),
+                this.translateService.use(response.Preferences.language)
+                    .pipe(
+                        switchMap(_ => of(response)),
+                    ),
             ),
         );
     }

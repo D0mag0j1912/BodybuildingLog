@@ -206,36 +206,38 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     } as DeleteExerciseDialogData,
                 } as DialogData,
             });
-            dialogRef.afterClosed().pipe(
-                switchMap((response: boolean) => {
-                    if (response) {
-                        return this.newTrainingService.currentTrainingChanged$.pipe(
-                            take(1),
-                            switchMap((currentTrainingState: Training) =>
-                                this.newTrainingService.deleteExercise(
-                                    currentTrainingState as Training,
-                                    exerciseName as string,
-                                ),
-                            ),
-                        );
-                    }
-                    else {
-                        return EMPTY;
-                    }
-                }),
-                finalize(() => {
-                    this.exerciseStateChanged$$.next();
-                    this.changeDetectorRef.markForCheck();
-                }),
-                takeUntil(this.unsubscribeService),
-            ).subscribe((data: [Training, Exercise[]]) => {
-                this.exerciseChanged = !this.exerciseChanged;
-                this.form.removeAt(indexExercise);
-                this.newTrainingService.pushToAvailableExercises(
-                    data[0] as Training,
-                    data[1] as Exercise[],
-                );
-            });
+            dialogRef.afterClosed()
+                .pipe(
+                    switchMap((response: boolean) => {
+                        if (response) {
+                            return this.newTrainingService.currentTrainingChanged$
+                                .pipe(
+                                    take(1),
+                                    switchMap((currentTrainingState: Training) =>
+                                        this.newTrainingService.deleteExercise(
+                                            currentTrainingState as Training,
+                                            exerciseName as string,
+                                        ),
+                                    ),
+                                );
+                        }
+                        else {
+                            return EMPTY;
+                        }
+                    }),
+                    finalize(() => {
+                        this.exerciseStateChanged$$.next();
+                        this.changeDetectorRef.markForCheck();
+                    }),
+                    takeUntil(this.unsubscribeService),
+                ).subscribe((data: [Training, Exercise[]]) => {
+                    this.exerciseChanged = !this.exerciseChanged;
+                    this.form.removeAt(indexExercise);
+                    this.newTrainingService.pushToAvailableExercises(
+                        data[0] as Training,
+                        data[1] as Exercise[],
+                    );
+                });
         }
         else {
             this.newTrainingService.currentTrainingChanged$.pipe(
