@@ -85,7 +85,6 @@ export class SignupComponent implements OnInit {
     }
 
     async onSubmit(): Promise<void> {
-        this.isLoading = true;
         this.form.statusChanges
             .pipe(
                 filter((status: FormControlStatus) => status !== 'PENDING'),
@@ -93,6 +92,7 @@ export class SignupComponent implements OnInit {
                 take(1),
                 switchMap(_ => {
                     if (this.form.valid) {
+                        this.isLoading = true;
                         /* await this.loadingControllerService.displayLoader({ message: 'auth.signing_in' }); */
 
                         return this.authService.signup(

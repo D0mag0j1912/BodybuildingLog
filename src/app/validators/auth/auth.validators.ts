@@ -1,6 +1,6 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { of, timer } from 'rxjs';
+import { EMPTY, of, timer } from 'rxjs';
 import { catchError, finalize, map, switchMap } from 'rxjs/operators';
 import { SignupService } from 'src/app/services/auth/signup.service';
 import { LoginService } from '../../services/auth/login.service';
@@ -47,9 +47,9 @@ export function isEmailAvailable(
                 if (control) {
                     const email: string = control?.value;
                     if (!email) {
-                        return of(null);
+                        return EMPTY;
                     }
-                    return signupService.getEmails(email)
+                    return signupService.getEmails(email.trim().toLowerCase())
                         .pipe(
                             map((response: boolean) => {
                                 if (!response) {
@@ -57,12 +57,12 @@ export function isEmailAvailable(
                                 }
                                 return null;
                             }),
-                            catchError(_ => of(null)),
+                            catchError(_ => EMPTY),
                             finalize(() => cd.markForCheck()),
                         );
                 }
                 else {
-                    return of(null);
+                    return EMPTY;
                 }
             }),
         );
