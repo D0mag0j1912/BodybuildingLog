@@ -9,7 +9,7 @@ export class CheckPassController {
 
     constructor(
         private readonly authService: AuthService,
-    ) {}
+    ) { }
 
     @Get()
     async passwordFitsEmail(@Query() userDto: UserDto): Promise<boolean> {

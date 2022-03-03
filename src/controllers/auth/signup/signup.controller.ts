@@ -12,7 +12,7 @@ export class SignupController {
 
     constructor(
         private readonly authService: AuthService,
-    ) {}
+    ) { }
 
     @Post()
     @UseGuards(new ConfirmPasswordGuard('auth.errors.equal_passwords'))
