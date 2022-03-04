@@ -1,7 +1,7 @@
 import { AfterViewInit, Directive } from '@angular/core';
 import { IonInput } from '@ionic/angular';
 
-@Directive({ selector: '[autofocus]' })
+@Directive({ selector: '[ionFocus]' })
 export class AutofocusDirective implements AfterViewInit {
 
     private firstTime = true;
