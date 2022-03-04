@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormControl, FormControlStatus, FormGroup, Validators } from '@angular/forms';
-import { IonInput, NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY } from 'rxjs';
 import { distinctUntilChanged, filter, switchMap, take, takeUntil, tap } from 'rxjs/operators';
@@ -29,20 +29,11 @@ type FormData = {
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent {
 
     form: FormGroup;
 
     isLoading = false;
-
-    @ViewChild('emailEl', { read: IonInput })
-    private readonly emailEl: IonInput;
-
-    @ViewChild('passEl', { read: IonInput })
-    private readonly passwordEl: IonInput;
-
-    @ViewChild('confirmPassEl', { read: IonInput })
-    private readonly confirmPasswordEl: IonInput;
 
     constructor(
         private readonly authService: AuthService,
@@ -60,6 +51,7 @@ export class SignupComponent implements OnInit {
             'email': new FormControl(null, {
                 validators: [Validators.required, Validators.email],
                 asyncValidators: [AuthCustomValidators.isEmailAvailable(this.signupService, this.changeDetectorRef)],
+                updateOn: 'blur',
             }),
             'password': new FormControl(null, [
                 Validators.required,
@@ -76,19 +68,6 @@ export class SignupComponent implements OnInit {
 
     get focusDuration(): number {
         return IonFocusDurations.SIGNUP;
-    }
-
-    ngOnInit(): void {
-        this.accessFormData('email')?.valueChanges
-            .pipe(
-                takeUntil(this.unsubscribeService),
-            )
-            .subscribe(_ => {
-                //TODO: Focus password field automatically when email is valid
-                if (this.accessFormData('email')?.valid) {
-                    this.passwordEl?.setFocus();
-                }
-            });
     }
 
     async onSubmit(): Promise<void> {
