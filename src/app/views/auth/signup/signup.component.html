@@ -103,6 +103,7 @@
                                 <ion-label position="floating">{{ 'auth.email' | translate }}</ion-label>
                                 <ion-input
                                     ionFocus
+                                    [duration]="focusDuration"
                                     type="email"
                                     formControlName="email"></ion-input>
                                 <ion-note

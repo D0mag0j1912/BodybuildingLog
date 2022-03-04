@@ -9,6 +9,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { LoginService } from '../../../services/auth/login.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
+import { IonFocusDurations } from '../../../constants/ion-focus-durations.const';
 
 type FormData = {
     email?: string;
@@ -52,6 +53,10 @@ export class LoginComponent implements OnInit {
         }, { asyncValidators: AuthCustomValidators.passwordFitsEmail(
             this.loginService,
             this.changeDetectorRef) });
+    }
+
+    get focusDuration(): number {
+        return IonFocusDurations.LOGIN;
     }
 
     ngOnInit(): void {

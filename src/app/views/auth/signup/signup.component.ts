@@ -12,6 +12,7 @@ import { LoadingControllerService } from '../../../services/shared/loading-contr
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
+import { IonFocusDurations } from '../../../constants/ion-focus-durations.const';
 
 type FormData = {
     language?: Language;
@@ -71,6 +72,10 @@ export class SignupComponent implements OnInit {
                 Validators.maxLength(20)],
             ),
         }, { validators: AuthCustomValidators.samePasswords() });
+    }
+
+    get focusDuration(): number {
+        return IonFocusDurations.SIGNUP;
     }
 
     ngOnInit(): void {

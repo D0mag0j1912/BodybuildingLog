@@ -1,8 +1,11 @@
-import { AfterViewInit, Directive } from '@angular/core';
+import { AfterViewInit, Directive, Input } from '@angular/core';
 import { IonInput } from '@ionic/angular';
 
 @Directive({ selector: '[ionFocus]' })
 export class AutofocusDirective implements AfterViewInit {
+
+    @Input('duration')
+    duration = 350;
 
     private firstTime = true;
 
@@ -15,7 +18,7 @@ export class AutofocusDirective implements AfterViewInit {
             setTimeout(() => {
                 this.ionInput?.setFocus();
                 this.firstTime = false;
-            }, 400);
+            }, this.duration);
         }
     }
 }
