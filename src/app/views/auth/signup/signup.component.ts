@@ -3,7 +3,7 @@ import { FormControl, FormControlStatus, FormGroup, Validators } from '@angular/
 import { IonInput, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY } from 'rxjs';
-import { distinctUntilChanged, filter, finalize, switchMap, take, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { Language, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -90,11 +90,14 @@ export class SignupComponent implements OnInit {
                 filter((status: FormControlStatus) => status !== 'PENDING'),
                 distinctUntilChanged(),
                 take(1),
-                switchMap(_ => {
+                tap(async _ => {
                     if (this.form.valid) {
                         this.isLoading = true;
-                        /* await this.loadingControllerService.displayLoader({ message: 'auth.signing_in' }); */
-
+                        await this.loadingControllerService.displayLoader({ message: 'auth.signing_in' });
+                    }
+                }),
+                switchMap(_ => {
+                    if (this.form.valid) {
                         return this.authService.signup(
                             this.accessFormData('language').value as Language,
                             this.accessFormData('weightFormat').value as WeightFormat,
@@ -107,11 +110,6 @@ export class SignupComponent implements OnInit {
                         return EMPTY;
                     }
                 }),
-                finalize(async () => {
-                    /* await this.loadingControllerService.dismissLoader(); */
-                    this.isLoading = false;
-                    this.changeDetectorRef.markForCheck();
-                }),
                 takeUntil(this.unsubscribeService),
             )
             .subscribe(async response => {
@@ -123,6 +121,9 @@ export class SignupComponent implements OnInit {
                     });
                     await this.navController.navigateForward(['/auth/login']);
                 }
+                await this.loadingControllerService.dismissLoader();
+                this.isLoading = false;
+                this.changeDetectorRef.markForCheck();
             });
         this.form.markAllAsTouched();
         this.form.updateValueAndValidity();

@@ -14,6 +14,7 @@
                     *ngIf="!(isAuthenticated$ | async)"
                     lines="none"
                     routerLink="/auth/login"
+                    routerDirection="forward"
                     (click)="onCloseSideNav()">
                     <ion-icon
                         name="log-in-sharp"
@@ -26,6 +27,7 @@
                     *ngIf="!(isAuthenticated$ | async)"
                     lines="none"
                     routerLink="/auth/signup"
+                    routerDirection="forward"
                     (click)="onCloseSideNav()">
                     <ion-icon
                         name="arrow-forward-sharp"
