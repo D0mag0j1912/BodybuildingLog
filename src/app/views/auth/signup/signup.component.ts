@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/
 import { FormControl, FormControlStatus, FormGroup, Validators } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { EMPTY } from 'rxjs';
+import { EMPTY, from } from 'rxjs';
 import { distinctUntilChanged, filter, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { Language, WeightFormat } from '../../../models/preferences.model';
@@ -74,20 +74,18 @@ export class SignupComponent {
                 filter((status: FormControlStatus) => status !== 'PENDING'),
                 distinctUntilChanged(),
                 take(1),
-                tap(async _ => {
-                    if (this.form.valid) {
-                        await this.loadingControllerService.displayLoader({ message: 'auth.signing_in' });
-                    }
-                }),
                 switchMap(_ => {
                     if (this.form.valid) {
-                        return this.authService.signup(
-                            this.accessFormData('language').value as Language,
-                            this.accessFormData('weightFormat').value as WeightFormat,
-                            this.accessFormData('email').value,
-                            this.accessFormData('password').value,
-                            this.accessFormData('confirmPassword').value,
-                        );
+                        return from(this.loadingControllerService.displayLoader({ message: 'auth.signing_in' }))
+                            .pipe(
+                                switchMap(_ => this.authService.signup(
+                                    this.accessFormData('language').value as Language,
+                                    this.accessFormData('weightFormat').value as WeightFormat,
+                                    this.accessFormData('email').value,
+                                    this.accessFormData('password').value,
+                                    this.accessFormData('confirmPassword').value,
+                                )),
+                            );
                     }
                     else {
                         return EMPTY;
@@ -96,6 +94,7 @@ export class SignupComponent {
                 takeUntil(this.unsubscribeService),
             )
             .subscribe(async response => {
+                await this.loadingControllerService.dismissLoader();
                 if (response.Success) {
                     await this.toastControllerService.displayToast({
                         message: this.translateService.instant(response.Message),
