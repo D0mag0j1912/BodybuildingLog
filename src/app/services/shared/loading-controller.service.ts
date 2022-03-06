@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LoadingController, LoadingOptions } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { MESSAGE_DURATION } from '../../constants/message-duration.const';
 
 @Injectable({ providedIn: 'root' })
 export class LoadingControllerService {
@@ -14,7 +13,7 @@ export class LoadingControllerService {
     async displayLoader(options: LoadingOptions): Promise<void> {
         const loading = await this.loadingController.create({
             message: this.translateService.instant(options.message as string),
-            duration: MESSAGE_DURATION.GENERAL,
+            keyboardClose: true,
         });
         await loading.present();
     }
