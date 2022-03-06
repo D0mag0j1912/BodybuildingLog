@@ -33,8 +33,6 @@ export class SignupComponent {
 
     form: FormGroup;
 
-    isLoading = false;
-
     constructor(
         private readonly authService: AuthService,
         private readonly signupService: SignupService,
@@ -71,8 +69,6 @@ export class SignupComponent {
     }
 
     async onSubmit(): Promise<void> {
-        this.form.markAllAsTouched();
-        this.form.updateValueAndValidity();
         this.form.statusChanges
             .pipe(
                 filter((status: FormControlStatus) => status !== 'PENDING'),
@@ -80,7 +76,6 @@ export class SignupComponent {
                 take(1),
                 tap(async _ => {
                     if (this.form.valid) {
-                        this.isLoading = true;
                         await this.loadingControllerService.displayLoader({ message: 'auth.signing_in' });
                     }
                 }),
@@ -109,12 +104,9 @@ export class SignupComponent {
                     });
                     await this.navController.navigateBack(['/auth/login']);
                 }
-                await this.loadingControllerService.dismissLoader();
-                this.isLoading = false;
-                this.changeDetectorRef.markForCheck();
             });
-        /* this.form.markAllAsTouched();
-        this.form.updateValueAndValidity(); */
+        this.form.markAllAsTouched();
+        this.form.updateValueAndValidity();
     }
 
     accessFormData(formFieldName: keyof FormData): FormControl {
