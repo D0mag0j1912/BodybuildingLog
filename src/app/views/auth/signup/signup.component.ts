@@ -71,6 +71,8 @@ export class SignupComponent {
     }
 
     async onSubmit(): Promise<void> {
+        this.form.markAllAsTouched();
+        this.form.updateValueAndValidity();
         this.form.statusChanges
             .pipe(
                 filter((status: FormControlStatus) => status !== 'PENDING'),
@@ -111,8 +113,8 @@ export class SignupComponent {
                 this.isLoading = false;
                 this.changeDetectorRef.markForCheck();
             });
-        this.form.markAllAsTouched();
-        this.form.updateValueAndValidity();
+        /* this.form.markAllAsTouched();
+        this.form.updateValueAndValidity(); */
     }
 
     accessFormData(formFieldName: keyof FormData): FormControl {
