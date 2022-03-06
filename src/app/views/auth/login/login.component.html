@@ -9,100 +9,102 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <ion-card>
-        <ion-card-content>
-            <form
-                [formGroup]="form"
-                (ngSubmit)="onSubmit()">
-                <ion-grid>
-                    <ion-row>
-                        <ion-col
-                            size-md="6"
-                            offset-md="3">
-                            <ion-item>
-                                <ion-label position="floating">
-                                    {{ 'auth.email' | translate }}
-                                </ion-label>
-                                <ion-input
-                                    ionFocus
-                                    [duration]="focusDuration"
-                                    type="email"
-                                    formControlName="email"></ion-input>
-                                <ion-note
-                                    *ngIf="accessFormData('email').errors?.required &&
-                                        (accessFormData('email').dirty || accessFormData('email').touched)"
-                                    slot="error">
-                                    {{ 'auth.errors.email_required' | translate }}
-                                </ion-note>
-                                <ion-note
-                                    *ngIf="accessFormData('email').errors?.email &&
-                                        !accessFormData('email').errors?.required"
-                                    slot="error">
-                                    {{ 'auth.errors.invalid_email' | translate }}
-                                </ion-note>
-                            </ion-item>
-                        </ion-col>
-                    </ion-row>
-                    <ion-row>
-                        <ion-col
-                            size-md="6"
-                            offset-md="3">
-                            <ion-item>
-                                <ion-label position="floating">
-                                    {{ 'auth.password' | translate }}
-                                </ion-label>
-                                <ion-input
-                                    #passwordEl
-                                    type="password"
-                                    formControlName="password"></ion-input>
-                                <ion-note
-                                    *ngIf="accessFormData('password').errors?.required &&
-                                        (accessFormData('password').dirty || accessFormData('password').touched)"
-                                    slot="error">
-                                    {{ 'auth.errors.password_required' | translate }}
-                                </ion-note>
-                                <ion-note
-                                    *ngIf="accessFormData('password').errors?.minlength
-                                        || accessFormData('password').errors?.maxlength"
-                                    slot="error">
-                                    {{ 'auth.errors.password_length' | translate }}
-                                </ion-note>
-                                <ion-note
-                                    *ngIf="form.errors?.passwordFitsEmail
-                                        && !accessFormData('password').errors?.required
-                                        && !accessFormData('password').errors?.minlength
-                                        && !accessFormData('password').errors?.maxlength"
-                                    slot="error">
-                                    {{ 'auth.errors.password_wrong_email' | translate }}
-                                </ion-note>
-                            </ion-item>
-                        </ion-col>
-                    </ion-row>
-                    <ion-row>
-                        <ion-col
-                            size-md="6"
-                            offset-md="3">
-                            <ion-button
-                                type="submit"
-                                color="primary"
-                                [disabled]="!form.valid || isLoading"
-                                [class.button-spinner]="isLoading">
-                                {{ 'auth.login' | translate }}
-                            </ion-button>
-                            <ion-note class="no_account_message">
-                                {{ 'auth.no_account_message' | translate }}
-                                <a
-                                    class="no-account-link"
-                                    routerLink="/auth/signup">
-                                    {{ 'auth.signup_link' | translate }}
-                                </a>
-                                {{ 'common.here' | translate }}
-                            </ion-note>
-                        </ion-col>
-                    </ion-row>
-                </ion-grid>
-            </form>
-        </ion-card-content>
-    </ion-card>
+    <ion-grid>
+        <ion-row>
+            <ion-col
+                size-md="4"
+                offset-md="4">
+                <ion-card>
+                    <ion-card-content>
+                        <form
+                            [formGroup]="form"
+                            (ngSubmit)="onSubmit()">
+                            <ion-grid>
+                                <ion-row>
+                                    <ion-col>
+                                        <ion-item>
+                                            <ion-label position="floating">
+                                                {{ 'auth.email' | translate }}
+                                            </ion-label>
+                                            <ion-input
+                                                ionFocus
+                                                [duration]="focusDuration"
+                                                type="email"
+                                                formControlName="email"></ion-input>
+                                            <ion-note
+                                                *ngIf="accessFormData('email').errors?.required &&
+                                                    (accessFormData('email').dirty || accessFormData('email').touched)"
+                                                slot="error">
+                                                {{ 'auth.errors.email_required' | translate }}
+                                            </ion-note>
+                                            <ion-note
+                                                *ngIf="accessFormData('email').errors?.email &&
+                                                    !accessFormData('email').errors?.required"
+                                                slot="error">
+                                                {{ 'auth.errors.invalid_email' | translate }}
+                                            </ion-note>
+                                        </ion-item>
+                                    </ion-col>
+                                </ion-row>
+                                <ion-row>
+                                    <ion-col>
+                                        <ion-item>
+                                            <ion-label position="floating">
+                                                {{ 'auth.password' | translate }}
+                                            </ion-label>
+                                            <ion-input
+                                                #passwordEl
+                                                type="password"
+                                                formControlName="password"></ion-input>
+                                            <ion-note
+                                                *ngIf="accessFormData('password').errors?.required &&
+                                                    (accessFormData('password').dirty || accessFormData('password').touched)"
+                                                slot="error">
+                                                {{ 'auth.errors.password_required' | translate }}
+                                            </ion-note>
+                                            <ion-note
+                                                *ngIf="accessFormData('password').errors?.minlength
+                                                    || accessFormData('password').errors?.maxlength"
+                                                slot="error">
+                                                {{ 'auth.errors.password_length' | translate }}
+                                            </ion-note>
+                                            <ion-note
+                                                *ngIf="form.errors?.passwordFitsEmail
+                                                    && !accessFormData('password').errors?.required
+                                                    && !accessFormData('password').errors?.minlength
+                                                    && !accessFormData('password').errors?.maxlength"
+                                                slot="error">
+                                                {{ 'auth.errors.password_wrong_email' | translate }}
+                                            </ion-note>
+                                        </ion-item>
+                                    </ion-col>
+                                </ion-row>
+                                <ion-row>
+                                    <ion-col>
+                                        <ion-button
+                                            type="submit"
+                                            color="primary"
+                                            [disabled]="!form.valid || isLoading"
+                                            [class.button-spinner]="isLoading">
+                                            {{ 'auth.login' | translate }}
+                                        </ion-button>
+                                        <ion-note class="no_account_message">
+                                            {{ 'auth.no_account_message' | translate }}
+                                            <a
+                                                class="no-account-link"
+                                                routerLink="/auth/signup">
+                                                {{ 'auth.signup_link' | translate }}
+                                            </a>
+                                            {{ 'common.here' | translate }}
+                                        </ion-note>
+                                    </ion-col>
+                                </ion-row>
+                            </ion-grid>
+                        </form>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>
 
