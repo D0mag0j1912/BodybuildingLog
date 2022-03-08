@@ -4,12 +4,8 @@ span:not(:last-child) {
     color: var(--ion-color-danger)
 }
 
-.submit-area {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 15px;
+.submit {
+    margin-top: 10px;
 }
 
 .no_account_message {
