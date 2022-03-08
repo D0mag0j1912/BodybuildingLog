@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { MaterialModule } from '../../material.module';
 import { LoginService } from '../../services/auth/login.service';
 import { SignupService } from '../../services/auth/signup.service';
 import { LoginComponent } from '../../views/auth/login/login.component';
@@ -27,7 +26,6 @@ const EXTERNAL_IMPORTS = [
 ];
 
 const MY_IMPORTS = [
-    MaterialModule,
     SharedModule,
     AuthRoutingModule,
     AutofocusModule,

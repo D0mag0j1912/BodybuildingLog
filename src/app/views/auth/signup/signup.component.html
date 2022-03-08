@@ -93,10 +93,9 @@
                                     </ion-radio-group>
                                     <ion-row>
                                         <ion-col>
+                                            <!--Tooltip => 'common.change_preference_registration' | translate-->
                                             <ion-note
-                                                class="did-you-know"
-                                                matTooltipClass="tooltip"
-                                                [matTooltip]="'common.change_preference_registration' | translate">
+                                                class="did-you-know">
                                                 {{ 'common.did_you_know' | translate }}
                                             </ion-note>
                                         </ion-col>
@@ -187,7 +186,8 @@
                                             <ion-button
                                                 class="submit"
                                                 type="submit"
-                                                color="primary">
+                                                color="primary"
+                                                [disabled]="isLoading">
                                                 {{ 'auth.signup' | translate }}
                                             </ion-button>
                                         </ion-col>

@@ -64,6 +64,7 @@ export class LoginComponent implements OnInit {
             .pipe(
                 takeUntil(this.unsubscribeService),
             ).subscribe(async _ => {
+                //TODO: fix
                 if (this.accessFormData('email')?.valid) {
                     await this.passwordInput.setFocus();
                 }

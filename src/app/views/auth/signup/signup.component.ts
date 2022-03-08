@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { FormControl, FormControlStatus, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY, from } from 'rxjs';
-import { distinctUntilChanged, filter, switchMap, take, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, finalize, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { Language, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -30,6 +30,8 @@ type FormData = {
     providers: [UnsubscribeService],
 })
 export class SignupComponent {
+
+    isLoading = false;
 
     form: FormGroup;
 
@@ -68,34 +70,39 @@ export class SignupComponent {
         return IonFocusDurations.SIGNUP;
     }
 
-    async onSubmit(): Promise<void> {
+    onSubmit(): void {
+        this.isLoading = true;
         this.form.statusChanges
             .pipe(
-                filter((status: FormControlStatus) => status !== 'PENDING'),
+                filter(_ => this.form.status !== 'PENDING'),
                 distinctUntilChanged(),
                 take(1),
                 switchMap(_ => {
                     if (this.form.valid) {
                         return from(this.loadingControllerService.displayLoader({ message: 'auth.signing_in' }))
-                            .pipe(
-                                switchMap(_ => this.authService.signup(
-                                    this.accessFormData('language').value as Language,
-                                    this.accessFormData('weightFormat').value as WeightFormat,
-                                    this.accessFormData('email').value,
-                                    this.accessFormData('password').value,
-                                    this.accessFormData('confirmPassword').value,
-                                )),
-                            );
+                        .pipe(
+                            switchMap(_ => this.authService.signup(
+                                this.accessFormData('language').value as Language,
+                                this.accessFormData('weightFormat').value as WeightFormat,
+                                this.accessFormData('email').value,
+                                this.accessFormData('password').value,
+                                this.accessFormData('confirmPassword').value,
+                            )),
+                        );
                     }
                     else {
                         return EMPTY;
                     }
                 }),
+                finalize(() => {
+                    this.isLoading = false;
+                    this.changeDetectorRef.markForCheck();
+                }),
                 takeUntil(this.unsubscribeService),
             )
             .subscribe(async response => {
-                await this.loadingControllerService.dismissLoader();
                 if (response.Success) {
+                    await this.loadingControllerService.dismissLoader();
                     await this.toastControllerService.displayToast({
                         message: this.translateService.instant(response.Message),
                         duration: MESSAGE_DURATION.GENERAL,
