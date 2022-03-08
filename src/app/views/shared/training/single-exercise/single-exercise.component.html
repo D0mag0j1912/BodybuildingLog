@@ -107,7 +107,6 @@
                 matTooltipClass="tooltip"
                 matTooltipPosition="above"
                 [matTooltip]="currentExerciseState[0]?.length > 0 ? ('training.new_training.finish_training' | translate) : ''"
-                [class.button-spinner]="isLoading"
                 [disabled]="currentExerciseState[0]?.length === 0 || isLoading">
                 <mat-icon class="finish-training-icon">done</mat-icon>
             </button>

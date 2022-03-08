@@ -82,8 +82,7 @@
                                         <ion-button
                                             type="submit"
                                             color="primary"
-                                            [disabled]="!form.valid || isLoading"
-                                            [class.button-spinner]="isLoading">
+                                            [disabled]="!form.valid || isLoading">
                                             {{ 'auth.login' | translate }}
                                         </ion-button>
                                         <ion-note class="no_account_message">
