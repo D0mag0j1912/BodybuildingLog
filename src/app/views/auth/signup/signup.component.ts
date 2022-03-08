@@ -3,7 +3,7 @@ import { FormControl, FormControlStatus, FormGroup, Validators } from '@angular/
 import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY, from } from 'rxjs';
-import { distinctUntilChanged, filter, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { Language, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';

@@ -3,7 +3,6 @@
 
 /** Ionic CSS Variables **/
 :root {
-    --ion-font-family: 'Poppins', sans-serif;
     /** primary **/
     --ion-color-primary: #009688;
     --ion-color-primary-rgb: 56, 128, 255;
@@ -77,6 +76,8 @@
     --ion-color-light-tint: #f5f6f9;
 
     --ion-font-family: 'Poppins', sans-serif;
+    --ion-toolbar-background: var(--ion-color-primary);
+    --ion-toolbar-color: var(--ion-color-primary-contrast);
 }
 
 @media (prefers-color-scheme: dark) {
