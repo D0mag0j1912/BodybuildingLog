@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY, from } from 'rxjs';
-import { distinctUntilChanged, filter, finalize, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, filter, finalize, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { Language, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -95,15 +95,18 @@ export class SignupComponent {
                         return EMPTY;
                     }
                 }),
-                finalize(() => {
+                catchError(_ => EMPTY),
+                finalize(async () => {
                     this.isLoading = false;
+                    if (this.form.valid) {
+                        await this.loadingControllerService.dismissLoader();
+                    }
                     this.changeDetectorRef.markForCheck();
                 }),
                 takeUntil(this.unsubscribeService),
             )
             .subscribe(async response => {
                 if (response.Success) {
-                    await this.loadingControllerService.dismissLoader();
                     await this.toastControllerService.displayToast({
                         message: this.translateService.instant(response.Message),
                         duration: MESSAGE_DURATION.GENERAL,

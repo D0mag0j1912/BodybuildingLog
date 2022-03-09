@@ -21,4 +21,5 @@ export class LoadingControllerService {
     async dismissLoader(): Promise<void> {
         await this.loadingController.dismiss();
     }
+
 }

@@ -63,7 +63,7 @@ export class AuthService {
             language: language,
             weightFormat: weightFormat,
         };
-        return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/signup', {
+        return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/signu', {
             signupData: signupData,
             preferences: preferences,
         });

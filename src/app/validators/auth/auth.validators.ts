@@ -41,31 +41,28 @@ export function isEmailAvailable(
     signupService: SignupService,
     cd: ChangeDetectorRef,
 ): AsyncValidatorFn {
-    return (control: AbstractControl) =>
-        timer(350).pipe(
-            switchMap(_ => {
-                if (control) {
-                    const email: string = control?.value;
-                    if (!email) {
-                        return EMPTY;
-                    }
-                    return signupService.getEmails(email.trim().toLowerCase())
-                        .pipe(
-                            map((response: boolean) => {
-                                if (!response) {
-                                    return { 'availableEmail': true };
-                                }
-                                return null;
-                            }),
-                            catchError(_ => EMPTY),
-                            finalize(() => cd.markForCheck()),
-                        );
-                }
-                else {
-                    return EMPTY;
-                }
-            }),
-        );
+    return (control: AbstractControl) => {
+        if (control) {
+            const email: string = control?.value;
+            if (!email) {
+                return EMPTY;
+            }
+            return signupService.getEmails(email.trim().toLowerCase())
+                .pipe(
+                    map((response: boolean) => {
+                        if (!response) {
+                            return { 'availableEmail': true };
+                        }
+                        return null;
+                    }),
+                    catchError(_ => EMPTY),
+                    finalize(() => cd.markForCheck()),
+                );
+        }
+        else {
+            return EMPTY;
+        }
+    };
 }
 
 export function samePasswords(): ValidatorFn {
