@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY, from } from 'rxjs';
-import { distinctUntilChanged, filter, finalize, switchMap, take, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, finalize, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { Language, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -74,21 +74,22 @@ export class SignupComponent {
         this.isLoading = true;
         this.form.statusChanges
             .pipe(
+                startWith(this.form.status),
                 filter(_ => this.form.status !== 'PENDING'),
                 distinctUntilChanged(),
                 take(1),
                 switchMap(_ => {
                     if (this.form.valid) {
                         return from(this.loadingControllerService.displayLoader({ message: 'auth.signing_in' }))
-                        .pipe(
-                            switchMap(_ => this.authService.signup(
-                                this.accessFormData('language').value as Language,
-                                this.accessFormData('weightFormat').value as WeightFormat,
-                                this.accessFormData('email').value,
-                                this.accessFormData('password').value,
-                                this.accessFormData('confirmPassword').value,
-                            )),
-                        );
+                            .pipe(
+                                switchMap(_ => this.authService.signup(
+                                    this.accessFormData('language').value as Language,
+                                    this.accessFormData('weightFormat').value as WeightFormat,
+                                    this.accessFormData('email').value,
+                                    this.accessFormData('password').value,
+                                    this.accessFormData('confirmPassword').value,
+                                )),
+                            );
                     }
                     else {
                         return EMPTY;

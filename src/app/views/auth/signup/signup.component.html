@@ -6,189 +6,195 @@
         <ion-title>{{ 'navigation.signup' | translate }}</ion-title>
     </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding">
-    <ion-card>
-        <ion-card-content>
-            <form
-                *ngIf="form"
-                [formGroup]="form"
-                (ngSubmit)="onSubmit()">
-                <ion-grid>
-                    <ion-row>
-                        <ion-col>
-                            <ion-note class="description">
-                                {{ 'auth.pick_language' | translate }}
-                            </ion-note>
-                        </ion-col>
-                    </ion-row>
-                    <ion-radio-group formControlName="language">
-                        <ion-row>
-                            <ion-col>
-                                <ion-item lines="none">
-                                    <ion-label class="label">{{ 'languages.english' | translate }}</ion-label>
-                                    <ion-radio
-                                        class="radio"
-                                        slot="start"
-                                        value="en">
-                                    </ion-radio>
-                                </ion-item>
-                            </ion-col>
-                            <ion-col>
-                                <ion-item lines="none">
-                                    <ion-label class="label">{{ 'languages.croatian' | translate }}</ion-label>
-                                    <ion-radio
-                                        class="radio"
-                                        slot="start"
-                                        value="hr">
-                                    </ion-radio>
-                                </ion-item>
-                            </ion-col>
-                        </ion-row>
-                        <ion-note
-                            *ngIf="accessFormData('language').errors?.required"
-                            class="error">
-                            {{ 'preferences.errors.language_required' | translate }}
-                        </ion-note>
-                    </ion-radio-group>
-                    <ion-row>
-                        <ion-col>
-                            <ion-note class="description">
-                                {{ 'auth.pick_weight_format' | translate }}
-                            </ion-note>
-                        </ion-col>
-                    </ion-row>
-                    <ion-radio-group formControlName="weightFormat">
-                        <ion-row>
-                            <ion-col>
-                                <ion-item lines="none">
-                                    <ion-label class="label">{{ 'common.kilograms' | translate }}</ion-label>
-                                    <ion-radio
-                                        class="radio"
-                                        slot="start"
-                                        value="kg">
-                                    </ion-radio>
-                                </ion-item>
-                            </ion-col>
-                            <ion-col>
-                                <ion-item lines="none">
-                                    <ion-label class="label">{{ 'common.pounds' | translate }}</ion-label>
-                                    <ion-radio
-                                        class="radio"
-                                        slot="start"
-                                        value="lbs">
-                                    </ion-radio>
-                                </ion-item>
-                            </ion-col>
-                        </ion-row>
-                        <ion-note
-                            *ngIf="accessFormData('weightFormat').errors?.required"
-                            class="error">
-                            {{ 'preferences.errors.weight_format_required' | translate }}
-                        </ion-note>
-                    </ion-radio-group>
-                    <ion-row>
-                        <ion-col>
-                            <!--Tooltip => 'common.change_preference_registration' | translate-->
-                            <ion-note
-                                class="did-you-know">
-                                {{ 'common.did_you_know' | translate }}
-                            </ion-note>
-                        </ion-col>
-                    </ion-row>
-                    <ion-row>
-                        <ion-col>
-                            <ion-item>
-                                <ion-label position="floating">{{ 'auth.email' | translate }}</ion-label>
-                                <ion-input
-                                    ionFocus
-                                    [duration]="focusDuration"
-                                    type="email"
-                                    formControlName="email"></ion-input>
-                                <ion-note
-                                    *ngIf="accessFormData('email').errors?.required &&
-                                        (accessFormData('email').dirty || accessFormData('email').touched)"
-                                    slot="error">
-                                    {{ 'auth.errors.email_required' | translate }}
-                                </ion-note>
-                                <ion-note
-                                    *ngIf="accessFormData('email').errors?.email"
-                                    slot="error">
-                                    {{ 'auth.errors.invalid_email' | translate }}
-                                </ion-note>
-                                <ion-note
-                                    *ngIf="accessFormData('email').errors?.availableEmail"
-                                    slot="error">
-                                    {{ 'auth.errors.email_already_registered' | translate }}
-                                </ion-note>
-                            </ion-item>
-                        </ion-col>
-                    </ion-row>
-                    <ion-row>
-                        <ion-col>
-                            <ion-item>
-                                <ion-label position="floating">{{ 'auth.password' | translate }}</ion-label>
-                                <!--TODO: input hint-->
-                                <ion-input
-                                    type="password"
-                                    formControlName="password"></ion-input>
-                                <ion-note
-                                    *ngIf="accessFormData('password').errors?.required &&
-                                        (accessFormData('password').dirty || accessFormData('password').touched)"
-                                    slot="error">
-                                    {{ 'auth.errors.password_required' | translate }}
-                                </ion-note>
-                                <ion-note
-                                    *ngIf="accessFormData('password').errors?.minlength ||
-                                        accessFormData('password').errors?.maxlength"
-                                    slot="error">
-                                    {{ 'auth.errors.password_length' | translate }}
-                                </ion-note>
-                            </ion-item>
-                        </ion-col>
-                    </ion-row>
-                    <ion-row>
-                        <ion-col>
-                            <ion-item>
-                                <ion-label position="floating">{{ 'auth.confirm_password' | translate }}</ion-label>
-                                <!--TODO: input hint-->
-                                <ion-input
-                                    type="password"
-                                    formControlName="confirmPassword"></ion-input>
-                                <ion-note
-                                    *ngIf="accessFormData('confirmPassword').errors?.required &&
-                                        (accessFormData('confirmPassword').dirty || accessFormData('confirmPassword').touched)"
-                                    slot="error">
-                                    {{ 'auth.errors.confirm_password_required' | translate }}
-                                </ion-note>
-                                <ion-note
-                                    *ngIf="accessFormData('confirmPassword').errors?.minlength ||
-                                        accessFormData('confirmPassword').errors?.maxlength"
-                                    slot="error">
-                                    {{ 'auth.errors.password_length' | translate }}
-                                </ion-note>
-                            </ion-item>
-                            <ion-note
-                                *ngIf="form.errors?.equalPass
-                                    && !accessFormData('confirmPassword').errors?.minlength
-                                    && !accessFormData('confirmPassword').errors?.maxlength"
-                                class="error">
-                                {{ 'auth.errors.equal_passwords' | translate }}
-                            </ion-note>
-                        </ion-col>
-                    </ion-row>
-                    <ion-row>
-                        <ion-col class="ion-text-center">
-                            <ion-button
-                                class="submit"
-                                type="submit"
-                                color="primary"
-                                [disabled]="isLoading">
-                                {{ 'auth.signup' | translate }}
-                            </ion-button>
-                        </ion-col>
-                    </ion-row>
-                </ion-grid>
-            </form>
-        </ion-card-content>
-    </ion-card>
+<ion-content>
+    <ion-grid>
+        <ion-row class="ion-justify-content-center">
+            <ion-col sizeMd="4">
+                <ion-card>
+                    <ion-card-content>
+                        <form
+                            *ngIf="form"
+                            [formGroup]="form"
+                            (ngSubmit)="onSubmit()">
+                            <ion-grid>
+                                <ion-row>
+                                    <ion-col>
+                                        <ion-note class="description">
+                                            {{ 'auth.pick_language' | translate }}
+                                        </ion-note>
+                                    </ion-col>
+                                </ion-row>
+                                <ion-radio-group formControlName="language">
+                                    <ion-row>
+                                        <ion-col>
+                                            <ion-item lines="none">
+                                                <ion-label class="label">{{ 'languages.english' | translate }}</ion-label>
+                                                <ion-radio
+                                                    class="radio"
+                                                    slot="start"
+                                                    value="en">
+                                                </ion-radio>
+                                            </ion-item>
+                                        </ion-col>
+                                        <ion-col>
+                                            <ion-item lines="none">
+                                                <ion-label class="label">{{ 'languages.croatian' | translate }}</ion-label>
+                                                <ion-radio
+                                                    class="radio"
+                                                    slot="start"
+                                                    value="hr">
+                                                </ion-radio>
+                                            </ion-item>
+                                        </ion-col>
+                                    </ion-row>
+                                    <ion-note
+                                        *ngIf="accessFormData('language').errors?.required"
+                                        class="error">
+                                        {{ 'preferences.errors.language_required' | translate }}
+                                    </ion-note>
+                                </ion-radio-group>
+                                <ion-row>
+                                    <ion-col>
+                                        <ion-note class="description">
+                                            {{ 'auth.pick_weight_format' | translate }}
+                                        </ion-note>
+                                    </ion-col>
+                                </ion-row>
+                                <ion-radio-group formControlName="weightFormat">
+                                    <ion-row>
+                                        <ion-col>
+                                            <ion-item lines="none">
+                                                <ion-label class="label">{{ 'common.kilograms' | translate }}</ion-label>
+                                                <ion-radio
+                                                    class="radio"
+                                                    slot="start"
+                                                    value="kg">
+                                                </ion-radio>
+                                            </ion-item>
+                                        </ion-col>
+                                        <ion-col>
+                                            <ion-item lines="none">
+                                                <ion-label class="label">{{ 'common.pounds' | translate }}</ion-label>
+                                                <ion-radio
+                                                    class="radio"
+                                                    slot="start"
+                                                    value="lbs">
+                                                </ion-radio>
+                                            </ion-item>
+                                        </ion-col>
+                                    </ion-row>
+                                    <ion-note
+                                        *ngIf="accessFormData('weightFormat').errors?.required"
+                                        class="error">
+                                        {{ 'preferences.errors.weight_format_required' | translate }}
+                                    </ion-note>
+                                </ion-radio-group>
+                                <ion-row>
+                                    <ion-col>
+                                        <!--Tooltip => 'common.change_preference_registration' | translate-->
+                                        <ion-note
+                                            class="did-you-know">
+                                            {{ 'common.did_you_know' | translate }}
+                                        </ion-note>
+                                    </ion-col>
+                                </ion-row>
+                                <ion-row>
+                                    <ion-col>
+                                        <ion-item>
+                                            <ion-label position="floating">{{ 'auth.email' | translate }}</ion-label>
+                                            <ion-input
+                                                ionFocus
+                                                [duration]="focusDuration"
+                                                type="email"
+                                                formControlName="email"></ion-input>
+                                            <ion-note
+                                                *ngIf="accessFormData('email').errors?.required &&
+                                                    (accessFormData('email').dirty || accessFormData('email').touched)"
+                                                slot="error">
+                                                {{ 'auth.errors.email_required' | translate }}
+                                            </ion-note>
+                                            <ion-note
+                                                *ngIf="accessFormData('email').errors?.email"
+                                                slot="error">
+                                                {{ 'auth.errors.invalid_email' | translate }}
+                                            </ion-note>
+                                            <ion-note
+                                                *ngIf="accessFormData('email').errors?.availableEmail"
+                                                slot="error">
+                                                {{ 'auth.errors.email_already_registered' | translate }}
+                                            </ion-note>
+                                        </ion-item>
+                                    </ion-col>
+                                </ion-row>
+                                <ion-row>
+                                    <ion-col>
+                                        <ion-item>
+                                            <ion-label position="floating">{{ 'auth.password' | translate }}</ion-label>
+                                            <!--TODO: input hint-->
+                                            <ion-input
+                                                type="password"
+                                                formControlName="password"></ion-input>
+                                            <ion-note
+                                                *ngIf="accessFormData('password').errors?.required &&
+                                                    (accessFormData('password').dirty || accessFormData('password').touched)"
+                                                slot="error">
+                                                {{ 'auth.errors.password_required' | translate }}
+                                            </ion-note>
+                                            <ion-note
+                                                *ngIf="accessFormData('password').errors?.minlength ||
+                                                    accessFormData('password').errors?.maxlength"
+                                                slot="error">
+                                                {{ 'auth.errors.password_length' | translate }}
+                                            </ion-note>
+                                        </ion-item>
+                                    </ion-col>
+                                </ion-row>
+                                <ion-row>
+                                    <ion-col>
+                                        <ion-item>
+                                            <ion-label position="floating">{{ 'auth.confirm_password' | translate }}</ion-label>
+                                            <!--TODO: input hint-->
+                                            <ion-input
+                                                type="password"
+                                                formControlName="confirmPassword"></ion-input>
+                                            <ion-note
+                                                *ngIf="accessFormData('confirmPassword').errors?.required &&
+                                                    (accessFormData('confirmPassword').dirty || accessFormData('confirmPassword').touched)"
+                                                slot="error">
+                                                {{ 'auth.errors.confirm_password_required' | translate }}
+                                            </ion-note>
+                                            <ion-note
+                                                *ngIf="accessFormData('confirmPassword').errors?.minlength ||
+                                                    accessFormData('confirmPassword').errors?.maxlength"
+                                                slot="error">
+                                                {{ 'auth.errors.password_length' | translate }}
+                                            </ion-note>
+                                        </ion-item>
+                                        <ion-note
+                                            *ngIf="form.errors?.equalPass
+                                                && !accessFormData('confirmPassword').errors?.minlength
+                                                && !accessFormData('confirmPassword').errors?.maxlength"
+                                            class="error">
+                                            {{ 'auth.errors.equal_passwords' | translate }}
+                                        </ion-note>
+                                    </ion-col>
+                                </ion-row>
+                                <ion-row>
+                                    <ion-col class="ion-text-center">
+                                        <ion-button
+                                            class="submit"
+                                            type="submit"
+                                            color="primary"
+                                            [disabled]="isLoading">
+                                            {{ 'auth.signup' | translate }}
+                                        </ion-button>
+                                    </ion-col>
+                                </ion-row>
+                            </ion-grid>
+                        </form>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>
