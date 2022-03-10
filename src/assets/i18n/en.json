@@ -59,6 +59,7 @@
         "signup_success": "User registered successfully",
         "signing_in": "Signing in...",
         "login": "Login",
+        "logging_in": "Logging in...",
         "no_account_message": "Don't have an account?",
         "login_success": "Login successful",
         "errors": {

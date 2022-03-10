@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { finalize, takeUntil } from 'rxjs/operators';
-import { IonInput, ToastController } from '@ionic/angular';
+import { catchError, finalize, takeUntil } from 'rxjs/operators';
+import { IonInput, NavController } from '@ionic/angular';
+import { EMPTY } from 'rxjs';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -10,6 +11,8 @@ import { LoginService } from '../../../services/auth/login.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { IonFocusDurations } from '../../../constants/ion-focus-durations.const';
+import { LoadingControllerService } from '../../../services/shared/loading-controller.service';
+import { ToastControllerService } from '../../../services/shared/toast-controller.service';
 
 type FormData = {
     email?: string;
@@ -38,7 +41,9 @@ export class LoginComponent implements OnInit {
         private readonly loginService: LoginService,
         private readonly authService: AuthService,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly toastController: ToastController,
+        private readonly navController: NavController,
+        private readonly loadingControllerService: LoadingControllerService,
+        private readonly toastControllerService: ToastControllerService,
     ) {
         this.form = new FormGroup({
             'email': new FormControl(null, [
@@ -60,7 +65,7 @@ export class LoginComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.accessFormData('email')?.valueChanges
+        /* this.accessFormData('email')?.valueChanges
             .pipe(
                 takeUntil(this.unsubscribeService),
             ).subscribe(async _ => {
@@ -68,39 +73,35 @@ export class LoginComponent implements OnInit {
                 if (this.accessFormData('email')?.valid) {
                     await this.passwordInput.setFocus();
                 }
-            });
+            }); */
     }
 
     async onSubmit(): Promise<void> {
         if (!this.form.valid) {
-            //TODO: test toast
-            const toast = await this.toastController.create({
-                message: this.translateService.instant('auth.errors.invalid_form'),
-                duration: MESSAGE_DURATION.ERROR,
-                color: '#c62828',
-            });
-            await toast.present();
             return;
         }
         this.isLoading = true;
+        await this.loadingControllerService.displayLoader({ message: 'auth.logging_in' });
 
         this.authService.login(
             this.accessFormData('email').value as string,
             this.accessFormData('password').value as string,
         ).pipe(
-            finalize(() => {
+            catchError(_ => EMPTY),
+            finalize(async () => {
                 this.isLoading = false;
+                await this.loadingControllerService.dismissLoader();
                 this.changeDetectorRef.markForCheck();
             }),
+            takeUntil(this.unsubscribeService),
         ).subscribe(async (response: AuthResponseData) => {
             if (response) {
-                //TODO: test toast
-                const toast = await this.toastController.create({
+                await this.toastControllerService.displayToast({
                     message: this.translateService.instant(response.Message),
                     duration: MESSAGE_DURATION.GENERAL,
                     color: response.Token ? '#009688' : '#c62828',
                 });
-                await toast.present();
+                await this.navController.navigateForward(['/training/new-training']);
             }
         });
     }

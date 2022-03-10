@@ -60,6 +60,7 @@
         "signup_success": "Korisnik uspješno registriran",
         "signing_in": "Registracija u tijeku...",
         "login": "Prijava",
+        "logging_in": "Prijava u tijeku...",
         "no_account_message": "Nemate korisnički račun?",
         "login_success": "Prijava uspješna",
         "errors": {

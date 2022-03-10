@@ -64,15 +64,15 @@
                                                 slot="error">
                                                 {{ 'auth.errors.password_length' | translate }}
                                             </ion-note>
-                                            <ion-note
-                                                *ngIf="form.errors?.passwordFitsEmail
-                                                    && !accessFormData('password').errors?.required
-                                                    && !accessFormData('password').errors?.minlength
-                                                    && !accessFormData('password').errors?.maxlength"
-                                                slot="error">
-                                                {{ 'auth.errors.password_wrong_email' | translate }}
-                                            </ion-note>
                                         </ion-item>
+                                        <ion-note
+                                            *ngIf="form.errors?.passwordFitsEmail
+                                                && !accessFormData('password').errors?.required
+                                                && !accessFormData('password').errors?.minlength
+                                                && !accessFormData('password').errors?.maxlength"
+                                            class="error">
+                                            {{ 'auth.errors.password_wrong_email' | translate }}
+                                        </ion-note>
                                     </ion-col>
                                 </ion-row>
                                 <ion-row>
