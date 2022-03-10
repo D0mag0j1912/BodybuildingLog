@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
@@ -26,7 +26,7 @@ type FormData = {
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
     isLoading = false;
 
@@ -62,18 +62,6 @@ export class LoginComponent implements OnInit {
 
     get focusDuration(): number {
         return IonFocusDurations.LOGIN;
-    }
-
-    ngOnInit(): void {
-        /* this.accessFormData('email')?.valueChanges
-            .pipe(
-                takeUntil(this.unsubscribeService),
-            ).subscribe(async _ => {
-                //TODO: fix
-                if (this.accessFormData('email')?.valid) {
-                    await this.passwordInput.setFocus();
-                }
-            }); */
     }
 
     async onSubmit(): Promise<void> {
