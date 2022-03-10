@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { AutofocusModule } from '../../directives/autofocus/autofocus.module';
 import { MaterialModule } from '../../material.module';
 import { PipesModule } from '../../pipes/pipes.module';
 import { ShowAllExercisesModule } from '../../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
@@ -38,6 +39,7 @@ const IMPORTS = [
     TrainingRoutingModule,
     SharedModule,
     PipesModule,
+    AutofocusModule,
 ];
 
 const PIPES_MODULES = [ShowAllExercisesModule];

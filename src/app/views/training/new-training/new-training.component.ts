@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
@@ -27,20 +27,6 @@ export class NewTrainingComponent implements OnDestroy {
 
     editData: EditNewTrainingData = EMPTY_TRAINING_EDIT;
     editMode = false;
-
-    private focusCounter = 0;
-
-    @ViewChild('bodyweightRef', {
-        read: ElementRef,
-    })
-    set bodyweightInput(bodyweight: ElementRef) {
-        if (bodyweight && this.focusCounter === 0) {
-            setTimeout(() => {
-                (bodyweight.nativeElement as HTMLInputElement).focus();
-                this.focusCounter++;
-            });
-        }
-    }
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
 
@@ -120,8 +106,8 @@ export class NewTrainingComponent implements OnDestroy {
         this.sharedService.editingTraining$$.next(false);
     }
 
-    onBodyweightChange(bodyweight: string): void {
-        this.newTrainingService.addBodyweightToStorage(bodyweight);
+    onBodyweightChange(bodyweight: string | number): void {
+        this.newTrainingService.addBodyweightToStorage(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString());
     }
     //TODO: fix edit mode
     tryAgain(): void {

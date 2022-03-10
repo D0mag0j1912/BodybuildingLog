@@ -1,4 +1,59 @@
-<ng-container *ngIf="(trainingStream$ | async) as trainingData">
+<ion-header>
+    <ion-toolbar class="toolbar-title">
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>{{ 'navigation.new_training' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ng-container *ngIf="(trainingStream$ | async) as trainingData">
+        <ion-spinner
+            *ngIf="trainingData?.IsLoading; else valueOrError"
+            name="crescent"
+            color="primary"></ion-spinner>
+        <ng-template #valueOrError>
+            <form
+                *ngIf="form && trainingData?.Value"
+                autocomplete="off"
+                [formGroup]="form">
+                <ion-grid>
+                    <ion-row>
+                        <ion-col>
+                            <ion-item>
+                                <ion-label position="floating">{{ 'training.new_training.pick_bodyweight' | translate }}</ion-label>
+                                <ion-input
+                                    ionFocus
+                                    #bodyweightRef
+                                    type="number"
+                                    formControlName="bodyweight"
+                                    (input)="onBodyweightChange(bodyweightRef.value)"></ion-input>
+                                <ion-note *ngIf="(bodyweight.touched || bodyweight.dirty) && !bodyweight.valid">
+                                    <ion-note
+                                        *ngIf="bodyweight?.errors?.onlyNumbers"
+                                        slot="error">
+                                        {{ 'training.new_training.errors.only_numbers' | translate }}
+                                    </ion-note>
+                                    <ion-note
+                                        *ngIf="bodyweight?.errors?.min"
+                                        slot="error">
+                                        {{ 'training.new_training.errors.bodyweight_min' | translate }}
+                                    </ion-note>
+                                    <ion-note
+                                        *ngIf="bodyweight?.errors?.max"
+                                        slot="error">
+                                        {{ 'training.new_training.errors.bodyweight_max' | translate }}
+                                    </ion-note>
+                                </ion-note>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </form>
+        </ng-template>
+    </ng-container>
+</ion-content>
+<!-- <ng-container *ngIf="(trainingStream$ | async) as trainingData">
     <mat-spinner
         *ngIf="trainingData?.IsLoading; else valueOrError"
         class="spinner"
@@ -78,4 +133,4 @@
             </div>
         </ng-container>
     </ng-template>
-</ng-container>
+</ng-container> -->

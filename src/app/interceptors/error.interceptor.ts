@@ -22,6 +22,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                 let errorMessage: string;
                 if (error instanceof HttpErrorResponse) {
                     captureException(error);
+                    //TODO: fix for Ionic
                     if (!window.navigator.onLine) {
                         errorMessage = this.translateService.instant('common.errors.internet_required');
                     }
