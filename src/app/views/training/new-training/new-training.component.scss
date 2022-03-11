@@ -1,32 +1,11 @@
 @import '../../../../../styles/default-pallette.scss';
 
-.section {
-    margin-top: 56px;
-}
+$box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
 
-.spinner {
-    position: absolute;
-    left: 45%;
-    top: 45%;
-}
-
-.main-form {
-    padding-top: 32px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.bodyweight {
-    width: 300px;
-    font-family: $font-family;
-}
-
-.bodyweight-error {
-    color: $dark-red;
-    font-size: 12px;
-    line-height: 16px;
+ion-list {
+    border: 2px solid white;
+    border-radius: 6px;
+    box-shadow: $box-shadow;
 }
 
 .error-wrapper {
@@ -54,19 +33,6 @@
 .error-image {
     width: 250px;
     height: 200px;
-}
-
-@media (min-width: 640px) {
-
-    .spinner {
-        top: 50%;
-        left: 50%;
-    }
-
-    .error-wrapper {
-        width: 300px;
-        left: 40%;
-    }
 }
 
 
