@@ -14,8 +14,7 @@
                     *ngIf="!(isAuthenticated$ | async)"
                     lines="none"
                     routerLink="/auth/login"
-                    routerDirection="forward"
-                    (click)="onCloseSideNav()">
+                    routerDirection="forward">
                     <ion-icon
                         slot="start"
                         name="log-in-sharp"
@@ -28,8 +27,7 @@
                     *ngIf="!(isAuthenticated$ | async)"
                     lines="none"
                     routerLink="/auth/signup"
-                    routerDirection="forward"
-                    (click)="onCloseSideNav()">
+                    routerDirection="forward">
                     <ion-icon
                         slot="start"
                         name="arrow-forward-sharp"
@@ -42,7 +40,7 @@
                     *ngIf="isAuthenticated$ | async"
                     lines="none"
                     routerLink="/training/new-training"
-                    (click)="onCloseSideNav()">
+                    routerDirection="forward">
                     <ion-icon
                         slot="start"
                         name="barbell-sharp"
@@ -54,7 +52,7 @@
                 <ion-item
                     *ngIf="isAuthenticated$ | async"
                     lines="none"
-                    (click)="goToPastTrainings(); onCloseSideNav();">
+                    (click)="goToPastTrainings()">
                     <ion-icon
                         slot="start"
                         name="analytics-sharp"
@@ -113,7 +111,8 @@
                 <ion-item
                     *ngIf="isAuthenticated$ | async"
                     lines="none"
-                    (click)="onCloseSideNav(); onLogout();">
+                    routerDirection="backward"
+                    (click)="onLogout()">
                     <ion-icon
                         slot="start"
                         name="log-out-sharp"

@@ -5,14 +5,12 @@ import { Exercise } from '../../../models/training/exercise.model';
 import { Training } from '../../../models/training/new-training/new-training.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
-@Pipe({
-    name: 'newTraining',
-})
+@Pipe({ name: 'newTraining' })
 export class NewTrainingPipe implements PipeTransform {
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
-    ) {}
+    ) { }
 
     transform(
         _value: Observable<Exercise[]>,

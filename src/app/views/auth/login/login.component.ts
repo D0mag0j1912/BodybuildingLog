@@ -87,7 +87,7 @@ export class LoginComponent {
                 await this.toastControllerService.displayToast({
                     message: this.translateService.instant(response.Message),
                     duration: MESSAGE_DURATION.GENERAL,
-                    color: response.Token ? '#009688' : '#c62828',
+                    color: response.Token ? 'primary' : 'danger',
                 });
                 await this.navController.navigateForward(['/training/new-training']);
             }

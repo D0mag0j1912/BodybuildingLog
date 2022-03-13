@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
@@ -20,9 +20,6 @@ import { NewTrainingService } from '../../../services/training/new-training.serv
 })
 export class SideNavComponent implements OnInit {
 
-    @Output()
-    readonly closeSideNav: EventEmitter<void> = new EventEmitter<void>();
-
     isAuthenticated$: Observable<boolean>;
     loggedUserData$: Observable<AuthResponseData>;
 
@@ -32,7 +29,7 @@ export class SideNavComponent implements OnInit {
         private readonly newTrainingService: NewTrainingService,
         private readonly unsubsService: UnsubscribeService,
         private readonly router: Router,
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.isAuthenticated$ = this.authService.isAuth$;
@@ -70,10 +67,7 @@ export class SideNavComponent implements OnInit {
                 ),
             ),
             takeUntil(this.unsubsService),
-        ).subscribe(_ => this.onCloseSideNav());
+        ).subscribe();
     }
 
-    onCloseSideNav(): void {
-        this.closeSideNav.emit();
-    }
 }

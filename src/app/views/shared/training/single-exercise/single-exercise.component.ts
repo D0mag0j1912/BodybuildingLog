@@ -1,12 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { IonSelect } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subject } from 'rxjs';
-import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../../constants/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { ExerciseNameErrorStateMatcher } from '../../../../helpers/error-matchers/exercise-name-error-state-matcher.helper';
@@ -26,7 +25,6 @@ import * as SingleExerciseValidators from '../../../../validators/training/singl
 import { DeleteExerciseDialogData, DialogComponent, DialogData } from '../../dialog/dialog.component';
 
 const INITIAL_WEIGHT = 0;
-const MAX_EXERCISE_NAME_WIDTH = 181;
 
 @Component({
     selector: 'bl-single-exercise',
@@ -63,24 +61,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     @Input()
     editMode = false;
-
-    @ViewChild('exerciseNameChoice', {
-        read: MatSelect,
-    })
-    set exerciseNameChoice(exerciseName: MatSelect) {
-        if (exerciseName) {
-            this.newTrainingService.currentTrainingChanged$.pipe(
-                take(1),
-                switchMap((currentTrainingState: Training) =>
-                    this.setExerciseNameTooltip(
-                        exerciseName as MatSelect,
-                        null,
-                        currentTrainingState as Training,
-                    )),
-                takeUntil(this.unsubscribeService),
-            ).subscribe();
-        }
-    }
 
     readonly currentExerciseState$: Observable<[SingleExercise[], Exercise[]]> =
         this.exerciseStateChanged$$.pipe(
@@ -154,27 +134,14 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         element: IonSelect,
     ): void {
         if (element?.value) {
-            if (this.form?.errors?.duplicateExerciseName) {
-                /* this.setExerciseNameTooltip(
-                    element as MatSelect,
-                    indexExercise as number,
-                ).subscribe(); */
-            }
-            else {
-                /* this.setExerciseNameTooltip(
-                    element as MatSelect,
-                    indexExercise as number,
-                ).subscribe(_ => {
-                    this.newTrainingService.updateExerciseChoices(
-                        $event.value as string,
-                        indexExercise as number,
-                        this.accessFormField('disabledTooltip', indexExercise).value as boolean,
-                    );
-                    this.exerciseChanged = !this.exerciseChanged;
-                    this.exerciseStateChanged$$.next();
-                    this.changeDetectorRef.markForCheck();
-                }); */
-            }
+            this.newTrainingService.updateExerciseChoices(
+                element.value,
+                indexExercise,
+                this.accessFormField('disabledTooltip', indexExercise).value as boolean,
+            );
+            this.exerciseChanged = !this.exerciseChanged;
+            this.exerciseStateChanged$$.next();
+            this.changeDetectorRef.markForCheck();
         }
     }
 
@@ -415,33 +382,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 } as Training;
             }),
             takeUntil(this.unsubscribeService),
-        );
-    }
-
-    private setExerciseNameTooltip(
-        element: MatSelect,
-        indexExercise?: number,
-        currentTrainingState?: Training,
-    ): Observable<void> {
-        return of(null).pipe(
-            delay(0),
-            tap(_ => {
-                if (currentTrainingState) {
-                    currentTrainingState.exercise.forEach((value: SingleExercise, index: number) => {
-                        this.accessFormField('disabledTooltip', index)?.patchValue(value.disabledTooltip as boolean);
-                    });
-                }
-                else {
-                    const width: number = ((element._elementRef.nativeElement as HTMLParagraphElement).querySelector('.mat-select-value-text') as HTMLSpanElement)?.offsetWidth;
-                    if (width > MAX_EXERCISE_NAME_WIDTH) {
-                        this.accessFormField('disabledTooltip', indexExercise ? indexExercise : 0)?.patchValue(false);
-                    }
-                    else {
-                        this.accessFormField('disabledTooltip', indexExercise ? indexExercise : 0)?.patchValue(true);
-                    }
-                }
-                this.changeDetectorRef.markForCheck();
-            }),
         );
     }
 

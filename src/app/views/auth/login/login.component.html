@@ -14,7 +14,8 @@
                     <ion-card-content>
                         <form
                             [formGroup]="form"
-                            (ngSubmit)="onSubmit()">
+                            (ngSubmit)="onSubmit()"
+                            (keydown.enter)="onSubmit()">
                             <ion-grid>
                                 <ion-row>
                                     <ion-col>

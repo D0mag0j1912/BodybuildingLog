@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { mergeMap, switchMap, tap } from 'rxjs/operators';
@@ -26,7 +27,8 @@ export class AuthService {
         private readonly http: HttpClient,
         private readonly router: Router,
         private readonly translateService: TranslateService,
-    ) {}
+        private readonly navController: NavController,
+    ) { }
 
     getToken(): string {
         return this.token;
@@ -133,7 +135,7 @@ export class AuthService {
         this.isAuth$$.next(false);
         clearTimeout(this.tokenTimer);
         this.clearLS();
-        await this.router.navigate(['/auth/login']);
+        await this.navController.navigateBack(['/auth/login']);
     }
 
     private setAuthTimer(duration: number): void {
