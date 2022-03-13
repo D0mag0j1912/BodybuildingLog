@@ -7,15 +7,15 @@ import {
 import { Schema } from 'mongoose';
 
 export const EXERCISE_SCHEMA = new Schema({
-    name: {
+    Name: {
         type: String,
         required: true,
     },
-    imageUrl: {
+    ImageUrl: {
         type: String,
         required: true,
     },
-    primaryMuscleGroup: {
+    PrimaryMuscleGroup: {
         type: String,
         required: true,
     },
@@ -32,15 +32,15 @@ export class Exercise {
     @ApiProperty()
     @IsDefined()
     @IsString()
-    name: string;
+    Name: string;
 
     @ApiProperty()
     @IsDefined()
     @IsString()
-    imageUrl: string;
+    ImageUrl: string;
 
     @ApiProperty()
     @IsDefined()
     @IsString()
-    primaryMuscleGroup: string;
+    PrimaryMuscleGroup: string;
 }
