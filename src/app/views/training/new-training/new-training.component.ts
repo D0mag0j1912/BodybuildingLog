@@ -5,7 +5,6 @@ import { forkJoin, Observable } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
-import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
@@ -92,10 +91,6 @@ export class NewTrainingComponent implements OnDestroy {
                             ),
                     ),
                 );
-    }
-
-    get spinnerSize(): number {
-        return SPINNER_SIZE;
     }
 
     get bodyweight(): FormControl {

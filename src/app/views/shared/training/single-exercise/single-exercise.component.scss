@@ -1,5 +1,16 @@
 @import '../../../../../../styles/default-pallette.scss';
 
+ion-select {
+    color: var(--ion-color-primary);
+    --placeholder-opacity: 1;
+}
+
+ion-item {
+    border: 2px solid white;
+    border-radius: 6px;
+    box-shadow: var(--ion-box-shadow);
+}
+
 .invalid-bodyweight {
     margin-top: 5px;
 }

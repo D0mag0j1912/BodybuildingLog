@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { IonicModule } from '@ionic/angular';
 import { MaterialModule } from '../material.module';
 import { PipesModule } from '../pipes/pipes.module';
 import { RoundTotalWeightModule } from '../pipes/training/new-training/round-total-weight/round-total-weight.module';
@@ -37,6 +38,7 @@ const EXTERNAL_IMPORTS = [
     ReactiveFormsModule,
     MaterialModule,
     TranslateModule,
+    IonicModule,
 ];
 
 const IMPORTS = [

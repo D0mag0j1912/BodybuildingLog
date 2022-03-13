@@ -3,6 +3,7 @@ import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGrou
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { IonSelect } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subject } from 'rxjs';
 import { delay, finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
@@ -149,19 +150,18 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     }
 
     onExerciseNameChange(
-        $event: MatSelectChange,
         indexExercise: number,
-        element: MatSelect,
+        element: IonSelect,
     ): void {
-        if ($event.value) {
+        if (element?.value) {
             if (this.form?.errors?.duplicateExerciseName) {
-                this.setExerciseNameTooltip(
+                /* this.setExerciseNameTooltip(
                     element as MatSelect,
                     indexExercise as number,
-                ).subscribe();
+                ).subscribe(); */
             }
             else {
-                this.setExerciseNameTooltip(
+                /* this.setExerciseNameTooltip(
                     element as MatSelect,
                     indexExercise as number,
                 ).subscribe(_ => {
@@ -173,7 +173,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     this.exerciseChanged = !this.exerciseChanged;
                     this.exerciseStateChanged$$.next();
                     this.changeDetectorRef.markForCheck();
-                });
+                }); */
             }
         }
     }

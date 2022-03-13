@@ -131,7 +131,7 @@ export class NewTrainingService {
                 map((allExercises: Exercise[]) =>
                     [
                         updatedTraining,
-                        allExercises.filter(exercise => exercise.name === deletedExerciseName),
+                        allExercises.filter(exercise => exercise.Name === deletedExerciseName),
                     ],
                 ),
             );
@@ -176,7 +176,7 @@ export class NewTrainingService {
 
     addNewExercise(alreadyUsedExercises: string[]): void {
         const allExercises: Exercise[] = [ ...this.allExercisesChanged$$.getValue() ];
-        const availableExercises: Exercise[] = allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1);
+        const availableExercises: Exercise[] = allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.Name) === -1);
         this.updateTrainingState(availableExercises);
     }
 
@@ -190,7 +190,7 @@ export class NewTrainingService {
         updatedTraining.exercise[selectedIndex].disabledTooltip = disabledTooltip;
         updatedTraining.exercise.forEach((exercise: SingleExercise, index: number) => {
             if (index !== selectedIndex) {
-                exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.name !== selectedExercise);
+                exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.Name !== selectedExercise);
             }
         });
         this.saveTrainingData({ ...updatedTraining });
@@ -240,10 +240,10 @@ export class NewTrainingService {
         a: Exercise,
         b: Exercise,
     ): number {
-        if (a.name < b.name) {
+        if (a.Name < b.Name) {
             return -1;
         }
-        if (a.name > b.name) {
+        if (a.Name > b.Name) {
             return 1;
         }
         return 0;

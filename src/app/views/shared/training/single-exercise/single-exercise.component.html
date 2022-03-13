@@ -4,6 +4,35 @@
     <ng-container
         *ngFor="let group of getExercises(); let i = index">
         <ng-container [formGroupName]="i">
+            <ion-grid>
+                <ion-row>
+                    <ion-col>
+                        <ion-item lines="none">
+                            <ion-label>{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
+                            <ion-select
+                                #exerciseNameChoice
+                                interface="popover"
+                                formControlName="name"
+                                (ionChange)="onExerciseNameChange(i, exerciseNameChoice)">
+                                <ion-select-option
+                                    *ngFor="let exercise of exercises$ | newTraining:i:exerciseChanged | async"
+                                    [value]="exercise.Name">
+                                    {{ exercise.Name | translate }}
+                                </ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ng-container>
+    </ng-container>
+</form>
+<!-- <form
+    [formGroup]="$any(form)"
+    (ngSubmit)="onSubmit()">
+    <ng-container
+        *ngFor="let group of getExercises(); let i = index">
+        <ng-container [formGroupName]="i">
             <div class="exercise-wrapper">
                 <mat-form-field
                     appearance="outline"
@@ -117,4 +146,4 @@
             {{ 'training.new_training.errors.at_least_one_exercise' | translate }}
         </span>
     </div>
-</form>
+</form> -->
