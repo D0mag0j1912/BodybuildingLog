@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { IonSelect } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subject } from 'rxjs';
-import { finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { finalize, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../../constants/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { GeneralResponseData } from '../../../../models/general-response.model';
@@ -18,6 +17,7 @@ import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import { FormSingleExerciseData } from '../../../../models/training/shared/single-exercise.model';
 import { RoundTotalWeightPipe } from '../../../../pipes/training/new-training/round-total-weight/round-total-weight.pipe';
+import { ToastControllerService } from '../../../../services/shared/toast-controller.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../../services/training/new-training.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
@@ -82,7 +82,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly snackBar: MatSnackBar,
+        private readonly toastControllerService: ToastControllerService,
         private readonly dialog: MatDialog,
         private readonly roundTotalWeightPipe: RoundTotalWeightPipe,
     ) {
@@ -325,10 +325,11 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 this.isLoading = false;
                 this.changeDetectorRef.markForCheck();
             }),
-        ).subscribe((response: GeneralResponseData) => {
-            this.snackBar.open(this.translateService.instant(response.Message), null, {
+        ).subscribe(async (response: GeneralResponseData) => {
+            await this.toastControllerService.displayToast({
+                message: this.translateService.instant(response.Message),
                 duration: MESSAGE_DURATION.GENERAL,
-                panelClass: 'app__snackbar',
+                color: 'primary',
             });
         });
     }

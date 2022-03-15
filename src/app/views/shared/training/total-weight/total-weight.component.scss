@@ -1,4 +1,3 @@
-@import '../../../../../../styles/default-pallette.scss';
 
 .wrapper {
     display: flex;
@@ -7,10 +6,10 @@
     column-gap: 10px;
     margin: 10px 0 15px 0;
     padding-bottom: 10px;
-    border-bottom: 2px solid $army-green;
+    border-bottom: 2px solid var(--ion-color-primary);
 
     .key {
-        color: $army-green;
+        color: var(--ion-color-primary);
         font-size: 15px;
     }
 
