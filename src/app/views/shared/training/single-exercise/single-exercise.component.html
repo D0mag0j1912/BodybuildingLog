@@ -6,8 +6,12 @@
         <ng-container [formGroupName]="i">
             <ion-grid>
                 <ion-row>
-                    <ion-col size="6">
-                        <ion-item lines="none">
+                    <ion-col
+                        sizeSm="3"
+                        offsetSm="3">
+                        <ion-item
+                            lines="none"
+                            fill="outline">
                             <ion-label>{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
                             <ion-select
                                 #exerciseNameChoice
@@ -32,10 +36,10 @@
                             {{ 'training.new_training.errors.exercise_name_duplicate' | translate }}
                         </ion-note>
                     </ion-col>
-                    <ion-col>
+                    <ion-col sizeSm="3">
                         <ion-icon
                             slot="icon-only"
-                            name="trash-sharp"
+                            name="trash-bin-sharp"
                             color="danger"
                             (click)="deleteExercise(i, accessFormField('name', i).value)"></ion-icon>
                     </ion-col>
