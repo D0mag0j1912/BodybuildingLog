@@ -1,5 +1,18 @@
 @import '../../../../../../styles/default-pallette.scss';
 
+.md .set-row {
+    align-items: center;
+}
+
+.ios .set-row {
+    align-items: flex-end;
+}
+
+.button-disabled {
+    --background: white;
+    --box-shadow: none;
+}
+
 .sets {
     width: 300px;
     font-size: 13px;

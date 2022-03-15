@@ -4,7 +4,7 @@
     <ng-container *ngFor="let set of getSets(); let j = index">
         <ng-container [formGroupName]="j">
             <ion-grid>
-                <ion-row>
+                <ion-row class="ion-text-center set-row">
                     <ion-col size="4">
                         <ion-item lines="none">
                             <ion-label position="floating">{{ 'training.new_training.weight_lifted' | translate }}</ion-label>
@@ -97,7 +97,20 @@
                             type="button"
                             [disabled]="j === 0 || isLoading"
                             (click)="deleteSet(j)">
-                            <ion-icon name="trash-sharp"></ion-icon>
+                            <ion-icon
+                                name="trash-sharp"
+                                color="danger"></ion-icon>
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        <ion-button
+                            type="button"
+                            color="primary"
+                            [disabled]="!exerciseNameControl.value || form.errors?.setNotFilled"
+                            (click)="addSet()">
+                            {{ 'training.new_training.buttons.add_set' | translate }}
                         </ion-button>
                     </ion-col>
                 </ion-row>
