@@ -1,17 +1,20 @@
 @import '../../../../../../styles/default-pallette.scss';
 
+ion-item {
+    --border-color: var(--ion-color-primary);
+}
+
 ion-select {
     color: var(--ion-color-primary);
     --placeholder-opacity: 1;
+}
 
-    &::part(text) {
-        color: var(--ion-color-primary);
-    }
+.md .exercise-row {
+    align-items: center;
+}
 
-    &::part(placeholder)::first-letter {
-        font-size: 24px;
-        font-weight: 500;
-    }
+.ios .exercise-row {
+    align-items: flex-end;
 }
 
 .invalid-bodyweight {

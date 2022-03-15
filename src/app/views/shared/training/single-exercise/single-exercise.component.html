@@ -5,14 +5,12 @@
         *ngFor="let group of getExercises(); let i = index">
         <ng-container [formGroupName]="i">
             <ion-grid>
-                <ion-row>
-                    <ion-col
-                        sizeSm="3"
-                        offsetSm="3">
+                <ion-row class="ion-text-center exercise-row">
+                    <ion-col size="10">
                         <ion-item
                             lines="none"
                             fill="outline">
-                            <ion-label>{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
+                            <ion-label position="floating">{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
                             <ion-select
                                 #exerciseNameChoice
                                 interface="popover"
@@ -30,15 +28,15 @@
                                 {{ 'training.new_training.errors.exercise_name_required' | translate }}
                             </ion-note>
                         </ion-item>
+                        <!--TODO: test this validation-->
                         <ion-note
                             *ngIf="form.errors?.duplicateExerciseName && form.errors?.duplicateExerciseName === accessFormField('name', i).value"
                             class="error">
                             {{ 'training.new_training.errors.exercise_name_duplicate' | translate }}
                         </ion-note>
                     </ion-col>
-                    <ion-col sizeSm="3">
+                    <ion-col size="2">
                         <ion-icon
-                            slot="icon-only"
                             name="trash-bin-sharp"
                             color="danger"
                             (click)="deleteExercise(i, accessFormField('name', i).value)"></ion-icon>
