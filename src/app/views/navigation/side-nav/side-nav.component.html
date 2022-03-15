@@ -61,49 +61,45 @@
                 </ion-item>
             </ion-menu-toggle>
             <ion-menu-toggle [autoHide]="false">
-                <ion-item lines="none">
+                <ion-item
+                    *ngIf="isAuthenticated$ | async"
+                    lines="none">
                     <ng-container *ngIf="(loggedUserData$ | async) as userData">
-                        <a
-                            *ngIf="isAuthenticated$ | async"
-                            [matMenuTriggerFor]="languages">
-                            <ion-icon
-                                slot="start"
-                                name="language-sharp"
-                                class="icon"></ion-icon>
-                            <span class="caption">
-                                {{ 'navigation.language' | translate }}
-                            </span>
-                            <mat-menu #languages="matMenu">
-                                <button
-                                    mat-menu-item
-                                    class="menu-item"
-                                    [class.chosenLanguage]="userData?.Preferences?.language === 'hr'"
-                                    [disabled]="userData?.Preferences?.language === 'hr'"
-                                    (click)="changeLanguage('hr')">
-                                    <img
-                                        src="../../../../assets/images/flags/croatia.png"
-                                        height="40"
-                                        width="40">
-                                    <span class="menu-item--text">
-                                        {{ 'languages.croatian' | translate }}
-                                    </span>
-                                </button>
-                                <button
-                                    mat-menu-item
-                                    class="menu-item"
-                                    [class.chosenLanguage]="userData?.Preferences?.language === 'en'"
-                                    [disabled]="userData?.Preferences?.language === 'en'"
-                                    (click)="changeLanguage('en')">
-                                    <img
-                                        src="../../../../assets/images/flags/united-kingdom.png"
-                                        height="24"
-                                        width="40">
-                                    <span class="menu-item--text">
-                                        {{ 'languages.english' | translate }}
-                                    </span>
-                                </button>
-                            </mat-menu>
-                        </a>
+                        <ion-icon
+                            slot="start"
+                            name="language-sharp"
+                            class="icon"></ion-icon>
+                        <ion-label>{{ 'navigation.language' | translate }}</ion-label>
+                        <mat-menu #languages="matMenu">
+                            <button
+                                mat-menu-item
+                                class="menu-item"
+                                [class.chosenLanguage]="userData?.Preferences?.language === 'hr'"
+                                [disabled]="userData?.Preferences?.language === 'hr'"
+                                (click)="changeLanguage('hr')">
+                                <img
+                                    src="../../../../assets/images/flags/croatia.png"
+                                    height="40"
+                                    width="40">
+                                <span class="menu-item--text">
+                                    {{ 'languages.croatian' | translate }}
+                                </span>
+                            </button>
+                            <button
+                                mat-menu-item
+                                class="menu-item"
+                                [class.chosenLanguage]="userData?.Preferences?.language === 'en'"
+                                [disabled]="userData?.Preferences?.language === 'en'"
+                                (click)="changeLanguage('en')">
+                                <img
+                                    src="../../../../assets/images/flags/united-kingdom.png"
+                                    height="24"
+                                    width="40">
+                                <span class="menu-item--text">
+                                    {{ 'languages.english' | translate }}
+                                </span>
+                            </button>
+                        </mat-menu>
                     </ng-container>
                 </ion-item>
             </ion-menu-toggle>

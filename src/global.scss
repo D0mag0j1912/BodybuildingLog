@@ -27,6 +27,10 @@
 
 @import '../styles/default-pallette.scss';
 
+.ion-invalid.ion-touched ion-label {
+    color: var(--ion-color-danger);
+}
+
 html, body {
     height: 100%;
     font-family: $font-family;

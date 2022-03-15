@@ -6,7 +6,7 @@
         <ng-container [formGroupName]="i">
             <ion-grid>
                 <ion-row>
-                    <ion-col>
+                    <ion-col size="6">
                         <ion-item lines="none">
                             <ion-label>{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
                             <ion-select
@@ -19,7 +19,6 @@
                                     [value]="exercise.Name">
                                     {{ exercise.Name | translate }}
                                 </ion-select-option>
-                                <ion-select-option [value]="null">ff</ion-select-option>
                             </ion-select>
                             <ion-note
                                 *ngIf="accessFormField('name', i).errors?.required"
@@ -32,6 +31,13 @@
                             class="error">
                             {{ 'training.new_training.errors.exercise_name_duplicate' | translate }}
                         </ion-note>
+                    </ion-col>
+                    <ion-col>
+                        <ion-icon
+                            slot="icon-only"
+                            name="trash-sharp"
+                            color="danger"
+                            (click)="deleteExercise(i, accessFormField('name', i).value)"></ion-icon>
                     </ion-col>
                 </ion-row>
             </ion-grid>
