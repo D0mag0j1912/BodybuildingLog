@@ -17,37 +17,6 @@ ion-select {
     align-items: flex-end;
 }
 
-.invalid-bodyweight {
-    margin-top: 5px;
-}
-
-.exercise-wrapper {
-    display: flex;
-    align-items: center;
-    column-gap: 10px;
-}
-
-.exercise-form-field {
-    width: 230px;
-
-    .mat-select {
-        font-family: $font-family;
-    }
-}
-
-.label,
-.error {
-    font-family: $font-family;
-}
-
-.error {
-    color: $dark-red;
-    font-size: $error-font-size;
-}
-
-.exercise-option {
-    padding: 0 !important;
-}
 
 .exercise-img {
     position: absolute;

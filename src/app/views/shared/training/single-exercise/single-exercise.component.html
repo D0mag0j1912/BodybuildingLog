@@ -43,6 +43,18 @@
                     </ion-col>
                 </ion-row>
             </ion-grid>
+            <bl-sets
+                formControlName="sets"
+                [isExerciseFormSubmitted$]="isSubmitted$$.asObservable()"
+                [exerciseStateChanged$]="exerciseStateChanged$$.asObservable()"
+                [exerciseNameControl]="accessFormField('name', i)"
+                [indexExercise]="i"
+                [isLoading]="isLoading"
+                [editMode]="editMode"
+                (setAdded)="onChangeSets($event)"
+                (setDeleted)="deleteSet($event)"
+                (formStateChanged)="onSetFormChange($event)"></bl-sets>
+            <bl-total-weight formControlName="total"></bl-total-weight>
         </ng-container>
     </ng-container>
 </form>

@@ -8,7 +8,6 @@ import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subject } from 'rxjs'
 import { finalize, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../../constants/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { ExerciseNameErrorStateMatcher } from '../../../../helpers/error-matchers/exercise-name-error-state-matcher.helper';
 import { GeneralResponseData } from '../../../../models/general-response.model';
 import { DEFAULT_WEIGHT_FORMAT } from '../../../../models/preferences.model';
 import { Exercise } from '../../../../models/training/exercise.model';
@@ -43,7 +42,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
 
     readonly form: FormArray = new FormArray([]);
-    readonly exerciseNameErrorStateMatcher: ExerciseNameErrorStateMatcher = new ExerciseNameErrorStateMatcher();
     setErrors: SetFormValidationErrors[] = [];
 
     exerciseChanged = false;
@@ -90,16 +88,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     ) {
         this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName(), SingleExerciseValidators.checkExerciseNumber()]);
         this.form.updateValueAndValidity();
-    }
-
-    setErrorMatcher(index: number): ExerciseNameErrorStateMatcher {
-        if (this.accessFormField('name', index)?.value) {
-            if (this.form?.errors?.duplicateExerciseName === this.accessFormField('name', index).value) {
-                return this.exerciseNameErrorStateMatcher;
-            }
-            return null;
-        }
-        return this.exerciseNameErrorStateMatcher;
     }
 
     writeValue(data: Training): void {
