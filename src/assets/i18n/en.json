@@ -99,7 +99,7 @@
             "pick_bodyweight": "Enter your today's weight",
             "pick_exercise": "Pick an exercise",
             "weight_lifted": "Weight lifted",
-            "reps_performed": "Reps performed",
+            "reps_performed": "Reps",
             "total": "Total",
             "delete_exercise_prompt": "Are you sure you want to delete?",
             "training_updated": "Training updated",
