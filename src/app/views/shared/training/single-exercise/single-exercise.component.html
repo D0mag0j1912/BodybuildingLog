@@ -57,6 +57,37 @@
             <bl-total-weight formControlName="total"></bl-total-weight>
         </ng-container>
     </ng-container>
+    <ng-container *ngIf="(currentExerciseState$ | async) as currentExerciseState">
+        <ion-grid>
+            <ion-row class="ion-justify-content-around">
+                <ion-col>
+                    <ion-button
+                        type="button"
+                        color="primary"
+                        [disabled]="isAddingExercisesDisabled(
+                            currentExerciseState[0].length,
+                            currentExerciseState[1].length) || isLoading"
+                        (click)="addExercise($event)">
+                        {{ 'training.new_training.buttons.add_exercise' | translate }}
+                    </ion-button>
+                </ion-col>
+                <ion-col>
+                    <ion-button
+                        type="submit"
+                        [disabled]="currentExerciseState[0]?.length === 0 || isLoading">
+                        <ion-icon
+                            color="primary"
+                            name="checkmark-done-sharp"></ion-icon>
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+            <span
+                *ngIf="form?.errors?.emptyTraining && (isSubmitted$$ | async) && currentExerciseState[0]?.length === 0"
+                class="empty-training-msg">
+                {{ 'training.new_training.errors.at_least_one_exercise' | translate }}
+            </span>
+        </ion-grid>
+    </ng-container>
 </form>
 <!-- <form
     [formGroup]="$any(form)"

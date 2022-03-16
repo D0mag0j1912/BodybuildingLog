@@ -17,7 +17,6 @@ ion-select {
     align-items: flex-end;
 }
 
-
 .exercise-img {
     position: absolute;
     bottom: 1%;
@@ -71,4 +70,14 @@ ion-select {
         line-height: 16px;
         white-space: nowrap;
     }
+}
+
+.empty-training-msg {
+    display: block;
+    text-align: center;
+    color: var(--ion-color-danger);
+    font-size: 13px;
+    margin-top: 10px;
+    line-height: 16px;
+    white-space: nowrap;
 }

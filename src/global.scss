@@ -55,6 +55,11 @@ ion-spinner {
     right: 0;
 }
 
+.button-disabled {
+    --background: white;
+    --box-shadow: none;
+}
+
 .error {
     display: block;
     font-size: 12px;
