@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -153,7 +152,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         indexExercise: number,
         exerciseName: string,
     ): Promise<void> {
-        //TODO: test modal
         if (exerciseName) {
             const modal = await this.modalController.create({
                 component: DeleteExerciseDialogComponent,

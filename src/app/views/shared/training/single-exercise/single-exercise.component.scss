@@ -17,61 +17,6 @@ ion-select {
     align-items: flex-end;
 }
 
-.exercise-img {
-    position: absolute;
-    bottom: 1%;
-    left:0%;
-    display: inline-block;
-    width: 25%;
-    height: 48px;
-}
-
-.exercise-text {
-    font-family: $font-family;
-    font-size: 13px;
-    margin: 0;
-    position: absolute;
-    bottom: 4%;
-    left: 25%;
-    text-align: center;
-    width: 165px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.delete-exercise-wrapper {
-    margin-top: -20px;
-}
-
-.add-exercise {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    width: 300px;
-    margin-top:10px;
-    column-gap:5px;
-
-    &-button {
-        font-family: $font-family;
-    }
-
-    &-button:not([disabled]):hover,
-    &-button:not([disabled]):active {
-        color: $light-blue;
-    }
-
-    .empty-training-msg {
-        display: block;
-        text-align: center;
-        color: $dark-red;
-        font-size: 13px;
-        margin-top: 10px;
-        line-height: 16px;
-        white-space: nowrap;
-    }
-}
-
 .empty-training-msg {
     display: block;
     text-align: center;
