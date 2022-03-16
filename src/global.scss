@@ -55,8 +55,9 @@ ion-spinner {
     right: 0;
 }
 
-.button-disabled {
-    --background: white;
+.button-disabled,
+.button-no-background {
+    --background: none;
     --box-shadow: none;
 }
 
