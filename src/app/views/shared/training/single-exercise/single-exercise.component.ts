@@ -22,7 +22,7 @@ import { ToastControllerService } from '../../../../services/shared/toast-contro
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../../services/training/new-training.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
-import { DeleteExerciseDialogData, DialogComponent, DialogData } from '../../dialog/dialog.component';
+import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } from '../../dialog/dialog.component';
 import { DialogRoles } from '../../../shared/dialog/dialog.component';
 
 const INITIAL_WEIGHT = 0;
@@ -153,9 +153,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         indexExercise: number,
         exerciseName: string,
     ): Promise<void> {
+        //TODO: test modal
         if (exerciseName) {
             const modal = await this.modalController.create({
-                component: DialogComponent,
+                component: DeleteExerciseDialogComponent,
                 componentProps: {
                     isError: false,
                     deleteExercise: {

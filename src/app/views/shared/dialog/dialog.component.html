@@ -1,47 +1,30 @@
-<ion-header translucent>
+<ion-header>
     <ion-toolbar>
         <ion-buttons slot="primary">
             <ion-button (click)="onCancel()">
                 <ion-icon name="close"></ion-icon>
             </ion-button>
         </ion-buttons>
-        <!--TODO: test title-->
-        <ion-title>{{ deleteExercise ? ('training.new_training.buttons.delete_exercise' | translate): '' }}</ion-title>
+        <ion-title>{{ 'training.new_training.buttons.delete_exercise' | translate }}</ion-title>
     </ion-toolbar>
 </ion-header>
-<ion-content>
-    <ion-text *ngIf="(message$ | async) as message">
-        <p class="message">{{ message }}</p>
+<ion-content class="ion-padding ion-text-center">
+    <ion-text
+        *ngIf="(deleteExercise?.message$ | async) as message"
+        class="delete-exercise-msg">
+        {{ message }}
     </ion-text>
-
-    <ion-text *ngIf="(deleteExercise.message$ | async) as message">
-        <p class="message">{{ message }}</p>
-    </ion-text>
-    <ion-text *ngIf="deleteExercise">
+    <ion-text>
         <p>
             {{ 'training.new_training.exercise_name' | translate }}
-            <strong>{{ deleteExercise.exerciseName | translate }}</strong>
+            <strong>{{ (deleteExercise?.exerciseName | translate) ?? '' }}</strong>
         </p>
     </ion-text>
-    <ion-grid>
-        <ion-row>
-            <ion-col>
-                <ion-button
-                    type="button"
-                    [color]="isError ? 'primary' : ''"
-                    (click)="onCancel()">
-                    {{ 'common.actions.close' | translate }}
-                </ion-button>
-            </ion-col>
-            <ion-col>
-                <ion-button
-                    *ngIf="deleteExercise"
-                    type="button"
-                    color="primary"
-                    (click)="onDeleteExercise()">
-                    {{ 'common.actions.delete' | translate }}
-                </ion-button>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
+    <ion-button
+        *ngIf="deleteExercise"
+        type="button"
+        color="primary"
+        (click)="onDeleteExercise()">
+        {{ 'common.actions.delete' | translate }}
+    </ion-button>
 </ion-content>

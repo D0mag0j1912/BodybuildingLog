@@ -4,8 +4,7 @@ import { Observable } from 'rxjs';
 
 export interface DialogData {
     isError: boolean;
-    message?: string;
-    deleteExercise?: DeleteExerciseDialogData;
+    deleteExercise: DeleteExerciseDialogData;
 }
 
 export interface DeleteExerciseDialogData {
@@ -22,7 +21,7 @@ export enum DialogRoles {
     styleUrls: ['./dialog.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DialogComponent {
+export class DeleteExerciseDialogComponent {
 
     @Input()
     isError = false;
@@ -30,12 +29,9 @@ export class DialogComponent {
     @Input()
     deleteExercise: DeleteExerciseDialogData;
 
-    @Input()
-    message$: Observable<string>;
-
     constructor(
         private readonly modalController: ModalController,
-    ) {}
+    ) { }
 
     async onCancel(): Promise<void> {
         await this.modalController.dismiss(false, DialogRoles.CANCEL);
