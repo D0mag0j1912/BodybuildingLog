@@ -1,37 +1,47 @@
+<ion-header translucent>
+    <ion-toolbar>
+        <ion-buttons slot="primary">
+            <ion-button (click)="onCancel()">
+                <ion-icon name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <!--TODO: test title-->
+        <ion-title>{{ deleteExercise ? ('training.new_training.buttons.delete_exercise' | translate): '' }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-text *ngIf="(message$ | async) as message">
+        <p class="message">{{ message }}</p>
+    </ion-text>
 
-<div
-    *ngIf="data.message"
-    mat-dialog-title>
-    <p class="message">{{ data.message }}</p>
-</div>
-
-<div
-    *ngIf="(data.deleteExercise.message$ | async) as message"
-    mat-dialog-title>
-    <p class="message">{{ message }}</p>
-</div>
-<div
-    *ngIf="data.deleteExercise"
-    mat-dialog-content>
-    <p class="mat-subheading-1 message">
-        {{ 'training.new_training.exercise_name' | translate }}
-        <strong>{{ data.deleteExercise.exerciseName | translate }}</strong>
-    </p>
-</div>
-<mat-dialog-actions class="actions">
-    <button
-        mat-raised-button
-        type="button"
-        [color]="data.isError ? 'primary' : ''"
-        [mat-dialog-close]="false">
-        {{ 'common.actions.close' | translate }}
-    </button>
-    <button
-        *ngIf="data.deleteExercise"
-        mat-raised-button
-        type="button"
-        color="primary"
-        [mat-dialog-close]="true">
-        {{ 'common.actions.delete' | translate }}
-    </button>
-</mat-dialog-actions>
+    <ion-text *ngIf="(deleteExercise.message$ | async) as message">
+        <p class="message">{{ message }}</p>
+    </ion-text>
+    <ion-text *ngIf="deleteExercise">
+        <p>
+            {{ 'training.new_training.exercise_name' | translate }}
+            <strong>{{ deleteExercise.exerciseName | translate }}</strong>
+        </p>
+    </ion-text>
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                <ion-button
+                    type="button"
+                    [color]="isError ? 'primary' : ''"
+                    (click)="onCancel()">
+                    {{ 'common.actions.close' | translate }}
+                </ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-button
+                    *ngIf="deleteExercise"
+                    type="button"
+                    color="primary"
+                    (click)="onDeleteExercise()">
+                    {{ 'common.actions.delete' | translate }}
+                </ion-button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

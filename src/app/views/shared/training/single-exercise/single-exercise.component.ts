@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { IonSelect } from '@ionic/angular';
+import { IonSelect, ModalController } from '@ionic/angular';
+import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, EMPTY, forkJoin, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, EMPTY, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import { finalize, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../../constants/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
@@ -22,6 +23,7 @@ import { UnsubscribeService } from '../../../../services/shared/unsubscribe.serv
 import { NewTrainingService } from '../../../../services/training/new-training.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { DeleteExerciseDialogData, DialogComponent, DialogData } from '../../dialog/dialog.component';
+import { DialogRoles } from '../../../shared/dialog/dialog.component';
 
 const INITIAL_WEIGHT = 0;
 
@@ -83,7 +85,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         private readonly translateService: TranslateService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly toastControllerService: ToastControllerService,
-        private readonly dialog: MatDialog,
+        private readonly modalController: ModalController,
         private readonly roundTotalWeightPipe: RoundTotalWeightPipe,
     ) {
         this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName(), SingleExerciseValidators.checkExerciseNumber()]);
@@ -147,24 +149,28 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         }
     }
 
-    deleteExercise(
+    async deleteExercise(
         indexExercise: number,
         exerciseName: string,
-    ): void {
+    ): Promise<void> {
         if (exerciseName) {
-            const dialogRef = this.dialog.open(DialogComponent, {
-                data: {
+            const modal = await this.modalController.create({
+                component: DialogComponent,
+                componentProps: {
                     isError: false,
                     deleteExercise: {
                         message$: this.translateService.stream('training.new_training.delete_exercise_prompt'),
                         exerciseName: exerciseName,
                     } as DeleteExerciseDialogData,
                 } as DialogData,
+                keyboardClose: true,
+                swipeToClose: true,
             });
-            dialogRef.afterClosed()
+            await modal.present();
+            from(modal.onDidDismiss())
                 .pipe(
-                    switchMap((response: boolean) => {
-                        if (response) {
+                    switchMap((response: OverlayEventDetail<boolean>) => {
+                        if (response.role === DialogRoles.DELETE_EXERCISE) {
                             return this.newTrainingService.currentTrainingChanged$
                                 .pipe(
                                     take(1),
