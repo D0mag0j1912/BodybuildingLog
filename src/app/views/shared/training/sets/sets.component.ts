@@ -4,7 +4,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { FormErrorStateMatcher } from '../../../../helpers/error-matchers/form-error-state-matcher.helper';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { FormSetData } from '../../../../models/training/shared/set.model';
@@ -26,7 +25,6 @@ import * as SetValidators from '../../../../validators/training/set.validators';
 export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     readonly form: FormArray = new FormArray([]);
-    readonly formErrorStateMatcher: FormErrorStateMatcher = new FormErrorStateMatcher();
 
     onTouched: () => void;
 
@@ -60,7 +58,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     constructor(
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.form.setValidators([SetValidators.allSetsFilled()]);

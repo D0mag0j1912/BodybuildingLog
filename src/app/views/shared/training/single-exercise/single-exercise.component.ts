@@ -166,6 +166,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 swipeToClose: true,
             });
             await modal.present();
+
             from(modal.onDidDismiss())
                 .pipe(
                     switchMap((response: OverlayEventDetail<boolean>) => {
