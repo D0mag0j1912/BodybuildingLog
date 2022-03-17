@@ -1,7 +1,7 @@
 @import '../../../../../../styles/default-pallette.scss';
 
 .md .set-row {
-    align-items: center;
+    align-items: flex-start;
 }
 
 .ios .set-row {
@@ -12,4 +12,8 @@
     color: var(--ion-color-primary);
     font-weight: bold;
     font-size: 14px;
+}
+
+.delete-set-col {
+    margin-top: 10px;
 }

@@ -5,7 +5,7 @@
         <ng-container [formGroupName]="j">
             <ion-grid>
                 <ion-row class="ion-text-center set-row">
-                    <ion-col size="4">
+                    <ion-col size="5">
                         <ion-item fill="outline">
                             <ion-label position="floating">{{ 'training.new_training.weight_lifted' | translate }}</ion-label>
                             <ion-input
@@ -57,7 +57,7 @@
                                 {{ 'training.new_training.set_saved' | translate }}
                             </ion-text>
                     </ion-col>
-                    <ion-col size="4">
+                    <ion-col size="5">
                         <ion-item fill="outline">
                             <ion-label position="floating">{{ 'training.new_training.reps_performed' | translate }}</ion-label>
                             <ion-input
@@ -92,7 +92,9 @@
                             {{ 'training.new_training.errors.reps_required' | translate }}
                         </ion-text>
                     </ion-col>
-                    <ion-col size="4">
+                    <ion-col
+                        size="2"
+                        class="delete-set-col">
                         <ion-button
                             class="button-no-background"
                             type="button"
