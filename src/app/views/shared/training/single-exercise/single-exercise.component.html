@@ -21,7 +21,8 @@
                                 </ion-select-option>
                             </ion-select>
                             <ion-note
-                                *ngIf="accessFormField('name', i).errors?.required"
+                                *ngIf="accessFormField('name', i).errors?.required &&
+                                    (accessFormField('name', i).touched || accessFormField('name', i).dirty)"
                                 slot="error">
                                 {{ 'training.new_training.errors.exercise_name_required' | translate }}
                             </ion-note>
@@ -33,8 +34,7 @@
                             {{ 'training.new_training.errors.exercise_name_duplicate' | translate }}
                         </ion-note>
                     </ion-col>
-                    <ion-col
-                        size="2">
+                    <ion-col size="2">
                         <ion-icon
                             name="trash-bin-sharp"
                             color="danger"
@@ -58,7 +58,7 @@
     </ng-container>
     <ng-container *ngIf="(currentExerciseState$ | async) as currentExerciseState">
         <ion-grid>
-            <ion-row class="ion-justify-content-around">
+            <ion-row>
                 <ion-col>
                     <ion-button
                         type="button"
