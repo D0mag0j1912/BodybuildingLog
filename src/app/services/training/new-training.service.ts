@@ -27,7 +27,11 @@ export class NewTrainingService {
     constructor(
         private readonly http: HttpClient,
         private readonly authService: AuthService,
-    ) {}
+    ) { }
+
+    getExerciseByName(): Observable<Exercise> {
+        return this.http.get<Exercise>(environment.BACKEND + '/training/get_exercise');
+    }
 
     getExercises(): Observable<StreamData<Exercise[]>> {
         return this.http.get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get_exercises').pipe(
