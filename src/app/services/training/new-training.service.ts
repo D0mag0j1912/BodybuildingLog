@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
@@ -29,8 +29,9 @@ export class NewTrainingService {
         private readonly authService: AuthService,
     ) { }
 
-    getExerciseByName(): Observable<Exercise> {
-        return this.http.get<Exercise>(environment.BACKEND + '/training/get_exercise');
+    getExerciseByName(exerciseName: string): Observable<Exercise> {
+        const params = new HttpParams().set('exerciseName', exerciseName);
+        return this.http.get<Exercise>(environment.BACKEND + '/training/get_exercise', { params: params });
     }
 
     getExercises(): Observable<StreamData<Exercise[]>> {
