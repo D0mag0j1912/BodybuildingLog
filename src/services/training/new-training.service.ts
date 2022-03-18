@@ -65,4 +65,13 @@ export class NewTrainingService {
             throw new InternalServerErrorException('training.new_training.errors.exercises_not_available');
         }
     }
+    //TODO: check later
+    async getExerciseByName(exerciseName: string): Promise<Exercise> {
+        try {
+            return await this.exerciseModel.findOne({ Name: exerciseName }).exec();
+        }
+        catch (error: unknown) {
+            throw new InternalServerErrorException();
+        }
+    }
 }

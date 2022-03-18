@@ -256,7 +256,7 @@ module.exports = {
             }
         ],
         "quote-props": "off",
-        "quotes": "off",
+        "quotes": ["error", "single", { "allowTemplateLiterals": true }],
         "react/jsx-child-element-spacing": "off",
         "react/jsx-closing-bracket-location": "off",
         "react/jsx-closing-tag-location": "off",

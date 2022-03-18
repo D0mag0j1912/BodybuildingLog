@@ -12,7 +12,7 @@ export class GetExercisesController {
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
-    ) {}
+    ) { }
 
     @ApiCreatedResponse({ type: Exercise })
     @Get()
