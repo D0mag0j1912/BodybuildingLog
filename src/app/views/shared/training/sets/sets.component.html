@@ -6,13 +6,25 @@
             <ion-grid>
                 <ion-row class="ion-text-center set-row">
                     <ion-col size="5">
-                        <ion-item fill="outline">
-                            <ion-label position="floating">{{ 'training.new_training.weight_lifted' | translate }}</ion-label>
+                        <ion-item
+                            fill="outline"
+                            [class.ion-item-error]="setIonComponentClass(
+                                set,
+                                isExerciseFormSubmitted$ | async,
+                                exerciseNameControl?.value)">
+                            <ion-label
+                                position="floating"
+                                [class.ion-label-error]="setIonComponentClass(
+                                    set,
+                                    isExerciseFormSubmitted$ | async,
+                                    exerciseNameControl?.value)">
+                                {{ 'training.new_training.weight_lifted' | translate }}
+                            </ion-label>
                             <ion-input
                                 type="text"
                                 formControlName="weightLifted"
-                                (input)="onChangeSets(j)"
-                                (blur)="onTouched()"></ion-input>
+                                (ionInput)="onChangeSets(j)"
+                                (ionBlur)="onTouched()"></ion-input>
                             <ion-text
                                 *ngIf="accessFormField('weightLifted', j).errors?.onlyNumbers
                                     && !accessFormField('weightLifted', j).errors?.min"
@@ -33,29 +45,29 @@
                             </ion-text>
                         </ion-item>
                         <ion-text
-                                *ngIf="(set.errors?.weightLiftedRequired && ((isExerciseFormSubmitted$ | async) || exerciseNameControl?.value))"
-                                class="error">
-                                {{ 'training.new_training.errors.weight_lifted_required' | translate }}
-                            </ion-text>
-                            <ion-text
-                                *ngIf="set.errors?.setNotEntered
-                                    && (isExerciseFormSubmitted$ | async)
-                                    && !set.errors?.weightLiftedRequired
-                                    && !set.errors?.repsRequired"
-                                class="error">
-                                {{ 'training.new_training.errors.set_required' | translate }}
-                            </ion-text>
-                            <ion-text
-                                *ngIf="accessFormField('weightLifted', j).value
-                                    && accessFormField('weightLifted', j).valid
-                                    && accessFormField('reps', j).value
-                                    && accessFormField('reps', j).valid
-                                    && !set.errors?.weightLiftedRequired
-                                    && !set.errors?.repsRequired
-                                    && !editMode"
-                                class="set-saved-msg">
-                                {{ 'training.new_training.set_saved' | translate }}
-                            </ion-text>
+                            *ngIf="(set.errors?.weightLiftedRequired && ((isExerciseFormSubmitted$ | async) || exerciseNameControl?.value))"
+                            class="error">
+                            {{ 'training.new_training.errors.weight_lifted_required' | translate }}
+                        </ion-text>
+                        <ion-text
+                            *ngIf="set.errors?.setNotEntered
+                                && (isExerciseFormSubmitted$ | async)
+                                && !set.errors?.weightLiftedRequired
+                                && !set.errors?.repsRequired"
+                            class="error">
+                            {{ 'training.new_training.errors.set_required' | translate }}
+                        </ion-text>
+                        <ion-text
+                            *ngIf="accessFormField('weightLifted', j).value
+                                && accessFormField('weightLifted', j).valid
+                                && accessFormField('reps', j).value
+                                && accessFormField('reps', j).valid
+                                && !set.errors?.weightLiftedRequired
+                                && !set.errors?.repsRequired
+                                && !editMode"
+                            class="set-saved-msg">
+                            {{ 'training.new_training.set_saved' | translate }}
+                        </ion-text>
                     </ion-col>
                     <ion-col size="5">
                         <ion-item fill="outline">
@@ -63,8 +75,8 @@
                             <ion-input
                                 type="text"
                                 formControlName="reps"
-                                (input)="onChangeSets(j)"
-                                (blur)="onTouched()"></ion-input>
+                                (ionInput)="onChangeSets(j)"
+                                (ionBlur)="onTouched()"></ion-input>
                             <ion-text
                                 *ngIf="accessFormField('reps', j).errors?.pattern
                                     && !accessFormField('reps', j).errors?.onlyNumbers"

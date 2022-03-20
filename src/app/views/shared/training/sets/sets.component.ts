@@ -163,31 +163,19 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         } as SetStateChanged);
     }
 
-    showAddSetTooltip(isSetError: boolean): Observable<string> {
-        if (isSetError) {
-            return this.translateService.stream('training.new_training.first_add_previous_set', {
-                setNumber: this.getSets().length > 0 ? this.getSets().length : 1,
-            });
-        }
-        else {
-            return of('');
-        }
-    }
-
-    showDeleteSetTooltip(indexSet: number): Observable<string> {
-        if (indexSet > 0) {
-            return this.translateService.stream('training.new_training.buttons.delete_set');
-        }
-        else {
-            return this.translateService.stream('training.new_training.errors.delete_first_set');
-        }
-    }
-
     accessFormField(
         formField: keyof FormSetData,
         indexSet: number,
     ): AbstractControl {
         return this.form.at(indexSet)?.get(formField);
+    }
+
+    setIonComponentClass(
+        set: AbstractControl,
+        isExerciseFormSubmitted: boolean,
+        exerciseName: string | undefined,
+    ): boolean {
+        return (set.errors?.weightLiftedRequired && (isExerciseFormSubmitted || !!exerciseName));
     }
 
     private calculateTotal(): number {
@@ -200,7 +188,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     get formErrors(): SetFormValidationErrors[] {
         let errors: SetFormValidationErrors[] = [];
-        if (this.form.errors) {
+        if (this.form?.errors) {
             const mappedKeys: SetFormValidationErrors[] =
                 Object.keys(this.form.errors)
                     .map((key: string) => key as SetFormValidationErrors);

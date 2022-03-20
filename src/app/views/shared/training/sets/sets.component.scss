@@ -1,4 +1,11 @@
-@import '../../../../../../styles/default-pallette.scss';
+
+.ion-item-error {
+    --highlight-background: var(--ion-color-danger);
+}
+
+.ion-label-error {
+    --color: var(--ion-color-danger);
+}
 
 .md .set-row {
     align-items: flex-start;
