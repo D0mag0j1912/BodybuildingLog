@@ -125,15 +125,15 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     addSet(set?: Set): void {
         this.form.push(
             new FormGroup({
-                'setNumber': new FormControl(set ? (set.setNumber as number) : this.getSets().length + 1, [Validators.required]),
-                'weightLifted': new FormControl({
-                    value: set ? (set.weightLifted as number) : null,
+                setNumber: new FormControl(set ? (set.setNumber as number) : this.getSets().length + 1, [Validators.required]),
+                weightLifted: new FormControl({
+                    value: set ? set.weightLifted : null,
                     disabled: this.exerciseNameControl.value ? false : true,
                 }, [Validators.min(1),
                     Validators.max(1000),
                     CommonValidators.isBroj()]),
-                'reps': new FormControl({
-                    value: set ? (set.reps as number) : null,
+                reps: new FormControl({
+                    value: set ? set.reps : null,
                     disabled: this.exerciseNameControl.value ? false : true,
                 }, [Validators.min(1),
                     Validators.max(1000),
@@ -198,7 +198,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     private calculateTotal(): number {
         let total = 0;
-        for(const group of this.getSets()){
+        for (const group of this.getSets()) {
             total += (+group.get('weightLifted')?.value * +group.get('reps')?.value);
         }
         return total;
