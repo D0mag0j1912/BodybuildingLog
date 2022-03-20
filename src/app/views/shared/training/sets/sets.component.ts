@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
@@ -56,9 +55,27 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     readonly formStateChanged: EventEmitter<SetFormValidationErrors[]> = new EventEmitter<SetFormValidationErrors[]>();
 
     constructor(
-        private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
     ) { }
+
+    get formErrors(): SetFormValidationErrors[] {
+        let errors: SetFormValidationErrors[] = [];
+        if (this.form?.errors) {
+            const mappedKeys: SetFormValidationErrors[] =
+                Object.keys(this.form.errors)
+                    .map((key: string) => key as SetFormValidationErrors);
+            errors = errors.concat(mappedKeys);
+        }
+        this.form.controls.forEach((group: AbstractControl) => {
+            if (group?.errors) {
+                const mappedKeys: SetFormValidationErrors[] =
+                    Object.keys(group.errors)
+                        .map((key: string) => key as SetFormValidationErrors);
+                errors = errors.concat(mappedKeys);
+            }
+        });
+        return errors;
+    }
 
     ngOnInit(): void {
         this.form.setValidators([SetValidators.allSetsFilled()]);
@@ -150,11 +167,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             total = this.calculateTotal();
         }
         this.setAdded.emit({
-            indexExercise: this.indexExercise as number,
-            indexSet: indexSet as number,
-            isWeightLiftedValid: isWeightLiftedValid as boolean,
-            isRepsValid: isRepsValid as boolean,
-            newTotal: total as number,
+            indexExercise: this.indexExercise,
+            indexSet: indexSet,
+            isWeightLiftedValid: isWeightLiftedValid,
+            isRepsValid: isRepsValid,
+            newTotal: total,
             newSet: {
                 setNumber: +this.accessFormField('setNumber', indexSet).value,
                 weightLifted: +this.accessFormField('weightLifted', indexSet).value,
@@ -185,25 +202,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             total += (+group.get('weightLifted')?.value * +group.get('reps')?.value);
         }
         return total;
-    }
-
-    get formErrors(): SetFormValidationErrors[] {
-        let errors: SetFormValidationErrors[] = [];
-        if (this.form?.errors) {
-            const mappedKeys: SetFormValidationErrors[] =
-                Object.keys(this.form.errors)
-                    .map((key: string) => key as SetFormValidationErrors);
-            errors = errors.concat(mappedKeys);
-        }
-        this.form.controls.forEach((group: AbstractControl) => {
-            if (group?.errors) {
-                const mappedKeys: SetFormValidationErrors[] =
-                    Object.keys(group.errors)
-                        .map((key: string) => key as SetFormValidationErrors);
-                errors = errors.concat(mappedKeys);
-            }
-        });
-        return errors;
     }
 
 }

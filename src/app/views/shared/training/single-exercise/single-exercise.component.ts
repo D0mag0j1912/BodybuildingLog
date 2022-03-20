@@ -220,9 +220,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         of(null).pipe(
             takeUntil(this.unsubscribeService),
         ).subscribe(_ => {
-            if ($event.isWeightLiftedValid
-                && $event.isRepsValid
-                && this.accessFormField('name', $event.indexExercise).value) {
+            if ($event?.isWeightLiftedValid &&
+                $event?.isRepsValid &&
+                this.accessFormField('name', $event.indexExercise).value) {
                     const trainingData: SetTrainingData = {
                         exerciseName: this.accessFormField('name', $event.indexExercise).value as string,
                         setNumber: $event.newSet.setNumber as number,
@@ -230,8 +230,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         reps: $event.newSet.reps as number,
                         total: $event.newTotal as number,
                     };
-
-                    this.newTrainingService.setsChanged(trainingData as SetTrainingData);
+                    this.newTrainingService.setsChanged(trainingData);
                     this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform($event.newTotal));
             }
             else {
