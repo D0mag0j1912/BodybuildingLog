@@ -11,13 +11,15 @@
                             [class.ion-item-error]="setIonComponentClass(
                                 set,
                                 isExerciseFormSubmitted$ | async,
-                                exerciseNameControl?.value)">
+                                exerciseNameControl?.value,
+                                'weightLifted')">
                             <ion-label
                                 position="floating"
                                 [class.ion-label-error]="setIonComponentClass(
                                     set,
                                     isExerciseFormSubmitted$ | async,
-                                    exerciseNameControl?.value)">
+                                    exerciseNameControl?.value,
+                                    'weightLifted')">
                                 {{ 'training.new_training.weight_lifted' | translate }}
                             </ion-label>
                             <ion-input
@@ -70,8 +72,22 @@
                         </ion-text>
                     </ion-col>
                     <ion-col size="5">
-                        <ion-item fill="outline">
-                            <ion-label position="floating">{{ 'training.new_training.reps_performed' | translate }}</ion-label>
+                        <ion-item
+                            fill="outline"
+                            [class.ion-item-error]="setIonComponentClass(
+                                set,
+                                isExerciseFormSubmitted$ | async,
+                                exerciseNameControl?.value,
+                                'reps')">
+                            <ion-label
+                                position="floating"
+                                [class.ion-label-error]="setIonComponentClass(
+                                    set,
+                                    isExerciseFormSubmitted$ | async,
+                                    exerciseNameControl?.value,
+                                    'reps')">
+                                    {{ 'training.new_training.reps_performed' | translate }}
+                                </ion-label>
                             <ion-input
                                 type="text"
                                 formControlName="reps"

@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
-import { Set } from '../../../../models/training/shared/set.model';
+import { Set, SetConstituent } from '../../../../models/training/shared/set.model';
 import { FormSetData } from '../../../../models/training/shared/set.model';
 import { SetFormValidationErrors } from '../../../../models/training/shared/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
@@ -174,8 +174,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         set: AbstractControl,
         isExerciseFormSubmitted: boolean,
         exerciseName: string | undefined,
+        setConstituent: SetConstituent,
     ): boolean {
-        return (set.errors?.weightLiftedRequired && (isExerciseFormSubmitted || !!exerciseName));
+        return ((setConstituent === 'weightLifted' ? set.errors?.weightLiftedRequired : set.errors?.repsRequired) && (isExerciseFormSubmitted || !!exerciseName));
     }
 
     private calculateTotal(): number {

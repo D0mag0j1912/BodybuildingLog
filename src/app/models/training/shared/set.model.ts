@@ -30,7 +30,7 @@ export function createInitialSet(): Set[] {
         weightLifted: null,
         reps: null,
     } as Set);
-    return sets as Set[];
+    return sets;
 }
 
 export type SetFormValidationErrors =
@@ -49,3 +49,5 @@ export type FormSetData = {
     weightLifted?: number;
     reps?: number;
 };
+
+export type SetConstituent = 'weightLifted' | 'reps';
