@@ -23,7 +23,7 @@
                                 {{ 'training.new_training.weight_lifted' | translate }}
                             </ion-label>
                             <ion-input
-                                type="text"
+                                type="number"
                                 formControlName="weightLifted"
                                 (ionInput)="onChangeSets(j)"
                                 (ionBlur)="onTouched()"></ion-input>
@@ -89,7 +89,7 @@
                                     {{ 'training.new_training.reps_performed' | translate }}
                                 </ion-label>
                             <ion-input
-                                type="text"
+                                type="number"
                                 formControlName="reps"
                                 (ionInput)="onChangeSets(j)"
                                 (ionBlur)="onTouched()"></ion-input>
