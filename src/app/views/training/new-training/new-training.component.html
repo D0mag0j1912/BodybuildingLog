@@ -4,6 +4,15 @@
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>{{ 'navigation.new_training' | translate }}</ion-title>
+        <ion-buttons
+            *ngIf="(isAuthenticated$ | async) && (isEditing$ | async)"
+            slot="primary">
+            <ion-button
+                type="button"
+                (click)="goToPastTraining()">
+                <ion-icon name="arrow-back-circle-sharp"></ion-icon>
+            </ion-button>
+        </ion-buttons>
     </ion-toolbar>
 </ion-header>
 <ion-content class="ion-text-center ion-padding">

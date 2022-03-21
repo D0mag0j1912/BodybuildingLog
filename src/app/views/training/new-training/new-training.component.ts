@@ -1,16 +1,18 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { StreamData } from '../../../models/common/interfaces/common.model';
+import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { createEmptyExercise, EditNewTrainingData, EMPTY_TRAINING, EMPTY_TRAINING_EDIT } from '../../../models/training/new-training/empty-training.model';
 import { Training } from '../../../models/training/new-training/new-training.model';
+import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
+import { AuthService } from '../../../services/auth/auth.service';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as CommonValidators from '../../../validators/shared/common.validators';
 
@@ -28,12 +30,16 @@ export class NewTrainingComponent implements OnDestroy {
     editMode = false;
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
+    isAuthenticated$: Observable<boolean>;
+    isEditing$: Observable<boolean>;
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
+        private readonly authService: AuthService,
         private readonly route: ActivatedRoute,
+        private readonly router: Router,
     ) {
         this.trainingStream$ =
             this.route.params
@@ -91,6 +97,8 @@ export class NewTrainingComponent implements OnDestroy {
                             ),
                     ),
                 );
+        this.isAuthenticated$ = this.authService.isAuth$;
+        this.isEditing$ = this.sharedService.editingTraining$$;
     }
 
     get bodyweight(): FormControl {
@@ -99,6 +107,24 @@ export class NewTrainingComponent implements OnDestroy {
 
     ngOnDestroy(): void {
         this.sharedService.editingTraining$$.next(false);
+    }
+
+    goToPastTraining(): void {
+        this.sharedService.pastTrainingsQueryParams$$
+            .pipe(
+                take(1),
+            ).subscribe(async (response: PastTrainingsQueryParams) => {
+                await this.router.navigate(['/training/past-trainings'], {
+                    queryParams: {
+                        startDate: response?.startDate ? response.startDate : undefined,
+                        endDate: response?.endDate ? response.endDate : undefined,
+                        search: response?.search ? response.search : undefined,
+                        page: response?.page ? response.page : undefined,
+                        size: response?.size ? response.size : undefined,
+                    } as PastTrainingsQueryParams,
+                });
+                localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
+            });
     }
 
     onBodyweightChange(bodyweight: string | number): void {
