@@ -77,11 +77,12 @@
                     </ion-button>
                 </ion-col>
             </ion-row>
-            <span
+            <ion-text
                 *ngIf="form?.errors?.emptyTraining && (isSubmitted$$ | async) && currentExerciseState[0]?.length === 0"
+                color="danger"
                 class="empty-training-msg">
                 {{ 'training.new_training.errors.at_least_one_exercise' | translate }}
-            </span>
+            </ion-text>
         </ion-grid>
     </ng-container>
 </form>
