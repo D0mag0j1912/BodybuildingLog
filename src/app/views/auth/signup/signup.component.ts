@@ -21,7 +21,6 @@ type FormData = {
     password?: string;
     confirmPassword?: string;
 };
-
 @Component({
     selector: 'bl-signup',
     templateUrl: './signup.component.html',
@@ -46,18 +45,18 @@ export class SignupComponent {
         private readonly navController: NavController,
     ) {
         this.form = new FormGroup({
-            'language': new FormControl('en', [Validators.required]),
-            'weightFormat': new FormControl('kg', [Validators.required]),
-            'email': new FormControl(null, {
+            language: new FormControl('en', [Validators.required]),
+            weightFormat: new FormControl('kg', [Validators.required]),
+            email: new FormControl(null, {
                 validators: [Validators.required, Validators.email],
                 asyncValidators: [AuthCustomValidators.isEmailAvailable(this.signupService, this.changeDetectorRef)],
             }),
-            'password': new FormControl(null, [
+            password: new FormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
                 Validators.maxLength(20)],
             ),
-            'confirmPassword': new FormControl(null, [
+            confirmPassword: new FormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
                 Validators.maxLength(20)],

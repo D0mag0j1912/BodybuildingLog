@@ -25,7 +25,7 @@
                             <ion-input
                                 type="number"
                                 formControlName="weightLifted"
-                                (ionInput)="onChangeSets(j)"
+                                (ionChange)="onChangeSets(j)"
                                 (ionBlur)="onTouched()"></ion-input>
                             <ion-text
                                 *ngIf="accessFormField('weightLifted', j).errors?.onlyNumbers
@@ -91,7 +91,7 @@
                             <ion-input
                                 type="number"
                                 formControlName="reps"
-                                (ionInput)="onChangeSets(j)"
+                                (ionChange)="onChangeSets(j)"
                                 (ionBlur)="onTouched()"></ion-input>
                             <ion-text
                                 *ngIf="accessFormField('reps', j).errors?.pattern

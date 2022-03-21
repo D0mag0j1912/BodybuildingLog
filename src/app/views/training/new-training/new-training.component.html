@@ -24,7 +24,7 @@
                         #bodyweightRef
                         type="number"
                         formControlName="bodyweight"
-                        (input)="onBodyweightChange(bodyweightRef.value)"></ion-input>
+                        (ionChange)="onBodyweightChange(bodyweightRef.value)"></ion-input>
                         <ion-note
                             *ngIf="bodyweight?.errors?.onlyNumbers"
                             slot="error">

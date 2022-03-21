@@ -132,14 +132,14 @@ export class NewTrainingComponent implements OnDestroy {
     private formInit(): void {
         const currentTrainingState = { ...this.newTrainingService.getCurrentTrainingState() };
         this.form = new FormGroup({
-            'bodyweight': new FormControl(
+            bodyweight: new FormControl(
                 NewTrainingHandler.fillBodyweight(
                     currentTrainingState.bodyweight,
                     this.editData?.editTraining ? this.editData.editTraining?.bodyweight : null,
                 ),
                 [CommonValidators.isBroj(), Validators.min(30), Validators.max(300)],
             ),
-            'exercise': new FormControl(currentTrainingState),
+            exercise: new FormControl(currentTrainingState),
         });
     }
 
