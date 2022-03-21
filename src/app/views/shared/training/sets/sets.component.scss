@@ -1,4 +1,14 @@
 
+ion-grid {
+    &:first-of-type {
+        padding-bottom: 0;
+    }
+
+    &:not(:first-of-type) {
+        padding-top: 0;
+    }
+}
+
 .ion-item-error {
     --highlight-background: var(--ion-color-danger);
 }
