@@ -22,7 +22,7 @@
                             </ion-select>
                             <ion-note
                                 *ngIf="accessFormField('name', i).errors?.required &&
-                                    (accessFormField('name', i).touched || accessFormField('name', i).dirty)"
+                                    ((accessFormField('name', i).touched || accessFormField('name', i).dirty) || (isSubmitted$$ | async))"
                                 slot="error">
                                 {{ 'training.new_training.errors.exercise_name_required' | translate }}
                             </ion-note>
