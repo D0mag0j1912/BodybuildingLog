@@ -65,14 +65,9 @@
                     <h3 class="error-title">
                         {{ 'training.new_training.errors.new_training_error_title' | translate }}
                     </h3>
-                    <span
-                        *ngIf="editMode; else createMode"
-                        class="error-description">
-                        {{ 'training.new_training.errors.new_training_error_description' | translate }}
+                    <span class="error-description">
+                        {{ editMode ? ('training.new_training.errors.new_training_error_description' | translate) : ('training.new_training.errors.new_training_error_load') | translate }}
                     </span>
-                    <ng-template #createMode>
-                        <span class="error-description">{{ 'training.new_training.errors.new_training_error_load' | translate }}</span>
-                    </ng-template>
                     <ion-button
                         color="primary"
                         type="button"
