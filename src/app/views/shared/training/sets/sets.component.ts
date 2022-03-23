@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { IonInput } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { delay, filter, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
+import { ExerciseStateType } from '../../../../models/training/new-training/new-training.model';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
 import { Set, SetConstituent } from '../../../../models/training/shared/set.model';
 import { FormSetData } from '../../../../models/training/shared/set.model';
@@ -31,7 +33,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     isExerciseFormSubmitted$: Observable<boolean> = of(false);
 
     @Input()
-    exerciseStateChanged$: Observable<void> = of(null);
+    exerciseStateChanged$: Observable<ExerciseStateType> = of(null);
 
     @Input()
     exerciseNameControl: AbstractControl | null;
@@ -53,6 +55,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     @Output()
     readonly formStateChanged: EventEmitter<SetFormValidationErrors[]> = new EventEmitter<SetFormValidationErrors[]>();
+
+    @ViewChild('weightLiftedEl', { read: IonInput })
+    weightLiftedEl: IonInput;
 
     constructor(
         private readonly unsubscribeService: UnsubscribeService,
@@ -88,6 +93,18 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             value ? this.accessFormField('weightLifted', 0).enable() : this.accessFormField('weightLifted', 0).disable();
             value ? this.accessFormField('reps', 0).enable() : this.accessFormField('reps', 0).disable();
         });
+
+        this.exerciseStateChanged$
+            .pipe(
+                filter(state => state === 'Update'),
+                delay(200),
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe(async _ => {
+                if (this.weightLiftedEl) {
+                    await this.weightLiftedEl.setFocus();
+                }
+            });
     }
 
     ngOnChanges(): void {

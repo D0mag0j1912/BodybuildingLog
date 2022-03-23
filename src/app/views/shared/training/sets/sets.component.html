@@ -23,6 +23,7 @@
                                 {{ 'training.new_training.weight_lifted' | translate }}
                             </ion-label>
                             <ion-input
+                                #weightLiftedEl
                                 type="number"
                                 formControlName="weightLifted"
                                 (ionChange)="onChangeSets(j)"
