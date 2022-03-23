@@ -16,7 +16,7 @@ export class PastTrainingsService {
 
     constructor(
         private readonly http: HttpClient,
-    ) {}
+    ) { }
 
     searchPastTrainings(
         searchValue: string,
