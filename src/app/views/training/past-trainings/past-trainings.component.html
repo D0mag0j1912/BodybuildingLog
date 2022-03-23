@@ -1,98 +1,108 @@
-<ng-container *ngIf="pastTrainings$ | async as pastTrainings">
-    <section class="main-section">
-        <ng-container *ngIf="pastTrainings?.IsError; else valueOrLoading">
-            <div class="error-wrapper">
-                <img
-                    class="error-image"
-                    src="../../../../assets/svgs/error1.svg">
-                <h3 class="error-title">
-                    {{ 'training.past_trainings.errors.past_trainings_error_title' | translate }}
-                </h3>
-                <span class="error-description">
-                    {{ 'training.past_trainings.errors.past_trainings_error_description' | translate }}
-                </span>
-                <button
-                    mat-raised-button
-                    color="primary"
-                    type="button"
-                    (click)="tryAgain()">
-                    {{ 'common.try_again' | translate }}
-                </button>
-            </div>
-        </ng-container>
-        <ng-template #valueOrLoading>
-            <bl-past-trainings-filters (trainingEmitted)="searchEmitted($event)"></bl-past-trainings-filters>
-            <ng-container *ngIf="pastTrainings?.IsLoading; else value">
-                <mat-spinner
-                    class="spinner"
-                    [diameter]="spinnerSize"></mat-spinner>
+<ion-header>
+    <ion-toolbar class="toolbar-title">
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>{{ 'navigation.past_trainings' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ng-container *ngIf="pastTrainings$ | async as pastTrainings">
+        <section class="main-section">
+            <ng-container *ngIf="pastTrainings?.IsError; else valueOrLoading">
+                <div class="error-wrapper">
+                    <img
+                        class="error-image"
+                        src="../../../../assets/svgs/error1.svg">
+                    <h3 class="error-title">
+                        {{ 'training.past_trainings.errors.past_trainings_error_title' | translate }}
+                    </h3>
+                    <span class="error-description">
+                        {{ 'training.past_trainings.errors.past_trainings_error_description' | translate }}
+                    </span>
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        type="button"
+                        (click)="tryAgain()">
+                        {{ 'common.try_again' | translate }}
+                    </button>
+                </div>
             </ng-container>
-            <ng-template #value>
-                <ng-container *ngIf="(isSearch$ | async) && pastTrainings?.Value?.TotalCount === 0; else otherCases">
-                    <div class="search-no-result-wrapper">
-                        <img
-                            class="search-not-found-img"
-                            src="../../../../assets/svgs/not-found.svg">
-                        <span class="search-not-found-title">
-                            {{ 'training.past_trainings.filters.search_no_result_title' | translate }}
-                        </span>
-                        <span class="search-not-found-description">
-                            {{ 'training.past_trainings.filters.search_no_result_description' | translate }}
-                        </span>
-                    </div>
+            <ng-template #valueOrLoading>
+                <bl-past-trainings-filters (trainingEmitted)="searchEmitted($event)"></bl-past-trainings-filters>
+                <ng-container *ngIf="pastTrainings?.IsLoading; else value">
+                    <mat-spinner
+                        class="spinner"
+                        [diameter]="spinnerSize"></mat-spinner>
                 </ng-container>
-                <ng-template #otherCases>
-                    <mat-card class="card-info-wrapper">
-                        <mat-card-title class="header-title">
-                            <div
-                                #timePeriod
-                                [innerHTML]="setTimePeriod(pastTrainings.Value?.Results?.Dates) | async"></div>
-                        </mat-card-title>
-                        <div class="footer">
-                            <div class="food-subtitle">
-                                <strong class="food-subtitle--txt">
-                                    {{ ('common.food' | translate) + ': ' }}
-                                </strong>
-                                <span>{{ food + ' ' + ('common.kcal' | translate) }}</span>
-                            </div>
+                <ng-template #value>
+                    <ng-container *ngIf="(isSearch$ | async) && pastTrainings?.Value?.TotalCount === 0; else otherCases">
+                        <div class="search-no-result-wrapper">
+                            <img
+                                class="search-not-found-img"
+                                src="../../../../assets/svgs/not-found.svg">
+                            <span class="search-not-found-title">
+                                {{ 'training.past_trainings.filters.search_no_result_title' | translate }}
+                            </span>
+                            <span class="search-not-found-description">
+                                {{ 'training.past_trainings.filters.search_no_result_description' | translate }}
+                            </span>
                         </div>
-                    </mat-card>
-                    <div
-                        *ngIf="pastTrainings.Value?.TotalCount > 0; else noTrainings"
-                        #itemWrapper
-                        class="training-item-wrapper"
-                        [class.no-trainings]="pastTrainings.Value?.TotalCount === 0">
-                        <bl-training-item
-                            *ngFor="let training of pastTrainings.Value?.Results?.Trainings"
-                            [training]="training"></bl-training-item>
-                    </div>
-                    <ng-template #noTrainings>
-                        <section class="no-trainings">
-                            <ng-container *ngIf="!(isSearch$ | async) && pastTrainings.Value?.TotalCount === 0;">
-                                <h1 class="no-trainings-title">
-                                    {{ 'training.past_trainings.no_trainings' | translate }}
-                                </h1>
-                                <button
-                                    mat-raised-button
-                                    class="no-trainings-button"
-                                    type="button"
-                                    routerLink="/training/new-training"
-                                    color="primary">
-                                    {{ 'training.past_trainings.log_training' | translate }}
-                                </button>
-                            </ng-container>
-                        </section>
+                    </ng-container>
+                    <ng-template #otherCases>
+                        <mat-card class="card-info-wrapper">
+                            <mat-card-title class="header-title">
+                                <div
+                                    #timePeriod
+                                    [innerHTML]="setTimePeriod(pastTrainings.Value?.Results?.Dates) | async"></div>
+                            </mat-card-title>
+                            <div class="footer">
+                                <div class="food-subtitle">
+                                    <strong class="food-subtitle--txt">
+                                        {{ ('common.food' | translate) + ': ' }}
+                                    </strong>
+                                    <span>{{ food + ' ' + ('common.kcal' | translate) }}</span>
+                                </div>
+                            </div>
+                        </mat-card>
+                        <div
+                            *ngIf="pastTrainings.Value?.TotalCount > 0; else noTrainings"
+                            #itemWrapper
+                            class="training-item-wrapper"
+                            [class.no-trainings]="pastTrainings.Value?.TotalCount === 0">
+                            <bl-training-item
+                                *ngFor="let training of pastTrainings.Value?.Results?.Trainings"
+                                [training]="training"></bl-training-item>
+                        </div>
+                        <ng-template #noTrainings>
+                            <section class="no-trainings">
+                                <ng-container *ngIf="!(isSearch$ | async) && pastTrainings.Value?.TotalCount === 0;">
+                                    <h1 class="no-trainings-title">
+                                        {{ 'training.past_trainings.no_trainings' | translate }}
+                                    </h1>
+                                    <button
+                                        mat-raised-button
+                                        class="no-trainings-button"
+                                        type="button"
+                                        routerLink="/training/new-training"
+                                        color="primary">
+                                        {{ 'training.past_trainings.log_training' | translate }}
+                                    </button>
+                                </ng-container>
+                            </section>
+                        </ng-template>
+                        <bl-pagination
+                            [isSearch]="isSearch$ | async"
+                            [page]="page"
+                            [size]="size"
+                            [isPreviousPage]="isPreviousPage"
+                            [isNextPage]="isNextPage"
+                            [data]="pastTrainings"
+                            (paginatorChanged)="onPaginatorChanged($event)"></bl-pagination>
                     </ng-template>
-                    <bl-pagination
-                        [isSearch]="isSearch$ | async"
-                        [page]="page"
-                        [size]="size"
-                        [isPreviousPage]="isPreviousPage"
-                        [isNextPage]="isNextPage"
-                        [data]="pastTrainings"
-                        (paginatorChanged)="onPaginatorChanged($event)"></bl-pagination>
                 </ng-template>
             </ng-template>
-        </ng-template>
-    </section>
-</ng-container>
+        </section>
+    </ng-container>
+</ion-content>

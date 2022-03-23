@@ -1,4 +1,8 @@
 
+ion-grid:first-of-type {
+    padding-bottom: 0;
+}
+
 ion-select {
     color: var(--ion-color-primary);
     --placeholder-opacity: 1;
