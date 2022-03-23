@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
@@ -56,8 +56,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     @Output()
     readonly formStateChanged: EventEmitter<SetFormValidationErrors[]> = new EventEmitter<SetFormValidationErrors[]>();
 
-    @ViewChild('weightLiftedEl', { read: IonInput })
-    weightLiftedEl: IonInput;
+    @ViewChildren('weightLiftedEl')
+    weightLiftedEl: QueryList<IonInput>;
 
     constructor(
         private readonly unsubscribeService: UnsubscribeService,
@@ -101,8 +101,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                 takeUntil(this.unsubscribeService),
             )
             .subscribe(async _ => {
-                if (this.weightLiftedEl) {
-                    await this.weightLiftedEl.setFocus();
+                if (this.weightLiftedEl?.first) {
+                    await this.weightLiftedEl.first.setFocus();
                 }
             });
     }
@@ -159,6 +159,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                 validators: [SetValidators.bothValuesRequired(), SetValidators.isSetValid()],
             }),
         );
+        of(null)
+            .pipe(
+                delay(200),
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe(async _ => {
+                if (this.weightLiftedEl) {
+                    await this.weightLiftedEl.last?.setFocus();
+                }
+            });
     }
 
     deleteSet(indexSet: number): void {
