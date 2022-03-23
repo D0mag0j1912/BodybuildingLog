@@ -9,3 +9,5 @@ export interface Training {
     readonly createdAt?: Date;
     readonly updatedAt?: Date;
 }
+
+export type ExerciseStateType = 'Update' | 'Add' | 'Delete';

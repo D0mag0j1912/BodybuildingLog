@@ -23,6 +23,7 @@ import { NewTrainingService } from '../../../../services/training/new-training.s
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } from '../../dialog/dialog.component';
 import { DialogRoles } from '../../../shared/dialog/dialog.component';
+import { ExerciseStateType } from '../../../../models/training/new-training/new-training.model';
 
 const INITIAL_WEIGHT = 0;
 
@@ -38,7 +39,7 @@ const INITIAL_WEIGHT = 0;
 })
 export class SingleExerciseComponent implements ControlValueAccessor {
 
-    readonly exerciseStateChanged$$: Subject<void> = new Subject<void>();
+    readonly exerciseStateChanged$$: Subject<ExerciseStateType> = new Subject<ExerciseStateType>();
     readonly isSubmitted$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
 
@@ -63,7 +64,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     readonly currentExerciseState$: Observable<[SingleExercise[], Exercise[]]> =
         this.exerciseStateChanged$$.pipe(
-            startWith(undefined as void),
+            startWith(undefined as ExerciseStateType),
             switchMap(_ =>
                 forkJoin([
                     this.newTrainingService.currentTrainingChanged$
@@ -129,7 +130,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 this.accessFormField('disabledTooltip', indexExercise).value as boolean,
             );
             this.exerciseChanged = !this.exerciseChanged;
-            this.exerciseStateChanged$$.next();
+            this.exerciseStateChanged$$.next('Update');
             this.changeDetectorRef.markForCheck();
         }
     }
@@ -144,7 +145,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
         if (clicked) {
             this.newTrainingService.addNewExercise(this.getAlreadyUsedExercises() as string[]);
-            this.exerciseStateChanged$$.next();
+            this.exerciseStateChanged$$.next('Add');
         }
     }
 
@@ -187,7 +188,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         }
                     }),
                     finalize(() => {
-                        this.exerciseStateChanged$$.next();
+                        this.exerciseStateChanged$$.next('Delete');
                         this.changeDetectorRef.markForCheck();
                     }),
                     takeUntil(this.unsubscribeService),
@@ -210,7 +211,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         indexExercise,
                     ),
                 ),
-                finalize(() => this.exerciseStateChanged$$.next()),
+                finalize(() => this.exerciseStateChanged$$.next('Delete')),
                 takeUntil(this.unsubscribeService),
             ).subscribe(_ => this.form.removeAt(indexExercise));
         }
@@ -262,34 +263,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     onSetFormChange($event: SetFormValidationErrors[]): void {
         this.setErrors = $event;
         this.changeDetectorRef.markForCheck();
-    }
-
-    showAddExerciseTooltip(
-        currentTrainingStateLength: number,
-        allExercisesLength: number,
-    ): Observable<string> {
-        if (currentTrainingStateLength >= allExercisesLength) {
-            return this.translateService.stream('training.new_training.errors.no_more_exercises_available');
-        }
-        else {
-            if (this.getExercises().length > 0) {
-                if (!this.accessFormField('name', this.getExercises().length - 1)?.value) {
-                    return this.translateService.stream('training.new_training.errors.pick_current_exercise');
-                }
-                else if (this.setErrors.includes('setNotEntered') && !this.setErrors.includes('setNotValid')) {
-                    return this.translateService.stream('training.new_training.errors.set_required');
-                }
-                else if (this.setErrors.includes('setNotValid')) {
-                    return this.translateService.stream('training.new_training.errors.set_invalid');
-                }
-                else {
-                    return of('');
-                }
-            }
-            else {
-                return of('');
-            }
-        }
     }
 
     isAddingExercisesDisabled(
@@ -350,9 +323,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     exerciseFormData.push({
                         exerciseName: this.accessFormField('name', indexExercise).value as string,
                         sets: [],
-                        total: +(splittedTotal[0] as string),
+                        total: +splittedTotal[0],
                         disabledTooltip: this.accessFormField('disabledTooltip', indexExercise).value as boolean,
-                        availableExercises: (currentTrainingState.exercise as SingleExercise[])[indexExercise]?.availableExercises || [],
+                        availableExercises: (currentTrainingState.exercise)[indexExercise]?.availableExercises || [],
                     });
 
                     const formSetData: Set[] = [];
@@ -369,10 +342,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
                 return {
                     createdAt: this.editMode ? this.editData.editedDate : new Date(),
-                    exercise: exerciseFormData as SingleExercise[],
-                    bodyweight: this.bodyweight.value ? +this.bodyweight.value as number : null,
-                    editMode: this.editMode as boolean,
-                    userId: currentTrainingState.userId as string,
+                    exercise: exerciseFormData,
+                    bodyweight: this.bodyweight.value ? +this.bodyweight.value : null,
+                    editMode: this.editMode,
+                    userId: currentTrainingState.userId,
                 } as Training;
             }),
             takeUntil(this.unsubscribeService),
