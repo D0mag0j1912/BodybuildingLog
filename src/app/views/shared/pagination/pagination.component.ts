@@ -42,7 +42,7 @@ export class PaginationComponent {
 
     constructor(
         private readonly translateService: TranslateService,
-    ) {}
+    ) { }
 
     loadPage(
         page?: Page,
@@ -88,53 +88,6 @@ export class PaginationComponent {
                 DateInterval: dateInterval,
                 EarliestTrainingDate: earliestTrainingDate,
             } as PaginatorChanged);
-        }
-    }
-
-    setPageTooltip(
-        isSearch: boolean,
-        page: Page,
-    ): Observable<string> {
-        if (isSearch) {
-            if (page === 'First' || page === 'Last') {
-                return this.translateService.stream(`training.past_trainings.buttons.${page === 'First' ? 'first_page' : 'last_page'}`);
-            }
-            else {
-                return this.translateService.stream(`training.past_trainings.buttons.${page === 'Next' ? 'next_page' : 'previous_page'}`);
-            }
-        }
-        else {
-            if (page === 'First' || page === 'Last') {
-                return this.translateService.stream(`training.past_trainings.buttons.${page === 'First' ? 'first_week' : 'last_week'}`);
-            }
-            else {
-                if (page === 'Next') {
-                    return this.translateService.stream(`training.past_trainings.${this.isNextPage ? 'buttons.next_week' : 'disabled_next_week'}`);
-                }
-                else {
-                    return this.translateService.stream(`training.past_trainings.${this.isPreviousPage ? 'buttons.previous_week' : 'disabled_previous_week'}`);
-                }
-            }
-        }
-    }
-
-    setPageTooltipClass(
-        isSearch: boolean,
-        page: Page,
-    ): string {
-        if (isSearch) {
-            return 'tooltip';
-        }
-        else {
-            if (page === 'First' || page === 'Last') {
-                return 'tooltip';
-            }
-            if (page === 'Next') {
-                return this.isNextPage ? 'tooltip' : 'tooltip-error';
-            }
-            else {
-                return this.isPreviousPage ? 'tooltip' : 'tooltip-error';
-            }
         }
     }
 

@@ -1,3 +1,4 @@
+
 <div class="paginator">
     <div class="controls-wrapper">
         <div
@@ -15,61 +16,41 @@
             </select>
         </div>
         <div class="arrow-wrapper">
-            <button
+            <ion-button
                 *ngIf="isPreviousPage"
-                mat-raised-button
                 class="first"
                 type="button"
-                matTooltipPosition="above"
-                [matTooltip]="setPageTooltip(isSearch, 'First') | async"
-                [matTooltipClass]="setPageTooltipClass(isSearch, 'First')"
                 (click)="loadPage(
                     'First',
                     undefined,
                     data?.Value?.Results?.EarliestTrainingDate)">
-                <mat-icon class="icon">first_page</mat-icon>
-            </button>
-            <div
-                matTooltipPosition="above"
-                [matTooltip]="setPageTooltip(isSearch, 'Previous') | async"
-                [matTooltipClass]="setPageTooltipClass(isSearch, 'Previous')">
-                <button
-                    mat-raised-button
-                    type="button"
-                    class="previous"
-                    [disabled]="data.IsLoading || !isPreviousPage"
-                    (click)="loadPage(
-                        'Previous',
-                        data.Value?.Results?.Dates)">
-                    <mat-icon class="icon">navigate_before</mat-icon>
-                </button>
-            </div>
-            <div
-                matTooltipPosition="above"
-                [matTooltip]="setPageTooltip(isSearch, 'Next') | async"
-                [matTooltipClass]="setPageTooltipClass(isSearch, 'Next')">
-                <button
-                    mat-raised-button
-                    type="button"
-                    class="next"
-                    [disabled]="data.IsLoading || !isNextPage"
-                    (click)="loadPage(
-                        'Next',
-                        data.Value?.Results?.Dates)">
-                    <mat-icon class="icon">navigate_next</mat-icon>
-                </button>
-            </div>
-            <button
+                <ion-icon name="play-back-sharp"></ion-icon>
+            </ion-button>
+            <ion-button
+                type="button"
+                class="previous"
+                [disabled]="data?.IsLoading || !isPreviousPage"
+                (click)="loadPage(
+                    'Previous',
+                    data.Value?.Results?.Dates)">
+                <ion-icon name="chevron-back-sharp"></ion-icon>
+            </ion-button>
+            <ion-button
+                type="button"
+                class="next"
+                [disabled]="data.IsLoading || !isNextPage"
+                (click)="loadPage(
+                    'Next',
+                    data.Value?.Results?.Dates)">
+                <ion-icon name="chevron-forward-sharp"></ion-icon>
+            </ion-button>
+            <ion-button
                 *ngIf="isNextPage"
-                mat-raised-button
                 class="last"
                 type="button"
-                matTooltipPosition="above"
-                [matTooltip]="setPageTooltip(isSearch, 'Last') | async"
-                [matTooltipClass]="setPageTooltipClass(isSearch, 'Last')"
                 (click)="loadPage('Last', undefined, undefined, data?.Value?.TotalPages)">
-                <mat-icon class="icon">last_page</mat-icon>
-            </button>
+                <ion-icon name="play-forward-sharp"></ion-icon>
+            </ion-button>
         </div>
     </div>
     <div
