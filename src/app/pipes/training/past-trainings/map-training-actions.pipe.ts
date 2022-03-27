@@ -6,19 +6,17 @@ interface TrainingItemActionsProperties {
     tooltip: string;
 }
 
-@Pipe({
-    name: 'mapTrainingItemActions',
-})
+@Pipe({ name: 'mapTrainingItemActions' })
 
 export class MapTrainingItemActionsPipe implements PipeTransform {
 
     private readonly actionToIcon: { [key: string]: TrainingItemActionsProperties } = {
         'delete': {
-            icon: 'delete',
+            icon: 'trash-sharp',
             tooltip: 'training.past_trainings.buttons.delete_training',
         },
         'more': {
-            icon: 'more_vert',
+            icon: 'ellipsis-vertical-sharp',
             tooltip: 'TODO',
         },
     };

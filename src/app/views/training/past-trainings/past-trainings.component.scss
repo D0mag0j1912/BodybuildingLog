@@ -60,8 +60,7 @@ ion-list {
 .card-info-wrapper {
     border: 2px solid var(--ion-color-primary);
     box-shadow: var(--ion-box-shadow);
-    margin: 10px 0;
-    margin-top: 5px;
+    margin: 5px 0;
 
     .header-title {
         font-size: 20px;
@@ -84,8 +83,8 @@ ion-list {
 
 .training-item-wrapper {
     display: block;
-    margin: 10px 0;
     overflow: auto;
+    max-height: calc(100vh - 270px);
 
     &::-webkit-scrollbar {
         width: 6px;

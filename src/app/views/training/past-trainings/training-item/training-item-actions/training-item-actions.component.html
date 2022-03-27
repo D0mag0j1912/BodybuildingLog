@@ -1,8 +1,5 @@
-<mat-icon
+<ion-icon
     class="action"
-    matTooltipClass="tooltip"
-    [matTooltip]="(action | mapTrainingItemActions: 'tooltip') | translate"
-    (click)="$event.stopPropagation(); performAction(action)">
-    {{ action | mapTrainingItemActions: 'icon' }}
-</mat-icon>
+    [name]="action | mapTrainingItemActions: 'icon'"
+    (click)="$event.stopPropagation(); performAction(action)"></ion-icon>
 

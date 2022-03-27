@@ -8,53 +8,58 @@
             {{ '(' + (training.createdAt | date: 'dd.MM.yyyy') + ')' }}
         </ion-card-title>
     </ion-card-header>
-    <div
-        class="central-wrapper"
-        [class.centered-central-wrapper]="!training.bodyweight">
+    <ion-card-content>
+        <ion-grid>
+            <ion-row
+                class="ion-justify-content-around"
+                [class.ion-justify-content-center]="!training?.bodyweight">
+                <ion-col>
+                    <div
+                        class="bodyweight"
+                        *ngIf="training?.bodyweight">
+                        <strong class="bodyweight--key">
+                            {{ 'common.bodyweight' | translate }}
+                        </strong>
+                        <span class="bodyweight--value">
+                            {{ training.bodyweight + ' kg' }}
+                        </span>
+                    </div>
+                </ion-col>
+                <ion-col>
+                    <div class="created-at">
+                        <strong class="created-at--key">
+                            {{ 'common.created_at_time' | translate }}
+                        </strong>
+                        <span class="created-at--value">
+                            {{ timeCreated }}
+                        </span>
+                    </div>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
         <div
-            class="bodyweight"
-            *ngIf="training.bodyweight">
-            <strong class="bodyweight--key">
-                {{ 'common.bodyweight' | translate }}
-            </strong>
-            <span class="bodyweight--value">
-                {{ training.bodyweight + ' kg' }}
+            class="exercise-wrapper"
+            [class.exercise-wrapper-no-dots]="training.exercise.length <= 2">
+            <span
+                #exerciseNameEl
+                *ngFor="let data of (training.exercise | slice:0:2); let i = index"
+                class="exercise-name">
+                {{ (i+1) + '. ' + (data.exerciseName | translate) }}
+            </span>
+            <span
+                *ngIf="training.exercise.length > 2"
+                class="exercise-dots">
+                &#8942;
             </span>
         </div>
-        <div class="created-at">
-            <strong class="created-at--key">
-                {{ 'common.created_at_time' | translate }}
-            </strong>
-            <span class="created-at--value">
-                {{ timeCreated }}
-            </span>
+        <div class="actions">
+            <bl-training-item-actions
+                *ngFor="let action of actions"
+                [action]="action"
+                [training]="training"
+                [weekDays]="weekDays"
+                [dayIndex]="dayIndex"
+                [timeCreated]="timeCreated"></bl-training-item-actions>
         </div>
-    </div>
-    <div
-        class="exercise-wrapper"
-        [class.exercise-wrapper-no-dots]="training.exercise.length <= 2"
-        matTooltipClass="tooltip"
-        [matTooltipDisabled]="isTooltipDisabled"
-        [matTooltip]="(training | showAllExercises | async)">
-        <span
-            #exerciseNameEl
-            *ngFor="let data of (training.exercise | slice:0:2); let i = index"
-            class="exercise-name">
-            {{ (i+1) + '. ' + (data.exerciseName | translate) }}
-        </span>
-        <span
-            *ngIf="training.exercise.length > 2"
-            class="exercise-dots">
-            &#8942;
-        </span>
-    </div>
-    <div class="actions">
-        <bl-training-item-actions
-            *ngFor="let action of actions"
-            [action]="action"
-            [training]="training"
-            [weekDays]="weekDays"
-            [dayIndex]="dayIndex"
-            [timeCreated]="timeCreated"></bl-training-item-actions>
-    </div>
+    </ion-card-content>
 </ion-card>

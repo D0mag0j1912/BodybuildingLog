@@ -1,8 +1,8 @@
-@import '../../../../../../../styles/default-pallette.scss';
 
 .action {
-    padding: 10px;
-    color: $army-green;
-    font-size: 26px;
-    border-left: 1px solid $light-periwinkle;
+    padding: 5px;
+    color: var(--ion-color-primary);
+    width: 32px;
+    height: 32px;
+    border-left: 1px solid var(--ion-color-light-periwinkle);
 }
