@@ -37,17 +37,23 @@
             </ng-container>
             <ng-template #value>
                 <ng-container *ngIf="(isSearch$ | async) && pastTrainings?.Value?.TotalCount === 0; else otherCases">
-                    <div class="search-no-result-wrapper">
-                        <img
-                            class="search-not-found-img"
-                            src="../../../../assets/svgs/not-found.svg">
-                        <span class="search-not-found-title">
-                            {{ 'training.past_trainings.filters.search_no_result_title' | translate }}
-                        </span>
-                        <span class="search-not-found-description">
-                            {{ 'training.past_trainings.filters.search_no_result_description' | translate }}
-                        </span>
-                    </div>
+                    <ion-list class="ion-text-center">
+                        <ion-item lines="none">
+                            <img
+                                class="search-not-found-img"
+                                src="../../../../assets/svgs/not-found.svg">
+                        </ion-item>
+                        <ion-item lines="none">
+                            <ion-text class="search-not-found-title">
+                                {{ 'training.past_trainings.filters.search_no_result_title' | translate }}
+                            </ion-text>
+                        </ion-item>
+                        <ion-item lines="none">
+                            <ion-text class="search-not-found-description">
+                                {{ 'training.past_trainings.filters.search_no_result_description' | translate }}
+                            </ion-text>
+                        </ion-item>
+                    </ion-list>
                 </ng-container>
                 <ng-template #otherCases>
                     <ion-card class="card-info-wrapper ion-text-center">

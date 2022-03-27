@@ -34,15 +34,13 @@ ion-content {
     }
 }
 
-.search-no-result-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
+ion-list {
+    margin-top: 10px;
 
     .search-not-found-img {
         width: 150px;
         height: 150px;
+        margin: 0 auto;
     }
 
     .search-not-found-title {
