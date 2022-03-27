@@ -10,13 +10,9 @@
     </ion-card-header>
     <ion-card-content>
         <ion-grid>
-            <ion-row
-                class="ion-justify-content-around"
-                [class.ion-justify-content-center]="!training?.bodyweight">
-                <ion-col>
-                    <div
-                        class="bodyweight"
-                        *ngIf="training?.bodyweight">
+            <ion-row>
+                <ion-col *ngIf="training?.bodyweight">
+                    <div class="bodyweight">
                         <strong class="bodyweight--key">
                             {{ 'common.bodyweight' | translate }}
                         </strong>
@@ -26,7 +22,9 @@
                     </div>
                 </ion-col>
                 <ion-col>
-                    <div class="created-at">
+                    <div
+                        class="created-at"
+                        [class.created-at--no-bodyweight]="!training?.bodyweight">
                         <strong class="created-at--key">
                             {{ 'common.created_at_time' | translate }}
                         </strong>
