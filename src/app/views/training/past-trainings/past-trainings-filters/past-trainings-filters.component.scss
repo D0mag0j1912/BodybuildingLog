@@ -1,18 +1,11 @@
 
-.search-icon {
-    color: #000000;
-    background-color: white;
-    padding: 3px;
-    border-radius: 8px;
-    box-shadow: var(--ion-box-shadow);
-    cursor: pointer;
-}
 
 .filters-wrapper {
     display: flex;
     align-items: flex-start;
     column-gap: 10px;
     padding: 5px 0;
+    margin: 0 10px;
     border: 2px solid var(--ion-color-primary);
     border-radius: 4px;
     box-sizing: border-box;
@@ -23,7 +16,7 @@
         align-items: center;
         flex-grow: 1;
         column-gap: 10px;
-        margin-left: 10px;
+        margin-left: 5px;
 
         .search-input {
 
@@ -31,6 +24,7 @@
                 border: 2px solid white;
                 border-radius: 6px;
                 box-shadow: var(--ion-box-shadow);
+                height: 35px;
 
                 &:focus {
                     outline: none;
@@ -53,6 +47,7 @@
         align-items: center;
         column-gap: 10px;
         margin-right: 10px;
+        height: 35px;
 
         .or {
             color: var(--ion-color-primary);
@@ -60,6 +55,8 @@
         }
 
         .filter-icon {
+            width: 24px;
+            height: 24px;
             cursor: pointer;
         }
     }
