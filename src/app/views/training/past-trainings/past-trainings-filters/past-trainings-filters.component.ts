@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject } from 'rxjs';
@@ -18,7 +18,7 @@ interface PeriodDropdown {
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class PastTrainingsFiltersComponent implements AfterViewInit {
+export class PastTrainingsFiltersComponent {
 
     private readonly keyUp$$: Subject<KeyboardEvent> = new Subject<KeyboardEvent>();
 
@@ -26,9 +26,6 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     readonly trainingEmitted: EventEmitter<string> = new EventEmitter<string>();
 
     searchValue = '';
-
-    @ViewChild('search', { read: ElementRef })
-    searchInput: ElementRef | undefined;
 
     sortOptions: [PeriodDropdown, PeriodDropdown] = [
         {
@@ -65,10 +62,6 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
 
     get inputMaxLength(): number {
         return INPUT_MAX_LENGTH;
-    }
-
-    ngAfterViewInit(): void {
-        setTimeout(() => (this.searchInput.nativeElement as HTMLInputElement).focus());
     }
 
     emitKeyboardEvent($event: KeyboardEvent): void {
