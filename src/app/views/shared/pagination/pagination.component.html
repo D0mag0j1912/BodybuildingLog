@@ -1,9 +1,6 @@
-
-<div class="paginator">
-    <div class="controls-wrapper">
-        <div
-            class="page-size-wrapper"
-            [class.page-size-not-visible]="!isSearch">
+<ion-grid>
+    <ion-row>
+        <ion-col *ngIf="isSearch">
             <select
                 class="page-size"
                 [(ngModel)]="size"
@@ -14,47 +11,59 @@
                     {{ size }}
                 </option>
             </select>
-        </div>
-        <div class="arrow-wrapper">
+        </ion-col>
+        <ion-col *ngIf="isPreviousPage">
             <ion-button
-                *ngIf="isPreviousPage"
                 class="first"
                 type="button"
+                color="primary"
                 (click)="loadPage(
                     'First',
                     undefined,
                     data?.Value?.Results?.EarliestTrainingDate)">
                 <ion-icon name="play-back-sharp"></ion-icon>
             </ion-button>
+        </ion-col>
+        <ion-col>
             <ion-button
                 type="button"
                 class="previous"
+                color="primary"
                 [disabled]="data?.IsLoading || !isPreviousPage"
                 (click)="loadPage(
                     'Previous',
                     data.Value?.Results?.Dates)">
                 <ion-icon name="chevron-back-sharp"></ion-icon>
             </ion-button>
+        </ion-col>
+        <ion-col>
             <ion-button
                 type="button"
                 class="next"
+                color="primary"
                 [disabled]="data.IsLoading || !isNextPage"
                 (click)="loadPage(
                     'Next',
                     data.Value?.Results?.Dates)">
                 <ion-icon name="chevron-forward-sharp"></ion-icon>
             </ion-button>
+        </ion-col>
+        <ion-col *ngIf="isNextPage">
             <ion-button
-                *ngIf="isNextPage"
                 class="last"
+                color="primary"
                 type="button"
                 (click)="loadPage('Last', undefined, undefined, data?.Value?.TotalPages)">
                 <ion-icon name="play-forward-sharp"></ion-icon>
             </ion-button>
-        </div>
-    </div>
-    <div
-        *ngIf="data?.Value?.TotalPages"
-        class="label"
-        [innerHTML]="setPageText(data.Value.TotalPages) | async"></div>
-</div>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col>
+            <div
+                *ngIf="data?.Value?.TotalPages"
+                class="label"
+                [innerHTML]="setPageText(data.Value.TotalPages) | async"></div>
+        </ion-col>
+    </ion-row>
+</ion-grid>

@@ -45,10 +45,6 @@
     }
 }
 
-.page-size-not-visible {
-    display: none;
-}
-
 .page-size {
     width: 65px;
     border: 0;
@@ -67,11 +63,6 @@
 .arrow-wrapper {
     display: flex;
     column-gap: 10px;
-
-    .mat-raised-button {
-        min-width: 0;
-        padding: 0 10px;
-    }
 }
 
 .previous:not([disabled]):hover,
