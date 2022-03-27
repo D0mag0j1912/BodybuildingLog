@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { format } from 'date-fns';
 import { takeUntil, tap } from 'rxjs/operators';
@@ -8,8 +8,6 @@ import { PastTrainingsQueryParams } from '../../../../models/training/past-train
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
 import { SharedService } from '../../../../services/shared/shared.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
-
-const MAX_EXERCISE_NAME_WIDTH = 200;
 
 @Component({
     selector: 'bl-training-item',
@@ -43,26 +41,9 @@ export class TrainingItemComponent implements OnInit {
     @Input()
     training: Training;
 
-    @ViewChildren('exerciseNameEl', {
-        read: ElementRef,
-    })
-    set exerciseNameEls(exerciseNames: QueryList<ElementRef>){
-        if(exerciseNames){
-            setTimeout(() => {
-                exerciseNames.forEach((exerciseName: ElementRef) => {
-                    if((exerciseName.nativeElement as HTMLSpanElement)?.offsetWidth > MAX_EXERCISE_NAME_WIDTH || this.training.exercise.length > 2){
-                        this.isTooltipDisabled = false;
-                    }
-                });
-                this.changeDetectorRef.markForCheck();
-            });
-        }
-    }
-
     constructor(
         private readonly unsubscribeService: UnsubscribeService,
         private readonly sharedService: SharedService,
-        private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
     ) { }

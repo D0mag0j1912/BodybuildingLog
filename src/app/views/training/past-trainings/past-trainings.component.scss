@@ -85,7 +85,6 @@ ion-list {
 .training-item-wrapper {
     display: block;
     overflow: auto;
-    max-height: calc(100vh - 270px);
 
     &::-webkit-scrollbar {
         width: 6px;

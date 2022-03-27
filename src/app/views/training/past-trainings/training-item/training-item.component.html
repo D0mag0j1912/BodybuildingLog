@@ -39,7 +39,6 @@
             class="exercise-wrapper"
             [class.exercise-wrapper-no-dots]="training.exercise.length <= 2">
             <span
-                #exerciseNameEl
                 *ngFor="let data of (training.exercise | slice:0:2); let i = index"
                 class="exercise-name">
                 {{ (i+1) + '. ' + (data.exerciseName | translate) }}

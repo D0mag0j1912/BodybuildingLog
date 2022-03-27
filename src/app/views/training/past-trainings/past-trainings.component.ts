@@ -5,10 +5,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Observable, of } from 'rxjs';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { delay, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
-import { SPINNER_SIZE } from '../../../constants/spinner-size.const';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
@@ -55,17 +54,18 @@ export class PastTrainingsComponent {
             const trainingElement = (this.trainingItemWrapper?.nativeElement as HTMLDivElement);
             if (trainingElement) {
                 this.isSearch$
-                .pipe(
-                    takeUntil(this.unsubscribeService),
-                )
-                .subscribe((isSearch: boolean) => {
-                    if ((timePeriodElement.nativeElement as HTMLDivElement).offsetHeight === 30) {
-                        trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? Heights.LOWER_SEARCH_HEIGHT : Heights.LOWER_WEEK_HEIGHT}px)`;
-                    }
-                    else if ((timePeriodElement.nativeElement as HTMLDivElement).offsetHeight > 30) {
-                        trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? Heights.HIGHER_SEARCH_HEIGHT : Heights.HIGHER_WEEK_HEIGHT}px)`;
-                    }
-                });
+                    .pipe(
+                        delay(50),
+                        takeUntil(this.unsubscribeService),
+                    )
+                    .subscribe((isSearch: boolean) => {
+                        if ((timePeriodElement.nativeElement as HTMLDivElement).offsetHeight === 24) {
+                            trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? Heights.LOWER_SEARCH_HEIGHT : Heights.LOWER_WEEK_HEIGHT}px)`;
+                        }
+                        else if ((timePeriodElement.nativeElement as HTMLDivElement).offsetHeight > 24) {
+                            trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? Heights.HIGHER_SEARCH_HEIGHT : Heights.HIGHER_WEEK_HEIGHT}px)`;
+                        }
+                    });
             }
         }
     }
@@ -111,10 +111,6 @@ export class PastTrainingsComponent {
                 );
         }
 
-    }
-
-    get spinnerSize(): number {
-        return SPINNER_SIZE;
     }
 
     get dateFormat(): string {

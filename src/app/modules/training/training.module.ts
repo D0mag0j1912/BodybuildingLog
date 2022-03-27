@@ -7,7 +7,6 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AutofocusModule } from '../../directives/autofocus/autofocus.module';
 import { TrainingItemDirective } from '../../directives/training-item/training-item.directive';
-import { MaterialModule } from '../../material.module';
 import { PipesModule } from '../../pipes/pipes.module';
 import { ShowAllExercisesModule } from '../../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NewTrainingComponent } from '../../views/training/new-training/new-training.component';
@@ -33,7 +32,6 @@ const EXTERNAL_IMPORTS = [
     FormsModule,
     ReactiveFormsModule,
     FlexLayoutModule,
-    MaterialModule,
     TranslateModule,
     IonicModule,
 ];

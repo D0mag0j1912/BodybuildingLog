@@ -17,6 +17,9 @@ import { TotalWeightComponent } from '../views/shared/training/total-weight/tota
 import { DeleteTrainingActionComponent } from '../views/shared/training/training-actions/delete-training-action/delete-training-action.component';
 import { MoreTrainingActionComponent } from '../views/shared/training/training-actions/more-training-action/more-training-action.component';
 import { PaginationComponent } from '../views/shared/pagination/pagination.component';
+import { PaginationDirective } from '../directives/pagination/pagination.directive';
+
+const DIRECTIVES = [PaginationDirective];
 
 const COMPONENTS = [
     DeleteExerciseDialogComponent,
@@ -50,6 +53,7 @@ const IMPORTS = [
 @NgModule({
     declarations: [
         ...COMPONENTS,
+        ...DIRECTIVES,
         ...ACTION_COMPONENTS,
     ],
     imports: [
@@ -66,4 +70,4 @@ const IMPORTS = [
         DeleteTrainingActionService,
     ],
 })
-export class SharedModule {}
+export class SharedModule { }
