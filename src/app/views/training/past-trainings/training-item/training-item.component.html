@@ -1,11 +1,13 @@
-<mat-card
-    class="wrapper"
+<ion-card
+    class="ion-text-center"
     (click)="trainingClicked()">
-    <div class="title-wrapper">
-        <strong class="day-name">
-            {{ ('weekdays.' + weekDays[dayIndex] | translate) }}</strong>
-        {{ '(' + (training.createdAt | date: 'dd.MM.yyyy') + ')' }}
-    </div>
+    <ion-card-header>
+        <ion-card-title>
+            <strong class="day-name">
+                {{ ('weekdays.' + weekDays[dayIndex] | translate) }}</strong>
+            {{ '(' + (training.createdAt | date: 'dd.MM.yyyy') + ')' }}
+        </ion-card-title>
+    </ion-card-header>
     <div
         class="central-wrapper"
         [class.centered-central-wrapper]="!training.bodyweight">
@@ -55,4 +57,4 @@
             [dayIndex]="dayIndex"
             [timeCreated]="timeCreated"></bl-training-item-actions>
     </div>
-</mat-card>
+</ion-card>

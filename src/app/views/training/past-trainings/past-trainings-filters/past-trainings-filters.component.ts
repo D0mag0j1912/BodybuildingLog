@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { SegmentChangeEventDetail } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
@@ -66,6 +67,10 @@ export class PastTrainingsFiltersComponent {
 
     emitKeyboardEvent($event: KeyboardEvent): void {
         this.keyUp$$.next($event);
+    }
+
+    segmentChanged($event: CustomEvent<SegmentChangeEventDetail>): void {
+        //TODO: create logic for sorting trainings by period
     }
 
     openFilterDialog(): void {

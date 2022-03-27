@@ -65,7 +65,7 @@ export class TrainingItemComponent implements OnInit {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         //TODO: vrijeme ovdje ide 2 sata unaprijed (uskladiti s lokalnom zonom) - Zasad samo oduzimam 2 sata
