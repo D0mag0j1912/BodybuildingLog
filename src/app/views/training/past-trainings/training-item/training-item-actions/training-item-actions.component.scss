@@ -1,8 +1,12 @@
 
-.action {
-    padding: 5px;
-    color: var(--ion-color-primary);
-    width: 32px;
-    height: 32px;
-    border-left: 1px solid var(--ion-color-light-periwinkle);
+:host {
+    position: relative;
+
+    .action {
+        padding: 0 5px;
+        color: var(--ion-color-primary);
+        width: 32px;
+        height: 100%;
+        border-left: 1px solid var(--ion-color-light-periwinkle);
+    }
 }

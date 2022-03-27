@@ -6,6 +6,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AutofocusModule } from '../../directives/autofocus/autofocus.module';
+import { TrainingItemDirective } from '../../directives/training-item/training-item.directive';
 import { MaterialModule } from '../../material.module';
 import { PipesModule } from '../../pipes/pipes.module';
 import { ShowAllExercisesModule } from '../../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
@@ -16,6 +17,8 @@ import { TrainingItemActionsComponent } from '../../views/training/past-training
 import { TrainingItemComponent } from '../../views/training/past-trainings/training-item/training-item.component';
 import { SharedModule } from '../shared.module';
 import { TrainingRoutingModule } from './training-routing.module';
+
+const DIRECTIVES = [TrainingItemDirective];
 
 const COMPONENTS = [
     NewTrainingComponent,
@@ -45,7 +48,10 @@ const IMPORTS = [
 const PIPES_MODULES = [ShowAllExercisesModule];
 
 @NgModule({
-    declarations: [ ...COMPONENTS ],
+    declarations: [
+        ...COMPONENTS,
+        ...DIRECTIVES,
+    ],
     imports: [
         ...EXTERNAL_IMPORTS,
         ...IMPORTS,
@@ -60,4 +66,4 @@ const PIPES_MODULES = [ShowAllExercisesModule];
         DatePipe,
     ],
 })
-export class TrainingModule {}
+export class TrainingModule { }

@@ -95,6 +95,12 @@ ion-list {
         background-color: var(--ion-color-light-periwinkle);
         border-radius: 6px;
     }
+
+    .bl-training-item:first-of-type {
+        ::ng-deep ion-card {
+            margin-top: 3px;
+        }
+    }
 }
 
 .no-trainings {
