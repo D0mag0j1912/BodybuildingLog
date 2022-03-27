@@ -47,13 +47,14 @@ ion-list {
         font-size: 16px;
         font-weight: 600;
         text-align: center;
-        margin: 20px 0;
+        margin: 10px auto 0 auto;
     }
 
     .search-not-found-description {
         font-size: 14px;
         color: var(--ion-color-medium);
         text-align: center;
+        margin: 10px auto 0 auto;
     }
 }
 
@@ -91,7 +92,7 @@ ion-list {
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: #dedfe1;
+        background-color: var(--ion-color-light-periwinkle);
         border-radius: 6px;
     }
 }
@@ -112,12 +113,9 @@ ion-list {
 @media (min-width: 640px) {
 
     .card-info-wrapper {
-        margin-top: 0.5rem;
         width: 850px;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        margin: 0 auto;
+        margin-top: 5px;
     }
 
     .training-item-wrapper {
@@ -125,12 +123,17 @@ ion-list {
         flex-direction: row;
         justify-content: flex-start;
         column-gap: 18px;
-        max-height: 400px;
         width: 850px;
         overflow: auto;
+        margin: 0 auto;
 
         &::-webkit-scrollbar {
             width: 4px;
         }
+    }
+
+    ion-list {
+        width: 850px;
+        margin: 0 auto;
     }
 }
