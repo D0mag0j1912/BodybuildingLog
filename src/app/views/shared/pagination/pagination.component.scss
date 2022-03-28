@@ -5,10 +5,15 @@ ion-card {
     margin: 0 auto;
     border: 2px solid var(--ion-color-primary);
     box-shadow: var(--ion-box-shadow);
+    width: 95%;
 
     ion-card-content {
         padding: 5px 10px;
     }
+}
+
+ion-button {
+    font-size: 5px;
 }
 
 .paginator {
