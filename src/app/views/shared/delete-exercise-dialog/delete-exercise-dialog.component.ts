@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { DialogRoles } from '../../../models/common/types/modal-roles.type';
 
 export interface DialogData {
     isError: boolean;
@@ -12,13 +13,9 @@ export interface DeleteExerciseDialogData {
     exerciseName: string;
 }
 
-export enum DialogRoles {
-    CANCEL = 'CANCEL',
-    DELETE_EXERCISE = 'DELETE_EXERCISE',
-}
 @Component({
-    templateUrl: './dialog.component.html',
-    styleUrls: ['./dialog.component.scss'],
+    templateUrl: './delete-exercise-dialog.component.html',
+    styleUrls: ['./delete-exercise-dialog.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteExerciseDialogComponent {

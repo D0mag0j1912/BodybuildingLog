@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -22,18 +22,19 @@ export class DeleteTrainingActionService implements TrainingActions {
 
     constructor(
         private readonly http: HttpClient,
-        private readonly dialog: MatDialog,
+        private readonly modalController: ModalController,
         private readonly datePipe: DatePipe,
         private readonly translateService: TranslateService,
-    ) {}
+    ) { }
 
-    perform(data: DeleteTrainingActionData): void {
-        this.openDeleteTrainingDialog(data);
+    async perform(data: DeleteTrainingActionData): Promise<void> {
+        await this.openDeleteTrainingDialog(data);
     }
 
-    openDeleteTrainingDialog(data: DeleteTrainingActionData): void {
-        this.dialog.open(DeleteTrainingActionComponent, {
-            data: {
+    async openDeleteTrainingDialog(data: DeleteTrainingActionData): Promise<void> {
+        const modal = await this.modalController.create({
+            component: DeleteTrainingActionComponent,
+            componentProps: {
                 title$: this.translateService.stream('training.past_trainings.actions.delete_training') as Observable<string>,
                 dateCreated$: this.translateService.stream(`weekdays.${data.weekDays[data.dayIndex]}`).pipe(
                     map((value: { [key: string]: string }) => `${value} (${this.datePipe.transform(data.training.createdAt as Date, 'dd.MM.yyyy')})`),
@@ -45,8 +46,9 @@ export class DeleteTrainingActionService implements TrainingActions {
                     currentDate: Date,
                 ) => this.deleteTraining(trainingId, currentDate),
             } as DeleteTrainingActionDialogData,
-            panelClass: 'delete-training-dialog',
+            cssClass: 'delete-training-dialog',
         });
+        await modal.present();
     }
 
     deleteTraining(

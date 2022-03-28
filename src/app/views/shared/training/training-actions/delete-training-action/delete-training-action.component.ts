@@ -1,16 +1,18 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { EMPTY, Observable } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { Training } from 'src/app/models/training/new-training/new-training.model';
 import { MESSAGE_DURATION } from '../../../../../constants/message-duration.const';
 import { StreamData } from '../../../../../models/common/interfaces/common.model';
 import { Paginator } from '../../../../../models/common/interfaces/paginator.model';
+import { DialogRoles } from '../../../../../models/common/types/modal-roles.type';
 import { PastTrainings } from '../../../../../models/training/past-trainings/past-trainings.model';
 import { SharedService } from '../../../../../services/shared/shared.service';
+import { ToastControllerService } from '../../../../../services/shared/toast-controller.service';
 
 export interface DeleteTrainingActionDialogData {
     readonly title$: Observable<string>;
@@ -30,17 +32,29 @@ export interface DeleteTrainingActionDialogData {
 })
 export class DeleteTrainingActionComponent {
 
+    @Input()
+    title$: Observable<string> = of('');
+
+    @Input()
+    dateCreated$: Observable<string> = of('');
+
+    @Input()
+    timeCreated$: Observable<string> = of('');
+
+    @Input()
+    training$: Observable<Training>;
+
     isLoading = false;
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public readonly data: DeleteTrainingActionDialogData,
         private readonly dialogRef: MatDialogRef<DeleteTrainingActionComponent>,
         private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
-        private readonly snackBar: MatSnackBar,
+        private readonly toastControllerService: ToastControllerService,
+        private readonly modalController: ModalController,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
-    ) {}
+    ) { }
 
     deleteTraining(trainingId: string): void {
         this.isLoading = true;
@@ -57,14 +71,19 @@ export class DeleteTrainingActionComponent {
                 this.isLoading = false;
                 this.changeDetectorRef.markForCheck();
             }),
-        ).subscribe((response: StreamData<Paginator<PastTrainings>>) => {
+        ).subscribe(async (response: StreamData<Paginator<PastTrainings>>) => {
             this.sharedService.deletedTraining$$.next(response);
-            this.snackBar.open(this.translateService.instant(response?.Value?.Results?.Message ?? ''), null, {
+            await this.toastControllerService.displayToast({
+                message: this.translateService.instant(response?.Value?.Results?.Message ?? ''),
                 duration: MESSAGE_DURATION.GENERAL,
-                panelClass: 'app__snackbar',
+                color: 'primary',
             });
             this.dialogRef.close();
         });
+    }
+
+    async onCancel(): Promise<void> {
+        await this.modalController.dismiss(false, DialogRoles.CANCEL);
     }
 
     private getSplittedCurrentDate(): string[] {

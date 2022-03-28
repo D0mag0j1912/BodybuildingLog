@@ -21,8 +21,8 @@ import { ToastControllerService } from '../../../../services/shared/toast-contro
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../../services/training/new-training.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
-import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } from '../../dialog/dialog.component';
-import { DialogRoles } from '../../../shared/dialog/dialog.component';
+import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } from '../../delete-exercise-dialog/delete-exercise-dialog.component';
+import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
 import { ExerciseStateType } from '../../../../models/training/new-training/new-training.model';
 
 const INITIAL_WEIGHT = 0;

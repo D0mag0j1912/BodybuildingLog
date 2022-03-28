@@ -9,7 +9,7 @@ import { RoundTotalWeightModule } from '../pipes/training/new-training/round-tot
 import { ShowAllExercisesModule } from '../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NotFoundResolverService } from '../services/shared/not-found-resolver.service';
 import { DeleteTrainingActionService } from '../services/training/training-actions/delete-training-action.service';
-import { DeleteExerciseDialogComponent } from '../views/shared/dialog/dialog.component';
+import { DeleteExerciseDialogComponent } from '../views/shared/delete-exercise-dialog/delete-exercise-dialog.component';
 import { NotFoundComponent } from '../views/shared/not-found/not-found.component';
 import { SetsComponent } from '../views/shared/training/sets/sets.component';
 import { SingleExerciseComponent } from '../views/shared/training/single-exercise/single-exercise.component';

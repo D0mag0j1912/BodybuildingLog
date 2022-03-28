@@ -1,18 +1,25 @@
-<ng-container *ngIf="(data.training$ | async) as training">
-    <div>
-        <span
-            mat-dialog-title
-            class="title">
-            {{ data.title$ | async }}
-        </span>
-    </div>
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="primary">
+            <ion-button (click)="onCancel()">
+                <ion-icon name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>{{ 'training.new_training.buttons.delete_exercise' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding ion-text-center">
+
+</ion-content>
+<ng-container *ngIf="(training$ | async) as training">
+    <ion-text>{{ title$ | async }}</ion-text>
     <mat-dialog-content class="content">
         <span class="created-at-key">
             {{ 'training.past_trainings.created_at' | translate }}
             <span class="created-at-value">
-                {{ data.dateCreated$ | async }}
+                {{ dateCreated$ | async }}
                 <span class="dot"></span>
-                <span>{{ ' ' + (data.timeCreated$ | async) }}</span>
+                <span>{{ ' ' + (timeCreated$ | async) }}</span>
             </span>
         </span>
         <div
