@@ -1,63 +1,67 @@
-<div class="paginator">
-    <div class="controls-wrapper">
-        <div
-            *ngIf="isSearch"
-            class="page-size-wrapper">
-            <select
-                class="page-size"
-                [(ngModel)]="size"
-                (change)="loadPage()">
-                <option
-                    *ngFor="let size of pageSizeOptions"
-                    [value]="size">
-                    {{ size }}
-                </option>
-            </select>
+<ion-card>
+    <ion-card-content>
+        <div class="paginator">
+            <div class="controls-wrapper">
+                <div
+                    *ngIf="isSearch"
+                    class="page-size-wrapper">
+                    <select
+                        class="page-size"
+                        [(ngModel)]="size"
+                        (change)="loadPage()">
+                        <option
+                            *ngFor="let size of pageSizeOptions"
+                            [value]="size">
+                            {{ size }}
+                        </option>
+                    </select>
+                </div>
+                <div class="arrow-wrapper">
+                    <ion-button
+                        *ngIf="isPreviousPage"
+                        class="first"
+                        type="button"
+                        color="primary"
+                        (click)="loadPage(
+                            'First',
+                            undefined,
+                            data?.Value?.Results?.EarliestTrainingDate)">
+                        <ion-icon name="play-back-sharp"></ion-icon>
+                    </ion-button>
+                    <ion-button
+                        type="button"
+                        class="previous"
+                        color="primary"
+                        [disabled]="data?.IsLoading || !isPreviousPage"
+                        (click)="loadPage(
+                            'Previous',
+                            data.Value?.Results?.Dates)">
+                        <ion-icon name="chevron-back-sharp"></ion-icon>
+                    </ion-button>
+                    <ion-button
+                        type="button"
+                        class="next"
+                        color="primary"
+                        [disabled]="data.IsLoading || !isNextPage"
+                        (click)="loadPage(
+                            'Next',
+                            data.Value?.Results?.Dates)">
+                        <ion-icon name="chevron-forward-sharp"></ion-icon>
+                    </ion-button>
+                    <ion-button
+                        *ngIf="isNextPage"
+                        class="last"
+                        color="primary"
+                        type="button"
+                        (click)="loadPage('Last', undefined, undefined, data?.Value?.TotalPages)">
+                        <ion-icon name="play-forward-sharp"></ion-icon>
+                    </ion-button>
+                </div>
+            </div>
+            <div
+                *ngIf="data?.Value?.TotalPages"
+                class="label"
+                [innerHTML]="setPageText(data.Value.TotalPages) | async"></div>
         </div>
-        <div class="arrow-wrapper">
-            <ion-button
-                *ngIf="isPreviousPage"
-                class="first"
-                type="button"
-                color="primary"
-                (click)="loadPage(
-                    'First',
-                    undefined,
-                    data?.Value?.Results?.EarliestTrainingDate)">
-                <ion-icon name="play-back-sharp"></ion-icon>
-            </ion-button>
-            <ion-button
-                type="button"
-                class="previous"
-                color="primary"
-                [disabled]="data?.IsLoading || !isPreviousPage"
-                (click)="loadPage(
-                    'Previous',
-                    data.Value?.Results?.Dates)">
-                <ion-icon name="chevron-back-sharp"></ion-icon>
-            </ion-button>
-            <ion-button
-                type="button"
-                class="next"
-                color="primary"
-                [disabled]="data.IsLoading || !isNextPage"
-                (click)="loadPage(
-                    'Next',
-                    data.Value?.Results?.Dates)">
-                <ion-icon name="chevron-forward-sharp"></ion-icon>
-            </ion-button>
-            <ion-button
-                *ngIf="isNextPage"
-                class="last"
-                color="primary"
-                type="button"
-                (click)="loadPage('Last', undefined, undefined, data?.Value?.TotalPages)">
-                <ion-icon name="play-forward-sharp"></ion-icon>
-            </ion-button>
-        </div>
-    </div>
-    <div
-        *ngIf="data?.Value?.TotalPages"
-        class="label"
-        [innerHTML]="setPageText(data.Value.TotalPages) | async"></div>
-</div>
+    </ion-card-content>
+</ion-card>
