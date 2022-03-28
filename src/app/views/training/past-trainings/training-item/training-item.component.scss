@@ -6,6 +6,10 @@ ion-card-header {
         color: var(--ion-color-primary);
         margin-right: 3px;
     }
+
+    ion-card-title {
+        white-space: nowrap;
+    }
 }
 
 ion-card-content {
@@ -75,7 +79,19 @@ ion-card:active {
 @media (min-width: 640px) {
     ion-card {
         height: 230px;
-        width: 275px;
+        width: 265px;
+        margin-right: 5px;
+    }
+
+    ion-card-content {
+        min-height: calc(100% - 40px);
+        position: relative;
+
+        .actions {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
     }
 }
 

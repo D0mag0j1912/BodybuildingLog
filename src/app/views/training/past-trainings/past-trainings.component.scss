@@ -128,18 +128,14 @@ ion-list {
         display: flex;
         flex-direction: row;
         justify-content: flex-start;
-        column-gap: 18px;
+        align-items: baseline;
         width: 850px;
         overflow: auto;
         margin: 0 auto;
-
-        &::-webkit-scrollbar {
-            width: 4px;
-        }
     }
 
     ion-list {
         width: 850px;
-        margin: 0 auto;
+        margin: 10px auto;
     }
 }
