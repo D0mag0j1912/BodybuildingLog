@@ -1,6 +1,8 @@
-<ion-grid>
-    <ion-row>
-        <ion-col *ngIf="isSearch">
+<div class="paginator">
+    <div class="controls-wrapper">
+        <div
+            *ngIf="isSearch"
+            class="page-size-wrapper">
             <select
                 class="page-size"
                 [(ngModel)]="size"
@@ -11,9 +13,10 @@
                     {{ size }}
                 </option>
             </select>
-        </ion-col>
-        <ion-col *ngIf="isPreviousPage">
+        </div>
+        <div class="arrow-wrapper">
             <ion-button
+                *ngIf="isPreviousPage"
                 class="first"
                 type="button"
                 color="primary"
@@ -23,8 +26,6 @@
                     data?.Value?.Results?.EarliestTrainingDate)">
                 <ion-icon name="play-back-sharp"></ion-icon>
             </ion-button>
-        </ion-col>
-        <ion-col>
             <ion-button
                 type="button"
                 class="previous"
@@ -35,8 +36,6 @@
                     data.Value?.Results?.Dates)">
                 <ion-icon name="chevron-back-sharp"></ion-icon>
             </ion-button>
-        </ion-col>
-        <ion-col>
             <ion-button
                 type="button"
                 class="next"
@@ -47,23 +46,18 @@
                     data.Value?.Results?.Dates)">
                 <ion-icon name="chevron-forward-sharp"></ion-icon>
             </ion-button>
-        </ion-col>
-        <ion-col *ngIf="isNextPage">
             <ion-button
+                *ngIf="isNextPage"
                 class="last"
                 color="primary"
                 type="button"
                 (click)="loadPage('Last', undefined, undefined, data?.Value?.TotalPages)">
                 <ion-icon name="play-forward-sharp"></ion-icon>
             </ion-button>
-        </ion-col>
-    </ion-row>
-    <ion-row>
-        <ion-col>
-            <div
-                *ngIf="data?.Value?.TotalPages"
-                class="label"
-                [innerHTML]="setPageText(data.Value.TotalPages) | async"></div>
-        </ion-col>
-    </ion-row>
-</ion-grid>
+        </div>
+    </div>
+    <div
+        *ngIf="data?.Value?.TotalPages"
+        class="label"
+        [innerHTML]="setPageText(data.Value.TotalPages) | async"></div>
+</div>

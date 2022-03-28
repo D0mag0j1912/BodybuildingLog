@@ -65,6 +65,7 @@ ion-list {
 
     .header-title {
         font-size: 20px;
+        white-space: nowrap;
 
         ::ng-deep &--key {
             color: var(--ion-color-primary);
