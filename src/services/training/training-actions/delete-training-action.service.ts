@@ -30,13 +30,11 @@ export class DeleteTrainingActionService {
             const pastTrainings: StreamData<Paginator<PastTrainings>> = await this.pastTrainingService.getPastTrainings(
                 currentDate as Date,
                 loggedUserId as string,
+                true,
             );
             return {
                 IsLoading: true,
-                Value: {
-                    ...pastTrainings.Value,
-                    Message: 'training.past_trainings.actions.delete_success',
-                } as PastTrainings,
+                Value: pastTrainings.Value,
                 IsError: false,
             } as StreamData<PastTrainings>;
         }

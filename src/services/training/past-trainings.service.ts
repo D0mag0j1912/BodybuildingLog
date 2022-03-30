@@ -14,7 +14,7 @@ export class PastTrainingsService {
 
     constructor(
         @InjectModel('Training') private readonly trainingModel: Model<Training>,
-    ) {}
+    ) { }
     
     async searchTrainings(
         loggedInUserId: string,
@@ -69,6 +69,7 @@ export class PastTrainingsService {
     async getPastTrainings(
         currentDate: Date,
         loggedUserId: string,
+        isDeleteTraining?: boolean,
     ): Promise<StreamData<Paginator<PastTrainings>>> {
         try {
             const dates: DateInterval = getIntervalDate(new Date(currentDate));
@@ -84,6 +85,9 @@ export class PastTrainingsService {
             results.Results.EarliestTrainingDate = (await this.getEarliestDate(loggedUserId)).createdAt;
             results.Results.IsPreviousWeek = isPreviousWeek(results.Results.EarliestTrainingDate, dates);
             results.Results.IsNextWeek = isNextWeek(dates);
+            if (isDeleteTraining) {
+                results.Results.Message = 'training.past_trainings.actions.delete_success';
+            }
             return {
                 IsLoading: true,
                 Value: results,
