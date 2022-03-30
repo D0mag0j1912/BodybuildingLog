@@ -1,31 +1,33 @@
 <!--TODO: convert to Ionic-->
-<!-- <mat-menu #languages="matMenu">
-<button
-    mat-menu-item
-    class="menu-item"
-    [class.chosenLanguage]="userData?.Preferences?.language === 'hr'"
-    [disabled]="userData?.Preferences?.language === 'hr'"
-    (click)="changeLanguage('hr')">
-    <img
-        src="../../../../assets/images/flags/croatia.png"
-        height="40"
-        width="40">
-    <span class="menu-item--text">
-        {{ 'languages.croatian' | translate }}
-    </span>
-</button>
-<button
-    mat-menu-item
-    class="menu-item"
-    [class.chosenLanguage]="userData?.Preferences?.language === 'en'"
-    [disabled]="userData?.Preferences?.language === 'en'"
-    (click)="changeLanguage('en')">
-    <img
-        src="../../../../assets/images/flags/united-kingdom.png"
-        height="24"
-        width="40">
-    <span class="menu-item--text">
-        {{ 'languages.english' | translate }}
-    </span>
-</button>
-</mat-menu> -->
+<ng-container *ngIf="(loggedUserData$ | async) as userData">
+    <ion-list>
+        <ion-item
+            lines="none"
+            class="menu-item"
+            [class.chosenLanguage]="userData?.Preferences?.language === 'hr'"
+            [disabled]="userData?.Preferences?.language === 'hr'"
+            (click)="changeLanguage('hr')">
+            <ion-img
+                src="../../../../assets/images/flags/croatia.png"
+                height="40"
+                width="40"></ion-img>
+            <ion-text class="menu-item--text">
+                {{ 'languages.croatian' | translate }}
+            </ion-text>
+        </ion-item>
+        <ion-item
+            lines="none"
+            class="menu-item"
+            [class.chosenLanguage]="userData?.Preferences?.language === 'en'"
+            [disabled]="userData?.Preferences?.language === 'en'"
+            (click)="changeLanguage('en')">
+            <ion-img
+                src="../../../../assets/images/flags/united-kingdom.png"
+                height="24"
+                width="40"></ion-img>
+            <ion-text class="menu-item--text">
+                {{ 'languages.english' | translate }}
+            </ion-text>
+        </ion-item>
+    </ion-list>
+</ng-container>

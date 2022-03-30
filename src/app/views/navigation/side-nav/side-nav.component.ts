@@ -3,13 +3,9 @@ import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
-import { switchMap, take, takeUntil } from 'rxjs/operators';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
-import { Language } from '../../../models/preferences.model';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
-import { NavigationService } from '../../../services/shared/navigation.service';
-import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import { LanguagesComponent } from './languages/languages.component';
 
@@ -18,7 +14,6 @@ import { LanguagesComponent } from './languages/languages.component';
     templateUrl: './side-nav.component.html',
     styleUrls: ['./side-nav.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [UnsubscribeService],
 })
 export class SideNavComponent implements OnInit {
 
@@ -27,9 +22,7 @@ export class SideNavComponent implements OnInit {
 
     constructor(
         private readonly authService: AuthService,
-        private readonly navigationService: NavigationService,
         private readonly newTrainingService: NewTrainingService,
-        private readonly unsubsService: UnsubscribeService,
         private readonly popoverController: PopoverController,
         private readonly router: Router,
     ) { }
@@ -63,22 +56,11 @@ export class SideNavComponent implements OnInit {
         const popover = await this.popoverController.create({
             component: LanguagesComponent,
             event: $event,
+            componentProps: {
+                loggedUserData: this.loggedUserData$,
+            },
         });
         await popover.present();
-    }
-
-    changeLanguage(language: Language): void {
-        this.authService.loggedUser$.pipe(
-            take(1),
-            switchMap((userData: AuthResponseData) =>
-                this.navigationService.setPreferences(
-                    userData._id,
-                    language,
-                    'kg',
-                ),
-            ),
-            takeUntil(this.unsubsService),
-        ).subscribe();
     }
 
 }

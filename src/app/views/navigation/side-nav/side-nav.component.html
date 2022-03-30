@@ -65,13 +65,11 @@
                     *ngIf="isAuthenticated$ | async"
                     lines="none"
                     (click)="$event.stopPropagation(); openPopover($event);">
-                    <ng-container *ngIf="(loggedUserData$ | async) as userData">
-                        <ion-icon
-                            slot="start"
-                            name="language-sharp"
-                            class="icon"></ion-icon>
-                        <ion-label>{{ 'navigation.language' | translate }}</ion-label>
-                    </ng-container>
+                    <ion-icon
+                        slot="start"
+                        name="language-sharp"
+                        class="icon"></ion-icon>
+                    <ion-label>{{ 'navigation.language' | translate }}</ion-label>
                 </ion-item>
             </ion-menu-toggle>
             <ion-menu-toggle [autoHide]="false">
