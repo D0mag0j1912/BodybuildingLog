@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,16 +12,13 @@ import { DialogRoles } from '../../../../../models/common/types/modal-roles.type
 import { PastTrainings } from '../../../../../models/training/past-trainings/past-trainings.model';
 import { SharedService } from '../../../../../services/shared/shared.service';
 import { ToastControllerService } from '../../../../../services/shared/toast-controller.service';
+import { DeleteTrainingActionService } from '../../../../../services/training/training-actions/delete-training-action.service';
 
 export interface DeleteTrainingActionDialogData {
     readonly title$: Observable<string>;
     readonly dateCreated$: Observable<string>;
     readonly timeCreated$: Observable<string>;
     readonly training$: Observable<Training>;
-    deleteTrainingFn(
-        trainingId: string,
-        currentDate: Date,
-    ): Observable<StreamData<Paginator<PastTrainings>>>;
 }
 
 @Component({
@@ -47,10 +43,10 @@ export class DeleteTrainingActionComponent {
     isLoading = false;
 
     constructor(
-        private readonly dialogRef: MatDialogRef<DeleteTrainingActionComponent>,
         private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
         private readonly toastControllerService: ToastControllerService,
+        private readonly deleteTrainingActionService: DeleteTrainingActionService,
         private readonly modalController: ModalController,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
@@ -58,13 +54,13 @@ export class DeleteTrainingActionComponent {
 
     deleteTraining(trainingId: string): void {
         this.isLoading = true;
-        this.data.deleteTrainingFn(
-            trainingId as string,
+        this.deleteTrainingActionService.deleteTraining(
+            trainingId,
             new Date(`
                 ${this.getSplittedCurrentDate()[2]}-
                 ${this.getSplittedCurrentDate()[1]}-
                 ${this.getSplittedCurrentDate()[0]}
-            `) as Date,
+            `),
         ).pipe(
             catchError(_ => EMPTY),
             finalize(() => {
@@ -78,7 +74,7 @@ export class DeleteTrainingActionComponent {
                 duration: MESSAGE_DURATION.GENERAL,
                 color: 'primary',
             });
-            this.dialogRef.close();
+            await this.modalController.dismiss(false, DialogRoles.DELETE_TRAINING);
         });
     }
 

@@ -31,16 +31,16 @@ export class TrainingItemActionsComponent {
         private readonly deleteTrainingActionService: DeleteTrainingActionService,
     ) { }
 
-    performAction(action: TrainingItemActions): void {
+    async performAction(action: TrainingItemActions): Promise<void> {
         const data: DeleteTrainingActionData = {
             weekDays: this.weekDays,
             timeCreated: this.timeCreated,
             dayIndex: this.dayIndex,
             training: this.training,
         };
-        switch(action) {
+        switch (action) {
             case 'delete':
-                this.deleteTrainingActionService.perform(data);
+                await this.deleteTrainingActionService.perform(data);
         }
     }
 }

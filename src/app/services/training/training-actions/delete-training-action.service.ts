@@ -5,7 +5,6 @@ import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Training } from 'src/app/models/training/new-training/new-training.model';
 import { environment } from '../../../../environments/environment';
 import { mapDateInterval } from '../../../helpers/training/past-trainings/map-past-trainings-dates.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
@@ -35,18 +34,13 @@ export class DeleteTrainingActionService implements TrainingActions {
         const modal = await this.modalController.create({
             component: DeleteTrainingActionComponent,
             componentProps: {
-                title$: this.translateService.stream('training.past_trainings.actions.delete_training') as Observable<string>,
+                title$: this.translateService.stream('training.past_trainings.actions.delete_training'),
                 dateCreated$: this.translateService.stream(`weekdays.${data.weekDays[data.dayIndex]}`).pipe(
-                    map((value: { [key: string]: string }) => `${value} (${this.datePipe.transform(data.training.createdAt as Date, 'dd.MM.yyyy')})`),
-                ) as Observable<string>,
-                timeCreated$: of(data.timeCreated) as Observable<string>,
-                training$: of(data.training as Training),
-                deleteTrainingFn: (
-                    trainingId: string,
-                    currentDate: Date,
-                ) => this.deleteTraining(trainingId, currentDate),
+                    map((value: { [key: string]: string }) => `${value} (${this.datePipe.transform(data.training.createdAt, 'dd.MM.yyyy')})`),
+                ),
+                timeCreated$: of(data.timeCreated),
+                training$: of(data.training),
             } as DeleteTrainingActionDialogData,
-            cssClass: 'delete-training-dialog',
         });
         await modal.present();
     }

@@ -1,32 +1,32 @@
-@import '../../../../../../../styles/default-pallette.scss';
-
-::ng-deep .delete-training-dialog {
-    .mat-dialog-container {
-        padding: 30px;
-    }
-}
 
 .title {
-    font-family: $font-family;
-    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
 }
 
-.content {
-    margin: 0 -30px;
-    padding: 0 30px;
+.dot {
+    height: 12px;
+    width: 12px;
+    background-color: var(--ion-color-primary);
+    border-radius: 50%;
+    display: inline-block;
 }
 
 .created-at {
     &-key {
         display: block;
-        margin-bottom: 10px;
-        text-align: center;
+        margin-top: 20px;
+        font-size: 18px;
     }
 
     &-value {
         display: block;
-        color: $army-green;
+        color: var(--ion-color-primary);
         font-weight: 600;
+
+        .time {
+            color: var(--ion-color-primary);
+        }
     }
 }
 
@@ -36,25 +36,22 @@
     row-gap: 5px;
     justify-content: flex-start;
 
-    .title {
-        align-self: center;
-    }
+    .exercises {
+        &-key {
+            align-self: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
 
-    .exercise {
         &-value {
-            color: $army-green;
+            color: var(--ion-color-primary);
             width: fit-content;
-            border-bottom: 2px solid $light-blue;
+            border-bottom: 2px solid var(--ion-color-light);
             align-self: center;
         }
     }
 }
 
-.actions {
-    padding-top: 15px;
-    justify-content: flex-end;
-
-    .delete-btn {
-        margin-left: 20px;
-    }
+.delete-btn {
+    margin-top: 10px;
 }

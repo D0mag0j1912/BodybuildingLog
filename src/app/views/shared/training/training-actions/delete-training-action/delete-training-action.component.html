@@ -9,46 +9,29 @@
     </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding ion-text-center">
-
-</ion-content>
-<ng-container *ngIf="(training$ | async) as training">
-    <ion-text>{{ title$ | async }}</ion-text>
-    <mat-dialog-content class="content">
-        <span class="created-at-key">
-            {{ 'training.past_trainings.created_at' | translate }}
-            <span class="created-at-value">
-                {{ dateCreated$ | async }}
-                <span class="dot"></span>
-                <span>{{ ' ' + (timeCreated$ | async) }}</span>
-            </span>
-        </span>
+    <ng-container *ngIf="(training$ | async) as training">
+        <ion-text class="title">{{ title$ | async }}</ion-text>
+        <ion-text class="created-at-key">{{ 'training.past_trainings.created_at' | translate }}</ion-text>
+        <ion-text class="created-at-value">
+            {{ dateCreated$ | async }}
+            <span class="dot"></span>
+            <span class="time">{{ ' ' + (timeCreated$ | async) }}</span>
+        </ion-text>
         <div
             class="exercises-wrapper">
-            <span class="title">{{ 'common.exercises' | translate }}</span>
+            <span class="exercises-key">{{ 'common.exercises' | translate }}</span>
             <strong
                 *ngFor="let exercise of training.exercise | slice:0:4"
-                class="exercise-value"
-                matTooltipClass="tooltip"
-                matTooltipPosition="above"
-                [matTooltip]="training.exercise.length > 4 ? (training | showAllExercises | async) : ''">
+                class="exercises-value">
                 {{ exercise.exerciseName | translate }}
             </strong>
         </div>
-    </mat-dialog-content>
-    <mat-dialog-actions class="actions">
-        <button
-            mat-raised-button
-            mat-dialog-close
-            [disabled]="isLoading">
-            {{ 'common.actions.close' | translate }}
-        </button>
-        <button
-            mat-raised-button
+        <ion-button
             class="delete-btn"
             color="primary"
             [disabled]="isLoading"
             (click)="deleteTraining(training._id)">
             {{ 'common.actions.delete' | translate }}
-        </button>
-    </mat-dialog-actions>
-</ng-container>
+        </ion-button>
+    </ng-container>
+</ion-content>
