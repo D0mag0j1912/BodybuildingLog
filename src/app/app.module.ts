@@ -13,7 +13,6 @@ import { AppComponent } from './app.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
-import { MaterialModule } from './material.module';
 import { NavigationModule } from './modules/navigation.module';
 import { SentryService } from './services/errors/sentry.service';
 
@@ -35,7 +34,6 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         FlexLayoutModule,
         BrowserAnimationsModule,
         AppRoutingModule,
-        MaterialModule,
         NavigationModule,
         TranslateModule.forRoot({
             loader: {

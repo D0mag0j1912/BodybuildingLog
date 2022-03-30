@@ -2,7 +2,6 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AutofocusModule } from '../../directives/autofocus/autofocus.module';
@@ -56,12 +55,6 @@ const PIPES_MODULES = [ShowAllExercisesModule];
         ...PIPES_MODULES,
     ],
     exports: [ ...COMPONENTS ],
-    providers: [
-        {
-            provide: MAT_DATE_LOCALE,
-            useValue: 'en-GB',
-        },
-        DatePipe,
-    ],
+    providers: [DatePipe],
 })
 export class TrainingModule { }

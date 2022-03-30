@@ -151,7 +151,6 @@ export class PastTrainingsComponent {
                                 this.handleArrows(response);
                             }),
                             mapStreamData(),
-
                         ),
                     ),
                 );

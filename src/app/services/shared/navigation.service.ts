@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
@@ -10,6 +9,7 @@ import { GeneralResponseData } from '../../models/general-response.model';
 import { Preferences, WeightFormat } from '../../models/preferences.model';
 import { Language } from '../../models/preferences.model';
 import { AuthService } from '../auth/auth.service';
+import { ToastControllerService } from './toast-controller.service';
 
 @Injectable({ providedIn: 'root' })
 export class NavigationService {
@@ -18,8 +18,8 @@ export class NavigationService {
         private readonly http: HttpClient,
         private readonly authService: AuthService,
         private readonly translateService: TranslateService,
-        private readonly snackBar: MatSnackBar,
-    ) {}
+        private readonly toastControllerService: ToastControllerService,
+    ) { }
 
     setPreferences(
         userId: string,
@@ -40,10 +40,11 @@ export class NavigationService {
             }),
             switchMap((response: GeneralResponseData) =>
                 this.translateService.use(language).pipe(
-                    tap(_ => {
-                        this.snackBar.open(this.translateService.instant(response.Message), null, {
+                    tap(async _ => {
+                        await this.toastControllerService.displayToast({
+                            message: this.translateService.instant(response.Message),
                             duration: MESSAGE_DURATION.GENERAL,
-                            panelClass: 'app__snackbar',
+                            color: 'primary',
                         });
                     }),
                 ),
