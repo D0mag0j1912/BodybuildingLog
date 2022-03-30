@@ -49,7 +49,7 @@ export class HeaderComponent implements OnInit {
         private readonly sharedService: SharedService,
         private readonly navigationService: NavigationService,
         private readonly router: Router,
-    ) {}
+    ) { }
 
     get StartDate(): string {
         return format(constructDates(new Date())?.StartDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
