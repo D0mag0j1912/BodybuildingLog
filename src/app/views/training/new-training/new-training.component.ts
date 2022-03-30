@@ -163,7 +163,10 @@ export class NewTrainingComponent implements OnDestroy {
                     currentTrainingState.bodyweight,
                     this.editData?.editTraining ? this.editData.editTraining?.bodyweight : null,
                 ),
-                [CommonValidators.isBroj(), Validators.min(30), Validators.max(300)],
+                {
+                    validators: [CommonValidators.isBroj(), Validators.min(30), Validators.max(300)],
+                    updateOn: 'blur',
+                },
             ),
             exercise: new FormControl(currentTrainingState),
         });

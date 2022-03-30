@@ -23,6 +23,7 @@
         display: block;
         color: var(--ion-color-primary);
         font-weight: 600;
+        font-size: 18px;
 
         .time {
             color: var(--ion-color-primary);
@@ -48,6 +49,7 @@
             width: fit-content;
             border-bottom: 2px solid var(--ion-color-light);
             align-self: center;
+            font-size: 18px;
         }
     }
 }
