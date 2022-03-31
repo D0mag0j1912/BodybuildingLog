@@ -3,7 +3,6 @@ import { FilterQuery, Model } from 'mongoose';
 import { Paginator, PaginatorParams } from '../models/common/paginator.model';
 import { Training } from '../models/training/new-training/new-training.model';
 import { PastTrainings } from '../models/training/past-trainings/past-trainings.model';
-import { getIntervalDate } from './date.helper';
 
 export const paginate = async <T extends Partial<PastTrainings>, U extends Model<K>, K extends Training>(
     model: U,
@@ -65,7 +64,6 @@ export const paginate = async <T extends Partial<PastTrainings>, U extends Model
                 .sort({ createdAt: 'asc' })
                 .exec();
         }
-        results.Results.Dates = getIntervalDate(results?.Results.Trainings);
         return results;
     }
     catch (error) {

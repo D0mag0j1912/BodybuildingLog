@@ -17,7 +17,7 @@ export class PastTrainingsController {
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
-    ) {}
+    ) { }
 
     @Get()
     async getPastTrainings(
