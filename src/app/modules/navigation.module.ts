@@ -4,13 +4,11 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { HeaderComponent } from '../views/navigation/header/header.component';
 import { LanguagesComponent } from '../views/navigation/side-nav/languages/languages.component';
 import { SideNavComponent } from '../views/navigation/side-nav/side-nav.component';
 import { AuthModule } from './auth/auth.module';
 
 const COMPONENTS = [
-    HeaderComponent,
     SideNavComponent,
     LanguagesComponent,
 ];
@@ -33,4 +31,4 @@ const IMPORTS = [AuthModule];
     ],
     exports: [ ...COMPONENTS ],
 })
-export class NavigationModule {}
+export class NavigationModule { }
