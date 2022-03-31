@@ -9,7 +9,7 @@ export class PreferencesService {
 
     constructor(
         @InjectModel('Preferences') private readonly preferencesModel: Model<PreferencesDto>,
-    ) {}
+    ) { }
 
     async setPreferences(
         userId: string,

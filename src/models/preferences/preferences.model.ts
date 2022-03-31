@@ -6,15 +6,15 @@ export type LanguageCode = 'hr' | 'en';
 export type WeightFormat = 'lbs' | 'kg';
 
 export const PREFERENCES_SCHEMA = new Schema({
-    language: {
+    Language: {
         type: String,
         required: true,
     },
-    weightFormat: {
+    WeightFormat: {
         type: String,
         required: true,
     },
-    userId: {
+    UserId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,

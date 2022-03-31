@@ -11,12 +11,12 @@ import { Schema } from 'mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
 
 export const USER_SCHEMA = new Schema({
-    email: {
+    Email: {
         type: String,
         required: true,
         unique: true,
     },
-    password: {
+    Password: {
         type: String,
         required: true,
     },
