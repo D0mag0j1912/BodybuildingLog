@@ -39,7 +39,7 @@ export class UserDto {
     @IsNotEmpty({
         message: 'auth.errors.email_required',
     })
-    email: string;
+    Email: string;
 
     @ApiProperty()
     @Length(6, 20, {
@@ -51,5 +51,5 @@ export class UserDto {
     @IsNotEmpty({
         message: 'auth.errors.password_required',
     })
-    password: string;
+    Password: string;
 }
