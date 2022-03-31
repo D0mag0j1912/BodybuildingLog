@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 import { MESSAGE_DURATION } from '../../constants/message-duration.const';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Preferences, WeightFormat } from '../../models/preferences.model';
-import { Language } from '../../models/preferences.model';
+import { LanguageCode } from '../../models/preferences.model';
 import { AuthService } from '../auth/auth.service';
 import { ToastControllerService } from './toast-controller.service';
 
@@ -23,19 +23,19 @@ export class NavigationService {
 
     setPreferences(
         userId: string,
-        language: Language,
+        language: LanguageCode,
         weightFormat: WeightFormat,
     ): Observable<GeneralResponseData> {
         const preferences: Partial<Preferences> = {
-            language: language,
-            weightFormat: weightFormat,
+            LanguageCode: language,
+            WeightFormat: weightFormat,
         };
         return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${userId}`, { preferences: preferences }).pipe(
             tap(_ => {
                 this.authService.updateUserData({
-                    userId: userId,
-                    language: language,
-                    weightFormat: weightFormat,
+                    UserId: userId,
+                    LanguageCode: language,
+                    WeightFormat: weightFormat,
                 } as Preferences);
             }),
             switchMap((response: GeneralResponseData) =>

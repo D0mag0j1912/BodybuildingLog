@@ -1,32 +1,14 @@
-<!--TODO: convert to Ionic-->
 <ng-container *ngIf="(loggedUserData$ | async) as userData">
     <ion-list>
         <ion-item
+            *ngFor="let language of languageData"
             lines="none"
-            class="menu-item"
-            [class.chosenLanguage]="userData?.Preferences?.language === 'hr'"
-            [disabled]="userData?.Preferences?.language === 'hr'"
-            (click)="changeLanguage('hr')">
-            <ion-img
-                src="../../../../assets/images/flags/croatia.png"
-                height="40"
-                width="40"></ion-img>
-            <ion-text class="menu-item--text">
-                {{ 'languages.croatian' | translate }}
-            </ion-text>
-        </ion-item>
-        <ion-item
-            lines="none"
-            class="menu-item"
-            [class.chosenLanguage]="userData?.Preferences?.language === 'en'"
-            [disabled]="userData?.Preferences?.language === 'en'"
-            (click)="changeLanguage('en')">
-            <ion-img
-                src="../../../../assets/images/flags/united-kingdom.png"
-                height="24"
-                width="40"></ion-img>
-            <ion-text class="menu-item--text">
-                {{ 'languages.english' | translate }}
+            [class.chosenLanguage]="userData?.Preferences?.LanguageCode === language.LanguageCode"
+            [disabled]="userData?.Preferences?.LanguageCode === language.LanguageCode"
+            (click)="changeLanguage(language.LanguageCode)">
+            <ion-img [src]="language.ImageUrl"></ion-img>
+            <ion-text>
+                {{ language.LanguageName | translate }}
             </ion-text>
         </ion-item>
     </ion-list>

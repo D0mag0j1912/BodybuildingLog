@@ -1,28 +1,5 @@
-@import '../../../../../styles/default-pallette.scss';
 
 .icon {
-    color: $army-green;
+    color: var(--ion-color-primary);
 }
-
-.menu-item {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    column-gap: 10px;
-    width: 150px;
-
-    &--text {
-        font-size: 15px;
-        font-family: $font-family;
-    }
-}
-
-.chosenLanguage {
-    background: $army-green;
-
-    .sidenav__menu-item--text {
-        color: white;
-    }
-}
-
 

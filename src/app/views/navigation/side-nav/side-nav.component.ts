@@ -57,8 +57,10 @@ export class SideNavComponent implements OnInit {
             component: LanguagesComponent,
             event: $event,
             componentProps: {
-                loggedUserData: this.loggedUserData$,
+                loggedUserData$: this.loggedUserData$,
             },
+            side: 'left',
+            keyboardClose: true,
         });
         await popover.present();
     }

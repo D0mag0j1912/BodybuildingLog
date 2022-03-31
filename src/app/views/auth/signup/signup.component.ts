@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { EMPTY } from 'rxjs';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
-import { Language, WeightFormat } from '../../../models/preferences.model';
+import { LanguageCode, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { SignupService } from '../../../services/auth/signup.service';
 import { LoadingControllerService } from '../../../services/shared/loading-controller.service';
@@ -15,7 +15,7 @@ import * as AuthCustomValidators from '../../../validators/auth/auth.validators'
 import { IonFocusDurations } from '../../../constants/ion-focus-durations.const';
 
 type FormData = {
-    language?: Language;
+    language?: LanguageCode;
     weightFormat?: WeightFormat;
     email?: string;
     password?: string;
@@ -76,7 +76,7 @@ export class SignupComponent {
         await this.loadingControllerService.displayLoader({ message: 'auth.signing_in' });
 
         this.authService.signup(
-            this.accessFormData('language').value as Language,
+            this.accessFormData('language').value as LanguageCode,
             this.accessFormData('weightFormat').value as WeightFormat,
             this.accessFormData('email').value,
             this.accessFormData('password').value,

@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
     ) {
         this.translateService.setDefaultLang('en');
         const authData: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
-        this.translateService.use(authData?.Preferences?.language || 'en')
+        this.translateService.use(authData?.Preferences?.LanguageCode || 'en')
             .pipe(
                 takeUntil(this.unsubscribeService),
             )

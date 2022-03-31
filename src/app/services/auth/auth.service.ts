@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 import { Login, Signup } from '../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../models/auth/auth-data.model';
 import { LocalStorageItems } from '../../models/common/interfaces/common.model';
-import { Language, WeightFormat } from '../../models/preferences.model';
+import { LanguageCode, WeightFormat } from '../../models/preferences.model';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
@@ -40,9 +40,9 @@ export class AuthService {
         const updatedUserData: AuthResponseData = {
             ...userData,
             Preferences: {
-                userId: preferences.userId,
-                language: preferences.language,
-                weightFormat: 'kg',
+                UserId: preferences.UserId,
+                LanguageCode: preferences.LanguageCode,
+                WeightFormat: 'kg',
             } as Preferences,
         };
         this.loggedUser$$.next({ ...updatedUserData });
@@ -50,7 +50,7 @@ export class AuthService {
     }
 
     signup(
-        language: Language,
+        language: LanguageCode,
         weightFormat: WeightFormat,
         email: string,
         password: string,
@@ -62,8 +62,8 @@ export class AuthService {
             confirmPassword,
         };
         const preferences: Partial<Preferences> = {
-            language: language,
-            weightFormat: weightFormat,
+            LanguageCode: language,
+            WeightFormat: weightFormat,
         };
         return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/signup', {
             signupData: signupData,
@@ -99,7 +99,7 @@ export class AuthService {
                 }
             }),
             mergeMap((response: AuthResponseData) =>
-                this.translateService.use(response.Preferences.language)
+                this.translateService.use(response.Preferences.LanguageCode)
                     .pipe(
                         switchMap(_ => of(response)),
                     ),

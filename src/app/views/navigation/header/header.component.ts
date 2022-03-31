@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
-import { Language } from '../../../models/preferences.model';
+import { LanguageCode } from '../../../models/preferences.model';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -92,7 +92,7 @@ export class HeaderComponent implements OnInit {
         this.toggleSideNav.emit();
     }
 
-    changeLanguage(language: Language): void {
+    changeLanguage(language: LanguageCode): void {
         this.authService.loggedUser$
             .pipe(
                 take(1),

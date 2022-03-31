@@ -1,12 +1,12 @@
 
 export interface Preferences {
-    userId?: string;
-    language?: Language;
-    weightFormat?: WeightFormat;
+    UserId?: string;
+    LanguageCode?: LanguageCode;
+    WeightFormat?: WeightFormat;
     //TODO: Training: { showTrainingsBy?: 'week' | 'day' }
 }
 
-export type Language = 'en' | 'hr';
+export type LanguageCode = 'en' | 'hr';
 
 export type WeightFormat = 'lbs' | 'kg';
 
