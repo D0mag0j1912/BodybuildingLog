@@ -64,7 +64,7 @@ export class AuthService {
                 _id: user._id,
             };
             const accessToken: string = await Promise.resolve(this.jwtService.sign(payload));
-            const preferences: PreferencesDto = await this.preferencesModel.findOne({ userId: user._id }).exec();
+            const preferences: PreferencesDto = await this.preferencesModel.findOne({ UserId: user._id }).exec();
             return {
                 Token: accessToken,
                 ExpiresIn: 10800,
@@ -102,7 +102,7 @@ export class AuthService {
         signupDto: SignupDto,
     ): Promise<AuthResponse> {
         try {
-            const { language, weightFormat } = preferencesDto;
+            const { LanguageCode: language, WeightFormat: weightFormat } = preferencesDto;
             const { email, password, confirmPassword } = signupDto;
             const encryptedPassword: string = await hash(password, 10);
             const user = new this.userModel({
@@ -111,9 +111,9 @@ export class AuthService {
             });
             const savedUser: UserDto = await user.save();
             const preferences: PreferencesDto = {
-                userId: savedUser._id,
-                language: language,
-                weightFormat: weightFormat,
+                UserId: savedUser._id,
+                LanguageCode: language,
+                WeightFormat: weightFormat,
             } as PreferencesDto;
             await this.preferencesModel.create(preferences);
             return {

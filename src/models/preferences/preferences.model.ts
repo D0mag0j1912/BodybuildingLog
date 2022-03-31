@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 
-export type Language = 'hr' | 'en';
+export type LanguageCode = 'hr' | 'en';
 export type WeightFormat = 'lbs' | 'kg';
 
 export const PREFERENCES_SCHEMA = new Schema({
@@ -27,15 +27,15 @@ export class PreferencesDto {
     @IsOptional()
     @IsDefined({ message: '@common.errors.something_went_wrong' })
     @IsString({ message: '@common.errors.something_went_wrong' })
-    userId: string;
+    UserId: string;
 
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.language_required' })
-    language: Language;
+    LanguageCode: LanguageCode;
 
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.weight_format_required' })
-    weightFormat: WeightFormat;
+    WeightFormat: WeightFormat;
 }

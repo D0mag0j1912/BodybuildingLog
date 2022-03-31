@@ -16,10 +16,10 @@ export class PreferencesService {
         preferencesDto: PreferencesDto,
     ): Promise<GeneralResponseData> {
         try {
-            const { language, weightFormat } = preferencesDto;
-            const preferences = await this.preferencesModel.findOne({ userId: userId }).exec();
-            preferences.language = language;
-            preferences.weightFormat = weightFormat;
+            const { LanguageCode: language, WeightFormat: weightFormat } = preferencesDto;
+            const preferences = await this.preferencesModel.findOne({ UserId: userId }).exec();
+            preferences.LanguageCode = language;
+            preferences.WeightFormat = weightFormat;
             await preferences.save();
             return { Message: 'preferences.language_changed' } as GeneralResponseData;
         }
