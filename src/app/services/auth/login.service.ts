@@ -7,13 +7,13 @@ export class LoginService {
 
     constructor(
         private readonly http: HttpClient,
-    ) {}
+    ) { }
 
     passwordFitsEmail(
         email: string,
         password: string,
     ): Observable<boolean> {
-        const params = `?email=${email}&password=${password}`;
+        const params = `?Email=${email}&Password=${password}`;
         return this.http.get<boolean>(environment.BACKEND + '/auth/check_pass' + params);
     }
 }

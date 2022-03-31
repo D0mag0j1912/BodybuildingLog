@@ -57,9 +57,9 @@ export class AuthService {
         confirmPassword: string,
     ): Observable<AuthResponseData> {
         const signupData: Signup = {
-            email,
-            password,
-            confirmPassword,
+            Email: email,
+            Password: password,
+            ConfirmPassword: confirmPassword,
         };
         const preferences: Partial<Preferences> = {
             LanguageCode: language,
@@ -76,8 +76,8 @@ export class AuthService {
         password: string,
     ): Observable<AuthResponseData> {
         const authData: Login = {
-            email: email,
-            password: password,
+            Email: email,
+            Password: password,
         };
         return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/login', authData).pipe(
             tap(async (response: AuthResponseData) => {

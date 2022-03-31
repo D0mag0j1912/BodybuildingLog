@@ -1,14 +1,14 @@
 import { Preferences } from '../preferences.model';
 
 export interface Signup {
-    readonly email: string;
-    readonly password: string;
-    readonly confirmPassword: string;
+    readonly Email: string;
+    readonly Password: string;
+    readonly ConfirmPassword: string;
 }
 
 export interface Login {
-    readonly email: string;
-    readonly password: string;
+    readonly Email: string;
+    readonly Password: string;
 }
 
 export interface AuthResponseData {
