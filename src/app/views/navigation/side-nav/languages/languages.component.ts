@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { PopoverController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { take, switchMap, takeUntil } from 'rxjs/operators';
 import { AuthResponseData } from '../../../../models/auth/auth-data.model';
@@ -42,6 +43,7 @@ export class LanguagesComponent {
         private readonly authService: AuthService,
         private readonly navigationService: NavigationService,
         private readonly unsubscribeService: UnsubscribeService,
+        private readonly popoverController: PopoverController,
     ) { }
 
     changeLanguage(language: LanguageCode): void {
@@ -55,6 +57,6 @@ export class LanguagesComponent {
                 ),
             ),
             takeUntil(this.unsubscribeService),
-        ).subscribe();
+        ).subscribe(async _ => await this.popoverController.dismiss());
     }
 }

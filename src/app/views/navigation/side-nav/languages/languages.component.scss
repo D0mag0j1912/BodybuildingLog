@@ -1,13 +1,15 @@
 
+
 ion-img {
     height: 40px;
     width: 40px;
 }
 
-.chosenLanguage {
-    background: var(--ion-color-primary);
+.language-txt {
+    margin-left: 10px;
+    font-size: 18px;
+}
 
-    .menu-item--text {
-        color: white;
-    }
+.checkmark {
+    color: var(--ion-color-primary);
 }

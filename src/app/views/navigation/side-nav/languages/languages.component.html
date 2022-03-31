@@ -3,13 +3,17 @@
         <ion-item
             *ngFor="let language of languageData"
             lines="none"
-            [class.chosenLanguage]="userData?.Preferences?.LanguageCode === language.LanguageCode"
             [disabled]="userData?.Preferences?.LanguageCode === language.LanguageCode"
             (click)="changeLanguage(language.LanguageCode)">
             <ion-img [src]="language.ImageUrl"></ion-img>
-            <ion-text>
+            <ion-text class="language-txt">
                 {{ language.LanguageName | translate }}
             </ion-text>
+            <ion-icon
+                *ngIf="userData?.Preferences?.LanguageCode === language.LanguageCode"
+                name="checkmark-outline"
+                class="checkmark"
+                slot="end"></ion-icon>
         </ion-item>
     </ion-list>
 </ng-container>
