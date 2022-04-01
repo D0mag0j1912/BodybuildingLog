@@ -3,9 +3,9 @@ ion-grid:first-of-type {
     padding-bottom: 0;
 }
 
-ion-select {
+.exercise-picker {
     color: var(--ion-color-primary);
-    --placeholder-opacity: 1;
+    max-width: 250px;
 }
 
 .md .exercise-row {
@@ -17,5 +17,5 @@ ion-select {
 }
 
 .empty-training-msg {
-    font-size: 13px;
+    font-size: 14px;
 }

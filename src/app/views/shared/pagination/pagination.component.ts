@@ -29,10 +29,10 @@ export class PaginationComponent {
     size: number = DEFAULT_SIZE;
 
     @Input()
-    isPreviousPage = true;
+    isPreviousPage = false;
 
     @Input()
-    isNextPage = true;
+    isNextPage = false;
 
     @Input()
     data: StreamData<Paginator<PastTrainings>> | undefined = undefined;

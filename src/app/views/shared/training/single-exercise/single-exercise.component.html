@@ -11,6 +11,7 @@
                             <ion-label position="floating">{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
                             <ion-select
                                 #exerciseNameChoice
+                                class="exercise-picker"
                                 interface="popover"
                                 formControlName="name"
                                 (ionChange)="onExerciseNameChange(i, exerciseNameChoice)">
