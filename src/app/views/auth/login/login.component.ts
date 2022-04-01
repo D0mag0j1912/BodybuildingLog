@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
-import { IonInput, NavController } from '@ionic/angular';
+import { IonInput } from '@ionic/angular';
 import { EMPTY } from 'rxjs';
+import { Router } from '@angular/router';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -41,7 +42,7 @@ export class LoginComponent {
         private readonly loginService: LoginService,
         private readonly authService: AuthService,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly navController: NavController,
+        private readonly router: Router,
         private readonly loadingControllerService: LoadingControllerService,
         private readonly toastControllerService: ToastControllerService,
     ) {
@@ -89,7 +90,7 @@ export class LoginComponent {
                     duration: MESSAGE_DURATION.GENERAL,
                     color: response.Token ? 'primary' : 'danger',
                 });
-                await this.navController.navigateForward(['/training/new-training']);
+                await this.router.navigate(['/training/new-training']);
             }
         });
     }

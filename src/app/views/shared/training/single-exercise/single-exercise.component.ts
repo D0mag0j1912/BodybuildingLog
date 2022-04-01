@@ -147,7 +147,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         }));
 
         if (event) {
-            this.newTrainingService.addNewExercise(this.getAlreadyUsedExercises() as string[]);
+            this.newTrainingService.addNewExercise(this.getAlreadyUsedExercises());
             this.exerciseStateChanged$$.next('Add');
             setTimeout(async () => await this.exercisePicker.last.open(event));
         }

@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY } from 'rxjs';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { LanguageCode, WeightFormat } from '../../../models/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -42,7 +42,7 @@ export class SignupComponent {
         private readonly loadingControllerService: LoadingControllerService,
         private readonly toastControllerService: ToastControllerService,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly navController: NavController,
+        private readonly router: Router,
     ) {
         this.form = new FormGroup({
             language: new FormControl('en', [Validators.required]),
@@ -97,7 +97,7 @@ export class SignupComponent {
                     duration: MESSAGE_DURATION.GENERAL,
                     color: response.Success ? 'primary' : 'danger',
                 });
-                await this.navController.navigateBack(['/auth/login']);
+                await this.router.navigate(['/auth/login']);
             }
         });
     }
