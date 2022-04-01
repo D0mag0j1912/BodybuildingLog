@@ -10,11 +10,11 @@
                         <ion-item fill="outline">
                             <ion-label position="floating">{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
                             <ion-select
-                                #exerciseNameChoice
+                                #exercisePicker
                                 class="exercise-picker"
                                 interface="popover"
                                 formControlName="name"
-                                (ionChange)="onExerciseNameChange(i, exerciseNameChoice)">
+                                (ionChange)="onExerciseNameChange(i, exercisePicker)">
                                 <ion-select-option
                                     *ngFor="let exercise of exercises$ | newTraining:i:exerciseChanged | async"
                                     [value]="exercise.Name">

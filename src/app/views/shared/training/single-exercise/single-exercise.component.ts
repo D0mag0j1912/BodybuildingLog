@@ -62,8 +62,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     @Input()
     editMode = false;
 
-    @ViewChildren('exerciseNameChoice')
-    exercisePicker: QueryList<IonSelect>;
+    @ViewChildren('exercisePicker')
+    exercisePickerEls: QueryList<IonSelect>;
 
     readonly currentExerciseState$: Observable<[SingleExercise[], Exercise[]]> =
         this.exerciseStateChanged$$.pipe(
@@ -93,6 +93,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     ) {
         this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName(), SingleExerciseValidators.checkExerciseNumber()]);
         this.form.updateValueAndValidity();
+
+
     }
 
     writeValue(data: Training): void {
@@ -149,7 +151,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         if (event) {
             this.newTrainingService.addNewExercise(this.getAlreadyUsedExercises());
             this.exerciseStateChanged$$.next('Add');
-            setTimeout(async () => await this.exercisePicker.last.open(event));
+            setTimeout(async () => await this.exercisePickerEls.last.open(event));
         }
     }
 
