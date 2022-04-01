@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
@@ -61,6 +61,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     @Input()
     editMode = false;
+
+    @ViewChildren('exerciseNameChoice')
+    exercisePicker: QueryList<IonSelect>;
 
     readonly currentExerciseState$: Observable<[SingleExercise[], Exercise[]]> =
         this.exerciseStateChanged$$.pipe(
@@ -135,7 +138,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         }
     }
 
-    addExercise(clicked?: MouseEvent): void {
+    addExercise(event?: UIEvent): void {
         this.form.push(new FormGroup({
             'name': new FormControl(null, [Validators.required]),
             'sets': new FormControl(createInitialSet()),
@@ -143,9 +146,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
             'disabledTooltip': new FormControl(true, [Validators.required]),
         }));
 
-        if (clicked) {
+        if (event) {
             this.newTrainingService.addNewExercise(this.getAlreadyUsedExercises() as string[]);
             this.exerciseStateChanged$$.next('Add');
+            setTimeout(async () => await this.exercisePicker.last.open(event));
         }
     }
 
