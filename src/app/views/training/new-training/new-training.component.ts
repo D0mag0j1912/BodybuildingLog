@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
-import { forkJoin, Observable } from 'rxjs';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { delay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
@@ -14,14 +14,17 @@ import { createEmptyExercise, EditNewTrainingData, EMPTY_TRAINING, EMPTY_TRAININ
 import { Training } from '../../../models/training/new-training/new-training.model';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
+import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as CommonValidators from '../../../validators/shared/common.validators';
+import { SingleExerciseComponent } from '../../shared/training/single-exercise/single-exercise.component';
 
 @Component({
     selector: 'bl-new-training',
     templateUrl: './new-training.component.html',
     styleUrls: ['./new-training.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [UnsubscribeService],
 })
 export class NewTrainingComponent implements OnDestroy {
 
@@ -37,11 +40,15 @@ export class NewTrainingComponent implements OnDestroy {
     @ViewChild(IonContent, { read: IonContent })
     ionContent: IonContent;
 
+    @ViewChildren(SingleExerciseComponent)
+    singleExerciseCmps: QueryList<SingleExerciseComponent>;
+
     constructor(
         private readonly newTrainingService: NewTrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
         private readonly authService: AuthService,
+        private readonly unsubscribeService: UnsubscribeService,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
     ) {
@@ -138,6 +145,20 @@ export class NewTrainingComponent implements OnDestroy {
 
     onBodyweightChange(bodyweight: string | number): void {
         this.newTrainingService.addBodyweightToStorage(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString());
+    }
+
+    async onExerciseAdded(event: UIEvent): Promise<void> {
+        if (this.ionContent) {
+            of(null)
+                .pipe(
+                    delay(100),
+                    tap(async _ => await this.ionContent.scrollToBottom(300)),
+                    delay(200),
+                    tap(async _ => await this.singleExerciseCmps.last?.exercisePickerEls?.last?.open(event)),
+                    takeUntil(this.unsubscribeService),
+                )
+                .subscribe();
+        }
     }
 
     tryAgain(): void {

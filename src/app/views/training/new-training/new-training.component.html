@@ -56,7 +56,8 @@
                     [bodyweight]="bodyweight"
                     [editData]="editData"
                     [isLoading]="trainingData.IsLoading"
-                    [editMode]="editMode"></bl-single-exercise>
+                    [editMode]="editMode"
+                    (exerciseAdded)="onExerciseAdded($event)"></bl-single-exercise>
             </form>
             <ng-container *ngIf="trainingData?.IsError">
                 <div class="error-wrapper">

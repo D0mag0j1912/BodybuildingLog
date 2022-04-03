@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
@@ -61,6 +61,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     @Input()
     editMode = false;
+
+    @Output()
+    readonly exerciseAdded: EventEmitter<UIEvent> = new EventEmitter();
 
     @ViewChildren('exercisePicker')
     exercisePickerEls: QueryList<IonSelect>;
@@ -149,7 +152,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         if (event) {
             this.newTrainingService.addNewExercise(this.getAlreadyUsedExercises());
             this.exerciseStateChanged$$.next('Add');
-            setTimeout(async () => await this.exercisePickerEls.last.open(event));
+            this.exerciseAdded.next(event);
         }
     }
 
