@@ -12,8 +12,12 @@ ion-card {
     }
 }
 
-ion-button {
+.md ion-button {
     font-size: 5px;
+}
+
+.ios ion-button {
+    font-size: 12px;
 }
 
 .paginator {
