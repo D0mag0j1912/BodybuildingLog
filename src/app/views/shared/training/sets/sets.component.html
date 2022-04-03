@@ -116,7 +116,8 @@
                             </ion-text>
                         </ion-item>
                         <ion-text
-                            *ngIf="(set.errors?.repsRequired && ((isExerciseFormSubmitted$ | async) || exerciseNameControl?.value))"
+                            *ngIf="(set.errors?.repsRequired &&
+                                ((isExerciseFormSubmitted$ | async) || exerciseNameControl?.value))"
                             class="error">
                             {{ 'training.new_training.errors.reps_required' | translate }}
                         </ion-text>

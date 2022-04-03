@@ -17,12 +17,8 @@ ion-grid {
     color: var(--ion-color-danger) !important;
 }
 
-.md .set-row {
+.set-row {
     align-items: flex-start;
-}
-
-.ios .set-row {
-    align-items: flex-end;
 }
 
 .set-saved-msg {
