@@ -51,8 +51,7 @@ export class NewTrainingComponent implements OnDestroy {
                     switchMap((params: Params) => {
                         if (params['id']) {
                             this.editMode = true;
-                            this.editData._id = params['id'];
-                            return this.pastTrainingService.getPastTraining(this.editData._id)
+                            return this.pastTrainingService.getPastTraining(params['id'])
                                 .pipe(
                                     tap((response: StreamData<Training>) => {
                                         this.editData = {
@@ -140,22 +139,24 @@ export class NewTrainingComponent implements OnDestroy {
     onBodyweightChange(bodyweight: string | number): void {
         this.newTrainingService.addBodyweightToStorage(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString());
     }
-    //TODO: fix edit mode
+
     tryAgain(): void {
-        if (this.editData.editTraining) {
-            this.pastTrainingService.getPastTraining(this.editData._id)
+        if (this.editData?.editTraining) {
+            this.trainingStream$ = this.pastTrainingService.getPastTraining(this.editData.editTraining?._id)
                 .pipe(
+                    tap((response: StreamData<Training>) => {
+                        this.editData = {
+                            editedDate: response?.Value?.updatedAt ?? new Date(),
+                            editTraining: {
+                                ...response?.Value,
+                                editMode: this.editMode,
+                            },
+                        };
+                        this.newTrainingService.updateTrainingData(this.editData.editTraining);
+                    }),
+                    switchMap(_ => this.newTrainingService.getExercises()),
                     mapStreamData(),
-            ).subscribe((response: StreamData<Training>) => {
-                this.editData = {
-                    editedDate: response?.Value?.updatedAt ?? new Date(),
-                    editTraining: {
-                        ...response?.Value,
-                        editMode: this.editMode,
-                    },
-                };
-                this.newTrainingService.updateTrainingData(this.editData.editTraining);
-            });
+            );
         }
         else {
             this.trainingStream$ = this.newTrainingService.getExercises()
