@@ -93,8 +93,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     ) {
         this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName(), SingleExerciseValidators.checkExerciseNumber()]);
         this.form.updateValueAndValidity();
-
-
     }
 
     writeValue(data: Training): void {

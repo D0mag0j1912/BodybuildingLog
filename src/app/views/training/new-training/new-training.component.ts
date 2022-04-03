@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { IonContent } from '@ionic/angular';
 import { forkJoin, Observable } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
@@ -32,6 +33,9 @@ export class NewTrainingComponent implements OnDestroy {
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
     isAuthenticated$: Observable<boolean>;
     isEditing$: Observable<boolean>;
+
+    @ViewChild(IonContent, { read: IonContent })
+    ionContent: IonContent;
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
@@ -103,6 +107,12 @@ export class NewTrainingComponent implements OnDestroy {
 
     get bodyweight(): FormControl {
         return this.form.get('bodyweight') as FormControl;
+    }
+
+    ionViewDidEnter(): void {
+        if (this.ionContent) {
+            setTimeout(async () => await this.ionContent.scrollToBottom(300), 100);
+        }
     }
 
     ngOnDestroy(): void {
