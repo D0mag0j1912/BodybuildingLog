@@ -39,6 +39,7 @@ export class PastTrainingsComponent {
     readonly pageSizeOptions: number[] = [1, 3, 5, 10];
     size: number = DEFAULT_SIZE;
     page: number = INITIAL_PAGE;
+    searchText = '';
 
     isNextPage = true;
     isPreviousPage = true;
@@ -91,11 +92,11 @@ export class PastTrainingsComponent {
 
         this.page = this.route.snapshot.queryParamMap?.get('page') ? +this.route.snapshot.queryParamMap.get('page') : INITIAL_PAGE;
         this.size = this.route.snapshot.queryParamMap?.get('size') ? +this.route.snapshot.queryParamMap.get('size') : DEFAULT_SIZE;
-        const searchFilter = this.route.snapshot.queryParamMap?.get('search');
-        if (searchFilter) {
+        this.searchText = this.route.snapshot.queryParamMap?.get('search');
+        if (this.searchText) {
             this.pastTrainings$ =
                 this.pastTrainingsService.searchPastTrainings(
-                    searchFilter.trim().toLowerCase(),
+                    this.searchText.trim().toLowerCase(),
                     this.size,
                     this.page,
                 ).pipe(
@@ -133,9 +134,10 @@ export class PastTrainingsComponent {
         this.pastTrainings$ =
             of($event)
                 .pipe(
-                    switchMap((value: string) =>
+                    tap(searchText => this.searchText = searchText),
+                    switchMap((searchText: string) =>
                         this.pastTrainingsService.searchPastTrainings(
-                            value,
+                            searchText,
                             this.size,
                             this.page,
                         ).pipe(
@@ -158,10 +160,9 @@ export class PastTrainingsComponent {
 
     onPaginatorChanged($event: PaginatorChanged): void {
         if ($event?.IsSearch) {
-            const currentSearchValue = this.route.snapshot.queryParamMap?.get('search') ?? undefined;
             this.pastTrainings$ =
                 this.pastTrainingsService.searchPastTrainings(
-                    currentSearchValue?.trim()?.toLowerCase() ?? '',
+                    this.searchText?.trim()?.toLowerCase() ?? '',
                     $event.Size,
                     $event.Page,
                 ).pipe(
@@ -171,7 +172,7 @@ export class PastTrainingsComponent {
                             relativeTo: this.route,
                             queryParams: this.handleQueryParams(
                                 response,
-                                currentSearchValue,
+                                this.searchText,
                             ),
                         });
                         this.handleArrows(response);
@@ -345,14 +346,8 @@ export class PastTrainingsComponent {
     }
 
     private handleArrows(x: StreamData<Paginator<PastTrainings>>): void {
-        if (x?.Value?.TotalCount <= DEFAULT_SIZE) {
-            this.isNextPage = false;
-            this.isPreviousPage = false;
-        }
-        else {
-            this.isPreviousPage = !!x?.Value?.Previous;
-            this.isNextPage = !!x?.Value?.Next;
-        }
+        this.isPreviousPage = !!x?.Value?.Previous;
+        this.isNextPage = !!x?.Value?.Next;
         if (x?.Value?.Results?.IsPreviousWeek !== undefined && x?.Value?.Results?.IsNextWeek !== undefined) {
             this.isNextPage = x.Value.Results.IsNextWeek;
             this.isPreviousPage = x.Value.Results.IsPreviousWeek;
