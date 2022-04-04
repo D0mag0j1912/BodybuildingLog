@@ -70,6 +70,10 @@ ion-list {
         ::ng-deep &--key {
             color: var(--ion-color-primary);
         }
+
+        ::ng-deep &--value {
+            font-weight: 400;
+        }
     }
 
     .food-key {

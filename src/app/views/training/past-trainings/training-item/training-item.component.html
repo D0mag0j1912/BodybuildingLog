@@ -3,9 +3,8 @@
     (click)="trainingClicked()">
     <ion-card-header>
         <ion-card-title>
-            <strong class="day-name">
-                {{ ('weekdays.' + weekDays[dayIndex] | translate) }}</strong>
-            {{ '(' + (training.createdAt | date: 'dd.MM.yyyy') + ')' }}
+            <strong class="day-name">{{ ('weekdays.' + weekDays[dayIndex] | translate) }}</strong>
+            <ion-text class="day-date">{{ '(' + (training.createdAt | date: 'dd.MM.yyyy') + ')' }}</ion-text>
         </ion-card-title>
     </ion-card-header>
     <ion-card-content>
