@@ -36,6 +36,7 @@ export class PastTrainingsService {
                     userId: loggedInUserId,
                 };
                 const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition, query);
+                results.Results.Dates = getIntervalDate(results?.Results.Trainings);
                 return {
                     IsLoading: true,
                     Value: results,
