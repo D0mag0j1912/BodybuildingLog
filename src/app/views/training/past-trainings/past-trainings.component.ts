@@ -20,10 +20,10 @@ import { Page } from '../../../models/common/types/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 
 enum Heights {
-    LOWER_WEEK_HEIGHT = 275,
-    HIGHER_WEEK_HEIGHT = 305,
-    LOWER_SEARCH_HEIGHT = 305,
-    HIGHER_SEARCH_HEIGHT = 335,
+    LOWER_WEEK_HEIGHT = 315,
+    HIGHER_WEEK_HEIGHT = 345,
+    LOWER_SEARCH_HEIGHT = 345,
+    HIGHER_SEARCH_HEIGHT = 375,
 }
 
 @Component({

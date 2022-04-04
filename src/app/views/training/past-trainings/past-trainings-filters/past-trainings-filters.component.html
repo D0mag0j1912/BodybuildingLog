@@ -25,7 +25,7 @@
             (ionChange)="segmentChanged($any($event))">
             <ng-container *ngFor="let option of sortOptions">
                 <ion-segment-button [value]="option.key">
-                    <ion-label>{{ option.value | async }}</ion-label>
+                    <ion-label color="primary">{{ option.value | async }}</ion-label>
                 </ion-segment-button>
             </ng-container>
         </ion-segment>
