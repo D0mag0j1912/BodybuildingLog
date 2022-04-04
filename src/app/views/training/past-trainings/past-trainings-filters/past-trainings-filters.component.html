@@ -18,13 +18,17 @@
             class="search-max-error">
             {{ 'training.past_trainings.filters.errors.search_max_length' | translate }}
         </span>
-        <!-- <ion-segment (ionChange)="segmentChanged($any($event))">
+        <ion-segment
+            color="primary"
+            mode="ios"
+            [value]="sortOptions[0].key"
+            (ionChange)="segmentChanged($any($event))">
             <ng-container *ngFor="let option of sortOptions">
                 <ion-segment-button [value]="option.key">
-                    {{ option.value | async }}
+                    <ion-label>{{ option.value | async }}</ion-label>
                 </ion-segment-button>
             </ng-container>
-        </ion-segment> -->
+        </ion-segment>
     </form>
     <div class="or-wrapper">
         <span class="or">{{ 'common.or' | translate }}</span>
