@@ -1,0 +1,16 @@
+<ion-fab
+    horizontal="start"
+    vertical="down"
+    slot="fixed">
+    <ion-fab-button color="primary">
+        <ion-icon name="calendar-outline"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list color="primary">
+        <ion-fab-button
+            *ngFor="let day of daysOfWeek"
+            color="primary"
+            type="button">
+            {{ day }}
+        </ion-fab-button>
+    </ion-fab-list>
+</ion-fab>

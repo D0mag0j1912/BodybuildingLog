@@ -7,6 +7,7 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
+    <bl-show-by-day></bl-show-by-day>
     <ng-container *ngIf="pastTrainings$ | async as pastTrainings">
         <ng-container *ngIf="pastTrainings?.IsError; else valueOrLoading">
             <div class="error-wrapper">

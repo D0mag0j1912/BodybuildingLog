@@ -11,6 +11,7 @@ import { ShowAllExercisesModule } from '../../pipes/training/past-trainings/show
 import { NewTrainingComponent } from '../../views/training/new-training/new-training.component';
 import { PastTrainingsFiltersComponent } from '../../views/training/past-trainings/past-trainings-filters/past-trainings-filters.component';
 import { PastTrainingsComponent } from '../../views/training/past-trainings/past-trainings.component';
+import { ShowByDayComponent } from '../../views/training/past-trainings/show-by-day/show-by-day.component';
 import { TrainingItemActionsComponent } from '../../views/training/past-trainings/training-item/training-item-actions/training-item-actions.component';
 import { TrainingItemComponent } from '../../views/training/past-trainings/training-item/training-item.component';
 import { SharedModule } from '../shared.module';
@@ -24,6 +25,7 @@ const COMPONENTS = [
     TrainingItemComponent,
     TrainingItemActionsComponent,
     PastTrainingsFiltersComponent,
+    ShowByDayComponent,
 ];
 
 const EXTERNAL_IMPORTS = [

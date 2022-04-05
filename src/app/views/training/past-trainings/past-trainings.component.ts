@@ -118,10 +118,6 @@ export class PastTrainingsComponent {
         return TEMPLATE_DATE_FORMAT;
     }
 
-    get maxTrainingsPerPage(): number {
-        return DEFAULT_SIZE;
-    }
-
     get isSearch$(): Observable<boolean> {
         return this.route.queryParamMap
             .pipe(
