@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DAYS_OF_WEEK } from '../../../../constants/days-of-week.const';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'bl-show-by-day',
@@ -9,7 +11,13 @@ import { DAYS_OF_WEEK } from '../../../../constants/days-of-week.const';
 })
 export class ShowByDayComponent {
 
-    get daysOfWeek(): string[] {
-        return DAYS_OF_WEEK.map(day => day[0]);
-    }
+    readonly daysOfWeek$: Observable<string[]> = this.translateService.stream('weekdays')
+        .pipe(
+            map(value => Object.values(value)),
+        );
+
+    constructor(
+        private readonly translateService: TranslateService,
+    ) {}
+
 }
