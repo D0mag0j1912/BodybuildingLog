@@ -1,3 +1,4 @@
+import { KeyValue } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SegmentChangeEventDetail } from '@ionic/angular';
@@ -6,11 +7,7 @@ import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 import { INPUT_MAX_LENGTH } from '../../../../constants/input-maxlength.const';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
-
-interface PeriodDropdown {
-    key: string;
-    value: Observable<string>;
-}
+import { PeriodDropdown } from '../../../../models/training/past-trainings/past-trainings.model';
 
 @Component({
     selector: 'bl-past-trainings-filters',
@@ -26,9 +23,12 @@ export class PastTrainingsFiltersComponent {
     @Output()
     readonly trainingEmitted: EventEmitter<string> = new EventEmitter<string>();
 
+    @Output()
+    readonly periodEmitted: EventEmitter<PeriodDropdown> = new EventEmitter<PeriodDropdown>();
+
     searchValue = '';
 
-    sortOptions: [PeriodDropdown, PeriodDropdown] = [
+    sortOptions: [KeyValue<PeriodDropdown, Observable<string>>, KeyValue<PeriodDropdown, Observable<string>>] = [
         {
             key: 'week',
             value: this.translateService.stream('training.past_trainings.show_by_week'),
@@ -71,6 +71,7 @@ export class PastTrainingsFiltersComponent {
 
     segmentChanged($event: CustomEvent<SegmentChangeEventDetail>): void {
         //TODO: create logic for sorting trainings by period
+        this.periodEmitted.emit($event?.detail?.value as PeriodDropdown);
     }
 
     openFilterDialog(): void {

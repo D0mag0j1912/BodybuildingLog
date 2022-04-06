@@ -29,7 +29,9 @@
             </div>
         </ng-container>
         <ng-template #valueOrLoading>
-            <bl-past-trainings-filters (trainingEmitted)="searchEmitted($event)"></bl-past-trainings-filters>
+            <bl-past-trainings-filters
+                (trainingEmitted)="searchEmitted($event)"
+                (periodEmitted)="onPeriodEmitted($event)"></bl-past-trainings-filters>
             <ng-container *ngIf="pastTrainings?.IsLoading; else value">
                 <ion-spinner
                     class="ion-spinner-class"

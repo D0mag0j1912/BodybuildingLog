@@ -12,7 +12,7 @@ import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator, INITIAL_PAGE, DEFAULT_SIZE, PaginatorChanged } from '../../../models/common/interfaces/paginator.model';
-import { DateInterval, PastTrainingsQueryParams, PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
+import { DateInterval, PastTrainingsQueryParams, PastTrainings, PeriodDropdown } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
@@ -40,6 +40,7 @@ export class PastTrainingsComponent {
     size: number = DEFAULT_SIZE;
     page: number = INITIAL_PAGE;
     searchText = '';
+    periodEmitted: PeriodDropdown = 'week';
 
     isNextPage = true;
     isPreviousPage = true;
@@ -152,6 +153,10 @@ export class PastTrainingsComponent {
                         ),
                     ),
                 );
+    }
+
+    onPeriodEmitted($event: PeriodDropdown): void {
+        this.periodEmitted = $event;
     }
 
     onPaginatorChanged($event: PaginatorChanged): void {
