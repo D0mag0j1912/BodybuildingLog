@@ -157,6 +157,7 @@ export class PastTrainingsComponent {
 
     onPeriodEmitted($event: PeriodDropdown): void {
         this.periodEmitted = $event;
+        this.changeDetectorRef.markForCheck();
     }
 
     onPaginatorChanged($event: PaginatorChanged): void {
