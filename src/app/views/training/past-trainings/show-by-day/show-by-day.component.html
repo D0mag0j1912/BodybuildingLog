@@ -1,15 +1,17 @@
 <ion-fab
     horizontal="end"
     vertical="down"
-    slot="fixed">
+    slot="fixed"
+    [activated]="true">
     <ion-fab-button color="primary">
         <ion-icon name="calendar-outline"></ion-icon>
     </ion-fab-button>
     <ion-fab-list>
         <ion-fab-button
             *ngFor="let day of daysOfWeek$ | async"
-            type="button">
-            {{ day[0] }}
+            type="button"
+            (click)="$event.stopPropagation()">
+            {{ day.substring(0, 3) }}
         </ion-fab-button>
     </ion-fab-list>
 </ion-fab>
