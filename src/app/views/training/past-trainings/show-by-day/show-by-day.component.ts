@@ -18,6 +18,6 @@ export class ShowByDayComponent {
 
     constructor(
         private readonly translateService: TranslateService,
-    ) {}
+    ) { }
 
 }

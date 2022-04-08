@@ -9,7 +9,7 @@
         <ion-fab-button
             *ngFor="let day of daysOfWeek$ | async"
             type="button">
-            {{ day }}
+            {{ day[0] }}
         </ion-fab-button>
     </ion-fab-list>
 </ion-fab>
