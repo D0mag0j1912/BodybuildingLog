@@ -3,6 +3,7 @@ ion-fab {
     margin-top: 35px;
 
     ion-fab-button {
-        --color: var(--ion-color-primary);
+        --background: var(--ion-color-primary);
+        --color: white;
     }
 }
