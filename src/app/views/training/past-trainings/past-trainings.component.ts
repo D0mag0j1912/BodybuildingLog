@@ -18,6 +18,7 @@ import { UnsubscribeService } from '../../../services/shared/unsubscribe.service
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 import { Page } from '../../../models/common/types/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
+import { DayActivatedType } from './show-by-day/show-by-day.component';
 
 enum Heights {
     LOWER_WEEK_HEIGHT = 315,
@@ -41,6 +42,10 @@ export class PastTrainingsComponent {
     page: number = INITIAL_PAGE;
     searchText = '';
     periodEmitted: PastTrainingsFilterType = 'week';
+    dayActivated: DayActivatedType = {
+        Date: new Date(),
+        DayNumber: 0,
+    };
 
     isNextPage = true;
     isPreviousPage = true;
@@ -172,14 +177,18 @@ export class PastTrainingsComponent {
         );
     }
 
-    onDayActivated($event: Date): void {
-        this.pastTrainings$ = this.pastTrainingsService.getPastTrainings($event, 'day')
+    onDayActivated($event: DayActivatedType): void {
+        this.dayActivated = $event;
+        this.pastTrainings$ = this.pastTrainingsService.getPastTrainings($event.Date, 'day')
             .pipe(
                 mapStreamData(),
             );
     }
 
-    onPaginatorChanged($event: PaginatorChanged): void {
+    onPaginatorChanged(
+        $event: PaginatorChanged,
+        dayFilterDate: Date,
+    ): void {
         if ($event?.IsSearch) {
             this.pastTrainings$ =
                 this.pastTrainingsService.searchPastTrainings(
@@ -204,8 +213,14 @@ export class PastTrainingsComponent {
         else {
             this.pastTrainings$ =
                 this.pastTrainingsService.getPastTrainings(
-                    this.calculateDate($event.PageType, $event.DateInterval, $event.EarliestTrainingDate),
-                    'week',
+                    this.periodEmitted === 'week'
+                    ? this.onPaginatorChangedFilterHandler(this.periodEmitted, $event)
+                    : this.onPaginatorChangedFilterHandler(
+                        this.periodEmitted,
+                        undefined,
+                        this.calculateDate($event.PageType, undefined, $event.EarliestTrainingDate, dayFilterDate),
+                    ),
+                    this.periodEmitted,
                 ).pipe(
                     tap(async (response: StreamData<Paginator<PastTrainings>>) => {
                         this.handleArrows(response);
@@ -267,6 +282,23 @@ export class PastTrainingsComponent {
             );
     }
 
+    private onPaginatorChangedFilterHandler(
+        filterType: PastTrainingsFilterType,
+        $weekEvent?: PaginatorChanged,
+        startOfCurrentWeek?: Date,
+    ): Date {
+        switch (filterType) {
+            case 'week': {
+                return this.calculateDate($weekEvent.PageType, $weekEvent.DateInterval, $weekEvent.EarliestTrainingDate);
+            }
+            case 'day': {
+                return addDays(startOfWeek(startOfCurrentWeek, { weekStartsOn: 1 }), this.dayActivated.DayNumber);
+            }
+            default:
+                isNeverCheck(filterType);
+        }
+    }
+
     private updatePageAndSize(response: StreamData<Paginator<PastTrainings>>): void {
         this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
         this.size = response?.Value?.Size ?? DEFAULT_SIZE;
@@ -277,24 +309,25 @@ export class PastTrainingsComponent {
         page: Page,
         dateInterval: DateInterval,
         earliestTrainingDate: Date,
+        startOfCurrentWeek?: Date,
     ): Date {
         switch (page) {
             case 'Previous': {
                 return subDays(
                     utcToZonedTime(
-                        dateInterval.StartDate,
+                        startOfCurrentWeek ? startOfCurrentWeek : dateInterval.StartDate,
                         environment.TIMEZONE,
                     ), 7);
             }
             case 'Next': {
                 return addDays(
                     utcToZonedTime(
-                        dateInterval.StartDate,
+                        startOfCurrentWeek ? startOfCurrentWeek : dateInterval.StartDate,
                         environment.TIMEZONE,
                     ), 7);
             }
             case 'First': {
-                return earliestTrainingDate;
+                return new Date(earliestTrainingDate);
             }
             case 'Last': {
                 return new Date();

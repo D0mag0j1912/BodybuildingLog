@@ -111,7 +111,9 @@
                         [isPreviousPage]="isPreviousPage"
                         [isNextPage]="isNextPage"
                         [data]="pastTrainings"
-                        (paginatorChanged)="onPaginatorChanged($event)"></bl-pagination>
+                        (paginatorChanged)="onPaginatorChanged(
+                            $event,
+                            pastTrainings.Value?.Results?.Dates?.StartDate)"></bl-pagination>
                 </ng-template>
             </ng-template>
         </ng-template>

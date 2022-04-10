@@ -4,6 +4,11 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { addDays, startOfWeek } from 'date-fns';
 
+export interface DayActivatedType {
+    Date: Date;
+    DayNumber: number;
+}
+
 @Component({
     selector: 'bl-show-by-day',
     templateUrl: './show-by-day.component.html',
@@ -16,7 +21,7 @@ export class ShowByDayComponent {
     startOfWeek: Date = new Date();
 
     @Output()
-    readonly dayActivated: EventEmitter<Date> = new EventEmitter<Date>();
+    readonly dayActivated: EventEmitter<DayActivatedType> = new EventEmitter<DayActivatedType>();
 
     readonly activeDay$$: BehaviorSubject<number> = new BehaviorSubject(1);
     readonly daysOfWeek$: Observable<string[]> = this.translateService.stream('weekdays')
@@ -33,7 +38,7 @@ export class ShowByDayComponent {
         this.activeDay$$.next(dayNumber);
 
         const newDate = addDays(startOfWeek(this.startOfWeek, { weekStartsOn: 1 }), index);
-        this.dayActivated.next(newDate);
+        this.dayActivated.next({ Date: newDate, DayNumber: index });
     }
 
 }
