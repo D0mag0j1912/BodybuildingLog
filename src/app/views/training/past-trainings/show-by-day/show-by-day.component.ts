@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { addDays } from 'date-fns';
+import { addDays, startOfWeek } from 'date-fns';
 
 @Component({
     selector: 'bl-show-by-day',
@@ -32,7 +32,7 @@ export class ShowByDayComponent {
         const dayNumber = index + 1;
         this.activeDay$$.next(dayNumber);
 
-        const newDate = addDays(this.startOfWeek, index);
+        const newDate = addDays(startOfWeek(this.startOfWeek, { weekStartsOn: 1 }), index);
         this.dayActivated.next(newDate);
     }
 
