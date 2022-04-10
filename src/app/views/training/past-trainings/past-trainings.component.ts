@@ -248,7 +248,7 @@ export class PastTrainingsComponent {
             dateInterval?.StartDate,
             dateInterval?.EndDate,
         );
-        if (isDay || !dateInterval?.EndDate) {
+        if (isDay) {
             return this.translateService.stream(`common.day`)
                 .pipe(
                     map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate)),
