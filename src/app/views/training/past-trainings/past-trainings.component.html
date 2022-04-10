@@ -7,8 +7,11 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <bl-show-by-day *ngIf="periodEmitted === 'day'"></bl-show-by-day>
     <ng-container *ngIf="pastTrainings$ | async as pastTrainings">
+        <bl-show-by-day
+            *ngIf="periodEmitted === 'day'"
+            [startOfWeek]="pastTrainings.Value?.Results?.Dates?.StartDate"
+            (dayActivated)="onDayActivated($event)"></bl-show-by-day>
         <ng-container *ngIf="pastTrainings?.IsError; else valueOrLoading">
             <div class="error-wrapper">
                 <img

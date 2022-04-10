@@ -8,10 +8,10 @@
     </ion-fab-button>
     <ion-fab-list>
         <ion-fab-button
-            *ngFor="let day of (daysOfWeek$ | async); let i = index"
+            *ngFor="let day of (daysOfWeek$ | async); let i = index;"
             type="button"
             [class.active-day]="(activeDay$$ | async) === (i + 1)"
-            (click)="$event.stopPropagation(); makeDayActive(i)">
+            (click)="$event.stopPropagation(); makeDayActive(i);">
             {{ day.substring(0, 3) }}
         </ion-fab-button>
     </ion-fab-list>

@@ -160,6 +160,13 @@ export class PastTrainingsComponent {
         this.changeDetectorRef.markForCheck();
     }
 
+    onDayActivated($event: Date): void {
+        this.pastTrainings$ = this.pastTrainingsService.getPastTrainings($event)
+            .pipe(
+                mapStreamData(),
+            );
+    }
+
     onPaginatorChanged($event: PaginatorChanged): void {
         if ($event?.IsSearch) {
             this.pastTrainings$ =
