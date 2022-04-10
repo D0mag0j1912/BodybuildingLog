@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -11,6 +11,7 @@ import { map } from 'rxjs/operators';
 })
 export class ShowByDayComponent {
 
+    readonly activeDay$$: BehaviorSubject<number> = new BehaviorSubject(1);
     readonly daysOfWeek$: Observable<string[]> = this.translateService.stream('weekdays')
         .pipe(
             map(value => Object.values(value)),
@@ -19,5 +20,9 @@ export class ShowByDayComponent {
     constructor(
         private readonly translateService: TranslateService,
     ) { }
+
+    makeDayActive(index: number): void {
+        this.activeDay$$.next(index + 1);
+    }
 
 }
