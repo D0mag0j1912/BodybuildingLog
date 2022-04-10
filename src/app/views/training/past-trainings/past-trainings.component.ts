@@ -2,10 +2,10 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, subDays } from 'date-fns';
+import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfWeek, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Observable, of } from 'rxjs';
-import { delay, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { delay, finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
@@ -158,9 +158,18 @@ export class PastTrainingsComponent {
                 );
     }
 
-    onPeriodEmitted($event: PastTrainingsFilterType): void {
+    onPeriodEmitted(
+        $event: PastTrainingsFilterType,
+        mondayDate: Date,
+    ): void {
         this.periodEmitted = $event;
-        this.changeDetectorRef.markForCheck();
+        this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
+            this.periodEmitted === 'week' ? new Date() : startOfWeek(mondayDate, { weekStartsOn: 1 }),
+            this.periodEmitted,
+        ).pipe(
+            mapStreamData(),
+            finalize(() => this.changeDetectorRef.markForCheck()),
+        );
     }
 
     onDayActivated($event: Date): void {
