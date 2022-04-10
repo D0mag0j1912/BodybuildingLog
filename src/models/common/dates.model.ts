@@ -1,5 +1,5 @@
 
 export interface DateInterval {
     StartDate: Date;
-    EndDate: Date;
+    EndDate?: Date;
 }

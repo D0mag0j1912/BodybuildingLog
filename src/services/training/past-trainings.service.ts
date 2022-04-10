@@ -6,7 +6,7 @@ import { paginate } from '../../helpers/pagination.helper';
 import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
 import { StreamData } from '../../models/common/response.model';
 import { Training } from '../../models/training/new-training/new-training.model';
-import { PastTrainings } from '../../models/training/past-trainings/past-trainings.model';
+import { PastTrainings, PastTrainingsFilterType } from '../../models/training/past-trainings/past-trainings.model';
 import { DateInterval } from '../../models/common/dates.model';
 
 @Injectable()
@@ -45,6 +45,7 @@ export class PastTrainingsService {
             }
             return this.getPastTrainings(
                 new Date(),
+                'week',
                 loggedInUserId,
             );
         }
@@ -69,20 +70,30 @@ export class PastTrainingsService {
 
     async getPastTrainings(
         currentDate: Date,
+        filterType: PastTrainingsFilterType,
         loggedUserId: string,
         isDeleteTraining?: boolean,
     ): Promise<StreamData<Paginator<PastTrainings>>> {
         try {
             const dates: DateInterval = getIntervalDate(new Date(currentDate));
-            const condition: FilterQuery<Training> = {
-                userId: loggedUserId,
-                createdAt: {
-                    $gte: dates.StartDate,
-                    $lt: dates.EndDate,
-                },
-            };
+            let condition: FilterQuery<Training>;
+            if (filterType === 'week') {
+                condition = {
+                    userId: loggedUserId,
+                    createdAt: {
+                        $gte: dates.StartDate,
+                        $lt: dates.EndDate,
+                    },
+                };
+            }
+            else {
+                condition = {
+                    userId: loggedUserId,
+                    createdAt: dates.StartDate,
+                };
+            }
             const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition);
-            results.Results.Dates = dates;
+            results.Results.Dates = filterType === 'week' ? dates : { StartDate: dates.StartDate, EndDate: null };
             results.Results.EarliestTrainingDate = (await this.getEarliestDate(loggedUserId))?.createdAt ?? new Date();
             results.Results.IsPreviousWeek = isPreviousWeek(results.Results?.EarliestTrainingDate, dates);
             results.Results.IsNextWeek = isNextWeek(dates);

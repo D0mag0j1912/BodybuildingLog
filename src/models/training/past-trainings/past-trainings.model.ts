@@ -9,3 +9,5 @@ export interface PastTrainings {
     EarliestTrainingDate?: Date;
     Message?: string;
 }
+
+export type PastTrainingsFilterType = 'week' | 'day';

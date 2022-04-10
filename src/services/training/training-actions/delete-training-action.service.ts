@@ -28,8 +28,9 @@ export class DeleteTrainingActionService {
             }
             await this.trainingModel.findByIdAndRemove(trainingId, { useFindAndModify: false }).exec();
             const pastTrainings: StreamData<Paginator<PastTrainings>> = await this.pastTrainingService.getPastTrainings(
-                currentDate as Date,
-                loggedUserId as string,
+                currentDate,
+                'week',
+                loggedUserId,
                 true,
             );
             return {

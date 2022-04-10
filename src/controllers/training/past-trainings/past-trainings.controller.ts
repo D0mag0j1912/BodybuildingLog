@@ -9,6 +9,7 @@ import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login.model';
 import { Paginator } from '../../../models/common/paginator.model';
 import { StreamData } from '../../../models/common/response.model';
+import { PastTrainingsFilterType } from '../../../models/training/past-trainings/past-trainings.model';
 
 @ApiTags('Training')
 @Controller('training/past_trainings')
@@ -23,14 +24,16 @@ export class PastTrainingsController {
     async getPastTrainings(
         @GET_USER() user: UserDto,
         @Query('currentDate') currentDate: Date,
+        @Query('filterType') filterType: PastTrainingsFilterType,
     ): Promise<StreamData<Paginator<PastTrainings>>> {
         //TODO: Create custom Pipe
-        if (!currentDate) {
+        if (!currentDate || !filterType) {
             throw new BadRequestException('training.past_trainings.errors.past_trainings_error_title');
         }
         return this.pastTrainingsService.getPastTrainings(
-            currentDate as Date,
-            user._id as string,
+            currentDate,
+            filterType,
+            user._id,
         );
     }
 
