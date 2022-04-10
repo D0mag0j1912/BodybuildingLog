@@ -12,7 +12,7 @@ import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator, INITIAL_PAGE, DEFAULT_SIZE, PaginatorChanged } from '../../../models/common/interfaces/paginator.model';
-import { DateInterval, PastTrainingsQueryParams, PastTrainings, PeriodDropdown } from '../../../models/training/past-trainings/past-trainings.model';
+import { DateInterval, PastTrainingsQueryParams, PastTrainings, PastTrainingsFilterType } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
@@ -40,7 +40,7 @@ export class PastTrainingsComponent {
     size: number = DEFAULT_SIZE;
     page: number = INITIAL_PAGE;
     searchText = '';
-    periodEmitted: PeriodDropdown = 'week';
+    periodEmitted: PastTrainingsFilterType = 'week';
 
     isNextPage = true;
     isPreviousPage = true;
@@ -106,7 +106,10 @@ export class PastTrainingsComponent {
                     );
         }
         else {
-            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
+            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
+                this.getDateTimeQueryParams(),
+                'week',
+            )
                 .pipe(
                     tap((response: StreamData<Paginator<PastTrainings>>) => this.handleArrows(response)),
                     mapStreamData(),
@@ -155,13 +158,13 @@ export class PastTrainingsComponent {
                 );
     }
 
-    onPeriodEmitted($event: PeriodDropdown): void {
+    onPeriodEmitted($event: PastTrainingsFilterType): void {
         this.periodEmitted = $event;
         this.changeDetectorRef.markForCheck();
     }
 
     onDayActivated($event: Date): void {
-        this.pastTrainings$ = this.pastTrainingsService.getPastTrainings($event)
+        this.pastTrainings$ = this.pastTrainingsService.getPastTrainings($event, 'day')
             .pipe(
                 mapStreamData(),
             );
@@ -191,25 +194,29 @@ export class PastTrainingsComponent {
         }
         else {
             this.pastTrainings$ =
-                this.pastTrainingsService.getPastTrainings(this.calculateDate($event.PageType, $event.DateInterval, $event.EarliestTrainingDate))
-                    .pipe(
-                        tap(async (response: StreamData<Paginator<PastTrainings>>) => {
-                            this.handleArrows(response);
-                            await this.router.navigate([], {
-                                relativeTo: this.route,
-                                queryParams: this.handleQueryParams(response),
-                            });
-                        }),
-                        mapStreamData(),
-                    );
+                this.pastTrainingsService.getPastTrainings(
+                    this.calculateDate($event.PageType, $event.DateInterval, $event.EarliestTrainingDate),
+                    'week',
+                ).pipe(
+                    tap(async (response: StreamData<Paginator<PastTrainings>>) => {
+                        this.handleArrows(response);
+                        await this.router.navigate([], {
+                            relativeTo: this.route,
+                            queryParams: this.handleQueryParams(response),
+                        });
+                    }),
+                    mapStreamData(),
+                );
         }
     }
 
     tryAgain(): void {
-        this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(this.getDateTimeQueryParams())
-            .pipe(
-                mapStreamData(),
-            );
+        this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
+            this.getDateTimeQueryParams(),
+            'week',
+        ).pipe(
+            mapStreamData(),
+        );
     }
 
     setTimePeriod(dateInterval: DateInterval): Observable<string> {

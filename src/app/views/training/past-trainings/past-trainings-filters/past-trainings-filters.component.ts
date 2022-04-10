@@ -7,7 +7,7 @@ import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 import { INPUT_MAX_LENGTH } from '../../../../constants/input-maxlength.const';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
-import { PeriodDropdown } from '../../../../models/training/past-trainings/past-trainings.model';
+import { PastTrainingsFilterType } from '../../../../models/training/past-trainings/past-trainings.model';
 
 @Component({
     selector: 'bl-past-trainings-filters',
@@ -24,11 +24,11 @@ export class PastTrainingsFiltersComponent {
     readonly trainingEmitted: EventEmitter<string> = new EventEmitter<string>();
 
     @Output()
-    readonly periodEmitted: EventEmitter<PeriodDropdown> = new EventEmitter<PeriodDropdown>();
+    readonly periodEmitted: EventEmitter<PastTrainingsFilterType> = new EventEmitter<PastTrainingsFilterType>();
 
     searchValue = '';
 
-    sortOptions: [KeyValue<PeriodDropdown, Observable<string>>, KeyValue<PeriodDropdown, Observable<string>>] = [
+    sortOptions: [KeyValue<PastTrainingsFilterType, Observable<string>>, KeyValue<PastTrainingsFilterType, Observable<string>>] = [
         {
             key: 'week',
             value: this.translateService.stream('training.past_trainings.show_by_week'),
@@ -71,7 +71,7 @@ export class PastTrainingsFiltersComponent {
 
     segmentChanged($event: CustomEvent<SegmentChangeEventDetail>): void {
         //TODO: create logic for sorting trainings by period
-        this.periodEmitted.emit($event?.detail?.value as PeriodDropdown);
+        this.periodEmitted.emit($event?.detail?.value as PastTrainingsFilterType);
     }
 
     openFilterDialog(): void {
