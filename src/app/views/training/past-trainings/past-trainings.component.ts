@@ -221,18 +221,18 @@ export class PastTrainingsComponent {
 
     setTimePeriod(dateInterval: DateInterval): Observable<string> {
         const isDay = isSameDay(
-            dateInterval.StartDate,
-            dateInterval.EndDate,
+            dateInterval?.StartDate,
+            dateInterval?.EndDate,
         );
-        if (isDay) {
+        if (isDay || !dateInterval?.EndDate) {
             return this.translateService.stream(`common.day`)
                 .pipe(
                     map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate)),
                 );
         }
         const isWeek = isSameWeek(
-            dateInterval.StartDate,
-            dateInterval.EndDate,
+            dateInterval?.StartDate,
+            dateInterval?.EndDate,
             { weekStartsOn: 1 },
         );
         if (isWeek) {
@@ -242,8 +242,8 @@ export class PastTrainingsComponent {
                 );
         }
         const isMonth = isSameMonth(
-            dateInterval.StartDate,
-            dateInterval.EndDate,
+            dateInterval?.StartDate,
+            dateInterval?.EndDate,
         );
         if (isMonth) {
             const month = getMonth(dateInterval.StartDate);

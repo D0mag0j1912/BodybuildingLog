@@ -32,7 +32,7 @@ export class ShowByDayComponent {
         const dayNumber = index + 1;
         this.activeDay$$.next(dayNumber);
 
-        const newDate = addDays(this.startOfWeek, dayNumber);
+        const newDate = addDays(this.startOfWeek, index);
         this.dayActivated.next(newDate);
     }
 
