@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
+import { endOfDay, startOfDay } from 'date-fns';
 import { getIntervalDate, isNextWeek, isPreviousWeek } from '../../helpers/date.helper';
 import { paginate } from '../../helpers/pagination.helper';
 import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
@@ -76,24 +77,15 @@ export class PastTrainingsService {
     ): Promise<StreamData<Paginator<PastTrainings>>> {
         try {
             const dates: DateInterval = getIntervalDate(new Date(currentDate));
-            let condition: FilterQuery<Training>;
-            if (filterType === 'week') {
-                condition = {
-                    userId: loggedUserId,
-                    createdAt: {
-                        $gte: dates.StartDate,
-                        $lt: dates.EndDate,
-                    },
-                };
-            }
-            else {
-                condition = {
-                    userId: loggedUserId,
-                    createdAt: dates.StartDate,
-                };
-            }
+            const condition: FilterQuery<Training> = {
+                userId: loggedUserId,
+                createdAt: {
+                    $gte: filterType === 'week' ? dates.StartDate : startOfDay(new Date(currentDate)),
+                    $lt: filterType === 'week' ? dates.EndDate : endOfDay(new Date(currentDate)),
+                },
+            };
             const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition);
-            results.Results.Dates = filterType === 'week' ? dates : { StartDate: dates.StartDate, EndDate: null };
+            results.Results.Dates = filterType === 'week' ? dates : { StartDate: new Date(currentDate), EndDate: new Date(currentDate) };
             results.Results.EarliestTrainingDate = (await this.getEarliestDate(loggedUserId))?.createdAt ?? new Date();
             results.Results.IsPreviousWeek = isPreviousWeek(results.Results?.EarliestTrainingDate, dates);
             results.Results.IsNextWeek = isNextWeek(dates);
