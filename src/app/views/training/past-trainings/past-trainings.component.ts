@@ -111,7 +111,7 @@ export class PastTrainingsComponent {
                     this.size,
                     this.page,
                 ).pipe(
-                    tap((x: StreamData<Paginator<PastTrainings>>) => this.handleArrows(x)),
+                    tap((x: StreamData<Paginator<PastTrainings>>) => this.handlePaginationArrows(x)),
                     mapStreamData(),
                 );
         }
@@ -120,7 +120,7 @@ export class PastTrainingsComponent {
                 this.getDateTimeQueryParams(),
                 'week',
             ).pipe(
-                tap((response: StreamData<Paginator<PastTrainings>>) => this.handleArrows(response)),
+                tap((response: StreamData<Paginator<PastTrainings>>) => this.handlePaginationArrows(response)),
                 mapStreamData(),
             );
         }
@@ -135,10 +135,10 @@ export class PastTrainingsComponent {
         this.pastTrainings$ =
             of($event)
                 .pipe(
-                    tap(searchText => this.searchText = searchText),
-                    switchMap((searchText: string) =>
-                        this.pastTrainingsService.searchPastTrainings(
-                            searchText,
+                    switchMap((searchText: string) => {
+                        this.searchText = searchText;
+                        return this.pastTrainingsService.searchPastTrainings(
+                            this.searchText,
                             this.size,
                             this.page,
                         ).pipe(
@@ -151,11 +151,11 @@ export class PastTrainingsComponent {
                                         $event.trim() !== '' ? $event.trim() : undefined,
                                     ),
                                 });
-                                this.handleArrows(response);
+                                this.handlePaginationArrows(response);
                             }),
                             mapStreamData(),
-                        ),
-                    ),
+                        );
+                    }),
                 );
     }
 
@@ -213,7 +213,7 @@ export class PastTrainingsComponent {
                                 this.searchText,
                             ),
                         });
-                        this.handleArrows(response);
+                        this.handlePaginationArrows(response);
                     }),
                     mapStreamData(),
                 );
@@ -235,7 +235,7 @@ export class PastTrainingsComponent {
                     this.periodEmitted,
                 ).pipe(
                     tap(async (response: StreamData<Paginator<PastTrainings>>) => {
-                        this.handleArrows(response);
+                        this.handlePaginationArrows(response);
                         await this.router.navigate([], {
                             relativeTo: this.route,
                             queryParams: this.handleQueryParams(response),
@@ -415,7 +415,7 @@ export class PastTrainingsComponent {
         }
     }
 
-    private handleArrows(x: StreamData<Paginator<PastTrainings>>): void {
+    private handlePaginationArrows(x: StreamData<Paginator<PastTrainings>>): void {
         this.isPreviousPage = !!x?.Value?.Previous;
         this.isNextPage = !!x?.Value?.Next;
         if (x?.Value?.Results?.IsPreviousWeek !== undefined && x?.Value?.Results?.IsNextWeek !== undefined) {
