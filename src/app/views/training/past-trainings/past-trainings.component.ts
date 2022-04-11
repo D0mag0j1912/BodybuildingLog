@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Observable, of } from 'rxjs';
-import { delay, finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { delay, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
@@ -43,7 +43,7 @@ export class PastTrainingsComponent {
     searchText = '';
     periodEmitted: PeriodFilterType = 'week';
     dayActivated: DayActivatedType = {
-        Date: new Date(),
+        Date: startOfDay(new Date()),
         DayNumber: 0,
     };
 
@@ -51,6 +51,11 @@ export class PastTrainingsComponent {
     isPreviousPage = true;
 
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
+
+    readonly isSearch$: Observable<boolean> = this.route.queryParamMap
+        .pipe(
+            map((params: ParamMap) => !!params?.get('search')),
+        );
 
     @ViewChild('itemWrapper', { read: ElementRef })
     trainingItemWrapper: ElementRef | undefined;
@@ -106,32 +111,23 @@ export class PastTrainingsComponent {
                     this.size,
                     this.page,
                 ).pipe(
-                        tap((x: StreamData<Paginator<PastTrainings>>) => this.handleArrows(x)),
-                        mapStreamData(),
-                    );
+                    tap((x: StreamData<Paginator<PastTrainings>>) => this.handleArrows(x)),
+                    mapStreamData(),
+                );
         }
         else {
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
                 this.getDateTimeQueryParams(),
                 'week',
-            )
-                .pipe(
-                    tap((response: StreamData<Paginator<PastTrainings>>) => this.handleArrows(response)),
-                    mapStreamData(),
-                );
+            ).pipe(
+                tap((response: StreamData<Paginator<PastTrainings>>) => this.handleArrows(response)),
+                mapStreamData(),
+            );
         }
-
     }
 
     get dateFormat(): string {
         return TEMPLATE_DATE_FORMAT;
-    }
-
-    get isSearch$(): Observable<boolean> {
-        return this.route.queryParamMap
-            .pipe(
-                map((params: ParamMap) => !!params?.get('search')),
-            );
     }
 
     searchEmitted($event: string): void {
@@ -179,8 +175,8 @@ export class PastTrainingsComponent {
                 });
             }),
             mapStreamData(),
-            finalize(() => this.changeDetectorRef.markForCheck()),
         );
+        this.changeDetectorRef.markForCheck();
     }
 
     onDayActivated($event: DayActivatedType): void {
