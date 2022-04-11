@@ -22,6 +22,7 @@
             color="primary"
             mode="ios"
             [value]="periodFilter"
+            [disabled]="periodDisabled"
             (ionChange)="segmentChanged($any($event))">
             <ng-container *ngFor="let option of sortOptions">
                 <ion-segment-button [value]="option.key">

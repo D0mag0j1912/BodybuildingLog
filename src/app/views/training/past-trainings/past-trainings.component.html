@@ -33,6 +33,7 @@
         </ng-container>
         <ng-template #valueOrLoading>
             <bl-past-trainings-filters
+                [periodDisabled]="isSearch$ | async"
                 [periodFilter]="periodFilter"
                 (trainingEmitted)="searchEmitted($event)"
                 (periodEmitted)="onPeriodEmitted($event, pastTrainings.Value?.Results?.Dates?.StartDate)"></bl-past-trainings-filters>

@@ -23,6 +23,9 @@ export class PastTrainingsFiltersComponent {
     @Input()
     periodFilter = 'week';
 
+    @Input()
+    periodDisabled = false;
+
     @Output()
     readonly trainingEmitted: EventEmitter<string> = new EventEmitter<string>();
 
