@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { addDays, startOfWeek } from 'date-fns';
+import { addDays, differenceInDays, startOfDay, startOfWeek } from 'date-fns';
 
 export interface DayActivatedType {
     Date: Date;
@@ -15,10 +15,10 @@ export interface DayActivatedType {
     styleUrls: ['./show-by-day.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ShowByDayComponent {
+export class ShowByDayComponent implements OnChanges {
 
     @Input()
-    startOfWeek: Date = new Date();
+    startDate: Date = new Date();
 
     @Output()
     readonly dayActivated: EventEmitter<DayActivatedType> = new EventEmitter<DayActivatedType>();
@@ -33,11 +33,19 @@ export class ShowByDayComponent {
         private readonly translateService: TranslateService,
     ) { }
 
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes?.startDate?.currentValue) {
+            const startOfWeekDate = startOfWeek(startOfDay(changes.startDate.currentValue), { weekStartsOn: 1 });
+            const currentDayIndex = differenceInDays(startOfDay(changes.startDate.currentValue), startOfWeekDate);
+            this.activeDay$$.next(currentDayIndex + 1);
+        }
+    }
+
     makeDayActive(index: number): void {
         const dayNumber = index + 1;
         this.activeDay$$.next(dayNumber);
 
-        const newDate = addDays(startOfWeek(this.startOfWeek, { weekStartsOn: 1 }), index);
+        const newDate = addDays(startOfWeek(this.startDate, { weekStartsOn: 1 }), index);
         this.dayActivated.next({ Date: newDate, DayNumber: index });
     }
 
