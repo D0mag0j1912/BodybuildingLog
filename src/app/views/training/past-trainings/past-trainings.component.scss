@@ -123,7 +123,7 @@ ion-list {
 @media (min-width: 640px) {
 
     .card-info-wrapper {
-        width: 850px;
+        width: 1135px;
         margin: 0 auto;
         margin-top: 5px;
     }
@@ -133,13 +133,13 @@ ion-list {
         flex-direction: row;
         justify-content: flex-start;
         align-items: baseline;
-        width: 850px;
+        width: 1135px;
         overflow: auto;
         margin: 0 auto;
     }
 
     ion-list {
-        width: 850px;
+        width: 1135px;
         margin: 10px auto;
     }
 }
