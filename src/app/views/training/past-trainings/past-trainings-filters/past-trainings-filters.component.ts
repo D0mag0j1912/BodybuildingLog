@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SegmentChangeEventDetail } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,6 +19,9 @@ import { PeriodFilterType } from '../../../../models/training/past-trainings/pas
 export class PastTrainingsFiltersComponent {
 
     private readonly keyUp$$: Subject<KeyboardEvent> = new Subject<KeyboardEvent>();
+
+    @Input()
+    periodFilter = 'week';
 
     @Output()
     readonly trainingEmitted: EventEmitter<string> = new EventEmitter<string>();

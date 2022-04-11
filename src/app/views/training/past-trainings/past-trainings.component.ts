@@ -41,7 +41,7 @@ export class PastTrainingsComponent {
     size: number = DEFAULT_SIZE;
     page: number = INITIAL_PAGE;
     searchText = '';
-    periodEmitted: PeriodFilterType = 'week';
+    periodFilter: PeriodFilterType = 'week';
     dayActivated: DayActivatedType = {
         Date: startOfDay(new Date()),
         DayNumber: 0,
@@ -111,14 +111,15 @@ export class PastTrainingsComponent {
                     this.size,
                     this.page,
                 ).pipe(
-                    tap((x: StreamData<Paginator<PastTrainings>>) => this.handlePaginationArrows(x)),
+                    tap((response: StreamData<Paginator<PastTrainings>>) => this.handlePaginationArrows(response)),
                     mapStreamData(),
                 );
         }
         else {
+            this.periodFilter = this.route.snapshot.queryParamMap?.get('showBy') as PeriodFilterType;
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
                 this.getDateTimeQueryParams(),
-                'week',
+                this.periodFilter ?? 'week',
             ).pipe(
                 tap((response: StreamData<Paginator<PastTrainings>>) => this.handlePaginationArrows(response)),
                 mapStreamData(),
@@ -163,10 +164,10 @@ export class PastTrainingsComponent {
         $event: PeriodFilterType,
         mondayDate: Date,
     ): void {
-        this.periodEmitted = $event;
+        this.periodFilter = $event;
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
             startOfWeek(startOfDay(mondayDate), { weekStartsOn: 1 }),
-            this.periodEmitted,
+            this.periodFilter,
         ).pipe(
             tap(async response => {
                 await this.router.navigate([], {
@@ -221,10 +222,10 @@ export class PastTrainingsComponent {
         else {
             this.pastTrainings$ =
                 this.pastTrainingsService.getPastTrainings(
-                    this.periodEmitted === 'week'
-                    ?   this.onPaginatorChangedFilterHandler(this.periodEmitted, $event)
+                    this.periodFilter === 'week'
+                    ?   this.onPaginatorChangedFilterHandler(this.periodFilter, $event)
                     :   this.onPaginatorChangedFilterHandler(
-                            this.periodEmitted,
+                            this.periodFilter,
                             undefined,
                             this.calculateDate(
                                 $event.PageType,
@@ -232,7 +233,7 @@ export class PastTrainingsComponent {
                                 $event.EarliestTrainingDate,
                                 dayFilterDate),
                     ),
-                    this.periodEmitted,
+                    this.periodFilter,
                 ).pipe(
                     tap(async (response: StreamData<Paginator<PastTrainings>>) => {
                         this.handlePaginationArrows(response);
@@ -359,6 +360,7 @@ export class PastTrainingsComponent {
             search: searchValue ?? undefined,
             page: this.handleSpecificQueryParam(searchValue, trainingData, 'page'),
             size: this.handleSpecificQueryParam(searchValue, trainingData, 'size'),
+            showBy: this.periodFilter,
         } as PastTrainingsQueryParams;
     }
 
@@ -426,9 +428,9 @@ export class PastTrainingsComponent {
     }
 
     private getDateTimeQueryParams(): Date {
-        const splittedDate = (this.route.snapshot.queryParams?.startDate as string)?.split('-') ?? [];
+        const splittedDate = this.route.snapshot.queryParams?.startDate?.split('-') ?? [];
         const utc = splittedDate.length > 0 ? new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString() : new Date().toUTCString();
-        return utcToZonedTime(new Date(utc), environment.TIMEZONE);
+        return startOfDay(utcToZonedTime(new Date(utc), environment.TIMEZONE));
     }
 
     private generateHeaderTitle(

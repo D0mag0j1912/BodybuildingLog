@@ -4,7 +4,7 @@ import { PopoverController } from '@ionic/angular';
 import { endOfWeek, format, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
-import { QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
+import { PastTrainingsQueryParams, QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import { LanguagesComponent } from './languages/languages.component';
@@ -48,7 +48,8 @@ export class SideNavComponent implements OnInit {
             queryParams: {
                 startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
                 endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
-            },
+                showBy: 'week',
+            } as PastTrainingsQueryParams,
         });
     }
 
@@ -56,9 +57,7 @@ export class SideNavComponent implements OnInit {
         const popover = await this.popoverController.create({
             component: LanguagesComponent,
             event: $event,
-            componentProps: {
-                loggedUserData$: this.loggedUserData$,
-            },
+            componentProps: { loggedUserData$: this.loggedUserData$ },
             side: 'left',
             keyboardClose: true,
         });
