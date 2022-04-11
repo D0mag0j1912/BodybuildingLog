@@ -12,7 +12,7 @@ import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator, INITIAL_PAGE, DEFAULT_SIZE, PaginatorChanged } from '../../../models/common/interfaces/paginator.model';
-import { DateInterval, PastTrainingsQueryParams, PastTrainings, PastTrainingsFilterType } from '../../../models/training/past-trainings/past-trainings.model';
+import { DateInterval, PastTrainingsQueryParams, PastTrainings, PeriodFilterType } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
@@ -41,7 +41,7 @@ export class PastTrainingsComponent {
     size: number = DEFAULT_SIZE;
     page: number = INITIAL_PAGE;
     searchText = '';
-    periodEmitted: PastTrainingsFilterType = 'week';
+    periodEmitted: PeriodFilterType = 'week';
     dayActivated: DayActivatedType = {
         Date: new Date(),
         DayNumber: 0,
@@ -164,7 +164,7 @@ export class PastTrainingsComponent {
     }
 
     onPeriodEmitted(
-        $event: PastTrainingsFilterType,
+        $event: PeriodFilterType,
         mondayDate: Date,
     ): void {
         this.periodEmitted = $event;
@@ -299,7 +299,7 @@ export class PastTrainingsComponent {
     }
 
     private onPaginatorChangedFilterHandler(
-        filterType: PastTrainingsFilterType,
+        filterType: PeriodFilterType,
         $weekEvent?: PaginatorChanged,
         startOfCurrentWeek?: Date,
     ): Date {

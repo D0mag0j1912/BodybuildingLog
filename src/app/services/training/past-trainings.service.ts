@@ -7,7 +7,7 @@ import { mapDateInterval } from '../../helpers/training/past-trainings/map-past-
 import { StreamData } from '../../models/common/interfaces/common.model';
 import { Paginator } from '../../models/common/interfaces/paginator.model';
 import { Training } from '../../models/training/new-training/new-training.model';
-import { PastTrainings, PastTrainingsFilterType } from '../../models/training/past-trainings/past-trainings.model';
+import { PastTrainings, PeriodFilterType } from '../../models/training/past-trainings/past-trainings.model';
 
 const ROUTE_PREFIX = '/training/';
 
@@ -32,7 +32,7 @@ export class PastTrainingsService {
 
     getPastTrainings(
         currentDate: Date,
-        filterType: PastTrainingsFilterType,
+        filterType: PeriodFilterType,
     ): Observable<StreamData<Paginator<PastTrainings>>> {
         const params = `?currentDate=${currentDate}&filterType=${filterType}`;
         return this.http.get<StreamData<Paginator<PastTrainings>>>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings${params}`)

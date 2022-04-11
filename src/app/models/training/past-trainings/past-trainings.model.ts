@@ -20,9 +20,15 @@ export interface PastTrainingsQueryParams {
     readonly search?: string;
     readonly page?: string;
     readonly size?: string;
+    readonly showBy?: PeriodFilterType;
 }
 
 export const QUERY_PARAMS_DATE_FORMAT = 'dd-MM-yyyy';
 export const TEMPLATE_DATE_FORMAT = 'dd.MM.yyyy';
 
-export type PastTrainingsFilterType = 'week' | 'day';
+export type PeriodFilterType = 'week' | 'day';
+
+export interface PastTrainingsFilterType {
+    periodFilter?: PeriodFilterType;
+    //TODO: add more types
+}
