@@ -214,11 +214,15 @@ export class PastTrainingsComponent {
             this.pastTrainings$ =
                 this.pastTrainingsService.getPastTrainings(
                     this.periodEmitted === 'week'
-                    ? this.onPaginatorChangedFilterHandler(this.periodEmitted, $event)
-                    : this.onPaginatorChangedFilterHandler(
-                        this.periodEmitted,
-                        undefined,
-                        this.calculateDate($event.PageType, undefined, $event.EarliestTrainingDate, dayFilterDate),
+                    ?   this.onPaginatorChangedFilterHandler(this.periodEmitted, $event)
+                    :   this.onPaginatorChangedFilterHandler(
+                            this.periodEmitted,
+                            undefined,
+                            this.calculateDate(
+                                $event.PageType,
+                                undefined,
+                                $event.EarliestTrainingDate,
+                                dayFilterDate),
                     ),
                     this.periodEmitted,
                 ).pipe(
