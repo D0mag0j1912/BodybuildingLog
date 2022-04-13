@@ -11,7 +11,6 @@
         <bl-show-by-day
             *ngIf="periodFilter === 'day'"
             [startDate]="pastTrainings.Value?.Results?.Dates?.StartDate"
-            [isSearch$]="isSearch$$.asObservable()"
             (dayActivated)="onDayActivated($event)"></bl-show-by-day>
         <ng-container *ngIf="pastTrainings?.IsError; else valueOrLoading">
             <div class="error-wrapper">
