@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
@@ -34,7 +34,7 @@ enum Heights {
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class PastTrainingsComponent {
+export class PastTrainingsComponent implements OnInit {
 
     readonly food: number = 3000;
     readonly pageSizeOptions: number[] = [1, 3, 5, 10];
@@ -100,12 +100,14 @@ export class PastTrainingsComponent {
                     .pipe(mapStreamData());
             this.changeDetectorRef.markForCheck();
         });
-
-        this.initView();
     }
 
     get dateFormat(): string {
         return TEMPLATE_DATE_FORMAT;
+    }
+
+    ngOnInit(): void {
+        this.initView();
     }
 
     searchEmitted($event: string): void {
