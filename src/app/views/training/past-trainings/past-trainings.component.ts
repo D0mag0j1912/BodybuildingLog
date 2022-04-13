@@ -1,10 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
@@ -51,11 +51,7 @@ export class PastTrainingsComponent implements OnInit {
     isPreviousPage = true;
 
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
-
-    readonly isSearch$: Observable<boolean> = this.route.queryParamMap
-        .pipe(
-            map((params: ParamMap) => !!params?.get('search')),
-        );
+    readonly isSearch$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     @ViewChild('itemWrapper', { read: ElementRef })
     trainingItemWrapper: ElementRef | undefined;
@@ -65,7 +61,7 @@ export class PastTrainingsComponent implements OnInit {
         if (timePeriodElement) {
             const trainingElement = (this.trainingItemWrapper?.nativeElement as HTMLDivElement);
             if (trainingElement) {
-                this.isSearch$
+                this.isSearch$$
                     .pipe(
                         delay(50),
                         takeUntil(this.unsubscribeService),
@@ -110,10 +106,10 @@ export class PastTrainingsComponent implements OnInit {
         this.initView();
     }
 
-    searchEmitted($event: string): void {
+    searchEmitted(searchText: string): void {
         this.page = INITIAL_PAGE;
         this.pastTrainings$ =
-            of($event)
+            of(searchText)
                 .pipe(
                     switchMap((searchText: string) => {
                         this.searchText = searchText;
@@ -128,10 +124,11 @@ export class PastTrainingsComponent implements OnInit {
                                     relativeTo: this.route,
                                     queryParams: this.handleQueryParams(
                                         response,
-                                        $event.trim() !== '' ? $event.trim() : undefined,
+                                        searchText.trim() !== '' ? searchText.trim() : undefined,
                                     ),
                                 });
                                 this.handlePaginationArrows(response);
+                                this.isSearch$$.next(!!this.searchText);
                             }),
                             mapStreamData(),
                         );

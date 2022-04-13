@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { addDays, differenceInDays, startOfDay, startOfWeek } from 'date-fns';
 
@@ -19,6 +19,9 @@ export class ShowByDayComponent implements OnChanges {
 
     @Input()
     startDate: Date = new Date();
+
+    @Input()
+    isSearch$: Observable<boolean> = of(false);
 
     @Output()
     readonly dayActivated: EventEmitter<DayActivatedType> = new EventEmitter<DayActivatedType>();
