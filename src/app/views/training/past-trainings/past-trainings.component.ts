@@ -101,30 +101,7 @@ export class PastTrainingsComponent {
             this.changeDetectorRef.markForCheck();
         });
 
-        this.page = this.route.snapshot.queryParamMap?.get('page') ? +this.route.snapshot.queryParamMap.get('page') : INITIAL_PAGE;
-        this.size = this.route.snapshot.queryParamMap?.get('size') ? +this.route.snapshot.queryParamMap.get('size') : DEFAULT_SIZE;
-        this.searchText = this.route.snapshot.queryParamMap?.get('search');
-        if (this.searchText) {
-            this.pastTrainings$ =
-                this.pastTrainingsService.searchPastTrainings(
-                    this.searchText.trim().toLowerCase(),
-                    this.size,
-                    this.page,
-                ).pipe(
-                    tap((response: StreamData<Paginator<PastTrainings>>) => this.handlePaginationArrows(response)),
-                    mapStreamData(),
-                );
-        }
-        else {
-            this.periodFilter = this.route.snapshot.queryParamMap?.get('showBy') as PeriodFilterType;
-            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
-                this.getDateTimeQueryParams(),
-                this.periodFilter ?? 'week',
-            ).pipe(
-                tap((response: StreamData<Paginator<PastTrainings>>) => this.handlePaginationArrows(response)),
-                mapStreamData(),
-            );
-        }
+        this.initView();
     }
 
     get dateFormat(): string {
@@ -246,14 +223,9 @@ export class PastTrainingsComponent {
                 );
         }
     }
-
+    //TODO: align with 'ShowByDay' feature
     tryAgain(): void {
-        this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
-            this.getDateTimeQueryParams(),
-            'week',
-        ).pipe(
-            mapStreamData(),
-        );
+        this.initView();
     }
 
     setTimePeriod(dateInterval: DateInterval): Observable<string> {
@@ -293,6 +265,33 @@ export class PastTrainingsComponent {
             .pipe(
                 map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
             );
+    }
+
+    private initView(): void {
+        this.page = this.route.snapshot.queryParamMap?.get('page') ? +this.route.snapshot.queryParamMap.get('page') : INITIAL_PAGE;
+        this.size = this.route.snapshot.queryParamMap?.get('size') ? +this.route.snapshot.queryParamMap.get('size') : DEFAULT_SIZE;
+        this.searchText = this.route.snapshot.queryParamMap?.get('search');
+        if (this.searchText) {
+            this.pastTrainings$ =
+                this.pastTrainingsService.searchPastTrainings(
+                    this.searchText.trim().toLowerCase(),
+                    this.size,
+                    this.page,
+                ).pipe(
+                    tap((response: StreamData<Paginator<PastTrainings>>) => this.handlePaginationArrows(response)),
+                    mapStreamData(),
+                );
+        }
+        else {
+            this.periodFilter = this.route.snapshot.queryParamMap?.get('showBy') as PeriodFilterType;
+            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
+                this.getDateTimeQueryParams(),
+                this.periodFilter ?? 'week',
+            ).pipe(
+                tap((response: StreamData<Paginator<PastTrainings>>) => this.handlePaginationArrows(response)),
+                mapStreamData(),
+            );
+        }
     }
 
     private onPaginatorChangedFilterHandler(
@@ -360,7 +359,7 @@ export class PastTrainingsComponent {
             search: searchValue ?? undefined,
             page: this.handleSpecificQueryParam(searchValue, trainingData, 'page'),
             size: this.handleSpecificQueryParam(searchValue, trainingData, 'size'),
-            showBy: this.periodFilter,
+            showBy: !searchValue ? this.periodFilter : undefined,
         } as PastTrainingsQueryParams;
     }
 
