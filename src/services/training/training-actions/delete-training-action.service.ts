@@ -14,7 +14,7 @@ export class DeleteTrainingActionService {
     constructor(
         @InjectModel('Training') private readonly trainingModel: Model<Training>,
         private readonly pastTrainingService: PastTrainingsService,
-    ) {}
+    ) { }
 
     async deleteTraining(
         trainingId: string,

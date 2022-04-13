@@ -1,4 +1,4 @@
-import { endOfWeek, startOfWeek, isSameWeek, eachDayOfInterval, startOfDay } from 'date-fns';
+import { endOfWeek, startOfWeek, isSameWeek, eachDayOfInterval, startOfDay, endOfDay } from 'date-fns';
 import { max, min } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Training } from '../models/training/new-training/new-training.model';
@@ -14,8 +14,8 @@ export function getIntervalDate(currentDateOrTrainings: Date | Training[]): Date
         maxDate = max(dates);
     }
     else {
-        minDate = startOfWeek(currentDateOrTrainings, { weekStartsOn: 1 });
-        maxDate = endOfWeek(currentDateOrTrainings, { weekStartsOn: 1 });
+        minDate = startOfWeek(startOfDay(currentDateOrTrainings), { weekStartsOn: 1 });
+        maxDate = endOfWeek(endOfDay(currentDateOrTrainings), { weekStartsOn: 1 });
     }
     return {
         StartDate: minDate,
