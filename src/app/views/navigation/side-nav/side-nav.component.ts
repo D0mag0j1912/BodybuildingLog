@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
-import { endOfWeek, format, startOfWeek } from 'date-fns';
+import { endOfDay, endOfWeek, format, startOfDay, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { PastTrainingsQueryParams, QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
@@ -38,10 +38,10 @@ export class SideNavComponent implements OnInit {
     }
 
     async goToPastTrainings(): Promise<void> {
-        const startDate: Date = startOfWeek(new Date(), {
+        const startDate: Date = startOfWeek(startOfDay(new Date()), {
             weekStartsOn: 1,
         });
-        const endDate: Date = endOfWeek(new Date(), {
+        const endDate: Date = endOfWeek(endOfDay(new Date()), {
             weekStartsOn: 1,
         });
         await this.router.navigate(['/training/past-trainings'], {

@@ -46,7 +46,7 @@ export class ShowByDayComponent implements OnChanges {
         const dayNumber = index + 1;
         this.activeDay$$.next(dayNumber);
 
-        const newDate = addDays(startOfWeek(this.startDate, { weekStartsOn: 1 }), index);
+        const newDate = addDays(startOfWeek(startOfDay(this.startDate), { weekStartsOn: 1 }), index);
         this.dayActivated.next({ Date: newDate, DayNumber: index });
     }
 
