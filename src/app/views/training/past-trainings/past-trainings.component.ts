@@ -113,6 +113,7 @@ export class PastTrainingsComponent implements OnInit {
                 .pipe(
                     switchMap((searchText: string) => {
                         this.searchText = searchText;
+                        this.isSearch$$.next(!!this.searchText);
                         return this.pastTrainingsService.searchPastTrainings(
                             this.searchText,
                             this.size,
@@ -128,7 +129,6 @@ export class PastTrainingsComponent implements OnInit {
                                     ),
                                 });
                                 this.handlePaginationArrows(response);
-                                this.isSearch$$.next(!!this.searchText);
                             }),
                             mapStreamData(),
                         );
