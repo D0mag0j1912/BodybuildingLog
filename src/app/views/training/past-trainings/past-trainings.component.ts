@@ -51,7 +51,7 @@ export class PastTrainingsComponent implements OnInit {
     isPreviousPage = true;
 
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
-    readonly isSearch$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    isSearch$: Observable<boolean>;
 
     @ViewChild('itemWrapper', { read: ElementRef })
     trainingItemWrapper: ElementRef | undefined;
@@ -61,7 +61,7 @@ export class PastTrainingsComponent implements OnInit {
         if (timePeriodElement) {
             const trainingElement = (this.trainingItemWrapper?.nativeElement as HTMLDivElement);
             if (trainingElement) {
-                this.isSearch$$
+                this.isSearch$
                     .pipe(
                         delay(50),
                         takeUntil(this.unsubscribeService),
@@ -103,17 +103,18 @@ export class PastTrainingsComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.isSearch$ = this.pastTrainingsService.isSearch$;
         this.initView();
     }
 
     searchEmitted(searchText: string): void {
+        this.pastTrainingsService.emitSearch(searchText);
         this.page = INITIAL_PAGE;
         this.pastTrainings$ =
             of(searchText)
                 .pipe(
                     switchMap((searchText: string) => {
                         this.searchText = searchText;
-                        this.isSearch$$.next(!!this.searchText);
                         return this.pastTrainingsService.searchPastTrainings(
                             this.searchText,
                             this.size,

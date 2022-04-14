@@ -1,13 +1,14 @@
 import { KeyValue } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SegmentChangeEventDetail } from '@ionic/angular';
+import { IonInput, SegmentChangeEventDetail } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 import { INPUT_MAX_LENGTH } from '../../../../constants/input-maxlength.const';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PeriodFilterType } from '../../../../models/training/past-trainings/past-trainings.model';
+import { PastTrainingsService } from '../../../../services/training/past-trainings.service';
 
 @Component({
     selector: 'bl-past-trainings-filters',
@@ -16,7 +17,7 @@ import { PeriodFilterType } from '../../../../models/training/past-trainings/pas
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class PastTrainingsFiltersComponent {
+export class PastTrainingsFiltersComponent implements AfterViewInit {
 
     private readonly keyUp$$: Subject<KeyboardEvent> = new Subject<KeyboardEvent>();
 
@@ -32,6 +33,9 @@ export class PastTrainingsFiltersComponent {
     @Output()
     readonly periodEmitted: EventEmitter<PeriodFilterType> = new EventEmitter<PeriodFilterType>();
 
+    @ViewChild('search', { read: IonInput })
+    searchEl: IonInput;
+
     searchValue = '';
 
     sortOptions: [KeyValue<PeriodFilterType, Observable<string>>, KeyValue<PeriodFilterType, Observable<string>>] = [
@@ -45,6 +49,7 @@ export class PastTrainingsFiltersComponent {
     ];
 
     constructor(
+        private readonly pastTrainingsService: PastTrainingsService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly route: ActivatedRoute,
@@ -57,7 +62,7 @@ export class PastTrainingsFiltersComponent {
         this.keyUp$$
             .pipe(
                 map((event: Event) => (event.target as HTMLInputElement).value),
-                map((value: string) => value.trim().toLowerCase()),
+                map((value: string) => value?.trim().toLowerCase()),
                 filter((value: string) => value.length <= 50),
                 debounceTime(500),
                 distinctUntilChanged(),
@@ -69,6 +74,15 @@ export class PastTrainingsFiltersComponent {
 
     get inputMaxLength(): number {
         return INPUT_MAX_LENGTH;
+    }
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            if (this.searchEl) {
+                const value = this.searchEl?.value;
+                this.pastTrainingsService.emitSearch(value as string);
+            }
+        });
     }
 
     emitKeyboardEvent($event: KeyboardEvent): void {

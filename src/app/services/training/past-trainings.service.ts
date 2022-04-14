@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { mapDateInterval } from '../../helpers/training/past-trainings/map-past-trainings-dates.helper';
@@ -14,9 +14,16 @@ const ROUTE_PREFIX = '/training/';
 @Injectable({ providedIn: 'root' })
 export class PastTrainingsService {
 
+    private readonly isSearch$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    readonly isSearch$: Observable<boolean> = this.isSearch$$.asObservable();
+
     constructor(
         private readonly http: HttpClient,
     ) { }
+
+    emitSearch(value?: string): void {
+        this.isSearch$$.next(!!value);
+    }
 
     searchPastTrainings(
         searchValue: string,
