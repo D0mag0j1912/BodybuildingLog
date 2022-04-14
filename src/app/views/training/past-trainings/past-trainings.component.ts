@@ -125,7 +125,7 @@ export class PastTrainingsComponent implements OnInit {
                                     relativeTo: this.route,
                                     queryParams: this.handleQueryParams(
                                         response,
-                                        searchText.trim() !== '' ? searchText.trim() : undefined,
+                                        searchText?.trim() ?? undefined,
                                     ),
                                 });
                                 this.handlePaginationArrows(response);

@@ -76,7 +76,6 @@ export class PastTrainingsFiltersComponent {
     }
 
     segmentChanged($event: CustomEvent<SegmentChangeEventDetail>): void {
-        //TODO: create logic for sorting trainings by period
         this.periodEmitted.emit($event?.detail?.value as PeriodFilterType);
     }
 
