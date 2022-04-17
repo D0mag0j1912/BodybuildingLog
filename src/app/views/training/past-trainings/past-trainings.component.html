@@ -9,7 +9,7 @@
 <ion-content>
     <ng-container *ngIf="pastTrainings$ | async as pastTrainings">
         <bl-show-by-day
-            *ngIf="periodFilter === 'day' && !(isSearch$ | async)"
+            *ngIf="periodFilter === 'day' && !isSearch"
             [startDate]="pastTrainings.Value?.Results?.Dates?.StartDate"
             (dayActivated)="onDayActivated($event)"></bl-show-by-day>
         <ng-container *ngIf="pastTrainings?.IsError; else valueOrLoading">
@@ -33,7 +33,7 @@
         </ng-container>
         <ng-template #valueOrLoading>
             <bl-past-trainings-filters
-                [periodDisabled]="isSearch$ | async"
+                [periodDisabled]="isSearch"
                 [periodFilter]="periodFilter"
                 (trainingEmitted)="searchEmitted($event)"
                 (periodEmitted)="onPeriodEmitted($event, pastTrainings.Value?.Results?.Dates?.StartDate)"></bl-past-trainings-filters>
@@ -44,7 +44,7 @@
                     color="primary"></ion-spinner>
             </ng-container>
             <ng-template #value>
-                <ng-container *ngIf="(isSearch$ | async) && pastTrainings?.Value?.TotalCount === 0; else otherCases">
+                <ng-container *ngIf="isSearch && pastTrainings?.Value?.TotalCount === 0; else otherCases">
                     <ion-list class="ion-text-center">
                         <ion-item lines="none">
                             <img
@@ -90,7 +90,7 @@
                     </div>
                     <ng-template #noTrainings>
                         <section class="no-trainings">
-                            <ng-container *ngIf="!(isSearch$ | async) && pastTrainings.Value?.TotalCount === 0;">
+                            <ng-container *ngIf="!isSearch && pastTrainings.Value?.TotalCount === 0;">
                                 <h1 class="no-trainings-title">
                                     {{ 'training.past_trainings.no_trainings' | translate }}
                                 </h1>
@@ -107,7 +107,7 @@
                         </section>
                     </ng-template>
                     <bl-pagination
-                        [isSearch]="isSearch$ | async"
+                        [isSearch]="isSearch"
                         [page]="page"
                         [size]="size"
                         [isPreviousPage]="isPreviousPage"

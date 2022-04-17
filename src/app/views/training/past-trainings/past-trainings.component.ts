@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { delay, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { environment } from '../../../../environments/environment';
@@ -49,9 +49,9 @@ export class PastTrainingsComponent implements OnInit {
 
     isNextPage = true;
     isPreviousPage = true;
+    isSearch = false;
 
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
-    isSearch$: Observable<boolean>;
 
     @ViewChild('itemWrapper', { read: ElementRef })
     trainingItemWrapper: ElementRef | undefined;
@@ -61,7 +61,7 @@ export class PastTrainingsComponent implements OnInit {
         if (timePeriodElement) {
             const trainingElement = (this.trainingItemWrapper?.nativeElement as HTMLDivElement);
             if (trainingElement) {
-                this.isSearch$
+                of(this.isSearch)
                     .pipe(
                         delay(50),
                         takeUntil(this.unsubscribeService),
@@ -88,14 +88,15 @@ export class PastTrainingsComponent implements OnInit {
         private readonly datePipe: DatePipe,
         private readonly router: Router,
     ) {
-        this.sharedService.deletedTraining$$.pipe(
-            takeUntil(this.unsubscribeService),
-        ).subscribe((response: StreamData<Paginator<PastTrainings>>) => {
-            this.pastTrainings$ =
-                of(response)
-                    .pipe(mapStreamData());
-            this.changeDetectorRef.markForCheck();
-        });
+        this.sharedService.deletedTraining$$
+            .pipe(
+                takeUntil(this.unsubscribeService),
+            ).subscribe((response: StreamData<Paginator<PastTrainings>>) => {
+                this.pastTrainings$ =
+                    of(response)
+                        .pipe(mapStreamData());
+                this.changeDetectorRef.markForCheck();
+            });
     }
 
     get dateFormat(): string {
@@ -103,7 +104,14 @@ export class PastTrainingsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.isSearch$ = this.pastTrainingsService.isSearch$;
+        this.pastTrainingsService.isSearch$
+            .pipe(
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe(isSearch => {
+                this.isSearch = isSearch;
+                this.changeDetectorRef.markForCheck();
+            });
         this.initView();
     }
 
@@ -143,7 +151,7 @@ export class PastTrainingsComponent implements OnInit {
     ): void {
         this.periodFilter = $event;
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
-            startOfWeek(startOfDay(mondayDate), { weekStartsOn: 1 }),
+            startOfWeek(mondayDate, { weekStartsOn: 1 }),
             this.periodFilter,
         ).pipe(
             tap(async response => {
@@ -304,7 +312,7 @@ export class PastTrainingsComponent implements OnInit {
                 return this.calculateDate($weekEvent.PageType, $weekEvent.DateInterval, $weekEvent.EarliestTrainingDate);
             }
             case 'day': {
-                return addDays(startOfWeek(startOfDay(startOfCurrentWeek), { weekStartsOn: 1 }), this.dayActivated.DayNumber);
+                return addDays(startOfWeek(startOfCurrentWeek, { weekStartsOn: 1 }), this.dayActivated.DayNumber);
             }
             default:
                 isNeverCheck(filterType);
