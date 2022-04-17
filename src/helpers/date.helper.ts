@@ -10,8 +10,8 @@ export function getIntervalDate(currentDateOrTrainings: Date | Training[]): Date
     let maxDate: Date;
     if (Array.isArray(currentDateOrTrainings)) {
         const dates: Date[] = currentDateOrTrainings.map((x: Training) => x.createdAt);
-        minDate = min(dates);
-        maxDate = max(dates);
+        minDate = startOfDay(min(dates));
+        maxDate = startOfDay(max(dates));
     }
     else {
         minDate = startOfWeek(startOfDay(currentDateOrTrainings), { weekStartsOn: 1 });
@@ -26,15 +26,16 @@ export function getIntervalDate(currentDateOrTrainings: Date | Training[]): Date
 export const isPreviousWeek = (
     minDate: Date,
     dateInterval: DateInterval,
-): boolean => !(isSameWeek(minDate, dateInterval.StartDate, { weekStartsOn: 1 }) && isSameWeek(minDate, dateInterval.EndDate, { weekStartsOn: 1 }));
+): boolean => !(isSameWeek(startOfDay(minDate), startOfDay(dateInterval.StartDate), { weekStartsOn: 1 }) &&
+    isSameWeek(startOfDay(minDate), startOfDay(dateInterval.EndDate), { weekStartsOn: 1 }));
 
 export const isNextWeek = (dateInterval: DateInterval): boolean => {
     const arrayOfDates: number[] = eachDayOfInterval({
         start: utcToZonedTime(
-            dateInterval.StartDate,
+            startOfDay(dateInterval.StartDate),
             TIMEZONE),
         end: utcToZonedTime(
-            dateInterval.EndDate,
+            startOfDay(dateInterval.EndDate),
             TIMEZONE),
     }).map((date: Date) => date.getTime());
     return !arrayOfDates.includes(startOfDay(new Date()).getTime());
