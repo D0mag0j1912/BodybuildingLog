@@ -150,18 +150,19 @@ export class PastTrainingsComponent implements OnInit {
         mondayDate: Date,
     ): void {
         this.periodFilter = $event;
-        this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
-            startOfWeek(mondayDate, { weekStartsOn: 1 }),
-            this.periodFilter,
-        ).pipe(
-            tap(async response => {
-                await this.router.navigate([], {
-                    relativeTo: this.route,
-                    queryParams: this.handleQueryParams(response),
-                });
-            }),
-            mapStreamData(),
-        );
+        this.pastTrainings$ = this.pastTrainingsService
+            .getPastTrainings(
+                startOfWeek(mondayDate, { weekStartsOn: 1 }),
+                this.periodFilter,
+            ).pipe(
+                tap(async response => {
+                    await this.router.navigate([], {
+                        relativeTo: this.route,
+                        queryParams: this.handleQueryParams(response),
+                    });
+                }),
+                mapStreamData(),
+            );
         this.changeDetectorRef.markForCheck();
     }
 
