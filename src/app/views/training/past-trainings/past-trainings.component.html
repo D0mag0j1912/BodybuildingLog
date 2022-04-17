@@ -10,7 +10,7 @@
     <ng-container *ngIf="pastTrainings$ | async as pastTrainings">
         <bl-show-by-day
             *ngIf="periodFilter === 'day' && !isSearch"
-            [startDate]="pastTrainings.Value?.Results?.Dates?.StartDate"
+            [startDate]="pastTrainings?.Value?.Results?.Dates?.StartDate"
             (dayActivated)="onDayActivated($event)"></bl-show-by-day>
         <ng-container *ngIf="pastTrainings?.IsError; else valueOrLoading">
             <div class="error-wrapper">

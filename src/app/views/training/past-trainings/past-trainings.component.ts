@@ -166,17 +166,19 @@ export class PastTrainingsComponent implements OnInit {
     }
 
     onDayActivated($event: DayActivatedType): void {
-        this.dayActivated = $event;
-        this.pastTrainings$ = this.pastTrainingsService.getPastTrainings($event.Date, 'day')
-            .pipe(
-                tap(async response => {
-                    await this.router.navigate([], {
-                        relativeTo: this.route,
-                        queryParams: this.handleQueryParams(response),
-                    });
-                }),
-                mapStreamData(),
-            );
+        if (!this.isSearch) {
+            this.dayActivated = $event;
+            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings($event.Date, 'day')
+                .pipe(
+                    tap(async response => {
+                        await this.router.navigate([], {
+                            relativeTo: this.route,
+                            queryParams: this.handleQueryParams(response),
+                        });
+                    }),
+                    mapStreamData(),
+                );
+        }
     }
 
     onPaginatorChanged(
