@@ -11,10 +11,7 @@ export const EXERCISE_SCHEMA = new Schema({
         type: String,
         required: true,
     },
-    ImageUrl: {
-        type: String,
-        required: true,
-    },
+    ImageUrl: String,
     PrimaryMuscleGroup: {
         type: String,
         required: true,
@@ -35,7 +32,7 @@ export class Exercise {
     Name: string;
 
     @ApiProperty()
-    @IsDefined()
+    @IsOptional()
     @IsString()
     ImageUrl: string;
 

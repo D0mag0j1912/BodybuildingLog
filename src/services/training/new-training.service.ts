@@ -12,7 +12,7 @@ export class NewTrainingService {
     constructor(
         @InjectModel('Exercise') private readonly exerciseModel: Model<Exercise>,
         @InjectModel('Training') private readonly trainingModel: Model<Training>,
-    ) {}
+    ) { }
 
     async editTraining(
         trainingId: string,

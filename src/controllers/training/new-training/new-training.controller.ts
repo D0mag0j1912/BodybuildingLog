@@ -24,7 +24,7 @@ export class NewTrainingController {
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
-    ) {}
+    ) { }
 
     @Post()
     async addTraining(@Body('trainingData', EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe) trainingData: Training): Promise<GeneralResponseData> {
