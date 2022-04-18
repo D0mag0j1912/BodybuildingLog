@@ -221,6 +221,19 @@
         "chinups": "Zgib (Pothvat)",
         "pullups": "Zgib (Nathvat)",
         "incline_dumbbell_press": "Kosi potisak bučicama",
-        "romanian_barbell_deadlift": "Rumunjsko mrtvo dizanje šipkom"
+        "romanian_barbell_deadlift": "Rumunjsko mrtvo dizanje šipkom",
+        "bench_press": "Ravni potisak šipkom",
+        "neck_curl": "Vratni pregib",
+        "neck_extension": "Vratna ekstenzija",
+        "hanging_leg_raise": "Viseće podizanje nogu",
+        "seated_row": "Sjedeće veslanje",
+        "squat": "Čučanj",
+        "hip_thrust": "Potisak kukovima",
+        "leg_curl": "Nožni pregib",
+        "calf_raise": "Podizanje listova",
+        "facepull": "Povlačenje prema licu",
+        "hammer_dumbbell_curl": "Čekić pregib bučicama",
+        "seated_dumbbell_overhead_extension": "Sjedeća triceps ekstenzija bučicom",
+        "pushup": "Sklek"
     }
 }

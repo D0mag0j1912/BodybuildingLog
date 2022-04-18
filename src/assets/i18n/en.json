@@ -217,9 +217,22 @@
         "sunday": "Sunday"
     },
     "exercises": {
-        "chinups": "Chinups",
-        "pullups": "Pullups",
+        "chinup": "Chinup",
+        "pullup": "Pullup",
         "incline_dumbbell_press": "Incline dumbbell press",
-        "romanian_barbell_deadlift": "Romanian barbell deadlift"
+        "romanian_barbell_deadlift": "Romanian barbell deadlift",
+        "bench_press": "Bench press",
+        "neck_curl": "Neck curl",
+        "neck_extension": "Neck extension",
+        "hanging_leg_raise": "Hanging leg raise",
+        "seated_row": "Seated row",
+        "squat": "Squat",
+        "hip_thrust": "Hip thrust",
+        "leg_curl": "Leg curl",
+        "calf_raise": "Calf raise",
+        "facepull": "Facepull",
+        "hammer_dumbbell_curl": "Hammer dumbbell curl",
+        "seated_dumbbell_overhead_extension": "Seated dumbbell overhead extension",
+        "pushup": "Pushup"
     }
 }
