@@ -111,9 +111,9 @@ export class PastTrainingsComponent implements OnInit {
             )
             .subscribe(isSearch => {
                 this.isSearch = isSearch;
-                this.initView();
                 this.changeDetectorRef.markForCheck();
             });
+        this.initView();
     }
 
     searchEmitted(searchText: string): void {
