@@ -46,6 +46,7 @@ export class PastTrainingsComponent implements OnInit {
         Date: startOfDay(new Date()),
         DayNumber: 0,
     };
+    showByDayStartDate: Date;
 
     isNextPage = true;
     isPreviousPage = true;
@@ -110,9 +111,9 @@ export class PastTrainingsComponent implements OnInit {
             )
             .subscribe(isSearch => {
                 this.isSearch = isSearch;
+                this.initView();
                 this.changeDetectorRef.markForCheck();
             });
-        this.initView();
     }
 
     searchEmitted(searchText: string): void {
@@ -150,6 +151,9 @@ export class PastTrainingsComponent implements OnInit {
         mondayDate: Date,
     ): void {
         this.periodFilter = $event;
+        if (this.periodFilter === 'day') {
+            this.showByDayStartDate = mondayDate;
+        }
         this.pastTrainings$ = this.pastTrainingsService
             .getPastTrainings(
                 startOfWeek(mondayDate, { weekStartsOn: 1 }),
@@ -208,6 +212,9 @@ export class PastTrainingsComponent implements OnInit {
                 );
         }
         else {
+            if (this.periodFilter === 'day') {
+                this.showByDayStartDate = dayFilterDate;
+            }
             this.pastTrainings$ =
                 this.pastTrainingsService.getPastTrainings(
                     this.periodFilter === 'week'
@@ -295,6 +302,9 @@ export class PastTrainingsComponent implements OnInit {
         }
         else {
             this.periodFilter = this.route.snapshot.queryParamMap?.get('showBy') as PeriodFilterType;
+            if (this.periodFilter === 'day') {
+                this.showByDayStartDate = this.getDateTimeQueryParams();
+            }
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
                 this.getDateTimeQueryParams(),
                 this.periodFilter ?? 'week',
