@@ -9,7 +9,7 @@
 <ion-content>
     <ng-container *ngIf="pastTrainings$ | async as pastTrainings">
         <bl-show-by-day
-            *ngIf="periodFilter === 'day' && !isSearch"
+            *ngIf="periodFilter === 'day' && !isSearch && !pastTrainings?.IsError"
             [startDate]="showByDayStartDate"
             (dayActivated)="onDayActivated($event)"></bl-show-by-day>
         <ng-container *ngIf="pastTrainings?.IsError; else valueOrLoading">
