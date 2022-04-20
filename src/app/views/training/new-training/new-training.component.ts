@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
@@ -26,7 +26,7 @@ import { SingleExerciseComponent } from '../../shared/training/single-exercise/s
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class NewTrainingComponent implements OnDestroy {
+export class NewTrainingComponent implements OnInit, OnDestroy {
 
     form: FormGroup;
 
@@ -51,7 +51,19 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly unsubscribeService: UnsubscribeService,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
-    ) {
+    ) { }
+
+    get bodyweight(): FormControl {
+        return this.form.get('bodyweight') as FormControl;
+    }
+
+    ionViewDidEnter(): void {
+        if (this.ionContent) {
+            setTimeout(async () => await this.ionContent.scrollToBottom(300), 100);
+        }
+    }
+
+    ngOnInit(): void {
         this.trainingStream$ =
             this.route.params
                 .pipe(
@@ -109,16 +121,6 @@ export class NewTrainingComponent implements OnDestroy {
                 );
         this.isAuthenticated$ = this.authService.isAuth$;
         this.isEditing$ = this.sharedService.editingTraining$$;
-    }
-
-    get bodyweight(): FormControl {
-        return this.form.get('bodyweight') as FormControl;
-    }
-
-    ionViewDidEnter(): void {
-        if (this.ionContent) {
-            setTimeout(async () => await this.ionContent.scrollToBottom(300), 100);
-        }
     }
 
     ngOnDestroy(): void {

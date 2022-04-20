@@ -36,8 +36,6 @@ export class TrainingItemComponent implements OnInit {
     timeCreated: string;
     dayIndex: number;
 
-    isTooltipDisabled = true;
-
     @Input()
     training: Training;
 
