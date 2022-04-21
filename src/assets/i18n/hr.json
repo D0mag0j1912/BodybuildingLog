@@ -151,7 +151,7 @@
             }
         },
         "past_trainings": {
-            "no_trainings": "Nema pronađenih treninga za ovaj tjedan",
+            "no_trainings": "Nema pronađenih treninga za ovaj {{ period }}",
             "log_training": "Unesite novi trening",
             "training_number": "Broj treninga: ",
             "disabled_next_week": "Idući tjedni nisu dostupni",

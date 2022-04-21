@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
@@ -26,7 +26,7 @@ import { SingleExerciseComponent } from '../../shared/training/single-exercise/s
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class NewTrainingComponent implements OnInit, OnDestroy {
+export class NewTrainingComponent implements OnInit {
 
     form: FormGroup;
 
@@ -123,7 +123,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         this.isEditing$ = this.sharedService.editingTraining$$;
     }
 
-    ngOnDestroy(): void {
+    ionViewDidLeave(): void {
         this.sharedService.editingTraining$$.next(false);
     }
 
@@ -131,14 +131,16 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         this.sharedService.pastTrainingsQueryParams$$
             .pipe(
                 take(1),
-            ).subscribe(async (response: PastTrainingsQueryParams) => {
+            )
+            .subscribe(async (response: PastTrainingsQueryParams) => {
                 await this.router.navigate(['/training/past-trainings'], {
                     queryParams: {
-                        startDate: response?.startDate ? response.startDate : undefined,
-                        endDate: response?.endDate ? response.endDate : undefined,
-                        search: response?.search ? response.search : undefined,
-                        page: response?.page ? response.page : undefined,
-                        size: response?.size ? response.size : undefined,
+                        startDate: response?.startDate ?? undefined,
+                        endDate: response?.endDate ?? undefined,
+                        search: response?.search ?? undefined,
+                        page: response?.page ?? undefined,
+                        size: response?.size ?? undefined,
+                        showBy: response?.showBy ?? 'week',
                     } as PastTrainingsQueryParams,
                 });
                 localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);

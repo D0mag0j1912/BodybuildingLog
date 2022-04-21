@@ -52,6 +52,10 @@ export class PastTrainingsComponent implements OnInit {
     isPreviousPage = true;
     isSearch = false;
 
+    readonly periodTranslation$: Observable<string> = this.translateService.stream(`common.${this.periodFilter}`)
+        .pipe(
+            map(value => value.toLowerCase()),
+        );
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
 
     @ViewChild('itemWrapper', { read: ElementRef })
@@ -104,7 +108,8 @@ export class PastTrainingsComponent implements OnInit {
         return TEMPLATE_DATE_FORMAT;
     }
 
-    ngOnInit(): void {
+    //TODO: put init login in ionViewWillEnter
+    ionViewWillEnter(): void {
         this.pastTrainingsService.isSearch$
             .pipe(
                 takeUntil(this.unsubscribeService),
@@ -114,6 +119,18 @@ export class PastTrainingsComponent implements OnInit {
                 this.changeDetectorRef.markForCheck();
             });
         this.initView();
+    }
+
+    ngOnInit(): void {
+        /* this.pastTrainingsService.isSearch$
+            .pipe(
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe(isSearch => {
+                this.isSearch = isSearch;
+                this.changeDetectorRef.markForCheck();
+            });
+        this.initView(); */
     }
 
     searchEmitted(searchText: string): void {
