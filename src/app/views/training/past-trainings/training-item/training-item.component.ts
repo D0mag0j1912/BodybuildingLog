@@ -1,20 +1,18 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { format } from 'date-fns';
-import { takeUntil, tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { LocalStorageItems } from '../../../../models/common/interfaces/common.model';
 import { Training } from '../../../../models/training/new-training/new-training.model';
 import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
 import { SharedService } from '../../../../services/shared/shared.service';
-import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 
 @Component({
     selector: 'bl-training-item',
     templateUrl: './training-item.component.html',
     styleUrls: ['./training-item.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [UnsubscribeService],
 })
 export class TrainingItemComponent implements OnInit {
 
@@ -40,7 +38,6 @@ export class TrainingItemComponent implements OnInit {
     training: Training;
 
     constructor(
-        private readonly unsubscribeService: UnsubscribeService,
         private readonly sharedService: SharedService,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
@@ -57,12 +54,12 @@ export class TrainingItemComponent implements OnInit {
     async trainingClicked(): Promise<void> {
         this.route.queryParams
             .pipe(
+                take(1),
                 tap(async (params: Params) => {
                     this.sharedService.pastTrainingsQueryParams$$.next(params as PastTrainingsQueryParams);
                     localStorage.setItem(LocalStorageItems.QUERY_PARAMS, JSON.stringify(params as PastTrainingsQueryParams));
                     await this.router.navigate(['/training/new-training', this.training._id]);
                 }),
-                takeUntil(this.unsubscribeService),
             )
             .subscribe();
     }
