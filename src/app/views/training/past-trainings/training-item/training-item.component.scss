@@ -1,100 +1,112 @@
 
-ion-card-header {
-    padding-bottom: 0;
+ion-card {
+    height: 230px;
 
-    .day-name {
-        color: var(--ion-color-primary);
-        margin-right: 3px;
+    &:hover,
+    &:active {
+        background: var(--ion-color-light);
     }
 
-    .day-date {
-        font-weight: 400;
-    }
+    ion-card-header {
+        padding-bottom: 0;
 
-    ion-card-title {
-        white-space: nowrap;
-    }
-}
-
-ion-card-content {
-    padding: 0;
-
-    .bodyweight,
-    .created-at {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        align-self: flex-start;
-        max-width: 120px;
-        white-space: nowrap;
-
-        &--key {
+        .day-name {
             color: var(--ion-color-primary);
-            justify-content: center;
-            font-size: 16px;
+            margin-right: 3px;
         }
 
-        &--value {
-            justify-content: center;
-            font-size: 16px;
+        .day-date {
+            font-weight: 400;
         }
 
-        &--no-bodyweight {
-            margin: 0 auto;
+        ion-card-title {
+            white-space: nowrap;
         }
     }
 
-    .exercise-wrapper {
-        padding-top: 10px;
+    ion-card-content {
+        height: 83%;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        position: relative;
+        padding: 0;
 
-        &-no-dots {
-            margin-bottom: 20px;
+        .info-grid {
+            margin: 0 30px;
+            flex: 0;
+
+            .bodyweight,
+            .created-at {
+                display: flex;
+                flex-direction: column;
+                white-space: nowrap;
+
+                &--key {
+                    color: var(--ion-color-primary);
+                    justify-content: center;
+                    font-size: 16px;
+                }
+
+                &--value {
+                    justify-content: center;
+                    font-size: 16px;
+                }
+
+                &--no-bodyweight {
+                    margin: 0 auto;
+                }
+            }
         }
 
-        .exercise-name {
-            max-width: 90%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: 16px;
+        .exercise-wrapper {
+            padding-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            &-no-dots {
+                margin-bottom: 20px;
+            }
+
+            .exercise-name {
+                max-width: 90%;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: 16px;
+            }
+
+            .exercise-dots {
+                align-self: center;
+            }
         }
 
-        .exercise-dots {
-            align-self: center;
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid var(--ion-color-light-periwinkle);
+            height: 40px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
         }
     }
-
-    .actions {
-        display: flex;
-        justify-content: flex-end;
-        border-top: 1px solid var(--ion-color-light-periwinkle);
-        height: 40px;
-    }
-}
-
-ion-card:hover,
-ion-card:active {
-    background: var(--ion-color-light);
 }
 
 @media (min-width: 640px) {
     ion-card {
-        height: 230px;
-        width: 268px;
         margin-right: 5px;
-    }
+        width: 325px;
 
-    ion-card-content {
-        min-height: calc(100% - 40px);
-        position: relative;
+        ion-card-content {
+            min-height: calc(100% - 40px);
+            position: relative;
 
-        .actions {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
+            .actions {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+            }
         }
     }
 }
