@@ -239,7 +239,7 @@ export class NewTrainingComponent implements OnInit {
                     this.editData?.editTraining ? this.editData.editTraining?.bodyweight : null,
                 ),
                 {
-                    validators: [CommonValidators.isBroj(), Validators.min(30), Validators.max(300)],
+                    validators: [CommonValidators.isNumber(), Validators.min(30), Validators.max(300)],
                     updateOn: 'blur',
                 },
             ),

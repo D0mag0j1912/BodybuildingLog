@@ -1,6 +1,6 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export function isBroj(): ValidatorFn {
+export function isNumber(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
         if (control.value) {
             if (!isNaN(parseFloat(control.value)) && isFinite(control.value)) {

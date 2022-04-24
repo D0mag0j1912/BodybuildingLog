@@ -148,7 +148,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                     disabled: this.exerciseNameControl.value ? false : true,
                 }, [Validators.min(1),
                     Validators.max(1000),
-                    CommonValidators.isBroj()]),
+                    CommonValidators.isNumber()]),
                 reps: new FormControl({
                     value: set ? set.reps : null,
                     disabled: this.exerciseNameControl.value ? false : true,
