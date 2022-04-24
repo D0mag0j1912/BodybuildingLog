@@ -157,24 +157,26 @@ export class PastTrainingsComponent {
         $event: PeriodFilterType,
         mondayDate: Date,
     ): void {
-        this.periodFilter = $event;
-        if (this.periodFilter === 'day') {
-            this.showByDayStartDate = mondayDate;
+        if (mondayDate) {
+            this.periodFilter = $event;
+            if (this.periodFilter === 'day') {
+                this.showByDayStartDate = mondayDate;
+            }
+            this.pastTrainings$ = this.pastTrainingsService
+                .getPastTrainings(
+                    startOfWeek(mondayDate, { weekStartsOn: 1 }),
+                    this.periodFilter,
+                ).pipe(
+                    tap(async response => {
+                        await this.router.navigate([], {
+                            relativeTo: this.route,
+                            queryParams: this.handleQueryParams(response),
+                        });
+                    }),
+                    mapStreamData(),
+                );
+            this.changeDetectorRef.markForCheck();
         }
-        this.pastTrainings$ = this.pastTrainingsService
-            .getPastTrainings(
-                startOfWeek(mondayDate, { weekStartsOn: 1 }),
-                this.periodFilter,
-            ).pipe(
-                tap(async response => {
-                    await this.router.navigate([], {
-                        relativeTo: this.route,
-                        queryParams: this.handleQueryParams(response),
-                    });
-                }),
-                mapStreamData(),
-            );
-        this.changeDetectorRef.markForCheck();
     }
 
     onDayActivated($event: DayActivatedType): void {
