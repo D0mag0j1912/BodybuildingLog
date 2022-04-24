@@ -142,6 +142,7 @@ export class NewTrainingComponent implements OnInit {
     async openDateTimePicker(): Promise<void> {
         const modal = await this.modalController.create({
             component: DateTimePickerComponent,
+            cssClass: 'datetime-picker',
         });
         await modal.present();
     }

@@ -32,7 +32,8 @@
         },
         "actions": {
             "delete": "Delete",
-            "close": "Close"
+            "close": "Close",
+            "confirm": "Confirm"
         },
         "months": {
             "january": "January",

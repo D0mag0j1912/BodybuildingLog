@@ -33,7 +33,8 @@
         },
         "actions": {
             "delete": "Izbriši",
-            "close": "Izađi"
+            "close": "Izađi",
+            "confirm": "Potvrdi"
         },
         "months": {
             "january": "Siječanj",
