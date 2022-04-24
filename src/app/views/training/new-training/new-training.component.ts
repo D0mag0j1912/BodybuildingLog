@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChild, ViewC
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
+import { format, parseISO } from 'date-fns';
 import { forkJoin, Observable, of } from 'rxjs';
 import { delay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
@@ -29,6 +30,9 @@ import { SingleExerciseComponent } from '../../shared/training/single-exercise/s
 })
 export class NewTrainingComponent implements OnInit {
 
+    dateValue = format(new Date(), 'yyyy-MM-dd') + 'T09:00:00.000Z';
+    formattedTodayDate: string;
+
     form: FormGroup;
 
     editData: EditNewTrainingData = EMPTY_TRAINING_EDIT;
@@ -53,7 +57,9 @@ export class NewTrainingComponent implements OnInit {
         private readonly route: ActivatedRoute,
         private readonly router: Router,
         private readonly modalController: ModalController,
-    ) { }
+    ) {
+        this.setToday();
+    }
 
     get bodyweight(): FormControl {
         return this.form.get('bodyweight') as FormControl;
@@ -127,6 +133,10 @@ export class NewTrainingComponent implements OnInit {
 
     ionViewDidLeave(): void {
         this.sharedService.editingTraining$$.next(false);
+    }
+
+    setToday(): void {
+        this.formattedTodayDate = format(parseISO(format(new Date(), 'yyyy-MM-dd') + 'T09:00:00.000Z'), 'HH:mm, MMM d, yyyy');
     }
 
     async openDateTimePicker(): Promise<void> {

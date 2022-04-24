@@ -22,6 +22,7 @@
         "created_at_time": "Vrijeme izrade",
         "here": "ovdje",
         "or": "ILI",
+        "date": "Datum",
         "errors": {
             "something_went_wrong": "Došlo je do greške Pokušajte ponovno",
             "invalid_date": "Pogrešan format datuma",

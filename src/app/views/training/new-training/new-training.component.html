@@ -51,7 +51,13 @@
                             {{ 'training.new_training.errors.bodyweight_max' | translate }}
                         </ion-note>
                 </ion-item>
-                <ion-item (click)="openDateTimePicker()">
+                <ion-item
+                    class="datetime-item"
+                    fill="outline"
+                    lines="none"
+                    (click)="openDateTimePicker()">
+                    <ion-label>{{ 'common.date' | translate }}</ion-label>
+                    <ion-text>{{ formattedTodayDate }}</ion-text>
                 </ion-item>
                 <bl-single-exercise
                     formControlName="exercise"

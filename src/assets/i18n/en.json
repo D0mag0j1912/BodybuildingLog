@@ -21,6 +21,7 @@
         "created_at_time": "Time created",
         "here": "here",
         "or": "OR",
+        "date": "Date",
         "errors": {
             "something_went_wrong": "Something went wrong Please try again",
             "invalid_date": "Invalid date format",
