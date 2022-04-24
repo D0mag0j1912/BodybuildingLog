@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
-import { IonDatetime } from '@ionic/angular';
+import { IonDatetime, ModalController } from '@ionic/angular';
+import { DialogRoles } from '../../../models/common/types/modal-roles.type';
 
 @Component({
     templateUrl: './datetime-picker.component.html',
@@ -13,11 +14,17 @@ export class DateTimePickerComponent {
     @ViewChild('datetime', { read: IonDatetime })
     dateTimeEl: IonDatetime;
 
-    close(): void {
-        this.dateTimeEl?.cancel(true);
+    constructor(
+        private readonly modalController: ModalController,
+    ) { }
+
+    async close(): Promise<void> {
+        await this.dateTimeEl?.cancel();
+        await this.modalController.dismiss(null, DialogRoles.CANCEL);
     }
 
-    select(): void {
-        this.dateTimeEl?.confirm(true);
+    async select(): Promise<void> {
+        await this.dateTimeEl?.confirm();
+        await this.modalController.dismiss(this.dateValue, DialogRoles.SELECT_DATE);
     }
 }

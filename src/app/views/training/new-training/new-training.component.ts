@@ -65,6 +65,10 @@ export class NewTrainingComponent implements OnInit {
         return this.form.get('bodyweight') as FormControl;
     }
 
+    get date(): FormControl {
+        return this.form.get('date') as FormControl;
+    }
+
     ionViewDidEnter(): void {
         if (this.ionContent) {
             setTimeout(async () => await this.ionContent.scrollToBottom(300), 100);
@@ -154,8 +158,11 @@ export class NewTrainingComponent implements OnInit {
             .pipe(
                 takeUntil(this.unsubscribeService),
             )
-            .subscribe(_ => {
-                //TODO: logic when date picker closes
+            .subscribe(response => {
+                const { data, role } = response;
+                if (role === 'SELECT_DATE') {
+                    this.date.patchValue(data);
+                }
             });
     }
 
