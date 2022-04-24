@@ -5,7 +5,7 @@
                 <ion-icon name="close"></ion-icon>
             </ion-button>
         </ion-buttons>
-        <ion-title>{{ 'training.new_training.buttons.delete_exercise' | translate }}</ion-title>
+        <ion-title class="ion-text-center">{{ 'training.new_training.buttons.delete_exercise' | translate }}</ion-title>
     </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding ion-text-center">
@@ -21,7 +21,7 @@
             class="exercises-wrapper">
             <span class="exercises-key">{{ 'common.exercises' | translate }}</span>
             <strong
-                *ngFor="let exercise of training.exercise | slice:0:4"
+                *ngFor="let exercise of training.exercise"
                 class="exercises-value">
                 {{ exercise.exerciseName | translate }}
             </strong>
