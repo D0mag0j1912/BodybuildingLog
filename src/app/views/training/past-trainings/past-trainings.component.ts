@@ -3,11 +3,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, View
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
 import { Observable, of } from 'rxjs';
 import { delay, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
-import { environment } from '../../../../environments/environment';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
@@ -355,18 +353,10 @@ export class PastTrainingsComponent {
     ): Date {
         switch (page) {
             case 'Previous': {
-                return subDays(
-                    utcToZonedTime(
-                        startOfCurrentWeek ? startOfCurrentWeek : dateInterval.StartDate,
-                        environment.TIMEZONE,
-                    ), 7);
+                return subDays(startOfCurrentWeek ? startOfCurrentWeek : dateInterval.StartDate, 7);
             }
             case 'Next': {
-                return addDays(
-                    utcToZonedTime(
-                        startOfCurrentWeek ? startOfCurrentWeek : dateInterval.StartDate,
-                        environment.TIMEZONE,
-                    ), 7);
+                return addDays(startOfCurrentWeek ? startOfCurrentWeek : dateInterval.StartDate, 7);
             }
             case 'First': {
                 return new Date(earliestTrainingDate);
@@ -404,18 +394,10 @@ export class PastTrainingsComponent {
                     return this.page.toString();
                 }
                 else if (queryParam === 'startDate') {
-                    return format(
-                        utcToZonedTime(
-                            trainingData?.Value?.Results?.Dates?.StartDate ?? new Date(),
-                            environment.TIMEZONE)
-                        , QUERY_PARAMS_DATE_FORMAT);
+                    return format(trainingData?.Value?.Results?.Dates?.StartDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
                 }
                 else if (queryParam === 'endDate') {
-                    return format(
-                        utcToZonedTime(
-                            trainingData?.Value?.Results?.Dates?.EndDate ?? new Date(),
-                            environment.TIMEZONE,
-                        ), QUERY_PARAMS_DATE_FORMAT);
+                    return format(trainingData?.Value?.Results?.Dates?.EndDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
                 }
                 else {
                     return this.size.toString();
@@ -427,18 +409,10 @@ export class PastTrainingsComponent {
         }
         else {
             if (queryParam === 'startDate') {
-                return format(
-                    utcToZonedTime(
-                        trainingData?.Value?.Results?.Dates?.StartDate ?? new Date(),
-                        environment.TIMEZONE)
-                    , QUERY_PARAMS_DATE_FORMAT);
+                return format(trainingData?.Value?.Results?.Dates?.StartDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
             }
             else if (queryParam === 'endDate') {
-                return format(
-                    utcToZonedTime(
-                        trainingData?.Value?.Results?.Dates?.EndDate ?? new Date(),
-                        environment.TIMEZONE,
-                    ), QUERY_PARAMS_DATE_FORMAT);
+                return format(trainingData?.Value?.Results?.Dates?.EndDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
             }
             else {
                 return undefined;
@@ -459,7 +433,7 @@ export class PastTrainingsComponent {
     private getDateTimeQueryParams(): Date {
         const splittedDate = this.route.snapshot.queryParams?.startDate?.split('-') ?? [];
         const utc = splittedDate.length > 0 ? new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString() : new Date().toUTCString();
-        return startOfDay(utcToZonedTime(new Date(utc), environment.TIMEZONE));
+        return startOfDay(new Date(utc));
     }
 
     private generateHeaderTitle(
