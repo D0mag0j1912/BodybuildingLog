@@ -143,6 +143,7 @@ export class NewTrainingComponent implements OnInit {
         const modal = await this.modalController.create({
             component: DateTimePickerComponent,
             cssClass: 'datetime-picker',
+            mode: 'md',
         });
         await modal.present();
     }
