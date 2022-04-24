@@ -51,6 +51,8 @@
                             {{ 'training.new_training.errors.bodyweight_max' | translate }}
                         </ion-note>
                 </ion-item>
+                <ion-item (click)="openDateTimePicker()">
+                </ion-item>
                 <bl-single-exercise
                     formControlName="exercise"
                     [bodyweight]="bodyweight"

@@ -17,6 +17,7 @@ import { DeleteTrainingActionComponent } from '../views/shared/training/training
 import { MoreTrainingActionComponent } from '../views/shared/training/training-actions/more-training-action/more-training-action.component';
 import { PaginationComponent } from '../views/shared/pagination/pagination.component';
 import { PaginationDirective } from '../directives/pagination/pagination.directive';
+import { DateTimePickerComponent } from '../views/shared/datetime-picker/datetime-picker.component';
 
 const DIRECTIVES = [PaginationDirective];
 
@@ -27,6 +28,7 @@ const COMPONENTS = [
     TotalWeightComponent,
     NotFoundComponent,
     PaginationComponent,
+    DateTimePickerComponent,
 ];
 
 const ACTION_COMPONENTS = [
@@ -62,6 +64,7 @@ const IMPORTS = [
     entryComponents: [
         DeleteExerciseDialogComponent,
         DeleteTrainingActionComponent,
+        DateTimePickerComponent,
     ],
     providers: [
         NotFoundResolverService,

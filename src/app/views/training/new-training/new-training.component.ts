@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { IonContent } from '@ionic/angular';
+import { IonContent, ModalController } from '@ionic/angular';
 import { forkJoin, Observable, of } from 'rxjs';
 import { delay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
@@ -17,6 +17,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as CommonValidators from '../../../validators/shared/common.validators';
+import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
 import { SingleExerciseComponent } from '../../shared/training/single-exercise/single-exercise.component';
 
 @Component({
@@ -51,6 +52,7 @@ export class NewTrainingComponent implements OnInit {
         private readonly unsubscribeService: UnsubscribeService,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
+        private readonly modalController: ModalController,
     ) { }
 
     get bodyweight(): FormControl {
@@ -125,6 +127,13 @@ export class NewTrainingComponent implements OnInit {
 
     ionViewDidLeave(): void {
         this.sharedService.editingTraining$$.next(false);
+    }
+
+    async openDateTimePicker(): Promise<void> {
+        const modal = await this.modalController.create({
+            component: DateTimePickerComponent,
+        });
+        await modal.present();
     }
 
     goToPastTraining(): void {
