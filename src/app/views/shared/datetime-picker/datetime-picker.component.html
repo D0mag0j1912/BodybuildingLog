@@ -2,7 +2,8 @@
     <ion-datetime
         #datetime
         presentation="date-time"
-        size="cover">
+        size="cover"
+        [value]="dateValue">
         <ion-buttons slot="buttons">
             <ion-button (click)="close()">{{ 'common.actions.close' | translate }}</ion-button>
             <ion-button

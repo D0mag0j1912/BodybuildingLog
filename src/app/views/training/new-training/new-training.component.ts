@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { format, parseISO } from 'date-fns';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, from, Observable, of } from 'rxjs';
 import { delay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
@@ -142,10 +142,21 @@ export class NewTrainingComponent implements OnInit {
     async openDateTimePicker(): Promise<void> {
         const modal = await this.modalController.create({
             component: DateTimePickerComponent,
+            componentProps: {
+                dateValue: this.dateValue,
+            },
             cssClass: 'datetime-picker',
             mode: 'md',
         });
         await modal.present();
+
+        from(modal.onDidDismiss())
+            .pipe(
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe(_ => {
+                //TODO: logic when date picker closes
+            });
     }
 
     goToPastTraining(): void {
@@ -225,6 +236,7 @@ export class NewTrainingComponent implements OnInit {
                     updateOn: 'blur',
                 },
             ),
+            date: new FormControl(this.dateValue, [Validators.required]),
             exercise: new FormControl(currentTrainingState),
         });
     }
