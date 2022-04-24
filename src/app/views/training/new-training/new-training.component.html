@@ -56,6 +56,11 @@
                     fill="outline"
                     lines="none"
                     (click)="openDateTimePicker()">
+                    <ion-icon
+                        class="datetime-icon"
+                        slot="start"
+                        color="primary"
+                        name="calendar-outline"></ion-icon>
                     <ion-label>{{ 'common.date' | translate }}</ion-label>
                     <ion-text>{{ formattedTodayDate }}</ion-text>
                 </ion-item>

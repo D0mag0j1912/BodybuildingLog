@@ -5,6 +5,11 @@ ion-item {
 
 .datetime-item {
     margin-top: 10px;
+
+    .datetime-icon {
+        width: 24px;
+        height: 24px;
+    }
 }
 
 .error-wrapper {
