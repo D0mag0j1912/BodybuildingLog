@@ -6,8 +6,7 @@ export interface Training {
     readonly userId: string;
     readonly _id?: string;
     readonly bodyweight?: number;
-    readonly createdAt?: Date;
-    readonly updatedAt?: Date;
+    readonly trainingDate?: Date;
 }
 
 export type ExerciseStateType = 'Update' | 'Add' | 'Delete';

@@ -87,7 +87,7 @@ export class NewTrainingComponent implements OnInit {
                                 .pipe(
                                     tap((response: StreamData<Training>) => {
                                         this.editData = {
-                                            editedDate: response?.Value?.updatedAt ?? new Date(),
+                                            editedDate: response?.Value?.trainingDate ?? new Date(),
                                             editTraining: {
                                                 ...response?.Value,
                                                 editMode: true,
@@ -215,7 +215,7 @@ export class NewTrainingComponent implements OnInit {
                 .pipe(
                     tap((response: StreamData<Training>) => {
                         this.editData = {
-                            editedDate: response?.Value?.updatedAt ?? new Date(),
+                            editedDate: response?.Value?.trainingDate ?? new Date(),
                             editTraining: {
                                 ...response?.Value,
                                 editMode: this.editMode,
