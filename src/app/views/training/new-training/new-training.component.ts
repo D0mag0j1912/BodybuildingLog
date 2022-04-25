@@ -135,10 +135,6 @@ export class NewTrainingComponent implements OnInit {
         this.sharedService.editingTraining$$.next(false);
     }
 
-    setToday(): void {
-        this.formattedTodayDate = format(parseISO(format(new Date(), 'yyyy-MM-dd') + 'T09:00:00.000'), 'HH:mm, MMM d, yyyy');
-    }
-
     async openDateTimePicker(): Promise<void> {
         const modal = await this.modalController.create({
             component: DateTimePickerComponent,
@@ -246,6 +242,10 @@ export class NewTrainingComponent implements OnInit {
             date: new FormControl(this.editData?.editedDate ? this.editData.editedDate : this.dateValue, [Validators.required]),
             exercise: new FormControl(currentTrainingState),
         });
+    }
+
+    private setToday(): void {
+        this.formattedTodayDate = format(parseISO(format(new Date(), 'yyyy-MM-dd') + 'T09:00:00.000'), 'HH:mm, MMM d, yyyy');
     }
 
 }
