@@ -57,9 +57,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     bodyweight: AbstractControl | null;
 
     @Input()
-    trainingDate: AbstractControl | null;
-
-    @Input()
     isLoading = false;
 
     @Input()
@@ -351,10 +348,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 });
 
                 return {
-                    createdAt: this.editMode ? this.editData.editedDate : new Date(),
                     exercise: exerciseFormData,
                     bodyweight: this.bodyweight.value ? +this.bodyweight.value : null,
-                    trainingDate: this.trainingDate.value,
+                    trainingDate: this.editMode ? this.editData.editedDate : new Date(),
                     editMode: this.editMode,
                     userId: currentTrainingState.userId,
                 } as Training;
