@@ -79,14 +79,14 @@ export class PastTrainingsService {
             const dates: DateInterval = getIntervalDate(new Date(currentDate));
             const condition: FilterQuery<Training> = {
                 userId: loggedUserId,
-                createdAt: {
+                trainingDate: {
                     $gte: filterType === 'week' ? dates.StartDate : startOfDay(new Date(currentDate)),
                     $lt: filterType === 'week' ? dates.EndDate : endOfDay(new Date(currentDate)),
                 },
             };
             const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition);
             results.Results.Dates = filterType === 'week' ? dates : { StartDate: new Date(currentDate), EndDate: new Date(currentDate) };
-            results.Results.EarliestTrainingDate = (await this.getEarliestDate(loggedUserId))?.createdAt ?? new Date();
+            results.Results.EarliestTrainingDate = (await this.getEarliestDate(loggedUserId))?.trainingDate ?? new Date();
             results.Results.IsPreviousWeek = isPreviousWeek(results.Results?.EarliestTrainingDate, dates);
             results.Results.IsNextWeek = isNextWeek(dates);
             if (isDeleteTraining) {
@@ -107,8 +107,8 @@ export class PastTrainingsService {
         const minDate = await this.trainingModel
             .findOne({
                 userId: loggedUserId,
-            }, 'createdAt -_id')
-            .sort({ createdAt: 1 })
+            }, 'trainingDate -_id')
+            .sort({ trainingDate: 1 })
             .limit(1)
             .exec();
         return minDate;

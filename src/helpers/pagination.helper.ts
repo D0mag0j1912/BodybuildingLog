@@ -55,13 +55,13 @@ export const paginate = async <T extends Partial<PastTrainings>, U extends Model
                 .find(condition)
                 .limit(size)
                 .skip(startIndex)
-                .sort({ createdAt: 'asc' })
+                .sort({ trainingDate: 'asc' })
                 .exec();
         }
         else {
             results.Results.Trainings = await model
                 .find(condition)
-                .sort({ createdAt: 'asc' })
+                .sort({ trainingDate: 'asc' })
                 .exec();
         }
         return results;

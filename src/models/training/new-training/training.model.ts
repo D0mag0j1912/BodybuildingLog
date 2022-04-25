@@ -25,12 +25,16 @@ export const NEW_TRAINING_SCHEMA = new Schema({
         required: true,
     },
     bodyweight: Number,
+    trainingDate: {
+        type: Date,
+        required: true,
+    },
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
-}, { timestamps: true });
+});
 
 export class Training {
 
@@ -64,19 +68,11 @@ export class Training {
     })
     bodyweight: number;
 
-    @ApiProperty({ required: false })
-    @IsOptional()
+    @ApiProperty()
     @IsDateString({}, {
         message: '@common.errors.invalid_date',
     })
-    createdAt: Date;
-
-    @ApiProperty({ required: false })
-    @IsOptional()
-    @IsDateString({}, {
-        message: '@common.errors.invalid_date',
-    })
-    updatedAt: Date;
+    trainingDate: Date;
 
     @ApiProperty()
     @IsNotEmpty({ message: '@common.errors.not_authenticated' })

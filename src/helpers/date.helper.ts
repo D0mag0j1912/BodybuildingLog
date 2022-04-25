@@ -9,7 +9,7 @@ export function getIntervalDate(currentDateOrTrainings: Date | Training[]): Date
     let minDate: Date;
     let maxDate: Date;
     if (Array.isArray(currentDateOrTrainings)) {
-        const dates: Date[] = currentDateOrTrainings.map((x: Training) => x.createdAt);
+        const dates: Date[] = currentDateOrTrainings.map((x: Training) => x.trainingDate);
         minDate = startOfDay(min(dates));
         maxDate = startOfDay(max(dates));
     }
