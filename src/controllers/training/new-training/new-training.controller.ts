@@ -11,7 +11,7 @@ import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login.model';
 import { GeneralResponseData } from '../../../models/common/response.model';
-import { Training } from '../../../models/training/new-training/new-training.model';
+import { Training } from '../../../models/training/new-training/training.model';
 import { DuplicateExercisePipe } from '../../../pipes/training/duplicate-exercise.pipe';
 import { EmptySetPipe } from '../../../pipes/training/empty-set.pipe';
 import { EmptyTrainingPipe } from '../../../pipes/training/empty-training.pipe';

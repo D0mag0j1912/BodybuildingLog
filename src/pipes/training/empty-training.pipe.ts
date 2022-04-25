@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
-import { Training } from '../../models/training/new-training/new-training.model';
+import { Training } from '../../models/training/new-training/training.model';
 
 @Injectable()
 export class EmptyTrainingPipe implements PipeTransform {

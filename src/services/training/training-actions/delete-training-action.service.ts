@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Training } from 'src/models/training/new-training/new-training.model';
+import { Training } from 'src/models/training/new-training/training.model';
 import { PastTrainings } from 'src/models/training/past-trainings/past-trainings.model';
 import { Paginator } from '../../../models/common/paginator.model';
 import { StreamData } from '../../../models/common/response.model';

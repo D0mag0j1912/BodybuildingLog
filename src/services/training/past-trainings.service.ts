@@ -6,7 +6,7 @@ import { getIntervalDate, isNextWeek, isPreviousWeek } from '../../helpers/date.
 import { paginate } from '../../helpers/pagination.helper';
 import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
 import { StreamData } from '../../models/common/response.model';
-import { Training } from '../../models/training/new-training/new-training.model';
+import { Training } from '../../models/training/new-training/training.model';
 import { PastTrainings, PastTrainingsFilterType } from '../../models/training/past-trainings/past-trainings.model';
 import { DateInterval } from '../../models/common/dates.model';
 

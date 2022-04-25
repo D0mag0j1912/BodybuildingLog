@@ -5,7 +5,7 @@ import { NewTrainingController } from 'src/controllers/training/new-training/new
 import { DeleteTrainingActionController } from 'src/controllers/training/past-trainings/delete-training-action.controller';
 import { PastTrainingsController } from 'src/controllers/training/past-trainings/past-trainings.controller';
 import { EXERCISE_SCHEMA } from 'src/models/training/exercise.model';
-import { NEW_TRAINING_SCHEMA } from 'src/models/training/new-training/new-training.model';
+import { NEW_TRAINING_SCHEMA } from 'src/models/training/new-training/training.model';
 import { SET_SCHEMA } from 'src/models/training/new-training/set.model';
 import { SINGLE_EXERCISE_SCHEMA } from 'src/models/training/new-training/single-exercise.model';
 import { NewTrainingService } from 'src/services/training/new-training.service';

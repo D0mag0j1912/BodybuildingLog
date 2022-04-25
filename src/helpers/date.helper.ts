@@ -1,7 +1,7 @@
 import { endOfWeek, startOfWeek, isSameWeek, eachDayOfInterval, startOfDay, endOfDay } from 'date-fns';
 import { max, min } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { Training } from '../models/training/new-training/new-training.model';
+import { Training } from '../models/training/new-training/training.model';
 import { TIMEZONE } from '../constants/timezone';
 import { DateInterval } from '../models/common/dates.model';
 

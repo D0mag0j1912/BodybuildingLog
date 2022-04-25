@@ -1,5 +1,5 @@
 import { BadRequestException, PipeTransform } from '@nestjs/common';
-import { Training } from '../../models/training/new-training/new-training.model';
+import { Training } from '../../models/training/new-training/training.model';
 import { SingleExercise } from '../../models/training/new-training/single-exercise.model';
 
 export class EmptySetPipe implements PipeTransform {

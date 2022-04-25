@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { GeneralResponseData, StreamData } from '../../models/common/response.model';
 import { Error } from '../../models/errors/error';
 import { Exercise } from '../../models/training/exercise.model';
-import { Training } from '../../models/training/new-training/new-training.model';
+import { Training } from '../../models/training/new-training/training.model';
 
 @Injectable()
 export class NewTrainingService {

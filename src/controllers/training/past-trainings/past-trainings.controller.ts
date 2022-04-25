@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import { Training } from 'src/models/training/new-training/new-training.model';
+import { Training } from 'src/models/training/new-training/training.model';
 import { PastTrainings } from 'src/models/training/past-trainings/past-trainings.model';
 import { PastTrainingsService } from 'src/services/training/past-trainings.service';
 import { GET_USER } from '../../../decorators/get-user.decorator';
