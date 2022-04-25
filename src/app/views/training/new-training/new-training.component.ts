@@ -140,7 +140,7 @@ export class NewTrainingComponent implements OnInit {
     }
 
     setToday(): void {
-        this.formattedTodayDate = format(parseISO(format(new Date(), 'yyyy-MM-dd') + 'T09:00:00.000Z'), 'HH:mm, MMM d, yyyy');
+        this.formattedTodayDate = format(parseISO(format(new Date(), 'yyyy-MM-dd') + 'T09:00:00.000'), 'HH:mm, MMM d, yyyy');
     }
 
     async openDateTimePicker(): Promise<void> {
