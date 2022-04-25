@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { format, parseISO } from 'date-fns';
-import { forkJoin, from, Observable, of } from 'rxjs';
+import { combineLatest, from, Observable, of } from 'rxjs';
 import { delay, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
@@ -98,16 +98,11 @@ export class NewTrainingComponent implements OnInit {
                             );
                         }
                         else {
-                            return forkJoin([
-                                this.newTrainingService.allExercisesChanged$
-                                    .pipe(
-                                        take(1),
-                                    ),
-                                this.newTrainingService.currentTrainingChanged$
-                                    .pipe(
-                                        take(1),
-                                    ),
+                            return combineLatest([
+                                this.newTrainingService.allExercisesChanged$,
+                                this.newTrainingService.currentTrainingChanged$,
                             ]).pipe(
+                                take(1),
                                 tap(([exercises, training]: [Exercise[], Training]) => {
                                     const currentTrainingState: Training = { ...training };
                                     if (currentTrainingState) {
@@ -248,7 +243,7 @@ export class NewTrainingComponent implements OnInit {
                     updateOn: 'blur',
                 },
             ),
-            date: new FormControl(this.dateValue, [Validators.required]),
+            date: new FormControl(this.editData?.editedDate ? this.editData.editedDate : this.dateValue, [Validators.required]),
             exercise: new FormControl(currentTrainingState),
         });
     }
