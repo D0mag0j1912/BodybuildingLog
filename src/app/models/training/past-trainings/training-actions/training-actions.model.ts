@@ -1,4 +1,4 @@
-import { Training } from '../../new-training/new-training.model';
+import { Training } from '../../new-training/training.model';
 
 export type TrainingItemActions = 'delete' | 'more';
 

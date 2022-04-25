@@ -4,7 +4,7 @@ import { IonInput } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { delay, filter, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { ExerciseStateType } from '../../../../models/training/new-training/new-training.model';
+import { ExerciseStateType } from '../../../../models/training/new-training/training.model';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
 import { Set, SetConstituent } from '../../../../models/training/shared/set.model';
 import { FormSetData } from '../../../../models/training/shared/set.model';

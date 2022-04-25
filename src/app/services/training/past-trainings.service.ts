@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 import { mapDateInterval } from '../../helpers/training/past-trainings/map-past-trainings-dates.helper';
 import { StreamData } from '../../models/common/interfaces/common.model';
 import { Paginator } from '../../models/common/interfaces/paginator.model';
-import { Training } from '../../models/training/new-training/new-training.model';
+import { Training } from '../../models/training/new-training/training.model';
 import { PastTrainings, PeriodFilterType } from '../../models/training/past-trainings/past-trainings.model';
 
 const ROUTE_PREFIX = '/training/';

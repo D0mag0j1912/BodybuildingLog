@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Training } from '../../../../models/training/new-training/new-training.model';
+import { Training } from '../../../../models/training/new-training/training.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 
 @Pipe({

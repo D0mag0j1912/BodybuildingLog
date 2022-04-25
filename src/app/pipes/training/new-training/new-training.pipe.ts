@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { Exercise } from '../../../models/training/exercise.model';
-import { Training } from '../../../models/training/new-training/new-training.model';
+import { Training } from '../../../models/training/new-training/training.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
 @Pipe({ name: 'newTraining' })

@@ -4,7 +4,7 @@ import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
-import { Training } from 'src/app/models/training/new-training/new-training.model';
+import { Training } from 'src/app/models/training/new-training/training.model';
 import { MESSAGE_DURATION } from '../../../../../constants/message-duration.const';
 import { StreamData } from '../../../../../models/common/interfaces/common.model';
 import { Paginator } from '../../../../../models/common/interfaces/paginator.model';

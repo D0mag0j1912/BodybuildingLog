@@ -12,7 +12,7 @@ import { mapStreamData } from '../../../helpers/training/past-trainings/map-stre
 import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { createEmptyExercise, EditNewTrainingData, EMPTY_TRAINING, EMPTY_TRAINING_EDIT } from '../../../models/training/new-training/empty-training.model';
-import { Training } from '../../../models/training/new-training/new-training.model';
+import { Training } from '../../../models/training/new-training/training.model';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';

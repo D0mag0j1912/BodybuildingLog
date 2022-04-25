@@ -9,7 +9,7 @@ import { LocalStorageItems } from '../../models/common/interfaces/common.model';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Exercise } from '../../models/training/exercise.model';
 import { createEmptyExercise, EMPTY_TRAINING } from '../../models/training/new-training/empty-training.model';
-import { Training } from '../../models/training/new-training/new-training.model';
+import { Training } from '../../models/training/new-training/training.model';
 import { SetTrainingData } from '../../models/training/shared/set.model';
 import { Set } from '../../models/training/shared/set.model';
 import { SingleExercise } from '../../models/training/shared/single-exercise.model';

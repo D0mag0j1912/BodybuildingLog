@@ -3,7 +3,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { format } from 'date-fns';
 import { take, tap } from 'rxjs/operators';
 import { LocalStorageItems } from '../../../../models/common/interfaces/common.model';
-import { Training } from '../../../../models/training/new-training/new-training.model';
+import { Training } from '../../../../models/training/new-training/training.model';
 import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
 import { SharedService } from '../../../../services/shared/shared.service';

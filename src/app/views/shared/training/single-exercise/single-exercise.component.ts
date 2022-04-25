@@ -11,7 +11,7 @@ import { GeneralResponseData } from '../../../../models/general-response.model';
 import { DEFAULT_WEIGHT_FORMAT } from '../../../../models/preferences.model';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { EditNewTrainingData, EMPTY_TRAINING_EDIT } from '../../../../models/training/new-training/empty-training.model';
-import { Training } from '../../../../models/training/new-training/new-training.model';
+import { Training } from '../../../../models/training/new-training/training.model';
 import { createInitialSet, SetFormValidationErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
@@ -23,7 +23,7 @@ import { NewTrainingService } from '../../../../services/training/new-training.s
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } from '../../delete-exercise-dialog/delete-exercise-dialog.component';
 import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
-import { ExerciseStateType } from '../../../../models/training/new-training/new-training.model';
+import { ExerciseStateType } from '../../../../models/training/new-training/training.model';
 
 const INITIAL_WEIGHT = 0;
 
