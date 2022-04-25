@@ -9,7 +9,7 @@ import { DialogRoles } from '../../../models/common/types/modal-roles.type';
 export class DateTimePickerComponent {
 
     @Input()
-    dateValue: Date;
+    dateValue: string;
 
     @ViewChild('datetime', { read: IonDatetime })
     dateTimeEl: IonDatetime;
@@ -17,6 +17,10 @@ export class DateTimePickerComponent {
     constructor(
         private readonly modalController: ModalController,
     ) { }
+
+    dateChanged(currentDateValue: string): void {
+        this.dateValue = currentDateValue;
+    }
 
     async close(): Promise<void> {
         await this.dateTimeEl?.cancel();

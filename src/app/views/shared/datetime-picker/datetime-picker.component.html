@@ -3,7 +3,9 @@
         #datetime
         presentation="date-time"
         size="cover"
-        [value]="dateValue">
+        firstDayOfWeek="1"
+        [value]="dateValue"
+        (ionChange)="dateChanged(datetime.value)">
         <ion-buttons slot="buttons">
             <ion-button (click)="close()">{{ 'common.actions.close' | translate }}</ion-button>
             <ion-button

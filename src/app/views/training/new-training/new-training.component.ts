@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { format, parseISO } from 'date-fns';
 import { forkJoin, from, Observable, of } from 'rxjs';
-import { delay, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { delay, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
@@ -30,7 +30,7 @@ import { SingleExerciseComponent } from '../../shared/training/single-exercise/s
 })
 export class NewTrainingComponent implements OnInit {
 
-    dateValue = format(new Date(), 'yyyy-MM-dd') + 'T09:00:00.000Z';
+    dateValue = format(new Date(), 'yyyy-MM-dd') + 'T09:00:00.000';
     formattedTodayDate: string;
 
     form: FormGroup;
@@ -57,6 +57,7 @@ export class NewTrainingComponent implements OnInit {
         private readonly route: ActivatedRoute,
         private readonly router: Router,
         private readonly modalController: ModalController,
+        private readonly changeDetectorRef: ChangeDetectorRef,
     ) {
         this.setToday();
     }
@@ -156,12 +157,16 @@ export class NewTrainingComponent implements OnInit {
 
         from(modal.onDidDismiss())
             .pipe(
+                finalize(() => this.changeDetectorRef.markForCheck()),
                 takeUntil(this.unsubscribeService),
             )
             .subscribe(response => {
                 const { data, role } = response;
                 if (role === 'SELECT_DATE') {
                     this.date.patchValue(data);
+                    this.dateValue = data;
+                    const [ _date, time ] = (data as string).split('T');
+                    this.formattedTodayDate = format(parseISO(format(new Date(data), 'yyyy-MM-dd') + `T${time}`), 'HH:mm, MMM d, yyyy');
                 }
             });
     }
