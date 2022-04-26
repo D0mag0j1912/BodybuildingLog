@@ -22,12 +22,12 @@ export class DeleteTrainingActionController {
     async deleteTraining(
         @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
-        @Query('currentDate') currentDate: Date,
+        @Query('currentDate') currentDate: string,
     ): Promise<StreamData<PastTrainings>> {
         return this.deleteTrainingActionService.deleteTraining(
-            trainingId as string,
-            user._id as string,
-            currentDate as Date,
+            trainingId,
+            user._id,
+            currentDate,
         );
     }
 }
