@@ -44,7 +44,6 @@ export class TrainingItemComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        //TODO: vrijeme ovdje ide 2 sata unaprijed (uskladiti s lokalnom zonom) - Zasad samo oduzimam 2 sata --- maknuti Z na kraju vremena
         this.timeCreated = format(new Date(this.training.trainingDate), 'HH:mm');
         this.dayIndex = new Date(this.training.trainingDate).getDay();
     }
