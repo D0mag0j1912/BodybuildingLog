@@ -11,8 +11,8 @@ export function mapDateInterval(response: StreamData<Paginator<PastTrainings>>):
             Results: {
                 ...response.Value.Results,
                 Dates: {
-                    StartDate: response?.Value?.Results?.Dates?.StartDate ? startOfDay(new Date(response.Value?.Results?.Dates?.StartDate)) : undefined,
-                    EndDate: response?.Value?.Results?.Dates?.EndDate ? startOfDay(new Date(response.Value?.Results?.Dates?.EndDate)) : undefined,
+                    StartDate: response?.Value?.Results?.Dates?.StartDate ? startOfDay(new Date(response.Value?.Results?.Dates?.StartDate)).toString() : undefined,
+                    EndDate: response?.Value?.Results?.Dates?.EndDate ? startOfDay(new Date(response.Value?.Results?.Dates?.EndDate)).toString() : undefined,
                 } as DateInterval,
             } as PastTrainings,
         } as Paginator<PastTrainings>,

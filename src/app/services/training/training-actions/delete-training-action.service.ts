@@ -47,7 +47,7 @@ export class DeleteTrainingActionService implements TrainingActions {
 
     deleteTraining(
         trainingId: string,
-        currentDate: Date,
+        currentDate: string,
     ): Observable<StreamData<Paginator<PastTrainings>>> {
         const params = `?currentDate=${currentDate}`;
         return this.http.delete<StreamData<Paginator<PastTrainings>>>(environment.BACKEND + `/training/delete_training/${trainingId}${params}`)

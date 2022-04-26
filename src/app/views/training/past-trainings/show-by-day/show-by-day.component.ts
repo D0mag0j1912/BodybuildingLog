@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { addDays, differenceInDays, startOfDay, startOfWeek } from 'date-fns';
 
 export interface DayActivatedType {
-    Date: Date;
+    Date: string;
     DayNumber: number;
 }
 
@@ -18,7 +18,7 @@ export interface DayActivatedType {
 export class ShowByDayComponent implements OnInit {
 
     @Input()
-    startDate: Date = startOfDay(new Date());
+    startDate: string = startOfDay(new Date()).toString();
 
     @Output()
     readonly dayActivated: EventEmitter<DayActivatedType> = new EventEmitter<DayActivatedType>();
@@ -35,8 +35,8 @@ export class ShowByDayComponent implements OnInit {
 
     ngOnInit(): void {
         if (this.startDate) {
-            const startOfWeekDate = startOfWeek(this.startDate, { weekStartsOn: 1 });
-            const currentDayIndex = differenceInDays(this.startDate, startOfWeekDate);
+            const startOfWeekDate = startOfWeek(new Date(this.startDate), { weekStartsOn: 1 });
+            const currentDayIndex = differenceInDays(new Date(this.startDate), startOfWeekDate);
             this.activeDay$$.next(currentDayIndex + 1);
         }
     }
@@ -45,7 +45,7 @@ export class ShowByDayComponent implements OnInit {
         const dayNumber = index + 1;
         this.activeDay$$.next(dayNumber);
 
-        const newDate = addDays(startOfWeek(this.startDate, { weekStartsOn: 1 }), index);
+        const newDate = addDays(startOfWeek(new Date(this.startDate), { weekStartsOn: 1 }), index).toString();
         this.dayActivated.next({ Date: newDate, DayNumber: index });
     }
 

@@ -47,7 +47,7 @@ export class PaginationComponent {
     loadPage(
         page?: Page,
         dateInterval?: DateInterval,
-        earliestTrainingDate?: Date,
+        earliestTrainingDate?: string,
         lastPage?: number,
     ): void {
         if (this.isSearch) {

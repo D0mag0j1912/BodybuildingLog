@@ -14,10 +14,6 @@ export class SharedService {
 
     readonly deletedTraining$$: Subject<StreamData<Paginator<PastTrainings>>> = new Subject<StreamData<Paginator<PastTrainings>>>();
 
-    subtractTwoHours(date: Date): Date {
-        return new Date(new Date(date).setHours(new Date(date).getHours() - 2));
-    }
-
     keepQueryParams(): void {
         const queryParams = JSON.parse(localStorage.getItem(LocalStorageItems.QUERY_PARAMS));
         if (!queryParams) {

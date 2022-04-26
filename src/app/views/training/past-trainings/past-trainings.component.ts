@@ -41,10 +41,10 @@ export class PastTrainingsComponent {
     searchText = '';
     periodFilter: PeriodFilterType = 'week';
     dayActivated: DayActivatedType = {
-        Date: startOfDay(new Date()),
+        Date: startOfDay(new Date()).toString(),
         DayNumber: 0,
     };
-    showByDayStartDate: Date;
+    showByDayStartDate: string;
 
     isNextPage = true;
     isPreviousPage = true;
@@ -153,7 +153,7 @@ export class PastTrainingsComponent {
 
     onPeriodEmitted(
         $event: PeriodFilterType,
-        mondayDate: Date,
+        mondayDate: string,
     ): void {
         if (mondayDate) {
             this.periodFilter = $event;
@@ -162,7 +162,7 @@ export class PastTrainingsComponent {
             }
             this.pastTrainings$ = this.pastTrainingsService
                 .getPastTrainings(
-                    startOfWeek(mondayDate, { weekStartsOn: 1 }),
+                    startOfWeek(new Date(mondayDate), { weekStartsOn: 1 }).toString(),
                     this.periodFilter,
                 ).pipe(
                     tap(async response => {
@@ -195,7 +195,7 @@ export class PastTrainingsComponent {
 
     onPaginatorChanged(
         $event: PaginatorChanged,
-        dayFilterDate: Date,
+        dayFilterDate: string,
     ): void {
         if ($event?.IsSearch) {
             this.pastTrainings$ =
@@ -255,8 +255,8 @@ export class PastTrainingsComponent {
 
     setTimePeriod(dateInterval: DateInterval): Observable<string> {
         const isDay = isSameDay(
-            dateInterval?.StartDate,
-            dateInterval?.EndDate,
+            new Date(dateInterval?.StartDate),
+            new Date(dateInterval?.EndDate),
         );
         if (isDay) {
             return this.translateService.stream(`common.day`)
@@ -265,8 +265,8 @@ export class PastTrainingsComponent {
                 );
         }
         const isWeek = isSameWeek(
-            dateInterval?.StartDate,
-            dateInterval?.EndDate,
+            new Date(dateInterval?.StartDate),
+            new Date(dateInterval?.EndDate),
             { weekStartsOn: 1 },
         );
         if (isWeek) {
@@ -276,11 +276,11 @@ export class PastTrainingsComponent {
                 );
         }
         const isMonth = isSameMonth(
-            dateInterval?.StartDate,
-            dateInterval?.EndDate,
+            new Date(dateInterval?.StartDate),
+            new Date(dateInterval?.EndDate),
         );
         if (isMonth) {
-            const month = getMonth(dateInterval.StartDate);
+            const month = getMonth(new Date(dateInterval.StartDate));
             return this.translateService.stream(`common.months.${ALL_MONTHS[month]}`)
                 .pipe(
                     map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
@@ -325,14 +325,14 @@ export class PastTrainingsComponent {
     private onPaginatorChangedFilterHandler(
         filterType: PeriodFilterType,
         $weekEvent?: PaginatorChanged,
-        startOfCurrentWeek?: Date,
-    ): Date {
+        startOfCurrentWeek?: string,
+    ): string {
         switch (filterType) {
             case 'week': {
                 return this.calculateDate($weekEvent.PageType, $weekEvent.DateInterval, $weekEvent.EarliestTrainingDate);
             }
             case 'day': {
-                return addDays(startOfWeek(startOfCurrentWeek, { weekStartsOn: 1 }), this.dayActivated.DayNumber);
+                return addDays(startOfWeek(new Date(startOfCurrentWeek), { weekStartsOn: 1 }), this.dayActivated.DayNumber).toString();
             }
             default:
                 isNeverCheck(filterType);
@@ -348,21 +348,21 @@ export class PastTrainingsComponent {
     private calculateDate(
         page: Page,
         dateInterval: DateInterval,
-        earliestTrainingDate: Date,
-        startOfCurrentWeek?: Date,
-    ): Date {
+        earliestTrainingDate: string,
+        startOfCurrentWeek?: string,
+    ): string {
         switch (page) {
             case 'Previous': {
-                return subDays(startOfCurrentWeek ? startOfCurrentWeek : dateInterval.StartDate, 7);
+                return subDays(startOfCurrentWeek ? new Date(startOfCurrentWeek) : new Date(dateInterval.StartDate), 7).toString();
             }
             case 'Next': {
-                return addDays(startOfCurrentWeek ? startOfCurrentWeek : dateInterval.StartDate, 7);
+                return addDays(startOfCurrentWeek ? new Date(startOfCurrentWeek) : new Date(dateInterval.StartDate), 7).toString();
             }
             case 'First': {
-                return new Date(earliestTrainingDate);
+                return earliestTrainingDate;
             }
             case 'Last': {
-                return new Date();
+                return new Date().toString();
             }
             default:
                 return isNeverCheck(page);
@@ -394,10 +394,10 @@ export class PastTrainingsComponent {
                     return this.page.toString();
                 }
                 else if (queryParam === 'startDate') {
-                    return format(trainingData?.Value?.Results?.Dates?.StartDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
+                    return format(new Date(trainingData?.Value?.Results?.Dates?.StartDate) ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
                 }
                 else if (queryParam === 'endDate') {
-                    return format(trainingData?.Value?.Results?.Dates?.EndDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
+                    return format(new Date(trainingData?.Value?.Results?.Dates?.EndDate) ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
                 }
                 else {
                     return this.size.toString();
@@ -409,10 +409,10 @@ export class PastTrainingsComponent {
         }
         else {
             if (queryParam === 'startDate') {
-                return format(trainingData?.Value?.Results?.Dates?.StartDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
+                return format(new Date(trainingData?.Value?.Results?.Dates?.StartDate) ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
             }
             else if (queryParam === 'endDate') {
-                return format(trainingData?.Value?.Results?.Dates?.EndDate ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
+                return format(new Date(trainingData?.Value?.Results?.Dates?.EndDate) ?? new Date(), QUERY_PARAMS_DATE_FORMAT);
             }
             else {
                 return undefined;
@@ -430,16 +430,16 @@ export class PastTrainingsComponent {
         this.changeDetectorRef.markForCheck();
     }
 
-    private getDateTimeQueryParams(): Date {
+    private getDateTimeQueryParams(): string {
         const splittedDate = this.route.snapshot.queryParams?.startDate?.split('-') ?? [];
         const utc = splittedDate.length > 0 ? new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString() : new Date().toUTCString();
-        return startOfDay(new Date(utc));
+        return startOfDay(new Date(utc)).toString();
     }
 
     private generateHeaderTitle(
         period: string,
-        startDate: Date,
-        endDate?: Date,
+        startDate: string,
+        endDate?: string,
     ): string {
         if (endDate) {
             return `
