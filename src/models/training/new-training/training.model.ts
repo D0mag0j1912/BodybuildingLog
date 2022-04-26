@@ -72,7 +72,7 @@ export class Training {
     @IsDateString({}, {
         message: '@common.errors.invalid_date',
     })
-    trainingDate: Date;
+    trainingDate: string;
 
     @ApiProperty()
     @IsNotEmpty({ message: '@common.errors.not_authenticated' })
