@@ -23,7 +23,7 @@ export class PastTrainingsController {
     @Get()
     async getPastTrainings(
         @GET_USER() user: UserDto,
-        @Query('currentDate') currentDate: string,
+        @Query('currentDate') currentDate: Date,
         @Query('filterType') filterType: PastTrainingsFilterType,
     ): Promise<StreamData<Paginator<PastTrainings>>> {
         //TODO: Create custom Pipe

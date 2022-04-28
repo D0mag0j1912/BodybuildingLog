@@ -45,7 +45,7 @@ export class PastTrainingsService {
                 } as StreamData<Paginator<PastTrainings>>;
             }
             return this.getPastTrainings(
-                new Date().toString(),
+                new Date(),
                 'week',
                 loggedInUserId,
             );
@@ -70,23 +70,23 @@ export class PastTrainingsService {
     }
 
     async getPastTrainings(
-        currentDate: string,
+        currentDate: Date,
         filterType: PastTrainingsFilterType,
         loggedUserId: string,
         isDeleteTraining?: boolean,
     ): Promise<StreamData<Paginator<PastTrainings>>> {
         try {
-            const dates: DateInterval = getIntervalDate(currentDate);
+            const dates: DateInterval = getIntervalDate(new Date(currentDate));
             const condition: FilterQuery<Training> = {
                 userId: loggedUserId,
                 trainingDate: {
-                    $gte: filterType === 'week' ? dates.StartDate : startOfDay(new Date(currentDate)).toString(),
-                    $lt: filterType === 'week' ? dates.EndDate : endOfDay(new Date(currentDate)).toString(),
+                    $gte: filterType === 'week' ? dates.StartDate : startOfDay(new Date(currentDate)),
+                    $lt: filterType === 'week' ? dates.EndDate : endOfDay(new Date(currentDate)),
                 },
             };
             const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition);
-            results.Results.Dates = filterType === 'week' ? dates : { StartDate: currentDate, EndDate: currentDate };
-            results.Results.EarliestTrainingDate = (await this.getEarliestDate(loggedUserId))?.trainingDate;
+            results.Results.Dates = filterType === 'week' ? dates : { StartDate: new Date(currentDate), EndDate: new Date(currentDate) };
+            results.Results.EarliestTrainingDate = (await this.getEarliestDate(loggedUserId))?.trainingDate ?? new Date();
             results.Results.IsPreviousWeek = isPreviousWeek(results.Results?.EarliestTrainingDate, dates);
             results.Results.IsNextWeek = isNextWeek(dates);
             if (isDeleteTraining) {

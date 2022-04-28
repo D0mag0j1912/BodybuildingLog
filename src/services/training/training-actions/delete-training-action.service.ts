@@ -19,7 +19,7 @@ export class DeleteTrainingActionService {
     async deleteTraining(
         trainingId: string,
         loggedUserId: string,
-        currentDate: string,
+        currentDate: Date,
     ): Promise<StreamData<PastTrainings>> {
         try {
             const trainingToBeRemoved: Training = await this.trainingModel.findById(trainingId as string).exec();
