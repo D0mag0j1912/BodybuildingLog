@@ -38,7 +38,7 @@ export class PastTrainingsService {
     }
 
     getPastTrainings(
-        currentDate: string,
+        currentDate: Date,
         filterType: PeriodFilterType,
     ): Observable<StreamData<Paginator<PastTrainings>>> {
         const params = `?currentDate=${currentDate}&filterType=${filterType}`;

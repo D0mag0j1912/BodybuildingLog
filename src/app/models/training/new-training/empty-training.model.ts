@@ -3,7 +3,7 @@ import { SingleExercise } from '../shared/single-exercise.model';
 import { Training } from './training.model';
 
 export type EditNewTrainingData = {
-    editedDate?: string;
+    editedDate?: Date;
     editTraining?: Training;
 };
 

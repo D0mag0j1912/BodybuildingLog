@@ -60,7 +60,7 @@ export class DeleteTrainingActionComponent {
                 ${this.getSplittedCurrentDate()[2]}-
                 ${this.getSplittedCurrentDate()[1]}-
                 ${this.getSplittedCurrentDate()[0]}
-            `).toString(),
+            `),
         ).pipe(
             catchError(_ => EMPTY),
             finalize(() => {

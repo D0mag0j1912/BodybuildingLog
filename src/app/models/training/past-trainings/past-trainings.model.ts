@@ -5,13 +5,13 @@ export interface PastTrainings {
     readonly Dates: DateInterval;
     readonly IsPreviousWeek?: boolean;
     readonly IsNextWeek?: boolean;
-    readonly EarliestTrainingDate?: string;
+    readonly EarliestTrainingDate?: Date;
     readonly Message?: string;
 }
 
 export interface DateInterval {
-    readonly StartDate: string;
-    readonly EndDate: string;
+    readonly StartDate: Date;
+    readonly EndDate: Date;
 }
 
 export interface PastTrainingsQueryParams {
