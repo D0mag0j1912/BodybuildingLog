@@ -30,7 +30,7 @@ import { SingleExerciseComponent } from '../../shared/training/single-exercise/s
 })
 export class NewTrainingComponent implements OnInit {
 
-    dateValue = format(new Date(), 'yyyy-MM-dd') + 'T09:00:00.000Z';
+    dateValue: string = format(new Date(), 'yyyy-MM-dd') + 'T09:00:00.000Z';
     formattedTodayDate: string;
 
     form: FormGroup;

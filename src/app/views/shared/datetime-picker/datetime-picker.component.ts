@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
 import { IonDatetime, ModalController } from '@ionic/angular';
+import { format } from 'date-fns';
 import { DialogRoles } from '../../../models/common/types/modal-roles.type';
 
 @Component({
@@ -7,6 +8,8 @@ import { DialogRoles } from '../../../models/common/types/modal-roles.type';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DateTimePickerComponent {
+
+    maxDate: string = format(new Date(), 'yyyy-MM-dd');
 
     @Input()
     dateValue: string;
