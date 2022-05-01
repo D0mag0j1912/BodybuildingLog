@@ -8,3 +8,17 @@
         <ion-title>{{ 'training.new_training.reorder_exercises' | translate }}</ion-title>
     </ion-toolbar>
 </ion-header>
+<ion-content class="ion-padding">
+    <div
+        *ngIf="(currentExercises$ | async) as currentExercises"
+        class="wrapper">
+        <ion-reorder-group [disabled]="false">
+            <ion-item *ngFor="let exerciseName of currentExercises">
+                <ion-label>
+                    {{ exerciseName | translate }}
+                </ion-label>
+                <ion-reorder slot="end"></ion-reorder>
+            </ion-item>
+        </ion-reorder-group>
+    </div>
+</ion-content>
