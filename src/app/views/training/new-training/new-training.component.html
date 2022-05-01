@@ -12,6 +12,7 @@
                 <ion-icon name="arrow-back-circle-sharp"></ion-icon>
             </ion-button>
             <ion-button
+                *ngIf="isReorder$ | async"
                 type="button"
                 (click)="openReorderModal()">
                 <ion-icon

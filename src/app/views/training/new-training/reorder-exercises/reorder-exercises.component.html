@@ -10,7 +10,7 @@
 </ion-header>
 <ion-content class="ion-padding">
     <div
-        *ngIf="(currentExercises$ | async) as currentExercises; else noExercises"
+        *ngIf="(currentExercises$ | async) as currentExercises"
         class="wrapper">
         <ion-reorder-group
             [disabled]="false"
@@ -34,7 +34,4 @@
             </ion-button>
         </div>
     </div>
-    <ng-template #noExercises>
-        <ion-text>{{ 'training.new_training.no_exercises_reorder' | translate }}</ion-text>
-    </ng-template>
 </ion-content>

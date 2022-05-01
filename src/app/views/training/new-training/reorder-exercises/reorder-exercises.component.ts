@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ItemReorderEventDetail, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
-import { filter, map, take } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
 import { Training } from '../../../../models/training/new-training/training.model';
 import { NewTrainingService } from '../../../../services/training/new-training.service';

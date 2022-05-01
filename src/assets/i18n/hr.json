@@ -111,7 +111,6 @@
             "training_saved": "Trening spremljen",
             "finish_training": "Završi trening",
             "reorder_exercises": "Promjena redoslijeda",
-            "no_exercises_reorder": "Nema unesenih vježbi",
             "errors": {
                 "date_required": "Datum je obvezan",
                 "bodyweight_number": "Tjelesna težina mora biti numerička vrijednost",

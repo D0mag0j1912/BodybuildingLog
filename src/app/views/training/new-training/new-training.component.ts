@@ -4,7 +4,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { format, parseISO } from 'date-fns';
 import { combineLatest, from, Observable, of } from 'rxjs';
-import { delay, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { delay, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
@@ -47,6 +47,11 @@ export class NewTrainingComponent implements OnInit {
 
     @ViewChildren(SingleExerciseComponent)
     singleExerciseCmps: QueryList<SingleExerciseComponent>;
+
+    readonly isReorder$: Observable<boolean> = this.newTrainingService.currentTrainingChanged$
+        .pipe(
+            map(training => training.exercises.some(exercise => !!exercise.exerciseName)),
+        );
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
