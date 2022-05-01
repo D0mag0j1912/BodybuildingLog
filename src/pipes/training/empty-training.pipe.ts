@@ -5,7 +5,7 @@ import { Training } from '../../models/training/new-training/training.model';
 export class EmptyTrainingPipe implements PipeTransform {
 
     transform(training: Training): Training {
-        const numberOfExercises = training?.exercise?.length;
+        const numberOfExercises = training?.exercises?.length;
         if (numberOfExercises && numberOfExercises > 0) {
             return training;
         }

@@ -16,7 +16,7 @@ import { Schema } from 'mongoose';
 import { SingleExercise, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model';
 
 export const NEW_TRAINING_SCHEMA = new Schema({
-    exercise: {
+    exercises: {
         type: [SINGLE_EXERCISE_SCHEMA],
         required: true,
     },
@@ -48,7 +48,7 @@ export class Training {
     @ApiProperty()
     @ValidateNested({ each: true })
     @Type(() => SingleExercise)
-    exercise: SingleExercise[];
+    exercises: SingleExercise[];
 
     @ApiProperty()
     @IsBoolean({ message: '@training.new_training.errors.error_save_training' })

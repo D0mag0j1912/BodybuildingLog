@@ -6,7 +6,7 @@ export class DuplicateExercisePipe implements PipeTransform {
 
     transform(newTraining: Training): Training {
         const exerciseNames: string[] = [];
-        for (const exercise of (newTraining?.exercise ?? [])) {
+        for (const exercise of (newTraining?.exercises ?? [])) {
             if (exerciseNames.indexOf(exercise.exerciseName) !== -1) {
                 throw new BadRequestException('training.new_training.errors.exercise_name_duplicate');
             }
