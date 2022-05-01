@@ -25,6 +25,12 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+ion-modal {
+    ion-title {
+        text-align: center;
+    }
+}
+
 .datetime-picker {
     --background: rgba(44, 39, 45, 0.2);
 
