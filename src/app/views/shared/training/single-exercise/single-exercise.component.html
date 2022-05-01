@@ -4,56 +4,58 @@
     <ng-container
         *ngFor="let group of getExercises(); let i = index">
         <ng-container [formGroupName]="i">
-            <ion-grid>
-                <ion-row class="ion-text-center exercise-row">
-                    <ion-col size="10">
-                        <ion-item fill="outline">
-                            <ion-label position="floating">{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
-                            <ion-select
-                                #exercisePicker
-                                class="exercise-picker"
-                                interface="popover"
-                                formControlName="name"
-                                (ionChange)="onExerciseNameChange(i, exercisePicker)">
-                                <ion-select-option
-                                    *ngFor="let exercise of exercises$ | newTraining:i:exerciseChanged | async"
-                                    [value]="exercise.Name">
-                                    {{ exercise.Name | translate }}
-                                </ion-select-option>
-                            </ion-select>
+            <div class="wrapper">
+                <ion-grid>
+                    <ion-row class="ion-text-center exercise-row">
+                        <ion-col size="10">
+                            <ion-item fill="outline">
+                                <ion-label position="floating">{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
+                                <ion-select
+                                    #exercisePicker
+                                    class="exercise-picker"
+                                    interface="popover"
+                                    formControlName="name"
+                                    (ionChange)="onExerciseNameChange(i, exercisePicker)">
+                                    <ion-select-option
+                                        *ngFor="let exercise of exercises$ | newTraining:i:exerciseChanged | async"
+                                        [value]="exercise.Name">
+                                        {{ exercise.Name | translate }}
+                                    </ion-select-option>
+                                </ion-select>
+                                <ion-note
+                                    *ngIf="accessFormField('name', i).errors?.required &&
+                                        ((accessFormField('name', i).touched || accessFormField('name', i).dirty) || (isSubmitted$$ | async))"
+                                    slot="error">
+                                    {{ 'training.new_training.errors.exercise_name_required' | translate }}
+                                </ion-note>
+                            </ion-item>
                             <ion-note
-                                *ngIf="accessFormField('name', i).errors?.required &&
-                                    ((accessFormField('name', i).touched || accessFormField('name', i).dirty) || (isSubmitted$$ | async))"
-                                slot="error">
-                                {{ 'training.new_training.errors.exercise_name_required' | translate }}
+                                *ngIf="form.errors?.duplicateExerciseName && form.errors?.duplicateExerciseName === accessFormField('name', i).value"
+                                class="error">
+                                {{ 'training.new_training.errors.exercise_name_duplicate' | translate }}
                             </ion-note>
-                        </ion-item>
-                        <ion-note
-                            *ngIf="form.errors?.duplicateExerciseName && form.errors?.duplicateExerciseName === accessFormField('name', i).value"
-                            class="error">
-                            {{ 'training.new_training.errors.exercise_name_duplicate' | translate }}
-                        </ion-note>
-                    </ion-col>
-                    <ion-col size="2">
-                        <ion-icon
-                            name="trash-bin-sharp"
-                            color="danger"
-                            (click)="deleteExercise(i, accessFormField('name', i).value)"></ion-icon>
-                    </ion-col>
-                </ion-row>
-            </ion-grid>
-            <bl-sets
-                formControlName="sets"
-                [isExerciseFormSubmitted$]="isSubmitted$$.asObservable()"
-                [exerciseStateChanged$]="exerciseStateChanged$$.asObservable()"
-                [exerciseNameControl]="accessFormField('name', i)"
-                [indexExercise]="i"
-                [isLoading]="isLoading"
-                [editMode]="editMode"
-                (setAdded)="onChangeSets($event)"
-                (setDeleted)="deleteSet($event)"
-                (formStateChanged)="onSetFormChange($event)"></bl-sets>
-            <bl-total-weight formControlName="total"></bl-total-weight>
+                        </ion-col>
+                        <ion-col size="2">
+                            <ion-icon
+                                name="trash-bin-sharp"
+                                color="danger"
+                                (click)="deleteExercise(i, accessFormField('name', i).value)"></ion-icon>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+                <bl-sets
+                    formControlName="sets"
+                    [isExerciseFormSubmitted$]="isSubmitted$$.asObservable()"
+                    [exerciseStateChanged$]="exerciseStateChanged$$.asObservable()"
+                    [exerciseNameControl]="accessFormField('name', i)"
+                    [indexExercise]="i"
+                    [isLoading]="isLoading"
+                    [editMode]="editMode"
+                    (setAdded)="onChangeSets($event)"
+                    (setDeleted)="deleteSet($event)"
+                    (formStateChanged)="onSetFormChange($event)"></bl-sets>
+                <bl-total-weight formControlName="total"></bl-total-weight>
+            </div>
         </ng-container>
     </ng-container>
     <ng-container *ngIf="(currentExerciseState$ | async) as currentExerciseState">

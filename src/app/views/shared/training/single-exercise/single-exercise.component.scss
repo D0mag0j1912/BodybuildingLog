@@ -1,5 +1,12 @@
 
+.wrapper {
+    box-shadow: var(--ion-box-shadow);
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
 ion-grid:first-of-type {
+    padding-top: 10px;
     padding-bottom: 0;
 }
 
