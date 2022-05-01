@@ -20,6 +20,7 @@ import { NewTrainingService } from '../../../services/training/new-training.serv
 import * as CommonValidators from '../../../validators/shared/common.validators';
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
 import { SingleExerciseComponent } from '../../shared/training/single-exercise/single-exercise.component';
+import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 @Component({
     selector: 'bl-new-training',
@@ -130,6 +131,14 @@ export class NewTrainingComponent implements OnInit {
 
     ionViewDidLeave(): void {
         this.sharedService.editingTraining$$.next(false);
+    }
+
+    async openReorderModal(): Promise<void> {
+        const modal = await this.modalController.create({
+            component: ReorderExercisesComponent,
+            keyboardClose: true,
+        });
+        await modal.present();
     }
 
     async openDateTimePicker(): Promise<void> {

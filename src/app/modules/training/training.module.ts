@@ -9,6 +9,7 @@ import { TrainingItemDirective } from '../../directives/training-item/training-i
 import { PipesModule } from '../../pipes/pipes.module';
 import { ShowAllExercisesModule } from '../../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NewTrainingComponent } from '../../views/training/new-training/new-training.component';
+import { ReorderExercisesComponent } from '../../views/training/new-training/reorder-exercises/reorder-exercises.component';
 import { PastTrainingsFiltersComponent } from '../../views/training/past-trainings/past-trainings-filters/past-trainings-filters.component';
 import { PastTrainingsComponent } from '../../views/training/past-trainings/past-trainings.component';
 import { ShowByDayComponent } from '../../views/training/past-trainings/show-by-day/show-by-day.component';
@@ -26,6 +27,7 @@ const COMPONENTS = [
     TrainingItemActionsComponent,
     PastTrainingsFiltersComponent,
     ShowByDayComponent,
+    ReorderExercisesComponent,
 ];
 
 const EXTERNAL_IMPORTS = [
@@ -57,6 +59,7 @@ const PIPES_MODULES = [ShowAllExercisesModule];
         ...PIPES_MODULES,
     ],
     exports: [ ...COMPONENTS ],
+    entryComponents: [ReorderExercisesComponent],
     providers: [DatePipe],
 })
 export class TrainingModule { }
