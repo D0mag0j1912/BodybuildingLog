@@ -10,9 +10,11 @@
 </ion-header>
 <ion-content class="ion-padding">
     <div
-        *ngIf="(currentExercises$ | async) as currentExercises"
+        *ngIf="(currentExercises$ | async) as currentExercises; else noExercises"
         class="wrapper">
-        <ion-reorder-group [disabled]="false">
+        <ion-reorder-group
+            [disabled]="false"
+            (ionItemReorder)="doReorder($any($event))">
             <ion-item *ngFor="let exerciseName of currentExercises">
                 <ion-label>
                     {{ exerciseName | translate }}
@@ -24,12 +26,15 @@
                 </ion-reorder>
             </ion-item>
         </ion-reorder-group>
+        <div class="actions">
+            <ion-button
+                type="button"
+                color="primary">
+                {{ 'common.actions.confirm' | translate }}
+            </ion-button>
+        </div>
     </div>
-    <div class="actions">
-        <ion-button
-            type="button"
-            color="primary">
-            {{ 'common.actions.confirm' | translate }}
-        </ion-button>
-    </div>
+    <ng-template #noExercises>
+        <ion-text>{{ 'training.new_training.no_exercises_reorder' | translate }}</ion-text>
+    </ng-template>
 </ion-content>

@@ -13,7 +13,7 @@ export const EMPTY_TRAINING_EDIT: EditNewTrainingData = {
 };
 
 export const EMPTY_TRAINING: Training = {
-    exercise: [],
+    exercises: [],
     _id: '',
     bodyweight: null,
     editMode: false,

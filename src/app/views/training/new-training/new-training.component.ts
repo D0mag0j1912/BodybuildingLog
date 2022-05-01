@@ -107,7 +107,7 @@ export class NewTrainingComponent implements OnInit {
                                         if (currentTrainingState.editMode && !this.editMode) {
                                             this.newTrainingService.updateTrainingData({
                                                 ...EMPTY_TRAINING,
-                                                exercise: [createEmptyExercise(exercises)],
+                                                exercises: [createEmptyExercise(exercises)],
                                                 userId: currentTrainingState?.userId ?? '',
                                             });
                                         }
@@ -244,7 +244,7 @@ export class NewTrainingComponent implements OnInit {
                 },
             ),
             date: new FormControl(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString(), [Validators.required]),
-            exercise: new FormControl(currentTrainingState),
+            exercises: new FormControl(currentTrainingState),
         });
         this.setFormattedDate(this.date.value);
     }

@@ -110,6 +110,7 @@
             "training_saved": "Training saved",
             "finish_training": "Finish training",
             "reorder_exercises": "Reorder exercises",
+            "no_exercises_reorder": "No exercises to reorder",
             "errors": {
                 "date_required": "Date is required",
                 "bodyweight_number": "Bodyweight needs to be numerical value",

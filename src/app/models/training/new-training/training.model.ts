@@ -1,7 +1,7 @@
 import { SingleExercise } from '../shared/single-exercise.model';
 
 export interface Training {
-    readonly exercise: SingleExercise[];
+    readonly exercises: SingleExercise[];
     readonly editMode: boolean;
     readonly userId: string;
     readonly _id?: string;

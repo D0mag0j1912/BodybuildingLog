@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ItemReorderEventDetail, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
 import { Training } from '../../../../models/training/new-training/training.model';
 import { NewTrainingService } from '../../../../services/training/new-training.service';
@@ -15,13 +15,24 @@ export class ReorderExercisesComponent {
 
     readonly currentExercises$: Observable<string[]> = this.newTrainingService.currentTrainingChanged$
         .pipe(
-            map((training: Training) => training.exercise.map(exercise => exercise.exerciseName)),
+            map((training: Training) => training.exercises.map(exercise => exercise.exerciseName)),
         );
 
     constructor(
         private readonly newTrainingService: NewTrainingService,
         private readonly modalController: ModalController,
     ) { }
+
+    doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
+        this.newTrainingService.currentTrainingChanged$
+            .pipe(
+                take(1),
+            )
+            .subscribe(state => {
+                const exercise = state.exercises.find((_exercise, index) => index === ev.detail.from);
+                ev.detail.complete();
+            });
+      }
 
     async onCancel(): Promise<void> {
         await this.modalController.dismiss(false, DialogRoles.CANCEL);

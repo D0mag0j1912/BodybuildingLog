@@ -79,7 +79,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     this.newTrainingService.currentTrainingChanged$
                         .pipe(
                             take(1),
-                            map((currentTrainingState: Training) => currentTrainingState.exercise),
+                            map((currentTrainingState: Training) => currentTrainingState.exercises),
                         ),
                         this.newTrainingService.allExercisesChanged$.pipe(
                             take(1),
@@ -102,8 +102,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     }
 
     writeValue(data: Training): void {
-        if (data.exercise.length > 0) {
-            (data.exercise as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
+        if (data.exercises.length > 0) {
+            (data.exercises as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
                 this.addExercise();
                 if (exercise.exerciseName) {
                     this.accessFormField('name', indexExercise).patchValue(exercise.exerciseName as string);
@@ -335,7 +335,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         sets: [],
                         total: +splittedTotal[0],
                         disabledTooltip: this.accessFormField('disabledTooltip', indexExercise).value as boolean,
-                        availableExercises: (currentTrainingState.exercise)[indexExercise]?.availableExercises || [],
+                        availableExercises: (currentTrainingState.exercises)[indexExercise]?.availableExercises || [],
                     });
 
                     const formSetData: Set[] = [];
@@ -351,7 +351,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 });
 
                 return {
-                    exercise: exerciseFormData,
+                    exercises: exerciseFormData,
                     bodyweight: this.bodyweight.value ? +this.bodyweight.value : null,
                     trainingDate: new Date(this.trainingDate.value) ?? new Date(),
                     editMode: this.editMode,

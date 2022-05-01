@@ -91,13 +91,13 @@ export class NewTrainingService {
         newTotal: number,
     ): void {
         const updatedTraining: Training = { ...this.currentTrainingChanged$$.getValue() };
-        updatedTraining.exercise[indexExercise].sets.splice(indexSet, 1);
-        updatedTraining.exercise[indexExercise].sets.map((set: Set) => {
+        updatedTraining.exercises[indexExercise].sets.splice(indexSet, 1);
+        updatedTraining.exercises[indexExercise].sets.map((set: Set) => {
             if (set.setNumber > (indexSet + 1)) {
                 set.setNumber--;
             }
         });
-        updatedTraining.exercise[indexExercise].total = newTotal;
+        updatedTraining.exercises[indexExercise].total = newTotal;
         this.saveTrainingData({ ...updatedTraining });
     }
 
@@ -106,7 +106,7 @@ export class NewTrainingService {
         toBeAddedExercise: Exercise[],
     ): void {
         const updatedTraining: Training = { ...currentTrainingState };
-        updatedTraining.exercise.map((exercise: SingleExercise) => {
+        updatedTraining.exercises.map((exercise: SingleExercise) => {
             const isDeletedExerciseInAE: Exercise = exercise.availableExercises.find((exercise: Exercise) => exercise._id === toBeAddedExercise[0]._id);
             if (!isDeletedExerciseInAE) {
                 exercise.availableExercises.push(toBeAddedExercise[0]);
@@ -121,7 +121,7 @@ export class NewTrainingService {
         deletedExerciseName?: string,
         indexExercise?: number,
     ): Observable<[Training, Exercise[]]> {
-        let updatedExercises: SingleExercise[] = [ ...currentTrainingState.exercise ];
+        let updatedExercises: SingleExercise[] = [ ...currentTrainingState.exercises ];
         let updatedTraining: Training;
         if (deletedExerciseName) {
             return this.allExercisesChanged$.pipe(
@@ -130,7 +130,7 @@ export class NewTrainingService {
                     updatedExercises = updatedExercises.filter((exercise: SingleExercise) => exercise.exerciseName !== deletedExerciseName);
                     updatedTraining = {
                         ...currentTrainingState,
-                        exercise: updatedExercises,
+                        exercises: updatedExercises,
                     };
                 }),
                 map((allExercises: Exercise[]) =>
@@ -145,7 +145,7 @@ export class NewTrainingService {
             updatedExercises = updatedExercises.filter((_exercise: SingleExercise, index: number) => index !== indexExercise);
             updatedTraining = {
                 ...currentTrainingState,
-                exercise: updatedExercises,
+                exercises: updatedExercises,
             };
             this.saveTrainingData(updatedTraining);
             return of([
@@ -157,24 +157,24 @@ export class NewTrainingService {
 
     setsChanged(trainingData: SetTrainingData): void {
         const updatedTraining: Training = { ...this.currentTrainingChanged$$.getValue() };
-        const indexOfChangedExercise: number = updatedTraining.exercise.findIndex((singleExercise: SingleExercise) => singleExercise.exerciseName === trainingData.exerciseName);
-        const indexFoundSet = updatedTraining.exercise[indexOfChangedExercise].sets.findIndex(set => set.setNumber === trainingData.setNumber);
+        const indexOfChangedExercise: number = updatedTraining.exercises.findIndex((singleExercise: SingleExercise) => singleExercise.exerciseName === trainingData.exerciseName);
+        const indexFoundSet = updatedTraining.exercises[indexOfChangedExercise].sets.findIndex(set => set.setNumber === trainingData.setNumber);
 
         if (indexFoundSet > -1) {
-            updatedTraining.exercise[indexOfChangedExercise].sets[indexFoundSet] = {
-                ...updatedTraining.exercise[indexOfChangedExercise].sets[indexFoundSet],
+            updatedTraining.exercises[indexOfChangedExercise].sets[indexFoundSet] = {
+                ...updatedTraining.exercises[indexOfChangedExercise].sets[indexFoundSet],
                 weightLifted: trainingData.weightLifted,
                 reps: trainingData.reps,
             };
-            updatedTraining.exercise[indexOfChangedExercise].total = trainingData.total;
+            updatedTraining.exercises[indexOfChangedExercise].total = trainingData.total;
         }
         else {
-            updatedTraining.exercise[indexOfChangedExercise].sets.push({
+            updatedTraining.exercises[indexOfChangedExercise].sets.push({
                 setNumber: trainingData.setNumber,
                 weightLifted: trainingData.weightLifted,
                 reps: trainingData.reps,
             });
-            updatedTraining.exercise[indexOfChangedExercise].total = trainingData.total;
+            updatedTraining.exercises[indexOfChangedExercise].total = trainingData.total;
         }
         this.saveTrainingData({ ...updatedTraining });
     }
@@ -191,9 +191,9 @@ export class NewTrainingService {
         disabledTooltip: boolean,
     ): void {
         const updatedTraining: Training = { ...this.currentTrainingChanged$$.getValue() };
-        updatedTraining.exercise[selectedIndex].exerciseName = selectedExercise;
-        updatedTraining.exercise[selectedIndex].disabledTooltip = disabledTooltip;
-        updatedTraining.exercise.forEach((exercise: SingleExercise, index: number) => {
+        updatedTraining.exercises[selectedIndex].exerciseName = selectedExercise;
+        updatedTraining.exercises[selectedIndex].disabledTooltip = disabledTooltip;
+        updatedTraining.exercises.forEach((exercise: SingleExercise, index: number) => {
             if (index !== selectedIndex) {
                 exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.Name !== selectedExercise);
             }
@@ -224,7 +224,7 @@ export class NewTrainingService {
                 userId: userId,
             };
         }
-        updatedTraining.exercise.push(createEmptyExercise(exercises));
+        updatedTraining.exercises.push(createEmptyExercise(exercises));
         this.saveTrainingData(updatedTraining);
     }
 

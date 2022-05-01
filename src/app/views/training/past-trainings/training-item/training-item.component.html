@@ -37,14 +37,14 @@
         </ion-grid>
         <div
             class="exercise-wrapper"
-            [class.exercise-wrapper-no-dots]="training.exercise.length <= 2">
+            [class.exercise-wrapper-no-dots]="training.exercises.length <= 2">
             <span
-                *ngFor="let data of (training.exercise | slice:0:2); let i = index"
+                *ngFor="let data of (training.exercises | slice:0:2); let i = index"
                 class="exercise-name">
                 {{ (i+1) + '. ' + (data.exerciseName | translate) }}
             </span>
             <span
-                *ngIf="training.exercise.length > 2"
+                *ngIf="training.exercises.length > 2"
                 class="exercise-dots">
                 &#8942;
             </span>

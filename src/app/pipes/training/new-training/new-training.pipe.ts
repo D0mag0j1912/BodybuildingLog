@@ -20,7 +20,7 @@ export class NewTrainingPipe implements PipeTransform {
         return this.newTrainingService.currentTrainingChanged$
             .pipe(
                 take(1),
-                map((training: Training) => training.exercise[index]?.availableExercises ?? []),
+                map((training: Training) => training.exercises[index]?.availableExercises ?? []),
         );
     }
 
