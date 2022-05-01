@@ -15,7 +15,7 @@ export function fillBodyweight(
         if (!editBodyweight) {
             return null;
         }
-        else{
+        else {
             return editBodyweight.toString();
         }
     }

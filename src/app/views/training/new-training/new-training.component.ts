@@ -30,7 +30,6 @@ import { SingleExerciseComponent } from '../../shared/training/single-exercise/s
 })
 export class NewTrainingComponent implements OnInit {
 
-    dateValue: string = format(new Date(), 'yyyy-MM-dd') + 'T09:00:00.000Z';
     formattedTodayDate: string;
 
     form: FormGroup;
@@ -58,9 +57,7 @@ export class NewTrainingComponent implements OnInit {
         private readonly router: Router,
         private readonly modalController: ModalController,
         private readonly changeDetectorRef: ChangeDetectorRef,
-    ) {
-        this.setToday();
-    }
+    ) { }
 
     get bodyweight(): FormControl {
         return this.form.get('bodyweight') as FormControl;
@@ -139,7 +136,7 @@ export class NewTrainingComponent implements OnInit {
         const modal = await this.modalController.create({
             component: DateTimePickerComponent,
             componentProps: {
-                dateValue: this.dateValue,
+                dateValue: format(new Date(this.date.value), `yyyy-MM-dd'T'HH:mm:ss'Z'`),
             },
             cssClass: 'datetime-picker',
             mode: 'md',
@@ -155,9 +152,7 @@ export class NewTrainingComponent implements OnInit {
                 const { data, role } = response;
                 if (role === 'SELECT_DATE') {
                     this.date.patchValue(data);
-                    this.dateValue = data;
-                    const [ _date, time ] = (data as string).split('T');
-                    this.formattedTodayDate = format(parseISO(format(new Date(data), 'yyyy-MM-dd') + `T${time}`), 'HH:mm, MMM d, yyyy');
+                    this.setFormattedDate(data);
                 }
             });
     }
@@ -239,13 +234,15 @@ export class NewTrainingComponent implements OnInit {
                     updateOn: 'blur',
                 },
             ),
-            date: new FormControl(this.editData?.editedDate ? this.editData.editedDate : this.dateValue, [Validators.required]),
+            date: new FormControl(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString(), [Validators.required]),
             exercise: new FormControl(currentTrainingState),
         });
+        this.setFormattedDate(this.date.value);
     }
 
-    private setToday(): void {
-        this.formattedTodayDate = format(parseISO(format(new Date(), 'yyyy-MM-dd') + 'T09:00:00.000'), 'HH:mm, MMM d, yyyy');
+    private setFormattedDate(dateValue: string): void {
+        const [ date, time ] = dateValue.split('T');
+        this.formattedTodayDate = format(parseISO(format(new Date(date), 'yyyy-MM-dd') + `T${time}`), 'HH:mm, MMM d, yyyy');
     }
 
 }
