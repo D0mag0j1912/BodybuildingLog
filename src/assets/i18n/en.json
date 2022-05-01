@@ -109,6 +109,7 @@
             "first_add_previous_set": "You need to enter set number {{ setNumber }}",
             "training_saved": "Training saved",
             "finish_training": "Finish training",
+            "reorder_exercises": "Reorder exercises",
             "errors": {
                 "date_required": "Date is required",
                 "bodyweight_number": "Bodyweight needs to be numerical value",

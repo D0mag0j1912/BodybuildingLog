@@ -110,6 +110,7 @@
             "first_add_previous_set": "Prvo morate unijeti set broj {{ setNumber }}",
             "training_saved": "Trening spremljen",
             "finish_training": "Završi trening",
+            "reorder_exercises": "Promjena redoslijeda",
             "errors": {
                 "date_required": "Datum je obvezan",
                 "bodyweight_number": "Tjelesna težina mora biti numerička vrijednost",
