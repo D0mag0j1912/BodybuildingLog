@@ -178,7 +178,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
             });
             await modal.present();
 
-            from(modal.onDidDismiss())
+            from(modal.onDidDismiss<boolean>())
                 .pipe(
                     switchMap((response: OverlayEventDetail<boolean>) => {
                         if (response.role === DialogRoles.DELETE_EXERCISE) {

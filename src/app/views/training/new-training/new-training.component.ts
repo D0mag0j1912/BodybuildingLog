@@ -10,6 +10,7 @@ import { PastTrainingsService } from 'src/app/services/training/past-trainings.s
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
+import { DialogRoles } from '../../../models/common/types/modal-roles.type';
 import { Exercise } from '../../../models/training/exercise.model';
 import { createEmptyExercise, EditNewTrainingData, EMPTY_TRAINING, EMPTY_TRAINING_EDIT } from '../../../models/training/new-training/empty-training.model';
 import { Training } from '../../../models/training/new-training/training.model';
@@ -144,6 +145,15 @@ export class NewTrainingComponent implements OnInit {
             keyboardClose: true,
         });
         await modal.present();
+        from(modal.onDidDismiss<Training | undefined>())
+            .pipe(
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe(response => {
+                if (response.role === DialogRoles.REORDER_EXERCISES) {
+                    this.newTrainingService.updateTrainingData(response.data);
+                }
+            });
     }
 
     async openDateTimePicker(): Promise<void> {
@@ -157,7 +167,7 @@ export class NewTrainingComponent implements OnInit {
         });
         await modal.present();
 
-        from(modal.onDidDismiss())
+        from(modal.onDidDismiss<string | undefined>())
             .pipe(
                 finalize(() => this.changeDetectorRef.markForCheck()),
                 takeUntil(this.unsubscribeService),

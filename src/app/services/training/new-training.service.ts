@@ -228,8 +228,8 @@ export class NewTrainingService {
         this.saveTrainingData(updatedTraining);
     }
 
-    updateTrainingData(editTraining: Training): void {
-        this.saveTrainingData({ ...editTraining });
+    updateTrainingData(newTrainingState: Training): void {
+        this.saveTrainingData({ ...newTrainingState });
     }
 
     clearTrainingData(): void {

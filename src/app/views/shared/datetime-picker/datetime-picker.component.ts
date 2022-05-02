@@ -27,7 +27,7 @@ export class DateTimePickerComponent {
 
     async close(): Promise<void> {
         await this.dateTimeEl?.cancel();
-        await this.modalController.dismiss(null, DialogRoles.CANCEL);
+        await this.modalController.dismiss(undefined, DialogRoles.CANCEL);
     }
 
     async select(): Promise<void> {

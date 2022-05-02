@@ -13,6 +13,8 @@ import { NewTrainingService } from '../../../../services/training/new-training.s
 })
 export class ReorderExercisesComponent {
 
+    private reorderedTrainingState: Training;
+
     readonly currentExercises$: Observable<string[]> = this.newTrainingService.currentTrainingChanged$
         .pipe(
             map((training: Training) => training.exercises.map(exercise => exercise.exerciseName)),
@@ -29,12 +31,26 @@ export class ReorderExercisesComponent {
                 take(1),
             )
             .subscribe(state => {
-                const exercise = state.exercises.find((_exercise, index) => index === ev.detail.from);
+                const exerciseFrom = state.exercises.find((_exercise, index) => index === ev.detail.from);
+                const remainingExercises = state.exercises.filter((_exercise, index) => index !== ev.detail.from);
+                const reorderedExercises = [
+                    ...remainingExercises.slice(0, ev.detail.to),
+                    exerciseFrom,
+                    ...remainingExercises.slice(ev.detail.to),
+                ];
+                this.reorderedTrainingState = {
+                    ...state,
+                    exercises: reorderedExercises,
+                };
                 ev.detail.complete();
             });
-      }
+    }
+
+    async reorderExercises(): Promise<void> {
+        await this.modalController.dismiss(this.reorderedTrainingState, DialogRoles.REORDER_EXERCISES);
+    }
 
     async onCancel(): Promise<void> {
-        await this.modalController.dismiss(false, DialogRoles.CANCEL);
+        await this.modalController.dismiss(undefined, DialogRoles.CANCEL);
     }
 }
