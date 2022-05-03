@@ -78,12 +78,6 @@ export class NewTrainingComponent implements OnInit {
         return this.form.get('date') as FormControl;
     }
 
-    ionViewDidEnter(): void {
-        if (this.ionContent) {
-            setTimeout(async () => await this.ionContent.scrollToBottom(300), 100);
-        }
-    }
-
     ngOnInit(): void {
         this.trainingStream$ = this.route.params
             .pipe(
@@ -136,6 +130,12 @@ export class NewTrainingComponent implements OnInit {
             );
         this.isAuthenticated$ = this.authService.isAuth$;
         this.isEditing$ = this.sharedService.editingTraining$$;
+    }
+
+    ionViewDidEnter(): void {
+        if (this.ionContent) {
+            setTimeout(async () => await this.ionContent.scrollToBottom(300), 100);
+        }
     }
 
     ionViewDidLeave(): void {
