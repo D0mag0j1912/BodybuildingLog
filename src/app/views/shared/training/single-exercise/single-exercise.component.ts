@@ -119,9 +119,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     }
 
     registerOnChange(fn: (formValue: Partial<SingleExercise[]>) => void): void {
-        this.form.valueChanges.pipe(
-            takeUntil(this.unsubscribeService),
-        ).subscribe(fn);
+        this.form.valueChanges
+            .pipe(
+                takeUntil(this.unsubscribeService),
+            ).subscribe(fn);
     }
 
     registerOnTouched(fn: () => void): void {
@@ -202,7 +203,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         this.changeDetectorRef.markForCheck();
                     }),
                     takeUntil(this.unsubscribeService),
-                ).subscribe((data: [Training, Exercise[]]) => {
+                )
+                .subscribe((data: [Training, Exercise[]]) => {
                     this.exerciseChanged = !this.exerciseChanged;
                     this.form.removeAt(indexExercise);
                     this.newTrainingService.pushToAvailableExercises(
@@ -212,18 +214,20 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 });
         }
         else {
-            this.newTrainingService.currentTrainingChanged$.pipe(
-                take(1),
-                switchMap((currentTrainingState: Training) =>
-                    this.newTrainingService.deleteExercise(
-                        currentTrainingState as Training,
-                        null,
-                        indexExercise,
+            this.newTrainingService.currentTrainingChanged$
+                .pipe(
+                    take(1),
+                    switchMap((currentTrainingState: Training) =>
+                        this.newTrainingService.deleteExercise(
+                            currentTrainingState as Training,
+                            null,
+                            indexExercise,
+                        ),
                     ),
-                ),
-                finalize(() => this.exerciseStateChanged$$.next('Delete')),
-                takeUntil(this.unsubscribeService),
-            ).subscribe(_ => this.form.removeAt(indexExercise));
+                    finalize(() => this.exerciseStateChanged$$.next('Delete')),
+                    takeUntil(this.unsubscribeService),
+                )
+                .subscribe(_ => this.form.removeAt(indexExercise));
         }
     }
 
