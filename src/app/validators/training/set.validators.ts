@@ -5,8 +5,8 @@ export function allSetsFilled(): ValidatorFn {
         if (array) {
             let isSetFilled = true;
             (array as FormArray).controls.forEach((set: AbstractControl) => {
-                if (!set.get('weightLifted').value || !set.get('reps').value
-                    || set.get('weightLifted').errors || set.get('reps').errors) {
+                if (!set.get('weightLifted').value || !set.get('reps').value ||
+                    set.get('weightLifted').errors || set.get('reps').errors) {
                     isSetFilled = false;
                 }
             });

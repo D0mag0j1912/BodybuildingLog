@@ -51,7 +51,11 @@ export class NewTrainingComponent implements OnInit {
 
     readonly isReorder$: Observable<boolean> = this.newTrainingService.currentTrainingChanged$
         .pipe(
-            map(training => training.exercises.some(exercise => !!exercise.exerciseName)),
+            map(training => {
+                const isExercise = training.exercises.some(exercise => !!exercise.exerciseName);
+                const isSet = training.exercises.find(value => value.sets.some(set => !!set.weightLifted && !!set.reps));
+                return isExercise && !!isSet;
+            }),
         );
 
     constructor(
