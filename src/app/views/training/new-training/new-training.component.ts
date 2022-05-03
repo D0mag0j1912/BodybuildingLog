@@ -263,7 +263,7 @@ export class NewTrainingComponent implements OnInit {
                 },
             ),
             date: new FormControl(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString(), [Validators.required]),
-            exercises: new FormControl(currentTrainingState),
+            exercises: new FormControl(currentTrainingState.exercises),
         });
         this.setFormattedDate(this.date.value);
     }

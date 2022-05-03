@@ -101,9 +101,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         this.form.updateValueAndValidity();
     }
 
-    writeValue(data: Training): void {
-        if (data.exercises.length > 0) {
-            (data.exercises as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
+    writeValue(exercises: SingleExercise[]): void {
+        if (exercises?.length > 0) {
+            (exercises as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
                 this.addExercise();
                 if (exercise.exerciseName) {
                     this.accessFormField('name', indexExercise).patchValue(exercise.exerciseName as string);
