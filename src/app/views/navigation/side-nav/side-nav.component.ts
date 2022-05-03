@@ -33,7 +33,7 @@ export class SideNavComponent implements OnInit {
     }
 
     async onLogout(): Promise<void> {
-        this.newTrainingService.clearTrainingData();
+        this.newTrainingService.clearTrainingState();
         await this.authService.logout();
     }
 

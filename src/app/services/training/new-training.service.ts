@@ -18,11 +18,11 @@ import { AuthService } from '../auth/auth.service';
 @Injectable({ providedIn: 'root' })
 export class NewTrainingService {
 
-    private readonly allExercisesChanged$$: BehaviorSubject<Exercise[]> = new BehaviorSubject<Exercise[]>([]);
-    readonly allExercisesChanged$: Observable<Exercise[]> = this.allExercisesChanged$$.asObservable();
+    private readonly _allExercisesChanged$$: BehaviorSubject<Exercise[]> = new BehaviorSubject<Exercise[]>([]);
+    readonly allExercisesChanged$: Observable<Exercise[]> = this._allExercisesChanged$$.asObservable();
 
-    private readonly currentTrainingChanged$$: BehaviorSubject<Training> = new BehaviorSubject<Training>(EMPTY_TRAINING);
-    readonly currentTrainingChanged$: Observable<Training> = this.currentTrainingChanged$$.asObservable();
+    private readonly _currentTrainingChanged$$: BehaviorSubject<Training> = new BehaviorSubject<Training>(EMPTY_TRAINING);
+    readonly currentTrainingChanged$: Observable<Training> = this._currentTrainingChanged$$.asObservable();
 
     constructor(
         private readonly http: HttpClient,
@@ -43,11 +43,12 @@ export class NewTrainingService {
                         take(1),
                         tap((authResponseData: AuthResponseData) => {
                             this.updateTrainingState(
+                                undefined,
                                 response.Value,
                                 true,
                                 authResponseData._id,
                             );
-                            this.allExercisesChanged$$.next(response.Value);
+                            this._allExercisesChanged$$.next(response.Value);
                             localStorage.setItem(LocalStorageItems.ALL_EXERCISES, JSON.stringify(response.Value));
                         }),
                         switchMap(_ => of(response)),
@@ -74,12 +75,12 @@ export class NewTrainingService {
     /**************************************** */
 
     getCurrentTrainingState(): Training {
-        return this.currentTrainingChanged$$.getValue();
+        return this._currentTrainingChanged$$.getValue();
     }
 
     addBodyweightToStorage(value: string): void {
         const updatedTraining = {
-            ...this.currentTrainingChanged$$.getValue(),
+            ...this._currentTrainingChanged$$.getValue(),
             bodyweight: +value,
         };
         this.saveTrainingData({ ...updatedTraining });
@@ -90,7 +91,7 @@ export class NewTrainingService {
         indexSet: number,
         newTotal: number,
     ): void {
-        const updatedTraining: Training = { ...this.currentTrainingChanged$$.getValue() };
+        const updatedTraining: Training = { ...this._currentTrainingChanged$$.getValue() };
         updatedTraining.exercises[indexExercise].sets.splice(indexSet, 1);
         updatedTraining.exercises[indexExercise].sets.map((set: Set) => {
             if (set.setNumber > (indexSet + 1)) {
@@ -156,7 +157,7 @@ export class NewTrainingService {
     }
 
     setsChanged(trainingData: SetTrainingData): void {
-        const updatedTraining: Training = { ...this.currentTrainingChanged$$.getValue() };
+        const updatedTraining: Training = { ...this._currentTrainingChanged$$.getValue() };
         const indexOfChangedExercise: number = updatedTraining.exercises.findIndex((singleExercise: SingleExercise) => singleExercise.exerciseName === trainingData.exerciseName);
         const indexFoundSet = updatedTraining.exercises[indexOfChangedExercise].sets.findIndex(set => set.setNumber === trainingData.setNumber);
 
@@ -180,9 +181,9 @@ export class NewTrainingService {
     }
 
     addNewExercise(alreadyUsedExercises: string[]): void {
-        const allExercises: Exercise[] = [ ...this.allExercisesChanged$$.getValue() ];
+        const allExercises: Exercise[] = [ ...this._allExercisesChanged$$.getValue() ];
         const availableExercises: Exercise[] = allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.Name) === -1);
-        this.updateTrainingState(availableExercises);
+        this.updateTrainingState(undefined, availableExercises);
     }
 
     updateExerciseChoices(
@@ -190,7 +191,7 @@ export class NewTrainingService {
         selectedIndex: number,
         disabledTooltip: boolean,
     ): void {
-        const updatedTraining: Training = { ...this.currentTrainingChanged$$.getValue() };
+        const updatedTraining: Training = { ...this._currentTrainingChanged$$.getValue() };
         updatedTraining.exercises[selectedIndex].exerciseName = selectedExercise;
         updatedTraining.exercises[selectedIndex].disabledTooltip = disabledTooltip;
         updatedTraining.exercises.forEach((exercise: SingleExercise, index: number) => {
@@ -208,36 +209,39 @@ export class NewTrainingService {
         if (!trainingState || !allExercises) {
             return;
         }
-        this.currentTrainingChanged$$.next({ ...trainingState });
-        this.allExercisesChanged$$.next([ ...allExercises ]);
+        this._currentTrainingChanged$$.next({ ...trainingState });
+        this._allExercisesChanged$$.next([ ...allExercises ]);
     }
 
     updateTrainingState(
-        exercises: Exercise[],
+        newTrainingState?: Training,
+        exercises?: Exercise[],
         restartAll?: boolean,
         userId?: string,
     ): void {
-        let updatedTraining: Training = this.currentTrainingChanged$$.getValue();
-        if (restartAll) {
-            updatedTraining = {
-                ...EMPTY_TRAINING,
-                userId: userId,
-            };
+        let updatedTraining: Training;
+        if (exercises) {
+            updatedTraining = this._currentTrainingChanged$$.getValue();
+            if (restartAll) {
+                updatedTraining = {
+                    ...EMPTY_TRAINING,
+                    userId: userId,
+                };
+            }
+            updatedTraining.exercises.push(createEmptyExercise(exercises));
         }
-        updatedTraining.exercises.push(createEmptyExercise(exercises));
-        this.saveTrainingData(updatedTraining);
+        else {
+            updatedTraining = newTrainingState;
+        }
+        this.saveTrainingData({ ...updatedTraining });
     }
 
-    updateTrainingData(newTrainingState: Training): void {
-        this.saveTrainingData({ ...newTrainingState });
-    }
-
-    clearTrainingData(): void {
+    clearTrainingState(): void {
         this.saveTrainingData({ ...EMPTY_TRAINING });
     }
 
     private saveTrainingData(updatedTraining: Training): void {
-        this.currentTrainingChanged$$.next({ ...updatedTraining });
+        this._currentTrainingChanged$$.next({ ...updatedTraining });
         localStorage.setItem(LocalStorageItems.TRAINING_STATE, JSON.stringify({ ...updatedTraining }));
     }
 

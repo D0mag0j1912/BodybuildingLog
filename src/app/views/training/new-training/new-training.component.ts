@@ -101,7 +101,7 @@ export class NewTrainingComponent implements OnInit {
                                                 editMode: true,
                                             },
                                         };
-                                        this.newTrainingService.updateTrainingData(this.editData.editTraining);
+                                        this.newTrainingService.updateTrainingState(this.editData.editTraining);
                                     }),
                             );
                         }
@@ -115,7 +115,7 @@ export class NewTrainingComponent implements OnInit {
                                     const currentTrainingState: Training = { ...training };
                                     if (currentTrainingState) {
                                         if (currentTrainingState.editMode && !this.editMode) {
-                                            this.newTrainingService.updateTrainingData({
+                                            this.newTrainingService.updateTrainingState({
                                                 ...EMPTY_TRAINING,
                                                 exercises: [createEmptyExercise(exercises)],
                                                 userId: currentTrainingState?.userId ?? '',
@@ -154,8 +154,8 @@ export class NewTrainingComponent implements OnInit {
                 takeUntil(this.unsubscribeService),
             )
             .subscribe(response => {
-                if (response.role === DialogRoles.REORDER_EXERCISES) {
-                    this.newTrainingService.updateTrainingData(response.data);
+                if (response?.role === DialogRoles.REORDER_EXERCISES) {
+                    this.newTrainingService.updateTrainingState(response.data);
                 }
             });
     }
@@ -235,7 +235,7 @@ export class NewTrainingComponent implements OnInit {
                                 editMode: this.editMode,
                             },
                         };
-                        this.newTrainingService.updateTrainingData(this.editData.editTraining);
+                        this.newTrainingService.updateTrainingState(this.editData.editTraining);
                     }),
                     switchMap(_ => this.newTrainingService.getExercises()),
                     mapStreamData(),
