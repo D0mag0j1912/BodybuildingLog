@@ -2,9 +2,10 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryLis
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
+import { OverlayEventDetail } from '@ionic/core';
 import { format, parseISO } from 'date-fns';
-import { combineLatest, EMPTY, from, Observable, of } from 'rxjs';
-import { delay, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { combineLatest, from, Observable, of } from 'rxjs';
+import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
@@ -150,12 +151,11 @@ export class NewTrainingComponent implements OnInit {
         await modal.present();
         from(modal.onDidDismiss<Training | undefined>())
             .pipe(
+                filter<OverlayEventDetail<Training>>(response => response?.role === DialogRoles.REORDER_EXERCISES),
                 takeUntil(this.unsubscribeService),
             )
             .subscribe(response => {
-                if (response?.role === DialogRoles.REORDER_EXERCISES) {
-                    //TODO: Reorder exercises in UI
-                }
+                //TODO: Reorder exercises in UI
             });
     }
 
