@@ -5,9 +5,9 @@ import { StreamData } from '../../../models/common/interfaces/common.model';
 export const mapStreamData = <T>() =>
     (source: Observable<StreamData<T>>) =>
         source.pipe(
-            map((trainingData: StreamData<T>) => ({
+            map((data: StreamData<T>) => ({
                 IsLoading: false,
-                Value: trainingData?.Value,
+                Value: data?.Value,
                 IsError: false,
             })),
             catchError(_ => of({

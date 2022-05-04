@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { format, parseISO } from 'date-fns';
-import { combineLatest, from, Observable, of } from 'rxjs';
+import { combineLatest, EMPTY, from, Observable, of } from 'rxjs';
 import { delay, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
@@ -154,7 +154,7 @@ export class NewTrainingComponent implements OnInit {
             )
             .subscribe(response => {
                 if (response?.role === DialogRoles.REORDER_EXERCISES) {
-                    this.newTrainingService.updateTrainingState(response.data);
+                    //TODO: Reorder exercises in UI
                 }
             });
     }

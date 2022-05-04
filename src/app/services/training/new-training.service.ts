@@ -39,20 +39,21 @@ export class NewTrainingService {
             switchMap((response: StreamData<Exercise[]>) => {
                 const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
                 if (!trainingState) {
-                    return this.authService.loggedUser$.pipe(
-                        take(1),
-                        tap((authResponseData: AuthResponseData) => {
-                            this.updateTrainingState(
-                                undefined,
-                                response.Value,
-                                true,
-                                authResponseData._id,
-                            );
-                            this._allExercisesChanged$$.next(response.Value);
-                            localStorage.setItem(LocalStorageItems.ALL_EXERCISES, JSON.stringify(response.Value));
-                        }),
-                        switchMap(_ => of(response)),
-                    );
+                    return this.authService.loggedUser$
+                        .pipe(
+                            take(1),
+                            tap((authResponseData: AuthResponseData) => {
+                                this.updateTrainingState(
+                                    undefined,
+                                    response.Value,
+                                    true,
+                                    authResponseData._id,
+                                );
+                                this._allExercisesChanged$$.next(response.Value);
+                                localStorage.setItem(LocalStorageItems.ALL_EXERCISES, JSON.stringify(response.Value));
+                            }),
+                            switchMap(_ => of(response)),
+                        );
                 }
                 else {
                     return of(response);
