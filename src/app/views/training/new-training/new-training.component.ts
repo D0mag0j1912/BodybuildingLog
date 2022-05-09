@@ -156,7 +156,6 @@ export class NewTrainingComponent implements OnInit {
                 takeUntil(this.unsubscribeService),
             )
             .subscribe(response => {
-                //TODO: Reorder exercises in UI
                 this.trainingStream$ = this.newTrainingService.allExercisesChanged$
                     .pipe(
                         take(1),
@@ -165,11 +164,14 @@ export class NewTrainingComponent implements OnInit {
                             Value: exercises,
                             IsError: false,
                         })),
+                        delay(1000),
                         tap(_ => {
-                            this.form.get('exercises').patchValue([]);
-                            this.form.get('exercises').patchValue(response.data?.exercises ?? []);
+                            this.newTrainingService.updateTrainingState(response?.data ?? EMPTY_TRAINING);
+                            this.formInit();
                         }),
                         mapStreamData(),
+                        //TODO: Scroll to bottom successfully
+                        tap(async _ => await this.ionContent.scrollToBottom(400)),
                     );
                 this.changeDetectorRef.markForCheck();
             });

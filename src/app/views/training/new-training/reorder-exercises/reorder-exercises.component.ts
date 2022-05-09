@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ItemReorderEventDetail, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
 import { Training } from '../../../../models/training/new-training/training.model';
 import { NewTrainingService } from '../../../../services/training/new-training.service';
@@ -26,24 +26,19 @@ export class ReorderExercisesComponent {
     ) { }
 
     doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
-        this.newTrainingService.currentTrainingChanged$
-            .pipe(
-                take(1),
-            )
-            .subscribe(state => {
-                const exerciseFrom = state.exercises.find((_exercise, index) => index === ev.detail.from);
-                const remainingExercises = state.exercises.filter((_exercise, index) => index !== ev.detail.from);
-                const reorderedExercises = [
-                    ...remainingExercises.slice(0, ev.detail.to),
-                    exerciseFrom,
-                    ...remainingExercises.slice(ev.detail.to),
-                ];
-                this.reorderedTrainingState = {
-                    ...state,
-                    exercises: reorderedExercises,
-                };
-                ev.detail.complete();
-            });
+        const currentTrainingState = this.newTrainingService.getCurrentTrainingState();
+        const exerciseFrom = (this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState).exercises.find((_exercise, index) => index === ev.detail.from);
+        const remainingExercises = (this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState).exercises.filter((_exercise, index) => index !== ev.detail.from);
+        const reorderedExercises = [
+            ...remainingExercises.slice(0, ev.detail.to),
+            exerciseFrom,
+            ...remainingExercises.slice(ev.detail.to),
+        ];
+        this.reorderedTrainingState = {
+            ...(this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState),
+            exercises: reorderedExercises,
+        };
+        ev.detail.complete();
     }
 
     async reorderExercises(): Promise<void> {
