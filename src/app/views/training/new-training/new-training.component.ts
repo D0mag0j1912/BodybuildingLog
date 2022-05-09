@@ -149,6 +149,7 @@ export class NewTrainingComponent implements OnInit {
             keyboardClose: true,
         });
         await modal.present();
+
         from(modal.onDidDismiss<Training | undefined>())
             .pipe(
                 filter<OverlayEventDetail<Training>>(response => response?.role === DialogRoles.REORDER_EXERCISES),
@@ -156,6 +157,21 @@ export class NewTrainingComponent implements OnInit {
             )
             .subscribe(response => {
                 //TODO: Reorder exercises in UI
+                this.trainingStream$ = this.newTrainingService.allExercisesChanged$
+                    .pipe(
+                        take(1),
+                        map(exercises => ({
+                            IsLoading: true,
+                            Value: exercises,
+                            IsError: false,
+                        })),
+                        tap(_ => {
+                            this.form.get('exercises').patchValue([]);
+                            this.form.get('exercises').patchValue(response.data?.exercises ?? []);
+                        }),
+                        mapStreamData(),
+                    );
+                this.changeDetectorRef.markForCheck();
             });
     }
 

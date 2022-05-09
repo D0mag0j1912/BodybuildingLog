@@ -25,86 +25,89 @@
 </ion-header>
 <ion-content class="ion-text-center ion-padding">
     <ng-container *ngIf="(trainingStream$ | async) as trainingData">
-        <ion-spinner
-            *ngIf="trainingData?.IsLoading; else valueOrError"
-            name="crescent"
-            color="primary"
-            class="ion-spinner-class"></ion-spinner>
-        <ng-template #valueOrError>
-            <form
-                *ngIf="form && trainingData?.Value"
-                autocomplete="off"
-                [formGroup]="form">
-                <ion-item fill="outline">
-                    <ion-label position="floating">{{ 'training.new_training.pick_bodyweight' | translate }}</ion-label>
-                    <ion-input
-                        ionFocus
-                        #bodyweightRef
-                        type="number"
-                        formControlName="bodyweight"
-                        (ionChange)="onBodyweightChange(bodyweightRef.value)"></ion-input>
-                        <ion-note
-                            *ngIf="bodyweight?.errors?.onlyNumbers"
-                            slot="error">
-                            {{ 'training.new_training.errors.only_numbers' | translate }}
-                        </ion-note>
-                        <ion-note
-                            *ngIf="bodyweight?.errors?.min"
-                            slot="error">
-                            {{ 'training.new_training.errors.bodyweight_min' | translate }}
-                        </ion-note>
-                        <ion-note
-                            *ngIf="bodyweight?.errors?.max"
-                            slot="error">
-                            {{ 'training.new_training.errors.bodyweight_max' | translate }}
-                        </ion-note>
-                </ion-item>
-                <ion-item
-                    class="datetime-item"
-                    fill="outline"
-                    lines="none"
-                    (click)="openDateTimePicker()">
-                    <ion-icon
-                        class="datetime-icon"
-                        slot="start"
-                        color="primary"
-                        name="calendar-outline"></ion-icon>
-                    <ion-label>{{ 'common.date' | translate }}</ion-label>
-                    <ion-text color="primary">{{ formattedTodayDate }}</ion-text>
-                </ion-item>
-                <ng-container>
-                    <ion-note
-                        *ngIf="date.errors?.required"
-                        class="error">{{ 'training.new_training.errors.date_required' | translate }}</ion-note>
-                </ng-container>
-                <bl-single-exercise
-                    formControlName="exercises"
-                    [bodyweight]="bodyweight"
-                    [trainingDate]="date"
-                    [editData]="editData"
-                    [isLoading]="trainingData.IsLoading"
-                    [editMode]="editMode"
-                    (exerciseAdded)="onExerciseAdded($event)"></bl-single-exercise>
-            </form>
-            <ng-container *ngIf="trainingData?.IsError">
-                <div class="error-wrapper">
-                    <img
-                        class="error-image"
-                        src="../../../../assets/svgs/error1.svg">
-                    <h3 class="error-title">
-                        {{ 'training.new_training.errors.new_training_error_title' | translate }}
-                    </h3>
-                    <span class="error-description">
-                        {{ editMode ? ('training.new_training.errors.new_training_error_description' | translate) : ('training.new_training.errors.new_training_error_load') | translate }}
-                    </span>
-                    <ion-button
-                        color="primary"
-                        type="button"
-                        (click)="tryAgain()">
-                        {{ 'common.try_again' | translate }}
-                    </ion-button>
-                </div>
+        <ng-container *ngIf="trainingData?.IsError; else valueOrLoading">
+            <div class="error-wrapper">
+                <img
+                    class="error-image"
+                    src="../../../../assets/svgs/error1.svg">
+                <h3 class="error-title">
+                    {{ 'training.new_training.errors.new_training_error_title' | translate }}
+                </h3>
+                <span class="error-description">
+                    {{ editMode ? ('training.new_training.errors.new_training_error_description' | translate) : ('training.new_training.errors.new_training_error_load') | translate }}
+                </span>
+                <ion-button
+                    color="primary"
+                    type="button"
+                    (click)="tryAgain()">
+                    {{ 'common.try_again' | translate }}
+                </ion-button>
+            </div>
+        </ng-container>
+        <ng-template #valueOrLoading>
+            <ng-container *ngIf="trainingData?.IsLoading; else Value">
+                <ion-spinner
+                    class="ion-spinner-class"
+                    name="crescent"
+                    color="primary"></ion-spinner>
             </ng-container>
+            <ng-template #Value>
+                <form
+                    *ngIf="form && trainingData?.Value"
+                    autocomplete="off"
+                    [formGroup]="form">
+                    <ion-item fill="outline">
+                        <ion-label position="floating">{{ 'training.new_training.pick_bodyweight' | translate }}</ion-label>
+                        <ion-input
+                            ionFocus
+                            #bodyweightRef
+                            type="number"
+                            formControlName="bodyweight"
+                            (ionChange)="onBodyweightChange(bodyweightRef.value)"></ion-input>
+                            <ion-note
+                                *ngIf="bodyweight?.errors?.onlyNumbers"
+                                slot="error">
+                                {{ 'training.new_training.errors.only_numbers' | translate }}
+                            </ion-note>
+                            <ion-note
+                                *ngIf="bodyweight?.errors?.min"
+                                slot="error">
+                                {{ 'training.new_training.errors.bodyweight_min' | translate }}
+                            </ion-note>
+                            <ion-note
+                                *ngIf="bodyweight?.errors?.max"
+                                slot="error">
+                                {{ 'training.new_training.errors.bodyweight_max' | translate }}
+                            </ion-note>
+                    </ion-item>
+                    <ion-item
+                        class="datetime-item"
+                        fill="outline"
+                        lines="none"
+                        (click)="openDateTimePicker()">
+                        <ion-icon
+                            class="datetime-icon"
+                            slot="start"
+                            color="primary"
+                            name="calendar-outline"></ion-icon>
+                        <ion-label>{{ 'common.date' | translate }}</ion-label>
+                        <ion-text color="primary">{{ formattedTodayDate }}</ion-text>
+                    </ion-item>
+                    <ng-container>
+                        <ion-note
+                            *ngIf="date.errors?.required"
+                            class="error">{{ 'training.new_training.errors.date_required' | translate }}</ion-note>
+                    </ng-container>
+                    <bl-single-exercise
+                        formControlName="exercises"
+                        [bodyweight]="bodyweight"
+                        [trainingDate]="date"
+                        [editData]="editData"
+                        [isLoading]="trainingData.IsLoading"
+                        [editMode]="editMode"
+                        (exerciseAdded)="onExerciseAdded($event)"></bl-single-exercise>
+                </form>
+            </ng-template>
         </ng-template>
     </ng-container>
 </ion-content>

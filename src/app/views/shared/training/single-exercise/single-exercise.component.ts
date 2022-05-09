@@ -102,19 +102,21 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     }
 
     writeValue(exercises: SingleExercise[]): void {
-        if (exercises?.length > 0) {
-            (exercises as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
+        if (exercises) {
+            if (exercises?.length > 0) {
+                (exercises as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
+                    this.addExercise();
+                    if (exercise.exerciseName) {
+                        this.accessFormField('name', indexExercise).patchValue(exercise.exerciseName as string);
+                        this.accessFormField('sets', indexExercise).patchValue(exercise.sets as Set[]);
+                        this.accessFormField('total', indexExercise).patchValue(exercise.total ? this.roundTotalWeightPipe.transform(exercise.total) : `0 ${DEFAULT_WEIGHT_FORMAT}`);
+                        this.accessFormField('disabledTooltip', indexExercise).patchValue(exercise.disabledTooltip as boolean);
+                    }
+                });
+            }
+            else {
                 this.addExercise();
-                if (exercise.exerciseName) {
-                    this.accessFormField('name', indexExercise).patchValue(exercise.exerciseName as string);
-                    this.accessFormField('sets', indexExercise).patchValue(exercise.sets as Set[]);
-                    this.accessFormField('total', indexExercise).patchValue(exercise.total ? this.roundTotalWeightPipe.transform(exercise.total) : `0 ${DEFAULT_WEIGHT_FORMAT}`);
-                    this.accessFormField('disabledTooltip', indexExercise).patchValue(exercise.disabledTooltip as boolean);
-                }
-            });
-        }
-        else {
-            this.addExercise();
+            }
         }
     }
 
