@@ -167,7 +167,7 @@ export class NewTrainingComponent implements OnInit {
                             })),
                             delay(300),
                             tap(_ => {
-                                this.newTrainingService.updateTrainingState(response?.data ?? EMPTY_TRAINING);
+                                this.newTrainingService.updateTrainingState(response.data);
                                 this.formInit();
                             }),
                             mapStreamData(),
