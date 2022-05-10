@@ -164,14 +164,13 @@ export class NewTrainingComponent implements OnInit {
                             Value: exercises,
                             IsError: false,
                         })),
-                        delay(1000),
+                        delay(500),
                         tap(_ => {
                             this.newTrainingService.updateTrainingState(response?.data ?? EMPTY_TRAINING);
                             this.formInit();
                         }),
                         mapStreamData(),
-                        //TODO: Scroll to bottom successfully
-                        tap(async _ => await this.ionContent.scrollToBottom(400)),
+                        tap(_ => setTimeout(async () => await this.ionContent.scrollToBottom(300), 100)),
                     );
                 this.changeDetectorRef.markForCheck();
             });
