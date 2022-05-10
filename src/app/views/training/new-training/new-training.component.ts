@@ -165,7 +165,7 @@ export class NewTrainingComponent implements OnInit {
                                 Value: exercises,
                                 IsError: false,
                             })),
-                            delay(500),
+                            delay(300),
                             tap(_ => {
                                 this.newTrainingService.updateTrainingState(response?.data ?? EMPTY_TRAINING);
                                 this.formInit();
