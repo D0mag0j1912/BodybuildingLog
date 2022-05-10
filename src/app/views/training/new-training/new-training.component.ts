@@ -156,23 +156,25 @@ export class NewTrainingComponent implements OnInit {
                 takeUntil(this.unsubscribeService),
             )
             .subscribe(response => {
-                this.trainingStream$ = this.newTrainingService.allExercisesChanged$
-                    .pipe(
-                        take(1),
-                        map(exercises => ({
-                            IsLoading: true,
-                            Value: exercises,
-                            IsError: false,
-                        })),
-                        delay(500),
-                        tap(_ => {
-                            this.newTrainingService.updateTrainingState(response?.data ?? EMPTY_TRAINING);
-                            this.formInit();
-                        }),
-                        mapStreamData(),
-                        tap(_ => setTimeout(async () => await this.ionContent.scrollToBottom(300), 100)),
-                    );
-                this.changeDetectorRef.markForCheck();
+                if (response?.data) {
+                    this.trainingStream$ = this.newTrainingService.allExercisesChanged$
+                        .pipe(
+                            take(1),
+                            map(exercises => ({
+                                IsLoading: true,
+                                Value: exercises,
+                                IsError: false,
+                            })),
+                            delay(500),
+                            tap(_ => {
+                                this.newTrainingService.updateTrainingState(response?.data ?? EMPTY_TRAINING);
+                                this.formInit();
+                            }),
+                            mapStreamData(),
+                            tap(_ => setTimeout(async () => await this.ionContent.scrollToBottom(300), 100)),
+                        );
+                    this.changeDetectorRef.markForCheck();
+                }
             });
     }
 
