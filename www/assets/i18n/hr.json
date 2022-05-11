@@ -1,5 +1,6 @@
 {
     "common": {
+        "please_wait": "Pričekajte...",
         "page": "Stranica",
         "of": "od",
         "page_not_found": "Stranica nije pronađena",
@@ -21,6 +22,7 @@
         "created_at_time": "Vrijeme izrade",
         "here": "ovdje",
         "or": "ILI",
+        "date": "Datum",
         "errors": {
             "something_went_wrong": "Došlo je do greške Pokušajte ponovno",
             "invalid_date": "Pogrešan format datuma",
@@ -31,7 +33,8 @@
         },
         "actions": {
             "delete": "Izbriši",
-            "close": "Izađi"
+            "close": "Izađi",
+            "confirm": "Potvrdi"
         },
         "months": {
             "january": "Siječanj",
@@ -57,7 +60,9 @@
         "signup": "Registracija",
         "signup_link": "Registrirajte ste",
         "signup_success": "Korisnik uspješno registriran",
+        "signing_in": "Registracija u tijeku...",
         "login": "Prijava",
+        "logging_in": "Prijava u tijeku...",
         "no_account_message": "Nemate korisnički račun?",
         "login_success": "Prijava uspješna",
         "errors": {
@@ -105,6 +110,7 @@
             "first_add_previous_set": "Prvo morate unijeti set broj {{ setNumber }}",
             "training_saved": "Trening spremljen",
             "finish_training": "Završi trening",
+            "reorder_exercises": "Promjena redoslijeda",
             "errors": {
                 "date_required": "Datum je obvezan",
                 "bodyweight_number": "Tjelesna težina mora biti numerička vrijednost",
@@ -148,7 +154,7 @@
             }
         },
         "past_trainings": {
-            "no_trainings": "Nema pronađenih treninga za ovaj tjedan",
+            "no_trainings": "Nema pronađenih treninga za ovaj {{ period }}",
             "log_training": "Unesite novi trening",
             "training_number": "Broj treninga: ",
             "disabled_next_week": "Idući tjedni nisu dostupni",
@@ -215,9 +221,22 @@
         "sunday": "Nedjelja"
     },
     "exercises": {
-        "chinups": "Zgib (Pothvat)",
-        "pullups": "Zgib (Nathvat)",
+        "chinup": "Zgib (Pothvat)",
+        "pullup": "Zgib (Nathvat)",
         "incline_dumbbell_press": "Kosi potisak bučicama",
-        "romanian_barbell_deadlift": "Rumunjsko mrtvo dizanje šipkom"
+        "romanian_barbell_deadlift": "Rumunjsko mrtvo dizanje šipkom",
+        "bench_press": "Ravni potisak šipkom",
+        "neck_curl": "Vratni pregib",
+        "neck_extension": "Vratna ekstenzija",
+        "hanging_leg_raise": "Viseće podizanje nogu",
+        "seated_row": "Sjedeće veslanje",
+        "squat": "Čučanj",
+        "hip_thrust": "Potisak kukovima",
+        "leg_curl": "Nožni pregib",
+        "calf_raise": "Podizanje listova",
+        "facepull": "Povlačenje prema licu",
+        "hammer_dumbbell_curl": "Čekić pregib bučicama",
+        "seated_dumbbell_overhead_extension": "Sjedeća triceps ekstenzija bučicom",
+        "pushup": "Sklek"
     }
 }

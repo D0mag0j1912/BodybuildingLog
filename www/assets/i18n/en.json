@@ -1,5 +1,6 @@
 {
     "common": {
+        "please_wait": "Please wait...",
         "page": "Page",
         "of": "of",
         "page_not_found": "Page not found",
@@ -20,6 +21,7 @@
         "created_at_time": "Time created",
         "here": "here",
         "or": "OR",
+        "date": "Date",
         "errors": {
             "something_went_wrong": "Something went wrong Please try again",
             "invalid_date": "Invalid date format",
@@ -30,7 +32,8 @@
         },
         "actions": {
             "delete": "Delete",
-            "close": "Close"
+            "close": "Close",
+            "confirm": "Confirm"
         },
         "months": {
             "january": "January",
@@ -56,7 +59,9 @@
         "signup": "Sign up",
         "signup_link": "Sign up",
         "signup_success": "User registered successfully",
+        "signing_in": "Signing in...",
         "login": "Login",
+        "logging_in": "Logging in...",
         "no_account_message": "Don't have an account?",
         "login_success": "Login successful",
         "errors": {
@@ -96,7 +101,7 @@
             "pick_bodyweight": "Enter your today's weight",
             "pick_exercise": "Pick an exercise",
             "weight_lifted": "Weight lifted",
-            "reps_performed": "Reps performed",
+            "reps_performed": "Reps",
             "total": "Total",
             "delete_exercise_prompt": "Are you sure you want to delete?",
             "training_updated": "Training updated",
@@ -104,6 +109,7 @@
             "first_add_previous_set": "You need to enter set number {{ setNumber }}",
             "training_saved": "Training saved",
             "finish_training": "Finish training",
+            "reorder_exercises": "Reorder exercises",
             "errors": {
                 "date_required": "Date is required",
                 "bodyweight_number": "Bodyweight needs to be numerical value",
@@ -146,7 +152,7 @@
             }
         },
         "past_trainings": {
-            "no_trainings": "No found trainings for this week",
+            "no_trainings": "No training found for this {{ period }}",
             "log_training": "Log new training",
             "training_number": "Number of trainings: ",
             "disabled_next_week": "Future weeks are not available",
@@ -214,9 +220,22 @@
         "sunday": "Sunday"
     },
     "exercises": {
-        "chinups": "Chinups",
-        "pullups": "Pullups",
+        "chinup": "Chinup",
+        "pullup": "Pullup",
         "incline_dumbbell_press": "Incline dumbbell press",
-        "romanian_barbell_deadlift": "Romanian barbell deadlift"
+        "romanian_barbell_deadlift": "Romanian barbell deadlift",
+        "bench_press": "Bench press",
+        "neck_curl": "Neck curl",
+        "neck_extension": "Neck extension",
+        "hanging_leg_raise": "Hanging leg raise",
+        "seated_row": "Seated row",
+        "squat": "Squat",
+        "hip_thrust": "Hip thrust",
+        "leg_curl": "Leg curl",
+        "calf_raise": "Calf raise",
+        "facepull": "Facepull",
+        "hammer_dumbbell_curl": "Hammer dumbbell curl",
+        "seated_dumbbell_overhead_extension": "Seated dumbbell overhead extension",
+        "pushup": "Pushup"
     }
 }
