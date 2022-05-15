@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
@@ -31,7 +31,7 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class NewTrainingComponent implements OnInit {
+export class NewTrainingComponent {
 
     formattedTodayDate: string;
 
@@ -79,7 +79,7 @@ export class NewTrainingComponent implements OnInit {
         return this.form.get('date') as FormControl;
     }
 
-    ngOnInit(): void {
+    ionViewWillEnter(): void {
         this.trainingStream$ = this.route.params
             .pipe(
                 switchMap((params: Params) => {
@@ -97,7 +97,7 @@ export class NewTrainingComponent implements OnInit {
                                     };
                                     this.newTrainingService.updateTrainingState(this.editData.editTraining);
                                 }),
-                        );
+                            );
                     }
                     else {
                         return combineLatest([
@@ -131,6 +131,7 @@ export class NewTrainingComponent implements OnInit {
             );
         this.isAuthenticated$ = this.authService.isAuth$;
         this.isEditing$ = this.sharedService.editingTraining$$;
+        this.changeDetectorRef.markForCheck();
     }
 
     ionViewDidEnter(): void {
