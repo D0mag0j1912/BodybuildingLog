@@ -1,7 +1,7 @@
 
 .wrapper {
     box-shadow: var(--ion-box-shadow);
-    border-radius: 8px;
+    border-radius: 4px;
     margin-top: 10px;
 }
 
@@ -26,4 +26,13 @@ ion-grid:first-of-type {
 
 .empty-training-msg {
     font-size: 14px;
+}
+
+.skeleton {
+    &--single-exercise {
+        /* TODO: Calculate height based on how many sets are present */
+        height: 275px;
+        margin-top: 10px;
+        border-radius: 4px;
+    }
 }
