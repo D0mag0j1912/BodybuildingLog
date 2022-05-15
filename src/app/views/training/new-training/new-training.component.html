@@ -46,6 +46,12 @@
         </ng-container>
         <ng-template #valueOrLoading>
             <ng-container *ngIf="trainingData?.IsLoading; else Value">
+                <ion-skeleton-text
+                    animated
+                    class="skeleton--bodyweight"></ion-skeleton-text>
+                <ion-skeleton-text
+                    animated
+                    class="skeleton--date"></ion-skeleton-text>
                 <ion-spinner
                     class="ion-spinner-class"
                     name="crescent"
@@ -61,6 +67,7 @@
                         <ion-input
                             ionFocus
                             #bodyweightRef
+                            class="bodyweight-input"
                             type="number"
                             formControlName="bodyweight"
                             (ionChange)="onBodyweightChange(bodyweightRef.value)"></ion-input>

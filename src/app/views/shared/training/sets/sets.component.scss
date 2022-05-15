@@ -19,6 +19,14 @@ ion-grid {
 
 .set-row {
     align-items: flex-start;
+
+    ::ng-deep .weight-lifted-input input {
+        height: 30px;
+    }
+
+    ::ng-deep .reps-input input {
+        height: 30px;
+    }
 }
 
 .set-saved-msg {
