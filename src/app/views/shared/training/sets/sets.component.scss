@@ -36,9 +36,11 @@ ion-grid {
 }
 
 .delete-set-col {
-    margin-top: 10px;
+    margin-top: 5px;
 
-    ion-icon {
+    .delete-set-icon {
         position: absolute;
+        width: 30px;
+        height: 30px;
     }
 }
