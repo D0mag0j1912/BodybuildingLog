@@ -82,6 +82,7 @@ export class NewTrainingComponent {
     ionViewWillEnter(): void {
         this.trainingStream$ = this.route.params
             .pipe(
+                take(1),
                 switchMap((params: Params) => {
                     if (params['id']) {
                         this.editMode = true;
