@@ -13,7 +13,7 @@ ion-grid:first-of-type {
 .exercise-picker {
     color: var(--ion-color-primary);
     max-width: 220px;
-    padding: 0;
+    padding-bottom: 0;
 }
 
 .md .exercise-row {
@@ -29,10 +29,14 @@ ion-grid:first-of-type {
 }
 
 .skeleton {
-    &--single-exercise {
-        /* TODO: Calculate height based on how many sets are present */
-        height: 275px;
-        margin-top: 10px;
-        border-radius: 4px;
+    &--exercise-picker {
+       width: 255px;
+       height: 57px;
+       border-radius: 4px;
+    }
+
+    &--delete-exercise {
+        width: 36px;
+        height: 36px;
     }
 }

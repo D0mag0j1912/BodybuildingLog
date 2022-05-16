@@ -1,12 +1,12 @@
 <form
-    *ngIf="form && !isLoading; else loading"
+    *ngIf="form"
     [formGroup]="$any(form)"
     (ngSubmit)="onSubmit()">
     <ng-container
         *ngFor="let group of getExercises(); let i = index">
         <ng-container [formGroupName]="i">
             <div class="wrapper">
-                <ion-grid>
+                <ion-grid *ngIf="!isLoading; else loading">
                     <ion-row class="ion-text-center exercise-row">
                         <ion-col size="10">
                             <ion-item fill="outline">
@@ -31,7 +31,7 @@
                                 </ion-note>
                             </ion-item>
                             <ion-note
-                                *ngIf="form.errors?.duplicateExerciseName && form.errors?.duplicateExerciseName === accessFormField('name', i).value"
+                                *ngIf="form.errors?.duplicateExerciseName && form.errors?.duplicateExerciseName === accessFormField('name', i)?.value"
                                 class="error">
                                 {{ 'training.new_training.errors.exercise_name_duplicate' | translate }}
                             </ion-note>
@@ -44,6 +44,22 @@
                         </ion-col>
                     </ion-row>
                 </ion-grid>
+                <ng-template #loading>
+                    <ion-grid>
+                        <ion-row class="ion-text-center exercise-row">
+                            <ion-col size="10">
+                                <ion-skeleton-text
+                                    animated
+                                    class="skeleton--exercise-picker"></ion-skeleton-text>
+                            </ion-col>
+                            <ion-col size="2">
+                                <ion-skeleton-text
+                                    animated
+                                    class="skeleton--delete-exercise"></ion-skeleton-text>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </ng-template>
                 <bl-sets
                     formControlName="sets"
                     [isExerciseFormSubmitted$]="isSubmitted$$.asObservable()"
@@ -90,8 +106,3 @@
         </ion-grid>
     </ng-container>
 </form>
-<ng-template #loading>
-    <ion-skeleton-text
-        animated
-        class="skeleton--single-exercise"></ion-skeleton-text>
-</ng-template>
