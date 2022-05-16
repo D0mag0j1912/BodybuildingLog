@@ -121,13 +121,11 @@ export class NewTrainingComponent {
                         );
                     }
                 }),
-                tap(_ => {
-                    this.sharedService.editingTraining$$.next(this.editMode);
-                    this.formInit();
-                }),
+                tap(_ => this.sharedService.editingTraining$$.next(this.editMode)),
                 switchMap(_ =>
                     this.newTrainingService.getExercises()
                         .pipe(
+                            tap(_ => this.formInit()),
                             mapStreamData(),
                         ),
                 ),

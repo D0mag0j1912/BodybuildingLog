@@ -105,7 +105,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     writeValue(exercises: SingleExercise[]): void {
         if (exercises) {
-            if (exercises.length > 0) {
+            if (exercises?.length > 0) {
                 (exercises as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
                     this.addExercise();
                     if (exercise.exerciseName) {
