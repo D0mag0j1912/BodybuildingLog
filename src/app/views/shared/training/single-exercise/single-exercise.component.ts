@@ -82,10 +82,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                                 take(1),
                                 map((currentTrainingState: Training) => currentTrainingState.exercises),
                             ),
-                            this.newTrainingService.allExercisesChanged$
-                                .pipe(
-                                    take(1),
-                                ),
+                        this.newTrainingService.allExercisesChanged$
+                            .pipe(
+                                take(1),
+                            ),
                     ]),
                 ),
             );

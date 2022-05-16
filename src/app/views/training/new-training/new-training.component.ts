@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
-import { format, parseISO } from 'date-fns';
+import { format, isThursday, parseISO } from 'date-fns';
 import { combineLatest, from, Observable, of } from 'rxjs';
 import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
@@ -16,6 +16,7 @@ import { Exercise } from '../../../models/training/exercise.model';
 import { createEmptyExercise, EditNewTrainingData, EMPTY_TRAINING, EMPTY_TRAINING_EDIT } from '../../../models/training/new-training/empty-training.model';
 import { Training } from '../../../models/training/new-training/training.model';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
+import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../services/training/new-training.service';
@@ -23,6 +24,12 @@ import * as CommonValidators from '../../../validators/shared/common.validators'
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
 import { SingleExerciseComponent } from '../../shared/training/single-exercise/single-exercise.component';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
+
+type FormData = {
+    bodyweight: number;
+    date: Date;
+    exercises: SingleExercise[];
+};
 
 @Component({
     selector: 'bl-new-training',
@@ -69,14 +76,17 @@ export class NewTrainingComponent {
         private readonly router: Router,
         private readonly modalController: ModalController,
         private readonly changeDetectorRef: ChangeDetectorRef,
-    ) { }
-
-    get bodyweight(): FormControl {
-        return this.form.get('bodyweight') as FormControl;
-    }
-
-    get date(): FormControl {
-        return this.form.get('date') as FormControl;
+    ) {
+        this.form = new FormGroup({
+            bodyweight: new FormControl(null,
+                {
+                    validators: [CommonValidators.isNumber(), Validators.min(30), Validators.max(300)],
+                    updateOn: 'blur',
+                },
+            ),
+            date: new FormControl(null, [Validators.required]),
+            exercises: new FormControl(null),
+        });
     }
 
     ionViewWillEnter(): void {
@@ -184,7 +194,7 @@ export class NewTrainingComponent {
         const modal = await this.modalController.create({
             component: DateTimePickerComponent,
             componentProps: {
-                dateValue: format(new Date(this.date.value), `yyyy-MM-dd'T'HH:mm:ss'Z'`),
+                dateValue: format(new Date(this.accessFormData('date').value), `yyyy-MM-dd'T'HH:mm:ss'Z'`),
             },
             cssClass: 'datetime-picker',
             mode: 'md',
@@ -199,7 +209,7 @@ export class NewTrainingComponent {
             .subscribe(response => {
                 const { data, role } = response;
                 if (role === 'SELECT_DATE') {
-                    this.date.patchValue(data);
+                    this.accessFormData('date').patchValue(data);
                     this.setFormattedDate(data);
                 }
             });
@@ -269,23 +279,19 @@ export class NewTrainingComponent {
         }
     }
 
+    accessFormData(formControl: keyof FormData): FormControl {
+        return this.form.get(formControl) as FormControl;
+    }
+
     private formInit(): void {
         const currentTrainingState = { ...this.newTrainingService.getCurrentTrainingState() };
-        this.form = new FormGroup({
-            bodyweight: new FormControl(
-                NewTrainingHandler.fillBodyweight(
-                    currentTrainingState.bodyweight,
-                    this.editData?.editTraining ? this.editData.editTraining?.bodyweight : null,
-                ),
-                {
-                    validators: [CommonValidators.isNumber(), Validators.min(30), Validators.max(300)],
-                    updateOn: 'blur',
-                },
-            ),
-            date: new FormControl(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString(), [Validators.required]),
-            exercises: new FormControl(currentTrainingState.exercises),
-        });
-        this.setFormattedDate(this.date.value);
+        this.accessFormData('bodyweight').patchValue(NewTrainingHandler.fillBodyweight(
+            currentTrainingState.bodyweight,
+            this.editData?.editTraining ? this.editData.editTraining?.bodyweight : null,
+        ));
+        this.accessFormData('date').patchValue(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString());
+        this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);
+        this.setFormattedDate(this.accessFormData('date').value);
     }
 
     private setFormattedDate(dateValue: string): void {
