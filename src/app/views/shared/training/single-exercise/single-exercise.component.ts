@@ -3,7 +3,7 @@ import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGrou
 import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, EMPTY, forkJoin, from, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, EMPTY, from, Observable, of, Subject } from 'rxjs';
 import { finalize, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../../constants/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
@@ -72,21 +72,23 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     exercisePickerEls: QueryList<IonSelect>;
 
     readonly currentExerciseState$: Observable<[SingleExercise[], Exercise[]]> =
-        this.exerciseStateChanged$$.pipe(
-            startWith(undefined as ExerciseStateType),
-            switchMap(_ =>
-                forkJoin([
-                    this.newTrainingService.currentTrainingChanged$
-                        .pipe(
-                            take(1),
-                            map((currentTrainingState: Training) => currentTrainingState.exercises),
-                        ),
-                        this.newTrainingService.allExercisesChanged$.pipe(
-                            take(1),
-                        ),
-                ]),
-            ),
-        );
+        this.exerciseStateChanged$$
+            .pipe(
+                startWith(undefined as ExerciseStateType),
+                switchMap(_ =>
+                    combineLatest([
+                        this.newTrainingService.currentTrainingChanged$
+                            .pipe(
+                                take(1),
+                                map((currentTrainingState: Training) => currentTrainingState.exercises),
+                            ),
+                            this.newTrainingService.allExercisesChanged$
+                                .pipe(
+                                    take(1),
+                                ),
+                    ]),
+                ),
+            );
 
     constructor(
         private readonly newTrainingService: NewTrainingService,

@@ -100,10 +100,8 @@
                         <ion-label>{{ 'common.date' | translate }}</ion-label>
                         <ion-text color="primary">{{ formattedTodayDate }}</ion-text>
                     </ion-item>
-                    <ng-container>
-                        <ion-note
-                            *ngIf="date.errors?.required"
-                            class="error">{{ 'training.new_training.errors.date_required' | translate }}</ion-note>
+                    <ng-container *ngIf="date?.errors?.required">
+                        <ion-note class="error">{{ 'training.new_training.errors.date_required' | translate }}</ion-note>
                     </ng-container>
                     <bl-single-exercise
                         formControlName="exercises"
