@@ -84,7 +84,7 @@ export class NewTrainingComponent {
                     updateOn: 'blur',
                 },
             ),
-            date: new FormControl(null, [Validators.required]),
+            date: new FormControl(new Date().toISOString(), [Validators.required]),
             exercises: new FormControl([]),
         });
     }
@@ -283,9 +283,6 @@ export class NewTrainingComponent {
 
     private _formInit(): void {
         const currentTrainingState = { ...this.newTrainingService.getCurrentTrainingState() };
-        this.accessFormData('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
-        this.accessFormData('date').patchValue(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString());
-        this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);
         /* this.form = new FormGroup({
             bodyweight: new FormControl(this._fillBodyweight(currentTrainingState),
                 {
@@ -296,6 +293,9 @@ export class NewTrainingComponent {
             date: new FormControl(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString(), [Validators.required]),
             exercises: new FormControl(currentTrainingState?.exercises ?? []),
         }); */
+        this.accessFormData('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
+        this.accessFormData('date').patchValue(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString());
+        this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);
         this._setFormattedDate(this.accessFormData('date').value);
     }
 

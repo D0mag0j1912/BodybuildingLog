@@ -46,7 +46,6 @@
         </ng-container>
         <ng-template #valueOrLoading>
             <form
-                *ngIf="form"
                 autocomplete="off"
                 [formGroup]="form">
                 <ng-container *ngIf="trainingData?.IsLoading && !trainingData?.Value; else notLoading">

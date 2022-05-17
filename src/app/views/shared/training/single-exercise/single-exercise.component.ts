@@ -116,9 +116,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     }
                 });
             }
-            else {
-                this.addExercise();
-            }
         }
     }
 
