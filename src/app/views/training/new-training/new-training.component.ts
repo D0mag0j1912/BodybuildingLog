@@ -76,7 +76,18 @@ export class NewTrainingComponent {
         private readonly router: Router,
         private readonly modalController: ModalController,
         private readonly changeDetectorRef: ChangeDetectorRef,
-    ) { }
+    ) {
+        this.form = new FormGroup({
+            bodyweight: new FormControl(null,
+                {
+                    validators: [CommonValidators.isNumber(), Validators.min(30), Validators.max(300)],
+                    updateOn: 'blur',
+                },
+            ),
+            date: new FormControl(null, [Validators.required]),
+            exercises: new FormControl([]),
+        });
+    }
 
     ionViewWillEnter(): void {
         this.trainingStream$ = this.route.params
@@ -272,7 +283,10 @@ export class NewTrainingComponent {
 
     private _formInit(): void {
         const currentTrainingState = { ...this.newTrainingService.getCurrentTrainingState() };
-        this.form = new FormGroup({
+        this.accessFormData('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
+        this.accessFormData('date').patchValue(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString());
+        this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);
+        /* this.form = new FormGroup({
             bodyweight: new FormControl(this._fillBodyweight(currentTrainingState),
                 {
                     validators: [CommonValidators.isNumber(), Validators.min(30), Validators.max(300)],
@@ -281,7 +295,7 @@ export class NewTrainingComponent {
             ),
             date: new FormControl(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString(), [Validators.required]),
             exercises: new FormControl(currentTrainingState?.exercises ?? []),
-        });
+        }); */
         this._setFormattedDate(this.accessFormData('date').value);
     }
 
