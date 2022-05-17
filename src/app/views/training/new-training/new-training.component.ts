@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
-import { format, isThursday, parseISO } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { combineLatest, from, Observable, of } from 'rxjs';
 import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
