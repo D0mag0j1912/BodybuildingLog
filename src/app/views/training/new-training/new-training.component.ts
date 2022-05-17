@@ -76,18 +76,7 @@ export class NewTrainingComponent {
         private readonly router: Router,
         private readonly modalController: ModalController,
         private readonly changeDetectorRef: ChangeDetectorRef,
-    ) {
-        this.form = new FormGroup({
-            bodyweight: new FormControl(null,
-                {
-                    validators: [CommonValidators.isNumber(), Validators.min(30), Validators.max(300)],
-                    updateOn: 'blur',
-                },
-            ),
-            date: new FormControl(null, [Validators.required]),
-            exercises: new FormControl(null),
-        });
-    }
+    ) { }
 
     ionViewWillEnter(): void {
         this.trainingStream$ = this.route.params
@@ -135,7 +124,7 @@ export class NewTrainingComponent {
                 switchMap(_ =>
                     this.newTrainingService.getExercises()
                         .pipe(
-                            tap(_ => this.formInit()),
+                            tap(_ => this._formInit()),
                             mapStreamData(),
                         ),
                 ),
@@ -180,7 +169,7 @@ export class NewTrainingComponent {
                             delay(300),
                             tap(_ => {
                                 this.newTrainingService.updateTrainingState(response.data);
-                                this.formInit();
+                                this._formInit();
                             }),
                             mapStreamData(),
                             tap(_ => setTimeout(async () => await this.ionContent.scrollToBottom(300), 100)),
@@ -193,9 +182,7 @@ export class NewTrainingComponent {
     async openDateTimePicker(): Promise<void> {
         const modal = await this.modalController.create({
             component: DateTimePickerComponent,
-            componentProps: {
-                dateValue: format(new Date(this.accessFormData('date').value), `yyyy-MM-dd'T'HH:mm:ss'Z'`),
-            },
+            componentProps: { dateValue: format(new Date(this.accessFormData('date').value), `yyyy-MM-dd'T'HH:mm:ss'Z'`) },
             cssClass: 'datetime-picker',
             mode: 'md',
         });
@@ -210,7 +197,7 @@ export class NewTrainingComponent {
                 const { data, role } = response;
                 if (role === 'SELECT_DATE') {
                     this.accessFormData('date').patchValue(data);
-                    this.setFormattedDate(data);
+                    this._setFormattedDate(data);
                 }
             });
     }
@@ -283,20 +270,31 @@ export class NewTrainingComponent {
         return this.form.get(formControl) as FormControl;
     }
 
-    private formInit(): void {
+    private _formInit(): void {
         const currentTrainingState = { ...this.newTrainingService.getCurrentTrainingState() };
-        this.accessFormData('bodyweight').patchValue(NewTrainingHandler.fillBodyweight(
-            currentTrainingState.bodyweight,
-            this.editData?.editTraining ? this.editData.editTraining?.bodyweight : null,
-        ));
-        this.accessFormData('date').patchValue(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString());
-        this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);
-        this.setFormattedDate(this.accessFormData('date').value);
+        this.form = new FormGroup({
+            bodyweight: new FormControl(this._fillBodyweight(currentTrainingState),
+                {
+                    validators: [CommonValidators.isNumber(), Validators.min(30), Validators.max(300)],
+                    updateOn: 'blur',
+                },
+            ),
+            date: new FormControl(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString(), [Validators.required]),
+            exercises: new FormControl(currentTrainingState?.exercises ?? []),
+        });
+        this._setFormattedDate(this.accessFormData('date').value);
     }
 
-    private setFormattedDate(dateValue: string): void {
+    private _setFormattedDate(dateValue: string): void {
         const [ date, time ] = dateValue.split('T');
         this.formattedTodayDate = format(parseISO(format(new Date(date), 'yyyy-MM-dd') + `T${time}`), 'HH:mm, MMM d, yyyy');
+    }
+
+    private _fillBodyweight(currentTrainingState: Training): string {
+        return NewTrainingHandler.fillBodyweight(
+            currentTrainingState.bodyweight,
+            this.editData?.editTraining ? this.editData.editTraining?.bodyweight : null,
+        );
     }
 
 }
