@@ -1,4 +1,5 @@
 <form
+    *ngIf="!isLoading; else loading"
     [formGroup]="$any(form)"
     autocomplete="off">
     <ng-container *ngFor="let set of getSets(); let j = index">
@@ -156,3 +157,33 @@
         </ion-col>
     </ion-row>
 </ion-grid>
+<!--TODO: Add logic for skeleton loader-->
+<ng-template #loading>
+    <ion-grid>
+        <ion-row class="ion-text-center set-row">
+            <ion-col size="5">
+                <ion-skeleton-text
+                    animated
+                    class="skeleton--set-constituent"></ion-skeleton-text>
+            </ion-col>
+            <ion-col size="5">
+                <ion-skeleton-text
+                    animated
+                    class="skeleton--set-constituent"></ion-skeleton-text>
+            </ion-col>
+            <ion-col
+                size="2"
+                class="delete-set-col">
+                <ion-skeleton-text
+                    animated
+                    class="skeleton--delete-set"></ion-skeleton-text>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <ion-grid>
+        <ion-row class="ion-text-center">
+            <ion-col>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ng-template>
