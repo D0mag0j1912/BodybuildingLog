@@ -57,7 +57,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     readonly formStateChanged: EventEmitter<SetFormValidationErrors[]> = new EventEmitter<SetFormValidationErrors[]>();
 
     @ViewChildren('weightLiftedEl')
-    weightLiftedEl: QueryList<IonInput>;
+    readonly weightLiftedEl: QueryList<IonInput>;
 
     constructor(
         private readonly unsubscribeService: UnsubscribeService,
@@ -87,12 +87,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         this.form.updateValueAndValidity();
         this.formStateChanged.emit(this.formErrors);
 
-        this.exerciseNameControl.valueChanges.pipe(
-            takeUntil(this.unsubscribeService),
-        ).subscribe((value: string) => {
-            value ? this.accessFormField('weightLifted', 0).enable() : this.accessFormField('weightLifted', 0).disable();
-            value ? this.accessFormField('reps', 0).enable() : this.accessFormField('reps', 0).disable();
-        });
+        this.exerciseNameControl.valueChanges
+            .pipe(
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe((value: string) => {
+                value ? this.accessFormField('weightLifted', 0).enable() : this.accessFormField('weightLifted', 0).disable();
+                value ? this.accessFormField('reps', 0).enable() : this.accessFormField('reps', 0).disable();
+            });
 
         this.exerciseStateChanged$
             .pipe(
@@ -122,12 +124,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     }
     //Sending parent new form value when form value changes
     registerOnChange(fn: (formValue: Partial<Set[]>) => void): void {
-        this.form.valueChanges.pipe(
-            takeUntil(this.unsubscribeService),
-        ).subscribe((formValue: Partial<Set[]>) => {
-            this.formStateChanged.emit(this.formErrors);
-            fn(formValue as Partial<Set[]>);
-        });
+        this.form.valueChanges
+            .pipe(
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe((formValue: Partial<Set[]>) => {
+                this.formStateChanged.emit(this.formErrors);
+                fn(formValue as Partial<Set[]>);
+            });
     }
 
     registerOnTouched(fn: () => void): void {

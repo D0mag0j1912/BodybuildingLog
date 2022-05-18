@@ -60,7 +60,7 @@
                     </ion-grid>
                 </ng-template>
                 <bl-sets
-                    formControlName="sets"
+                    [formControl]="$any(form.controls[i].get('sets'))"
                     [isExerciseFormSubmitted$]="isSubmitted$$.asObservable()"
                     [exerciseStateChanged$]="exerciseStateChanged$$.asObservable()"
                     [exerciseNameControl]="accessFormField('name', i)"
@@ -83,7 +83,7 @@
                         color="primary"
                         [disabled]="isAddingExercisesDisabled(
                             currentExerciseState[0].length,
-                            currentExerciseState[1].length) || isLoading"
+                            currentExerciseState[1].length) || isLoading || isApiLoading"
                         (click)="addExercise($event)">
                         {{ 'training.new_training.buttons.add_exercise' | translate }}
                     </ion-button>
@@ -91,7 +91,7 @@
                 <ion-col>
                     <ion-button
                         type="submit"
-                        [disabled]="currentExerciseState[0]?.length === 0 || isLoading">
+                        [disabled]="currentExerciseState[0]?.length === 0 || isLoading || isApiLoading">
                         <ion-icon name="checkmark-sharp"></ion-icon>
                     </ion-button>
                 </ion-col>
