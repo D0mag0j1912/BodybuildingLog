@@ -3,10 +3,10 @@
     autocomplete="off">
     <ng-container *ngFor="let set of getSets(); let j = index">
         <ng-container [formGroupName]="j">
-            <ng-container *ngIf="!isLoading; else loading">
-                <ion-grid>
-                    <ion-row class="ion-text-center set-row">
-                        <ion-col size="5">
+            <ion-grid>
+                <ion-row class="ion-text-center set-row">
+                    <ion-col size="5">
+                        <ng-container *ngIf="!isLoading; else weightLiftedLoading">
                             <ion-item
                                 fill="outline"
                                 [class.ion-item-error]="setIonComponentClass(
@@ -73,8 +73,15 @@
                                 class="set-saved-msg">
                                 {{ 'training.new_training.set_saved' | translate }}
                             </ion-text>
-                        </ion-col>
-                        <ion-col size="5">
+                        </ng-container>
+                        <ng-template #weightLiftedLoading>
+                            <ion-skeleton-text
+                                animated
+                                class="skeleton--set-constituent"></ion-skeleton-text>
+                        </ng-template>
+                    </ion-col>
+                    <ion-col size="5">
+                        <ng-container *ngIf="!isLoading; else repsLoading">
                             <ion-item
                                 fill="outline"
                                 [class.ion-item-error]="setIonComponentClass(
@@ -124,10 +131,17 @@
                                 class="error">
                                 {{ 'training.new_training.errors.reps_required' | translate }}
                             </ion-text>
-                        </ion-col>
-                        <ion-col
-                            size="2"
-                            class="delete-set-col">
+                        </ng-container>
+                        <ng-template #repsLoading>
+                            <ion-skeleton-text
+                                animated
+                                class="skeleton--set-constituent"></ion-skeleton-text>
+                        </ng-template>
+                    </ion-col>
+                    <ion-col
+                        size="2"
+                        class="delete-set-col">
+                        <ng-container *ngIf="!isLoading; else deleteSetLoading">
                             <ion-button
                                 class="button-no-background"
                                 type="button"
@@ -138,40 +152,22 @@
                                     color="danger"
                                     class="delete-set-icon"></ion-icon>
                             </ion-button>
-                        </ion-col>
-                    </ion-row>
-                </ion-grid>
-            </ng-container>
-            <ng-template #loading>
-                <ion-grid>
-                    <ion-row class="ion-text-center set-row">
-                        <ion-col size="5">
-                            <ion-skeleton-text
-                                animated
-                                class="skeleton--set-constituent"></ion-skeleton-text>
-                        </ion-col>
-                        <ion-col size="5">
-                            <ion-skeleton-text
-                                animated
-                                class="skeleton--set-constituent"></ion-skeleton-text>
-                        </ion-col>
-                        <ion-col
-                            size="2"
-                            class="delete-set-col">
+                        </ng-container>
+                        <ng-template #deleteSetLoading>
                             <ion-skeleton-text
                                 animated
                                 class="skeleton--delete-set"></ion-skeleton-text>
-                        </ion-col>
-                    </ion-row>
-                </ion-grid>
-            </ng-template>
+                        </ng-template>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
         </ng-container>
     </ng-container>
 </form>
-<ng-container *ngIf="!isLoading; else addSetLoading">
-    <ion-grid>
-        <ion-row class="ion-text-center">
-            <ion-col>
+<ion-grid>
+    <ion-row class="ion-text-center">
+        <ion-col>
+            <ng-container *ngIf="!isLoading; else addSetLoading">
                 <ion-button
                     type="button"
                     color="primary"
@@ -179,19 +175,12 @@
                     (click)="addSet()">
                     {{ 'training.new_training.buttons.add_set' | translate }}
                 </ion-button>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
-</ng-container>
-
-<ng-template #addSetLoading>
-    <ion-grid>
-        <ion-row class="ion-justify-content-center">
-            <ion-col>
+            </ng-container>
+            <ng-template #addSetLoading>
                 <ion-skeleton-text
                     animated
                     class="skeleton--add-set"></ion-skeleton-text>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
-</ng-template>
+            </ng-template>
+        </ion-col>
+    </ion-row>
+</ion-grid>
