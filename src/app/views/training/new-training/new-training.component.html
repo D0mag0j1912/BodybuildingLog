@@ -48,11 +48,6 @@
             <form
                 autocomplete="off"
                 [formGroup]="form">
-                <ion-spinner
-                    *ngIf="trainingData?.IsLoading"
-                    class="ion-spinner-class"
-                    name="crescent"
-                    color="primary"></ion-spinner>
                 <ng-container *ngIf="!trainingData?.IsLoading; else bodyweightLoading">
                     <ion-item fill="outline">
                         <ion-label position="floating">{{ 'training.new_training.pick_bodyweight' | translate }}</ion-label>
