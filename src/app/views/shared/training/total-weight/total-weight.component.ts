@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 
@@ -13,12 +13,15 @@ export class TotalWeightComponent implements ControlValueAccessor {
 
     value: string;
 
+    @Input()
+    isLoading = false;
+
     onChange: () => void;
     onTouched: () => void;
 
     constructor(
         private readonly changeDetectorRef: ChangeDetectorRef,
-    ){}
+    ) { }
 
     writeValue(value: string): void {
         this.value = value;

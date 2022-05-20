@@ -68,7 +68,9 @@
                     (setAdded)="onChangeSets($event)"
                     (setDeleted)="deleteSet($event)"
                     (formStateChanged)="onSetFormChange($event)"></bl-sets>
-                <bl-total-weight formControlName="total"></bl-total-weight>
+                <bl-total-weight
+                    formControlName="total"
+                    [isLoading]="isLoading"></bl-total-weight>
             </div>
         </ng-container>
     </ng-container>
@@ -76,22 +78,36 @@
         <ion-grid>
             <ion-row>
                 <ion-col>
-                    <ion-button
-                        type="button"
-                        color="primary"
-                        [disabled]="isAddingExercisesDisabled(
-                            currentExerciseState[0].length,
-                            currentExerciseState[1].length) || isLoading || isApiLoading"
-                        (click)="addExercise($event)">
-                        {{ 'training.new_training.buttons.add_exercise' | translate }}
-                    </ion-button>
+                    <ng-container *ngIf="!isLoading; else addExerciseLoading">
+                        <ion-button
+                            type="button"
+                            color="primary"
+                            [disabled]="isAddingExercisesDisabled(
+                                currentExerciseState[0].length,
+                                currentExerciseState[1].length) || isApiLoading"
+                            (click)="addExercise($event)">
+                            {{ 'training.new_training.buttons.add_exercise' | translate }}
+                        </ion-button>
+                    </ng-container>
+                    <ng-template #addExerciseLoading>
+                        <ion-skeleton-text
+                            animated
+                            class="skeleton--add-exercise"></ion-skeleton-text>
+                    </ng-template>
                 </ion-col>
                 <ion-col>
-                    <ion-button
-                        type="submit"
-                        [disabled]="currentExerciseState[0]?.length === 0 || isLoading || isApiLoading">
-                        <ion-icon name="checkmark-sharp"></ion-icon>
-                    </ion-button>
+                    <ng-container *ngIf="!isLoading; else finishTrainingLoading">
+                        <ion-button
+                            type="submit"
+                            [disabled]="currentExerciseState[0]?.length === 0 || isApiLoading">
+                            <ion-icon name="checkmark-sharp"></ion-icon>
+                        </ion-button>
+                    </ng-container>
+                    <ng-template #finishTrainingLoading>
+                        <ion-skeleton-text
+                            animated
+                            class="skeleton--finish-training"></ion-skeleton-text>
+                    </ng-template>
                 </ion-col>
             </ion-row>
             <ion-text
