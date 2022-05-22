@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit } from '@angular/core';
 
 @Component({
     selector: 'bl-skeleton-loader',
@@ -6,39 +6,23 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
     styleUrls: ['./skeleton-loader.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SkeletonLoaderComponent {
+export class SkeletonLoaderComponent implements OnInit {
 
-    @Input()
-    width: number;
+    width: string;
+    height: string;
+    className: string;
 
-    @Input()
-    height: number;
+    constructor(
+        private readonly elementRef: ElementRef<HTMLElement>,
+    ) { }
 
-    @Input()
-    borderRadius: number;
-
-    @Input()
-    pixels = true;
-
-    styleSkeletonLoader(): { [key: string]: string } {
-        return {
-            'width': this.adjustUnit(this.width),
-            'height': this.adjustUnit(this.height),
-            'border-radius': this.adjustUnit(this.borderRadius),
-        };
-    }
-
-    private adjustUnit(property: number): string {
-        if (property) {
-            if (this.pixels) {
-                return `${property}px`;
-            }
-            else {
-                return `${property}%`;
-            }
+    ngOnInit(): void {
+        const host = this.elementRef.nativeElement;
+        if (this.className) {
+            host.classList.add(this.className);
         }
-        else {
-            return '';
-        }
+
+        host.style.setProperty('width', this.width ?? '');
+        host.style.setProperty('height', this.height ?? '');
     }
 }

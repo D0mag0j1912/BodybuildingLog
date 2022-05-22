@@ -1,5 +1,5 @@
 import { Directive, Input, OnChanges, SimpleChanges, TemplateRef, ViewContainerRef } from '@angular/core';
-import { IonSkeletonText } from '@ionic/angular';
+import { SkeletonLoaderComponent } from '../../views/shared/skeleton-loader/skeleton-loader.component';
 
 @Directive({ selector: '[skeleton]' })
 export class SkeletonLoaderDirective implements OnChanges {
@@ -30,7 +30,7 @@ export class SkeletonLoaderDirective implements OnChanges {
 
             if (changes?.isLoading?.currentValue) {
                 Array.from({ length: this.size }).forEach(_ => {
-                    const ref = this._viewContainerRef.createComponent(IonSkeletonText);
+                    const ref = this._viewContainerRef.createComponent(SkeletonLoaderComponent);
 
                     Object.assign(ref.instance, {
                         width: this.width === 'rand' ? `${100}%` : this.width,
