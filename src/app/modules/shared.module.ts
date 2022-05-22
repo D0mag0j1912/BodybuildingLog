@@ -18,6 +18,7 @@ import { MoreTrainingActionComponent } from '../views/shared/training/training-a
 import { PaginationComponent } from '../views/shared/pagination/pagination.component';
 import { PaginationDirective } from '../directives/pagination/pagination.directive';
 import { DateTimePickerComponent } from '../views/shared/datetime-picker/datetime-picker.component';
+import { SkeletonLoaderComponent } from '../views/shared/skeleton-loader/skeleton-loader.component';
 
 const DIRECTIVES = [PaginationDirective];
 
@@ -29,6 +30,7 @@ const COMPONENTS = [
     NotFoundComponent,
     PaginationComponent,
     DateTimePickerComponent,
+    SkeletonLoaderComponent,
 ];
 
 const ACTION_COMPONENTS = [
