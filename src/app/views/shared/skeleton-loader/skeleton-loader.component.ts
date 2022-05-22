@@ -16,4 +16,12 @@ export class SkeletonLoaderComponent {
 
     @Input()
     borderRadius: number;
+
+    styleSkeletonLoader(): { [key: string]: string } {
+        return {
+            'width.px': `${this.width ? this.width : ''}`,
+            'height.px': `${this.height ? this.height : ''}`,
+            'border-radius.px': `${this.borderRadius ? this.borderRadius : ''}`,
+        };
+    }
 }
