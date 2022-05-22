@@ -19,6 +19,9 @@ export class SkeletonLoaderDirective implements OnChanges {
     @Input('skeletonBorderRadius')
     borderRadius: string;
 
+    @Input('skeletonMargin')
+    margin: string;
+
     @Input('skeletonClassName')
     className: string;
 
@@ -39,6 +42,7 @@ export class SkeletonLoaderDirective implements OnChanges {
                         width: this.width,
                         height: this.height,
                         borderRadius: this.borderRadius,
+                        margin: this.margin,
                         className: this.className,
                     });
                 });

@@ -11,6 +11,7 @@ export class SkeletonLoaderComponent implements OnInit {
     width: string;
     height: string;
     borderRadius: string;
+    margin: string;
     className: string;
 
     constructor(
@@ -26,9 +27,10 @@ export class SkeletonLoaderComponent implements OnInit {
 
     styleSkeleton(): { [key: string]: string } {
         return {
-            'width': `${this.width}` ?? '',
-            'height': `${this.height}` ?? '',
-            'border-radius': `${this.borderRadius}` ?? '',
+            'width': this.width ?? '',
+            'height': this.height ?? '',
+            'border-radius': this.borderRadius ?? '',
+            'margin': this.margin ?? '',
         };
     }
 }
