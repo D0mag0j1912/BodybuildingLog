@@ -4,9 +4,12 @@
 }
 
 .wrapper {
-    box-shadow: var(--ion-box-shadow);
     border-radius: 4px;
     margin-top: 10px;
+
+    &--not-loading {
+        box-shadow: var(--ion-box-shadow);
+    }
 }
 
 ion-grid:first-of-type {

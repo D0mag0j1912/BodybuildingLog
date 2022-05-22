@@ -5,11 +5,13 @@
     <ng-container
         *ngFor="let group of getExercises(); let i = index">
         <ng-container [formGroupName]="i">
-            <div class="wrapper">
+            <div
+                class="wrapper"
+                [class.wrapper--not-loading]="!isLoading">
                 <ion-grid>
                     <ion-row class="ion-text-center exercise-row">
                         <ion-col
-                            *skeleton="isLoading; width: '255px'; height: '57px';"
+                            *skeleton="isLoading; width: '240px'; height: '57px';"
                             size="10">
                             <ion-item fill="outline">
                                 <ion-label position="floating">{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
@@ -43,7 +45,7 @@
                         </ion-col>
                         <ion-col size="2">
                             <ion-icon
-                                *skeleton="isLoading; width: '36px'; height: '36px';"
+                                *skeleton="isLoading; width: '45px'; height: '45px'; margin: '0 0 0 5px';"
                                 name="trash-bin-sharp"
                                 color="danger"
                                 (click)="deleteExercise(i, accessFormField('name', i).value)"></ion-icon>
