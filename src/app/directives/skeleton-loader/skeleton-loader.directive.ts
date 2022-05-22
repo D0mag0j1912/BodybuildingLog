@@ -16,6 +16,9 @@ export class SkeletonLoaderDirective implements OnChanges {
     @Input('skeletonHeight')
     height: string;
 
+    @Input('skeletonBorderRadius')
+    borderRadius: string;
+
     @Input('skeletonClassName')
     className: string;
 
@@ -33,8 +36,9 @@ export class SkeletonLoaderDirective implements OnChanges {
                     const ref = this._viewContainerRef.createComponent(SkeletonLoaderComponent);
 
                     Object.assign(ref.instance, {
-                        width: this.width === 'rand' ? `${100}%` : this.width,
+                        width: this.width,
                         height: this.height,
+                        borderRadius: this.borderRadius,
                         className: this.className,
                     });
                 });

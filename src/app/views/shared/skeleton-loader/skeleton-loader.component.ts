@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit } from '@angular/core';
 
 @Component({
     selector: 'bl-skeleton-loader',
@@ -10,6 +10,7 @@ export class SkeletonLoaderComponent implements OnInit {
 
     width: string;
     height: string;
+    borderRadius: string;
     className: string;
 
     constructor(
@@ -21,8 +22,13 @@ export class SkeletonLoaderComponent implements OnInit {
         if (this.className) {
             host.classList.add(this.className);
         }
+    }
 
-        host.style.setProperty('width', this.width ?? '');
-        host.style.setProperty('height', this.height ?? '');
+    styleSkeleton(): { [key: string]: string } {
+        return {
+            'width': `${this.width}` ?? '',
+            'height': `${this.height}` ?? '',
+            'border-radius': `${this.borderRadius}` ?? '',
+        };
     }
 }
