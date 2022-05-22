@@ -44,24 +44,3 @@ ion-grid {
         height: 30px;
     }
 }
-
-.skeleton {
-    &--set-constituent {
-        width: 122px;
-        height: 57px;
-        --border-radius: 4px;
-    }
-
-    &--delete-set {
-        width: 30px;
-        height: 30px;
-        --border-radius: 4px;
-    }
-
-    &--add-set {
-        width: 115px;
-        height: 35px;
-        --border-radius: 4px;
-        margin: 0 auto;
-    }
-}
