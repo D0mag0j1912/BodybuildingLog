@@ -76,29 +76,24 @@
                         </ion-note>
                 </ion-item>
 
-                <ng-container *ngIf="!trainingData?.IsLoading; else dateLoading">
-                    <ion-item
-                        class="datetime-item"
-                        fill="outline"
-                        lines="none"
-                        (click)="openDateTimePicker()">
-                        <ion-icon
-                            class="datetime-icon"
-                            slot="start"
-                            color="primary"
-                            name="calendar-outline"></ion-icon>
-                        <ion-label>{{ 'common.date' | translate }}</ion-label>
-                        <ion-text color="primary">{{ formattedTodayDate }}</ion-text>
-                    </ion-item>
-                    <ng-container *ngIf="accessFormData('date')?.errors?.required">
-                        <ion-note class="error">{{ 'training.new_training.errors.date_required' | translate }}</ion-note>
-                    </ng-container>
+                <ion-item
+                    *skeleton="trainingData?.IsLoading; height: '50px'; width: '310px'"
+                    class="datetime-item"
+                    fill="outline"
+                    lines="none"
+                    (click)="openDateTimePicker()">
+                    <ion-icon
+                        class="datetime-icon"
+                        slot="start"
+                        color="primary"
+                        name="calendar-outline"></ion-icon>
+                    <ion-label>{{ 'common.date' | translate }}</ion-label>
+                    <ion-text color="primary">{{ formattedTodayDate }}</ion-text>
+                </ion-item>
+                <ng-container *ngIf="accessFormData('date')?.errors?.required">
+                    <ion-note class="error">{{ 'training.new_training.errors.date_required' | translate }}</ion-note>
                 </ng-container>
-                <ng-template #dateLoading>
-                    <ion-skeleton-text
-                        animated
-                        class="skeleton--date"></ion-skeleton-text>
-                </ng-template>
+
                 <bl-single-exercise
                     formControlName="exercises"
                     [bodyweight]="accessFormData('bodyweight')"
