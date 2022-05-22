@@ -19,6 +19,7 @@ import { PaginationComponent } from '../views/shared/pagination/pagination.compo
 import { PaginationDirective } from '../directives/pagination/pagination.directive';
 import { DateTimePickerComponent } from '../views/shared/datetime-picker/datetime-picker.component';
 import { SkeletonLoaderComponent } from '../views/shared/skeleton-loader/skeleton-loader.component';
+import { SkeletonLoaderModule } from '../directives/skeleton-loader/skeleton-loader.module';
 
 const DIRECTIVES = [PaginationDirective];
 
@@ -50,6 +51,7 @@ const IMPORTS = [
     ShowAllExercisesModule,
     PipesModule,
     RoundTotalWeightModule,
+    SkeletonLoaderModule,
 ];
 
 @NgModule({
