@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AutofocusModule } from '../../directives/autofocus/autofocus.module';
+import { SkeletonLoaderModule } from '../../directives/skeleton-loader/skeleton-loader.module';
 import { TrainingItemDirective } from '../../directives/training-item/training-item.directive';
 import { PipesModule } from '../../pipes/pipes.module';
 import { ShowAllExercisesModule } from '../../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
@@ -44,6 +45,7 @@ const IMPORTS = [
     SharedModule,
     PipesModule,
     AutofocusModule,
+    SkeletonLoaderModule,
 ];
 
 const PIPES_MODULES = [ShowAllExercisesModule];
