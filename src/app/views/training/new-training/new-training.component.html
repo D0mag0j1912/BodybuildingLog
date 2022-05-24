@@ -47,9 +47,12 @@
         <ng-template #valueOrLoading>
             <ion-spinner
                 *ngIf="trainingData?.IsLoading"
+                class="ion-spinner-class"
+                name="crescent"
                 color="primary"></ion-spinner>
             <form
                 autocomplete="off"
+                [class.hide-form]="trainingData?.IsLoading"
                 [formGroup]="form">
                 <ion-item
                     fill="outline">
