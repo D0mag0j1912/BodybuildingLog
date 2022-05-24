@@ -10,9 +10,7 @@
                 [class.wrapper--not-loading]="!isLoading">
                 <ion-grid>
                     <ion-row class="ion-text-center exercise-row">
-                        <ion-col
-                            *skeleton="isLoading; width: '240px'; height: '57px';"
-                            size="10">
+                        <ion-col size="10">
                             <ion-item fill="outline">
                                 <ion-label position="floating">{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
                                 <ion-select
@@ -45,7 +43,6 @@
                         </ion-col>
                         <ion-col size="2">
                             <ion-icon
-                                *skeleton="isLoading; width: '45px'; height: '45px'; margin: '0 0 0 5px';"
                                 name="trash-bin-sharp"
                                 color="danger"
                                 (click)="deleteExercise(i, accessFormField('name', i).value)"></ion-icon>
@@ -74,7 +71,6 @@
             <ion-row>
                 <ion-col>
                     <ion-button
-                        *skeleton="isLoading; width: '205px'; height: '35px';"
                         type="button"
                         color="primary"
                         [disabled]="isAddingExercisesDisabled(
@@ -86,7 +82,6 @@
                 </ion-col>
                 <ion-col>
                     <ion-button
-                        *skeleton="isLoading; width: '65px'; height: '35px';"
                         type="submit"
                         [disabled]="currentExerciseState[0]?.length === 0 || isApiLoading">
                         <ion-icon name="checkmark-sharp"></ion-icon>

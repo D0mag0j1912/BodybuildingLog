@@ -45,11 +45,13 @@
             </div>
         </ng-container>
         <ng-template #valueOrLoading>
+            <ion-spinner
+                *ngIf="trainingData?.IsLoading"
+                color="primary"></ion-spinner>
             <form
                 autocomplete="off"
                 [formGroup]="form">
                 <ion-item
-                    *skeleton="trainingData?.IsLoading; height: '57px'; width: '310px'; margin: '0 0 0 10px';"
                     fill="outline">
                     <ion-label position="floating">{{ 'training.new_training.pick_bodyweight' | translate }}</ion-label>
                     <ion-input
@@ -77,7 +79,6 @@
                 </ion-item>
 
                 <ion-item
-                    *skeleton="trainingData?.IsLoading; height: '50px'; width: '310px'; margin: '10px 0 0 10px';"
                     class="datetime-item"
                     fill="outline"
                     lines="none"

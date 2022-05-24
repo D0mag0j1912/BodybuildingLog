@@ -7,7 +7,6 @@
                 <ion-row class="ion-text-center set-row">
                     <ion-col size="5">
                         <ion-item
-                            *skeleton="isLoading; width: '115px'; height: '57px';"
                             fill="outline"
                             [class.ion-item-error]="setIonComponentClass(
                                 set,
@@ -82,7 +81,6 @@
                     </ion-col>
                     <ion-col size="5">
                         <ion-item
-                            *skeleton="isLoading; width: '115px'; height: '57px';"
                             fill="outline"
                             [class.ion-item-error]="setIonComponentClass(
                                 set,
@@ -140,7 +138,6 @@
                         size="2"
                         class="delete-set-col">
                         <ion-button
-                            *skeleton="isLoading; width: '40px'; height: '40px';"
                             class="button-no-background"
                             type="button"
                             [disabled]="j === 0 || isLoading"
@@ -160,7 +157,6 @@
     <ion-row class="ion-text-center">
         <ion-col>
             <ion-button
-                *skeleton="isLoading; width: '115px'; height: '35px'; margin: '0 auto';"
                 type="button"
                 color="primary"
                 [disabled]="!exerciseNameControl.value || form.errors?.setNotFilled"
