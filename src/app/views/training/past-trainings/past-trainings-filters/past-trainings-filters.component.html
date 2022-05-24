@@ -3,21 +3,29 @@
         #form="ngForm"
         class="search-wrapper"
         autocomplete="off">
-        <ion-input
-            ngDefaultControl
-            #search="ngModel"
-            name="search"
-            type="text"
-            class="search-input"
-            [maxlength]="inputMaxLength"
-            [placeholder]="'training.past_trainings.filters.enter_search_term' | translate"
-            [(ngModel)]="searchValue"
-            (keyup)="emitKeyboardEvent($event)"></ion-input>
-        <span
-            *ngIf="search?.control?.errors?.maxlength"
-            class="search-max-error">
-            {{ 'training.past_trainings.filters.errors.search_max_length' | translate }}
-        </span>
+        <div class="filter-wrapper">
+            <ion-input
+                ngDefaultControl
+                #search="ngModel"
+                name="search"
+                type="text"
+                class="search-input"
+                [maxlength]="inputMaxLength"
+                [placeholder]="'training.past_trainings.filters.enter_search_term' | translate"
+                [(ngModel)]="searchValue"
+                (keyup)="emitKeyboardEvent($event)"></ion-input>
+            <span
+                *ngIf="search?.control?.errors?.maxlength"
+                class="search-max-error">
+                {{ 'training.past_trainings.filters.errors.search_max_length' | translate }}
+            </span>
+            <div class="or-wrapper">
+                <span class="or">{{ 'common.or' | translate }}</span>
+                <ion-icon
+                    name="filter-outline"
+                    class="filter-icon"></ion-icon>
+            </div>
+        </div>
         <ion-segment
             color="primary"
             mode="ios"
@@ -31,10 +39,4 @@
             </ng-container>
         </ion-segment>
     </form>
-    <div class="or-wrapper">
-        <span class="or">{{ 'common.or' | translate }}</span>
-        <ion-icon
-            name="filter-outline"
-            class="filter-icon"></ion-icon>
-    </div>
 </div>
