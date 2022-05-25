@@ -1,37 +1,70 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { switchMap, take, tap } from 'rxjs/operators';
+import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { environment } from '../../../environments/environment';
 import { StreamData } from '../../models/common/interfaces/common.model';
+import { LocalStorageItems } from '../../models/common/interfaces/common.model';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Exercise } from '../../models/training/exercise.model';
 import { Training } from '../../models/training/new-training/training.model';
+import { AuthService } from '../auth/auth.service';
+import { NewTrainingStateService } from '../state/new-training-state.service';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingService {
 
     constructor(
-        private readonly _http: HttpClient,
+        private readonly http: HttpClient,
+        private readonly authService: AuthService,
+        private readonly newTrainingStateService: NewTrainingStateService,
     ) { }
 
     getExerciseByName(exerciseName: string): Observable<Exercise> {
         const params = new HttpParams().set('exerciseName', exerciseName);
-        return this._http.get<Exercise>(environment.BACKEND + '/training/get_exercise', { params: params });
+        return this.http.get<Exercise>(environment.BACKEND + '/training/get_exercise', { params: params });
     }
 
     getExercises(): Observable<StreamData<Exercise[]>> {
-        return this._http.get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get_exercises');
+        return this.http.get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get_exercises')
+            .pipe(
+                switchMap((response: StreamData<Exercise[]>) => {
+                    this.newTrainingStateService.emitNewTrainingDataStream(response);
+                    const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
+                    if (!trainingState) {
+                        return this.authService.loggedUser$
+                            .pipe(
+                                take(1),
+                                tap((authResponseData: AuthResponseData) => {
+                                    this.newTrainingStateService.updateTrainingState(
+                                        undefined,
+                                        response.Value,
+                                        true,
+                                        authResponseData._id,
+                                    );
+                                    this.newTrainingStateService.emitAllExercises(response.Value);
+                                    localStorage.setItem(LocalStorageItems.ALL_EXERCISES, JSON.stringify(response.Value));
+                                }),
+                                switchMap(_ => of(response)),
+                            );
+                    }
+                    else {
+                        return of(response);
+                    }
+                }),
+            );
     }
 
     addTraining(trainingData: Training): Observable<GeneralResponseData> {
-        return this._http.post<GeneralResponseData>(environment.BACKEND + '/training/handle_training', { trainingData: trainingData });
+        return this.http.post<GeneralResponseData>(environment.BACKEND + '/training/handle_training', { trainingData: trainingData });
     }
 
     updateTraining(
         trainingData: Training,
         trainingId: string,
     ): Observable<GeneralResponseData> {
-        return this._http.put<GeneralResponseData>(environment.BACKEND + `/training/handle_training/${trainingId}`, { updatedTrainingData: trainingData });
+        return this.http.put<GeneralResponseData>(environment.BACKEND + `/training/handle_training/${trainingId}`, { updatedTrainingData: trainingData });
     }
 
 }

@@ -23,6 +23,7 @@ import * as CommonValidators from '../../../validators/shared/common.validators'
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
 import { SingleExerciseComponent } from '../../shared/training/single-exercise/single-exercise.component';
 import { NewTrainingStateService } from '../../../services/state/new-training-state.service';
+import { NewTrainingService } from '../../../services/api/new-training.service';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 type FormData = {
@@ -68,6 +69,7 @@ export class NewTrainingComponent {
 
     constructor(
         private readonly newTrainingStateService: NewTrainingStateService,
+        private readonly newTrainingService: NewTrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
         private readonly authService: AuthService,
@@ -135,6 +137,14 @@ export class NewTrainingComponent {
                 switchMap(_ =>
                     this.newTrainingStateService.newTrainingDataStream$
                         .pipe(
+                            switchMap(newTrainingData => {
+                                if (!newTrainingData) {
+                                    return this.newTrainingService.getExercises();
+                                }
+                                else {
+                                    return of(newTrainingData);
+                                }
+                            }),
                             tap(_ => this._formInit()),
                             mapStreamData(),
                         ),
