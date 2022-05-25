@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { PastTrainingsQueryParams, QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
-import { NewTrainingService } from '../../../services/training/new-training.service';
+import { NewTrainingStateService } from '../../../services/state/new-training-state.service';
 import { LanguagesComponent } from './languages/languages.component';
 
 @Component({
@@ -22,7 +22,7 @@ export class SideNavComponent implements OnInit {
 
     constructor(
         private readonly authService: AuthService,
-        private readonly newTrainingService: NewTrainingService,
+        private readonly newTrainingStateService: NewTrainingStateService,
         private readonly popoverController: PopoverController,
         private readonly router: Router,
     ) { }
@@ -33,7 +33,7 @@ export class SideNavComponent implements OnInit {
     }
 
     async onLogout(): Promise<void> {
-        this.newTrainingService.clearTrainingState();
+        this.newTrainingStateService.clearTrainingState();
         await this.authService.logout();
     }
 

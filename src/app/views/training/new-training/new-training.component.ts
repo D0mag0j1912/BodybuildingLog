@@ -19,10 +19,10 @@ import { PastTrainingsQueryParams } from '../../../models/training/past-training
 import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
-import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as CommonValidators from '../../../validators/shared/common.validators';
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
 import { SingleExerciseComponent } from '../../shared/training/single-exercise/single-exercise.component';
+import { NewTrainingStateService } from '../../../services/state/new-training-state.service';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 type FormData = {
@@ -57,7 +57,7 @@ export class NewTrainingComponent {
     @ViewChildren(SingleExerciseComponent)
     singleExerciseCmps: QueryList<SingleExerciseComponent>;
 
-    readonly isReorder$: Observable<boolean> = this.newTrainingService.currentTrainingChanged$
+    readonly isReorder$: Observable<boolean> = this.newTrainingStateService.currentTrainingChanged$
         .pipe(
             map(training => {
                 const isExercise = training.exercises.some(exercise => !!exercise.exerciseName);
@@ -67,7 +67,7 @@ export class NewTrainingComponent {
         );
 
     constructor(
-        private readonly newTrainingService: NewTrainingService,
+        private readonly newTrainingStateService: NewTrainingStateService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
         private readonly authService: AuthService,
@@ -106,21 +106,21 @@ export class NewTrainingComponent {
                                             editMode: true,
                                         },
                                     };
-                                    this.newTrainingService.updateTrainingState(this.editData.editTraining);
+                                    this.newTrainingStateService.updateTrainingState(this.editData.editTraining);
                                 }),
                             );
                     }
                     else {
                         return combineLatest([
-                            this.newTrainingService.allExercisesChanged$,
-                            this.newTrainingService.currentTrainingChanged$,
+                            this.newTrainingStateService.allExercisesChanged$,
+                            this.newTrainingStateService.currentTrainingChanged$,
                         ]).pipe(
                             take(1),
                             tap(([exercises, training]: [Exercise[], Training]) => {
                                 const currentTrainingState: Training = { ...training };
                                 if (currentTrainingState) {
                                     if (currentTrainingState.editMode && !this.editMode) {
-                                        this.newTrainingService.updateTrainingState({
+                                        this.newTrainingStateService.updateTrainingState({
                                             ...EMPTY_TRAINING,
                                             exercises: [createEmptyExercise(exercises)],
                                             userId: currentTrainingState?.userId ?? '',
@@ -133,7 +133,7 @@ export class NewTrainingComponent {
                 }),
                 tap(_ => this.sharedService.editingTraining$$.next(this.editMode)),
                 switchMap(_ =>
-                    this.newTrainingService.getExercises()
+                    this.newTrainingStateService.newTrainingDataStream$
                         .pipe(
                             tap(_ => this._formInit()),
                             mapStreamData(),
@@ -169,7 +169,7 @@ export class NewTrainingComponent {
             )
             .subscribe(response => {
                 if (response?.data) {
-                    this.trainingStream$ = this.newTrainingService.allExercisesChanged$
+                    this.trainingStream$ = this.newTrainingStateService.allExercisesChanged$
                         .pipe(
                             take(1),
                             map(exercises => ({
@@ -179,7 +179,7 @@ export class NewTrainingComponent {
                             })),
                             delay(300),
                             tap(_ => {
-                                this.newTrainingService.updateTrainingState(response.data);
+                                this.newTrainingStateService.updateTrainingState(response.data);
                                 this._formInit();
                             }),
                             mapStreamData(),
@@ -234,7 +234,7 @@ export class NewTrainingComponent {
     }
 
     onBodyweightChange(bodyweight: string | number): void {
-        this.newTrainingService.addBodyweightToStorage(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString());
+        this.newTrainingStateService.addBodyweightToStorage(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString());
     }
 
     async onExerciseAdded(event: UIEvent): Promise<void> {
@@ -263,14 +263,14 @@ export class NewTrainingComponent {
                                 editMode: this.editMode,
                             },
                         };
-                        this.newTrainingService.updateTrainingState(this.editData.editTraining);
+                        this.newTrainingStateService.updateTrainingState(this.editData.editTraining);
                     }),
-                    switchMap(_ => this.newTrainingService.getExercises()),
+                    switchMap(_ => this.newTrainingStateService.newTrainingDataStream$),
                     mapStreamData(),
             );
         }
         else {
-            this.trainingStream$ = this.newTrainingService.getExercises()
+            this.trainingStream$ = this.newTrainingStateService.newTrainingDataStream$
                 .pipe(
                     mapStreamData(),
                 );
@@ -282,17 +282,7 @@ export class NewTrainingComponent {
     }
 
     private _formInit(): void {
-        const currentTrainingState = { ...this.newTrainingService.getCurrentTrainingState() };
-        /* this.form = new FormGroup({
-            bodyweight: new FormControl(this._fillBodyweight(currentTrainingState),
-                {
-                    validators: [CommonValidators.isNumber(), Validators.min(30), Validators.max(300)],
-                    updateOn: 'blur',
-                },
-            ),
-            date: new FormControl(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString(), [Validators.required]),
-            exercises: new FormControl(currentTrainingState?.exercises ?? []),
-        }); */
+        const currentTrainingState = { ...this.newTrainingStateService.getCurrentTrainingState() };
         this.accessFormData('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
         this.accessFormData('date').patchValue(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString());
         this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);

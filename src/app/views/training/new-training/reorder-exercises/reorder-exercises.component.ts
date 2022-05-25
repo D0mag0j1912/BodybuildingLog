@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
 import { Training } from '../../../../models/training/new-training/training.model';
-import { NewTrainingService } from '../../../../services/training/new-training.service';
+import { NewTrainingStateService } from '../../../../services/state/new-training-state.service';
 
 @Component({
     templateUrl: './reorder-exercises.component.html',
@@ -15,18 +15,18 @@ export class ReorderExercisesComponent {
 
     private reorderedTrainingState: Training;
 
-    readonly currentExercises$: Observable<string[]> = this.newTrainingService.currentTrainingChanged$
+    readonly currentExercises$: Observable<string[]> = this.newTrainingStateService.currentTrainingChanged$
         .pipe(
             map((training: Training) => training.exercises.map(exercise => exercise.exerciseName)),
         );
 
     constructor(
-        private readonly newTrainingService: NewTrainingService,
+        private readonly newTrainingStateService: NewTrainingStateService,
         private readonly modalController: ModalController,
     ) { }
 
     doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
-        const currentTrainingState = this.newTrainingService.getCurrentTrainingState();
+        const currentTrainingState = this.newTrainingStateService.getCurrentTrainingState();
         const exerciseFrom = (this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState).exercises.find((_exercise, index) => index === ev.detail.from);
         const remainingExercises = (this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState).exercises.filter((_exercise, index) => index !== ev.detail.from);
         const reorderedExercises = [
