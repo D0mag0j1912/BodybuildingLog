@@ -7,7 +7,7 @@ import { format, parseISO } from 'date-fns';
 import { combineLatest, from, Observable, of } from 'rxjs';
 import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
-import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
+import { PastTrainingsService } from 'src/app/services/api/past-trainings.service';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';

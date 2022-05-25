@@ -13,9 +13,10 @@ import { Paginator, INITIAL_PAGE, DEFAULT_SIZE, PaginatorChanged } from '../../.
 import { DateInterval, PastTrainingsQueryParams, PastTrainings, PeriodFilterType } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
-import { PastTrainingsService } from '../../../services/training/past-trainings.service';
+import { PastTrainingsService } from '../../../services/api/past-trainings.service';
 import { Page } from '../../../models/common/types/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
+import { PastTrainingsStateService } from '../../../services/state/past-trainings-state.service';
 import { DayActivatedType } from './show-by-day/show-by-day.component';
 
 enum Heights {
@@ -79,6 +80,7 @@ export class PastTrainingsComponent {
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
+        private readonly pastTrainingsStateService: PastTrainingsStateService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
@@ -110,7 +112,7 @@ export class PastTrainingsComponent {
     }
 
     ionViewWillEnter(): void {
-        this.pastTrainingsService.isSearch$
+        this.pastTrainingsStateService.isSearch$
             .pipe(
                 takeUntil(this.unsubscribeService),
             )
@@ -122,7 +124,7 @@ export class PastTrainingsComponent {
     }
 
     searchEmitted(searchText: string): void {
-        this.pastTrainingsService.emitSearch(searchText);
+        this.pastTrainingsStateService.emitSearch(searchText);
         this.page = INITIAL_PAGE;
         this.pastTrainings$ =
             of(searchText)

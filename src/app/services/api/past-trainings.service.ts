@@ -14,16 +14,9 @@ const ROUTE_PREFIX = '/training/';
 @Injectable({ providedIn: 'root' })
 export class PastTrainingsService {
 
-    private readonly isSearch$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    readonly isSearch$: Observable<boolean> = this.isSearch$$.asObservable();
-
     constructor(
-        private readonly http: HttpClient,
+        private readonly _http: HttpClient,
     ) { }
-
-    emitSearch(value?: string): void {
-        this.isSearch$$.next(!!value);
-    }
 
     searchPastTrainings(
         searchValue: string,
@@ -31,7 +24,7 @@ export class PastTrainingsService {
         currentPage: number,
     ): Observable<StreamData<Paginator<PastTrainings>>> {
         const params = `?searchValue=${searchValue}&size=${pageSize.toString()}&page=${currentPage.toString()}`;
-        return this.http.get<StreamData<Paginator<PastTrainings>>>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings${params}`)
+        return this._http.get<StreamData<Paginator<PastTrainings>>>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings${params}`)
             .pipe(
                 map((response: StreamData<Paginator<PastTrainings>>) => mapDateInterval(response)),
             );
@@ -42,14 +35,14 @@ export class PastTrainingsService {
         filterType: PeriodFilterType,
     ): Observable<StreamData<Paginator<PastTrainings>>> {
         const params = `?currentDate=${currentDate}&filterType=${filterType}`;
-        return this.http.get<StreamData<Paginator<PastTrainings>>>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings${params}`)
+        return this._http.get<StreamData<Paginator<PastTrainings>>>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings${params}`)
             .pipe(
                 map((response: StreamData<Paginator<PastTrainings>>) => mapDateInterval(response)),
             );
     }
 
     getPastTraining(id: string): Observable<StreamData<Training>> {
-        return this.http.get<StreamData<Training>>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings/${id}`);
+        return this._http.get<StreamData<Training>>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings/${id}`);
     }
 
 }
