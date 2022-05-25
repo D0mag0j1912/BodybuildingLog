@@ -2,8 +2,8 @@ import { ChangeDetectorRef } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { EMPTY, of, timer } from 'rxjs';
 import { catchError, finalize, map, switchMap } from 'rxjs/operators';
-import { SignupService } from 'src/app/services/auth/signup.service';
-import { LoginService } from '../../services/auth/login.service';
+import { SignupService } from 'src/app/services/api/auth/signup.service';
+import { LoginService } from '../../services/api/auth/login.service';
 
 export function passwordFitsEmail(
     loginService: LoginService,

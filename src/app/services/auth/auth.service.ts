@@ -10,14 +10,15 @@ import { Login, Signup } from '../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../models/auth/auth-data.model';
 import { LocalStorageItems } from '../../models/common/interfaces/common.model';
 import { LanguageCode, WeightFormat } from '../../models/preferences.model';
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-    private readonly loggedUser$$: BehaviorSubject<AuthResponseData> = new BehaviorSubject<AuthResponseData>(null);
-    readonly loggedUser$: Observable<AuthResponseData> = this.loggedUser$$.asObservable();
+    private readonly _loggedUser$$: BehaviorSubject<AuthResponseData> = new BehaviorSubject<AuthResponseData>(null);
+    readonly loggedUser$: Observable<AuthResponseData> = this._loggedUser$$.asObservable();
 
-    private readonly isAuth$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    readonly isAuth$: Observable<boolean> = this.isAuth$$.asObservable();
+    private readonly _isAuth$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    readonly isAuth$: Observable<boolean> = this._isAuth$$.asObservable();
 
     private tokenTimer: NodeJS.Timeout;
     private token: string;
@@ -43,7 +44,7 @@ export class AuthService {
                 WeightFormat: 'kg',
             } as Preferences,
         };
-        this.loggedUser$$.next({ ...updatedUserData });
+        this._loggedUser$$.next({ ...updatedUserData });
         localStorage.setItem(LocalStorageItems.USER_DATA, JSON.stringify({ ...updatedUserData }));
     }
 
@@ -80,8 +81,8 @@ export class AuthService {
         return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/login', authData).pipe(
             tap(async (response: AuthResponseData) => {
                 if (response.Token) {
-                    this.loggedUser$$.next(response);
-                    this.isAuth$$.next(true);
+                    this._loggedUser$$.next(response);
+                    this._isAuth$$.next(true);
                     this.token = response.Token as string;
                     const expiresInDuration: number = response.ExpiresIn as number;
                     this.setAuthTimer(expiresInDuration);
@@ -122,15 +123,15 @@ export class AuthService {
             if (expiresIn > 0) {
                 this.token = userData.Token;
                 this.setAuthTimer(expiresIn / 1000);
-                this.isAuth$$.next(true);
-                this.loggedUser$$.next(authData);
+                this._isAuth$$.next(true);
+                this._loggedUser$$.next(authData);
             }
         }
     }
 
     async logout(): Promise<void> {
         this.token = null;
-        this.isAuth$$.next(false);
+        this._isAuth$$.next(false);
         clearTimeout(this.tokenTimer);
         this.clearLS();
         await this.router.navigate(['/auth/login']);

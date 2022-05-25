@@ -8,7 +8,7 @@ import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs
 import { INPUT_MAX_LENGTH } from '../../../../constants/input-maxlength.const';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PeriodFilterType } from '../../../../models/training/past-trainings/past-trainings.model';
-import { PastTrainingsStateService } from '../../../../services/state/past-trainings-state.service';
+import { PastTrainingsStateService } from '../../../../services/state/training/past-trainings-state.service';
 
 @Component({
     selector: 'bl-past-trainings-filters',

@@ -6,7 +6,7 @@ import { LocalStorageItems } from './models/common/interfaces/common.model';
 import { AuthService } from './services/auth/auth.service';
 import { SharedService } from './services/shared/shared.service';
 import { UnsubscribeService } from './services/shared/unsubscribe.service';
-import { NewTrainingStateService } from './services/state/new-training-state.service';
+import { NewTrainingStateService } from './services/state/training/new-training-state.service';
 
 @Component({
     selector: 'bl-root',

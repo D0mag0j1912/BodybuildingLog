@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { Exercise } from '../../../models/training/exercise.model';
 import { Training } from '../../../models/training/new-training/training.model';
-import { NewTrainingStateService } from '../../../services/state/new-training-state.service';
+import { NewTrainingStateService } from '../../../services/state/training/new-training-state.service';
 
 @Pipe({ name: 'newTraining' })
 export class NewTrainingPipe implements PipeTransform {

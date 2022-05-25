@@ -7,7 +7,7 @@ import { format, parseISO } from 'date-fns';
 import { combineLatest, from, Observable, of } from 'rxjs';
 import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
-import { PastTrainingsService } from 'src/app/services/api/past-trainings.service';
+import { PastTrainingsService } from 'src/app/services/api/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
@@ -22,8 +22,8 @@ import { UnsubscribeService } from '../../../services/shared/unsubscribe.service
 import * as CommonValidators from '../../../validators/shared/common.validators';
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
 import { SingleExerciseComponent } from '../../shared/training/single-exercise/single-exercise.component';
-import { NewTrainingStateService } from '../../../services/state/new-training-state.service';
-import { NewTrainingService } from '../../../services/api/new-training.service';
+import { NewTrainingStateService } from '../../../services/state/training/new-training-state.service';
+import { NewTrainingService } from '../../../services/api/training/new-training.service';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 type FormData = {

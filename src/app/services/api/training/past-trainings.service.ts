@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
-import { mapDateInterval } from '../../helpers/training/past-trainings/map-past-trainings-dates.helper';
-import { StreamData } from '../../models/common/interfaces/common.model';
-import { Paginator } from '../../models/common/interfaces/paginator.model';
-import { Training } from '../../models/training/new-training/training.model';
-import { PastTrainings, PeriodFilterType } from '../../models/training/past-trainings/past-trainings.model';
+import { environment } from '../../../../environments/environment';
+import { mapDateInterval } from '../../../helpers/training/past-trainings/map-past-trainings-dates.helper';
+import { StreamData } from '../../../models/common/interfaces/common.model';
+import { Paginator } from '../../../models/common/interfaces/paginator.model';
+import { Training } from '../../../models/training/new-training/training.model';
+import { PastTrainings, PeriodFilterType } from '../../../models/training/past-trainings/past-trainings.model';
 
 const ROUTE_PREFIX = '/training/';
 

@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { AuthService } from '../../../services/auth/auth.service';
-import { LoginService } from '../../../services/auth/login.service';
+import { LoginService } from '../../../services/api/auth/login.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { IonFocusDurations } from '../../../constants/ion-focus-durations.const';

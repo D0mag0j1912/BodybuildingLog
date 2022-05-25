@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { PastTrainingsQueryParams, QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthService } from '../../../services/auth/auth.service';
-import { NewTrainingStateService } from '../../../services/state/new-training-state.service';
+import { NewTrainingStateService } from '../../../services/state/training/new-training-state.service';
 import { LanguagesComponent } from './languages/languages.component';
 
 @Component({

@@ -19,12 +19,12 @@ import { FormSingleExerciseData } from '../../../../models/training/shared/singl
 import { RoundTotalWeightPipe } from '../../../../pipes/training/new-training/round-total-weight/round-total-weight.pipe';
 import { ToastControllerService } from '../../../../services/shared/toast-controller.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
-import { NewTrainingService } from '../../../../services/api/new-training.service';
+import { NewTrainingService } from '../../../../services/api/training/new-training.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } from '../../delete-exercise-dialog/delete-exercise-dialog.component';
 import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
 import { ExerciseStateType } from '../../../../models/training/new-training/training.model';
-import { NewTrainingStateService } from '../../../../services/state/new-training-state.service';
+import { NewTrainingStateService } from '../../../../services/state/training/new-training-state.service';
 
 const INITIAL_WEIGHT = 0;
 

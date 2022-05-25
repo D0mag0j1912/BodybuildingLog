@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
 import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
-import { environment } from '../../../environments/environment';
-import { StreamData } from '../../models/common/interfaces/common.model';
-import { LocalStorageItems } from '../../models/common/interfaces/common.model';
-import { GeneralResponseData } from '../../models/general-response.model';
-import { Exercise } from '../../models/training/exercise.model';
-import { Training } from '../../models/training/new-training/training.model';
-import { AuthService } from '../auth/auth.service';
-import { NewTrainingStateService } from '../state/new-training-state.service';
+import { environment } from '../../../../environments/environment';
+import { StreamData } from '../../../models/common/interfaces/common.model';
+import { LocalStorageItems } from '../../../models/common/interfaces/common.model';
+import { GeneralResponseData } from '../../../models/general-response.model';
+import { Exercise } from '../../../models/training/exercise.model';
+import { Training } from '../../../models/training/new-training/training.model';
+import { AuthService } from '../../auth/auth.service';
+import { NewTrainingStateService } from '../../state/training/new-training-state.service';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingService {
