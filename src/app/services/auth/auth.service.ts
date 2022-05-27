@@ -34,8 +34,7 @@ export class AuthService {
     }
 
     updateUserData(preferences?: Preferences): void {
-        //TODO: Ovdje treba pokupiti podatke iz Subjecta, a ne LS
-        const userData: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
+        const userData: AuthResponseData = { ...this._loggedUser$$.getValue() };
         const updatedUserData: AuthResponseData = {
             ...userData,
             Preferences: {
@@ -162,5 +161,6 @@ export class AuthService {
         localStorage.removeItem(LocalStorageItems.USER_DATA);
         localStorage.removeItem(LocalStorageItems.TRAINING_STATE);
         localStorage.removeItem(LocalStorageItems.ALL_EXERCISES);
+        localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
     }
 }
