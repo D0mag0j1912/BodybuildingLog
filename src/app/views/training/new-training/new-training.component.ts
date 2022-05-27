@@ -17,13 +17,13 @@ import { createEmptyExercise, EditNewTrainingData, EMPTY_TRAINING, EMPTY_TRAININ
 import { Training } from '../../../models/training/new-training/training.model';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
-import { AuthService } from '../../../services/auth/auth.service';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import * as CommonValidators from '../../../validators/shared/common.validators';
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
 import { SingleExerciseComponent } from '../../shared/training/single-exercise/single-exercise.component';
 import { NewTrainingStateService } from '../../../services/state/training/new-training-state.service';
 import { NewTrainingService } from '../../../services/api/training/new-training.service';
+import { AuthStateService } from '../../../services/state/auth/auth-state.service';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 type FormData = {
@@ -72,7 +72,7 @@ export class NewTrainingComponent {
         private readonly newTrainingService: NewTrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
-        private readonly authService: AuthService,
+        private readonly authStateService: AuthStateService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
@@ -150,7 +150,7 @@ export class NewTrainingComponent {
                         ),
                 ),
             );
-        this.isAuthenticated$ = this.authService.isAuth$;
+        this.isAuthenticated$ = this.authStateService.isAuth$;
         this.isEditing$ = this.sharedService.editingTraining$$;
         this.changeDetectorRef.markForCheck();
     }

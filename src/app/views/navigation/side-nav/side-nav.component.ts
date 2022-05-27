@@ -5,7 +5,7 @@ import { endOfDay, endOfWeek, format, startOfDay, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { PastTrainingsQueryParams, QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
-import { AuthService } from '../../../services/auth/auth.service';
+import { AuthStateService } from '../../../services/state/auth/auth-state.service';
 import { NewTrainingStateService } from '../../../services/state/training/new-training-state.service';
 import { LanguagesComponent } from './languages/languages.component';
 
@@ -21,20 +21,20 @@ export class SideNavComponent implements OnInit {
     loggedUserData$: Observable<AuthResponseData>;
 
     constructor(
-        private readonly authService: AuthService,
+        private readonly authStateService: AuthStateService,
         private readonly newTrainingStateService: NewTrainingStateService,
         private readonly popoverController: PopoverController,
         private readonly router: Router,
     ) { }
 
     ngOnInit(): void {
-        this.isAuthenticated$ = this.authService.isAuth$;
-        this.loggedUserData$ = this.authService.loggedUser$;
+        this.isAuthenticated$ = this.authStateService.isAuth$;
+        this.loggedUserData$ = this.authStateService.loggedUser$;
     }
 
     async onLogout(): Promise<void> {
         this.newTrainingStateService.clearTrainingState();
-        await this.authService.logout();
+        await this.authStateService.logout();
     }
 
     async goToPastTrainings(): Promise<void> {

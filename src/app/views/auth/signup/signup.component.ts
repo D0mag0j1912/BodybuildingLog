@@ -6,7 +6,7 @@ import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
 import { LanguageCode, WeightFormat } from '../../../models/preferences.model';
-import { AuthService } from '../../../services/auth/auth.service';
+import { AuthService } from '../../../services/api/auth/auth.service';
 import { SignupService } from '../../../services/api/auth/signup.service';
 import { LoadingControllerService } from '../../../services/shared/loading-controller.service';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';

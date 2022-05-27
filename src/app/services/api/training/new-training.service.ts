@@ -9,7 +9,7 @@ import { LocalStorageItems } from '../../../models/common/interfaces/common.mode
 import { GeneralResponseData } from '../../../models/general-response.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { Training } from '../../../models/training/new-training/training.model';
-import { AuthService } from '../../auth/auth.service';
+import { AuthStateService } from '../../state/auth/auth-state.service';
 import { NewTrainingStateService } from '../../state/training/new-training-state.service';
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +17,7 @@ export class NewTrainingService {
 
     constructor(
         private readonly http: HttpClient,
-        private readonly authService: AuthService,
+        private readonly authStateService: AuthStateService,
         private readonly newTrainingStateService: NewTrainingStateService,
     ) { }
 
@@ -33,7 +33,7 @@ export class NewTrainingService {
                     this.newTrainingStateService.emitNewTrainingDataStream(response);
                     const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
                     if (!trainingState) {
-                        return this.authService.loggedUser$
+                        return this.authStateService.loggedUser$
                             .pipe(
                                 take(1),
                                 tap((authResponseData: AuthResponseData) => {
