@@ -3,10 +3,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { AuthResponseData } from './models/auth/auth-data.model';
 import { LocalStorageItems } from './models/common/interfaces/common.model';
-import { AuthService } from './services/auth/auth.service';
 import { SharedService } from './services/shared/shared.service';
 import { UnsubscribeService } from './services/shared/unsubscribe.service';
-import { NewTrainingService } from './services/training/new-training.service';
+import { AuthStateService } from './services/state/auth/auth-state.service';
+import { NewTrainingStateService } from './services/state/training/new-training-state.service';
 
 @Component({
     selector: 'bl-root',
@@ -18,9 +18,9 @@ import { NewTrainingService } from './services/training/new-training.service';
 export class AppComponent implements OnInit {
 
     constructor(
-        private readonly authService: AuthService,
+        private readonly authStateService: AuthStateService,
         private readonly sharedService: SharedService,
-        private readonly newTrainingService: NewTrainingService,
+        private readonly newTrainingStateService: NewTrainingStateService,
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
     ) {
@@ -34,8 +34,8 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.authService.autoLogin();
-        this.newTrainingService.keepTrainingState();
+        this.authStateService.autoLogin();
+        this.newTrainingStateService.keepTrainingState();
         this.sharedService.keepQueryParams();
     }
 }

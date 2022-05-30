@@ -7,7 +7,7 @@ import { format, parseISO } from 'date-fns';
 import { combineLatest, from, Observable, of } from 'rxjs';
 import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
-import { PastTrainingsService } from 'src/app/services/training/past-trainings.service';
+import { PastTrainingsService } from 'src/app/services/api/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
@@ -17,12 +17,13 @@ import { createEmptyExercise, EditNewTrainingData, EMPTY_TRAINING, EMPTY_TRAININ
 import { Training } from '../../../models/training/new-training/training.model';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
-import { AuthService } from '../../../services/auth/auth.service';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
-import { NewTrainingService } from '../../../services/training/new-training.service';
 import * as CommonValidators from '../../../validators/shared/common.validators';
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
 import { SingleExerciseComponent } from '../../shared/training/single-exercise/single-exercise.component';
+import { NewTrainingStateService } from '../../../services/state/training/new-training-state.service';
+import { NewTrainingService } from '../../../services/api/training/new-training.service';
+import { AuthStateService } from '../../../services/state/auth/auth-state.service';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 type FormData = {
@@ -57,7 +58,7 @@ export class NewTrainingComponent {
     @ViewChildren(SingleExerciseComponent)
     singleExerciseCmps: QueryList<SingleExerciseComponent>;
 
-    readonly isReorder$: Observable<boolean> = this.newTrainingService.currentTrainingChanged$
+    readonly isReorder$: Observable<boolean> = this.newTrainingStateService.currentTrainingChanged$
         .pipe(
             map(training => {
                 const isExercise = training.exercises.some(exercise => !!exercise.exerciseName);
@@ -67,10 +68,11 @@ export class NewTrainingComponent {
         );
 
     constructor(
+        private readonly newTrainingStateService: NewTrainingStateService,
         private readonly newTrainingService: NewTrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
-        private readonly authService: AuthService,
+        private readonly authStateService: AuthStateService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
@@ -106,21 +108,21 @@ export class NewTrainingComponent {
                                             editMode: true,
                                         },
                                     };
-                                    this.newTrainingService.updateTrainingState(this.editData.editTraining);
+                                    this.newTrainingStateService.updateTrainingState(this.editData.editTraining);
                                 }),
                             );
                     }
                     else {
                         return combineLatest([
-                            this.newTrainingService.allExercisesChanged$,
-                            this.newTrainingService.currentTrainingChanged$,
+                            this.newTrainingStateService.allExercisesChanged$,
+                            this.newTrainingStateService.currentTrainingChanged$,
                         ]).pipe(
                             take(1),
                             tap(([exercises, training]: [Exercise[], Training]) => {
                                 const currentTrainingState: Training = { ...training };
                                 if (currentTrainingState) {
                                     if (currentTrainingState.editMode && !this.editMode) {
-                                        this.newTrainingService.updateTrainingState({
+                                        this.newTrainingStateService.updateTrainingState({
                                             ...EMPTY_TRAINING,
                                             exercises: [createEmptyExercise(exercises)],
                                             userId: currentTrainingState?.userId ?? '',
@@ -140,7 +142,7 @@ export class NewTrainingComponent {
                         ),
                 ),
             );
-        this.isAuthenticated$ = this.authService.isAuth$;
+        this.isAuthenticated$ = this.authStateService.isAuth$;
         this.isEditing$ = this.sharedService.editingTraining$$;
         this.changeDetectorRef.markForCheck();
     }
@@ -169,7 +171,7 @@ export class NewTrainingComponent {
             )
             .subscribe(response => {
                 if (response?.data) {
-                    this.trainingStream$ = this.newTrainingService.allExercisesChanged$
+                    this.trainingStream$ = this.newTrainingStateService.allExercisesChanged$
                         .pipe(
                             take(1),
                             map(exercises => ({
@@ -179,7 +181,7 @@ export class NewTrainingComponent {
                             })),
                             delay(300),
                             tap(_ => {
-                                this.newTrainingService.updateTrainingState(response.data);
+                                this.newTrainingStateService.updateTrainingState(response.data);
                                 this._formInit();
                             }),
                             mapStreamData(),
@@ -234,7 +236,7 @@ export class NewTrainingComponent {
     }
 
     onBodyweightChange(bodyweight: string | number): void {
-        this.newTrainingService.addBodyweightToStorage(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString());
+        this.newTrainingStateService.addBodyweightToStorage(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString());
     }
 
     async onExerciseAdded(event: UIEvent): Promise<void> {
@@ -263,7 +265,7 @@ export class NewTrainingComponent {
                                 editMode: this.editMode,
                             },
                         };
-                        this.newTrainingService.updateTrainingState(this.editData.editTraining);
+                        this.newTrainingStateService.updateTrainingState(this.editData.editTraining);
                     }),
                     switchMap(_ => this.newTrainingService.getExercises()),
                     mapStreamData(),
@@ -282,17 +284,7 @@ export class NewTrainingComponent {
     }
 
     private _formInit(): void {
-        const currentTrainingState = { ...this.newTrainingService.getCurrentTrainingState() };
-        /* this.form = new FormGroup({
-            bodyweight: new FormControl(this._fillBodyweight(currentTrainingState),
-                {
-                    validators: [CommonValidators.isNumber(), Validators.min(30), Validators.max(300)],
-                    updateOn: 'blur',
-                },
-            ),
-            date: new FormControl(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString(), [Validators.required]),
-            exercises: new FormControl(currentTrainingState?.exercises ?? []),
-        }); */
+        const currentTrainingState = { ...this.newTrainingStateService.getCurrentTrainingState() };
         this.accessFormData('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
         this.accessFormData('date').patchValue(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString());
         this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);

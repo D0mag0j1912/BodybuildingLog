@@ -1,8 +1,15 @@
 
+.form {
+    padding: 0 10px;
+}
+
 .wrapper {
-    box-shadow: var(--ion-box-shadow);
     border-radius: 4px;
     margin-top: 10px;
+
+    &--not-loading {
+        box-shadow: var(--ion-box-shadow);
+    }
 }
 
 ion-grid:first-of-type {
@@ -26,18 +33,4 @@ ion-grid:first-of-type {
 
 .empty-training-msg {
     font-size: 14px;
-}
-
-.skeleton {
-    &--exercise-picker {
-       width: 255px;
-       height: 57px;
-       border-radius: 4px;
-    }
-
-    &--delete-exercise {
-        width: 36px;
-        height: 36px;
-        border-radius: 4px;
-    }
 }

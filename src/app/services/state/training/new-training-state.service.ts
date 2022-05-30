@@ -1,22 +1,15 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, switchMap, take, tap } from 'rxjs/operators';
-import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
-import { environment } from '../../../environments/environment';
-import { StreamData } from '../../models/common/interfaces/common.model';
-import { LocalStorageItems } from '../../models/common/interfaces/common.model';
-import { GeneralResponseData } from '../../models/general-response.model';
-import { Exercise } from '../../models/training/exercise.model';
-import { createEmptyExercise, EMPTY_TRAINING } from '../../models/training/new-training/empty-training.model';
-import { Training } from '../../models/training/new-training/training.model';
-import { SetTrainingData } from '../../models/training/shared/set.model';
-import { Set } from '../../models/training/shared/set.model';
-import { SingleExercise } from '../../models/training/shared/single-exercise.model';
-import { AuthService } from '../auth/auth.service';
+import { take, tap, map } from 'rxjs/operators';
+import { LocalStorageItems } from '../../../models/common/interfaces/common.model';
+import { Exercise } from '../../../models/training/exercise.model';
+import { createEmptyExercise, EMPTY_TRAINING } from '../../../models/training/new-training/empty-training.model';
+import { Training } from '../../../models/training/new-training/training.model';
+import { SetTrainingData, Set } from '../../../models/training/shared/set.model';
+import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
 
 @Injectable({ providedIn: 'root' })
-export class NewTrainingService {
+export class NewTrainingStateService {
 
     private readonly _allExercisesChanged$$: BehaviorSubject<Exercise[]> = new BehaviorSubject<Exercise[]>([]);
     readonly allExercisesChanged$: Observable<Exercise[]> = this._allExercisesChanged$$.asObservable();
@@ -24,57 +17,9 @@ export class NewTrainingService {
     private readonly _currentTrainingChanged$$: BehaviorSubject<Training> = new BehaviorSubject<Training>(EMPTY_TRAINING);
     readonly currentTrainingChanged$: Observable<Training> = this._currentTrainingChanged$$.asObservable();
 
-    constructor(
-        private readonly http: HttpClient,
-        private readonly authService: AuthService,
-    ) { }
-
-    getExerciseByName(exerciseName: string): Observable<Exercise> {
-        const params = new HttpParams().set('exerciseName', exerciseName);
-        return this.http.get<Exercise>(environment.BACKEND + '/training/get_exercise', { params: params });
+    emitAllExercises(exercises: Exercise[]): void {
+        this._allExercisesChanged$$.next(exercises);
     }
-
-    getExercises(): Observable<StreamData<Exercise[]>> {
-        return this.http.get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get_exercises')
-            .pipe(
-                switchMap((response: StreamData<Exercise[]>) => {
-                    const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
-                    if (!trainingState) {
-                        return this.authService.loggedUser$
-                            .pipe(
-                                take(1),
-                                tap((authResponseData: AuthResponseData) => {
-                                    this.updateTrainingState(
-                                        undefined,
-                                        response.Value,
-                                        true,
-                                        authResponseData._id,
-                                    );
-                                    this._allExercisesChanged$$.next(response.Value);
-                                    localStorage.setItem(LocalStorageItems.ALL_EXERCISES, JSON.stringify(response.Value));
-                                }),
-                                switchMap(_ => of(response)),
-                            );
-                    }
-                    else {
-                        return of(response);
-                    }
-                }),
-            );
-    }
-
-    addTraining(trainingData: Training): Observable<GeneralResponseData> {
-        return this.http.post<GeneralResponseData>(environment.BACKEND + '/training/handle_training', { trainingData: trainingData });
-    }
-
-    updateTraining(
-        trainingData: Training,
-        trainingId: string,
-    ): Observable<GeneralResponseData> {
-        return this.http.put<GeneralResponseData>(environment.BACKEND + `/training/handle_training/${trainingId}`, { updatedTrainingData: trainingData });
-    }
-
-    /**************************************** */
 
     getCurrentTrainingState(): Training {
         return this._currentTrainingChanged$$.getValue();

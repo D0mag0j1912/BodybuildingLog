@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../../services/auth/auth.service';
+import { AuthStateService } from '../../../services/state/auth/auth-state.service';
 
 @Component({
     selector: 'bl-not-found',
@@ -10,7 +10,9 @@ import { AuthService } from '../../../services/auth/auth.service';
 })
 export class NotFoundComponent {
 
-    isAuth$: Observable<boolean> = this.authService.isAuth$;
+    isAuth$: Observable<boolean> = this.authStateService.isAuth$;
 
-    constructor(private readonly authService: AuthService) {}
+    constructor(
+        private readonly authStateService: AuthStateService,
+    ) { }
 }

@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 import { take, switchMap, takeUntil } from 'rxjs/operators';
 import { AuthResponseData } from '../../../../models/auth/auth-data.model';
 import { LanguageCode } from '../../../../models/preferences.model';
-import { AuthService } from '../../../../services/auth/auth.service';
 import { NavigationService } from '../../../../services/shared/navigation.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
+import { AuthStateService } from '../../../../services/state/auth/auth-state.service';
 
 interface LanguageData {
     LanguageCode: LanguageCode;
@@ -40,23 +40,25 @@ export class LanguagesComponent {
     loggedUserData$: Observable<AuthResponseData>;
 
     constructor(
-        private readonly authService: AuthService,
+        private readonly authStateService: AuthStateService,
         private readonly navigationService: NavigationService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly popoverController: PopoverController,
     ) { }
 
     changeLanguage(language: LanguageCode): void {
-        this.authService.loggedUser$.pipe(
-            take(1),
-            switchMap((userData: AuthResponseData) =>
-                this.navigationService.setPreferences(
-                    userData._id,
-                    language,
-                    'kg',
+        this.authStateService.loggedUser$
+            .pipe(
+                take(1),
+                switchMap((userData: AuthResponseData) =>
+                    this.navigationService.setPreferences(
+                        userData._id,
+                        language,
+                        'kg',
+                    ),
                 ),
-            ),
-            takeUntil(this.unsubscribeService),
-        ).subscribe(async _ => await this.popoverController.dismiss());
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe(async _ => await this.popoverController.dismiss());
     }
 }

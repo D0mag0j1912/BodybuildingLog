@@ -12,7 +12,7 @@ import { DialogRoles } from '../../../../../models/common/types/modal-roles.type
 import { PastTrainings } from '../../../../../models/training/past-trainings/past-trainings.model';
 import { SharedService } from '../../../../../services/shared/shared.service';
 import { ToastControllerService } from '../../../../../services/shared/toast-controller.service';
-import { DeleteTrainingActionService } from '../../../../../services/training/training-actions/delete-training-action.service';
+import { DeleteTrainingActionService } from '../../../../../services/api/training/delete-training-action.service';
 
 export interface DeleteTrainingActionDialogData {
     readonly title$: Observable<string>;

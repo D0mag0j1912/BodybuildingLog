@@ -7,7 +7,7 @@ import { PipesModule } from '../pipes/pipes.module';
 import { RoundTotalWeightModule } from '../pipes/training/new-training/round-total-weight/round-total-weight.module';
 import { ShowAllExercisesModule } from '../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NotFoundResolverService } from '../services/shared/not-found-resolver.service';
-import { DeleteTrainingActionService } from '../services/training/training-actions/delete-training-action.service';
+import { DeleteTrainingActionService } from '../services/api/training/delete-training-action.service';
 import { DeleteExerciseDialogComponent } from '../views/shared/delete-exercise-dialog/delete-exercise-dialog.component';
 import { NotFoundComponent } from '../views/shared/not-found/not-found.component';
 import { SetsComponent } from '../views/shared/training/sets/sets.component';
@@ -18,6 +18,8 @@ import { MoreTrainingActionComponent } from '../views/shared/training/training-a
 import { PaginationComponent } from '../views/shared/pagination/pagination.component';
 import { PaginationDirective } from '../directives/pagination/pagination.directive';
 import { DateTimePickerComponent } from '../views/shared/datetime-picker/datetime-picker.component';
+import { SkeletonLoaderComponent } from '../views/shared/skeleton-loader/skeleton-loader.component';
+import { SkeletonLoaderModule } from '../directives/skeleton-loader/skeleton-loader.module';
 
 const DIRECTIVES = [PaginationDirective];
 
@@ -29,6 +31,7 @@ const COMPONENTS = [
     NotFoundComponent,
     PaginationComponent,
     DateTimePickerComponent,
+    SkeletonLoaderComponent,
 ];
 
 const ACTION_COMPONENTS = [
@@ -48,6 +51,7 @@ const IMPORTS = [
     ShowAllExercisesModule,
     PipesModule,
     RoundTotalWeightModule,
+    SkeletonLoaderModule,
 ];
 
 @NgModule({

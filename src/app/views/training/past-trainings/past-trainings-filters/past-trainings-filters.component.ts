@@ -8,7 +8,7 @@ import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs
 import { INPUT_MAX_LENGTH } from '../../../../constants/input-maxlength.const';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PeriodFilterType } from '../../../../models/training/past-trainings/past-trainings.model';
-import { PastTrainingsService } from '../../../../services/training/past-trainings.service';
+import { PastTrainingsStateService } from '../../../../services/state/training/past-trainings-state.service';
 
 @Component({
     selector: 'bl-past-trainings-filters',
@@ -49,7 +49,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     ];
 
     constructor(
-        private readonly pastTrainingsService: PastTrainingsService,
+        private readonly pastTrainingsStateService: PastTrainingsStateService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly route: ActivatedRoute,
@@ -80,7 +80,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
         setTimeout(() => {
             if (this.searchEl) {
                 const value = this.searchEl?.value;
-                this.pastTrainingsService.emitSearch(value as string);
+                this.pastTrainingsStateService.emitSearch(value as string);
             }
         });
     }

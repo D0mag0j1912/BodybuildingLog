@@ -8,7 +8,7 @@ import { MESSAGE_DURATION } from '../../constants/message-duration.const';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { Preferences, WeightFormat } from '../../models/preferences.model';
 import { LanguageCode } from '../../models/preferences.model';
-import { AuthService } from '../auth/auth.service';
+import { AuthStateService } from '../state/auth/auth-state.service';
 import { ToastControllerService } from './toast-controller.service';
 
 @Injectable({ providedIn: 'root' })
@@ -16,7 +16,7 @@ export class NavigationService {
 
     constructor(
         private readonly http: HttpClient,
-        private readonly authService: AuthService,
+        private readonly authStateService: AuthStateService,
         private readonly translateService: TranslateService,
         private readonly toastControllerService: ToastControllerService,
     ) { }
@@ -30,26 +30,27 @@ export class NavigationService {
             LanguageCode: language,
             WeightFormat: weightFormat,
         };
-        return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${userId}`, { preferences: preferences }).pipe(
-            tap(_ => {
-                this.authService.updateUserData({
-                    UserId: userId,
-                    LanguageCode: language,
-                    WeightFormat: weightFormat,
-                } as Preferences);
-            }),
-            switchMap((response: GeneralResponseData) =>
-                this.translateService.use(language).pipe(
-                    tap(async _ => {
-                        await this.toastControllerService.displayToast({
-                            message: this.translateService.instant(response.Message),
-                            duration: MESSAGE_DURATION.GENERAL,
-                            color: 'primary',
-                        });
-                    }),
+        return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${userId}`, { preferences: preferences })
+            .pipe(
+                tap(_ => {
+                    this.authStateService.updateUserData({
+                        UserId: userId,
+                        LanguageCode: language,
+                        WeightFormat: weightFormat,
+                    } as Preferences);
+                }),
+                switchMap((response: GeneralResponseData) =>
+                    this.translateService.use(language).pipe(
+                        tap(async _ => {
+                            await this.toastControllerService.displayToast({
+                                message: this.translateService.instant(response.Message),
+                                duration: MESSAGE_DURATION.GENERAL,
+                                color: 'primary',
+                            });
+                        }),
+                    ),
                 ),
-            ),
-        );
+            );
     }
 
 }
