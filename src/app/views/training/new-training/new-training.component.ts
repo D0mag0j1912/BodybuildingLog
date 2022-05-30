@@ -135,16 +135,8 @@ export class NewTrainingComponent {
                 }),
                 tap(_ => this.sharedService.editingTraining$$.next(this.editMode)),
                 switchMap(_ =>
-                    this.newTrainingStateService.newTrainingDataStream$
+                    this.newTrainingService.getExercises()
                         .pipe(
-                            switchMap(newTrainingData => {
-                                if (!newTrainingData) {
-                                    return this.newTrainingService.getExercises();
-                                }
-                                else {
-                                    return of(newTrainingData);
-                                }
-                            }),
                             tap(_ => this._formInit()),
                             mapStreamData(),
                         ),
@@ -275,12 +267,12 @@ export class NewTrainingComponent {
                         };
                         this.newTrainingStateService.updateTrainingState(this.editData.editTraining);
                     }),
-                    switchMap(_ => this.newTrainingStateService.newTrainingDataStream$),
+                    switchMap(_ => this.newTrainingService.getExercises()),
                     mapStreamData(),
             );
         }
         else {
-            this.trainingStream$ = this.newTrainingStateService.newTrainingDataStream$
+            this.trainingStream$ = this.newTrainingService.getExercises()
                 .pipe(
                     mapStreamData(),
                 );

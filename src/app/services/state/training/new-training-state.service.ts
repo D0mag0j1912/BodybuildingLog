@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { take, tap, map } from 'rxjs/operators';
-import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
+import { LocalStorageItems } from '../../../models/common/interfaces/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { createEmptyExercise, EMPTY_TRAINING } from '../../../models/training/new-training/empty-training.model';
 import { Training } from '../../../models/training/new-training/training.model';
@@ -16,13 +16,6 @@ export class NewTrainingStateService {
 
     private readonly _currentTrainingChanged$$: BehaviorSubject<Training> = new BehaviorSubject<Training>(EMPTY_TRAINING);
     readonly currentTrainingChanged$: Observable<Training> = this._currentTrainingChanged$$.asObservable();
-
-    private readonly _newTrainingDataStream$$: BehaviorSubject<StreamData<Exercise[]>> = new BehaviorSubject<StreamData<Exercise[]>>(null);
-    readonly newTrainingDataStream$: Observable<StreamData<Exercise[]>> = this._newTrainingDataStream$$.asObservable();
-
-    emitNewTrainingDataStream(trainingData: StreamData<Exercise[]>): void {
-        this._newTrainingDataStream$$.next(trainingData);
-    }
 
     emitAllExercises(exercises: Exercise[]): void {
         this._allExercisesChanged$$.next(exercises);
