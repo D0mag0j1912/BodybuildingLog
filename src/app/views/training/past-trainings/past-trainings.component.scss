@@ -63,6 +63,10 @@ ion-list {
     box-shadow: var(--ion-box-shadow);
     margin: 5px 0;
 
+    &--header {
+        padding-bottom: 8px;
+    }
+
     .header-title {
         font-size: 20px;
         white-space: nowrap;

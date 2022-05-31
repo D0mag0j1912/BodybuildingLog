@@ -103,7 +103,7 @@ export class PastTrainingsComponent {
     get dateFormat(): string {
         return TEMPLATE_DATE_FORMAT;
     }
-
+    //TODO: make simple stream
     getPeriodTranslation$(): Observable<string> {
         return this.translateService.stream(`common.${this.periodFilter}`)
             .pipe(
@@ -255,43 +255,48 @@ export class PastTrainingsComponent {
         this.initView();
     }
 
-    setTimePeriod(dateInterval: DateInterval): Observable<string> {
-        const isDay = isSameDay(
-            dateInterval?.StartDate,
-            dateInterval?.EndDate,
-        );
-        if (isDay) {
-            return this.translateService.stream(`common.day`)
-                .pipe(
-                    map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate)),
-                );
-        }
-        const isWeek = isSameWeek(
-            dateInterval?.StartDate,
-            dateInterval?.EndDate,
-            { weekStartsOn: 1 },
-        );
-        if (isWeek) {
-            return this.translateService.stream('common.week')
-                .pipe(
-                    map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
-                );
-        }
-        const isMonth = isSameMonth(
-            dateInterval?.StartDate,
-            dateInterval?.EndDate,
-        );
-        if (isMonth) {
-            const month = getMonth(dateInterval.StartDate);
-            return this.translateService.stream(`common.months.${ALL_MONTHS[month]}`)
-                .pipe(
-                    map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
-                );
-        }
-        return this.translateService.stream('common.period')
-            .pipe(
-                map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
+    setTimePeriod$(dateInterval: DateInterval): Observable<string> {
+        if (dateInterval?.StartDate && dateInterval?.EndDate) {
+            const isDay = isSameDay(
+                dateInterval.StartDate,
+                dateInterval.EndDate,
             );
+            if (isDay) {
+                return this.translateService.stream(`common.day`)
+                    .pipe(
+                        map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate)),
+                    );
+            }
+            const isWeek = isSameWeek(
+                dateInterval.StartDate,
+                dateInterval.EndDate,
+                { weekStartsOn: 1 },
+            );
+            if (isWeek) {
+                return this.translateService.stream('common.week')
+                    .pipe(
+                        map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
+                    );
+            }
+            const isMonth = isSameMonth(
+                dateInterval.StartDate,
+                dateInterval.EndDate,
+            );
+            if (isMonth) {
+                const month = getMonth(dateInterval.StartDate);
+                return this.translateService.stream(`common.months.${ALL_MONTHS[month]}`)
+                    .pipe(
+                        map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
+                    );
+            }
+            return this.translateService.stream('common.period')
+                .pipe(
+                    map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
+                );
+        }
+        else {
+            return of('');
+        }
     }
 
     private initView(): void {
