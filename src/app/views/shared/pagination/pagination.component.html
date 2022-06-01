@@ -2,35 +2,40 @@
     <ion-card-content>
         <div class="paginator">
             <div class="controls-wrapper">
-                <div
-                    *ngIf="isSearch"
-                    class="page-size-wrapper">
-                    <select
-                        class="page-size"
-                        [(ngModel)]="size"
-                        (change)="loadPage()">
-                        <option
-                            *ngFor="let size of pageSizeOptions"
-                            [value]="size">
-                            {{ size }}
-                        </option>
-                    </select>
-                </div>
+                <ng-container *ngIf="isSearch">
+                    <div
+                        *skeleton="isLoading; width: '50px'; height: '35px'; margin: '0 10px 0 0'"
+                        class="page-size-wrapper">
+                        <select
+                            class="page-size"
+                            [(ngModel)]="size"
+                            (change)="loadPage()">
+                            <option
+                                *ngFor="let size of pageSizeOptions"
+                                [value]="size">
+                                {{ size }}
+                            </option>
+                        </select>
+                    </div>
+                </ng-container>
                 <div class="arrow-wrapper">
+                    <ng-container *ngIf="isPreviousPage">
+                        <ion-button
+                            *skeleton="isLoading; width: '50px'; height: '35px'"
+                            mode="md"
+                            class="first"
+                            type="button"
+                            color="primary"
+                            fill="outline"
+                            (click)="loadPage(
+                                'First',
+                                undefined,
+                                data?.Value?.Results?.EarliestTrainingDate)">
+                            <ion-icon name="play-back-sharp"></ion-icon>
+                        </ion-button>
+                    </ng-container>
                     <ion-button
-                        *ngIf="isPreviousPage"
-                        mode="md"
-                        class="first"
-                        type="button"
-                        color="primary"
-                        fill="outline"
-                        (click)="loadPage(
-                            'First',
-                            undefined,
-                            data?.Value?.Results?.EarliestTrainingDate)">
-                        <ion-icon name="play-back-sharp"></ion-icon>
-                    </ion-button>
-                    <ion-button
+                        *skeleton="isLoading; width: '50px'; height: '35px'"
                         mode="md"
                         type="button"
                         class="previous"
@@ -43,6 +48,7 @@
                         <ion-icon name="chevron-back-sharp"></ion-icon>
                     </ion-button>
                     <ion-button
+                        *skeleton="isLoading; width: '50px'; height: '35px'"
                         mode="md"
                         type="button"
                         class="next"
@@ -54,16 +60,18 @@
                             data.Value?.Results?.Dates)">
                         <ion-icon name="chevron-forward-sharp"></ion-icon>
                     </ion-button>
-                    <ion-button
-                        mode="md"
-                        *ngIf="isNextPage"
-                        type="button"
-                        class="last"
-                        color="primary"
-                        fill="outline"
-                        (click)="loadPage('Last', undefined, undefined, data?.Value?.TotalPages)">
-                        <ion-icon name="play-forward-sharp"></ion-icon>
-                    </ion-button>
+                    <ng-container *ngIf="isNextPage">
+                        <ion-button
+                            *skeleton="isLoading; width: '50px'; height: '35px'"
+                            mode="md"
+                            type="button"
+                            class="last"
+                            color="primary"
+                            fill="outline"
+                            (click)="loadPage('Last', undefined, undefined, data?.Value?.TotalPages)">
+                            <ion-icon name="play-forward-sharp"></ion-icon>
+                        </ion-button>
+                    </ng-container>
                 </div>
             </div>
             <div

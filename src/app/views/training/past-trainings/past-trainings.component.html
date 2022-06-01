@@ -88,7 +88,8 @@
                     [class.no-trainings]="pastTrainings.Value?.TotalCount === 0">
                     <bl-training-item
                         *ngFor="let training of pastTrainings.Value?.Results?.Trainings"
-                        [training]="training"></bl-training-item>
+                        [training]="training"
+                        [isLoading]="pastTrainings?.IsLoading"></bl-training-item>
                 </div>
                 <ng-template #noTrainings>
                     <section class="no-trainings">
@@ -115,6 +116,7 @@
                     [isPreviousPage]="isPreviousPage"
                     [isNextPage]="isNextPage"
                     [data]="pastTrainings"
+                    [isLoading]="pastTrainings?.IsLoading"
                     (paginatorChanged)="onPaginatorChanged(
                         $event,
                         pastTrainings.Value?.Results?.Dates?.StartDate)"></bl-pagination>

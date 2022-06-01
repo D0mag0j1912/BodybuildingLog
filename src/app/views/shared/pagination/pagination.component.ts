@@ -37,6 +37,9 @@ export class PaginationComponent {
     @Input()
     data: StreamData<Paginator<PastTrainings>> | undefined = undefined;
 
+    @Input()
+    isLoading = false;
+
     @Output()
     readonly paginatorChanged: EventEmitter<PaginatorChanged> = new EventEmitter<PaginatorChanged>();
 
