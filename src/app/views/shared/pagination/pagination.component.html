@@ -74,10 +74,12 @@
                     </ng-container>
                 </div>
             </div>
-            <div
-                *ngIf="data?.Value?.TotalPages"
-                class="label"
-                [innerHTML]="setPageText(data.Value.TotalPages) | async"></div>
+            <ng-container *ngIf="data?.Value?.TotalPages">
+                <div
+                    *skeleton="isLoading; width: '75px'; height: '25px'"
+                    class="label"
+                    [innerHTML]="setPageText$(data.Value?.TotalPages) | async"></div>
+            </ng-container>
         </div>
     </ion-card-content>
 </ion-card>

@@ -94,7 +94,7 @@ export class PaginationComponent {
         }
     }
 
-    setPageText(totalPages: number): Observable<string> {
+    setPageText$(totalPages: number): Observable<string> {
         return this.translateService.stream('common')
             .pipe(
                 map((value: { [key: string]: string }) =>
