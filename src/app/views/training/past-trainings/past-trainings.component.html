@@ -93,7 +93,7 @@
                 </div>
                 <ng-template #noTrainings>
                     <section class="no-trainings">
-                        <ng-container *ngIf="!isSearch && pastTrainings.Value?.TotalCount === 0;">
+                        <ng-container *ngIf="!isSearch && pastTrainings.Value?.TotalCount === 0">
                             <h1 class="no-trainings-title">
                                 {{ 'training.past_trainings.no_trainings' | translate: { period: (getPeriodTranslation$() | async) } }}
                             </h1>
