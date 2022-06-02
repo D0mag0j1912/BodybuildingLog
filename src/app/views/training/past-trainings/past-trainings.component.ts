@@ -63,7 +63,7 @@ export class PastTrainingsComponent {
             if (trainingElement) {
                 of(this.isSearch)
                     .pipe(
-                        delay(100),
+                        delay(375),
                         takeUntil(this.unsubscribeService),
                     )
                     .subscribe((isSearch: boolean) => {
