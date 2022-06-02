@@ -82,31 +82,32 @@
                     </ion-card-content>
                 </ion-card>
                 <div
-                    *ngIf="pastTrainings.Value?.TotalCount > 0; else noTrainings"
                     #itemWrapper
                     class="training-item-wrapper">
-                    <bl-training-item
-                        *ngFor="let training of pastTrainings.Value?.Results?.Trainings"
-                        [training]="training"
-                        [isLoading]="pastTrainings?.IsLoading"></bl-training-item>
+                    <ng-container *ngIf="pastTrainings.Value?.TotalCount > 0; else noTrainings">
+                        <bl-training-item
+                            *ngFor="let training of pastTrainings.Value?.Results?.Trainings"
+                            [training]="training"
+                            [isLoading]="pastTrainings?.IsLoading"></bl-training-item>
+                    </ng-container>
+                    <ng-template #noTrainings>
+                        <section class="no-trainings">
+                            <ng-container *ngIf="!isSearch && pastTrainings.Value?.TotalCount === 0">
+                                <h1 class="no-trainings-title">
+                                    {{ 'training.past_trainings.no_trainings' | translate: { period: (getPeriodTranslation$() | async) } }}
+                                </h1>
+                                <ion-button
+                                    mode="md"
+                                    type="button"
+                                    routerLink="/training/new-training"
+                                    routerDirection="forward"
+                                    color="primary">
+                                    {{ 'training.past_trainings.log_training' | translate }}
+                                </ion-button>
+                            </ng-container>
+                        </section>
+                    </ng-template>
                 </div>
-                <ng-template #noTrainings>
-                    <section class="no-trainings">
-                        <ng-container *ngIf="!isSearch && pastTrainings.Value?.TotalCount === 0">
-                            <h1 class="no-trainings-title">
-                                {{ 'training.past_trainings.no_trainings' | translate: { period: (getPeriodTranslation$() | async) } }}
-                            </h1>
-                            <ion-button
-                                mode="md"
-                                type="button"
-                                routerLink="/training/new-training"
-                                routerDirection="forward"
-                                color="primary">
-                                {{ 'training.past_trainings.log_training' | translate }}
-                            </ion-button>
-                        </ng-container>
-                    </section>
-                </ng-template>
                 <bl-pagination
                     [isSearch]="isSearch"
                     [page]="page"

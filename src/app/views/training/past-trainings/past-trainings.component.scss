@@ -113,18 +113,18 @@ ion-list {
             margin-top: 3px;
         }
     }
-}
 
-.no-trainings {
-    margin: 0 1rem 1rem 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    .no-trainings {
+        margin: 0 1rem 1rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
-    &-title {
-        font-size: 18px;
-        font-weight: normal;
-        text-align: center;
+        &-title {
+            font-size: 18px;
+            font-weight: normal;
+            text-align: center;
+        }
     }
 }
 

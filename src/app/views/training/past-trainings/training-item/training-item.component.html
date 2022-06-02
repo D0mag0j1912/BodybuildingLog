@@ -3,7 +3,7 @@
     class="ion-text-center"
     (click)="trainingClicked()">
     <ion-card-header>
-        <ion-card-title *skeleton="isLoading; width: '290px'; height: '25px';">
+        <ion-card-title>
             <strong class="day-name">{{ ('weekdays.' + weekDays[dayIndex] | translate) }}</strong>
             <ion-text class="day-date">{{ '(' + (training.trainingDate | date: 'dd.MM.yyyy') + ')' }}</ion-text>
         </ion-card-title>
