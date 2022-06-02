@@ -84,8 +84,7 @@
                 <div
                     *ngIf="pastTrainings.Value?.TotalCount > 0; else noTrainings"
                     #itemWrapper
-                    class="training-item-wrapper"
-                    [class.no-trainings]="pastTrainings.Value?.TotalCount === 0">
+                    class="training-item-wrapper">
                     <bl-training-item
                         *ngFor="let training of pastTrainings.Value?.Results?.Trainings"
                         [training]="training"
@@ -99,7 +98,6 @@
                             </h1>
                             <ion-button
                                 mode="md"
-                                class="no-trainings-button"
                                 type="button"
                                 routerLink="/training/new-training"
                                 routerDirection="forward"
