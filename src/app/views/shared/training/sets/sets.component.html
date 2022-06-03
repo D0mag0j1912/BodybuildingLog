@@ -53,6 +53,7 @@
                         </ion-item>
                         <ion-text
                             *ngIf="(set.errors?.weightLiftedRequired && ((isExerciseFormSubmitted$ | async) || exerciseNameControl?.value)) &&
+                                !accessFormField('weightLifted', j).errors?.min &&
                                 !isLoading"
                             class="error">
                             {{ 'training.new_training.errors.weight_lifted_required' | translate }}
