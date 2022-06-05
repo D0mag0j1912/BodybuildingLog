@@ -37,6 +37,9 @@ export class PaginationComponent {
     @Input()
     data: StreamData<Paginator<PastTrainings>> | undefined = undefined;
 
+    @Input()
+    isLoading = false;
+
     @Output()
     readonly paginatorChanged: EventEmitter<PaginatorChanged> = new EventEmitter<PaginatorChanged>();
 
@@ -91,7 +94,7 @@ export class PaginationComponent {
         }
     }
 
-    setPageText(totalPages: number): Observable<string> {
+    setPageText$(totalPages: number): Observable<string> {
         return this.translateService.stream('common')
             .pipe(
                 map((value: { [key: string]: string }) =>

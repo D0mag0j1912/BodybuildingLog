@@ -14,6 +14,7 @@
                                 exerciseNameControl?.value,
                                 'weightLifted')">
                             <ion-label
+                                class="ion-label"
                                 position="floating"
                                 [class.ion-label-error]="setIonComponentClass(
                                     set,
@@ -53,6 +54,7 @@
                         </ion-item>
                         <ion-text
                             *ngIf="(set.errors?.weightLiftedRequired && ((isExerciseFormSubmitted$ | async) || exerciseNameControl?.value)) &&
+                                !accessFormField('weightLifted', j).errors?.min &&
                                 !isLoading"
                             class="error">
                             {{ 'training.new_training.errors.weight_lifted_required' | translate }}
@@ -88,6 +90,7 @@
                                 exerciseNameControl?.value,
                                 'reps')">
                             <ion-label
+                                class="ion-label"
                                 position="floating"
                                 [class.ion-label-error]="setIonComponentClass(
                                     set,
