@@ -37,9 +37,6 @@ export class TrainingItemComponent implements OnInit {
     @Input()
     training: Training;
 
-    @Input()
-    isLoading = false;
-
     constructor(
         private readonly sharedService: SharedService,
         private readonly route: ActivatedRoute,
