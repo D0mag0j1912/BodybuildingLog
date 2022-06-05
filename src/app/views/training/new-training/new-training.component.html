@@ -25,7 +25,7 @@
 </ion-header>
 <ion-content class="ion-text-center ion-padding">
     <ng-container *ngIf="(trainingStream$ | async) as trainingData">
-        <ng-container *ngIf="trainingData?.IsError; else valueOrLoading">
+        <ng-container *ngIf="trainingData.IsError; else valueOrLoading">
             <div class="error-wrapper">
                 <img
                     class="error-image"
@@ -46,13 +46,13 @@
         </ng-container>
         <ng-template #valueOrLoading>
             <ion-spinner
-                *ngIf="trainingData?.IsLoading"
+                *ngIf="trainingData.IsLoading"
                 class="ion-spinner-class"
                 name="crescent"
                 color="primary"></ion-spinner>
             <form
                 autocomplete="off"
-                [class.hide-form]="trainingData?.IsLoading"
+                [class.hide-form]="trainingData.IsLoading"
                 [formGroup]="form">
                 <ion-item
                     fill="outline">
@@ -103,7 +103,7 @@
                     [bodyweight]="accessFormData('bodyweight')"
                     [trainingDate]="accessFormData('date')"
                     [editData]="editData"
-                    [isLoading]="trainingData?.IsLoading"
+                    [isLoading]="trainingData.IsLoading"
                     [editMode]="editMode"
                     (exerciseAdded)="onExerciseAdded($event)"></bl-single-exercise>
             </form>
