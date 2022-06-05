@@ -27,6 +27,10 @@ ion-grid {
     ::ng-deep .reps-input input {
         height: 30px;
     }
+
+    .ion-label {
+        font-size: 14px;
+    }
 }
 
 .set-saved-msg {
