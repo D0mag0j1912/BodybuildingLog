@@ -304,15 +304,14 @@ export class PastTrainingsComponent {
         this.size = this.route.snapshot.queryParamMap?.get('size') ? +this.route.snapshot.queryParamMap.get('size') : DEFAULT_SIZE;
         this.searchText = this.route.snapshot.queryParamMap?.get('search');
         if (this.searchText) {
-            this.pastTrainings$ =
-                this.pastTrainingsService.searchPastTrainings(
-                    this.searchText.trim().toLowerCase(),
-                    this.size,
-                    this.page,
-                ).pipe(
-                    tap((response: StreamData<Paginator<PastTrainings>>) => this.handlePaginationArrows(response)),
-                    mapStreamData(),
-                );
+            this.pastTrainings$ = this.pastTrainingsService.searchPastTrainings(
+                this.searchText.trim().toLowerCase(),
+                this.size,
+                this.page,
+            ).pipe(
+                tap((response: StreamData<Paginator<PastTrainings>>) => this.handlePaginationArrows(response)),
+                mapStreamData(),
+            );
         }
         else {
             this.periodFilter = this.route.snapshot.queryParamMap?.get('showBy') as PeriodFilterType;
