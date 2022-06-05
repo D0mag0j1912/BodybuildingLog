@@ -7,12 +7,12 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <ng-container *ngIf="pastTrainings$ | async as pastTrainings">
+    <ng-container *ngIf="pastTrainings$ | async as state">
         <bl-show-by-day
-            *ngIf="periodFilter === 'day' && !isSearch && !pastTrainings.IsError"
+            *ngIf="periodFilter === 'day' && !isSearch && !state.IsError"
             [startDate]="showByDayStartDate"
             (dayActivated)="onDayActivated($event)"></bl-show-by-day>
-        <ng-container *ngIf="pastTrainings.IsError; else valueOrLoading">
+        <ng-container *ngIf="state.IsError; else valueOrLoading">
             <div class="error-wrapper">
                 <img
                     class="error-image"
@@ -32,7 +32,7 @@
             </div>
         </ng-container>
         <ng-template #valueOrLoading>
-            <ng-container *ngIf="pastTrainings.IsLoading">
+            <ng-container *ngIf="state.IsLoading">
                 <ion-spinner
                     class="ion-spinner-class"
                     name="crescent"
@@ -42,8 +42,8 @@
                 [periodDisabled]="isSearch"
                 [periodFilter]="periodFilter"
                 (trainingEmitted)="searchEmitted($event)"
-                (periodEmitted)="onPeriodEmitted($event, pastTrainings.Value?.Results?.Dates?.StartDate)"></bl-past-trainings-filters>
-            <ng-container *ngIf="isSearch && pastTrainings.Value?.TotalCount === 0; else otherCases">
+                (periodEmitted)="onPeriodEmitted($event, state.Value?.Results?.Dates?.StartDate)"></bl-past-trainings-filters>
+            <ng-container *ngIf="isSearch && state.Value?.TotalCount === 0; else otherCases">
                 <ion-list class="ion-text-center">
                     <ion-item lines="none">
                         <img
@@ -67,13 +67,13 @@
                     <ion-card-header class="card-info-wrapper--header">
                         <ion-card-title class="header-title">
                             <div
-                                *skeleton="pastTrainings.IsLoading; width: '305px'; height: '25px';"
+                                *skeleton="state.IsLoading; width: '305px'; height: '25px';"
                                 #timePeriod
-                                [innerHTML]="setTimePeriod$(pastTrainings.Value?.Results?.Dates) | async"></div>
+                                [innerHTML]="setTimePeriod$(state.Value?.Results?.Dates) | async"></div>
                         </ion-card-title>
                     </ion-card-header>
                     <ion-card-content>
-                        <ng-container *skeleton="pastTrainings.IsLoading; width: '305px'; height: '25px';">
+                        <ng-container *skeleton="state.IsLoading; width: '305px'; height: '25px';">
                             <strong class="food-key">
                                 {{ ('common.food' | translate) + ': ' }}
                             </strong>
@@ -84,15 +84,15 @@
                 <div
                     #itemWrapper
                     class="training-item-wrapper">
-                    <ng-container *ngIf="pastTrainings.Value?.TotalCount > 0; else noTrainings">
+                    <ng-container *ngIf="state.Value?.TotalCount > 0; else noTrainings">
                         <bl-training-item
-                            *ngFor="let training of pastTrainings.Value?.Results?.Trainings"
+                            *ngFor="let training of state.Value?.Results?.Trainings"
                             [training]="training"
-                            [isLoading]="pastTrainings.IsLoading"></bl-training-item>
+                            [isLoading]="state.IsLoading"></bl-training-item>
                     </ng-container>
                     <ng-template #noTrainings>
                         <section class="no-trainings">
-                            <ng-container *ngIf="!isSearch && pastTrainings.Value?.TotalCount === 0">
+                            <ng-container *ngIf="!isSearch && state.Value?.TotalCount === 0">
                                 <h1 class="no-trainings-title">
                                     {{ 'training.past_trainings.no_trainings' | translate: { period: (getPeriodTranslation$() | async) } }}
                                 </h1>
@@ -114,11 +114,11 @@
                     [size]="size"
                     [isPreviousPage]="isPreviousPage"
                     [isNextPage]="isNextPage"
-                    [data]="pastTrainings"
-                    [isLoading]="pastTrainings.IsLoading"
+                    [data]="state"
+                    [isLoading]="state.IsLoading"
                     (paginatorChanged)="onPaginatorChanged(
                         $event,
-                        pastTrainings.Value?.Results?.Dates?.StartDate)"></bl-pagination>
+                        state.Value?.Results?.Dates?.StartDate)"></bl-pagination>
             </ng-template>
         </ng-template>
     </ng-container>
