@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
 import { Observable, of } from 'rxjs';
-import { delay, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from 'src/app/services/shared/shared.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
@@ -20,10 +20,8 @@ import { PastTrainingsStateService } from '../../../services/state/training/past
 import { DayActivatedType } from './show-by-day/show-by-day.component';
 
 enum Heights {
-    LOWER_WEEK_HEIGHT = 315,
-    HIGHER_WEEK_HEIGHT = 345,
-    LOWER_SEARCH_HEIGHT = 345,
-    HIGHER_SEARCH_HEIGHT = 375,
+    WEEK_HEIGHT = 315,
+    SEARCH_HEIGHT = 345,
 }
 
 @Component({
@@ -61,19 +59,7 @@ export class PastTrainingsComponent {
         if (timePeriodElement) {
             const trainingElement = (this.trainingItemWrapper?.nativeElement as HTMLDivElement);
             if (trainingElement) {
-                of(this.isSearch)
-                    .pipe(
-                        delay(100),
-                        takeUntil(this.unsubscribeService),
-                    )
-                    .subscribe((isSearch: boolean) => {
-                        if ((timePeriodElement.nativeElement as HTMLDivElement).offsetHeight === 24) {
-                            trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? Heights.LOWER_SEARCH_HEIGHT : Heights.LOWER_WEEK_HEIGHT}px)`;
-                        }
-                        else if ((timePeriodElement.nativeElement as HTMLDivElement).offsetHeight > 24) {
-                            trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? Heights.HIGHER_SEARCH_HEIGHT : Heights.HIGHER_WEEK_HEIGHT}px)`;
-                        }
-                    });
+                trainingElement.style.maxHeight = `calc(100vh - ${this.isSearch ? Heights.SEARCH_HEIGHT : Heights.WEEK_HEIGHT}px)`;
             }
         }
     }
