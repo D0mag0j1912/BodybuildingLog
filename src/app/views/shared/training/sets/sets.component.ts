@@ -120,6 +120,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                     this.addSet(set);
                 }
             }
+            else {
+                this.addSet();
+            }
         }
     }
     //Sending parent new form value when form value changes
