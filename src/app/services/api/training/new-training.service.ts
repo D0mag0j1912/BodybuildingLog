@@ -30,6 +30,7 @@ export class NewTrainingService {
         return this.http.get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get_exercises')
             .pipe(
                 switchMap((response: StreamData<Exercise[]>) => {
+                    this.newTrainingStateService.emitAllExercises(response);
                     const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
                     if (!trainingState) {
                         return this.authStateService.loggedUser$
@@ -42,8 +43,6 @@ export class NewTrainingService {
                                         true,
                                         authResponseData._id,
                                     );
-                                    this.newTrainingStateService.emitAllExercises(response.Value);
-                                    localStorage.setItem(LocalStorageItems.ALL_EXERCISES, JSON.stringify(response.Value));
                                 }),
                                 switchMap(_ => of(response)),
                             );

@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { Observable } from 'rxjs';
-import { take, switchMap, takeUntil } from 'rxjs/operators';
+import { take, switchMap } from 'rxjs/operators';
 import { AuthResponseData } from '../../../../models/auth/auth-data.model';
 import { LanguageCode } from '../../../../models/preferences.model';
 import { NavigationService } from '../../../../services/shared/navigation.service';
-import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { AuthStateService } from '../../../../services/state/auth/auth-state.service';
 
 interface LanguageData {
@@ -19,7 +18,6 @@ interface LanguageData {
     templateUrl: './languages.component.html',
     styleUrls: ['./languages.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [UnsubscribeService],
 })
 export class LanguagesComponent {
 
@@ -42,7 +40,6 @@ export class LanguagesComponent {
     constructor(
         private readonly authStateService: AuthStateService,
         private readonly navigationService: NavigationService,
-        private readonly unsubscribeService: UnsubscribeService,
         private readonly popoverController: PopoverController,
     ) { }
 
@@ -57,7 +54,6 @@ export class LanguagesComponent {
                         'kg',
                     ),
                 ),
-                takeUntil(this.unsubscribeService),
             )
             .subscribe(async _ => await this.popoverController.dismiss());
     }

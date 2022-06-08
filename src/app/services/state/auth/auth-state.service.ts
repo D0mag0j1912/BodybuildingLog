@@ -114,7 +114,6 @@ export class AuthStateService {
     private clearLS(): void {
         localStorage.removeItem(LocalStorageItems.USER_DATA);
         localStorage.removeItem(LocalStorageItems.TRAINING_STATE);
-        localStorage.removeItem(LocalStorageItems.ALL_EXERCISES);
         localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
     }
 }
