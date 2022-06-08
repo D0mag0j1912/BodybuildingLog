@@ -87,6 +87,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         this.newTrainingStateService.allExercisesChanged$
                             .pipe(
                                 take(1),
+                                map(value => value?.Value ?? []),
                             ),
                     ]),
                 ),

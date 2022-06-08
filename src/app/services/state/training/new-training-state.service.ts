@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { take, tap, map } from 'rxjs/operators';
-import { LocalStorageItems } from '../../../models/common/interfaces/common.model';
+import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { createEmptyExercise, EMPTY_TRAINING } from '../../../models/training/new-training/empty-training.model';
 import { Training } from '../../../models/training/new-training/training.model';
@@ -11,13 +11,13 @@ import { SingleExercise } from '../../../models/training/shared/single-exercise.
 @Injectable({ providedIn: 'root' })
 export class NewTrainingStateService {
 
-    private readonly _allExercisesChanged$$: BehaviorSubject<Exercise[]> = new BehaviorSubject<Exercise[]>([]);
-    readonly allExercisesChanged$: Observable<Exercise[]> = this._allExercisesChanged$$.asObservable();
+    private readonly _allExercisesChanged$$: BehaviorSubject<StreamData<Exercise[]>> = new BehaviorSubject<StreamData<Exercise[]>>(null);
+    readonly allExercisesChanged$: Observable<StreamData<Exercise[]>> = this._allExercisesChanged$$.asObservable();
 
     private readonly _currentTrainingChanged$$: BehaviorSubject<Training> = new BehaviorSubject<Training>(EMPTY_TRAINING);
     readonly currentTrainingChanged$: Observable<Training> = this._currentTrainingChanged$$.asObservable();
 
-    emitAllExercises(exercises: Exercise[]): void {
+    emitAllExercises(exercises: StreamData<Exercise[]>): void {
         this._allExercisesChanged$$.next(exercises);
     }
 
@@ -72,22 +72,24 @@ export class NewTrainingStateService {
         let updatedExercises: SingleExercise[] = [ ...currentTrainingState.exercises ];
         let updatedTraining: Training;
         if (deletedExerciseName) {
-            return this.allExercisesChanged$.pipe(
-                take(1),
-                tap(_ => {
-                    updatedExercises = updatedExercises.filter((exercise: SingleExercise) => exercise.exerciseName !== deletedExerciseName);
-                    updatedTraining = {
-                        ...currentTrainingState,
-                        exercises: updatedExercises,
-                    };
-                }),
-                map((allExercises: Exercise[]) =>
-                    [
-                        updatedTraining,
-                        allExercises.filter(exercise => exercise.Name === deletedExerciseName),
-                    ],
-                ),
-            );
+            return this.allExercisesChanged$
+                .pipe(
+                    take(1),
+                    map(value => value.Value),
+                    tap(_ => {
+                        updatedExercises = updatedExercises.filter((exercise: SingleExercise) => exercise.exerciseName !== deletedExerciseName);
+                        updatedTraining = {
+                            ...currentTrainingState,
+                            exercises: updatedExercises,
+                        };
+                    }),
+                    map((allExercises: Exercise[]) =>
+                        [
+                            updatedTraining,
+                            allExercises.filter(exercise => exercise.Name === deletedExerciseName),
+                        ],
+                    ),
+                );
         }
         else {
             updatedExercises = updatedExercises.filter((_exercise: SingleExercise, index: number) => index !== indexExercise);
@@ -128,7 +130,7 @@ export class NewTrainingStateService {
     }
 
     addNewExercise(alreadyUsedExercises: string[]): void {
-        const allExercises: Exercise[] = [ ...this._allExercisesChanged$$.getValue() ];
+        const allExercises: Exercise[] = [ ...this._allExercisesChanged$$.getValue().Value ];
         const availableExercises: Exercise[] = allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.Name) === -1);
         this.updateTrainingState(undefined, availableExercises);
     }
@@ -151,13 +153,11 @@ export class NewTrainingStateService {
 
     keepTrainingState(): void {
         const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
-        const allExercises: Exercise[] = JSON.parse(localStorage.getItem(LocalStorageItems.ALL_EXERCISES));
 
-        if (!trainingState || !allExercises) {
+        if (!trainingState) {
             return;
         }
         this._currentTrainingChanged$$.next({ ...trainingState });
-        this._allExercisesChanged$$.next([ ...allExercises ]);
     }
 
     updateTrainingState(

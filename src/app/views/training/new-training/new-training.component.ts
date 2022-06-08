@@ -118,13 +118,13 @@ export class NewTrainingComponent {
                             this.newTrainingStateService.currentTrainingChanged$,
                         ]).pipe(
                             take(1),
-                            tap(([exercises, training]: [Exercise[], Training]) => {
+                            tap(([exercises, training]: [StreamData<Exercise[]>, Training]) => {
                                 const currentTrainingState: Training = { ...training };
                                 if (currentTrainingState) {
                                     if (currentTrainingState.editMode && !this.editMode) {
                                         this.newTrainingStateService.updateTrainingState({
                                             ...EMPTY_TRAINING,
-                                            exercises: [createEmptyExercise(exercises)],
+                                            exercises: [createEmptyExercise(exercises.Value)],
                                             userId: currentTrainingState?.userId ?? '',
                                         });
                                     }
@@ -135,8 +135,17 @@ export class NewTrainingComponent {
                 }),
                 tap(_ => this.sharedService.editingTraining$$.next(this.editMode)),
                 switchMap(_ =>
-                    this.newTrainingService.getExercises()
+                    this.newTrainingStateService.allExercisesChanged$
                         .pipe(
+                            take(1),
+                            switchMap(value => {
+                                if (value) {
+                                    return of(value);
+                                }
+                                else {
+                                    return this.newTrainingService.getExercises();
+                                }
+                            }),
                             tap(_ => this._formInit()),
                             mapStreamData(),
                         ),
@@ -174,9 +183,9 @@ export class NewTrainingComponent {
                     this.trainingStream$ = this.newTrainingStateService.allExercisesChanged$
                         .pipe(
                             take(1),
-                            map(exercises => ({
+                            map(value => ({
                                 IsLoading: true,
-                                Value: exercises,
+                                Value: value.Value,
                                 IsError: false,
                             })),
                             delay(300),
