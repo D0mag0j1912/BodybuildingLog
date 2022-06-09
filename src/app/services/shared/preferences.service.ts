@@ -34,32 +34,34 @@ export class PreferencesService {
         const preferences: Partial<Preferences> = {
             LanguageCode: language,
             WeightFormat: weightFormat,
-            PreferenceChanged: preferenceChanged,
         };
-        return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${userId}`, { preferences: preferences })
-            .pipe(
-                tap(_ => {
-                    this.authStateService.updateUserData({
-                        UserId: userId,
-                        LanguageCode: language,
-                        WeightFormat: weightFormat,
-                    } as Preferences);
-                }),
-                switchMap((response: GeneralResponseData) =>
-                    this.translateService.use(language)
-                        .pipe(
-                            tap(async _ => {
-                                if (response.Message) {
-                                    await this.toastControllerService.displayToast({
-                                        message: this.translateService.instant(response.Message),
-                                        duration: MESSAGE_DURATION.GENERAL,
-                                        color: 'primary',
-                                    });
-                                }
-                            }),
-                        ),
-                ),
-            );
+        return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${userId}`, {
+            preferences: preferences,
+            preferenceChanged: preferenceChanged,
+        })
+        .pipe(
+            tap(_ => {
+                this.authStateService.updateUserData({
+                    UserId: userId,
+                    LanguageCode: language,
+                    WeightFormat: weightFormat,
+                } as Preferences);
+            }),
+            switchMap((response: GeneralResponseData) =>
+                this.translateService.use(language)
+                    .pipe(
+                        tap(async _ => {
+                            if (response.Message) {
+                                await this.toastControllerService.displayToast({
+                                    message: this.translateService.instant(response.Message),
+                                    duration: MESSAGE_DURATION.GENERAL,
+                                    color: 'primary',
+                                });
+                            }
+                        }),
+                    ),
+            ),
+        );
     }
 
 }

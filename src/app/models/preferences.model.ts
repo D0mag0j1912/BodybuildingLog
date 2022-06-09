@@ -3,7 +3,6 @@ export interface Preferences {
     UserId?: string;
     LanguageCode?: LanguageCode;
     WeightFormat?: WeightFormat;
-    PreferenceChanged?: PreferenceChangedType;
 }
 
 export type PreferenceChangedType = 'language' | 'showByPeriod';
