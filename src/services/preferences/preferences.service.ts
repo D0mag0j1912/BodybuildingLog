@@ -11,6 +11,11 @@ export class PreferencesService {
         @InjectModel('Preferences') private readonly preferencesModel: Model<PreferencesDto>,
     ) { }
 
+    async getPreferences(userId: string): Promise<PreferencesDto> {
+        const preferences = await this.preferencesModel.findOne({ UserId: userId }).exec();
+        return preferences;
+    }
+
     async setPreferences(
         userId: string,
         preferencesDto: PreferencesDto,
