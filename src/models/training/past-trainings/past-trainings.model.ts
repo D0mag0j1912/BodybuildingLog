@@ -10,4 +10,4 @@ export interface PastTrainings {
     Message?: string;
 }
 
-export type PastTrainingsFilterType = 'week' | 'day';
+export type PeriodFilterType = 'week' | 'day';

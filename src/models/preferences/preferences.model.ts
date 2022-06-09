@@ -1,11 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
+import { PeriodFilterType } from '../training/past-trainings/past-trainings.model';
 
 export type LanguageCode = 'hr' | 'en';
 export type WeightFormat = 'lbs' | 'kg';
 
 export const PREFERENCES_SCHEMA = new Schema({
+    UserId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
     LanguageCode: {
         type: String,
         required: true,
@@ -14,11 +20,7 @@ export const PREFERENCES_SCHEMA = new Schema({
         type: String,
         required: true,
     },
-    UserId: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-    },
+    ShowByPeriod: String,
 });
 
 export class PreferencesDto {
@@ -38,4 +40,9 @@ export class PreferencesDto {
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.weight_format_required' })
     WeightFormat: WeightFormat;
+
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString({ message: '@common.errors.something_went_wrong' })
+    ShowByPeriod: PeriodFilterType;
 }
