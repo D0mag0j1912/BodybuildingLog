@@ -36,11 +36,6 @@ export class PreferencesDto {
     @IsNotEmpty({ message: '@preferences.errors.weight_format_required' })
     WeightFormat: WeightFormat;
 
-    @ApiProperty()
-    @IsString({ message: '@common.errors.something_went_wrong' })
-    @IsNotEmpty({ message: '@common.errors.something_went_wrong' })
-    PreferenceChanged: PreferenceChangedType;
-
     @ApiProperty({ required: false })
     @IsOptional()
     @IsString({ message: '@common.errors.something_went_wrong' })
