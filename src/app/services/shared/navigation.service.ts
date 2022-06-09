@@ -6,7 +6,7 @@ import { switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { MESSAGE_DURATION } from '../../constants/message-duration.const';
 import { GeneralResponseData } from '../../models/general-response.model';
-import { Preferences, WeightFormat } from '../../models/preferences.model';
+import { PreferenceChangedType, Preferences, WeightFormat } from '../../models/preferences.model';
 import { LanguageCode } from '../../models/preferences.model';
 import { AuthStateService } from '../state/auth/auth-state.service';
 import { ToastControllerService } from './toast-controller.service';
@@ -25,10 +25,12 @@ export class NavigationService {
         userId: string,
         language: LanguageCode,
         weightFormat: WeightFormat,
+        preferenceChanged: PreferenceChangedType,
     ): Observable<GeneralResponseData> {
         const preferences: Partial<Preferences> = {
             LanguageCode: language,
             WeightFormat: weightFormat,
+            PreferenceChanged: preferenceChanged,
         };
         return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${userId}`, { preferences: preferences })
             .pipe(
