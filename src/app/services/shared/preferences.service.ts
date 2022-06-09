@@ -21,6 +21,10 @@ export class PreferencesService {
         private readonly toastControllerService: ToastControllerService,
     ) { }
 
+    getPreferences(userId: string): Observable<Preferences> {
+        return this.http.get<Preferences>(environment.BACKEND + `/preferences/${userId}`);
+    }
+
     setPreferences(
         userId: string,
         language: LanguageCode,
