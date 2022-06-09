@@ -5,6 +5,7 @@ import { PeriodFilterType } from '../training/past-trainings/past-trainings.mode
 
 export type LanguageCode = 'hr' | 'en';
 export type WeightFormat = 'lbs' | 'kg';
+export type PreferenceChangedType = 'language' | 'showByPeriod';
 
 export const PREFERENCES_SCHEMA = new Schema({
     UserId: {
@@ -25,12 +26,6 @@ export const PREFERENCES_SCHEMA = new Schema({
 
 export class PreferencesDto {
 
-    @ApiProperty({ required: false })
-    @IsOptional()
-    @IsDefined({ message: '@common.errors.something_went_wrong' })
-    @IsString({ message: '@common.errors.something_went_wrong' })
-    UserId: string;
-
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.language_required' })
@@ -41,8 +36,19 @@ export class PreferencesDto {
     @IsNotEmpty({ message: '@preferences.errors.weight_format_required' })
     WeightFormat: WeightFormat;
 
+    @ApiProperty()
+    @IsString({ message: '@common.errors.something_went_wrong' })
+    @IsNotEmpty({ message: '@common.errors.something_went_wrong' })
+    PreferenceChanged: PreferenceChangedType;
+
     @ApiProperty({ required: false })
     @IsOptional()
     @IsString({ message: '@common.errors.something_went_wrong' })
     ShowByPeriod: PeriodFilterType;
+
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsDefined({ message: '@common.errors.something_went_wrong' })
+    @IsString({ message: '@common.errors.something_went_wrong' })
+    UserId: string;
 }

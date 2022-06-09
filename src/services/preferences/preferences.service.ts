@@ -16,12 +16,25 @@ export class PreferencesService {
         preferencesDto: PreferencesDto,
     ): Promise<GeneralResponseData> {
         try {
-            const { LanguageCode: language, WeightFormat: weightFormat } = preferencesDto;
+            const {
+                LanguageCode: language,
+                WeightFormat: weightFormat,
+                ShowByPeriod: showByPeriod,
+                PreferenceChanged: preferenceChanged,
+            } = preferencesDto;
             const preferences = await this.preferencesModel.findOne({ UserId: userId }).exec();
             preferences.LanguageCode = language;
             preferences.WeightFormat = weightFormat;
+            preferences.ShowByPeriod = showByPeriod;
             await preferences.save();
-            return { Message: 'preferences.language_changed' } as GeneralResponseData;
+            switch (preferenceChanged) {
+                case 'language': {
+                    return { Message: 'preferences.language_changed' } as GeneralResponseData;
+                }
+                case 'showByPeriod': {
+                    return { Message: '' } as GeneralResponseData;
+                }
+            }
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('preferences.errors.language_change');
