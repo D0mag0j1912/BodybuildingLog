@@ -38,6 +38,7 @@ export class PastTrainingsComponent {
     size: number = DEFAULT_SIZE;
     page: number = INITIAL_PAGE;
     searchText = '';
+    //TODO: set period filter type based on user preferences
     periodFilter: PeriodFilterType = 'week';
     dayActivated: DayActivatedType = {
         Date: startOfDay(new Date()),

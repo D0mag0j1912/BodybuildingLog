@@ -40,15 +40,18 @@ export class NavigationService {
                     } as Preferences);
                 }),
                 switchMap((response: GeneralResponseData) =>
-                    this.translateService.use(language).pipe(
-                        tap(async _ => {
-                            await this.toastControllerService.displayToast({
-                                message: this.translateService.instant(response.Message),
-                                duration: MESSAGE_DURATION.GENERAL,
-                                color: 'primary',
-                            });
-                        }),
-                    ),
+                    this.translateService.use(language)
+                        .pipe(
+                            tap(async _ => {
+                                if (response.Message) {
+                                    await this.toastControllerService.displayToast({
+                                        message: this.translateService.instant(response.Message),
+                                        duration: MESSAGE_DURATION.GENERAL,
+                                        color: 'primary',
+                                    });
+                                }
+                            }),
+                        ),
                 ),
             );
     }
