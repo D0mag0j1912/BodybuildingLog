@@ -12,7 +12,7 @@ import { AuthStateService } from '../state/auth/auth-state.service';
 import { ToastControllerService } from './toast-controller.service';
 
 @Injectable({ providedIn: 'root' })
-export class NavigationService {
+export class PreferencesService {
 
     constructor(
         private readonly http: HttpClient,

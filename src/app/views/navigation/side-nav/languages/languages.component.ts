@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { take, switchMap } from 'rxjs/operators';
 import { AuthResponseData } from '../../../../models/auth/auth-data.model';
 import { LanguageCode } from '../../../../models/preferences.model';
-import { NavigationService } from '../../../../services/shared/navigation.service';
+import { PreferencesService } from '../../../../services/shared/preferences.service';
 import { AuthStateService } from '../../../../services/state/auth/auth-state.service';
 
 interface LanguageData {
@@ -39,7 +39,7 @@ export class LanguagesComponent {
 
     constructor(
         private readonly authStateService: AuthStateService,
-        private readonly navigationService: NavigationService,
+        private readonly navigationService: PreferencesService,
         private readonly popoverController: PopoverController,
         private readonly menuController: MenuController,
     ) { }

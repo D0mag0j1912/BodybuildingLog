@@ -17,6 +17,7 @@ import { PastTrainingsService } from '../../../services/api/training/past-traini
 import { Page } from '../../../models/common/types/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { PastTrainingsStateService } from '../../../services/state/training/past-trainings-state.service';
+import { PreferencesService } from '../../../services/shared/preferences.service';
 import { DayActivatedType } from './show-by-day/show-by-day.component';
 
 enum Heights {
@@ -71,6 +72,7 @@ export class PastTrainingsComponent {
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
+        private readonly preferencesService: PreferencesService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
         private readonly datePipe: DatePipe,
@@ -149,6 +151,7 @@ export class PastTrainingsComponent {
             if (this.periodFilter === 'day') {
                 this.showByDayStartDate = mondayDate;
             }
+            //TODO: Call preferences API
             this.pastTrainings$ = this.pastTrainingsService
                 .getPastTrainings(
                     startOfWeek(mondayDate, { weekStartsOn: 1 }),
