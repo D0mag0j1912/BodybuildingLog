@@ -17,7 +17,7 @@ import { PastTrainingsService } from '../../../services/api/training/past-traini
 import { Page } from '../../../models/common/types/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { PastTrainingsStateService } from '../../../services/state/training/past-trainings-state.service';
-import { PreferencesService } from '../../../services/shared/preferences.service';
+import { PreferencesStateService } from '../../../services/state/shared/preferences-state.service';
 import { DayActivatedType } from './show-by-day/show-by-day.component';
 
 enum Heights {
@@ -39,8 +39,7 @@ export class PastTrainingsComponent {
     size: number = DEFAULT_SIZE;
     page: number = INITIAL_PAGE;
     searchText = '';
-    //TODO: set period filter type based on user preferences
-    periodFilter: PeriodFilterType = 'week';
+    periodFilter: PeriodFilterType = this.preferencesStateService.getPreferences()?.ShowByPeriod ?? 'week';
     dayActivated: DayActivatedType = {
         Date: startOfDay(new Date()),
         DayNumber: 0,
@@ -72,7 +71,7 @@ export class PastTrainingsComponent {
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
-        private readonly preferencesService: PreferencesService,
+        private readonly preferencesStateService: PreferencesStateService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
         private readonly datePipe: DatePipe,
