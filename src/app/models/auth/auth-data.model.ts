@@ -18,5 +18,4 @@ export interface AuthResponseData {
     readonly ExpiresIn?: number;
     readonly ExpirationDate?: Date;
     readonly _id?: string;
-    readonly Preferences?: Preferences;
 }

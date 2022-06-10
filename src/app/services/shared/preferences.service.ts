@@ -8,7 +8,6 @@ import { MESSAGE_DURATION } from '../../constants/message-duration.const';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { PreferenceChangedType, Preferences, WeightFormat } from '../../models/preferences.model';
 import { LanguageCode } from '../../models/preferences.model';
-import { AuthStateService } from '../state/auth/auth-state.service';
 import { ToastControllerService } from './toast-controller.service';
 
 @Injectable({ providedIn: 'root' })
@@ -16,7 +15,6 @@ export class PreferencesService {
 
     constructor(
         private readonly http: HttpClient,
-        private readonly authStateService: AuthStateService,
         private readonly translateService: TranslateService,
         private readonly toastControllerService: ToastControllerService,
     ) { }
@@ -40,13 +38,6 @@ export class PreferencesService {
             preferenceChanged: preferenceChanged,
         })
         .pipe(
-            tap(_ => {
-                this.authStateService.updateUserData({
-                    UserId: userId,
-                    LanguageCode: language,
-                    WeightFormat: weightFormat,
-                } as Preferences);
-            }),
             switchMap((response: GeneralResponseData) =>
                 this.translateService.use(language)
                     .pipe(

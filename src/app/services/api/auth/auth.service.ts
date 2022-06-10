@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Preferences } from 'src/app/models/preferences.model';
 import { environment } from '../../../../environments/environment';
 import { Login, Signup } from '../../../models/auth/auth-data.model';
@@ -17,7 +16,6 @@ export class AuthService {
     constructor(
         private readonly http: HttpClient,
         private readonly router: Router,
-        private readonly translateService: TranslateService,
         private readonly authStateService: AuthStateService,
     ) { }
 
@@ -51,32 +49,26 @@ export class AuthService {
             Email: email,
             Password: password,
         };
-        return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/login', authData).pipe(
-            tap(async (response: AuthResponseData) => {
-                if (response.Token) {
-                    this.authStateService.emitLoggedUser(response);
-                    this.authStateService.emitIsAuth(true);
-                    this.authStateService.setToken(response.Token);
-                    const expiresInDuration: number = response.ExpiresIn;
-                    this.authStateService.setAuthTimer(expiresInDuration);
-                    const now: Date = new Date();
-                    const expirationDate: Date = new Date(now.getTime() + expiresInDuration * 1000);
-                    this.authStateService.saveLS(
-                        this.authStateService.getToken(),
-                        expirationDate,
-                        response._id,
-                        response.Preferences,
-                    );
-                    await this.router.navigate(['/training/new-training']);
-                }
-            }),
-            switchMap((response: AuthResponseData) =>
-                this.translateService.use(response.Preferences.LanguageCode)
-                    .pipe(
-                        switchMap(_ => of(response)),
-                    ),
-            ),
-        );
+        return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/login', authData)
+            .pipe(
+                tap(async (response: AuthResponseData) => {
+                    if (response.Token) {
+                        this.authStateService.emitLoggedUser(response);
+                        this.authStateService.emitIsAuth(true);
+                        this.authStateService.setToken(response.Token);
+                        const expiresInDuration = response.ExpiresIn;
+                        this.authStateService.setAuthTimer(expiresInDuration);
+                        const now = new Date();
+                        const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+                        this.authStateService.saveLS(
+                            this.authStateService.getToken(),
+                            expirationDate,
+                            response._id,
+                        );
+                        await this.router.navigate(['/training/new-training']);
+                    }
+                }),
+            );
     }
 
 }

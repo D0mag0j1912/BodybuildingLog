@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
-import { AuthResponseData } from './models/auth/auth-data.model';
-import { LocalStorageItems } from './models/common/interfaces/common.model';
+import { EMPTY } from 'rxjs';
+import { switchMap, take, takeUntil } from 'rxjs/operators';
+import { PreferencesService } from './services/shared/preferences.service';
 import { SharedService } from './services/shared/shared.service';
 import { UnsubscribeService } from './services/shared/unsubscribe.service';
 import { AuthStateService } from './services/state/auth/auth-state.service';
@@ -23,19 +23,31 @@ export class AppComponent implements OnInit {
         private readonly newTrainingStateService: NewTrainingStateService,
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
-    ) {
-        this.translateService.setDefaultLang('en');
-        const authData: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
-        this.translateService.use(authData?.Preferences?.LanguageCode || 'en')
-            .pipe(
-                takeUntil(this.unsubscribeService),
-            )
-            .subscribe();
-    }
+        private readonly preferencesService: PreferencesService,
+    ) { }
 
     ngOnInit(): void {
         this.authStateService.autoLogin();
         this.newTrainingStateService.keepTrainingState();
         this.sharedService.keepQueryParams();
+
+        this.translateService.setDefaultLang('en');
+        this.authStateService.loggedUser$
+            .pipe(
+                take(1),
+                switchMap(loggedUser => {
+                    if (loggedUser) {
+                        return this.preferencesService.getPreferences(loggedUser._id)
+                            .pipe(
+                                switchMap(preferences => this.translateService.use(preferences.LanguageCode || 'en')),
+                            );
+                    }
+                    else {
+                        return EMPTY;
+                    }
+                }),
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe();
     }
 }
