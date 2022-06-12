@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
 import { Observable, of } from 'rxjs';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { SharedService } from 'src/app/services/shared/shared.service';
+import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { SharedService } from '../../../services/shared/shared.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
@@ -17,6 +17,8 @@ import { PastTrainingsService } from '../../../services/api/training/past-traini
 import { Page } from '../../../models/common/types/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { PastTrainingsStateService } from '../../../services/state/training/past-trainings-state.service';
+import { PreferencesStateService } from '../../../services/state/shared/preferences-state.service';
+import { PreferencesService } from '../../../services/shared/preferences.service';
 import { DayActivatedType } from './show-by-day/show-by-day.component';
 
 enum Heights {
@@ -38,7 +40,7 @@ export class PastTrainingsComponent {
     size: number = DEFAULT_SIZE;
     page: number = INITIAL_PAGE;
     searchText = '';
-    periodFilter: PeriodFilterType = 'week';
+    periodFilter: PeriodFilterType = this.preferencesStateService.getPreferences()?.ShowByPeriod ?? 'week';
     dayActivated: DayActivatedType = {
         Date: startOfDay(new Date()),
         DayNumber: 0,
@@ -70,6 +72,8 @@ export class PastTrainingsComponent {
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
+        private readonly preferencesService: PreferencesService,
+        private readonly preferencesStateService: PreferencesStateService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
         private readonly datePipe: DatePipe,
@@ -148,20 +152,31 @@ export class PastTrainingsComponent {
             if (this.periodFilter === 'day') {
                 this.showByDayStartDate = mondayDate;
             }
-            this.pastTrainings$ = this.pastTrainingsService
-                .getPastTrainings(
-                    startOfWeek(mondayDate, { weekStartsOn: 1 }),
-                    this.periodFilter,
-                ).pipe(
-                    tap(async response => {
-                        await this.router.navigate([], {
-                            relativeTo: this.route,
-                            queryParams: this.handleQueryParams(response),
-                        });
-                    }),
-                    mapStreamData(),
-                );
-            this.changeDetectorRef.markForCheck();
+            const currentPreferences = this.preferencesStateService.getPreferences();
+            this.preferencesService.setPreferences(
+                {
+                    ...currentPreferences,
+                    ShowByPeriod: this.periodFilter,
+                },
+                'showByPeriod',
+            ).pipe(
+                take(1),
+            ).subscribe(_ => {
+                this.pastTrainings$ = this.pastTrainingsService
+                    .getPastTrainings(
+                        startOfWeek(mondayDate, { weekStartsOn: 1 }),
+                        this.periodFilter,
+                    ).pipe(
+                        tap(async response => {
+                            await this.router.navigate([], {
+                                relativeTo: this.route,
+                                queryParams: this.handleQueryParams(response),
+                            });
+                        }),
+                        mapStreamData(),
+                    );
+                this.changeDetectorRef.markForCheck();
+            });
         }
     }
 

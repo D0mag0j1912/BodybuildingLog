@@ -1,10 +1,13 @@
+import { PeriodFilterType } from './training/past-trainings/past-trainings.model';
 
 export interface Preferences {
     UserId?: string;
     LanguageCode?: LanguageCode;
     WeightFormat?: WeightFormat;
-    //TODO: Training: { showTrainingsBy?: 'week' | 'day' }
+    ShowByPeriod?: PeriodFilterType;
 }
+
+export type PreferenceChangedType = 'language' | 'showByPeriod';
 
 export type LanguageCode = 'en' | 'hr';
 

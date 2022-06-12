@@ -45,20 +45,6 @@ export class AuthStateService {
         this._isAuth$$.next(isAuth);
     }
 
-    updateUserData(preferences?: Preferences): void {
-        const userData: AuthResponseData = { ...this._loggedUser$$.getValue() };
-        const updatedUserData: AuthResponseData = {
-            ...userData,
-            Preferences: {
-                UserId: preferences.UserId,
-                LanguageCode: preferences.LanguageCode,
-                WeightFormat: 'kg',
-            } as Preferences,
-        };
-        this.emitLoggedUser({ ...updatedUserData });
-        localStorage.setItem(LocalStorageItems.USER_DATA, JSON.stringify({ ...updatedUserData }));
-    }
-
     autoLogin(): void {
         if (JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA))) {
             const userData: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
@@ -69,7 +55,6 @@ export class AuthStateService {
                 Token: userData.Token,
                 ExpirationDate: new Date(userData.ExpirationDate),
                 _id: userData._id,
-                Preferences: userData.Preferences,
             };
             const now: Date = new Date();
             const expiresIn: number = authData.ExpirationDate.getTime() - now.getTime();
@@ -100,13 +85,11 @@ export class AuthStateService {
         token: string,
         expirationDate: Date,
         userId: string,
-        preferences: Preferences,
     ): void {
         const userData: AuthResponseData = {
             Token: token,
             ExpirationDate: expirationDate,
             _id: userId,
-            Preferences: preferences,
         };
         localStorage.setItem(LocalStorageItems.USER_DATA, JSON.stringify(userData));
     }
