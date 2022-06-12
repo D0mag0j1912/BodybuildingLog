@@ -6,9 +6,7 @@ import { switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { MESSAGE_DURATION } from '../../constants/message-duration.const';
 import { GeneralResponseData } from '../../models/general-response.model';
-import { PreferenceChangedType, Preferences, WeightFormat } from '../../models/preferences.model';
-import { LanguageCode } from '../../models/preferences.model';
-import { PeriodFilterType } from '../../models/training/past-trainings/past-trainings.model';
+import { PreferenceChangedType, Preferences } from '../../models/preferences.model';
 import { PreferencesStateService } from '../state/shared/preferences-state.service';
 import { ToastControllerService } from './toast-controller.service';
 
