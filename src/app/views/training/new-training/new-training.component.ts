@@ -49,15 +49,8 @@ export class NewTrainingComponent {
     editMode = false;
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
-    isAuthenticated$: Observable<boolean>;
-    isEditing$: Observable<boolean>;
-
-    @ViewChild(IonContent, { read: IonContent })
-    ionContent: IonContent;
-
-    @ViewChildren(SingleExerciseComponent)
-    singleExerciseCmps: QueryList<SingleExerciseComponent>;
-
+    readonly isAuthenticated$: Observable<boolean> = this.authStateService.isAuth$;
+    readonly isEditing$: Observable<boolean> = this.sharedService.editingTraining$$;
     readonly isReorder$: Observable<boolean> = this.newTrainingStateService.currentTrainingChanged$
         .pipe(
             map(training => {
@@ -66,6 +59,12 @@ export class NewTrainingComponent {
                 return isExercise && !!isSet;
             }),
         );
+
+    @ViewChild(IonContent, { read: IonContent })
+    ionContent: IonContent;
+
+    @ViewChildren(SingleExerciseComponent)
+    singleExerciseCmps: QueryList<SingleExerciseComponent>;
 
     constructor(
         private readonly newTrainingStateService: NewTrainingStateService,
@@ -155,14 +154,12 @@ export class NewTrainingComponent {
                     ),
                 ),
             );
-        this.isAuthenticated$ = this.authStateService.isAuth$;
-        this.isEditing$ = this.sharedService.editingTraining$$;
         this.changeDetectorRef.markForCheck();
     }
 
     ionViewDidEnter(): void {
         if (this.ionContent) {
-            setTimeout(async () => await this.ionContent.scrollToBottom(300), 100);
+            setTimeout(async () => await this.ionContent.scrollToBottom(300), 300);
         }
     }
 
