@@ -8,6 +8,7 @@ import { MESSAGE_DURATION } from '../../constants/message-duration.const';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { PreferenceChangedType, Preferences, WeightFormat } from '../../models/preferences.model';
 import { LanguageCode } from '../../models/preferences.model';
+import { PreferencesStateService } from '../state/shared/preferences-state.service';
 import { ToastControllerService } from './toast-controller.service';
 
 @Injectable({ providedIn: 'root' })
@@ -17,6 +18,7 @@ export class PreferencesService {
         private readonly http: HttpClient,
         private readonly translateService: TranslateService,
         private readonly toastControllerService: ToastControllerService,
+        private readonly preferencesStateService: PreferencesStateService,
     ) { }
 
     getPreferences(userId: string): Observable<Preferences> {
@@ -42,6 +44,11 @@ export class PreferencesService {
                 this.translateService.use(language)
                     .pipe(
                         tap(async _ => {
+                            const currentPreferences = this.preferencesStateService.getPreferences();
+                            this.preferencesStateService.emitPreferences({
+                                ...currentPreferences,
+                                LanguageCode: language,
+                            });
                             if (response.Message) {
                                 await this.toastControllerService.displayToast({
                                     message: this.translateService.instant(response.Message),

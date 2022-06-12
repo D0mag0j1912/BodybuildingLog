@@ -3,9 +3,11 @@ import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 import { endOfDay, endOfWeek, format, startOfDay, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
-import { AuthResponseData } from '../../../models/auth/auth-data.model';
+import { take } from 'rxjs/operators';
+import { Preferences } from '../../../models/preferences.model';
 import { PastTrainingsQueryParams, QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthStateService } from '../../../services/state/auth/auth-state.service';
+import { PreferencesStateService } from '../../../services/state/shared/preferences-state.service';
 import { NewTrainingStateService } from '../../../services/state/training/new-training-state.service';
 import { LanguagesComponent } from './languages/languages.component';
 
@@ -18,10 +20,12 @@ import { LanguagesComponent } from './languages/languages.component';
 export class SideNavComponent implements OnInit {
 
     isAuthenticated$: Observable<boolean>;
-    loggedUserData$: Observable<AuthResponseData>;
+    private readonly preferences$: Observable<Preferences> = this.preferencesStateService.preferencesChanged$
+        .pipe(take(1));
 
     constructor(
         private readonly authStateService: AuthStateService,
+        private readonly preferencesStateService: PreferencesStateService,
         private readonly newTrainingStateService: NewTrainingStateService,
         private readonly popoverController: PopoverController,
         private readonly router: Router,
@@ -29,7 +33,6 @@ export class SideNavComponent implements OnInit {
 
     ngOnInit(): void {
         this.isAuthenticated$ = this.authStateService.isAuth$;
-        this.loggedUserData$ = this.authStateService.loggedUser$;
     }
 
     async onLogout(): Promise<void> {
@@ -38,10 +41,10 @@ export class SideNavComponent implements OnInit {
     }
 
     async goToPastTrainings(): Promise<void> {
-        const startDate: Date = startOfWeek(startOfDay(new Date()), {
+        const startDate = startOfWeek(startOfDay(new Date()), {
             weekStartsOn: 1,
         });
-        const endDate: Date = endOfWeek(endOfDay(new Date()), {
+        const endDate = endOfWeek(endOfDay(new Date()), {
             weekStartsOn: 1,
         });
         await this.router.navigate(['/training/past-trainings'], {
@@ -57,7 +60,7 @@ export class SideNavComponent implements OnInit {
         const popover = await this.popoverController.create({
             component: LanguagesComponent,
             event: $event,
-            componentProps: { loggedUserData$: this.loggedUserData$ },
+            componentProps: { preferences$: this.preferences$ },
             side: 'left',
             keyboardClose: true,
         });

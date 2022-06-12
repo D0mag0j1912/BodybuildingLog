@@ -3,7 +3,7 @@ import { MenuController, PopoverController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { take, switchMap } from 'rxjs/operators';
 import { AuthResponseData } from '../../../../models/auth/auth-data.model';
-import { LanguageCode } from '../../../../models/preferences.model';
+import { LanguageCode, Preferences } from '../../../../models/preferences.model';
 import { PreferencesService } from '../../../../services/shared/preferences.service';
 import { AuthStateService } from '../../../../services/state/auth/auth-state.service';
 
@@ -21,6 +21,9 @@ interface LanguageData {
 })
 export class LanguagesComponent {
 
+    @Input()
+    preferences$: Observable<Preferences>;
+
     readonly languageData: Readonly<LanguageData[]> = [
         {
             LanguageCode: 'en',
@@ -33,9 +36,6 @@ export class LanguagesComponent {
             LanguageName: 'languages.croatian',
         },
     ];
-
-    @Input()
-    loggedUserData$: Observable<AuthResponseData>;
 
     constructor(
         private readonly authStateService: AuthStateService,
