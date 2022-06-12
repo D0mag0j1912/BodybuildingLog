@@ -6,6 +6,7 @@ import { AuthResponseData } from '../../../../models/auth/auth-data.model';
 import { LanguageCode, Preferences } from '../../../../models/preferences.model';
 import { PreferencesService } from '../../../../services/shared/preferences.service';
 import { AuthStateService } from '../../../../services/state/auth/auth-state.service';
+import { PreferencesStateService } from '../../../../services/state/shared/preferences-state.service';
 
 interface LanguageData {
     LanguageCode: LanguageCode;
@@ -38,6 +39,7 @@ export class LanguagesComponent {
     ];
 
     constructor(
+        private readonly preferencesStateService: PreferencesStateService,
         private readonly authStateService: AuthStateService,
         private readonly navigationService: PreferencesService,
         private readonly popoverController: PopoverController,
@@ -45,17 +47,22 @@ export class LanguagesComponent {
     ) { }
 
     changeLanguage(language: LanguageCode): void {
+        const currentPreferences = this.preferencesStateService.getPreferences();
         this.authStateService.loggedUser$
             .pipe(
                 take(1),
-                switchMap((userData: AuthResponseData) =>
-                    this.navigationService.setPreferences(
-                        userData._id,
-                        language,
-                        'kg',
+                switchMap((userData: AuthResponseData) => {
+                    const preferences: Preferences = {
+                        UserId: userData._id,
+                        LanguageCode: language,
+                        WeightFormat: 'kg',
+                        ShowByPeriod: currentPreferences.ShowByPeriod,
+                    };
+                    return this.navigationService.setPreferences(
+                        preferences,
                         'language',
-                    ),
-                ),
+                    );
+                }),
             )
             .subscribe(async _ => {
                 await this.popoverController.dismiss();

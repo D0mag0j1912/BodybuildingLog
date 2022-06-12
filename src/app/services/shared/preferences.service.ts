@@ -8,6 +8,7 @@ import { MESSAGE_DURATION } from '../../constants/message-duration.const';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { PreferenceChangedType, Preferences, WeightFormat } from '../../models/preferences.model';
 import { LanguageCode } from '../../models/preferences.model';
+import { PeriodFilterType } from '../../models/training/past-trainings/past-trainings.model';
 import { PreferencesStateService } from '../state/shared/preferences-state.service';
 import { ToastControllerService } from './toast-controller.service';
 
@@ -26,29 +27,24 @@ export class PreferencesService {
     }
 
     setPreferences(
-        userId: string,
-        language: LanguageCode,
-        weightFormat: WeightFormat,
+        preferences: Preferences,
         preferenceChanged: PreferenceChangedType,
     ): Observable<GeneralResponseData> {
-        const preferences: Partial<Preferences> = {
-            LanguageCode: language,
-            WeightFormat: weightFormat,
+        const apiPreferences: Partial<Preferences> = {
+            LanguageCode: preferences.LanguageCode,
+            WeightFormat: preferences.WeightFormat,
+            ShowByPeriod: preferences.ShowByPeriod,
         };
-        return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${userId}`, {
-            preferences: preferences,
+        return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${preferences.UserId}`, {
+            preferences: apiPreferences,
             preferenceChanged: preferenceChanged,
         })
         .pipe(
             switchMap((response: GeneralResponseData) =>
-                this.translateService.use(language)
+                this.translateService.use(preferences.LanguageCode)
                     .pipe(
                         tap(async _ => {
-                            const currentPreferences = this.preferencesStateService.getPreferences();
-                            this.preferencesStateService.emitPreferences({
-                                ...currentPreferences,
-                                LanguageCode: language,
-                            });
+                            this.preferencesStateService.emitPreferences(preferences);
                             if (response.Message) {
                                 await this.toastControllerService.displayToast({
                                     message: this.translateService.instant(response.Message),
