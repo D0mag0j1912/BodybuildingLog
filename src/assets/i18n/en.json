@@ -236,6 +236,7 @@
         "facepull": "Facepull",
         "hammer_dumbbell_curl": "Hammer dumbbell curl",
         "seated_dumbbell_overhead_extension": "Seated dumbbell overhead extension",
-        "pushup": "Pushup"
+        "pushup": "Pushup",
+        "chest_press_machine": "Machine chest press"
     }
 }
