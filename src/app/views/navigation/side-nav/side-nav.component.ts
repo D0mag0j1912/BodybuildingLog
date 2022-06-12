@@ -44,7 +44,7 @@ export class SideNavComponent {
             queryParams: {
                 startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
                 endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
-                showBy: currentPreferences.ShowByPeriod,
+                showBy: currentPreferences?.ShowByPeriod ?? 'week',
             } as PastTrainingsQueryParams,
         });
     }
