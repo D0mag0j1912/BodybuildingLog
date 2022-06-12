@@ -1,14 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import { Preferences } from 'src/app/models/preferences.model';
 import { environment } from '../../../../environments/environment';
 import { Login, Signup } from '../../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { LanguageCode, WeightFormat } from '../../../models/preferences.model';
+import { PreferencesService } from '../../shared/preferences.service';
 import { AuthStateService } from '../../state/auth/auth-state.service';
+import { PreferencesStateService } from '../../state/shared/preferences-state.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -17,6 +19,8 @@ export class AuthService {
         private readonly http: HttpClient,
         private readonly router: Router,
         private readonly authStateService: AuthStateService,
+        private readonly preferencesService: PreferencesService,
+        private readonly preferencesStateService: PreferencesStateService,
     ) { }
 
     signup(
@@ -68,6 +72,11 @@ export class AuthService {
                         await this.router.navigate(['/training/new-training']);
                     }
                 }),
+                switchMap(response => this.preferencesService.getPreferences(response._id)
+                    .pipe(
+                        tap(preferences => this.preferencesStateService.emitPreferences(preferences)),
+                        switchMap(_ => of(response)),
+                    )),
             );
     }
 
