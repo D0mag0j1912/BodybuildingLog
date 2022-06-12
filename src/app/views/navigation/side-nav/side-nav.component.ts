@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 import { endOfDay, endOfWeek, format, startOfDay, startOfWeek } from 'date-fns';
@@ -17,9 +17,9 @@ import { LanguagesComponent } from './languages/languages.component';
     styleUrls: ['./side-nav.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SideNavComponent implements OnInit {
+export class SideNavComponent {
 
-    isAuthenticated$: Observable<boolean>;
+    readonly isAuthenticated$: Observable<boolean> = this.authStateService.isAuth$;
     private readonly preferences$: Observable<Preferences> = this.preferencesStateService.preferencesChanged$
         .pipe(take(1));
 
@@ -30,10 +30,6 @@ export class SideNavComponent implements OnInit {
         private readonly popoverController: PopoverController,
         private readonly router: Router,
     ) { }
-
-    ngOnInit(): void {
-        this.isAuthenticated$ = this.authStateService.isAuth$;
-    }
 
     async onLogout(): Promise<void> {
         this.newTrainingStateService.clearTrainingState();
@@ -47,11 +43,12 @@ export class SideNavComponent implements OnInit {
         const endDate = endOfWeek(endOfDay(new Date()), {
             weekStartsOn: 1,
         });
+        const currentPreferences = this.preferencesStateService.getPreferences();
         await this.router.navigate(['/training/past-trainings'], {
             queryParams: {
                 startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
                 endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
-                showBy: 'week',
+                showBy: currentPreferences.ShowByPeriod,
             } as PastTrainingsQueryParams,
         });
     }
