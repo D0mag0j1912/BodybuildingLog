@@ -64,13 +64,11 @@ export class AuthService {
                 _id: user._id,
             };
             const accessToken: string = await Promise.resolve(this.jwtService.sign(payload));
-            const preferences: PreferencesDto = await this.preferencesModel.findOne({ UserId: user._id }).exec();
             return {
                 Token: accessToken,
                 ExpiresIn: 10800,
                 _id: user._id,
                 Message: 'auth.login_success',
-                Preferences: preferences,
             } as AuthResponse;
         }
         catch (error: unknown) {
@@ -114,6 +112,7 @@ export class AuthService {
                 UserId: savedUser._id,
                 LanguageCode: language,
                 WeightFormat: weightFormat,
+                ShowByPeriod: null,
             };
             await this.preferencesModel.create(preferences);
             return {

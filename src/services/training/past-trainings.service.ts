@@ -7,7 +7,7 @@ import { paginate } from '../../helpers/pagination.helper';
 import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
 import { StreamData } from '../../models/common/response.model';
 import { Training } from '../../models/training/new-training/training.model';
-import { PastTrainings, PastTrainingsFilterType } from '../../models/training/past-trainings/past-trainings.model';
+import { PastTrainings, PeriodFilterType } from '../../models/training/past-trainings/past-trainings.model';
 import { DateInterval } from '../../models/common/dates.model';
 
 @Injectable()
@@ -71,7 +71,7 @@ export class PastTrainingsService {
 
     async getPastTrainings(
         currentDate: Date,
-        filterType: PastTrainingsFilterType,
+        filterType: PeriodFilterType,
         loggedUserId: string,
         isDeleteTraining?: boolean,
     ): Promise<StreamData<Paginator<PastTrainings>>> {
