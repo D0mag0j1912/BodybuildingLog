@@ -68,7 +68,7 @@ export class NewTrainingComponent {
 
     constructor(
         private readonly trainingStoreService: TrainingStoreService,
-        private readonly newTrainingService: TrainingService,
+        private readonly trainingService: TrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
         private readonly authStateService: AuthStoreService,
@@ -103,7 +103,7 @@ export class NewTrainingComponent {
                                     return of(value);
                                 }
                                 else {
-                                    return this.newTrainingService.getExercises();
+                                    return this.trainingService.getExercises();
                                 }
                             }),
                             tap(exercisesData => allExercisesChanged = exercisesData),
@@ -277,12 +277,12 @@ export class NewTrainingComponent {
                         };
                         this.trainingStoreService.updateTrainingState(this.editData.editTraining);
                     }),
-                    switchMap(_ => this.newTrainingService.getExercises()),
+                    switchMap(_ => this.trainingService.getExercises()),
                     mapStreamData(),
             );
         }
         else {
-            this.trainingStream$ = this.newTrainingService.getExercises()
+            this.trainingStream$ = this.trainingService.getExercises()
                 .pipe(
                     mapStreamData(),
                 );

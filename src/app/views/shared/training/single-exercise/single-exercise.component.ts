@@ -95,7 +95,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     constructor(
         private readonly trainingStoreService: TrainingStoreService,
-        private readonly newTrainingService: TrainingService,
+        private readonly trainingService: TrainingService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly changeDetectorRef: ChangeDetectorRef,
@@ -312,13 +312,13 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         this.gatherAllFormData().pipe(
             switchMap((apiNewTraining: Training) => {
                 if (this.editMode) {
-                    return this.newTrainingService.updateTraining(
+                    return this.trainingService.updateTraining(
                         apiNewTraining,
                         this.editData.editTraining?._id,
                     );
                 }
                 else {
-                    return this.newTrainingService.addTraining(apiNewTraining);
+                    return this.trainingService.addTraining(apiNewTraining);
                 }
             }),
             finalize(() => {
