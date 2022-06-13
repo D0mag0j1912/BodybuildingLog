@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
     constructor(
         private readonly authStateService: AuthStoreService,
         private readonly sharedService: SharedService,
-        private readonly newTrainingStateService: TrainingStoreService,
+        private readonly trainingStoreService: TrainingStoreService,
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly preferencesService: PreferencesService,
@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit(): void {
         this.authStateService.autoLogin();
-        this.newTrainingStateService.keepTrainingState();
+        this.trainingStoreService.keepTrainingState();
         this.sharedService.keepQueryParams();
 
         this.translateService.setDefaultLang('en');

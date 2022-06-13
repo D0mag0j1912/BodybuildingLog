@@ -26,13 +26,13 @@ export class SideNavComponent {
     constructor(
         private readonly authStateService: AuthStoreService,
         private readonly preferencesStateService: PreferencesStoreService,
-        private readonly newTrainingStateService: TrainingStoreService,
+        private readonly trainingStoreService: TrainingStoreService,
         private readonly popoverController: PopoverController,
         private readonly router: Router,
     ) { }
 
     async onLogout(): Promise<void> {
-        this.newTrainingStateService.clearTrainingState();
+        this.trainingStoreService.clearTrainingState();
         await this.authStateService.logout();
     }
 

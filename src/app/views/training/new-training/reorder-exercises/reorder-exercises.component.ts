@@ -15,18 +15,18 @@ export class ReorderExercisesComponent {
 
     private reorderedTrainingState: Training;
 
-    readonly currentExercises$: Observable<string[]> = this.newTrainingStateService.currentTrainingChanged$
+    readonly currentExercises$: Observable<string[]> = this.trainingStoreService.currentTrainingChanged$
         .pipe(
             map((training: Training) => training.exercises.map(exercise => exercise.exerciseName)),
         );
 
     constructor(
-        private readonly newTrainingStateService: TrainingStoreService,
+        private readonly trainingStoreService: TrainingStoreService,
         private readonly modalController: ModalController,
     ) { }
 
     doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
-        const currentTrainingState = this.newTrainingStateService.getCurrentTrainingState();
+        const currentTrainingState = this.trainingStoreService.getCurrentTrainingState();
         const exerciseFrom = (this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState).exercises.find((_exercise, index) => index === ev.detail.from);
         const remainingExercises = (this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState).exercises.filter((_exercise, index) => index !== ev.detail.from);
         const reorderedExercises = [

@@ -18,7 +18,7 @@ export class NewTrainingService {
     constructor(
         private readonly http: HttpClient,
         private readonly authStateService: AuthStoreService,
-        private readonly newTrainingStateService: TrainingStoreService,
+        private readonly trainingStoreService: TrainingStoreService,
     ) { }
 
     getExerciseByName(exerciseName: string): Observable<Exercise> {
@@ -30,14 +30,14 @@ export class NewTrainingService {
         return this.http.get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get_exercises')
             .pipe(
                 switchMap((response: StreamData<Exercise[]>) => {
-                    this.newTrainingStateService.emitAllExercises(response);
+                    this.trainingStoreService.emitAllExercises(response);
                     const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
                     if (!trainingState) {
                         return this.authStateService.loggedUser$
                             .pipe(
                                 take(1),
                                 tap((authResponseData: AuthResponseData) => {
-                                    this.newTrainingStateService.updateTrainingState(
+                                    this.trainingStoreService.updateTrainingState(
                                         undefined,
                                         response.Value,
                                         true,

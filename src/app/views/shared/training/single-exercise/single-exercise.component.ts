@@ -79,12 +79,12 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 startWith(undefined as ExerciseStateType),
                 switchMap(_ =>
                     combineLatest([
-                        this.newTrainingStateService.currentTrainingChanged$
+                        this.trainingStoreService.currentTrainingChanged$
                             .pipe(
                                 take(1),
                                 map((currentTrainingState: Training) => currentTrainingState.exercises),
                             ),
-                        this.newTrainingStateService.allExercisesChanged$
+                        this.trainingStoreService.allExercisesChanged$
                             .pipe(
                                 take(1),
                                 map(value => value?.Value ?? []),
@@ -94,7 +94,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
             );
 
     constructor(
-        private readonly newTrainingStateService: TrainingStoreService,
+        private readonly trainingStoreService: TrainingStoreService,
         private readonly newTrainingService: NewTrainingService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
@@ -142,7 +142,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         element: IonSelect,
     ): void {
         if (element?.value) {
-            this.newTrainingStateService.updateExerciseChoices(
+            this.trainingStoreService.updateExerciseChoices(
                 element.value,
                 indexExercise,
                 this.accessFormField('disabledTooltip', indexExercise).value as boolean,
@@ -162,7 +162,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         }));
 
         if (event) {
-            this.newTrainingStateService.addNewExercise(this.getAlreadyUsedExercises());
+            this.trainingStoreService.addNewExercise(this.getAlreadyUsedExercises());
             this.exerciseStateChanged$$.next('Add');
             this.exerciseAdded.next(event);
         }
@@ -191,11 +191,11 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 .pipe(
                     switchMap((response: OverlayEventDetail<boolean>) => {
                         if (response.role === DialogRoles.DELETE_EXERCISE) {
-                            return this.newTrainingStateService.currentTrainingChanged$
+                            return this.trainingStoreService.currentTrainingChanged$
                                 .pipe(
                                     take(1),
                                     switchMap((currentTrainingState: Training) =>
-                                        this.newTrainingStateService.deleteExercise(
+                                        this.trainingStoreService.deleteExercise(
                                             currentTrainingState as Training,
                                             exerciseName as string,
                                         ),
@@ -215,18 +215,18 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 .subscribe((data: [Training, Exercise[]]) => {
                     this.exerciseChanged = !this.exerciseChanged;
                     this.form.removeAt(indexExercise);
-                    this.newTrainingStateService.pushToAvailableExercises(
+                    this.trainingStoreService.pushToAvailableExercises(
                         data[0] as Training,
                         data[1] as Exercise[],
                     );
                 });
         }
         else {
-            this.newTrainingStateService.currentTrainingChanged$
+            this.trainingStoreService.currentTrainingChanged$
                 .pipe(
                     take(1),
                     switchMap((currentTrainingState: Training) =>
-                        this.newTrainingStateService.deleteExercise(
+                        this.trainingStoreService.deleteExercise(
                             currentTrainingState as Training,
                             null,
                             indexExercise,
@@ -253,7 +253,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         reps: $event.newSet.reps as number,
                         total: $event.newTotal as number,
                     };
-                    this.newTrainingStateService.setsChanged(trainingData);
+                    this.trainingStoreService.setsChanged(trainingData);
                     this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform($event.newTotal));
             }
             else {
@@ -264,7 +264,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     deleteSet($event: Partial<SetStateChanged>): void {
         this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform($event.newTotal));
-        this.newTrainingStateService.deleteSet(
+        this.trainingStoreService.deleteSet(
             $event.indexExercise as number,
             $event.indexSet as number,
             $event.newTotal as number,
@@ -335,7 +335,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     }
 
     private gatherAllFormData(): Observable<Training> {
-        return this.newTrainingStateService.currentTrainingChanged$.pipe(
+        return this.trainingStoreService.currentTrainingChanged$.pipe(
             take(1),
             map((currentTrainingState: Training) => {
                 const exerciseFormData: SingleExercise[] = [];
