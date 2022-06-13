@@ -22,7 +22,7 @@ import * as CommonValidators from '../../../validators/shared/common.validators'
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
 import { SingleExerciseComponent } from '../../shared/training/single-exercise/single-exercise.component';
 import { TrainingStoreService } from '../../../services/store/training/training-store.service';
-import { NewTrainingService } from '../../../services/api/training/new-training.service';
+import { TrainingService } from '../../../services/api/training/training.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
@@ -68,7 +68,7 @@ export class NewTrainingComponent {
 
     constructor(
         private readonly trainingStoreService: TrainingStoreService,
-        private readonly newTrainingService: NewTrainingService,
+        private readonly newTrainingService: TrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
         private readonly authStateService: AuthStoreService,

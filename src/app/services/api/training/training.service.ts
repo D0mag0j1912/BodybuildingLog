@@ -13,7 +13,7 @@ import { AuthStoreService } from '../../store/auth/auth-store.service';
 import { TrainingStoreService } from '../../store/training/training-store.service';
 
 @Injectable({ providedIn: 'root' })
-export class NewTrainingService {
+export class TrainingService {
 
     constructor(
         private readonly http: HttpClient,

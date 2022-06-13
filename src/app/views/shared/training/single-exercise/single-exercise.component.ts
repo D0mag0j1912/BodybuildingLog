@@ -19,7 +19,7 @@ import { FormSingleExerciseData } from '../../../../models/training/shared/singl
 import { RoundTotalWeightPipe } from '../../../../pipes/training/new-training/round-total-weight/round-total-weight.pipe';
 import { ToastControllerService } from '../../../../services/shared/toast-controller.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
-import { NewTrainingService } from '../../../../services/api/training/new-training.service';
+import { TrainingService } from '../../../../services/api/training/training.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } from '../../delete-exercise-dialog/delete-exercise-dialog.component';
 import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
@@ -95,7 +95,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     constructor(
         private readonly trainingStoreService: TrainingStoreService,
-        private readonly newTrainingService: NewTrainingService,
+        private readonly newTrainingService: TrainingService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly changeDetectorRef: ChangeDetectorRef,
