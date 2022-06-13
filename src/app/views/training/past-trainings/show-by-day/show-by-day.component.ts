@@ -35,18 +35,22 @@ export class ShowByDayComponent implements OnInit {
 
     ngOnInit(): void {
         if (this.startDate) {
-            const startOfWeekDate = startOfWeek(this.startDate, { weekStartsOn: 1 });
-            const currentDayIndex = differenceInDays(this.startDate, startOfWeekDate);
-            this.activeDay$$.next(currentDayIndex + 1);
+            this.makeDayActiveProgramatically();
         }
     }
 
-    makeDayActive(index: number): void {
+    onDayActivated(index: number): void {
         const dayNumber = index + 1;
         this.activeDay$$.next(dayNumber);
 
         const newDate = addDays(startOfWeek(this.startDate, { weekStartsOn: 1 }), index);
         this.dayActivated.next({ Date: newDate, DayNumber: index });
+    }
+
+    private makeDayActiveProgramatically(): void {
+        const startOfWeekDate = startOfWeek(this.startDate, { weekStartsOn: 1 });
+        const currentDayIndex = differenceInDays(this.startDate, startOfWeekDate);
+        this.activeDay$$.next(currentDayIndex + 1);
     }
 
 }
