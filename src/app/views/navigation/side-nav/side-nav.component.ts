@@ -37,14 +37,14 @@ export class SideNavComponent {
     }
 
     async goToPastTrainings(): Promise<void> {
+        const showByPeriod = this.preferencesStateService.getPreferences()?.ShowByPeriod ?? 'week';
         const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
-        const endDate = endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 });
-        const currentPreferences = this.preferencesStateService.getPreferences();
+        const endDate = showByPeriod === 'week' ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 }) : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
         await this.router.navigate(['/training/past-trainings'], {
             queryParams: {
                 startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
                 endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
-                showBy: currentPreferences?.ShowByPeriod ?? 'week',
+                showBy: showByPeriod,
             } as PastTrainingsQueryParams,
         });
     }
