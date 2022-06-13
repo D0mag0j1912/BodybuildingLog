@@ -5,8 +5,8 @@ import { take, switchMap } from 'rxjs/operators';
 import { AuthResponseData } from '../../../../models/auth/auth-data.model';
 import { LanguageCode, Preferences } from '../../../../models/preferences.model';
 import { PreferencesService } from '../../../../services/shared/preferences.service';
-import { AuthStateService } from '../../../../services/state/auth/auth-state.service';
-import { PreferencesStateService } from '../../../../services/state/shared/preferences-state.service';
+import { AuthStoreService } from '../../../../services/store/auth/auth-store.service';
+import { PreferencesStoreService } from '../../../../services/store/shared/preferences-state.service';
 
 interface LanguageData {
     LanguageCode: LanguageCode;
@@ -39,8 +39,8 @@ export class LanguagesComponent {
     ];
 
     constructor(
-        private readonly preferencesStateService: PreferencesStateService,
-        private readonly authStateService: AuthStateService,
+        private readonly preferencesStateService: PreferencesStoreService,
+        private readonly authStateService: AuthStoreService,
         private readonly navigationService: PreferencesService,
         private readonly popoverController: PopoverController,
         private readonly menuController: MenuController,

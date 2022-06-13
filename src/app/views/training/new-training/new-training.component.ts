@@ -21,9 +21,9 @@ import { UnsubscribeService } from '../../../services/shared/unsubscribe.service
 import * as CommonValidators from '../../../validators/shared/common.validators';
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
 import { SingleExerciseComponent } from '../../shared/training/single-exercise/single-exercise.component';
-import { NewTrainingStateService } from '../../../services/state/training/new-training-state.service';
+import { TrainingStoreService } from '../../../services/store/training/training-store.service';
 import { NewTrainingService } from '../../../services/api/training/new-training.service';
-import { AuthStateService } from '../../../services/state/auth/auth-state.service';
+import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 type FormData = {
@@ -67,11 +67,11 @@ export class NewTrainingComponent {
     singleExerciseCmps: QueryList<SingleExerciseComponent>;
 
     constructor(
-        private readonly newTrainingStateService: NewTrainingStateService,
+        private readonly newTrainingStateService: TrainingStoreService,
         private readonly newTrainingService: NewTrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedService: SharedService,
-        private readonly authStateService: AuthStateService,
+        private readonly authStateService: AuthStoreService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly route: ActivatedRoute,
         private readonly router: Router,

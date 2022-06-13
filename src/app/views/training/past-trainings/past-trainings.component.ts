@@ -16,8 +16,8 @@ import { UnsubscribeService } from '../../../services/shared/unsubscribe.service
 import { PastTrainingsService } from '../../../services/api/training/past-trainings.service';
 import { Page } from '../../../models/common/types/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
-import { PastTrainingsStateService } from '../../../services/state/training/past-trainings-state.service';
-import { PreferencesStateService } from '../../../services/state/shared/preferences-state.service';
+import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
+import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
 import { PreferencesService } from '../../../services/shared/preferences.service';
 import { DayActivatedType } from './show-by-day/show-by-day.component';
 
@@ -68,12 +68,12 @@ export class PastTrainingsComponent {
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
-        private readonly pastTrainingsStateService: PastTrainingsStateService,
+        private readonly pastTrainingsStateService: PastTrainingsStoreService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
         private readonly preferencesService: PreferencesService,
-        private readonly preferencesStateService: PreferencesStateService,
+        private readonly preferencesStateService: PreferencesStoreService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
         private readonly datePipe: DatePipe,

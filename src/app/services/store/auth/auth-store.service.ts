@@ -5,7 +5,7 @@ import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { LocalStorageItems } from '../../../models/common/interfaces/common.model';
 
 @Injectable({ providedIn: 'root' })
-export class AuthStateService {
+export class AuthStoreService {
 
     private readonly _loggedUser$$: BehaviorSubject<AuthResponseData> = new BehaviorSubject<AuthResponseData>(null);
     readonly loggedUser$: Observable<AuthResponseData> = this._loggedUser$$.asObservable();

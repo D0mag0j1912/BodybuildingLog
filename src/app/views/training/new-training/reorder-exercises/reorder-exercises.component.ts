@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
 import { Training } from '../../../../models/training/new-training/training.model';
-import { NewTrainingStateService } from '../../../../services/state/training/new-training-state.service';
+import { TrainingStoreService } from '../../../../services/store/training/training-store.service';
 
 @Component({
     templateUrl: './reorder-exercises.component.html',
@@ -21,7 +21,7 @@ export class ReorderExercisesComponent {
         );
 
     constructor(
-        private readonly newTrainingStateService: NewTrainingStateService,
+        private readonly newTrainingStateService: TrainingStoreService,
         private readonly modalController: ModalController,
     ) { }
 

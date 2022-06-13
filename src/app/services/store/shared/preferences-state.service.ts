@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Preferences } from '../../../models/preferences.model';
 
 @Injectable({ providedIn: 'root' })
-export class PreferencesStateService {
+export class PreferencesStoreService {
 
     private readonly _preferencesChanged$$: BehaviorSubject<Preferences> = new BehaviorSubject(null);
     readonly preferencesChanged$: Observable<Preferences> = this._preferencesChanged$$.asObservable();

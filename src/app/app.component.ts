@@ -5,9 +5,9 @@ import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { PreferencesService } from './services/shared/preferences.service';
 import { SharedService } from './services/shared/shared.service';
 import { UnsubscribeService } from './services/shared/unsubscribe.service';
-import { AuthStateService } from './services/state/auth/auth-state.service';
-import { PreferencesStateService } from './services/state/shared/preferences-state.service';
-import { NewTrainingStateService } from './services/state/training/new-training-state.service';
+import { AuthStoreService } from './services/store/auth/auth-store.service';
+import { PreferencesStoreService } from './services/store/shared/preferences-state.service';
+import { TrainingStoreService } from './services/store/training/training-store.service';
 
 @Component({
     selector: 'bl-root',
@@ -19,13 +19,13 @@ import { NewTrainingStateService } from './services/state/training/new-training-
 export class AppComponent implements OnInit {
 
     constructor(
-        private readonly authStateService: AuthStateService,
+        private readonly authStateService: AuthStoreService,
         private readonly sharedService: SharedService,
-        private readonly newTrainingStateService: NewTrainingStateService,
+        private readonly newTrainingStateService: TrainingStoreService,
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly preferencesService: PreferencesService,
-        private readonly preferencesStateService: PreferencesStateService,
+        private readonly preferencesStateService: PreferencesStoreService,
     ) { }
 
     ngOnInit(): void {

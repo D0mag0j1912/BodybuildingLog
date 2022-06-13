@@ -9,16 +9,16 @@ import { LocalStorageItems } from '../../../models/common/interfaces/common.mode
 import { GeneralResponseData } from '../../../models/general-response.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { Training } from '../../../models/training/new-training/training.model';
-import { AuthStateService } from '../../state/auth/auth-state.service';
-import { NewTrainingStateService } from '../../state/training/new-training-state.service';
+import { AuthStoreService } from '../../store/auth/auth-store.service';
+import { TrainingStoreService } from '../../store/training/training-store.service';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingService {
 
     constructor(
         private readonly http: HttpClient,
-        private readonly authStateService: AuthStateService,
-        private readonly newTrainingStateService: NewTrainingStateService,
+        private readonly authStateService: AuthStoreService,
+        private readonly newTrainingStateService: TrainingStoreService,
     ) { }
 
     getExerciseByName(exerciseName: string): Observable<Exercise> {

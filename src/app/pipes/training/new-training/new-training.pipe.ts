@@ -3,13 +3,13 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { Exercise } from '../../../models/training/exercise.model';
 import { Training } from '../../../models/training/new-training/training.model';
-import { NewTrainingStateService } from '../../../services/state/training/new-training-state.service';
+import { TrainingStoreService } from '../../../services/store/training/training-store.service';
 
 @Pipe({ name: 'newTraining' })
 export class NewTrainingPipe implements PipeTransform {
 
     constructor(
-        private readonly newTrainingStateService: NewTrainingStateService,
+        private readonly newTrainingStateService: TrainingStoreService,
     ) { }
 
     transform(

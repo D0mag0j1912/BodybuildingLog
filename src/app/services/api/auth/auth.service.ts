@@ -9,8 +9,8 @@ import { Login, Signup } from '../../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { LanguageCode, WeightFormat } from '../../../models/preferences.model';
 import { PreferencesService } from '../../shared/preferences.service';
-import { AuthStateService } from '../../state/auth/auth-state.service';
-import { PreferencesStateService } from '../../state/shared/preferences-state.service';
+import { AuthStoreService } from '../../store/auth/auth-store.service';
+import { PreferencesStoreService } from '../../store/shared/preferences-state.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -18,9 +18,9 @@ export class AuthService {
     constructor(
         private readonly http: HttpClient,
         private readonly router: Router,
-        private readonly authStateService: AuthStateService,
+        private readonly authStateService: AuthStoreService,
         private readonly preferencesService: PreferencesService,
-        private readonly preferencesStateService: PreferencesStateService,
+        private readonly preferencesStateService: PreferencesStoreService,
     ) { }
 
     signup(

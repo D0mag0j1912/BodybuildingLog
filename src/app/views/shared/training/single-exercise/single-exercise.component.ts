@@ -24,7 +24,7 @@ import * as SingleExerciseValidators from '../../../../validators/training/singl
 import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } from '../../delete-exercise-dialog/delete-exercise-dialog.component';
 import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
 import { ExerciseStateType } from '../../../../models/training/new-training/training.model';
-import { NewTrainingStateService } from '../../../../services/state/training/new-training-state.service';
+import { TrainingStoreService } from '../../../../services/store/training/training-store.service';
 
 const INITIAL_WEIGHT = 0;
 
@@ -94,7 +94,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
             );
 
     constructor(
-        private readonly newTrainingStateService: NewTrainingStateService,
+        private readonly newTrainingStateService: TrainingStoreService,
         private readonly newTrainingService: NewTrainingService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
