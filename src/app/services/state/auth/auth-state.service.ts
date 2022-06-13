@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { LocalStorageItems } from '../../../models/common/interfaces/common.model';
-import { Preferences } from '../../../models/preferences.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthStateService {
@@ -57,7 +56,7 @@ export class AuthStateService {
                 _id: userData._id,
             };
             const now: Date = new Date();
-            const expiresIn: number = authData.ExpirationDate.getTime() - now.getTime();
+            const expiresIn = authData.ExpirationDate.getTime() - now.getTime();
             if (expiresIn > 0) {
                 this.token = userData.Token;
                 this.setAuthTimer(expiresIn / 1000);
@@ -71,7 +70,7 @@ export class AuthStateService {
         this.token = null;
         this.emitIsAuth(false);
         clearTimeout(this.tokenTimer);
-        this.clearLS();
+        this.clearData();
         await this.router.navigate(['/auth/login']);
     }
 
@@ -94,7 +93,7 @@ export class AuthStateService {
         localStorage.setItem(LocalStorageItems.USER_DATA, JSON.stringify(userData));
     }
 
-    private clearLS(): void {
+    private clearData(): void {
         localStorage.removeItem(LocalStorageItems.USER_DATA);
         localStorage.removeItem(LocalStorageItems.TRAINING_STATE);
         localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);

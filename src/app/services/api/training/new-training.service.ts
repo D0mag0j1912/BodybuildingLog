@@ -55,7 +55,7 @@ export class NewTrainingService {
     }
 
     addTraining(trainingData: Training): Observable<GeneralResponseData> {
-        return this.http.post<GeneralResponseData>(environment.BACKEND + '/training/handle_training', { trainingData: trainingData });
+        return this.http.post<GeneralResponseData>(environment.BACKEND + '/training/handle_training', { trainingData });
     }
 
     updateTraining(
