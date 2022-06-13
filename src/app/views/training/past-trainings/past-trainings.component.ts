@@ -223,7 +223,12 @@ export class PastTrainingsComponent {
         }
         else {
             if (this.periodFilter === 'day') {
-                this.showByDayStartDate = dayFilterDate;
+                this.showByDayStartDate = this.calculateDate(
+                    $event.PageType,
+                    undefined,
+                    $event.EarliestTrainingDate,
+                    dayFilterDate,
+                );
             }
             this.pastTrainings$ =
                 this.pastTrainingsService.getPastTrainings(
@@ -232,11 +237,7 @@ export class PastTrainingsComponent {
                     :   this.onPaginatorChangedFilterHandler(
                             this.periodFilter,
                             undefined,
-                            this.calculateDate(
-                                $event.PageType,
-                                undefined,
-                                $event.EarliestTrainingDate,
-                                dayFilterDate),
+                            this.showByDayStartDate,
                     ),
                     this.periodFilter,
                 ).pipe(
@@ -330,11 +331,11 @@ export class PastTrainingsComponent {
     }
 
     private onPaginatorChangedFilterHandler(
-        filterType: PeriodFilterType,
+        periodFilterType: PeriodFilterType,
         $weekEvent?: PaginatorChanged,
         startOfCurrentWeek?: Date,
     ): Date {
-        switch (filterType) {
+        switch (periodFilterType) {
             case 'week': {
                 return this.calculateDate($weekEvent.PageType, $weekEvent.DateInterval, $weekEvent.EarliestTrainingDate);
             }
@@ -342,7 +343,7 @@ export class PastTrainingsComponent {
                 return addDays(startOfWeek(startOfCurrentWeek, { weekStartsOn: 1 }), this.dayActivated.DayNumber);
             }
             default:
-                isNeverCheck(filterType);
+                isNeverCheck(periodFilterType);
         }
     }
 
