@@ -49,7 +49,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     ];
 
     constructor(
-        private readonly pastTrainingsStateService: PastTrainingsStoreService,
+        private readonly pastTrainingsStoreService: PastTrainingsStoreService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly route: ActivatedRoute,
@@ -80,7 +80,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
         setTimeout(() => {
             if (this.searchEl) {
                 const value = this.searchEl?.value;
-                this.pastTrainingsStateService.emitSearch(value as string);
+                this.pastTrainingsStoreService.emitSearch(value as string);
             }
         });
     }

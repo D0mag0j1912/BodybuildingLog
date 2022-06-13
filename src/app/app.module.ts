@@ -1,6 +1,5 @@
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorHandler, NgModule } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -31,7 +30,6 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     imports: [
         BrowserModule,
         HttpClientModule,
-        FlexLayoutModule,
         BrowserAnimationsModule,
         AppRoutingModule,
         NavigationModule,

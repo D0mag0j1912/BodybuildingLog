@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -16,7 +15,6 @@ const COMPONENTS = [
 const EXTERNAL_IMPORTS = [
     CommonModule,
     TranslateModule,
-    FlexLayoutModule,
     RouterModule,
     IonicModule,
 ];

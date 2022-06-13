@@ -68,7 +68,7 @@ export class PastTrainingsComponent {
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
-        private readonly pastTrainingsStateService: PastTrainingsStoreService,
+        private readonly pastTrainingsStoreService: PastTrainingsStoreService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
@@ -102,7 +102,7 @@ export class PastTrainingsComponent {
     }
 
     ionViewWillEnter(): void {
-        this.pastTrainingsStateService.isSearch$
+        this.pastTrainingsStoreService.isSearch$
             .pipe(
                 takeUntil(this.unsubscribeService),
             )
@@ -114,7 +114,7 @@ export class PastTrainingsComponent {
     }
 
     searchEmitted(searchText: string): void {
-        this.pastTrainingsStateService.emitSearch(searchText);
+        this.pastTrainingsStoreService.emitSearch(searchText);
         this.page = INITIAL_PAGE;
         this.pastTrainings$ =
             of(searchText)
