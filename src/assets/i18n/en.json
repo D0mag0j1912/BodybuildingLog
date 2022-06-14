@@ -208,7 +208,8 @@
         "errors": {
             "language_required": "Language field is required",
             "language_change": "Error while trying to change language",
-            "weight_format_required": "Weight format field is required"
+            "weight_format_required": "Weight format field is required",
+            "period_change": "Error while trying to change period"
         }
     },
     "weekdays": {
