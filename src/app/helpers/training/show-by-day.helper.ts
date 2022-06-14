@@ -8,7 +8,7 @@ export function calculateLastWeekDay(startingDate: Date): Date {
 }
 
 export function calculateFirstWeekDay(
-    earliestTrainingDate: Date,
+    earliestTrainingDate: string,
     startingDate: Date,
 ): Date {
     const startOfCurrentWeek = startOfWeek(startingDate, { weekStartsOn: 1 });

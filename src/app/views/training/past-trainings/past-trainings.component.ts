@@ -357,7 +357,7 @@ export class PastTrainingsComponent {
     private calculateDate(
         page: Page,
         dateInterval: DateInterval,
-        earliestTrainingDate: Date,
+        earliestTrainingDate: string,
         startingDate?: Date,
     ): Date {
         switch (page) {
