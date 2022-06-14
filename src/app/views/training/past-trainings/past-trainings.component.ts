@@ -19,6 +19,7 @@ import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
 import { PreferencesService } from '../../../services/shared/preferences.service';
+import { calculateFirstWeekDay, calculateLastWeekDay } from '../../../helpers/training/show-by-day.helper';
 import { DayActivatedType } from './show-by-day/show-by-day.component';
 
 enum Heights {
@@ -357,20 +358,20 @@ export class PastTrainingsComponent {
         page: Page,
         dateInterval: DateInterval,
         earliestTrainingDate: Date,
-        startOfCurrentWeek?: Date,
+        startingDate?: Date,
     ): Date {
         switch (page) {
             case 'Previous': {
-                return subDays(startOfCurrentWeek ? startOfCurrentWeek : dateInterval.StartDate, 7);
+                return subDays(startingDate ? startingDate : dateInterval.StartDate, 7);
             }
             case 'Next': {
-                return addDays(startOfCurrentWeek ? startOfCurrentWeek : dateInterval.StartDate, 7);
+                return addDays(startingDate ? startingDate : dateInterval.StartDate, 7);
             }
             case 'First': {
-                return new Date(earliestTrainingDate);
+                return this.periodFilter === 'week' ? new Date(earliestTrainingDate) : calculateFirstWeekDay(earliestTrainingDate, startingDate);
             }
             case 'Last': {
-                return new Date();
+                return this.periodFilter === 'week' ? new Date() : calculateLastWeekDay(startingDate);
             }
             default:
                 return isNeverCheck(page);

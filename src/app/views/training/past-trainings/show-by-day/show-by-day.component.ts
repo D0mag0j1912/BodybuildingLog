@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -15,7 +15,7 @@ export interface DayActivatedType {
     styleUrls: ['./show-by-day.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ShowByDayComponent implements OnInit {
+export class ShowByDayComponent implements OnChanges {
 
     @Input()
     startDate: Date = startOfDay(new Date());
@@ -33,10 +33,11 @@ export class ShowByDayComponent implements OnInit {
         private readonly translateService: TranslateService,
     ) { }
 
-    ngOnInit(): void {
-        if (this.startDate) {
-            const startOfWeekDate = startOfWeek(this.startDate, { weekStartsOn: 1 });
-            const currentDayIndex = differenceInDays(this.startDate, startOfWeekDate);
+    ngOnChanges(changes: SimpleChanges): void {
+        const startDate = changes?.startDate?.currentValue as Date;
+        if (startDate) {
+            const startOfWeekDate = startOfWeek(startDate, { weekStartsOn: 1 });
+            const currentDayIndex = differenceInDays(startDate, startOfWeekDate);
             this.activeDay$$.next(currentDayIndex + 1);
         }
     }
