@@ -69,7 +69,7 @@
                             <div
                                 *skeleton="state.IsLoading; width: '305px'; height: '25px';"
                                 #timePeriod
-                                [innerHTML]="setTimePeriod$(state.Value?.Results?.Dates) | async"></div>
+                                [innerHTML]="setTimePeriod$(state.Value?.Results) | async"></div>
                         </ion-card-title>
                     </ion-card-header>
                     <ion-card-content>
@@ -93,7 +93,9 @@
                         <section class="no-trainings">
                             <ng-container *ngIf="!isSearch && state.Value?.TotalCount === 0">
                                 <h1 class="no-trainings-title">
-                                    {{ 'training.past_trainings.no_trainings' | translate: { period: (getPeriodTranslation$() | async) } }}
+                                    {{ periodFilter === 'week' ?
+                                        ('training.past_trainings.no_trainings_week' | translate) :
+                                        ('training.past_trainings.no_trainings_day' | translate: { dayName: getDayTranslation$(state.Value?.Results?.DayName) | async }) }}
                                 </h1>
                                 <ion-button
                                     mode="md"
