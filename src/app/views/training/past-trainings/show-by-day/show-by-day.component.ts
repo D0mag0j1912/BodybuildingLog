@@ -18,7 +18,7 @@ export interface DayActivatedType {
 export class ShowByDayComponent implements OnChanges {
 
     @Input()
-    startDate: Date = startOfDay(new Date());
+    startDate = startOfDay(new Date());
 
     @Output()
     readonly dayActivated: EventEmitter<DayActivatedType> = new EventEmitter<DayActivatedType>();

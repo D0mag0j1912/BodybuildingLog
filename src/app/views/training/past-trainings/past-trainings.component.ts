@@ -258,14 +258,15 @@ export class PastTrainingsComponent {
         this.initView();
     }
 
-    setTimePeriod$(dateInterval: DateInterval): Observable<string> {
+    setTimePeriod$(results: PastTrainings): Observable<string> {
+        const dateInterval = results?.Dates;
         if (dateInterval?.StartDate && dateInterval?.EndDate) {
             const isDay = isSameDay(
                 dateInterval.StartDate,
                 dateInterval.EndDate,
             );
-            if (isDay) {
-                return this.translateService.stream(`common.day`)
+            if (isDay && this.periodFilter === 'day') {
+                return this.translateService.stream(results.DayName)
                     .pipe(
                         map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate)),
                     );
