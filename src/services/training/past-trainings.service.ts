@@ -40,6 +40,7 @@ export class PastTrainingsService {
                 };
                 const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition, query);
                 results.Results.Dates = getIntervalDate(results?.Results.Trainings);
+                results.Results.DayName = this.getWeekDayName(results.Results.Dates.StartDate);
                 return {
                     IsLoading: true,
                     Value: results,
