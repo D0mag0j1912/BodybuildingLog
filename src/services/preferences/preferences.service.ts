@@ -42,7 +42,14 @@ export class PreferencesService {
             }
         }
         catch (error: unknown) {
-            throw new InternalServerErrorException('preferences.errors.language_change');
+            switch (preferenceChanged) {
+                case 'language': {
+                    throw new InternalServerErrorException('preferences.errors.language_change');
+                }
+                case 'showByPeriod': {
+                    throw new InternalServerErrorException('preferences.errors.period_change');
+                }
+            }
         }
     }
 }
