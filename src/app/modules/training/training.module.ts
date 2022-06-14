@@ -1,6 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -35,7 +34,6 @@ const EXTERNAL_IMPORTS = [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    FlexLayoutModule,
     TranslateModule,
     IonicModule,
 ];

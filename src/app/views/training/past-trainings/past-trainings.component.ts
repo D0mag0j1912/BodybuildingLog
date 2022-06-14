@@ -16,9 +16,10 @@ import { UnsubscribeService } from '../../../services/shared/unsubscribe.service
 import { PastTrainingsService } from '../../../services/api/training/past-trainings.service';
 import { Page } from '../../../models/common/types/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
-import { PastTrainingsStateService } from '../../../services/state/training/past-trainings-state.service';
-import { PreferencesStateService } from '../../../services/state/shared/preferences-state.service';
+import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
+import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
 import { PreferencesService } from '../../../services/shared/preferences.service';
+import { calculateFirstWeekDay, calculateLastWeekDay } from '../../../helpers/training/show-by-day.helper';
 import { DayActivatedType } from './show-by-day/show-by-day.component';
 
 enum Heights {
@@ -68,12 +69,12 @@ export class PastTrainingsComponent {
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
-        private readonly pastTrainingsStateService: PastTrainingsStateService,
+        private readonly pastTrainingsStoreService: PastTrainingsStoreService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
         private readonly preferencesService: PreferencesService,
-        private readonly preferencesStateService: PreferencesStateService,
+        private readonly preferencesStateService: PreferencesStoreService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
         private readonly datePipe: DatePipe,
@@ -102,7 +103,7 @@ export class PastTrainingsComponent {
     }
 
     ionViewWillEnter(): void {
-        this.pastTrainingsStateService.isSearch$
+        this.pastTrainingsStoreService.isSearch$
             .pipe(
                 takeUntil(this.unsubscribeService),
             )
@@ -114,7 +115,7 @@ export class PastTrainingsComponent {
     }
 
     searchEmitted(searchText: string): void {
-        this.pastTrainingsStateService.emitSearch(searchText);
+        this.pastTrainingsStoreService.emitSearch(searchText);
         this.page = INITIAL_PAGE;
         this.pastTrainings$ =
             of(searchText)
@@ -223,7 +224,12 @@ export class PastTrainingsComponent {
         }
         else {
             if (this.periodFilter === 'day') {
-                this.showByDayStartDate = dayFilterDate;
+                this.showByDayStartDate = this.calculateDate(
+                    $event.PageType,
+                    undefined,
+                    $event.EarliestTrainingDate,
+                    dayFilterDate,
+                );
             }
             this.pastTrainings$ =
                 this.pastTrainingsService.getPastTrainings(
@@ -232,11 +238,7 @@ export class PastTrainingsComponent {
                     :   this.onPaginatorChangedFilterHandler(
                             this.periodFilter,
                             undefined,
-                            this.calculateDate(
-                                $event.PageType,
-                                undefined,
-                                $event.EarliestTrainingDate,
-                                dayFilterDate),
+                            this.showByDayStartDate,
                     ),
                     this.periodFilter,
                 ).pipe(
@@ -330,11 +332,11 @@ export class PastTrainingsComponent {
     }
 
     private onPaginatorChangedFilterHandler(
-        filterType: PeriodFilterType,
+        periodFilterType: PeriodFilterType,
         $weekEvent?: PaginatorChanged,
         startOfCurrentWeek?: Date,
     ): Date {
-        switch (filterType) {
+        switch (periodFilterType) {
             case 'week': {
                 return this.calculateDate($weekEvent.PageType, $weekEvent.DateInterval, $weekEvent.EarliestTrainingDate);
             }
@@ -342,7 +344,7 @@ export class PastTrainingsComponent {
                 return addDays(startOfWeek(startOfCurrentWeek, { weekStartsOn: 1 }), this.dayActivated.DayNumber);
             }
             default:
-                isNeverCheck(filterType);
+                isNeverCheck(periodFilterType);
         }
     }
 
@@ -355,21 +357,21 @@ export class PastTrainingsComponent {
     private calculateDate(
         page: Page,
         dateInterval: DateInterval,
-        earliestTrainingDate: Date,
-        startOfCurrentWeek?: Date,
+        earliestTrainingDate: string,
+        startingDate?: Date,
     ): Date {
         switch (page) {
             case 'Previous': {
-                return subDays(startOfCurrentWeek ? startOfCurrentWeek : dateInterval.StartDate, 7);
+                return subDays(startingDate ? startingDate : dateInterval.StartDate, 7);
             }
             case 'Next': {
-                return addDays(startOfCurrentWeek ? startOfCurrentWeek : dateInterval.StartDate, 7);
+                return addDays(startingDate ? startingDate : dateInterval.StartDate, 7);
             }
             case 'First': {
-                return new Date(earliestTrainingDate);
+                return this.periodFilter === 'week' ? new Date(earliestTrainingDate) : calculateFirstWeekDay(earliestTrainingDate, startingDate);
             }
             case 'Last': {
-                return new Date();
+                return this.periodFilter === 'week' ? new Date() : calculateLastWeekDay(startingDate);
             }
             default:
                 return isNeverCheck(page);

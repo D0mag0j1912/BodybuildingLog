@@ -6,9 +6,9 @@ import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Preferences } from '../../../models/preferences.model';
 import { PastTrainingsQueryParams, QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
-import { AuthStateService } from '../../../services/state/auth/auth-state.service';
-import { PreferencesStateService } from '../../../services/state/shared/preferences-state.service';
-import { NewTrainingStateService } from '../../../services/state/training/new-training-state.service';
+import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
+import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
+import { TrainingStoreService } from '../../../services/store/training/training-store.service';
 import { LanguagesComponent } from './languages/languages.component';
 
 @Component({
@@ -24,27 +24,27 @@ export class SideNavComponent {
         .pipe(take(1));
 
     constructor(
-        private readonly authStateService: AuthStateService,
-        private readonly preferencesStateService: PreferencesStateService,
-        private readonly newTrainingStateService: NewTrainingStateService,
+        private readonly authStateService: AuthStoreService,
+        private readonly preferencesStateService: PreferencesStoreService,
+        private readonly trainingStoreService: TrainingStoreService,
         private readonly popoverController: PopoverController,
         private readonly router: Router,
     ) { }
 
     async onLogout(): Promise<void> {
-        this.newTrainingStateService.clearTrainingState();
+        this.trainingStoreService.clearTrainingState();
         await this.authStateService.logout();
     }
 
     async goToPastTrainings(): Promise<void> {
+        const showByPeriod = this.preferencesStateService.getPreferences()?.ShowByPeriod ?? 'week';
         const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
-        const endDate = endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 });
-        const currentPreferences = this.preferencesStateService.getPreferences();
+        const endDate = showByPeriod === 'week' ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 }) : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
         await this.router.navigate(['/training/past-trainings'], {
             queryParams: {
                 startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
                 endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
-                showBy: currentPreferences.ShowByPeriod,
+                showBy: showByPeriod,
             } as PastTrainingsQueryParams,
         });
     }

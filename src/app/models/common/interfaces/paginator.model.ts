@@ -22,7 +22,7 @@ export interface PaginatorChanged {
     readonly IsSearch?: boolean;
     readonly PageType?: Page;
     readonly DateInterval?: DateInterval;
-    readonly EarliestTrainingDate?: Date;
+    readonly EarliestTrainingDate?: string;
 }
 
 export const DEFAULT_SIZE = 3;

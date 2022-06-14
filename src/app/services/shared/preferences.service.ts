@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 import { MESSAGE_DURATION } from '../../constants/message-duration.const';
 import { GeneralResponseData } from '../../models/general-response.model';
 import { PreferenceChangedType, Preferences } from '../../models/preferences.model';
-import { PreferencesStateService } from '../state/shared/preferences-state.service';
+import { PreferencesStoreService } from '../store/shared/preferences-state.service';
 import { ToastControllerService } from './toast-controller.service';
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +17,7 @@ export class PreferencesService {
         private readonly http: HttpClient,
         private readonly translateService: TranslateService,
         private readonly toastControllerService: ToastControllerService,
-        private readonly preferencesStateService: PreferencesStateService,
+        private readonly preferencesStateService: PreferencesStoreService,
     ) { }
 
     getPreferences(userId: string): Observable<Preferences> {

@@ -9,7 +9,7 @@ import { SetTrainingData, Set } from '../../../models/training/shared/set.model'
 import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
 
 @Injectable({ providedIn: 'root' })
-export class NewTrainingStateService {
+export class TrainingStoreService {
 
     private readonly _allExercisesChanged$$: BehaviorSubject<StreamData<Exercise[]>> = new BehaviorSubject<StreamData<Exercise[]>>(null);
     readonly allExercisesChanged$: Observable<StreamData<Exercise[]>> = this._allExercisesChanged$$.asObservable();

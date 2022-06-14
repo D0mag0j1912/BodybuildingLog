@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { CanLoad, Route, Router, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { AuthStateService } from '../services/state/auth/auth-state.service';
+import { AuthStoreService } from '../services/store/auth/auth-store.service';
 
 @Injectable()
 export class AuthGuard implements CanLoad {
 
     constructor(
-        private readonly authStateService: AuthStateService,
+        private readonly authStateService: AuthStoreService,
         private readonly router: Router,
     ) { }
 

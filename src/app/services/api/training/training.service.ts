@@ -9,16 +9,16 @@ import { LocalStorageItems } from '../../../models/common/interfaces/common.mode
 import { GeneralResponseData } from '../../../models/general-response.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { Training } from '../../../models/training/new-training/training.model';
-import { AuthStateService } from '../../state/auth/auth-state.service';
-import { NewTrainingStateService } from '../../state/training/new-training-state.service';
+import { AuthStoreService } from '../../store/auth/auth-store.service';
+import { TrainingStoreService } from '../../store/training/training-store.service';
 
 @Injectable({ providedIn: 'root' })
-export class NewTrainingService {
+export class TrainingService {
 
     constructor(
         private readonly http: HttpClient,
-        private readonly authStateService: AuthStateService,
-        private readonly newTrainingStateService: NewTrainingStateService,
+        private readonly authStateService: AuthStoreService,
+        private readonly trainingStoreService: TrainingStoreService,
     ) { }
 
     getExerciseByName(exerciseName: string): Observable<Exercise> {
@@ -30,14 +30,14 @@ export class NewTrainingService {
         return this.http.get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get_exercises')
             .pipe(
                 switchMap((response: StreamData<Exercise[]>) => {
-                    this.newTrainingStateService.emitAllExercises(response);
+                    this.trainingStoreService.emitAllExercises(response);
                     const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
                     if (!trainingState) {
                         return this.authStateService.loggedUser$
                             .pipe(
                                 take(1),
                                 tap((authResponseData: AuthResponseData) => {
-                                    this.newTrainingStateService.updateTrainingState(
+                                    this.trainingStoreService.updateTrainingState(
                                         undefined,
                                         response.Value,
                                         true,
@@ -55,7 +55,7 @@ export class NewTrainingService {
     }
 
     addTraining(trainingData: Training): Observable<GeneralResponseData> {
-        return this.http.post<GeneralResponseData>(environment.BACKEND + '/training/handle_training', { trainingData: trainingData });
+        return this.http.post<GeneralResponseData>(environment.BACKEND + '/training/handle_training', { trainingData });
     }
 
     updateTraining(
