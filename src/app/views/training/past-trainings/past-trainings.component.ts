@@ -259,7 +259,7 @@ export class PastTrainingsComponent {
     }
 
     setTimePeriod$(results: PastTrainings): Observable<string> {
-        const dateInterval = results?.Dates;
+        const dateInterval = results.Dates;
         if (dateInterval?.StartDate && dateInterval?.EndDate) {
             const isDay = isSameDay(
                 dateInterval.StartDate,
