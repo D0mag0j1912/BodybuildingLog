@@ -128,6 +128,7 @@ export class PastTrainingsComponent {
                             this.page,
                         ).pipe(
                             tap(async (response: StreamData<Paginator<PastTrainings>>) => {
+                                this.showByDayStartDate = new Date();
                                 this.updatePageAndSize(response);
                                 await this.router.navigate([], {
                                     relativeTo: this.route,
