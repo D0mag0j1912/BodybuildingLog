@@ -95,8 +95,8 @@ export class PastTrainingsComponent {
         return TEMPLATE_DATE_FORMAT;
     }
     //TODO: make simple stream
-    getPeriodTranslation$(): Observable<string> {
-        return this.translateService.stream(`common.${this.periodFilter}`)
+    getDayTranslation$(dayName: string): Observable<string> {
+        return this.translateService.stream(dayName)
             .pipe(
                 map(value => value?.toLowerCase()),
             );

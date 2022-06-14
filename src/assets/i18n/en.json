@@ -152,7 +152,8 @@
             }
         },
         "past_trainings": {
-            "no_trainings": "No training found for this {{ period }}",
+            "no_trainings_week": "No trainings found for this week",
+            "no_trainings_day": "No trainings found for {{ dayName }}",
             "log_training": "Log new training",
             "training_number": "Number of trainings: ",
             "disabled_next_week": "Future weeks are not available",
