@@ -14,6 +14,8 @@ import { DeleteTrainingActionService } from 'src/services/training/training-acti
 import { SearchTrainingsController } from '../../controllers/training/past-trainings/search-trainings.controller';
 import { AuthModule } from '../auth/auth.module';
 import { PreferencesModule } from '../preferences/preferences.module';
+import { TRANSLATION_EXERCISE_SCHEMA } from '../../models/translations/exercises/translation-exercise.model';
+import { NESTED_LANGUAGE_EXERCISE_SCHEMA } from '../../models/translations/exercises/nested-language-exercise.model';
 
 const CONTROLLERS = [
     GetExercisesController,
@@ -48,6 +50,12 @@ const IMPORTS = [
         }, {
             name: 'Training',
             schema: NEW_TRAINING_SCHEMA,
+        }, {
+            name: 'TranslationExercise',
+            schema: TRANSLATION_EXERCISE_SCHEMA,
+        }, {
+            name: 'NestedLanguageExercise',
+            schema: NESTED_LANGUAGE_EXERCISE_SCHEMA,
         }]),
         ...IMPORTS,
     ],

@@ -11,7 +11,7 @@ import {
     IsString,
     Max,
     Min,
-    ValidateNested} from 'class-validator';
+    ValidateNested } from 'class-validator';
 import { Schema } from 'mongoose';
 import { SingleExercise, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model';
 
