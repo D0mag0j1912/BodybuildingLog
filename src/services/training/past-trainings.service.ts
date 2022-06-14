@@ -86,8 +86,8 @@ export class PastTrainingsService {
             };
             const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition);
             results.Results.Dates = filterType === 'week' ? dates : { StartDate: new Date(currentDate), EndDate: new Date(currentDate) };
-            results.Results.EarliestTrainingDate = (await this.getEarliestDate(loggedUserId))?.trainingDate ?? new Date();
-            results.Results.IsPreviousWeek = isPreviousWeek(results.Results?.EarliestTrainingDate, dates);
+            results.Results.EarliestTrainingDate = (await this.getEarliestDate(loggedUserId))?.trainingDate.toString() ?? new Date().toString();
+            results.Results.IsPreviousWeek = isPreviousWeek(new Date(results.Results?.EarliestTrainingDate), dates);
             results.Results.IsNextWeek = isNextWeek(dates);
             if (isDeleteTraining) {
                 results.Results.Message = 'training.past_trainings.actions.delete_success';
