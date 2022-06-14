@@ -7,6 +7,7 @@ export interface PastTrainings {
     IsPreviousWeek?: boolean;
     IsNextWeek?: boolean;
     EarliestTrainingDate?: string;
+    DayName?: string;
     Message?: string;
 }
 

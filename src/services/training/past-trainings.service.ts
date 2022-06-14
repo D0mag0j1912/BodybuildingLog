@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { endOfDay, startOfDay } from 'date-fns';
+import { endOfDay, getDay, startOfDay } from 'date-fns';
 import { getIntervalDate, isNextWeek, isPreviousWeek } from '../../helpers/date.helper';
 import { paginate } from '../../helpers/pagination.helper';
 import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
@@ -71,7 +71,7 @@ export class PastTrainingsService {
 
     async getPastTrainings(
         currentDate: Date,
-        filterType: PeriodFilterType,
+        periodFilterType: PeriodFilterType,
         loggedUserId: string,
         isDeleteTraining?: boolean,
     ): Promise<StreamData<Paginator<PastTrainings>>> {
@@ -80,15 +80,18 @@ export class PastTrainingsService {
             const condition: FilterQuery<Training> = {
                 userId: loggedUserId,
                 trainingDate: {
-                    $gte: filterType === 'week' ? dates.StartDate : startOfDay(new Date(currentDate)),
-                    $lt: filterType === 'week' ? dates.EndDate : endOfDay(new Date(currentDate)),
+                    $gte: periodFilterType === 'week' ? dates.StartDate : startOfDay(new Date(currentDate)),
+                    $lt: periodFilterType === 'week' ? dates.EndDate : endOfDay(new Date(currentDate)),
                 },
             };
             const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition);
-            results.Results.Dates = filterType === 'week' ? dates : { StartDate: new Date(currentDate), EndDate: new Date(currentDate) };
+            results.Results.Dates = periodFilterType === 'week' ? dates : { StartDate: new Date(currentDate), EndDate: new Date(currentDate) };
             results.Results.EarliestTrainingDate = (await this.getEarliestDate(loggedUserId)) ?? new Date().toString();
             results.Results.IsPreviousWeek = isPreviousWeek(new Date(results.Results?.EarliestTrainingDate), dates);
             results.Results.IsNextWeek = isNextWeek(dates);
+            if (periodFilterType === 'day') {
+                results.Results.DayName = this.getWeekDayName(new Date(currentDate));
+            }
             if (isDeleteTraining) {
                 results.Results.Message = 'training.past_trainings.actions.delete_success';
             }
@@ -103,7 +106,27 @@ export class PastTrainingsService {
         }
     }
 
-    async getEarliestDate(loggedUserId: string): Promise<string> {
+    private getWeekDayName(startDate: Date): string {
+        const dayIndex = getDay(startDate);
+        switch (dayIndex) {
+            case 0:
+                return 'weekdays.sunday';
+            case 1:
+                return 'weekdays.monday';
+            case 2:
+                return 'weekdays.tuesday';
+            case 3:
+                return 'weekdays.wednesday';
+            case 4:
+                return 'weekdays.thursday';
+            case 5:
+                return 'weekdays.friday';
+            case 6:
+                return 'weekdays.saturday';
+        }
+    }
+
+    private async getEarliestDate(loggedUserId: string): Promise<string> {
         const minDate = await this.trainingModel
             .findOne({
                 userId: loggedUserId,
