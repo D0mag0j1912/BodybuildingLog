@@ -15,5 +15,6 @@ import { AuthModule } from '../auth/auth.module';
     ],
     controllers: [PreferencesController],
     providers: [PreferencesService],
+    exports: [PreferencesService],
 })
 export class PreferencesModule {}

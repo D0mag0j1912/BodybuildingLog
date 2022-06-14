@@ -13,6 +13,7 @@ import { PastTrainingsService } from 'src/services/training/past-trainings.servi
 import { DeleteTrainingActionService } from 'src/services/training/training-actions/delete-training-action.service';
 import { SearchTrainingsController } from '../../controllers/training/past-trainings/search-trainings.controller';
 import { AuthModule } from '../auth/auth.module';
+import { PreferencesModule } from '../preferences/preferences.module';
 
 const CONTROLLERS = [
     GetExercisesController,
@@ -28,7 +29,10 @@ const SERVICES = [
     DeleteTrainingActionService,
 ];
 
-const IMPORTS = [AuthModule];
+const IMPORTS = [
+    AuthModule,
+    PreferencesModule,
+];
 
 @Module({
     imports: [

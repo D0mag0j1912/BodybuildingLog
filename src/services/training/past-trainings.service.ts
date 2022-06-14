@@ -9,12 +9,14 @@ import { StreamData } from '../../models/common/response.model';
 import { Training } from '../../models/training/new-training/training.model';
 import { PastTrainings, PeriodFilterType } from '../../models/training/past-trainings/past-trainings.model';
 import { DateInterval } from '../../models/common/dates.model';
+import { PreferencesService } from '../preferences/preferences.service';
 
 @Injectable()
 export class PastTrainingsService {
 
     constructor(
         @InjectModel('Training') private readonly trainingModel: Model<Training>,
+        private readonly preferencesService: PreferencesService,
     ) { }
     
     async searchTrainings(
@@ -44,9 +46,10 @@ export class PastTrainingsService {
                     IsError: false,
                 } as StreamData<Paginator<PastTrainings>>;
             }
+            const userPreferences = await this.preferencesService.getPreferences(loggedInUserId);
             return this.getPastTrainings(
                 new Date(),
-                'week',
+                userPreferences.ShowByPeriod,
                 loggedInUserId,
             );
         }
