@@ -266,7 +266,7 @@ export class PastTrainingsComponent {
                 dateInterval.StartDate,
                 dateInterval.EndDate,
             );
-            if (isDay && this.periodFilter === 'day') {
+            if (isDay) {
                 return this.translateService.stream(results.DayName)
                     .pipe(
                         map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate)),
