@@ -32,7 +32,7 @@ export class PastTrainingsService {
                     Size: size,
                 };
                 const condition: FilterQuery<Training> = {
-                    'exercise.exerciseName': {
+                    'exercises.exerciseName': {
                         $regex: searchValue,
                         $options: 'i',
                     },
