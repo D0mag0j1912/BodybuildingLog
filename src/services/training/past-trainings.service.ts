@@ -26,7 +26,7 @@ export class PastTrainingsService {
         page: number,
     ): Promise<StreamData<Paginator<PastTrainings>>> {
         try {
-            if (searchValue !== '' && searchValue && size && page) {
+            if (searchValue !== '') {
                 const query: PaginatorParams = {
                     Page: page,
                     Size: size,
@@ -47,12 +47,14 @@ export class PastTrainingsService {
                     IsError: false,
                 } as StreamData<Paginator<PastTrainings>>;
             }
-            const userPreferences = await this.preferencesService.getPreferences(loggedInUserId);
-            return this.getPastTrainings(
-                new Date(),
-                userPreferences.ShowByPeriod,
-                loggedInUserId,
-            );
+            else {
+                const userPreferences = await this.preferencesService.getPreferences(loggedInUserId);
+                return this.getPastTrainings(
+                    new Date(),
+                    userPreferences.ShowByPeriod,
+                    loggedInUserId,
+                );
+            }
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.past_trainings.filters.errors.search_error');
