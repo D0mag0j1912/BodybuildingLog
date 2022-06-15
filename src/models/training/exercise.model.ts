@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-    IsDefined,
     IsMongoId,
+    IsNotEmpty,
     IsOptional,
     IsString } from 'class-validator';
 import { Schema } from 'mongoose';
@@ -37,7 +37,7 @@ export class Exercise {
     _id: number;
 
     @ApiProperty()
-    @IsDefined()
+    @IsNotEmpty()
     @IsString()
     Name: string;
 
@@ -47,7 +47,14 @@ export class Exercise {
     ImageUrl: string;
 
     @ApiProperty()
-    @IsDefined()
+    @IsNotEmpty()
     @IsString()
     PrimaryMuscleGroup: string;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    Translations: {
+        hr: string;
+        en: string;
+    };
 }
