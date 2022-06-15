@@ -68,7 +68,7 @@ export class NewTrainingService {
     //TODO: check later
     async getExerciseByName(exerciseName: string): Promise<Exercise> {
         try {
-            return await this.exerciseModel.findOne({ Name: exerciseName }).exec();
+            return await this.exerciseModel.findOne({ name: exerciseName }).exec();
         }
         catch (error: unknown) {
             throw new InternalServerErrorException();

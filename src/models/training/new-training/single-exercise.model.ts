@@ -15,8 +15,8 @@ import { SET_SCHEMA } from './set.model';
 import { Set } from './set.model';
 
 export const SINGLE_EXERCISE_SCHEMA = new Schema({
-    exerciseName: {
-        type: String,
+    exerciseInfo: {
+        type: EXERCISE_SCHEMA,
         required: true,
     },
     sets: {
@@ -46,9 +46,7 @@ export class SingleExercise {
     _id: string;
 
     @ApiProperty()
-    @IsString({ message: '@training.new_training.errors.exercise_name_string' })
-    @IsNotEmpty({ message: '@training.new_training.errors.exercise_name_required' })
-    exerciseName: string;
+    exerciseInfo: Exercise;
 
     @ApiProperty()
     @ValidateNested({ each: true })

@@ -140,7 +140,7 @@ export class PastTrainingsService {
             .sort({ trainingDate: 1 })
             .limit(1)
             .exec();
-        return minDate.trainingDate.toString();
+        return minDate?.trainingDate?.toString() ?? new Date().toISOString();
     }
 
 }
