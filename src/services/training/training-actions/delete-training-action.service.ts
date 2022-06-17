@@ -6,6 +6,7 @@ import { PastTrainings } from 'src/models/training/past-trainings/past-trainings
 import { Paginator } from '../../../models/common/paginator.model';
 import { StreamData } from '../../../models/common/response.model';
 import { Error } from '../../../models/errors/error';
+import { DeleteTrainingMetaDto } from '../../../models/training/training-actions/delete-training-action.model';
 import { PreferencesService } from '../../preferences/preferences.service';
 import { PastTrainingsService } from '../past-trainings.service';
 
@@ -21,7 +22,7 @@ export class DeleteTrainingActionService {
     async deleteTraining(
         trainingId: string,
         loggedUserId: string,
-        currentDate: Date,
+        meta: DeleteTrainingMetaDto,
     ): Promise<StreamData<PastTrainings>> {
         try {
             const trainingToBeRemoved: Training = await this.trainingModel.findById(trainingId as string).exec();
@@ -30,12 +31,23 @@ export class DeleteTrainingActionService {
             }
             await this.trainingModel.findByIdAndRemove(trainingId, { useFindAndModify: false }).exec();
             const userPreferences = await this.preferencesService.getPreferences(loggedUserId);
-            const pastTrainings: StreamData<Paginator<PastTrainings>> = await this.pastTrainingService.getPastTrainings(
-                currentDate,
-                userPreferences.ShowByPeriod,
-                loggedUserId,
-                true,
-            );
+            let pastTrainings: StreamData<Paginator<PastTrainings>>;
+            if (meta?.currentDate) {
+                pastTrainings = await this.pastTrainingService.getPastTrainings(
+                    meta.currentDate,
+                    userPreferences.ShowByPeriod,
+                    loggedUserId,
+                    true,
+                );
+            }
+            else {
+                pastTrainings = await this.pastTrainingService.searchTrainings(
+                    loggedUserId,
+                    meta.searchData.searchValue,
+                    meta.searchData.size,
+                    meta.searchData.page,
+                );
+            }
             return {
                 IsLoading: true,
                 Value: pastTrainings.Value,
