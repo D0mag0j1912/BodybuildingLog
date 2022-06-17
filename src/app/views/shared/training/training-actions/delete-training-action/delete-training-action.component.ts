@@ -1,17 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
 import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { Training } from 'src/app/models/training/new-training/training.model';
-import { MESSAGE_DURATION } from '../../../../../constants/message-duration.const';
 import { StreamData } from '../../../../../models/common/interfaces/common.model';
 import { DEFAULT_SIZE, INITIAL_PAGE, Paginator } from '../../../../../models/common/interfaces/paginator.model';
 import { DialogRoles } from '../../../../../models/common/types/modal-roles.type';
 import { PastTrainings } from '../../../../../models/training/past-trainings/past-trainings.model';
 import { SharedService } from '../../../../../services/shared/shared.service';
-import { ToastControllerService } from '../../../../../services/shared/toast-controller.service';
 import { DeleteTrainingActionService } from '../../../../../services/api/training/delete-training-action.service';
 import { SearchDataDto } from '../../../../../models/common/interfaces/paginator.model';
 
@@ -44,9 +41,7 @@ export class DeleteTrainingActionComponent {
     isLoading = false;
 
     constructor(
-        private readonly translateService: TranslateService,
         private readonly sharedService: SharedService,
-        private readonly toastControllerService: ToastControllerService,
         private readonly deleteTrainingActionService: DeleteTrainingActionService,
         private readonly modalController: ModalController,
         private readonly changeDetectorRef: ChangeDetectorRef,
@@ -66,11 +61,6 @@ export class DeleteTrainingActionComponent {
             }),
         ).subscribe(async (response: StreamData<Paginator<PastTrainings>>) => {
             this.sharedService.deletedTraining$$.next(response);
-            await this.toastControllerService.displayToast({
-                message: this.translateService.instant(response?.Value?.Results?.Message ?? ''),
-                duration: MESSAGE_DURATION.GENERAL,
-                color: 'primary',
-            });
             await this.modalController.dismiss(false, DialogRoles.DELETE_TRAINING);
         });
     }
