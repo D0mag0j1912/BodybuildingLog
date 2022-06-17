@@ -209,7 +209,8 @@
         "errors": {
             "language_required": "Jezik je obvezan",
             "language_change": "Došlo je do greške pri promjeni jezika",
-            "weight_format_required": "Format težine je obvezan"
+            "weight_format_required": "Format težine je obvezan",
+            "period_change": "Došlo je do greške pri promjeni perioda"
         }
     },
     "weekdays": {

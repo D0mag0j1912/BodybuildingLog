@@ -5,9 +5,7 @@ import { map } from 'rxjs/operators';
 import { Training } from '../../../../models/training/new-training/training.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 
-@Pipe({
-    name: 'showAllExercises',
-})
+@Pipe({ name: 'showAllExercises' })
 export class ShowAllExercisesPipe implements PipeTransform {
 
     constructor(
@@ -15,7 +13,7 @@ export class ShowAllExercisesPipe implements PipeTransform {
     ) {}
 
     transform(training: Training): Observable<string> {
-        return this.translateService.stream(training.exercises?.map((x: SingleExercise) => x?.exerciseName) ?? []).pipe(
+        return this.translateService.stream(training.exercises?.map((x: SingleExercise) => x?.exerciseData.name) ?? []).pipe(
             map((value: {[key: string]: string}) => {
                 let exercisesToConcat = '';
                 Object.values(value).forEach((exerciseName: string, index: number) => {

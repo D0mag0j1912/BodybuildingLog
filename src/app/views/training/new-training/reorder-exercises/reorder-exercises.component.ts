@@ -17,7 +17,7 @@ export class ReorderExercisesComponent {
 
     readonly currentExercises$: Observable<string[]> = this.trainingStoreService.currentTrainingChanged$
         .pipe(
-            map((training: Training) => training.exercises.map(exercise => exercise.exerciseName)),
+            map((training: Training) => training.exercises.map(exercise => exercise.exerciseData.name)),
         );
 
     constructor(

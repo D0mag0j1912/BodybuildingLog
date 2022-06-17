@@ -128,6 +128,7 @@ export class PastTrainingsComponent {
                             this.page,
                         ).pipe(
                             tap(async (response: StreamData<Paginator<PastTrainings>>) => {
+                                this.showByDayStartDate = new Date();
                                 this.updatePageAndSize(response);
                                 await this.router.navigate([], {
                                     relativeTo: this.route,
@@ -265,7 +266,7 @@ export class PastTrainingsComponent {
                 dateInterval.StartDate,
                 dateInterval.EndDate,
             );
-            if (isDay && this.periodFilter === 'day') {
+            if (isDay) {
                 return this.translateService.stream(results.DayName)
                     .pipe(
                         map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate)),

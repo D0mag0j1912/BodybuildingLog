@@ -14,8 +14,8 @@ import { EditNewTrainingData, EMPTY_TRAINING_EDIT } from '../../../../models/tra
 import { Training } from '../../../../models/training/new-training/training.model';
 import { createInitialSet, SetFormValidationErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
-import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
-import { FormSingleExerciseData } from '../../../../models/training/shared/single-exercise.model';
+import { FormControlExerciseData, FormGroupExerciseData, SingleExercise } from '../../../../models/training/shared/single-exercise.model';
+import { FormControlSingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import { RoundTotalWeightPipe } from '../../../../pipes/training/new-training/round-total-weight/round-total-weight.pipe';
 import { ToastControllerService } from '../../../../services/shared/toast-controller.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
@@ -115,11 +115,14 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 }
                 (exercises as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
                     this.addExercise();
-                    if (exercise?.exerciseName) {
-                        this.accessFormField('name', indexExercise).patchValue(exercise.exerciseName as string);
-                        this.accessFormField('sets', indexExercise).patchValue(exercise.sets as Set[]);
+                    if (exercise?.exerciseData?.name) {
+                        this.accessFormGroup('exerciseData', 'name', indexExercise).patchValue(exercise.exerciseData.name);
+                        this.accessFormGroup('exerciseData', 'imageUrl', indexExercise).patchValue(exercise.exerciseData.imageUrl);
+                        this.accessFormGroup('exerciseData', 'primaryMuscleGroup', indexExercise).patchValue(exercise.exerciseData.primaryMuscleGroup);
+                        this.accessFormGroup('exerciseData', 'translations', indexExercise).patchValue(exercise.exerciseData.translations);
+                        this.accessFormField('sets', indexExercise).patchValue(exercise.sets);
                         this.accessFormField('total', indexExercise).patchValue(exercise?.total ? this.roundTotalWeightPipe.transform(exercise.total) : `0 ${DEFAULT_WEIGHT_FORMAT}`);
-                        this.accessFormField('disabledTooltip', indexExercise).patchValue(exercise.disabledTooltip as boolean);
+                        this.accessFormField('disabledTooltip', indexExercise).patchValue(exercise.disabledTooltip);
                     }
                 });
             }
@@ -142,10 +145,17 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         element: IonSelect,
     ): void {
         if (element?.value) {
+            const currentTraining = { ...this.trainingStoreService.getCurrentTrainingState() };
+            const selectedExerciseData = currentTraining.exercises[indexExercise].availableExercises.find(exercise => exercise.name === element.value as string);
+            this.accessFormGroup('exerciseData', 'imageUrl', indexExercise).patchValue(selectedExerciseData.imageUrl);
+            this.accessFormGroup('exerciseData', 'primaryMuscleGroup', indexExercise).patchValue(selectedExerciseData.primaryMuscleGroup);
+            this.accessFormGroup('exerciseData', 'translations', indexExercise).patchValue(selectedExerciseData.translations);
             this.trainingStoreService.updateExerciseChoices(
-                element.value,
+                element.value as string,
                 indexExercise,
                 this.accessFormField('disabledTooltip', indexExercise).value as boolean,
+                currentTraining,
+                selectedExerciseData,
             );
             this.exerciseChanged = !this.exerciseChanged;
             this.exerciseStateChanged$$.next('Update');
@@ -155,10 +165,15 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     addExercise(event?: UIEvent): void {
         this.form.push(new FormGroup({
-            'name': new FormControl(null, [Validators.required]),
-            'sets': new FormControl(createInitialSet()),
-            'total': new FormControl(this.roundTotalWeightPipe.transform(INITIAL_WEIGHT), [Validators.required]),
-            'disabledTooltip': new FormControl(true, [Validators.required]),
+            exerciseData: new FormGroup({
+                name: new FormControl(null, [Validators.required]),
+                imageUrl: new FormControl(null),
+                primaryMuscleGroup: new FormControl(null),
+                translations: new FormControl(null),
+            }),
+            sets: new FormControl(createInitialSet()),
+            total: new FormControl(this.roundTotalWeightPipe.transform(INITIAL_WEIGHT), [Validators.required]),
+            disabledTooltip: new FormControl(true, [Validators.required]),
         }));
 
         if (event) {
@@ -196,8 +211,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                                     take(1),
                                     switchMap((currentTrainingState: Training) =>
                                         this.trainingStoreService.deleteExercise(
-                                            currentTrainingState as Training,
-                                            exerciseName as string,
+                                            currentTrainingState,
+                                            exerciseName,
                                         ),
                                     ),
                                 );
@@ -245,9 +260,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         ).subscribe(_ => {
             if ($event?.isWeightLiftedValid &&
                 $event?.isRepsValid &&
-                this.accessFormField('name', $event.indexExercise).value) {
+                this.accessFormGroup('exerciseData', 'name', $event.indexExercise).value) {
                     const trainingData: SetTrainingData = {
-                        exerciseName: this.accessFormField('name', $event.indexExercise).value as string,
+                        exerciseName: this.accessFormGroup('exerciseData', 'name', $event.indexExercise).value as string,
                         setNumber: $event.newSet.setNumber as number,
                         weightLifted: $event.newSet.weightLifted as number,
                         reps: $event.newSet.reps as number,
@@ -276,10 +291,18 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     }
 
     accessFormField(
-        formField: keyof FormSingleExerciseData,
+        formField: keyof FormControlSingleExercise,
         indexExercise: number,
     ): AbstractControl {
         return this.form.at(indexExercise)?.get(formField);
+    }
+
+    accessFormGroup(
+        formGroup: keyof FormGroupExerciseData,
+        formField: keyof FormControlExerciseData,
+        indexExercise: number,
+    ): AbstractControl {
+        return this.form.at(indexExercise).get(formGroup)?.get(formField);
     }
 
     onSetFormChange($event: SetFormValidationErrors[]): void {
@@ -293,7 +316,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     ): boolean {
         if (this.getExercises().length > 0) {
             return (currentExercisesLength >= allExercisesLength)
-                || ((!this.accessFormField('name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
+                || ((!this.accessFormGroup('exerciseData', 'name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
                 || this.setErrors.includes('setNotEntered')
                 || this.setErrors.includes('setNotValid');
         }
@@ -342,8 +365,14 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
                 this.getExercises().forEach((_exercise: AbstractControl, indexExercise: number) => {
                     const splittedTotal: string[] = (this.accessFormField('total', indexExercise).value as string).split(' ');
+                    const exerciseData: Exercise = {
+                        name: this.accessFormGroup('exerciseData', 'name', indexExercise).value as string,
+                        imageUrl: this.accessFormGroup('exerciseData', 'imageUrl', indexExercise).value as string,
+                        primaryMuscleGroup: this.accessFormGroup('exerciseData', 'primaryMuscleGroup', indexExercise).value as string,
+                        translations: this.accessFormGroup('exerciseData', 'translations', indexExercise).value as { hr: string; en: string },
+                    };
                     exerciseFormData.push({
-                        exerciseName: this.accessFormField('name', indexExercise).value as string,
+                        exerciseData,
                         sets: [],
                         total: +splittedTotal[0],
                         disabledTooltip: this.accessFormField('disabledTooltip', indexExercise).value as boolean,
@@ -377,8 +406,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     private getAlreadyUsedExercises(): string[] {
         const alreadyUsedExercises: string[] = [];
         for (const exercise of this.getExercises()) {
-            if (exercise.get('name').value) {
-                alreadyUsedExercises.push(exercise.get('name').value as string);
+            if (exercise.get('exerciseData.name').value) {
+                alreadyUsedExercises.push(exercise.get('exerciseData.name').value as string);
             }
         }
         return alreadyUsedExercises as string[];

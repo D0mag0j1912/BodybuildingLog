@@ -23,7 +23,7 @@
             <strong
                 *ngFor="let exercise of training.exercises"
                 class="exercises-value">
-                {{ exercise.exerciseName | translate }}
+                {{ exercise.exerciseData.name | translate }}
             </strong>
         </div>
         <ion-button

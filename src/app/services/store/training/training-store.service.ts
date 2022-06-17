@@ -22,7 +22,7 @@ export class TrainingStoreService {
     }
 
     getCurrentTrainingState(): Training {
-        return this._currentTrainingChanged$$.getValue();
+        return { ...this._currentTrainingChanged$$.getValue() };
     }
 
     addBodyweightToStorage(value: string): void {
@@ -77,7 +77,7 @@ export class TrainingStoreService {
                     take(1),
                     map(value => value.Value),
                     tap(_ => {
-                        updatedExercises = updatedExercises.filter((exercise: SingleExercise) => exercise.exerciseName !== deletedExerciseName);
+                        updatedExercises = updatedExercises.filter((exercise: SingleExercise) => exercise.exerciseData.name !== deletedExerciseName);
                         updatedTraining = {
                             ...currentTrainingState,
                             exercises: updatedExercises,
@@ -86,7 +86,7 @@ export class TrainingStoreService {
                     map((allExercises: Exercise[]) =>
                         [
                             updatedTraining,
-                            allExercises.filter(exercise => exercise.Name === deletedExerciseName),
+                            allExercises.filter(exercise => exercise.name === deletedExerciseName),
                         ],
                     ),
                 );
@@ -107,7 +107,7 @@ export class TrainingStoreService {
 
     setsChanged(trainingData: SetTrainingData): void {
         const updatedTraining: Training = { ...this._currentTrainingChanged$$.getValue() };
-        const indexOfChangedExercise: number = updatedTraining.exercises.findIndex((singleExercise: SingleExercise) => singleExercise.exerciseName === trainingData.exerciseName);
+        const indexOfChangedExercise: number = updatedTraining.exercises.findIndex((singleExercise: SingleExercise) => singleExercise.exerciseData.name === trainingData.exerciseName);
         const indexFoundSet = updatedTraining.exercises[indexOfChangedExercise].sets.findIndex(set => set.setNumber === trainingData.setNumber);
 
         if (indexFoundSet > -1) {
@@ -131,7 +131,7 @@ export class TrainingStoreService {
 
     addNewExercise(alreadyUsedExercises: string[]): void {
         const allExercises: Exercise[] = [ ...this._allExercisesChanged$$.getValue().Value ];
-        const availableExercises: Exercise[] = allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.Name) === -1);
+        const availableExercises: Exercise[] = allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1);
         this.updateTrainingState(undefined, availableExercises);
     }
 
@@ -139,21 +139,21 @@ export class TrainingStoreService {
         selectedExercise: string,
         selectedIndex: number,
         disabledTooltip: boolean,
+        trainingToBeUpdated: Training,
+        selectedExerciseData: Exercise,
     ): void {
-        const updatedTraining: Training = { ...this._currentTrainingChanged$$.getValue() };
-        updatedTraining.exercises[selectedIndex].exerciseName = selectedExercise;
-        updatedTraining.exercises[selectedIndex].disabledTooltip = disabledTooltip;
-        updatedTraining.exercises.forEach((exercise: SingleExercise, index: number) => {
+        trainingToBeUpdated.exercises[selectedIndex].exerciseData = selectedExerciseData;
+        trainingToBeUpdated.exercises[selectedIndex].disabledTooltip = disabledTooltip;
+        trainingToBeUpdated.exercises.forEach((exercise: SingleExercise, index: number) => {
             if (index !== selectedIndex) {
-                exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.Name !== selectedExercise);
+                exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.name !== selectedExercise);
             }
         });
-        this.saveTrainingData({ ...updatedTraining });
+        this.saveTrainingData({ ...trainingToBeUpdated });
     }
 
     keepTrainingState(): void {
         const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
-
         if (!trainingState) {
             return;
         }
@@ -196,10 +196,10 @@ export class TrainingStoreService {
         a: Exercise,
         b: Exercise,
     ): number {
-        if (a.Name < b.Name) {
+        if (a.name < b.name) {
             return -1;
         }
-        if (a.Name > b.Name) {
+        if (a.name > b.name) {
             return 1;
         }
         return 0;
