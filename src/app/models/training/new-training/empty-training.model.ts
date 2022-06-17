@@ -22,7 +22,7 @@ export const EMPTY_TRAINING: Training = {
 
 export const createEmptyExercise = (exercises: Exercise[]): SingleExercise =>
     ({
-        exerciseName: null,
+        exerciseData: { name: null },
         sets: [],
         total: null,
         disabledTooltip: true,

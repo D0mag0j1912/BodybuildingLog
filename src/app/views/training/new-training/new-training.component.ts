@@ -54,7 +54,7 @@ export class NewTrainingComponent {
     readonly isReorder$: Observable<boolean> = this.trainingStoreService.currentTrainingChanged$
         .pipe(
             map(training => {
-                const isExercise = training.exercises.some(exercise => !!exercise.exerciseName);
+                const isExercise = training.exercises.some(exercise => !!exercise.exerciseData.name);
                 const isSet = training.exercises.find(value => value.sets.some(set => !!set.weightLifted && !!set.reps));
                 return isExercise && !!isSet;
             }),
