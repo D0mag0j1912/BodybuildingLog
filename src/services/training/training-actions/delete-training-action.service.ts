@@ -6,6 +6,7 @@ import { PastTrainings } from 'src/models/training/past-trainings/past-trainings
 import { Paginator } from '../../../models/common/paginator.model';
 import { StreamData } from '../../../models/common/response.model';
 import { Error } from '../../../models/errors/error';
+import { PreferencesService } from '../../preferences/preferences.service';
 import { PastTrainingsService } from '../past-trainings.service';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class DeleteTrainingActionService {
     constructor(
         @InjectModel('Training') private readonly trainingModel: Model<Training>,
         private readonly pastTrainingService: PastTrainingsService,
+        private readonly preferencesService: PreferencesService,
     ) { }
 
     async deleteTraining(
@@ -27,9 +29,10 @@ export class DeleteTrainingActionService {
                 throw new UnauthorizedException('common.errors.not_authorized');
             }
             await this.trainingModel.findByIdAndRemove(trainingId, { useFindAndModify: false }).exec();
+            const userPreferences = await this.preferencesService.getPreferences(loggedUserId);
             const pastTrainings: StreamData<Paginator<PastTrainings>> = await this.pastTrainingService.getPastTrainings(
                 currentDate,
-                'week',
+                userPreferences.ShowByPeriod,
                 loggedUserId,
                 true,
             );
