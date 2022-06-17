@@ -8,6 +8,7 @@ import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login.model';
 import { StreamData } from '../../../models/common/response.model';
 import { DeleteTrainingMetaDto } from '../../../models/training/training-actions/delete-training-action.model';
+import { ParseDeleteTrainingRequest } from '../../../pipes/training/parse-delete-training-request.pipe';
 
 @ApiTags('Training')
 @Controller('training/delete_training')
@@ -23,7 +24,7 @@ export class DeleteTrainingActionController {
     async deleteTraining(
         @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
-        @Query('meta') meta: DeleteTrainingMetaDto,
+        @Query(ParseDeleteTrainingRequest) meta: DeleteTrainingMetaDto,
     ): Promise<StreamData<PastTrainings>> {
         return this.deleteTrainingActionService.deleteTraining(
             trainingId,
