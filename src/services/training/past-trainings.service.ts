@@ -31,12 +31,15 @@ export class PastTrainingsService {
                     Page: page,
                     Size: size,
                 };
+                const queryWordRegex = new RegExp(searchValue, 'i');
                 const condition: FilterQuery<Training> = {
-                    'exercises.exerciseName': {
-                        $regex: searchValue,
-                        $options: 'i',
-                    },
-                    userId: loggedInUserId,
+                    $and: [{
+                        $or: [
+                            { 'exercises.exerciseData.translations.en': { $regex: queryWordRegex } },
+                            { 'exercises.exerciseData.translations.hr': { $regex: queryWordRegex } },
+                        ],
+                        userId: loggedInUserId,
+                    }],
                 };
                 const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition, query);
                 results.Results.Dates = getIntervalDate(results?.Results.Trainings);
