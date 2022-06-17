@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
-import { Training } from 'src/app/models/training/new-training/training.model';
+import { Training } from '../../../../../models/training/new-training/training.model';
 import { StreamData } from '../../../../../models/common/interfaces/common.model';
 import { DEFAULT_SIZE, INITIAL_PAGE, Paginator } from '../../../../../models/common/interfaces/paginator.model';
 import { DialogRoles } from '../../../../../models/common/types/modal-roles.type';
