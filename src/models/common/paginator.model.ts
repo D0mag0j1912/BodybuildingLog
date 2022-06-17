@@ -18,7 +18,7 @@ export interface PaginatorParams {
 export const INITIAL_PAGE = 1;
 export const DEFAULT_SIZE = 3;
 
-export class PaginateDto {
+export class SearchDataDto {
 
     @IsNotEmpty()
     page: number;
