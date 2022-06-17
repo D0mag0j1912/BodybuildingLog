@@ -39,21 +39,21 @@ export class Exercise {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    Name: string;
+    name: string;
 
     @ApiProperty()
     @IsOptional()
     @IsString()
-    ImageUrl: string;
+    imageUrl: string;
 
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    PrimaryMuscleGroup: string;
+    primaryMuscleGroup: string;
 
     @ApiProperty()
     @IsNotEmpty()
-    Translations: {
+    translations: {
         hr: string;
         en: string;
     };
