@@ -1,20 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-    IsDefined,
     IsMongoId,
+    IsNotEmpty,
     IsOptional,
     IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 
 export const EXERCISE_SCHEMA = new Schema({
-    Name: {
+    name: {
         type: String,
         required: true,
     },
-    ImageUrl: String,
-    PrimaryMuscleGroup: {
+    imageUrl: String,
+    primaryMuscleGroup: {
         type: String,
         required: true,
+    },
+    translations: {
+        hr: {
+            type: String,
+            required: true,
+        },
+        en: {
+            type: String,
+            required: true,
+        },
     },
 });
 
@@ -27,17 +37,24 @@ export class Exercise {
     _id: number;
 
     @ApiProperty()
-    @IsDefined()
+    @IsNotEmpty()
     @IsString()
-    Name: string;
+    name: string;
 
     @ApiProperty()
     @IsOptional()
     @IsString()
-    ImageUrl: string;
+    imageUrl: string;
 
     @ApiProperty()
-    @IsDefined()
+    @IsNotEmpty()
     @IsString()
-    PrimaryMuscleGroup: string;
+    primaryMuscleGroup: string;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    translations: {
+        hr: string;
+        en: string;
+    };
 }

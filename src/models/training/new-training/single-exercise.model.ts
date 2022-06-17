@@ -7,7 +7,7 @@ import {
     IsNumber,
     IsOptional,
     IsString,
-    ValidateNested} from 'class-validator';
+    ValidateNested } from 'class-validator';
 import { Schema } from 'mongoose';
 import { EXERCISE_SCHEMA } from '../exercise.model';
 import { Exercise } from '../exercise.model';
@@ -15,8 +15,8 @@ import { SET_SCHEMA } from './set.model';
 import { Set } from './set.model';
 
 export const SINGLE_EXERCISE_SCHEMA = new Schema({
-    exerciseName: {
-        type: String,
+    exerciseData: {
+        type: EXERCISE_SCHEMA,
         required: true,
     },
     sets: {
@@ -46,9 +46,7 @@ export class SingleExercise {
     _id: string;
 
     @ApiProperty()
-    @IsString({ message: '@training.new_training.errors.exercise_name_string' })
-    @IsNotEmpty({ message: '@training.new_training.errors.exercise_name_required' })
-    exerciseName: string;
+    exerciseData: Exercise;
 
     @ApiProperty()
     @ValidateNested({ each: true })
