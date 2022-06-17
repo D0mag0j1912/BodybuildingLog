@@ -62,6 +62,7 @@ export class PastTrainingsComponent {
         if (timePeriodElement) {
             const trainingElement = (this.trainingItemWrapper?.nativeElement as HTMLDivElement);
             if (trainingElement) {
+                //TODO: Fix isSearch behavior. Too late assigned to true
                 trainingElement.style.maxHeight = `calc(100vh - ${this.isSearch ? Heights.SEARCH_HEIGHT : Heights.WEEK_HEIGHT}px)`;
             }
         }
