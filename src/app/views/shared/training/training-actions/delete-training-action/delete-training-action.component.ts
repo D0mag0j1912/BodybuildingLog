@@ -7,12 +7,13 @@ import { catchError, finalize } from 'rxjs/operators';
 import { Training } from 'src/app/models/training/new-training/training.model';
 import { MESSAGE_DURATION } from '../../../../../constants/message-duration.const';
 import { StreamData } from '../../../../../models/common/interfaces/common.model';
-import { Paginator } from '../../../../../models/common/interfaces/paginator.model';
+import { DEFAULT_SIZE, INITIAL_PAGE, Paginator } from '../../../../../models/common/interfaces/paginator.model';
 import { DialogRoles } from '../../../../../models/common/types/modal-roles.type';
 import { PastTrainings } from '../../../../../models/training/past-trainings/past-trainings.model';
 import { SharedService } from '../../../../../services/shared/shared.service';
 import { ToastControllerService } from '../../../../../services/shared/toast-controller.service';
 import { DeleteTrainingActionService } from '../../../../../services/api/training/delete-training-action.service';
+import { SearchDataDto } from '../../../../../models/common/interfaces/paginator.model';
 
 export interface DeleteTrainingActionDialogData {
     readonly title$: Observable<string>;
@@ -56,11 +57,7 @@ export class DeleteTrainingActionComponent {
         this.isLoading = true;
         this.deleteTrainingActionService.deleteTraining(
             trainingId,
-            new Date(`
-                ${this.getSplittedCurrentDate()[2]}-
-                ${this.getSplittedCurrentDate()[1]}-
-                ${this.getSplittedCurrentDate()[0]}
-            `),
+            this.getDeleteTrainingMeta(),
         ).pipe(
             catchError(_ => EMPTY),
             finalize(() => {
@@ -82,7 +79,34 @@ export class DeleteTrainingActionComponent {
         await this.modalController.dismiss(false, DialogRoles.CANCEL);
     }
 
-    private getSplittedCurrentDate(): string[] {
-        return (this.route.snapshot.queryParams.startDate as string)?.split('-');
+    private getDeleteTrainingMeta(): {
+        searchData: SearchDataDto | undefined;
+        currentDate: Date | undefined;
+    } {
+        const isSearch = !!this.route.snapshot.queryParams?.search;
+        if (isSearch) {
+            const searchValue = (this.route.snapshot.queryParams?.search as string).trim();
+            const page = +this.route.snapshot.queryParams?.page ?? INITIAL_PAGE;
+            const size = +this.route.snapshot.queryParams?.size ?? DEFAULT_SIZE;
+            return {
+                searchData: {
+                    page: page,
+                    size: size,
+                    searchValue: searchValue,
+                } as SearchDataDto,
+                currentDate: undefined,
+            };
+        }
+        else {
+            const splittedDate = (this.route.snapshot.queryParams.startDate as string)?.split('-');
+            return {
+                searchData: undefined,
+                currentDate: new Date(`
+                    ${splittedDate[2]}-
+                    ${splittedDate[1]}-
+                    ${splittedDate[0]}
+                `),
+            };
+        }
     }
 }
