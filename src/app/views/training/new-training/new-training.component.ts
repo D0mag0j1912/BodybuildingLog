@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
@@ -39,7 +39,7 @@ type FormData = {
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class NewTrainingComponent {
+export class NewTrainingComponent implements OnDestroy {
 
     formattedTodayDate: string;
 
@@ -50,13 +50,13 @@ export class NewTrainingComponent {
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
     readonly isAuthenticated$: Observable<boolean> = this.authStateService.isAuth$;
-    readonly isEditing$: Observable<boolean> = this.sharedService.editingTraining$$;
+    readonly isEditing$: Observable<boolean> = this.sharedService.editingTraining$;
     readonly isReorder$: Observable<boolean> = this.trainingStoreService.currentTrainingChanged$
         .pipe(
             map(training => {
-                const isExercise = training.exercises.some(exercise => !!exercise.exerciseData.name);
-                const isSet = training.exercises.find(value => value.sets.some(set => !!set.weightLifted && !!set.reps));
-                return isExercise && !!isSet;
+                const exercises = training.exercises;
+                const areAtLeastTwoExercises = exercises.length >= 2 && exercises.every(exercise => !!exercise.exerciseData.name && exercise.sets.length > 0);
+                return areAtLeastTwoExercises;
             }),
         );
 
@@ -146,7 +146,7 @@ export class NewTrainingComponent {
                             );
                     }
                 }),
-                tap(_ => this.sharedService.editingTraining$$.next(this.editMode)),
+                tap(_ => this.sharedService.emitEditingTraining(this.editMode)),
                 switchMap(_ => of(allExercisesChanged)
                     .pipe(
                         tap(_ => this._formInit()),
@@ -164,7 +164,11 @@ export class NewTrainingComponent {
     }
 
     ionViewDidLeave(): void {
-        this.sharedService.editingTraining$$.next(false);
+        this.sharedService.emitEditingTraining(false);
+    }
+
+    ngOnDestroy(): void {
+        this.sharedService.completeDayClicked();
     }
 
     async openReorderModal(): Promise<void> {
@@ -295,8 +299,9 @@ export class NewTrainingComponent {
 
     private _formInit(): void {
         const currentTrainingState = { ...this.trainingStoreService.getCurrentTrainingState() };
+        const dayClickedDate = this.sharedService.getDayClickedDate();
         this.accessFormData('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
-        this.accessFormData('date').patchValue(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString());
+        this.accessFormData('date').patchValue(this._fillTrainingDate(dayClickedDate));
         this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);
         this._setFormattedDate(this.accessFormData('date').value);
     }
@@ -304,6 +309,15 @@ export class NewTrainingComponent {
     private _setFormattedDate(dateValue: string): void {
         const [ date, time ] = dateValue.split('T');
         this.formattedTodayDate = format(parseISO(format(new Date(date), 'yyyy-MM-dd') + `T${time}`), 'HH:mm, MMM d, yyyy');
+    }
+
+    private _fillTrainingDate(dayClickedDate: string | undefined): string {
+        if (this.editData?.editedDate) {
+            return this.editData.editedDate as string;
+        }
+        else {
+            return dayClickedDate ? dayClickedDate : new Date().toISOString();
+        }
     }
 
     private _fillBodyweight(currentTrainingState: Training): string {

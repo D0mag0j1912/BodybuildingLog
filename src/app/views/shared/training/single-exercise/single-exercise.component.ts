@@ -7,8 +7,8 @@ import { BehaviorSubject, combineLatest, EMPTY, from, Observable, of, Subject } 
 import { finalize, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../../constants/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { GeneralResponseData } from '../../../../models/general-response.model';
-import { DEFAULT_WEIGHT_FORMAT } from '../../../../models/preferences.model';
+import { GeneralResponseData } from '../../../../models/interfaces/general-response.model';
+import { DEFAULT_WEIGHT_FORMAT } from '../../../../constants/default-weight-format.const';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { EditNewTrainingData, EMPTY_TRAINING_EDIT } from '../../../../models/training/new-training/empty-training.model';
 import { Training } from '../../../../models/training/new-training/training.model';

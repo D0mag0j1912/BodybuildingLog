@@ -5,8 +5,9 @@ import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { MESSAGE_DURATION } from '../../constants/message-duration.const';
-import { GeneralResponseData } from '../../models/general-response.model';
-import { PreferenceChangedType, Preferences } from '../../models/preferences.model';
+import { GeneralResponseData } from '../../models/interfaces/general-response.model';
+import { Preferences } from '../../models/interfaces/preferences.model';
+import { PreferenceChangedType } from '../../models/types/preferences.type';
 import { PreferencesStoreService } from '../store/shared/preferences-state.service';
 import { ToastControllerService } from './toast-controller.service';
 

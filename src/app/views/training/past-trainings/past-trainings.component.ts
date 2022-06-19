@@ -2,9 +2,10 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
+import { add, addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
 import { Observable, of } from 'rxjs';
-import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { NavController } from '@ionic/angular';
 import { SharedService } from '../../../services/shared/shared.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
@@ -19,8 +20,8 @@ import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
 import { PreferencesService } from '../../../services/shared/preferences.service';
-import { calculateFirstWeekDay, calculateLastWeekDay } from '../../../helpers/training/show-by-day.helper';
-import { DayActivatedType } from './show-by-day/show-by-day.component';
+import { calculateFirstWeekDay, calculateLastWeekDay, getCurrentDayIndex } from '../../../helpers/training/show-by-day.helper';
+import { DayActivatedType } from '../../../models/types/day-activated.type';
 
 enum Heights {
     WEEK_HEIGHT = 315,
@@ -62,8 +63,12 @@ export class PastTrainingsComponent {
         if (timePeriodElement) {
             const trainingElement = (this.trainingItemWrapper?.nativeElement as HTMLDivElement);
             if (trainingElement) {
-                //TODO: Fix isSearch behavior. Too late assigned to true
-                trainingElement.style.maxHeight = `calc(100vh - ${this.isSearch ? Heights.SEARCH_HEIGHT : Heights.WEEK_HEIGHT}px)`;
+                of(this.isSearch)
+                    .pipe(
+                        delay(0),
+                        takeUntil(this.unsubscribeService),
+                    )
+                    .subscribe(isSearch => trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? Heights.SEARCH_HEIGHT : Heights.WEEK_HEIGHT}px)`);
             }
         }
     }
@@ -80,6 +85,7 @@ export class PastTrainingsComponent {
         private readonly route: ActivatedRoute,
         private readonly datePipe: DatePipe,
         private readonly router: Router,
+        private readonly navController: NavController,
     ) {
         this.sharedService.deletedTraining$$
             .pipe(
@@ -154,6 +160,10 @@ export class PastTrainingsComponent {
             this.periodFilter = $event;
             if (this.periodFilter === 'day') {
                 this.showByDayStartDate = mondayDate;
+                this.dayActivated = {
+                    Date: this.showByDayStartDate,
+                    DayNumber: getCurrentDayIndex(this.showByDayStartDate),
+                };
             }
             const currentPreferences = this.preferencesStateService.getPreferences();
             this.preferencesService.setPreferences(
@@ -232,6 +242,10 @@ export class PastTrainingsComponent {
                     $event.EarliestTrainingDate,
                     dayFilterDate,
                 );
+                this.dayActivated = {
+                    Date: this.showByDayStartDate,
+                    DayNumber: getCurrentDayIndex(this.showByDayStartDate),
+                };
             }
             this.pastTrainings$ =
                 this.pastTrainingsService.getPastTrainings(
@@ -255,6 +269,13 @@ export class PastTrainingsComponent {
                 );
         }
     }
+
+    async logNewTraining(): Promise<void> {
+        const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
+        this.sharedService.emitDayClicked(dayClickedDate.toISOString());
+        await this.navController.navigateForward('/training/new-training');
+    }
+
     //TODO: align with 'ShowByDay' feature
     tryAgain(): void {
         this.initView();
@@ -323,6 +344,10 @@ export class PastTrainingsComponent {
             this.periodFilter = this.route.snapshot.queryParamMap?.get('showBy') as PeriodFilterType;
             if (this.periodFilter === 'day') {
                 this.showByDayStartDate = this.getDateTimeQueryParams();
+                this.dayActivated = {
+                    Date: this.showByDayStartDate,
+                    DayNumber: getCurrentDayIndex(this.showByDayStartDate),
+                };
             }
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
                 this.getDateTimeQueryParams(),
