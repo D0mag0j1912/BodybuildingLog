@@ -54,9 +54,9 @@ export class NewTrainingComponent implements OnDestroy {
     readonly isReorder$: Observable<boolean> = this.trainingStoreService.currentTrainingChanged$
         .pipe(
             map(training => {
-                const isExercise = training.exercises.some(exercise => !!exercise.exerciseData.name);
-                const isSet = training.exercises.find(value => value.sets.some(set => !!set.weightLifted && !!set.reps));
-                return isExercise && !!isSet;
+                const exercises = training.exercises;
+                const areAtLeastTwoExercises = exercises.length >= 2 && exercises.every(exercise => !!exercise.exerciseData.name && exercise.sets.length > 0);
+                return areAtLeastTwoExercises;
             }),
         );
 
