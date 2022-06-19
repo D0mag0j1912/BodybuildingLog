@@ -16,6 +16,10 @@ export class SharedService {
 
     readonly dayClicked$$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
+    getDayClickedDate(): string | undefined {
+        return this.dayClicked$$.getValue();
+    }
+
     keepQueryParams(): void {
         const queryParams = JSON.parse(localStorage.getItem(LocalStorageItems.QUERY_PARAMS));
         if (!queryParams) {

@@ -165,6 +165,7 @@ export class NewTrainingComponent {
 
     ionViewDidLeave(): void {
         this.sharedService.editingTraining$$.next(false);
+        this.sharedService.dayClicked$$.next(null);
     }
 
     async openReorderModal(): Promise<void> {
@@ -295,8 +296,9 @@ export class NewTrainingComponent {
 
     private _formInit(): void {
         const currentTrainingState = { ...this.trainingStoreService.getCurrentTrainingState() };
+        const dayClickedDate = this.sharedService.getDayClickedDate();
         this.accessFormData('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
-        this.accessFormData('date').patchValue(this.editData?.editedDate ? this.editData.editedDate : new Date().toISOString());
+        this.accessFormData('date').patchValue(this._fillTrainingDate(dayClickedDate));
         this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);
         this._setFormattedDate(this.accessFormData('date').value);
     }
@@ -304,6 +306,15 @@ export class NewTrainingComponent {
     private _setFormattedDate(dateValue: string): void {
         const [ date, time ] = dateValue.split('T');
         this.formattedTodayDate = format(parseISO(format(new Date(date), 'yyyy-MM-dd') + `T${time}`), 'HH:mm, MMM d, yyyy');
+    }
+
+    private _fillTrainingDate(dayClickedDate: string | undefined): string {
+        if (this.editData?.editedDate) {
+            return this.editData.editedDate as string;
+        }
+        else {
+            return dayClickedDate ? dayClickedDate : new Date().toISOString();
+        }
     }
 
     private _fillBodyweight(currentTrainingState: Training): string {

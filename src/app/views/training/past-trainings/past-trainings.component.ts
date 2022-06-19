@@ -2,9 +2,10 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
+import { add, addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
 import { Observable, of } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { NavController } from '@ionic/angular';
 import { SharedService } from '../../../services/shared/shared.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
@@ -84,6 +85,7 @@ export class PastTrainingsComponent {
         private readonly route: ActivatedRoute,
         private readonly datePipe: DatePipe,
         private readonly router: Router,
+        private readonly navController: NavController,
     ) {
         this.sharedService.deletedTraining$$
             .pipe(
@@ -259,6 +261,13 @@ export class PastTrainingsComponent {
                 );
         }
     }
+
+    async logNewTraining(): Promise<void> {
+        const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
+        this.sharedService.dayClicked$$.next(dayClickedDate.toISOString());
+        await this.navController.navigateForward('/training/new-training');
+    }
+
     //TODO: align with 'ShowByDay' feature
     tryAgain(): void {
         this.initView();

@@ -100,9 +100,8 @@
                                 <ion-button
                                     mode="md"
                                     type="button"
-                                    routerLink="/training/new-training"
-                                    routerDirection="forward"
-                                    color="primary">
+                                    color="primary"
+                                    (click)="logNewTraining()">
                                     {{ 'training.past_trainings.log_training' | translate }}
                                 </ion-button>
                             </ng-container>
