@@ -160,6 +160,10 @@ export class PastTrainingsComponent {
             this.periodFilter = $event;
             if (this.periodFilter === 'day') {
                 this.showByDayStartDate = mondayDate;
+                this.dayActivated = {
+                    Date: this.showByDayStartDate,
+                    DayNumber: getCurrentDayIndex(this.showByDayStartDate),
+                };
             }
             const currentPreferences = this.preferencesStateService.getPreferences();
             this.preferencesService.setPreferences(
@@ -238,6 +242,10 @@ export class PastTrainingsComponent {
                     $event.EarliestTrainingDate,
                     dayFilterDate,
                 );
+                this.dayActivated = {
+                    Date: this.showByDayStartDate,
+                    DayNumber: getCurrentDayIndex(this.showByDayStartDate),
+                };
             }
             this.pastTrainings$ =
                 this.pastTrainingsService.getPastTrainings(
