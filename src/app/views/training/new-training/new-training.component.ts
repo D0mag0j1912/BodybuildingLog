@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
@@ -39,7 +39,7 @@ type FormData = {
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class NewTrainingComponent {
+export class NewTrainingComponent implements OnDestroy {
 
     formattedTodayDate: string;
 
@@ -165,7 +165,10 @@ export class NewTrainingComponent {
 
     ionViewDidLeave(): void {
         this.sharedService.editingTraining$$.next(false);
-        this.sharedService.dayClicked$$.next(null);
+    }
+
+    ngOnDestroy(): void {
+        this.sharedService.completeDayClicked();
     }
 
     async openReorderModal(): Promise<void> {

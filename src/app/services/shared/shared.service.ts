@@ -16,6 +16,14 @@ export class SharedService {
 
     readonly dayClicked$$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
+    completeDayClicked(): void {
+        this.dayClicked$$.complete();
+    }
+
+    emitDayClicked(dayClicked: string): void {
+        this.dayClicked$$.next(dayClicked);
+    }
+
     getDayClickedDate(): string | undefined {
         return this.dayClicked$$.getValue();
     }

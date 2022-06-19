@@ -264,7 +264,7 @@ export class PastTrainingsComponent {
 
     async logNewTraining(): Promise<void> {
         const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
-        this.sharedService.dayClicked$$.next(dayClickedDate.toISOString());
+        this.sharedService.emitDayClicked(dayClickedDate.toISOString());
         await this.navController.navigateForward('/training/new-training');
     }
 
