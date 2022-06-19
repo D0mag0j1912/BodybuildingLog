@@ -50,7 +50,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
     readonly isAuthenticated$: Observable<boolean> = this.authStateService.isAuth$;
-    readonly isEditing$: Observable<boolean> = this.sharedService.editingTraining$$;
+    readonly isEditing$: Observable<boolean> = this.sharedService.editingTraining$;
     readonly isReorder$: Observable<boolean> = this.trainingStoreService.currentTrainingChanged$
         .pipe(
             map(training => {
@@ -146,7 +146,7 @@ export class NewTrainingComponent implements OnDestroy {
                             );
                     }
                 }),
-                tap(_ => this.sharedService.editingTraining$$.next(this.editMode)),
+                tap(_ => this.sharedService.emitEditingTraining(this.editMode)),
                 switchMap(_ => of(allExercisesChanged)
                     .pipe(
                         tap(_ => this._formInit()),
@@ -164,7 +164,7 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     ionViewDidLeave(): void {
-        this.sharedService.editingTraining$$.next(false);
+        this.sharedService.emitEditingTraining(false);
     }
 
     ngOnDestroy(): void {

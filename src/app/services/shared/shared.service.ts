@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { StreamData } from '../../models/common/interfaces/common.model';
 import { Paginator } from '../../models/common/interfaces/paginator.model';
 import { PastTrainings, PastTrainingsQueryParams } from '../../models/training/past-trainings/past-trainings.model';
@@ -8,7 +8,8 @@ import { LocalStorageItems } from '../../models/common/interfaces/common.model';
 @Injectable({ providedIn: 'root' })
 export class SharedService {
 
-    readonly editingTraining$$: Subject<boolean> = new Subject<boolean>();
+    private readonly editingTraining$$: Subject<boolean> = new Subject<boolean>();
+    readonly editingTraining$: Observable<boolean> = this.editingTraining$$.asObservable();
 
     readonly pastTrainingsQueryParams$$: BehaviorSubject<PastTrainingsQueryParams> = new BehaviorSubject<PastTrainingsQueryParams>(null);
 
@@ -26,6 +27,10 @@ export class SharedService {
 
     getDayClickedDate(): string | undefined {
         return this.dayClicked$$.getValue();
+    }
+
+    emitEditingTraining(editMode: boolean): void {
+        this.editingTraining$$.next(editMode);
     }
 
     keepQueryParams(): void {
