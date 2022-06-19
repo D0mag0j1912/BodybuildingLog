@@ -4,7 +4,7 @@ import { PopoverController } from '@ionic/angular';
 import { endOfDay, endOfWeek, format, startOfDay, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { Preferences } from '../../../models/preferences.model';
+import { Preferences } from '../../../models/interfaces/preferences.model';
 import { PastTrainingsQueryParams, QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';

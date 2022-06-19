@@ -6,7 +6,7 @@ import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
 import { environment } from '../../../../environments/environment';
 import { StreamData } from '../../../models/common/interfaces/common.model';
 import { LocalStorageItems } from '../../../models/common/interfaces/common.model';
-import { GeneralResponseData } from '../../../models/general-response.model';
+import { GeneralResponseData } from '../../../models/interfaces/general-response.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { Training } from '../../../models/training/new-training/training.model';
 import { AuthStoreService } from '../../store/auth/auth-store.service';

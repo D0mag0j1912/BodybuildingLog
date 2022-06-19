@@ -5,7 +5,7 @@ import { EMPTY } from 'rxjs';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
-import { LanguageCode, WeightFormat } from '../../../models/preferences.model';
+import { LanguageCode, WeightFormat } from '../../../models/types/preferences.type';
 import { AuthService } from '../../../services/api/auth/auth.service';
 import { SignupService } from '../../../services/api/auth/signup.service';
 import { LoadingControllerService } from '../../../services/shared/loading-controller.service';
