@@ -1,5 +1,5 @@
 
 export interface DayActivatedType {
-    Date: Date;
+    readonly Date: Date;
     readonly DayNumber: number;
 }

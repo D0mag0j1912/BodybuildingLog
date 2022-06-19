@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Out
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { addDays, differenceInDays, startOfDay, startOfWeek } from 'date-fns';
+import { addDays, startOfDay, startOfWeek } from 'date-fns';
 import { DayActivatedType } from '../../../../models/types/day-activated.type';
+import { getCurrentDayIndex } from '../../../../helpers/training/show-by-day.helper';
 
 @Component({
     selector: 'bl-show-by-day',
@@ -32,9 +33,7 @@ export class ShowByDayComponent implements OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         const startDate = changes?.startDate?.currentValue as Date;
         if (startDate) {
-            const startOfWeekDate = startOfWeek(startDate, { weekStartsOn: 1 });
-            const currentDayIndex = differenceInDays(startDate, startOfWeekDate);
-            this.activeDay$$.next(currentDayIndex + 1);
+            this.activeDay$$.next(getCurrentDayIndex(startDate) + 1);
         }
     }
 

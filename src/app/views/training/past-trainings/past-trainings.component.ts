@@ -20,7 +20,7 @@ import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
 import { PreferencesService } from '../../../services/shared/preferences.service';
-import { calculateFirstWeekDay, calculateLastWeekDay } from '../../../helpers/training/show-by-day.helper';
+import { calculateFirstWeekDay, calculateLastWeekDay, getCurrentDayIndex } from '../../../helpers/training/show-by-day.helper';
 import { DayActivatedType } from '../../../models/types/day-activated.type';
 
 enum Heights {
@@ -336,6 +336,10 @@ export class PastTrainingsComponent {
             this.periodFilter = this.route.snapshot.queryParamMap?.get('showBy') as PeriodFilterType;
             if (this.periodFilter === 'day') {
                 this.showByDayStartDate = this.getDateTimeQueryParams();
+                this.dayActivated = {
+                    Date: this.showByDayStartDate,
+                    DayNumber: getCurrentDayIndex(this.showByDayStartDate),
+                };
             }
             this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
                 this.getDateTimeQueryParams(),
