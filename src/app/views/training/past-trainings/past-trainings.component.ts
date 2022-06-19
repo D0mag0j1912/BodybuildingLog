@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
 import { Observable, of } from 'rxjs';
-import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { SharedService } from '../../../services/shared/shared.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
@@ -62,8 +62,12 @@ export class PastTrainingsComponent {
         if (timePeriodElement) {
             const trainingElement = (this.trainingItemWrapper?.nativeElement as HTMLDivElement);
             if (trainingElement) {
-                //TODO: Fix isSearch behavior. Too late assigned to true
-                trainingElement.style.maxHeight = `calc(100vh - ${this.isSearch ? Heights.SEARCH_HEIGHT : Heights.WEEK_HEIGHT}px)`;
+                of(this.isSearch)
+                    .pipe(
+                        delay(0),
+                        takeUntil(this.unsubscribeService),
+                    )
+                    .subscribe(isSearch => trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? Heights.SEARCH_HEIGHT : Heights.WEEK_HEIGHT}px)`);
             }
         }
     }

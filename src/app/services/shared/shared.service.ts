@@ -14,6 +14,8 @@ export class SharedService {
 
     readonly deletedTraining$$: Subject<StreamData<Paginator<PastTrainings>>> = new Subject<StreamData<Paginator<PastTrainings>>>();
 
+    readonly dayClicked$$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+
     keepQueryParams(): void {
         const queryParams = JSON.parse(localStorage.getItem(LocalStorageItems.QUERY_PARAMS));
         if (!queryParams) {
