@@ -3,11 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { addDays, differenceInDays, startOfDay, startOfWeek } from 'date-fns';
-
-export interface DayActivatedType {
-    Date: Date;
-    DayNumber: number;
-}
+import { DayActivatedType } from '../../../../models/types/day-activated.type';
 
 @Component({
     selector: 'bl-show-by-day',
