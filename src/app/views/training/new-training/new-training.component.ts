@@ -231,7 +231,7 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     goToPastTraining(): void {
-        this.sharedService.pastTrainingsQueryParams$$
+        this.sharedService.pastTrainingsQueryParams$
             .pipe(
                 take(1),
             )

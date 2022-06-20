@@ -8,10 +8,11 @@ import { LocalStorageItems } from '../../models/common/interfaces/common.model';
 @Injectable({ providedIn: 'root' })
 export class SharedService {
 
-    private readonly editingTraining$$: Subject<boolean> = new Subject<boolean>();
-    readonly editingTraining$: Observable<boolean> = this.editingTraining$$.asObservable();
+    private readonly _editingTraining$$: Subject<boolean> = new Subject<boolean>();
+    readonly editingTraining$: Observable<boolean> = this._editingTraining$$.asObservable();
 
-    readonly pastTrainingsQueryParams$$: BehaviorSubject<PastTrainingsQueryParams> = new BehaviorSubject<PastTrainingsQueryParams>(null);
+    private readonly _pastTrainingsQueryParams$$: BehaviorSubject<PastTrainingsQueryParams> = new BehaviorSubject<PastTrainingsQueryParams>(null);
+    readonly pastTrainingsQueryParams$: Observable<PastTrainingsQueryParams> = this._pastTrainingsQueryParams$$.asObservable();
 
     readonly deletedTraining$$: Subject<StreamData<Paginator<PastTrainings>>> = new Subject<StreamData<Paginator<PastTrainings>>>();
 
@@ -30,14 +31,18 @@ export class SharedService {
     }
 
     emitEditingTraining(editMode: boolean): void {
-        this.editingTraining$$.next(editMode);
+        this._editingTraining$$.next(editMode);
     }
-
+    /* */
     keepQueryParams(): void {
         const queryParams = JSON.parse(localStorage.getItem(LocalStorageItems.QUERY_PARAMS));
         if (!queryParams) {
             return;
         }
-        this.pastTrainingsQueryParams$$.next(queryParams);
+        this._pastTrainingsQueryParams$$.next(queryParams);
+    }
+
+    emitPastTrainingsQueryParams(params: PastTrainingsQueryParams): void {
+        this._pastTrainingsQueryParams$$.next(params);
     }
 }

@@ -53,7 +53,7 @@ export class TrainingItemComponent implements OnInit {
             .pipe(
                 take(1),
                 tap(async (params: Params) => {
-                    this.sharedService.pastTrainingsQueryParams$$.next(params as PastTrainingsQueryParams);
+                    this.sharedService.emitPastTrainingsQueryParams(params as PastTrainingsQueryParams);
                     localStorage.setItem(LocalStorageItems.QUERY_PARAMS, JSON.stringify(params as PastTrainingsQueryParams));
                     await this.router.navigate(['/training/new-training', this.training._id]);
                 }),
