@@ -40,16 +40,16 @@ export class LanguagesComponent {
     ];
 
     constructor(
-        private readonly preferencesStateService: PreferencesStoreService,
-        private readonly authStateService: AuthStoreService,
+        private readonly preferencesStoreService: PreferencesStoreService,
+        private readonly authStoreService: AuthStoreService,
         private readonly navigationService: PreferencesService,
         private readonly popoverController: PopoverController,
         private readonly menuController: MenuController,
     ) { }
 
     changeLanguage(language: LanguageCode): void {
-        const currentPreferences = this.preferencesStateService.getPreferences();
-        this.authStateService.loggedUser$
+        const currentPreferences = this.preferencesStoreService.getPreferences();
+        this.authStoreService.loggedUser$
             .pipe(
                 take(1),
                 switchMap((userData: AuthResponseData) => {

@@ -6,10 +6,10 @@ import { add, addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, sta
 import { Observable, of } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { NavController } from '@ionic/angular';
-import { SharedService } from '../../../services/shared/shared.service';
+import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { StreamData } from '../../../models/common/interfaces/common.model';
+import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator, INITIAL_PAGE, DEFAULT_SIZE, PaginatorChanged } from '../../../models/common/interfaces/paginator.model';
 import { DateInterval, PastTrainingsQueryParams, PastTrainings, PeriodFilterType } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
@@ -41,8 +41,11 @@ export class PastTrainingsComponent {
     readonly pageSizeOptions: number[] = [1, 3, 5, 10];
     size: number = DEFAULT_SIZE;
     page: number = INITIAL_PAGE;
+
     searchText = '';
-    periodFilter: PeriodFilterType = this.preferencesStateService.getPreferences()?.ShowByPeriod ?? 'week';
+    currentQueryParams: PastTrainingsQueryParams;
+
+    periodFilter: PeriodFilterType = this.preferencesStoreService.getPreferences()?.ShowByPeriod ?? 'week';
     dayActivated: DayActivatedType = {
         Date: startOfDay(new Date()),
         DayNumber: 0,
@@ -78,16 +81,22 @@ export class PastTrainingsComponent {
         private readonly pastTrainingsStoreService: PastTrainingsStoreService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
-        private readonly sharedService: SharedService,
+        private readonly sharedStoreService: SharedStoreService,
         private readonly preferencesService: PreferencesService,
-        private readonly preferencesStateService: PreferencesStoreService,
+        private readonly preferencesStoreService: PreferencesStoreService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
         private readonly datePipe: DatePipe,
         private readonly router: Router,
         private readonly navController: NavController,
     ) {
-        this.sharedService.deletedTraining$$
+        this.route.queryParams
+            .pipe(
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe(params => this.currentQueryParams = params);
+
+        this.sharedStoreService.deletedTraining$$
             .pipe(
                 takeUntil(this.unsubscribeService),
             ).subscribe((response: StreamData<Paginator<PastTrainings>>) => {
@@ -113,6 +122,7 @@ export class PastTrainingsComponent {
     }
 
     ionViewWillEnter(): void {
+        localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
         this.pastTrainingsStoreService.isSearch$
             .pipe(
                 takeUntil(this.unsubscribeService),
@@ -122,6 +132,11 @@ export class PastTrainingsComponent {
                 this.changeDetectorRef.markForCheck();
             });
         this.initView();
+    }
+
+    ionViewWillLeave(): void {
+        this.sharedStoreService.emitPastTrainingsQueryParams(this.currentQueryParams);
+        localStorage.setItem(LocalStorageItems.QUERY_PARAMS, JSON.stringify(this.currentQueryParams));
     }
 
     searchEmitted(searchText: string): void {
@@ -168,7 +183,7 @@ export class PastTrainingsComponent {
                     DayNumber: getCurrentDayIndex(this.showByDayStartDate),
                 };
             }
-            const currentPreferences = this.preferencesStateService.getPreferences();
+            const currentPreferences = this.preferencesStoreService.getPreferences();
             this.preferencesService.setPreferences(
                 {
                     ...currentPreferences,
@@ -275,7 +290,7 @@ export class PastTrainingsComponent {
 
     async logNewTraining(): Promise<void> {
         const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
-        this.sharedService.emitDayClicked(dayClickedDate.toISOString());
+        this.sharedStoreService.emitDayClicked(dayClickedDate.toISOString());
         await this.navController.navigateForward('/training/new-training');
     }
 

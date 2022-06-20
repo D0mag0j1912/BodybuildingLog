@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
-import { endOfDay, endOfWeek, format, startOfDay, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { startOfWeek, startOfDay, endOfWeek, endOfDay, format } from 'date-fns';
 import { Preferences } from '../../../models/interfaces/preferences.model';
-import { PastTrainingsQueryParams, QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
 import { TrainingStoreService } from '../../../services/store/training/training-store.service';
+import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
+import { PastTrainingsQueryParams, QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { LanguagesComponent } from './languages/languages.component';
 
 @Component({
@@ -19,13 +20,14 @@ import { LanguagesComponent } from './languages/languages.component';
 })
 export class SideNavComponent {
 
-    readonly isAuthenticated$: Observable<boolean> = this.authStateService.isAuth$;
-    private readonly preferences$: Observable<Preferences> = this.preferencesStateService.preferencesChanged$
+    readonly isAuthenticated$: Observable<boolean> = this.authStoreService.isAuth$;
+    private readonly preferences$: Observable<Preferences> = this.preferencesStoreService.preferencesChanged$
         .pipe(take(1));
 
     constructor(
-        private readonly authStateService: AuthStoreService,
-        private readonly preferencesStateService: PreferencesStoreService,
+        private readonly authStoreService: AuthStoreService,
+        private readonly sharedStoreService: SharedStoreService,
+        private readonly preferencesStoreService: PreferencesStoreService,
         private readonly trainingStoreService: TrainingStoreService,
         private readonly popoverController: PopoverController,
         private readonly router: Router,
@@ -33,20 +35,31 @@ export class SideNavComponent {
 
     async onLogout(): Promise<void> {
         this.trainingStoreService.clearTrainingState();
-        await this.authStateService.logout();
+        await this.authStoreService.logout();
     }
 
     async goToPastTrainings(): Promise<void> {
-        const showByPeriod = this.preferencesStateService.getPreferences()?.ShowByPeriod ?? 'week';
-        const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
-        const endDate = showByPeriod === 'week' ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 }) : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
-        await this.router.navigate(['/training/past-trainings'], {
-            queryParams: {
-                startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
-                endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
-                showBy: showByPeriod,
-            } as PastTrainingsQueryParams,
-        });
+        this.sharedStoreService.pastTrainingsQueryParams$
+            .pipe(
+                take(1),
+            )
+            .subscribe(async params => {
+                let queryParams: PastTrainingsQueryParams;
+                if (params) {
+                    queryParams = params;
+                }
+                else {
+                    const showByPeriod = this.preferencesStoreService.getPreferences()?.ShowByPeriod ?? 'week';
+                    const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
+                    const endDate = showByPeriod === 'week' ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 }) : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
+                    queryParams = {
+                        startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
+                        endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
+                        showBy: showByPeriod,
+                    };
+                }
+                await this.router.navigate(['/training/past-trainings'], { queryParams });
+            });
     }
 
     async openPopover($event: Event): Promise<void> {

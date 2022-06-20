@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { format } from 'date-fns';
-import { take, tap } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { LocalStorageItems } from '../../../../models/common/interfaces/common.model';
 import { Training } from '../../../../models/training/new-training/training.model';
 import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
-import { SharedService } from '../../../../services/shared/shared.service';
+import { SharedStoreService } from '../../../../services/store/shared/shared-store.service';
 
 @Component({
     selector: 'bl-training-item',
@@ -38,7 +38,7 @@ export class TrainingItemComponent implements OnInit {
     training: Training;
 
     constructor(
-        private readonly sharedService: SharedService,
+        private readonly sharedStoreService: SharedStoreService,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
     ) { }
@@ -52,13 +52,12 @@ export class TrainingItemComponent implements OnInit {
         this.route.queryParams
             .pipe(
                 take(1),
-                tap(async (params: Params) => {
-                    this.sharedService.pastTrainingsQueryParams$$.next(params as PastTrainingsQueryParams);
-                    localStorage.setItem(LocalStorageItems.QUERY_PARAMS, JSON.stringify(params as PastTrainingsQueryParams));
-                    await this.router.navigate(['/training/new-training', this.training._id]);
-                }),
             )
-            .subscribe();
+            .subscribe(async (params: Params) => {
+                this.sharedStoreService.emitPastTrainingsQueryParams(params as PastTrainingsQueryParams);
+                localStorage.setItem(LocalStorageItems.QUERY_PARAMS, JSON.stringify(params as PastTrainingsQueryParams));
+                await this.router.navigate(['/training/new-training', this.training._id]);
+            });
     }
 
 }

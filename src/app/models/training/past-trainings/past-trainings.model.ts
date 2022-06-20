@@ -16,8 +16,8 @@ export interface DateInterval {
 }
 
 export interface PastTrainingsQueryParams {
-    readonly startDate: string;
-    readonly endDate: string;
+    readonly startDate?: string;
+    readonly endDate?: string;
     readonly search?: string;
     readonly page?: string;
     readonly size?: string;
