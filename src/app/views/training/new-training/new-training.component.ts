@@ -94,6 +94,7 @@ export class NewTrainingComponent implements OnDestroy {
         let allExercisesChanged: StreamData<Exercise[]>;
         this.trainingStream$ = this.route.params
             .pipe(
+                take(1),
                 switchMap((params: Params) =>
                     this.trainingStoreService.allExercisesChanged$
                         .pipe(
