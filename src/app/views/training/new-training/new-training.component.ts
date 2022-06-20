@@ -24,7 +24,6 @@ import { TrainingStoreService } from '../../../services/store/training/training-
 import { TrainingService } from '../../../services/api/training/training.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
-import { getQueryParamsFromPreviousUrl } from '../../../helpers/training/past-trainings/get-query-params-from-url.helper';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
