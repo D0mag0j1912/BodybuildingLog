@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 import { Observable } from 'rxjs';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { startOfWeek, startOfDay, endOfWeek, endOfDay, format } from 'date-fns';
 import { Preferences } from '../../../models/interfaces/preferences.model';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
 import { TrainingStoreService } from '../../../services/store/training/training-store.service';
-import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { PastTrainingsQueryParams, QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
 import { LanguagesComponent } from './languages/languages.component';
@@ -18,7 +17,6 @@ import { LanguagesComponent } from './languages/languages.component';
     templateUrl: './side-nav.component.html',
     styleUrls: ['./side-nav.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [UnsubscribeService],
 })
 export class SideNavComponent {
 
@@ -26,28 +24,14 @@ export class SideNavComponent {
     private readonly preferences$: Observable<Preferences> = this.preferencesStoreService.preferencesChanged$
         .pipe(take(1));
 
-    previousUrl: string;
-    currentUrl: string;
-
     constructor(
         private readonly authStoreService: AuthStoreService,
         private readonly sharedStoreService: SharedStoreService,
         private readonly preferencesStoreService: PreferencesStoreService,
         private readonly trainingStoreService: TrainingStoreService,
-        private readonly unsubscribeService: UnsubscribeService,
         private readonly popoverController: PopoverController,
         private readonly router: Router,
-    ) {
-        this.router.events
-            .pipe(
-                filter((e): e is NavigationEnd => e instanceof NavigationEnd),
-                takeUntil(this.unsubscribeService),
-            )
-            .subscribe(event => {
-                this.previousUrl = this.currentUrl;
-                this.currentUrl = event.url;
-            });
-    }
+    ) { }
 
     async onLogout(): Promise<void> {
         this.trainingStoreService.clearTrainingState();
