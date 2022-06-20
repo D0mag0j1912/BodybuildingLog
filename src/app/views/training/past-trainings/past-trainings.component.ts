@@ -103,10 +103,13 @@ export class PastTrainingsComponent {
     }
     //TODO: make simple stream
     getDayTranslation$(dayName: string): Observable<string> {
-        return this.translateService.stream(dayName)
-            .pipe(
-                map(value => value?.toLowerCase()),
-            );
+        if (dayName) {
+            return this.translateService.stream(dayName)
+                .pipe(
+                    map(value => value?.toLowerCase()),
+                );
+        }
+        return of('');
     }
 
     ionViewWillEnter(): void {
