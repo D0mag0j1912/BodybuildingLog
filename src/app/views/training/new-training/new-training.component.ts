@@ -242,7 +242,7 @@ export class NewTrainingComponent implements OnDestroy {
                         search: response?.search ?? undefined,
                         page: response?.page ?? undefined,
                         size: response?.size ?? undefined,
-                        showBy: response?.showBy ?? 'week',
+                        showBy: response?.showBy ?? undefined,
                     } as PastTrainingsQueryParams,
                 });
                 localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
