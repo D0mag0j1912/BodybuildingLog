@@ -6,6 +6,7 @@ import { PreferencesService } from './services/shared/preferences.service';
 import { UnsubscribeService } from './services/shared/unsubscribe.service';
 import { AuthStoreService } from './services/store/auth/auth-store.service';
 import { PreferencesStoreService } from './services/store/shared/preferences-state.service';
+import { SharedStoreService } from './services/store/shared/shared-store.service';
 import { TrainingStoreService } from './services/store/training/training-store.service';
 
 @Component({
@@ -20,6 +21,7 @@ export class AppComponent implements OnInit {
     constructor(
         private readonly authStoreService: AuthStoreService,
         private readonly trainingStoreService: TrainingStoreService,
+        private readonly sharedStoreService: SharedStoreService,
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly preferencesService: PreferencesService,
@@ -29,6 +31,7 @@ export class AppComponent implements OnInit {
     ngOnInit(): void {
         this.authStoreService.autoLogin();
         this.trainingStoreService.keepTrainingState();
+        this.sharedStoreService.keepQueryParams();
 
         this.translateService.setDefaultLang('en');
         this.authStoreService.loggedUser$

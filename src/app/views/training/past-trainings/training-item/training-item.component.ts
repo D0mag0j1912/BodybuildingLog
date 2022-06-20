@@ -1,8 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { format } from 'date-fns';
+import { take } from 'rxjs/operators';
+import { LocalStorageItems } from '../../../../models/common/interfaces/common.model';
 import { Training } from '../../../../models/training/new-training/training.model';
+import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
+import { SharedStoreService } from '../../../../services/store/shared/shared-store.service';
 
 @Component({
     selector: 'bl-training-item',
@@ -34,6 +38,8 @@ export class TrainingItemComponent implements OnInit {
     training: Training;
 
     constructor(
+        private readonly sharedStoreService: SharedStoreService,
+        private readonly route: ActivatedRoute,
         private readonly router: Router,
     ) { }
 
@@ -43,7 +49,15 @@ export class TrainingItemComponent implements OnInit {
     }
 
     async trainingClicked(): Promise<void> {
-        await this.router.navigate(['/training/new-training', this.training._id]);
+        this.route.queryParams
+            .pipe(
+                take(1),
+            )
+            .subscribe(async (params: Params) => {
+                this.sharedStoreService.emitPastTrainingsQueryParams(params as PastTrainingsQueryParams);
+                localStorage.setItem(LocalStorageItems.QUERY_PARAMS, JSON.stringify(params as PastTrainingsQueryParams));
+                await this.router.navigate(['/training/new-training', this.training._id]);
+            });
     }
 
 }
