@@ -9,7 +9,7 @@ import { NavController } from '@ionic/angular';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { StreamData } from '../../../models/common/interfaces/common.model';
+import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator, INITIAL_PAGE, DEFAULT_SIZE, PaginatorChanged } from '../../../models/common/interfaces/paginator.model';
 import { DateInterval, PastTrainingsQueryParams, PastTrainings, PeriodFilterType } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
@@ -41,7 +41,10 @@ export class PastTrainingsComponent {
     readonly pageSizeOptions: number[] = [1, 3, 5, 10];
     size: number = DEFAULT_SIZE;
     page: number = INITIAL_PAGE;
+
     searchText = '';
+    currentQueryParams: PastTrainingsQueryParams;
+
     periodFilter: PeriodFilterType = this.preferencesStoreService.getPreferences()?.ShowByPeriod ?? 'week';
     dayActivated: DayActivatedType = {
         Date: startOfDay(new Date()),
@@ -87,6 +90,12 @@ export class PastTrainingsComponent {
         private readonly router: Router,
         private readonly navController: NavController,
     ) {
+        this.route.queryParams
+            .pipe(
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe(params => this.currentQueryParams = params);
+
         this.sharedStoreService.deletedTraining$$
             .pipe(
                 takeUntil(this.unsubscribeService),
@@ -113,6 +122,7 @@ export class PastTrainingsComponent {
     }
 
     ionViewWillEnter(): void {
+        localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
         this.pastTrainingsStoreService.isSearch$
             .pipe(
                 takeUntil(this.unsubscribeService),
@@ -122,6 +132,11 @@ export class PastTrainingsComponent {
                 this.changeDetectorRef.markForCheck();
             });
         this.initView();
+    }
+
+    ionViewWillLeave(): void {
+        this.sharedStoreService.emitPastTrainingsQueryParams(this.currentQueryParams);
+        localStorage.setItem(LocalStorageItems.QUERY_PARAMS, JSON.stringify(this.currentQueryParams));
     }
 
     searchEmitted(searchText: string): void {
