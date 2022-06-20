@@ -6,7 +6,7 @@ import { OverlayEventDetail } from '@ionic/core';
 import { format, parseISO } from 'date-fns';
 import { from, Observable, of } from 'rxjs';
 import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
-import { SharedService } from 'src/app/services/shared/shared.service';
+import { SharedStoreService } from 'src/app/services/store/shared/shared-store.service';
 import { PastTrainingsService } from 'src/app/services/api/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
@@ -50,7 +50,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
     readonly isAuthenticated$: Observable<boolean> = this.authStateService.isAuth$;
-    readonly isEditing$: Observable<boolean> = this.sharedService.editingTraining$;
+    readonly isEditing$: Observable<boolean> = this.sharedStoreService.editingTraining$;
     readonly isReorder$: Observable<boolean> = this.trainingStoreService.currentTrainingChanged$
         .pipe(
             map(training => {
@@ -70,7 +70,7 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly trainingStoreService: TrainingStoreService,
         private readonly trainingService: TrainingService,
         private readonly pastTrainingService: PastTrainingsService,
-        private readonly sharedService: SharedService,
+        private readonly sharedStoreService: SharedStoreService,
         private readonly authStateService: AuthStoreService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly route: ActivatedRoute,
@@ -147,7 +147,7 @@ export class NewTrainingComponent implements OnDestroy {
                             );
                     }
                 }),
-                tap(_ => this.sharedService.emitEditingTraining(this.editMode)),
+                tap(_ => this.sharedStoreService.emitEditingTraining(this.editMode)),
                 switchMap(_ => of(allExercisesChanged)
                     .pipe(
                         tap(_ => this._formInit()),
@@ -165,11 +165,11 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     ionViewDidLeave(): void {
-        this.sharedService.emitEditingTraining(false);
+        this.sharedStoreService.emitEditingTraining(false);
     }
 
     ngOnDestroy(): void {
-        this.sharedService.completeDayClicked();
+        this.sharedStoreService.completeDayClicked();
     }
 
     async openReorderModal(): Promise<void> {
@@ -231,7 +231,7 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     goToPastTraining(): void {
-        this.sharedService.pastTrainingsQueryParams$
+        this.sharedStoreService.pastTrainingsQueryParams$
             .pipe(
                 take(1),
             )
@@ -300,7 +300,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     private _formInit(): void {
         const currentTrainingState = { ...this.trainingStoreService.getCurrentTrainingState() };
-        const dayClickedDate = this.sharedService.getDayClickedDate();
+        const dayClickedDate = this.sharedStoreService.getDayClickedDate();
         this.accessFormData('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
         this.accessFormData('date').patchValue(this._fillTrainingDate(dayClickedDate));
         this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { StreamData } from '../../models/common/interfaces/common.model';
-import { Paginator } from '../../models/common/interfaces/paginator.model';
-import { PastTrainings, PastTrainingsQueryParams } from '../../models/training/past-trainings/past-trainings.model';
-import { LocalStorageItems } from '../../models/common/interfaces/common.model';
+import { StreamData } from '../../../models/common/interfaces/common.model';
+import { Paginator } from '../../../models/common/interfaces/paginator.model';
+import { PastTrainings, PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
+import { LocalStorageItems } from '../../../models/common/interfaces/common.model';
 
 @Injectable({ providedIn: 'root' })
-export class SharedService {
+export class SharedStoreService {
 
     private readonly _editingTraining$$: Subject<boolean> = new Subject<boolean>();
     readonly editingTraining$: Observable<boolean> = this._editingTraining$$.asObservable();
@@ -45,4 +45,5 @@ export class SharedService {
     emitPastTrainingsQueryParams(params: PastTrainingsQueryParams): void {
         this._pastTrainingsQueryParams$$.next(params);
     }
+
 }

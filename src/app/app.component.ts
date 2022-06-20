@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { EMPTY } from 'rxjs';
 import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { PreferencesService } from './services/shared/preferences.service';
-import { SharedService } from './services/shared/shared.service';
+import { SharedStoreService } from './services/store/shared/shared-store.service';
 import { UnsubscribeService } from './services/shared/unsubscribe.service';
 import { AuthStoreService } from './services/store/auth/auth-store.service';
 import { PreferencesStoreService } from './services/store/shared/preferences-state.service';
@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
 
     constructor(
         private readonly authStateService: AuthStoreService,
-        private readonly sharedService: SharedService,
+        private readonly sharedStoreService: SharedStoreService,
         private readonly trainingStoreService: TrainingStoreService,
         private readonly translateService: TranslateService,
         private readonly unsubscribeService: UnsubscribeService,
@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
     ngOnInit(): void {
         this.authStateService.autoLogin();
         this.trainingStoreService.keepTrainingState();
-        this.sharedService.keepQueryParams();
+        this.sharedStoreService.keepQueryParams();
 
         this.translateService.setDefaultLang('en');
         this.authStateService.loggedUser$

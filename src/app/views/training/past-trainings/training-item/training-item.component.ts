@@ -6,7 +6,7 @@ import { LocalStorageItems } from '../../../../models/common/interfaces/common.m
 import { Training } from '../../../../models/training/new-training/training.model';
 import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
-import { SharedService } from '../../../../services/shared/shared.service';
+import { SharedStoreService } from '../../../../services/store/shared/shared-store.service';
 
 @Component({
     selector: 'bl-training-item',
@@ -38,7 +38,7 @@ export class TrainingItemComponent implements OnInit {
     training: Training;
 
     constructor(
-        private readonly sharedService: SharedService,
+        private readonly sharedStoreService: SharedStoreService,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
     ) { }
@@ -53,7 +53,7 @@ export class TrainingItemComponent implements OnInit {
             .pipe(
                 take(1),
                 tap(async (params: Params) => {
-                    this.sharedService.emitPastTrainingsQueryParams(params as PastTrainingsQueryParams);
+                    this.sharedStoreService.emitPastTrainingsQueryParams(params as PastTrainingsQueryParams);
                     localStorage.setItem(LocalStorageItems.QUERY_PARAMS, JSON.stringify(params as PastTrainingsQueryParams));
                     await this.router.navigate(['/training/new-training', this.training._id]);
                 }),

@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Preferences } from '../../../models/interfaces/preferences.model';
 import { PastTrainingsQueryParams, QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
+import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
 import { TrainingStoreService } from '../../../services/store/training/training-store.service';
@@ -27,6 +28,7 @@ export class SideNavComponent {
         private readonly authStateService: AuthStoreService,
         private readonly preferencesStateService: PreferencesStoreService,
         private readonly trainingStoreService: TrainingStoreService,
+        private readonly sharedStoreService: SharedStoreService,
         private readonly popoverController: PopoverController,
         private readonly router: Router,
     ) { }

@@ -6,7 +6,7 @@ import { add, addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, sta
 import { Observable, of } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { NavController } from '@ionic/angular';
-import { SharedService } from '../../../services/shared/shared.service';
+import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/interfaces/common.model';
@@ -78,7 +78,7 @@ export class PastTrainingsComponent {
         private readonly pastTrainingsStoreService: PastTrainingsStoreService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
-        private readonly sharedService: SharedService,
+        private readonly sharedStoreService: SharedStoreService,
         private readonly preferencesService: PreferencesService,
         private readonly preferencesStateService: PreferencesStoreService,
         private readonly changeDetectorRef: ChangeDetectorRef,
@@ -87,7 +87,7 @@ export class PastTrainingsComponent {
         private readonly router: Router,
         private readonly navController: NavController,
     ) {
-        this.sharedService.deletedTraining$$
+        this.sharedStoreService.deletedTraining$$
             .pipe(
                 takeUntil(this.unsubscribeService),
             ).subscribe((response: StreamData<Paginator<PastTrainings>>) => {
@@ -275,7 +275,7 @@ export class PastTrainingsComponent {
 
     async logNewTraining(): Promise<void> {
         const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
-        this.sharedService.emitDayClicked(dayClickedDate.toISOString());
+        this.sharedStoreService.emitDayClicked(dayClickedDate.toISOString());
         await this.navController.navigateForward('/training/new-training');
     }
 
