@@ -23,7 +23,6 @@ import { SingleExerciseComponent } from '../../shared/training/single-exercise/s
 import { TrainingStoreService } from '../../../services/store/training/training-store.service';
 import { TrainingService } from '../../../services/api/training/training.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
-import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
@@ -74,7 +73,6 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly sharedStoreService: SharedStoreService,
         private readonly authStoreService: AuthStoreService,
         private readonly unsubscribeService: UnsubscribeService,
-        private readonly preferencesStoreService: PreferencesStoreService,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
         private readonly modalController: ModalController,
@@ -237,17 +235,8 @@ export class NewTrainingComponent implements OnDestroy {
             .pipe(
                 take(1),
             )
-            .subscribe(async (response: PastTrainingsQueryParams) => {
-                await this.router.navigate(['/training/past-trainings'], {
-                    queryParams: {
-                        startDate: response?.startDate ?? undefined,
-                        endDate: response?.endDate ?? undefined,
-                        search: response?.search ?? undefined,
-                        page: response?.page ?? undefined,
-                        size: response?.size ?? undefined,
-                        showBy: response?.showBy ?? undefined,
-                    } as PastTrainingsQueryParams,
-                });
+            .subscribe(async (params: PastTrainingsQueryParams) => {
+                await this.router.navigate(['/training/past-trainings'], { queryParams: params });
                 localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
             });
     }
