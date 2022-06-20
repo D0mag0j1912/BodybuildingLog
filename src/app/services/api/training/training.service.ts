@@ -17,7 +17,7 @@ export class TrainingService {
 
     constructor(
         private readonly http: HttpClient,
-        private readonly authStateService: AuthStoreService,
+        private readonly authStoreService: AuthStoreService,
         private readonly trainingStoreService: TrainingStoreService,
     ) { }
 
@@ -33,7 +33,7 @@ export class TrainingService {
                     this.trainingStoreService.emitAllExercises(response);
                     const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
                     if (!trainingState) {
-                        return this.authStateService.loggedUser$
+                        return this.authStoreService.loggedUser$
                             .pipe(
                                 take(1),
                                 tap((authResponseData: AuthResponseData) => {

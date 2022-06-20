@@ -8,12 +8,12 @@ import { AuthStoreService } from '../services/store/auth/auth-store.service';
 export class AuthGuard implements CanLoad {
 
     constructor(
-        private readonly authStateService: AuthStoreService,
+        private readonly authStoreService: AuthStoreService,
         private readonly router: Router,
     ) { }
 
     canLoad(_route: Route): Observable<boolean | UrlTree> {
-        return this.authStateService.isAuth$
+        return this.authStoreService.isAuth$
             .pipe(
                 take(1),
                 map((isAuth: boolean) => {

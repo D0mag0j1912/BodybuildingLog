@@ -18,7 +18,7 @@ export class PreferencesService {
         private readonly http: HttpClient,
         private readonly translateService: TranslateService,
         private readonly toastControllerService: ToastControllerService,
-        private readonly preferencesStateService: PreferencesStoreService,
+        private readonly preferencesStoreService: PreferencesStoreService,
     ) { }
 
     getPreferences(userId: string): Observable<Preferences> {
@@ -43,7 +43,7 @@ export class PreferencesService {
                 this.translateService.use(preferences.LanguageCode)
                     .pipe(
                         tap(async _ => {
-                            this.preferencesStateService.emitPreferences(preferences);
+                            this.preferencesStoreService.emitPreferences(preferences);
                             if (response.Message) {
                                 await this.toastControllerService.displayToast({
                                     message: this.translateService.instant(response.Message),

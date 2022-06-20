@@ -13,5 +13,4 @@ export interface StreamData<T> {
 export enum LocalStorageItems {
     TRAINING_STATE = 'trainingState',
     USER_DATA = 'userData',
-    QUERY_PARAMS = 'queryParams',
 }

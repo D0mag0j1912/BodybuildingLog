@@ -96,6 +96,5 @@ export class AuthStoreService {
     private clearData(): void {
         localStorage.removeItem(LocalStorageItems.USER_DATA);
         localStorage.removeItem(LocalStorageItems.TRAINING_STATE);
-        localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
     }
 }

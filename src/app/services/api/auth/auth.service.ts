@@ -18,9 +18,9 @@ export class AuthService {
     constructor(
         private readonly http: HttpClient,
         private readonly router: Router,
-        private readonly authStateService: AuthStoreService,
+        private readonly authStoreService: AuthStoreService,
         private readonly preferencesService: PreferencesService,
-        private readonly preferencesStateService: PreferencesStoreService,
+        private readonly preferencesStoreService: PreferencesStoreService,
     ) { }
 
     signup(
@@ -57,15 +57,15 @@ export class AuthService {
             .pipe(
                 tap(async (response: AuthResponseData) => {
                     if (response.Token) {
-                        this.authStateService.emitLoggedUser(response);
-                        this.authStateService.emitIsAuth(true);
-                        this.authStateService.setToken(response.Token);
+                        this.authStoreService.emitLoggedUser(response);
+                        this.authStoreService.emitIsAuth(true);
+                        this.authStoreService.setToken(response.Token);
                         const expiresInDuration = response.ExpiresIn;
-                        this.authStateService.setAuthTimer(expiresInDuration);
+                        this.authStoreService.setAuthTimer(expiresInDuration);
                         const now = new Date();
                         const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
-                        this.authStateService.saveLS(
-                            this.authStateService.getToken(),
+                        this.authStoreService.saveLS(
+                            this.authStoreService.getToken(),
                             expirationDate,
                             response._id,
                         );
@@ -74,7 +74,7 @@ export class AuthService {
                 }),
                 switchMap(response => this.preferencesService.getPreferences(response._id)
                     .pipe(
-                        tap(preferences => this.preferencesStateService.emitPreferences(preferences)),
+                        tap(preferences => this.preferencesStoreService.emitPreferences(preferences)),
                         switchMap(_ => of(response)),
                     )),
             );

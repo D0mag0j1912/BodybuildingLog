@@ -10,9 +10,9 @@ import { AuthStoreService } from '../../../services/store/auth/auth-store.servic
 })
 export class NotFoundComponent {
 
-    isAuth$: Observable<boolean> = this.authStateService.isAuth$;
+    isAuth$: Observable<boolean> = this.authStoreService.isAuth$;
 
     constructor(
-        private readonly authStateService: AuthStoreService,
+        private readonly authStoreService: AuthStoreService,
     ) { }
 }

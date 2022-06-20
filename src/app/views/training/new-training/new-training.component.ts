@@ -10,12 +10,11 @@ import { SharedStoreService } from 'src/app/services/store/shared/shared-store.s
 import { PastTrainingsService } from 'src/app/services/api/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
+import { StreamData } from '../../../models/common/interfaces/common.model';
 import { DialogRoles } from '../../../models/common/types/modal-roles.type';
 import { Exercise } from '../../../models/training/exercise.model';
 import { createEmptyExercise, EditNewTrainingData, EMPTY_TRAINING, EMPTY_TRAINING_EDIT } from '../../../models/training/new-training/empty-training.model';
 import { Training } from '../../../models/training/new-training/training.model';
-import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import * as CommonValidators from '../../../validators/shared/common.validators';
@@ -24,6 +23,8 @@ import { SingleExerciseComponent } from '../../shared/training/single-exercise/s
 import { TrainingStoreService } from '../../../services/store/training/training-store.service';
 import { TrainingService } from '../../../services/api/training/training.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
+import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
+import { getQueryParamsFromPreviousUrl } from '../../../helpers/training/past-trainings/get-query-params-from-url.helper';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 type FormData = {
@@ -49,7 +50,7 @@ export class NewTrainingComponent implements OnDestroy {
     editMode = false;
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
-    readonly isAuthenticated$: Observable<boolean> = this.authStateService.isAuth$;
+    readonly isAuthenticated$: Observable<boolean> = this.authStoreService.isAuth$;
     readonly isEditing$: Observable<boolean> = this.sharedStoreService.editingTraining$;
     readonly isReorder$: Observable<boolean> = this.trainingStoreService.currentTrainingChanged$
         .pipe(
@@ -71,8 +72,9 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly trainingService: TrainingService,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly sharedStoreService: SharedStoreService,
-        private readonly authStateService: AuthStoreService,
+        private readonly authStoreService: AuthStoreService,
         private readonly unsubscribeService: UnsubscribeService,
+        private readonly preferencesStoreService: PreferencesStoreService,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
         private readonly modalController: ModalController,
@@ -230,24 +232,9 @@ export class NewTrainingComponent implements OnDestroy {
             });
     }
 
-    goToPastTraining(): void {
-        this.sharedStoreService.pastTrainingsQueryParams$
-            .pipe(
-                take(1),
-            )
-            .subscribe(async (response: PastTrainingsQueryParams) => {
-                await this.router.navigate(['/training/past-trainings'], {
-                    queryParams: {
-                        startDate: response?.startDate ?? undefined,
-                        endDate: response?.endDate ?? undefined,
-                        search: response?.search ?? undefined,
-                        page: response?.page ?? undefined,
-                        size: response?.size ?? undefined,
-                        showBy: response?.showBy ?? undefined,
-                    } as PastTrainingsQueryParams,
-                });
-                localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
-            });
+    async goToPastTraining(): Promise<void> {
+        //TODO: Get previous URL query params
+        /* await this.router.navigate(['/training/past-trainings'], { queryParams: getQueryParamsFromPreviousUrl(this.previousUrl, this.preferencesStoreService.getPreferences()) }); */
     }
 
     onBodyweightChange(bodyweight: string | number): void {

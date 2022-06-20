@@ -42,7 +42,7 @@ export class PastTrainingsComponent {
     size: number = DEFAULT_SIZE;
     page: number = INITIAL_PAGE;
     searchText = '';
-    periodFilter: PeriodFilterType = this.preferencesStateService.getPreferences()?.ShowByPeriod ?? 'week';
+    periodFilter: PeriodFilterType = this.preferencesStoreService.getPreferences()?.ShowByPeriod ?? 'week';
     dayActivated: DayActivatedType = {
         Date: startOfDay(new Date()),
         DayNumber: 0,
@@ -80,7 +80,7 @@ export class PastTrainingsComponent {
         private readonly translateService: TranslateService,
         private readonly sharedStoreService: SharedStoreService,
         private readonly preferencesService: PreferencesService,
-        private readonly preferencesStateService: PreferencesStoreService,
+        private readonly preferencesStoreService: PreferencesStoreService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
         private readonly datePipe: DatePipe,
@@ -168,7 +168,7 @@ export class PastTrainingsComponent {
                     DayNumber: getCurrentDayIndex(this.showByDayStartDate),
                 };
             }
-            const currentPreferences = this.preferencesStateService.getPreferences();
+            const currentPreferences = this.preferencesStoreService.getPreferences();
             this.preferencesService.setPreferences(
                 {
                     ...currentPreferences,
