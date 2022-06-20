@@ -98,7 +98,7 @@
         "new_training": {
             "exercise_name": "Exercise name:",
             "pick_date": "Choose a date",
-            "pick_bodyweight": "Enter your today's weight",
+            "pick_bodyweight": "Enter your weight",
             "pick_exercise": "Pick an exercise",
             "weight_lifted": "Weight lifted",
             "reps_performed": "Reps",

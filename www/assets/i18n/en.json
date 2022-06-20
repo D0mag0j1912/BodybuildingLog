@@ -152,7 +152,8 @@
             }
         },
         "past_trainings": {
-            "no_trainings": "No training found for this {{ period }}",
+            "no_trainings_week": "No trainings found for this week",
+            "no_trainings_day": "No trainings found for {{ dayName }}",
             "log_training": "Log new training",
             "training_number": "Number of trainings: ",
             "disabled_next_week": "Future weeks are not available",
@@ -207,7 +208,8 @@
         "errors": {
             "language_required": "Language field is required",
             "language_change": "Error while trying to change language",
-            "weight_format_required": "Weight format field is required"
+            "weight_format_required": "Weight format field is required",
+            "period_change": "Error while trying to change period"
         }
     },
     "weekdays": {
@@ -236,6 +238,7 @@
         "facepull": "Facepull",
         "hammer_dumbbell_curl": "Hammer dumbbell curl",
         "seated_dumbbell_overhead_extension": "Seated dumbbell overhead extension",
-        "pushup": "Pushup"
+        "pushup": "Pushup",
+        "chest_press_machine": "Machine chest press"
     }
 }
