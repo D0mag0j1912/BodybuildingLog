@@ -38,17 +38,28 @@ export class SideNavComponent {
         await this.authStateService.logout();
     }
 
-    async goToPastTrainings(): Promise<void> {
-        const showByPeriod = this.preferencesStateService.getPreferences()?.ShowByPeriod ?? 'week';
-        const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
-        const endDate = showByPeriod === 'week' ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 }) : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
-        await this.router.navigate(['/training/past-trainings'], {
-            queryParams: {
-                startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
-                endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
-                showBy: showByPeriod,
-            } as PastTrainingsQueryParams,
-        });
+    goToPastTrainings(): void {
+        this.sharedStoreService.pastTrainingsQueryParams$
+            .pipe(
+                take(1),
+            )
+            .subscribe(async params => {
+                let queryParams: PastTrainingsQueryParams;
+                if (params) {
+                    queryParams = params;
+                }
+                else {
+                    const showByPeriod = this.preferencesStateService.getPreferences()?.ShowByPeriod ?? 'week';
+                    const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
+                    const endDate = showByPeriod === 'week' ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 }) : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
+                    queryParams = {
+                        startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
+                        endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
+                        showBy: showByPeriod,
+                    };
+                }
+                await this.router.navigate(['/training/past-trainings'], { queryParams });
+            });
     }
 
     async openPopover($event: Event): Promise<void> {
