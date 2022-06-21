@@ -1,0 +1,157 @@
+
+ion-content {
+    --padding-bottom: 10px;
+    --padding-end: 10px;
+    --padding-start: 10px;
+    --padding-top: 5px;
+
+    &::part(scroll) {
+        overflow-y: hidden;
+    }
+}
+
+.ion-spinner-class {
+    top: 150px;
+}
+
+.error-wrapper {
+    width: 250px;
+    margin: 5rem auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .error-image {
+        width: 250px;
+        height: 200px;
+    }
+
+    .error-title {
+        font-size: 18px;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+
+    .error-description {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 15px;
+        line-height: 24px;
+        text-align: center;
+        color: var(--ion-color-medium);
+    }
+}
+
+ion-list {
+    margin-top: 10px;
+
+    .search-not-found-img {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto;
+    }
+
+    .search-not-found-title {
+        font-size: 16px;
+        font-weight: 600;
+        text-align: center;
+        margin: 10px auto 0 auto;
+    }
+
+    .search-not-found-description {
+        font-size: 14px;
+        color: var(--ion-color-medium);
+        text-align: center;
+        margin: 10px auto 0 auto;
+    }
+}
+
+.card-info-wrapper {
+    border: 2px solid var(--ion-color-primary);
+    box-shadow: var(--ion-box-shadow);
+    margin: 5px 0;
+
+    &--header {
+        padding: 16px 10px 8px 10px;
+    }
+
+    .header-title {
+        font-size: 20px;
+        white-space: nowrap;
+
+        ::ng-deep &--key {
+            color: var(--ion-color-primary);
+        }
+
+        ::ng-deep &--value {
+            font-weight: 400;
+        }
+    }
+
+    .food-key {
+        font-size: 16px;
+        color: var(--ion-color-primary);
+    }
+
+    .food-value {
+        font-size: 16px;
+        color: black;
+    }
+}
+
+.training-item-wrapper {
+    display: block;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--ion-color-light-periwinkle);
+        border-radius: 6px;
+    }
+
+    .bl-training-item:first-of-type {
+        ::ng-deep ion-card {
+            margin-top: 3px;
+        }
+    }
+
+    .no-trainings {
+        margin: 0 1rem 1rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        &-title {
+            font-size: 18px;
+            font-weight: normal;
+            text-align: center;
+        }
+    }
+}
+
+@media (min-width: 640px) {
+
+    .card-info-wrapper {
+        width: 1020px;
+        margin: 0 auto;
+        margin-top: 5px;
+    }
+
+    .training-item-wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: baseline;
+        width: 1020px;
+        overflow: auto;
+        margin: 0 auto;
+    }
+
+    ion-list {
+        width: 1020px;
+        margin: 10px auto;
+    }
+}

@@ -1,0 +1,40 @@
+
+.form {
+    padding: 0 10px;
+}
+
+.wrapper {
+    border-radius: 4px;
+    margin-top: 10px;
+
+    &--not-loading {
+        box-shadow: var(--ion-box-shadow);
+    }
+}
+
+ion-grid:first-of-type {
+    padding-top: 10px;
+    padding-bottom: 0;
+}
+
+.exercise-picker {
+    color: var(--ion-color-primary);
+    max-width: 220px;
+    padding-bottom: 0;
+}
+
+.md .exercise-row {
+    align-items: center;
+}
+
+.ios .exercise-row {
+    align-items: flex-end;
+}
+
+.empty-training-msg {
+    font-size: 14px;
+}
+
+.at-least-one-exercise-txt {
+    text-align: start;
+}

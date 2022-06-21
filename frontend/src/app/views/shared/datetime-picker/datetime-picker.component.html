@@ -1,0 +1,17 @@
+<ion-content>
+    <ion-datetime
+        #datetime
+        presentation="date-time"
+        size="cover"
+        firstDayOfWeek="1"
+        [value]="dateValue"
+        [max]="maxDate"
+        (ionChange)="dateChanged(datetime.value)">
+        <ion-buttons slot="buttons">
+            <ion-button (click)="close()">{{ 'common.actions.close' | translate }}</ion-button>
+            <ion-button
+                color="primary"
+                (click)="select()">{{ 'common.actions.confirm' | translate }}</ion-button>
+        </ion-buttons>
+    </ion-datetime>
+</ion-content>

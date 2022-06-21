@@ -1,0 +1,38 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="end">
+            <ion-button (click)="onCancel()">
+                <ion-icon name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>{{ 'training.new_training.reorder_exercises' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+    <div
+        *ngIf="(currentExercises$ | async) as currentExercises"
+        class="wrapper">
+        <ion-reorder-group
+            [disabled]="false"
+            (ionItemReorder)="doReorder($any($event))">
+            <ion-item *ngFor="let exerciseName of currentExercises">
+                <ion-label>
+                    {{ exerciseName | translate }}
+                </ion-label>
+                <ion-reorder slot="end">
+                    <ion-icon
+                        color="primary"
+                        name="repeat"></ion-icon>
+                </ion-reorder>
+            </ion-item>
+        </ion-reorder-group>
+    </div>
+    <div class="actions">
+        <ion-button
+            type="button"
+            color="primary"
+            (click)="reorderExercises()">
+            {{ 'common.actions.confirm' | translate }}
+        </ion-button>
+    </div>
+</ion-content>

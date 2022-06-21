@@ -1,0 +1,244 @@
+{
+    "common": {
+        "please_wait": "Please wait...",
+        "page": "Page",
+        "of": "of",
+        "page_not_found": "Page not found",
+        "exercises":"Exercises: ",
+        "change_preference_registration": "Your preferences can be changed during application use anytime",
+        "did_you_know": "Did you know?",
+        "kilograms": "Kilograms",
+        "pounds": "Pounds",
+        "day": "Day",
+        "week": "Week",
+        "month": "Month",
+        "year": "Year",
+        "period": "Period",
+        "food": "Food",
+        "kcal": "calories",
+        "try_again": "Try again",
+        "bodyweight": "Bodyweight",
+        "created_at_time": "Time created",
+        "here": "here",
+        "or": "OR",
+        "date": "Date",
+        "errors": {
+            "something_went_wrong": "Something went wrong Please try again",
+            "invalid_date": "Invalid date format",
+            "unknown_error": "Unknown error occured",
+            "not_authenticated": "You need to be authenticated to finish this activity",
+            "not_authorized": "You need to be authorized to finish this activity",
+            "internet_required": "Internet connection is required"
+        },
+        "actions": {
+            "delete": "Delete",
+            "close": "Close",
+            "confirm": "Confirm"
+        },
+        "months": {
+            "january": "January",
+            "february": "February",
+            "march": "March",
+            "april": "April",
+            "may": "May",
+            "june": "June",
+            "july": "July",
+            "august": "August",
+            "september": "September",
+            "october": "October",
+            "november": "November",
+            "december": "December"
+        }
+    },
+    "auth": {
+        "pick_language": "Pick a language",
+        "pick_weight_format": "Pick a weight format",
+        "email": "Email",
+        "password": "Password",
+        "confirm_password": "Confirm password",
+        "signup": "Sign up",
+        "signup_link": "Sign up",
+        "signup_success": "User registered successfully",
+        "signing_in": "Signing in...",
+        "login": "Login",
+        "logging_in": "Logging in...",
+        "no_account_message": "Don't have an account?",
+        "login_success": "Login successful",
+        "errors": {
+            "signup_error": "User registration failed",
+            "login_error": "Authentication failed",
+            "invalid_email": "Invalid email format",
+            "email_required": "Email is required",
+            "email_already_registered": "Email is already registered",
+            "email_not_registered": "Email is not registered",
+            "password_required": "Password is required",
+            "password_string": "Password needs to be a string",
+            "password_length": "Password length should be between 6 and 20 characters",
+            "confirm_password_required": "Confirm password field is required",
+            "confirm_password_string": "Confirm password needs to be a string",
+            "confirm_password_length": "Confirm password value length should be between 6 and 20 characters",
+            "equal_passwords": "Passwords must be equal",
+            "password_wrong_email": "Password doesn't match email",
+            "invalid_form": "All field needs to be correctly filled"
+        }
+    },
+    "navigation": {
+        "title": "Bodybuilding Log",
+        "login": "Login",
+        "signup": "Sign up",
+        "new_training": "New training",
+        "past_trainings": "Past trainings",
+        "language": "Language",
+        "logout": "Logout",
+        "buttons": {
+            "edit_go_back": "Go back"
+        }
+    },
+    "training": {
+        "new_training": {
+            "exercise_name": "Exercise name:",
+            "pick_date": "Choose a date",
+            "pick_bodyweight": "Enter your weight",
+            "pick_exercise": "Pick an exercise",
+            "weight_lifted": "Weight lifted",
+            "reps_performed": "Reps",
+            "total": "Total",
+            "delete_exercise_prompt": "Are you sure you want to delete?",
+            "training_updated": "Training updated",
+            "set_saved": "Set saved",
+            "first_add_previous_set": "You need to enter set number {{ setNumber }}",
+            "training_saved": "Training saved",
+            "finish_training": "Finish training",
+            "reorder_exercises": "Reorder exercises",
+            "errors": {
+                "date_required": "Date is required",
+                "bodyweight_number": "Bodyweight needs to be numerical value",
+                "bodyweight_min": "Bodyweight needs to be greater than 30",
+                "bodyweight_max": "Bodyweight needs to be less than 300",
+                "exercise_name_required": "Exercise name is required",
+                "exercise_name_string": "Exercise name must be text",
+                "exercise_name_duplicate": "Exercise name must be unique value",
+                "at_least_one_exercise": "At least one exercise is required",
+                "at_least_one_set": "At least one set is required",
+                "weight_lifted_required": "Weight lifted value is required",
+                "weight_lifted_number": "Weight lifted value must be number",
+                "weight_lifted_min": "Minimum weight lifted value is 1",
+                "weight_lifted_max": "Maximum weight lifted value is 1000",
+                "reps_required": "Reps are required",
+                "reps_number": "Rep value must be a number",
+                "reps_min": "Minimum reps value is 1",
+                "reps_max": "Maximum reps value is 1000",
+                "only_numbers": "Only numbers are allowed",
+                "only_positive": "Only positive numbers",
+                "set_number_max": "Maximum set number is 50",
+                "total_numerical": "Total must be numerical value",
+                "new_training_error_title": "Training is not available",
+                "new_training_error_description": "Desired training is not currently available. Please try again or pick another one",
+                "new_training_error_load": "There is a problem in loading new training. Please try again",
+                "error_update_training": "Error while trying to update training. Please check your data again",
+                "error_save_training": "Error while trying to save training. Please check your data again",
+                "exercises_not_available": "Exercises not available",
+                "no_more_exercises_available": "No more exercises available",
+                "pick_current_exercise": "Current exercise needs to be selected first",
+                "delete_first_set": "First set cannot be deleted",
+                "set_required": "Set is required",
+                "set_invalid": "Error happened while entering set"
+            },
+            "buttons": {
+                "add_set": "Add new set",
+                "add_exercise": "Add new exercise",
+                "delete_exercise": "Delete exercise",
+                "delete_set": "Delete set"
+            }
+        },
+        "past_trainings": {
+            "no_trainings_week": "No trainings found for this week",
+            "no_trainings_day": "No trainings found for {{ dayName }}",
+            "log_training": "Log new training",
+            "training_number": "Number of trainings: ",
+            "disabled_next_week": "Future weeks are not available",
+            "disabled_previous_week": "Previous weeks are not available",
+            "created_at": "Training created: ",
+            "show_by_week": "Show by week",
+            "show_by_day": "Show by day",
+            "filters": {
+                "enter_search_term": "Search by exercise name",
+                "choose_custom_query": "Choose custom query",
+                "apply_filters": "Apply filters",
+                "search_no_result_title": "We couldn't find any results for your search",
+                "search_no_result_description": "Try again with different search term or apply filters",
+                "errors": {
+                    "search_empty": "Your search needs a value",
+                    "search_error": "Error searching training",
+                    "search_max_length": "Maximum number of characters is reached"
+                }
+            },
+            "buttons": {
+                "first_page": "First page",
+                "last_page": "Last page",
+                "next_page": "Next",
+                "previous_page": "Previous",
+                "first_week": "First week",
+                "last_week": "Last week",
+                "previous_week": "Previous week",
+                "next_week": "Next week",
+                "delete_training": "Delete training"
+            },
+            "actions": {
+                "delete_training": "Are you sure you want to delete training?",
+                "delete_success": "Training successfully deleted",
+                "errors": {
+                    "error_delete_training": "Deleting training failed"
+                }
+            },
+            "errors": {
+                "error_load_training": "Error while loading training",
+                "get_training_error": "Requested training is not available",
+                "past_trainings_error_title": "Past trainings currently not available",
+                "past_trainings_error_description": "Past trainings are not currently available. Please try again"
+            }
+        }
+    },
+    "languages": {
+        "english": "English",
+        "croatian": "Croatian"
+    },
+    "preferences": {
+        "language_changed": "Language successfully changed",
+        "errors": {
+            "language_required": "Language field is required",
+            "language_change": "Error while trying to change language",
+            "weight_format_required": "Weight format field is required",
+            "period_change": "Error while trying to change period"
+        }
+    },
+    "weekdays": {
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday"
+    },
+    "exercises": {
+        "chinup": "Chinup",
+        "pullup": "Pullup",
+        "incline_dumbbell_press": "Incline dumbbell press",
+        "romanian_barbell_deadlift": "Romanian barbell deadlift",
+        "bench_press": "Bench press",
+        "neck_curl": "Neck curl",
+        "neck_extension": "Neck extension",
+        "hanging_leg_raise": "Hanging leg raise",
+        "seated_row": "Seated row",
+        "squat": "Squat",
+        "hip_thrust": "Hip thrust",
+        "leg_curl": "Leg curl",
+        "calf_raise": "Calf raise",
+        "facepull": "Facepull",
+        "hammer_dumbbell_curl": "Hammer dumbbell curl",
+        "seated_dumbbell_overhead_extension": "Seated dumbbell overhead extension",
+        "pushup": "Pushup",
+        "chest_press_machine": "Machine chest press"
+    }
+}

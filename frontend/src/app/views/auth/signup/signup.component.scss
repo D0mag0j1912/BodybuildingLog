@@ -1,0 +1,28 @@
+
+ion-row {
+    flex-wrap: nowrap;
+}
+
+.description {
+    font-size: 14px;
+    color: var(--ion-color-primary);
+    font-weight: 500;
+}
+
+.label {
+    margin-left: 10px;
+}
+
+.radio {
+    margin: 0;
+}
+
+.did-you-know {
+    font-size: 12px;
+    color: var(--ion-color-medium);
+}
+
+.submit {
+    margin-top: 10px;
+}
+

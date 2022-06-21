@@ -1,0 +1,89 @@
+<ion-menu
+    side="start"
+    content-id="main">
+    <ion-header>
+        <ion-toolbar>
+            <ion-title>{{ 'navigation.title' | translate }}</ion-title>
+        </ion-toolbar>
+    </ion-header>
+    <ion-content>
+        <ion-list>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                    *ngIf="!(isAuthenticated$ | async)"
+                    lines="none"
+                    routerLink="/auth/login"
+                    routerDirection="forward">
+                    <ion-icon
+                        slot="start"
+                        name="log-in-sharp"
+                        class="icon"></ion-icon>
+                    <ion-label>{{ 'navigation.login' | translate }}</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                    *ngIf="!(isAuthenticated$ | async)"
+                    lines="none"
+                    routerLink="/auth/signup"
+                    routerDirection="forward">
+                    <ion-icon
+                        slot="start"
+                        name="arrow-forward-sharp"
+                        class="icon"></ion-icon>
+                    <ion-label>{{ 'navigation.signup' | translate }}</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                    *ngIf="isAuthenticated$ | async"
+                    lines="none"
+                    routerLink="/training/new-training"
+                    routerDirection="forward">
+                    <ion-icon
+                        slot="start"
+                        name="barbell-sharp"
+                        class="icon"></ion-icon>
+                    <ion-label>{{ 'navigation.new_training' | translate }}</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                    *ngIf="isAuthenticated$ | async"
+                    lines="none"
+                    (click)="goToPastTrainings()">
+                    <ion-icon
+                        slot="start"
+                        name="analytics-sharp"
+                        class="icon"></ion-icon>
+                    <ion-label>{{ 'navigation.past_trainings' | translate }}</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                    *ngIf="isAuthenticated$ | async"
+                    lines="none"
+                    (click)="$event.stopPropagation(); openPopover($event);">
+                    <ion-icon
+                        slot="start"
+                        name="language-sharp"
+                        class="icon"></ion-icon>
+                    <ion-label>{{ 'navigation.language' | translate }}</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                    *ngIf="isAuthenticated$ | async"
+                    lines="none"
+                    routerDirection="backward"
+                    (click)="onLogout()">
+                    <ion-icon
+                        slot="start"
+                        name="log-out-sharp"
+                        class="icon"></ion-icon>
+                    <ion-label>{{ 'navigation.logout' | translate }}</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+        </ion-list>
+    </ion-content>
+</ion-menu>

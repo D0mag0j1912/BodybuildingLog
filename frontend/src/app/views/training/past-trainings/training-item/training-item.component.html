@@ -1,0 +1,62 @@
+<ion-card
+    mode="md"
+    class="ion-text-center"
+    (click)="trainingClicked()">
+    <ion-card-header>
+        <ion-card-title>
+            <strong class="day-name">{{ ('weekdays.' + weekDays[dayIndex] | translate) }}</strong>
+            <ion-text class="day-date">{{ '(' + (training.trainingDate | date: 'dd.MM.yyyy') + ')' }}</ion-text>
+        </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+        <ion-grid class="info-grid">
+            <ion-row>
+                <ion-col *ngIf="training?.bodyweight">
+                    <div class="bodyweight">
+                        <strong class="bodyweight--key">
+                            {{ 'common.bodyweight' | translate }}
+                        </strong>
+                        <span class="bodyweight--value">
+                            {{ training.bodyweight + ' kg' }}
+                        </span>
+                    </div>
+                </ion-col>
+                <ion-col>
+                    <div
+                        class="created-at"
+                        [class.created-at--no-bodyweight]="!training?.bodyweight">
+                        <strong class="created-at--key">
+                            {{ 'common.created_at_time' | translate }}
+                        </strong>
+                        <span class="created-at--value">
+                            {{ timeCreated }}
+                        </span>
+                    </div>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+        <div
+            class="exercise-wrapper"
+            [class.exercise-wrapper-no-dots]="training.exercises.length <= 2">
+            <span
+                *ngFor="let data of (training.exercises | slice:0:2); let i = index"
+                class="exercise-name">
+                {{ (i+1) + '. ' + (data.exerciseData.name | translate) }}
+            </span>
+            <span
+                *ngIf="training.exercises.length > 2"
+                class="exercise-dots">
+                &#8942;
+            </span>
+        </div>
+        <div class="actions">
+            <bl-training-item-actions
+                *ngFor="let action of actions"
+                [action]="action"
+                [training]="training"
+                [weekDays]="weekDays"
+                [dayIndex]="dayIndex"
+                [timeCreated]="timeCreated"></bl-training-item-actions>
+        </div>
+    </ion-card-content>
+</ion-card>

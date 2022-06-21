@@ -1,0 +1,127 @@
+
+ion-card {
+    position: fixed;
+    bottom: 0;
+    margin: 0 auto;
+    border: 2px solid var(--ion-color-primary);
+    box-shadow: var(--ion-box-shadow);
+    width: 95%;
+
+    ion-card-content {
+        padding: 5px 10px;
+    }
+}
+
+.md ion-button {
+    font-size: 5px;
+}
+
+.ios ion-button {
+    font-size: 12px;
+}
+
+.paginator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    row-gap: 5px;
+}
+
+.controls-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.page-size-wrapper {
+    display: block;
+    width: 45px;
+    margin-right: 20px;
+    padding: 6px 0;
+    overflow: hidden;
+    border: none;
+    border-radius: 4px;
+    position: relative;
+    box-shadow: var(--ion-box-shadow);
+
+    &:after {
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid var(--ion-color-primary);
+        position: absolute;
+        top: 40%;
+        right: 5px;
+        content: "";
+        z-index: 98;
+    }
+}
+
+.page-size {
+    width: 65px;
+    border: 0;
+    position: relative;
+    top: -1px;
+    z-index: 99;
+    background: none;
+    cursor: pointer;
+    padding-left: 8px;
+
+    &:focus-visible {
+        outline: none;
+    }
+}
+
+.arrow-wrapper {
+    display: flex;
+    column-gap: 10px;
+}
+
+.previous:not([disabled]):hover,
+.previous:not([disabled]):active,
+.next:not([disabled]):hover,
+.next:not([disabled]):active,
+.first:not([disabled]):hover,
+.first:not([disabled]):active,
+.last:not([disabled]):hover,
+.last:not([disabled]):active {
+    background: var(--ion-color-light);
+}
+
+.icon {
+    color: var(--ion-color-primary);
+}
+
+.label {
+    font-size: 15px;
+}
+
+@media (min-width: 640px) {
+
+    ion-card {
+        width: 1020px;
+        position: relative;
+        margin-top: 5px;
+    }
+
+    .paginator {
+        column-gap: 20px;
+        justify-content: flex-end;
+        flex-direction: row;
+    }
+
+    .arrow-wrapper {
+        margin-right: 15px;
+    }
+
+    .controls-wrapper {
+        order: 2;
+    }
+
+    .label {
+        margin-right: auto;
+        margin-left: 15px;
+    }
+}

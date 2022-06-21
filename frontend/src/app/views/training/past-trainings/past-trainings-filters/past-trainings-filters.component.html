@@ -1,0 +1,42 @@
+<div class="filters-wrapper">
+    <form
+        #form="ngForm"
+        class="search-wrapper"
+        autocomplete="off">
+        <div class="filter-wrapper">
+            <ion-input
+                ngDefaultControl
+                #search="ngModel"
+                name="search"
+                type="text"
+                class="search-input"
+                [maxlength]="inputMaxLength"
+                [placeholder]="'training.past_trainings.filters.enter_search_term' | translate"
+                [(ngModel)]="searchValue"
+                (keyup)="emitKeyboardEvent($event)"></ion-input>
+            <span
+                *ngIf="search?.control?.errors?.maxlength"
+                class="search-max-error">
+                {{ 'training.past_trainings.filters.errors.search_max_length' | translate }}
+            </span>
+            <div class="or-wrapper">
+                <span class="or">{{ 'common.or' | translate }}</span>
+                <ion-icon
+                    name="filter-outline"
+                    class="filter-icon"></ion-icon>
+            </div>
+        </div>
+        <ion-segment
+            color="primary"
+            mode="ios"
+            [value]="periodFilter"
+            [disabled]="periodDisabled"
+            (ionChange)="segmentChanged($any($event))">
+            <ng-container *ngFor="let option of sortOptions">
+                <ion-segment-button [value]="option.key">
+                    <ion-label color="primary">{{ option.value | async }}</ion-label>
+                </ion-segment-button>
+            </ng-container>
+        </ion-segment>
+    </form>
+</div>

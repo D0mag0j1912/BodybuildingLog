@@ -1,0 +1,60 @@
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.dot {
+    height: 8px;
+    width: 8px;
+    margin-bottom: 2px;
+    background-color: var(--ion-color-primary);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.created-at {
+    &-key {
+        display: block;
+        margin-top: 20px;
+        font-size: 18px;
+    }
+
+    &-value {
+        display: block;
+        color: var(--ion-color-primary);
+        font-weight: 600;
+        font-size: 18px;
+
+        .time {
+            color: var(--ion-color-primary);
+        }
+    }
+}
+
+.exercises-wrapper {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    justify-content: flex-start;
+
+    .exercises {
+        &-key {
+            align-self: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        &-value {
+            color: var(--ion-color-primary);
+            width: fit-content;
+            border-bottom: 2px solid var(--ion-color-light);
+            align-self: center;
+            font-size: 18px;
+        }
+    }
+}
+
+.delete-btn {
+    margin-top: 10px;
+}

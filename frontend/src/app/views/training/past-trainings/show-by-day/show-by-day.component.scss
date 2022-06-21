@@ -1,0 +1,28 @@
+
+ion-fab {
+    margin-top: 35px;
+
+    ion-fab-button {
+        --background: var(--ion-color-primary);
+        --color: white;
+    }
+
+    ion-fab-list {
+        ion-fab-button {
+            width: 50px;
+            height: 50px;
+        }
+    }
+}
+
+.active-day {
+    --background: var(--ion-color-primary-shade) !important;
+}
+
+@media (min-width: 640px) {
+    ion-fab {
+        position: absolute;
+        right: 380px;
+        margin-top: 0;
+    }
+}
