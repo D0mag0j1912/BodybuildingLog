@@ -1,4 +1,4 @@
-import { DateInterval } from '../../../models/common/dates.model';
+import { DateInterval } from '../../common/dates.model';
 import { Training } from '../new-training/training.model';
 
 export interface PastTrainings {
