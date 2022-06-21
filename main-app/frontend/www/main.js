@@ -11,7 +11,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AppRoutingModule": () => (/* binding */ AppRoutingModule)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/core */ 3184);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/router */ 52816);
@@ -32,7 +32,7 @@ const routes = [{
 }, {
   path: 'auth',
   loadChildren: function () {
-    var _ref = (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    var _ref = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       return Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! ./modules/auth/auth.module */ 83970)).then(module => module.AuthModule);
     });
 
@@ -43,7 +43,7 @@ const routes = [{
 }, {
   path: 'training',
   loadChildren: function () {
-    var _ref2 = (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    var _ref2 = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       return __webpack_require__.e(/*! import() */ "src_app_modules_training_training_module_ts").then(__webpack_require__.bind(__webpack_require__, /*! ./modules/training/training.module */ 89952)).then(module => module.TrainingModule);
     });
 
@@ -93,10 +93,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! rxjs/operators */ 88759);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! rxjs/operators */ 85921);
 /* harmony import */ var _services_shared_preferences_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./services/shared/preferences.service */ 68476);
-/* harmony import */ var _services_shared_shared_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./services/shared/shared.service */ 41571);
-/* harmony import */ var _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./services/shared/unsubscribe.service */ 50523);
-/* harmony import */ var _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./services/store/auth/auth-store.service */ 88458);
-/* harmony import */ var _services_store_shared_preferences_state_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./services/store/shared/preferences-state.service */ 99165);
+/* harmony import */ var _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./services/shared/unsubscribe.service */ 50523);
+/* harmony import */ var _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./services/store/auth/auth-store.service */ 88458);
+/* harmony import */ var _services_store_shared_preferences_state_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./services/store/shared/preferences-state.service */ 99165);
+/* harmony import */ var _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./services/store/shared/shared-store.service */ 81102);
 /* harmony import */ var _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./services/store/training/training-store.service */ 70788);
 
 
@@ -112,25 +112,25 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let AppComponent = class AppComponent {
-    constructor(authStateService, sharedService, trainingStoreService, translateService, unsubscribeService, preferencesService, preferencesStateService) {
-        this.authStateService = authStateService;
-        this.sharedService = sharedService;
+    constructor(authStoreService, trainingStoreService, sharedStoreService, translateService, unsubscribeService, preferencesService, preferencesStoreService) {
+        this.authStoreService = authStoreService;
         this.trainingStoreService = trainingStoreService;
+        this.sharedStoreService = sharedStoreService;
         this.translateService = translateService;
         this.unsubscribeService = unsubscribeService;
         this.preferencesService = preferencesService;
-        this.preferencesStateService = preferencesStateService;
+        this.preferencesStoreService = preferencesStoreService;
     }
     ngOnInit() {
-        this.authStateService.autoLogin();
+        this.authStoreService.autoLogin();
         this.trainingStoreService.keepTrainingState();
-        this.sharedService.keepQueryParams();
+        this.sharedStoreService.keepQueryParams();
         this.translateService.setDefaultLang('en');
-        this.authStateService.loggedUser$
+        this.authStoreService.loggedUser$
             .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.take)(1), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.switchMap)(loggedUser => {
             if (loggedUser) {
                 return this.preferencesService.getPreferences(loggedUser._id)
-                    .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.tap)(preferences => this.preferencesStateService.emitPreferences(preferences)), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.switchMap)(preferences => this.translateService.use(preferences.LanguageCode || 'en')));
+                    .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.tap)(preferences => this.preferencesStoreService.emitPreferences(preferences)), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.switchMap)(preferences => this.translateService.use(preferences.LanguageCode || 'en')));
             }
             else {
                 return rxjs__WEBPACK_IMPORTED_MODULE_11__.EMPTY;
@@ -140,20 +140,20 @@ let AppComponent = class AppComponent {
     }
 };
 AppComponent.ctorParameters = () => [
-    { type: _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_5__.AuthStoreService },
-    { type: _services_shared_shared_service__WEBPACK_IMPORTED_MODULE_3__.SharedService },
+    { type: _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_4__.AuthStoreService },
     { type: _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_7__.TrainingStoreService },
+    { type: _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_6__.SharedStoreService },
     { type: _ngx_translate_core__WEBPACK_IMPORTED_MODULE_13__.TranslateService },
-    { type: _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_4__.UnsubscribeService },
+    { type: _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_3__.UnsubscribeService },
     { type: _services_shared_preferences_service__WEBPACK_IMPORTED_MODULE_2__.PreferencesService },
-    { type: _services_store_shared_preferences_state_service__WEBPACK_IMPORTED_MODULE_6__.PreferencesStoreService }
+    { type: _services_store_shared_preferences_state_service__WEBPACK_IMPORTED_MODULE_5__.PreferencesStoreService }
 ];
 AppComponent = (0,tslib__WEBPACK_IMPORTED_MODULE_14__.__decorate)([
     (0,_angular_core__WEBPACK_IMPORTED_MODULE_15__.Component)({
         selector: 'bl-root',
         template: _app_component_html_ngResource__WEBPACK_IMPORTED_MODULE_0__,
         changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_15__.ChangeDetectionStrategy.OnPush,
-        providers: [_services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_4__.UnsubscribeService],
+        providers: [_services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_3__.UnsubscribeService],
         styles: [_app_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_1__]
     })
 ], AppComponent);
@@ -550,12 +550,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let AuthGuard = class AuthGuard {
-    constructor(authStateService, router) {
-        this.authStateService = authStateService;
+    constructor(authStoreService, router) {
+        this.authStoreService = authStoreService;
         this.router = router;
     }
     canLoad(_route) {
-        return this.authStateService.isAuth$
+        return this.authStoreService.isAuth$
             .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.take)(1), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_2__.map)((isAuth) => {
             if (!isAuth) {
                 return this.router.createUrlTree(['/auth/login']);
@@ -662,11 +662,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let AuthInterceptor = class AuthInterceptor {
-    constructor(authStateService) {
-        this.authStateService = authStateService;
+    constructor(authStoreService) {
+        this.authStoreService = authStoreService;
     }
     intercept(request, next) {
-        const token = this.authStateService.getToken();
+        const token = this.authStoreService.getToken();
         const authRequest = request.clone({ headers: request.headers.set('authorization', 'Bearer ' + token) });
         return next.handle(authRequest);
     }
@@ -1468,7 +1468,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AuthService": () => (/* binding */ AuthService)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/common/http */ 28784);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/core */ 3184);
@@ -1492,12 +1492,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let AuthService = class AuthService {
-  constructor(http, router, authStateService, preferencesService, preferencesStateService) {
+  constructor(http, router, authStoreService, preferencesService, preferencesStoreService) {
     this.http = http;
     this.router = router;
-    this.authStateService = authStateService;
+    this.authStoreService = authStoreService;
     this.preferencesService = preferencesService;
-    this.preferencesStateService = preferencesStateService;
+    this.preferencesStoreService = preferencesStoreService;
   }
 
   signup(language, weightFormat, email, password, confirmPassword) {
@@ -1524,22 +1524,22 @@ let AuthService = class AuthService {
       Password: password
     };
     return this.http.post(_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.BACKEND + '/auth/login', authData).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.tap)( /*#__PURE__*/function () {
-      var _ref = (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (response) {
+      var _ref = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (response) {
         if (response.Token) {
-          _this.authStateService.emitLoggedUser(response);
+          _this.authStoreService.emitLoggedUser(response);
 
-          _this.authStateService.emitIsAuth(true);
+          _this.authStoreService.emitIsAuth(true);
 
-          _this.authStateService.setToken(response.Token);
+          _this.authStoreService.setToken(response.Token);
 
           const expiresInDuration = response.ExpiresIn;
 
-          _this.authStateService.setAuthTimer(expiresInDuration);
+          _this.authStoreService.setAuthTimer(expiresInDuration);
 
           const now = new Date();
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
 
-          _this.authStateService.saveLS(_this.authStateService.getToken(), expirationDate, response._id);
+          _this.authStoreService.saveLS(_this.authStoreService.getToken(), expirationDate, response._id);
 
           yield _this.router.navigate(['/training/new-training']);
         }
@@ -1548,7 +1548,7 @@ let AuthService = class AuthService {
       return function (_x) {
         return _ref.apply(this, arguments);
       };
-    }()), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.switchMap)(response => this.preferencesService.getPreferences(response._id).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.tap)(preferences => this.preferencesStateService.emitPreferences(preferences)), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.switchMap)(_ => (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.of)(response)))));
+    }()), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.switchMap)(response => this.preferencesService.getPreferences(response._id).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.tap)(preferences => this.preferencesStoreService.emitPreferences(preferences)), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.switchMap)(_ => (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.of)(response)))));
   }
 
 };
@@ -1661,7 +1661,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DeleteTrainingActionService": () => (/* binding */ DeleteTrainingActionService)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/common */ 36362);
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/common/http */ 28784);
@@ -1696,7 +1696,7 @@ let DeleteTrainingActionService = class DeleteTrainingActionService {
   perform(data) {
     var _this = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       yield _this.openDeleteTrainingDialog(data);
     })();
   }
@@ -1704,7 +1704,7 @@ let DeleteTrainingActionService = class DeleteTrainingActionService {
   openDeleteTrainingDialog(data) {
     var _this2 = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       const modal = yield _this2.modalController.create({
         component: _views_shared_training_training_actions_delete_training_action_delete_training_action_component__WEBPACK_IMPORTED_MODULE_3__.DeleteTrainingActionComponent,
         componentProps: {
@@ -1774,9 +1774,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let TrainingService = class TrainingService {
-    constructor(http, authStateService, trainingStoreService) {
+    constructor(http, authStoreService, trainingStoreService) {
         this.http = http;
-        this.authStateService = authStateService;
+        this.authStoreService = authStoreService;
         this.trainingStoreService = trainingStoreService;
     }
     getExerciseByName(exerciseName) {
@@ -1789,7 +1789,7 @@ let TrainingService = class TrainingService {
             this.trainingStoreService.emitAllExercises(response);
             const trainingState = JSON.parse(localStorage.getItem(_models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_1__.LocalStorageItems.TRAINING_STATE));
             if (!trainingState) {
-                return this.authStateService.loggedUser$
+                return this.authStoreService.loggedUser$
                     .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.take)(1), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_7__.tap)((authResponseData) => {
                     this.trainingStoreService.updateTrainingState(undefined, response.Value, true, authResponseData._id);
                 }), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.switchMap)(_ => (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.of)(response)));
@@ -1861,7 +1861,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "LoadingControllerService": () => (/* binding */ LoadingControllerService)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/core */ 3184);
 /* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ionic/angular */ 93819);
@@ -1880,7 +1880,7 @@ let LoadingControllerService = class LoadingControllerService {
   displayLoader(options) {
     var _this = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       const loading = yield _this.loadingController.create({
         message: _this.translateService.instant(options.message),
         keyboardClose: true
@@ -1892,7 +1892,7 @@ let LoadingControllerService = class LoadingControllerService {
   dismissLoader() {
     var _this2 = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       yield _this2.loadingController.dismiss();
     })();
   }
@@ -1953,7 +1953,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "PreferencesService": () => (/* binding */ PreferencesService)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/common/http */ 28784);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/core */ 3184);
@@ -1975,11 +1975,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let PreferencesService = class PreferencesService {
-  constructor(http, translateService, toastControllerService, preferencesStateService) {
+  constructor(http, translateService, toastControllerService, preferencesStoreService) {
     this.http = http;
     this.translateService = translateService;
     this.toastControllerService = toastControllerService;
-    this.preferencesStateService = preferencesStateService;
+    this.preferencesStoreService = preferencesStoreService;
   }
 
   getPreferences(userId) {
@@ -1998,8 +1998,8 @@ let PreferencesService = class PreferencesService {
       preferences: apiPreferences,
       preferenceChanged: preferenceChanged
     }).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.switchMap)(response => this.translateService.use(preferences.LanguageCode).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.tap)( /*#__PURE__*/function () {
-      var _ref = (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (_) {
-        _this.preferencesStateService.emitPreferences(preferences);
+      var _ref = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (_) {
+        _this.preferencesStoreService.emitPreferences(preferences);
 
         if (response.Message) {
           yield _this.toastControllerService.displayToast({
@@ -2035,62 +2035,6 @@ PreferencesService = (0,tslib__WEBPACK_IMPORTED_MODULE_9__.__decorate)([(0,_angu
 
 /***/ }),
 
-/***/ 41571:
-/*!***************************************************!*\
-  !*** ./src/app/services/shared/shared.service.ts ***!
-  \***************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "SharedService": () => (/* binding */ SharedService)
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! tslib */ 34929);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/core */ 3184);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ 92218);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ 84505);
-/* harmony import */ var _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/common/interfaces/common.model */ 66756);
-
-
-
-
-let SharedService = class SharedService {
-    constructor() {
-        this.editingTraining$$ = new rxjs__WEBPACK_IMPORTED_MODULE_1__.Subject();
-        this.editingTraining$ = this.editingTraining$$.asObservable();
-        this.pastTrainingsQueryParams$$ = new rxjs__WEBPACK_IMPORTED_MODULE_2__.BehaviorSubject(null);
-        this.deletedTraining$$ = new rxjs__WEBPACK_IMPORTED_MODULE_1__.Subject();
-        this.dayClicked$$ = new rxjs__WEBPACK_IMPORTED_MODULE_2__.BehaviorSubject(null);
-    }
-    completeDayClicked() {
-        this.dayClicked$$.complete();
-    }
-    emitDayClicked(dayClicked) {
-        this.dayClicked$$.next(dayClicked);
-    }
-    getDayClickedDate() {
-        return this.dayClicked$$.getValue();
-    }
-    emitEditingTraining(editMode) {
-        this.editingTraining$$.next(editMode);
-    }
-    keepQueryParams() {
-        const queryParams = JSON.parse(localStorage.getItem(_models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_0__.LocalStorageItems.QUERY_PARAMS));
-        if (!queryParams) {
-            return;
-        }
-        this.pastTrainingsQueryParams$$.next(queryParams);
-    }
-};
-SharedService = (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__decorate)([
-    (0,_angular_core__WEBPACK_IMPORTED_MODULE_4__.Injectable)({ providedIn: 'root' })
-], SharedService);
-
-
-
-/***/ }),
-
 /***/ 76467:
 /*!*************************************************************!*\
   !*** ./src/app/services/shared/toast-controller.service.ts ***!
@@ -2102,7 +2046,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ToastControllerService": () => (/* binding */ ToastControllerService)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/core */ 3184);
 /* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ionic/angular */ 93819);
@@ -2121,7 +2065,7 @@ let ToastControllerService = class ToastControllerService {
   displayToast(options) {
     var _this = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       const toast = yield _this.toastController.create({
         message: _this.translateService.instant(options === null || options === void 0 ? void 0 : options.message),
         duration: options.duration,
@@ -2188,7 +2132,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AuthStoreService": () => (/* binding */ AuthStoreService)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/core */ 3184);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/router */ 52816);
@@ -2261,7 +2205,7 @@ let AuthStoreService = class AuthStoreService {
   logout() {
     var _this = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       _this.token = null;
 
       _this.emitIsAuth(false);
@@ -2277,7 +2221,7 @@ let AuthStoreService = class AuthStoreService {
   setAuthTimer(duration) {
     var _this2 = this;
 
-    this.tokenTimer = setTimeout( /*#__PURE__*/(0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    this.tokenTimer = setTimeout( /*#__PURE__*/(0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       yield _this2.logout();
     }), duration * 1000);
   }
@@ -2342,6 +2286,66 @@ let PreferencesStoreService = class PreferencesStoreService {
 PreferencesStoreService = (0,tslib__WEBPACK_IMPORTED_MODULE_1__.__decorate)([
     (0,_angular_core__WEBPACK_IMPORTED_MODULE_2__.Injectable)({ providedIn: 'root' })
 ], PreferencesStoreService);
+
+
+
+/***/ }),
+
+/***/ 81102:
+/*!***************************************************************!*\
+  !*** ./src/app/services/store/shared/shared-store.service.ts ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SharedStoreService": () => (/* binding */ SharedStoreService)
+/* harmony export */ });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! tslib */ 34929);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/core */ 3184);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ 84505);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ 92218);
+/* harmony import */ var _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../models/common/interfaces/common.model */ 66756);
+
+
+
+
+let SharedStoreService = class SharedStoreService {
+    constructor() {
+        this._pastTrainingsQueryParams$$ = new rxjs__WEBPACK_IMPORTED_MODULE_1__.BehaviorSubject(null);
+        this.pastTrainingsQueryParams$ = this._pastTrainingsQueryParams$$.asObservable();
+        this._editingTraining$$ = new rxjs__WEBPACK_IMPORTED_MODULE_2__.Subject();
+        this.editingTraining$ = this._editingTraining$$.asObservable();
+        this.deletedTraining$$ = new rxjs__WEBPACK_IMPORTED_MODULE_2__.Subject();
+        this.dayClicked$$ = new rxjs__WEBPACK_IMPORTED_MODULE_1__.BehaviorSubject(null);
+    }
+    completeDayClicked() {
+        this.dayClicked$$.complete();
+    }
+    emitDayClicked(dayClicked) {
+        this.dayClicked$$.next(dayClicked);
+    }
+    getDayClickedDate() {
+        return this.dayClicked$$.getValue();
+    }
+    emitEditingTraining(editMode) {
+        this._editingTraining$$.next(editMode);
+    }
+    keepQueryParams() {
+        const queryParams = JSON.parse(localStorage.getItem(_models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_0__.LocalStorageItems.QUERY_PARAMS));
+        if (!queryParams) {
+            return;
+        }
+        this._pastTrainingsQueryParams$$.next(queryParams);
+    }
+    emitPastTrainingsQueryParams(params) {
+        this._pastTrainingsQueryParams$$.next(params);
+    }
+};
+SharedStoreService = (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__decorate)([
+    (0,_angular_core__WEBPACK_IMPORTED_MODULE_4__.Injectable)({ providedIn: 'root' })
+], SharedStoreService);
 
 
 
@@ -2762,7 +2766,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "LoginComponent": () => (/* binding */ LoginComponent)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _login_component_html_ngResource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./login.component.html?ngResource */ 33327);
 /* harmony import */ var _login_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./login.component.scss?ngResource */ 92767);
@@ -2828,7 +2832,7 @@ let LoginComponent = class LoginComponent {
   onSubmit() {
     var _this = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       if (!_this.form.valid) {
         return;
       }
@@ -2838,13 +2842,13 @@ let LoginComponent = class LoginComponent {
         message: 'auth.logging_in'
       });
 
-      _this.authService.login(_this.accessFormData('email').value, _this.accessFormData('password').value).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.catchError)(_ => rxjs__WEBPACK_IMPORTED_MODULE_13__.EMPTY), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_14__.finalize)( /*#__PURE__*/(0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+      _this.authService.login(_this.accessFormData('email').value, _this.accessFormData('password').value).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.catchError)(_ => rxjs__WEBPACK_IMPORTED_MODULE_13__.EMPTY), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_14__.finalize)( /*#__PURE__*/(0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
         _this.isLoading = false;
         yield _this.loadingControllerService.dismissLoader();
 
         _this.changeDetectorRef.markForCheck();
       })), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_15__.takeUntil)(_this.unsubscribeService)).subscribe( /*#__PURE__*/function () {
-        var _ref2 = (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (response) {
+        var _ref2 = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (response) {
           if (response) {
             yield _this.toastControllerService.displayToast({
               message: _this.translateService.instant(response.Message),
@@ -2916,7 +2920,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "SignupComponent": () => (/* binding */ SignupComponent)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _signup_component_html_ngResource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./signup.component.html?ngResource */ 36927);
 /* harmony import */ var _signup_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./signup.component.scss?ngResource */ 35431);
@@ -2986,7 +2990,7 @@ let SignupComponent = class SignupComponent {
   onSubmit() {
     var _this = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       if (!_this.form.valid) {
         return;
       }
@@ -2996,13 +3000,13 @@ let SignupComponent = class SignupComponent {
         message: 'auth.signing_in'
       });
 
-      _this.authService.signup(_this.accessFormData('language').value, _this.accessFormData('weightFormat').value, _this.accessFormData('email').value, _this.accessFormData('password').value, _this.accessFormData('confirmPassword').value).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.catchError)(_ => rxjs__WEBPACK_IMPORTED_MODULE_13__.EMPTY), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_14__.finalize)( /*#__PURE__*/(0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+      _this.authService.signup(_this.accessFormData('language').value, _this.accessFormData('weightFormat').value, _this.accessFormData('email').value, _this.accessFormData('password').value, _this.accessFormData('confirmPassword').value).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.catchError)(_ => rxjs__WEBPACK_IMPORTED_MODULE_13__.EMPTY), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_14__.finalize)( /*#__PURE__*/(0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
         _this.isLoading = false;
         yield _this.loadingControllerService.dismissLoader();
 
         _this.changeDetectorRef.markForCheck();
       })), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_15__.takeUntil)(_this.unsubscribeService)).subscribe( /*#__PURE__*/function () {
-        var _ref2 = (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (response) {
+        var _ref2 = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (response) {
           if (response.Success) {
             yield _this.toastControllerService.displayToast({
               message: _this.translateService.instant(response.Message),
@@ -3066,7 +3070,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "LanguagesComponent": () => (/* binding */ LanguagesComponent)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _languages_component_html_ngResource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./languages.component.html?ngResource */ 46735);
 /* harmony import */ var _languages_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./languages.component.scss?ngResource */ 45138);
@@ -3088,9 +3092,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let LanguagesComponent = class LanguagesComponent {
-  constructor(preferencesStateService, authStateService, navigationService, popoverController, menuController) {
-    this.preferencesStateService = preferencesStateService;
-    this.authStateService = authStateService;
+  constructor(preferencesStoreService, authStoreService, navigationService, popoverController, menuController) {
+    this.preferencesStoreService = preferencesStoreService;
+    this.authStoreService = authStoreService;
     this.navigationService = navigationService;
     this.popoverController = popoverController;
     this.menuController = menuController;
@@ -3108,8 +3112,8 @@ let LanguagesComponent = class LanguagesComponent {
   changeLanguage(language) {
     var _this = this;
 
-    const currentPreferences = this.preferencesStateService.getPreferences();
-    this.authStateService.loggedUser$.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.take)(1), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_7__.switchMap)(userData => {
+    const currentPreferences = this.preferencesStoreService.getPreferences();
+    this.authStoreService.loggedUser$.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.take)(1), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_7__.switchMap)(userData => {
       const preferences = {
         UserId: userData._id,
         LanguageCode: language,
@@ -3118,7 +3122,7 @@ let LanguagesComponent = class LanguagesComponent {
       };
       return this.navigationService.setPreferences(preferences, 'language');
     })).subscribe( /*#__PURE__*/function () {
-      var _ref = (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (_) {
+      var _ref = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (_) {
         yield _this.popoverController.dismiss();
         yield _this.menuController.close();
       });
@@ -3169,24 +3173,26 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "SideNavComponent": () => (/* binding */ SideNavComponent)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! tslib */ 34929);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _side_nav_component_html_ngResource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./side-nav.component.html?ngResource */ 93763);
 /* harmony import */ var _side_nav_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./side-nav.component.scss?ngResource */ 11362);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @angular/core */ 3184);
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @angular/router */ 52816);
-/* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @ionic/angular */ 93819);
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! date-fns */ 68031);
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! date-fns */ 69377);
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! date-fns */ 10913);
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! date-fns */ 33200);
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! date-fns */ 86712);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs/operators */ 83910);
-/* harmony import */ var _models_training_past_trainings_past_trainings_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../models/training/past-trainings/past-trainings.model */ 48941);
-/* harmony import */ var _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../services/store/auth/auth-store.service */ 88458);
-/* harmony import */ var _services_store_shared_preferences_state_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../services/store/shared/preferences-state.service */ 99165);
-/* harmony import */ var _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../services/store/training/training-store.service */ 70788);
-/* harmony import */ var _languages_languages_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./languages/languages.component */ 47746);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @angular/core */ 3184);
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @angular/router */ 52816);
+/* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @ionic/angular */ 93819);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! rxjs/operators */ 83910);
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! date-fns */ 68031);
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! date-fns */ 69377);
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! date-fns */ 10913);
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! date-fns */ 33200);
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! date-fns */ 86712);
+/* harmony import */ var _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/store/auth/auth-store.service */ 88458);
+/* harmony import */ var _services_store_shared_preferences_state_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../services/store/shared/preferences-state.service */ 99165);
+/* harmony import */ var _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../services/store/training/training-store.service */ 70788);
+/* harmony import */ var _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../services/store/shared/shared-store.service */ 81102);
+/* harmony import */ var _models_training_past_trainings_past_trainings_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../models/training/past-trainings/past-trainings.model */ 48941);
+/* harmony import */ var _languages_languages_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./languages/languages.component */ 47746);
+
 
 
 
@@ -3202,57 +3208,74 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let SideNavComponent = class SideNavComponent {
-  constructor(authStateService, preferencesStateService, trainingStoreService, popoverController, router) {
-    this.authStateService = authStateService;
-    this.preferencesStateService = preferencesStateService;
+  constructor(authStoreService, sharedStoreService, preferencesStoreService, trainingStoreService, popoverController, router) {
+    this.authStoreService = authStoreService;
+    this.sharedStoreService = sharedStoreService;
+    this.preferencesStoreService = preferencesStoreService;
     this.trainingStoreService = trainingStoreService;
     this.popoverController = popoverController;
     this.router = router;
-    this.isAuthenticated$ = this.authStateService.isAuth$;
-    this.preferences$ = this.preferencesStateService.preferencesChanged$.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.take)(1));
+    this.isAuthenticated$ = this.authStoreService.isAuth$;
+    this.preferences$ = this.preferencesStoreService.preferencesChanged$.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.take)(1));
   }
 
   onLogout() {
     var _this = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       _this.trainingStoreService.clearTrainingState();
 
-      yield _this.authStateService.logout();
+      yield _this.authStoreService.logout();
     })();
   }
 
   goToPastTrainings() {
     var _this2 = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
-      var _a, _b;
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+      _this2.sharedStoreService.pastTrainingsQueryParams$.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.take)(1)).subscribe( /*#__PURE__*/function () {
+        var _ref = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (params) {
+          var _a, _b;
 
-      const showByPeriod = (_b = (_a = _this2.preferencesStateService.getPreferences()) === null || _a === void 0 ? void 0 : _a.ShowByPeriod) !== null && _b !== void 0 ? _b : 'week';
-      const startDate = (0,date_fns__WEBPACK_IMPORTED_MODULE_9__["default"])((0,date_fns__WEBPACK_IMPORTED_MODULE_10__["default"])(new Date()), {
-        weekStartsOn: 1
-      });
-      const endDate = showByPeriod === 'week' ? (0,date_fns__WEBPACK_IMPORTED_MODULE_11__["default"])((0,date_fns__WEBPACK_IMPORTED_MODULE_12__["default"])(new Date()), {
-        weekStartsOn: 1
-      }) : (0,date_fns__WEBPACK_IMPORTED_MODULE_9__["default"])((0,date_fns__WEBPACK_IMPORTED_MODULE_10__["default"])(new Date()), {
-        weekStartsOn: 1
-      });
-      yield _this2.router.navigate(['/training/past-trainings'], {
-        queryParams: {
-          startDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_13__["default"])(startDate, _models_training_past_trainings_past_trainings_model__WEBPACK_IMPORTED_MODULE_3__.QUERY_PARAMS_DATE_FORMAT),
-          endDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_13__["default"])(endDate, _models_training_past_trainings_past_trainings_model__WEBPACK_IMPORTED_MODULE_3__.QUERY_PARAMS_DATE_FORMAT),
-          showBy: showByPeriod
-        }
-      });
+          let queryParams;
+
+          if (params) {
+            queryParams = params;
+          } else {
+            const showByPeriod = (_b = (_a = _this2.preferencesStoreService.getPreferences()) === null || _a === void 0 ? void 0 : _a.ShowByPeriod) !== null && _b !== void 0 ? _b : 'week';
+            const startDate = (0,date_fns__WEBPACK_IMPORTED_MODULE_10__["default"])((0,date_fns__WEBPACK_IMPORTED_MODULE_11__["default"])(new Date()), {
+              weekStartsOn: 1
+            });
+            const endDate = showByPeriod === 'week' ? (0,date_fns__WEBPACK_IMPORTED_MODULE_12__["default"])((0,date_fns__WEBPACK_IMPORTED_MODULE_13__["default"])(new Date()), {
+              weekStartsOn: 1
+            }) : (0,date_fns__WEBPACK_IMPORTED_MODULE_10__["default"])((0,date_fns__WEBPACK_IMPORTED_MODULE_11__["default"])(new Date()), {
+              weekStartsOn: 1
+            });
+            queryParams = {
+              startDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_14__["default"])(startDate, _models_training_past_trainings_past_trainings_model__WEBPACK_IMPORTED_MODULE_7__.QUERY_PARAMS_DATE_FORMAT),
+              endDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_14__["default"])(endDate, _models_training_past_trainings_past_trainings_model__WEBPACK_IMPORTED_MODULE_7__.QUERY_PARAMS_DATE_FORMAT),
+              showBy: showByPeriod
+            };
+          }
+
+          yield _this2.router.navigate(['/training/past-trainings'], {
+            queryParams
+          });
+        });
+
+        return function (_x) {
+          return _ref.apply(this, arguments);
+        };
+      }());
     })();
   }
 
   openPopover($event) {
     var _this3 = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       const popover = yield _this3.popoverController.create({
-        component: _languages_languages_component__WEBPACK_IMPORTED_MODULE_7__.LanguagesComponent,
+        component: _languages_languages_component__WEBPACK_IMPORTED_MODULE_8__.LanguagesComponent,
         event: $event,
         componentProps: {
           preferences$: _this3.preferences$
@@ -3267,21 +3290,23 @@ let SideNavComponent = class SideNavComponent {
 };
 
 SideNavComponent.ctorParameters = () => [{
-  type: _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_4__.AuthStoreService
+  type: _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_3__.AuthStoreService
 }, {
-  type: _services_store_shared_preferences_state_service__WEBPACK_IMPORTED_MODULE_5__.PreferencesStoreService
+  type: _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_6__.SharedStoreService
 }, {
-  type: _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_6__.TrainingStoreService
+  type: _services_store_shared_preferences_state_service__WEBPACK_IMPORTED_MODULE_4__.PreferencesStoreService
 }, {
-  type: _ionic_angular__WEBPACK_IMPORTED_MODULE_14__.PopoverController
+  type: _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_5__.TrainingStoreService
 }, {
-  type: _angular_router__WEBPACK_IMPORTED_MODULE_15__.Router
+  type: _ionic_angular__WEBPACK_IMPORTED_MODULE_15__.PopoverController
+}, {
+  type: _angular_router__WEBPACK_IMPORTED_MODULE_16__.Router
 }];
 
-SideNavComponent = (0,tslib__WEBPACK_IMPORTED_MODULE_16__.__decorate)([(0,_angular_core__WEBPACK_IMPORTED_MODULE_17__.Component)({
+SideNavComponent = (0,tslib__WEBPACK_IMPORTED_MODULE_17__.__decorate)([(0,_angular_core__WEBPACK_IMPORTED_MODULE_18__.Component)({
   selector: 'bl-side-nav',
   template: _side_nav_component_html_ngResource__WEBPACK_IMPORTED_MODULE_1__,
-  changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_17__.ChangeDetectionStrategy.OnPush,
+  changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_18__.ChangeDetectionStrategy.OnPush,
   styles: [_side_nav_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_2__]
 })], SideNavComponent);
 
@@ -3299,7 +3324,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DateTimePickerComponent": () => (/* binding */ DateTimePickerComponent)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _datetime_picker_component_html_ngResource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./datetime-picker.component.html?ngResource */ 53030);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/core */ 3184);
@@ -3326,7 +3351,7 @@ let DateTimePickerComponent = class DateTimePickerComponent {
   close() {
     var _this = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       var _a;
 
       yield (_a = _this.dateTimeEl) === null || _a === void 0 ? void 0 : _a.cancel();
@@ -3337,7 +3362,7 @@ let DateTimePickerComponent = class DateTimePickerComponent {
   select() {
     var _this2 = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       var _a;
 
       yield (_a = _this2.dateTimeEl) === null || _a === void 0 ? void 0 : _a.confirm();
@@ -3381,7 +3406,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DeleteExerciseDialogComponent": () => (/* binding */ DeleteExerciseDialogComponent)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _delete_exercise_dialog_component_html_ngResource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./delete-exercise-dialog.component.html?ngResource */ 71504);
 /* harmony import */ var _delete_exercise_dialog_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./delete-exercise-dialog.component.scss?ngResource */ 79948);
@@ -3404,7 +3429,7 @@ let DeleteExerciseDialogComponent = class DeleteExerciseDialogComponent {
   onCancel() {
     var _this = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       yield _this.modalController.dismiss(false, _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.CANCEL);
     })();
   }
@@ -3412,7 +3437,7 @@ let DeleteExerciseDialogComponent = class DeleteExerciseDialogComponent {
   onDeleteExercise() {
     var _this2 = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       yield _this2.modalController.dismiss(true, _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.DELETE_EXERCISE);
     })();
   }
@@ -3462,9 +3487,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let NotFoundComponent = class NotFoundComponent {
-    constructor(authStateService) {
-        this.authStateService = authStateService;
-        this.isAuth$ = this.authStateService.isAuth$;
+    constructor(authStoreService) {
+        this.authStoreService = authStoreService;
+        this.isAuth$ = this.authStoreService.isAuth$;
     }
 };
 NotFoundComponent.ctorParameters = () => [
@@ -3669,7 +3694,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "SetsComponent": () => (/* binding */ SetsComponent)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _sets_component_html_ngResource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./sets.component.html?ngResource */ 34122);
 /* harmony import */ var _sets_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./sets.component.scss?ngResource */ 31082);
@@ -3740,7 +3765,7 @@ let SetsComponent = SetsComponent_1 = class SetsComponent {
       value ? this.accessFormField('reps', 0).enable() : this.accessFormField('reps', 0).disable();
     });
     this.exerciseStateChanged$.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_11__.filter)(state => state === 'Update'), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.delay)(200), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.takeUntil)(this.unsubscribeService)).subscribe( /*#__PURE__*/function () {
-      var _ref = (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (_) {
+      var _ref = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (_) {
         var _a;
 
         if ((_a = _this.weightLiftedEl) === null || _a === void 0 ? void 0 : _a.first) {
@@ -3805,7 +3830,7 @@ let SetsComponent = SetsComponent_1 = class SetsComponent {
       validators: [_validators_training_set_validators__WEBPACK_IMPORTED_MODULE_6__.bothValuesRequired(), _validators_training_set_validators__WEBPACK_IMPORTED_MODULE_6__.isSetValid()]
     }));
     (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.of)(null).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.delay)(200), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.takeUntil)(this.unsubscribeService)).subscribe( /*#__PURE__*/function () {
-      var _ref2 = (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (_) {
+      var _ref2 = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (_) {
         var _a;
 
         if (_this2.weightLiftedEl) {
@@ -3946,7 +3971,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "SingleExerciseComponent": () => (/* binding */ SingleExerciseComponent)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _single_exercise_component_html_ngResource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./single-exercise.component.html?ngResource */ 91068);
 /* harmony import */ var _single_exercise_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./single-exercise.component.scss?ngResource */ 13376);
@@ -4105,7 +4130,7 @@ let SingleExerciseComponent = SingleExerciseComponent_1 = class SingleExerciseCo
   deleteExercise(indexExercise, exerciseName) {
     var _this = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       if (exerciseName) {
         const modal = yield _this.modalController.create({
           component: _delete_exercise_dialog_delete_exercise_dialog_component__WEBPACK_IMPORTED_MODULE_13__.DeleteExerciseDialogComponent,
@@ -4219,7 +4244,7 @@ let SingleExerciseComponent = SingleExerciseComponent_1 = class SingleExerciseCo
       this.isApiLoading = false;
       this.changeDetectorRef.markForCheck();
     })).subscribe( /*#__PURE__*/function () {
-      var _ref = (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (response) {
+      var _ref = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (response) {
         yield _this2.toastControllerService.displayToast({
           message: _this2.translateService.instant(response.Message),
           duration: _constants_message_duration_const__WEBPACK_IMPORTED_MODULE_3__.MESSAGE_DURATION.GENERAL,
@@ -4412,7 +4437,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DeleteTrainingActionComponent": () => (/* binding */ DeleteTrainingActionComponent)
 /* harmony export */ });
-/* harmony import */ var C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
+/* harmony import */ var C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js */ 71670);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _delete_training_action_component_html_ngResource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./delete-training-action.component.html?ngResource */ 89843);
 /* harmony import */ var _delete_training_action_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./delete-training-action.component.scss?ngResource */ 19543);
@@ -4425,7 +4450,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! rxjs/operators */ 44661);
 /* harmony import */ var _models_common_interfaces_paginator_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../models/common/interfaces/paginator.model */ 68350);
 /* harmony import */ var _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../../models/common/types/modal-roles.type */ 78033);
-/* harmony import */ var _services_shared_shared_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../../services/shared/shared.service */ 41571);
+/* harmony import */ var _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../../services/store/shared/shared-store.service */ 81102);
 /* harmony import */ var _services_api_training_delete_training_action_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../../services/api/training/delete-training-action.service */ 64490);
 
 
@@ -4441,8 +4466,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let DeleteTrainingActionComponent = class DeleteTrainingActionComponent {
-  constructor(sharedService, deleteTrainingActionService, modalController, changeDetectorRef, route) {
-    this.sharedService = sharedService;
+  constructor(sharedStoreService, deleteTrainingActionService, modalController, changeDetectorRef, route) {
+    this.sharedStoreService = sharedStoreService;
     this.deleteTrainingActionService = deleteTrainingActionService;
     this.modalController = modalController;
     this.changeDetectorRef = changeDetectorRef;
@@ -4461,8 +4486,8 @@ let DeleteTrainingActionComponent = class DeleteTrainingActionComponent {
       this.isLoading = false;
       this.changeDetectorRef.markForCheck();
     })).subscribe( /*#__PURE__*/function () {
-      var _ref = (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (response) {
-        _this.sharedService.deletedTraining$$.next(response);
+      var _ref = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (response) {
+        _this.sharedStoreService.deletedTraining$$.next(response);
 
         yield _this.modalController.dismiss(false, _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_4__.DialogRoles.DELETE_TRAINING);
       });
@@ -4476,7 +4501,7 @@ let DeleteTrainingActionComponent = class DeleteTrainingActionComponent {
   onCancel() {
     var _this2 = this;
 
-    return (0,C_Development_trainingApk_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
+    return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       yield _this2.modalController.dismiss(false, _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_4__.DialogRoles.CANCEL);
     })();
   }
@@ -4514,7 +4539,7 @@ let DeleteTrainingActionComponent = class DeleteTrainingActionComponent {
 };
 
 DeleteTrainingActionComponent.ctorParameters = () => [{
-  type: _services_shared_shared_service__WEBPACK_IMPORTED_MODULE_5__.SharedService
+  type: _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_5__.SharedStoreService
 }, {
   type: _services_api_training_delete_training_action_service__WEBPACK_IMPORTED_MODULE_6__.DeleteTrainingActionService
 }, {
@@ -4599,7 +4624,7 @@ __webpack_require__.r(__webpack_exports__);
 //if using mobile device emulator: http://192.168.0.114:3000
 const environment = {
     production: false,
-    BACKEND: 'http://192.168.0.114:3000',
+    BACKEND: 'http://localhost:3000',
 };
 /*
  * For easier debugging in development mode, you can import the following file
