@@ -5,12 +5,13 @@ import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { Training } from '../../../../../models/training/new-training/training.model';
 import { StreamData } from '../../../../../models/common/interfaces/common.model';
-import { DEFAULT_SIZE, INITIAL_PAGE, Paginator } from '../../../../../models/common/interfaces/paginator.model';
+import { Paginator } from '../../../../../models/common/interfaces/paginator.model';
 import { DialogRoles } from '../../../../../models/common/types/modal-roles.type';
 import { PastTrainings } from '../../../../../models/training/past-trainings/past-trainings.model';
 import { SharedStoreService } from '../../../../../services/store/shared/shared-store.service';
 import { DeleteTrainingActionService } from '../../../../../services/api/training/delete-training-action.service';
 import { SearchDataDto } from '../../../../../models/common/interfaces/paginator.model';
+import { DEFAULT_SIZE, INITIAL_PAGE } from '../../../../../constants/shared/paginator.const';
 
 export interface DeleteTrainingActionDialogData {
     readonly title$: Observable<string>;

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DEFAULT_WEIGHT_FORMAT } from '../../../../constants/default-weight-format.const';
+import { DEFAULT_WEIGHT_FORMAT } from '../../../../constants/shared/default-weight-format.const';
 
 @Pipe({
     name: 'roundTotalWeight',

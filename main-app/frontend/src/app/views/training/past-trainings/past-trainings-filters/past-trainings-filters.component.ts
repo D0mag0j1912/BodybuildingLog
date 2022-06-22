@@ -5,7 +5,7 @@ import { IonInput, SegmentChangeEventDetail } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
-import { INPUT_MAX_LENGTH } from '../../../../constants/input-maxlength.const';
+import { INPUT_MAX_LENGTH } from '../../../../constants/shared/input-maxlength.const';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PeriodFilterType } from '../../../../models/training/past-trainings/past-trainings.model';
 import { PastTrainingsStoreService } from '../../../../services/store/training/past-trainings-store.service';

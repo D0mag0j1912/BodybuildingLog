@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { EMPTY } from 'rxjs';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { MESSAGE_DURATION } from '../../../constants/message-duration.const';
+import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
 import { LanguageCode, WeightFormat } from '../../../models/types/preferences.type';
 import { AuthService } from '../../../services/api/auth/auth.service';
 import { SignupService } from '../../../services/api/auth/signup.service';
@@ -12,7 +12,7 @@ import { LoadingControllerService } from '../../../services/shared/loading-contr
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
-import { IonFocusDurations } from '../../../constants/ion-focus-durations.const';
+import { IonFocusDurations } from '../../../constants/shared/ion-focus-durations.const';
 
 type FormData = {
     language?: LanguageCode;
