@@ -3,9 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { compare, hash } from 'bcrypt';
 import { Model } from 'mongoose';
-import { AuthResponse } from 'src/models/auth/auth-response.model';
-import { UserDto } from 'src/models/auth/login.model';
-import { PreferencesDto } from 'src/models/preferences/preferences.model';
+import { UserDto } from '../../models/auth/login.model';
+import { PreferencesDto } from '../../models/preferences/preferences.model';
+import { AuthResponse } from '../../models/auth/auth-response.model';
 import { JwtPayload } from '../../models/auth/jwt-payload.model';
 import { SignupDto } from '../../models/auth/signup.model';
 

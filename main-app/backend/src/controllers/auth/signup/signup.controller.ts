@@ -1,9 +1,9 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthResponse } from 'src/models/auth/auth-response.model';
-import { SignupDto } from 'src/models/auth/signup.model';
-import { PreferencesDto } from 'src/models/preferences/preferences.model';
-import { AuthService } from 'src/services/auth/auth.service';
+import { SignupDto } from '../../../models/auth/signup.model';
+import { PreferencesDto } from '../../../models/preferences/preferences.model';
+import { AuthService } from '../../../services/auth/auth.service';
+import { AuthResponse } from '../../../models/auth/auth-response.model';
 import { ConfirmPasswordGuard } from '../../../guards/auth/confirm-password.guard';
 
 @ApiTags('Authentication')

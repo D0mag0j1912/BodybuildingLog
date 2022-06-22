@@ -1,8 +1,8 @@
 import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Training } from 'src/models/training/new-training/training.model';
-import { PastTrainings } from 'src/models/training/past-trainings/past-trainings.model';
+import { Training } from '../../../models/training/new-training/training.model';
+import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
 import { Paginator } from '../../../models/common/paginator.model';
 import { StreamData } from '../../../models/common/response.model';
 import { Error } from '../../../models/errors/error';
@@ -26,7 +26,7 @@ export class DeleteTrainingActionService {
     ): Promise<StreamData<PastTrainings>> {
         try {
             const trainingToBeRemoved: Training = await this.trainingModel.findById(trainingId as string).exec();
-            if(loggedUserId.toString() !== trainingToBeRemoved.userId.toString()){
+            if (loggedUserId.toString() !== trainingToBeRemoved.userId.toString()) {
                 throw new UnauthorizedException('common.errors.not_authorized');
             }
             await this.trainingModel.findByIdAndRemove(trainingId, { useFindAndModify: false }).exec();

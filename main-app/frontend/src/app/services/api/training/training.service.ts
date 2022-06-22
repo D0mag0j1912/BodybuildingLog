@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
-import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
+import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { environment } from '../../../../environments/environment';
 import { StreamData } from '../../../models/common/interfaces/common.model';
 import { LocalStorageItems } from '../../../models/common/interfaces/common.model';

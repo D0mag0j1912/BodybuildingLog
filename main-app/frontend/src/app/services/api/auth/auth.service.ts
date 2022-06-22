@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { Preferences } from 'src/app/models/interfaces/preferences.model';
+import { Preferences } from '../../../models/interfaces/preferences.model';
 import { environment } from '../../../../environments/environment';
 import { Login, Signup } from '../../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';

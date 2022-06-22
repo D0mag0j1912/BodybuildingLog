@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../environments/environment';
 import { MESSAGE_DURATION } from '../../constants/shared/message-duration.const';
 import { GeneralResponseData } from '../../models/interfaces/general-response.model';
 import { Preferences } from '../../models/interfaces/preferences.model';

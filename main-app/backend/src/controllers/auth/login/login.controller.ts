@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import { AuthResponse } from 'src/models/auth/auth-response.model';
-import { UserDto } from 'src/models/auth/login.model';
-import { AuthService } from 'src/services/auth/auth.service';
+import { UserDto } from '../../../models/auth/login.model';
+import { AuthService } from '../../../services/auth/auth.service';
+import { AuthResponse } from '../../../models/auth/auth-response.model';
 @ApiTags('Authentication')
 @Controller('auth/login')
 export class LoginController {

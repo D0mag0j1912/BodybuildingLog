@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PREFERENCES_SCHEMA } from 'src/models/preferences/preferences.model';
-import { PreferencesService } from 'src/services/preferences/preferences.service';
+import { PREFERENCES_SCHEMA } from '../../models/preferences/preferences.model';
+import { PreferencesService } from '../../services/preferences/preferences.service';
 import { PreferencesController } from '../../controllers/preferences/preferences.controller';
 import { AuthModule } from '../auth/auth.module';
 
