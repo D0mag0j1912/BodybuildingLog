@@ -13,7 +13,7 @@ import { mapStreamData } from '../../../helpers/training/past-trainings/map-stre
 import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { DialogRoles } from '../../../models/common/types/modal-roles.type';
 import { Exercise } from '../../../models/training/exercise.model';
-import { createEmptyExercise, EditNewTrainingData, EMPTY_TRAINING, EMPTY_TRAINING_EDIT } from '../../../models/training/new-training/empty-training.model';
+import { EditNewTrainingData } from '../../../models/training/new-training/edit-training.model';
 import { Training } from '../../../models/training/new-training/training.model';
 import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
@@ -24,6 +24,7 @@ import { TrainingStoreService } from '../../../services/store/training/training-
 import { TrainingService } from '../../../services/api/training/training.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
+import { EMPTY_TRAINING, EMPTY_TRAINING_EDIT, createEmptyExercise } from '../../../constants/training/new-training.const';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 type FormData = {

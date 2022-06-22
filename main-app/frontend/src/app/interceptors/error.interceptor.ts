@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { captureException } from '@sentry/minimal';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { MESSAGE_DURATION } from '../constants/message-duration.const';
+import { MESSAGE_DURATION } from '../constants/shared/message-duration.const';
 import { ErrorMessage } from '../models/common/interfaces/common.model';
 import { ToastControllerService } from '../services/shared/toast-controller.service';
 

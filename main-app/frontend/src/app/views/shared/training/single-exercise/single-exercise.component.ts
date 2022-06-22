@@ -5,12 +5,12 @@ import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, EMPTY, from, Observable, of, Subject } from 'rxjs';
 import { finalize, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
-import { MESSAGE_DURATION } from '../../../../constants/message-duration.const';
+import { MESSAGE_DURATION } from '../../../../constants/shared/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { GeneralResponseData } from '../../../../models/interfaces/general-response.model';
-import { DEFAULT_WEIGHT_FORMAT } from '../../../../constants/default-weight-format.const';
+import { DEFAULT_WEIGHT_FORMAT } from '../../../../constants/shared/default-weight-format.const';
 import { Exercise } from '../../../../models/training/exercise.model';
-import { EditNewTrainingData, EMPTY_TRAINING_EDIT } from '../../../../models/training/new-training/empty-training.model';
+import { EditNewTrainingData } from '../../../../models/training/new-training/edit-training.model';
 import { Training } from '../../../../models/training/new-training/training.model';
 import { createInitialSet, SetFormValidationErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
@@ -25,6 +25,7 @@ import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } f
 import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
 import { ExerciseStateType } from '../../../../models/training/new-training/training.model';
 import { TrainingStoreService } from '../../../../services/store/training/training-store.service';
+import { EMPTY_TRAINING_EDIT } from '../../../../constants/training/new-training.const';
 
 const INITIAL_WEIGHT = 0;
 

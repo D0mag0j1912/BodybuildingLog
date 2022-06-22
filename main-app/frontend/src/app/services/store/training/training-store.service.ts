@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { take, tap, map } from 'rxjs/operators';
 import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
-import { createEmptyExercise, EMPTY_TRAINING } from '../../../models/training/new-training/empty-training.model';
+import { createEmptyExercise, EMPTY_TRAINING } from '../../../constants/training/new-training.const';
 import { Training } from '../../../models/training/new-training/training.model';
 import { SetTrainingData, Set } from '../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../models/training/shared/single-exercise.model';

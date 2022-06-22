@@ -1,5 +1,3 @@
-import { Preferences } from '../interfaces/preferences.model';
-
 export interface Signup {
     readonly Email: string;
     readonly Password: string;

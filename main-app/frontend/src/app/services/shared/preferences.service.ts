@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { MESSAGE_DURATION } from '../../constants/message-duration.const';
+import { MESSAGE_DURATION } from '../../constants/shared/message-duration.const';
 import { GeneralResponseData } from '../../models/interfaces/general-response.model';
 import { Preferences } from '../../models/interfaces/preferences.model';
 import { PreferenceChangedType } from '../../models/types/preferences.type';

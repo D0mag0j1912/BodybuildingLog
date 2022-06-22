@@ -10,9 +10,9 @@ import { SharedStoreService } from '../../../services/store/shared/shared-store.
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
-import { Paginator, INITIAL_PAGE, DEFAULT_SIZE, PaginatorChanged } from '../../../models/common/interfaces/paginator.model';
+import { Paginator, PaginatorChanged } from '../../../models/common/interfaces/paginator.model';
 import { DateInterval, PastTrainingsQueryParams, PastTrainings, PeriodFilterType } from '../../../models/training/past-trainings/past-trainings.model';
-import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
+import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PastTrainingsService } from '../../../services/api/training/past-trainings.service';
 import { Page } from '../../../models/common/types/page.type';
@@ -22,6 +22,7 @@ import { PreferencesStoreService } from '../../../services/store/shared/preferen
 import { PreferencesService } from '../../../services/shared/preferences.service';
 import { calculateFirstWeekDay, calculateLastWeekDay, getCurrentDayIndex } from '../../../helpers/training/show-by-day.helper';
 import { DayActivatedType } from '../../../models/types/day-activated.type';
+import { INITIAL_PAGE, DEFAULT_SIZE } from '../../../constants/shared/paginator.const';
 
 enum Heights {
     WEEK_HEIGHT = 315,

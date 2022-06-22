@@ -1,11 +1,7 @@
-import { Exercise } from '../exercise.model';
-import { SingleExercise } from '../shared/single-exercise.model';
-import { Training } from './training.model';
-
-export type EditNewTrainingData = {
-    editedDate?: string | Date;
-    editTraining?: Training;
-};
+import { Exercise } from '../../models/training/exercise.model';
+import { EditNewTrainingData } from '../../models/training/new-training/edit-training.model';
+import { Training } from '../../models/training/new-training/training.model';
+import { SingleExercise } from '../../models/training/shared/single-exercise.model';
 
 export const EMPTY_TRAINING_EDIT: EditNewTrainingData = {
     editedDate: null,

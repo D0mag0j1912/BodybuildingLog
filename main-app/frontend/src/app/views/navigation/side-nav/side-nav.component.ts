@@ -9,7 +9,8 @@ import { AuthStoreService } from '../../../services/store/auth/auth-store.servic
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
 import { TrainingStoreService } from '../../../services/store/training/training-store.service';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
-import { PastTrainingsQueryParams, QUERY_PARAMS_DATE_FORMAT } from '../../../models/training/past-trainings/past-trainings.model';
+import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
+import { QUERY_PARAMS_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
 import { LanguagesComponent } from './languages/languages.component';
 
 @Component({
