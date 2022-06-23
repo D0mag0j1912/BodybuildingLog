@@ -14,6 +14,7 @@ import { DeleteTrainingActionService } from '../../services/training/training-ac
 import { SearchTrainingsController } from '../../controllers/training/past-trainings/search-trainings.controller';
 import { AuthModule } from '../auth/auth.module';
 import { PreferencesModule } from '../preferences/preferences.module';
+import { GetExercisesController } from '../../controllers/training/new-training/get-exercises.controller';
 
 const CONTROLLERS = [
     ExerciseController,
@@ -21,6 +22,7 @@ const CONTROLLERS = [
     PastTrainingsController,
     DeleteTrainingActionController,
     SearchTrainingsController,
+    GetExercisesController,
 ];
 
 const SERVICES = [

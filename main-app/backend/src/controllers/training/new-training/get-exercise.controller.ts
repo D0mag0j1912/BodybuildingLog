@@ -5,7 +5,7 @@ import { Exercise } from '../../../models/training/exercise.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
 @ApiTags('Training')
-@Controller('training/get_exercises')
+@Controller('training/get_exercise')
 @UseGuards(AuthGuard())
 export class ExerciseController {
 

@@ -27,7 +27,7 @@ export class TrainingService {
     }
 
     getExercises(): Observable<StreamData<Exercise[]>> {
-        return this.http.get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get_exercises')
+        return this.http.get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get-exercises')
             .pipe(
                 switchMap((response: StreamData<Exercise[]>) => {
                     this.trainingStoreService.emitAllExercises(response);
