@@ -55,14 +55,14 @@ export class TrainingService {
     }
 
     addTraining(trainingData: Training): Observable<GeneralResponseData> {
-        return this.http.post<GeneralResponseData>(environment.BACKEND + '/training/handle_training', { trainingData });
+        return this.http.post<GeneralResponseData>(environment.BACKEND + '/training/handle-training', { trainingData });
     }
 
     updateTraining(
         trainingData: Training,
         trainingId: string,
     ): Observable<GeneralResponseData> {
-        return this.http.put<GeneralResponseData>(environment.BACKEND + `/training/handle_training/${trainingId}`, { updatedTrainingData: trainingData });
+        return this.http.put<GeneralResponseData>(environment.BACKEND + `/training/handle-training/${trainingId}`, { updatedTrainingData: trainingData });
     }
 
 }

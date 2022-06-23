@@ -24,7 +24,7 @@ export class PastTrainingsService {
         currentPage: number,
     ): Observable<StreamData<Paginator<PastTrainings>>> {
         const params = `?searchValue=${searchValue}&size=${pageSize.toString()}&page=${currentPage.toString()}`;
-        return this._http.get<StreamData<Paginator<PastTrainings>>>(`${environment.BACKEND}${ROUTE_PREFIX}search_trainings${params}`)
+        return this._http.get<StreamData<Paginator<PastTrainings>>>(`${environment.BACKEND}${ROUTE_PREFIX}search-trainings${params}`)
             .pipe(
                 map((response: StreamData<Paginator<PastTrainings>>) => mapDateInterval(response)),
             );
@@ -35,14 +35,14 @@ export class PastTrainingsService {
         filterType: PeriodFilterType,
     ): Observable<StreamData<Paginator<PastTrainings>>> {
         const params = `?currentDate=${currentDate}&filterType=${filterType}`;
-        return this._http.get<StreamData<Paginator<PastTrainings>>>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings${params}`)
+        return this._http.get<StreamData<Paginator<PastTrainings>>>(`${environment.BACKEND}${ROUTE_PREFIX}past-trainings${params}`)
             .pipe(
                 map((response: StreamData<Paginator<PastTrainings>>) => mapDateInterval(response)),
             );
     }
 
     getPastTraining(id: string): Observable<StreamData<Training>> {
-        return this._http.get<StreamData<Training>>(`${environment.BACKEND}${ROUTE_PREFIX}past_trainings/${id}`);
+        return this._http.get<StreamData<Training>>(`${environment.BACKEND}${ROUTE_PREFIX}past-trainings/${id}`);
     }
 
 }

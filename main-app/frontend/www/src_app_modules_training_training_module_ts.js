@@ -352,16 +352,16 @@ let PastTrainingsService = class PastTrainingsService {
     }
     searchPastTrainings(searchValue, pageSize, currentPage) {
         const params = `?searchValue=${searchValue}&size=${pageSize.toString()}&page=${currentPage.toString()}`;
-        return this._http.get(`${_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND}${ROUTE_PREFIX}search_trainings${params}`)
+        return this._http.get(`${_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND}${ROUTE_PREFIX}search-trainings${params}`)
             .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_2__.map)((response) => (0,_helpers_training_past_trainings_map_past_trainings_dates_helper__WEBPACK_IMPORTED_MODULE_1__.mapDateInterval)(response)));
     }
     getPastTrainings(currentDate, filterType) {
         const params = `?currentDate=${currentDate}&filterType=${filterType}`;
-        return this._http.get(`${_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND}${ROUTE_PREFIX}past_trainings${params}`)
+        return this._http.get(`${_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND}${ROUTE_PREFIX}past-trainings${params}`)
             .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_2__.map)((response) => (0,_helpers_training_past_trainings_map_past_trainings_dates_helper__WEBPACK_IMPORTED_MODULE_1__.mapDateInterval)(response)));
     }
     getPastTraining(id) {
-        return this._http.get(`${_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND}${ROUTE_PREFIX}past_trainings/${id}`);
+        return this._http.get(`${_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND}${ROUTE_PREFIX}past-trainings/${id}`);
     }
 };
 PastTrainingsService.ctorParameters = () => [
@@ -1082,7 +1082,7 @@ let PastTrainingsComponent = class PastTrainingsComponent {
     this.size = _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_15__.DEFAULT_SIZE;
     this.page = _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_15__.INITIAL_PAGE;
     this.searchText = '';
-    this.periodFilter = (_b = (_a = this.preferencesStoreService.getPreferences()) === null || _a === void 0 ? void 0 : _a.ShowByPeriod) !== null && _b !== void 0 ? _b : 'week';
+    this.periodFilter = (_b = (_a = this.preferencesStoreService.getPreferences()) === null || _a === void 0 ? void 0 : _a.showByPeriod) !== null && _b !== void 0 ? _b : 'week';
     this.dayActivated = {
       Date: (0,date_fns__WEBPACK_IMPORTED_MODULE_16__["default"])(new Date()),
       DayNumber: 0
@@ -1183,7 +1183,7 @@ let PastTrainingsComponent = class PastTrainingsComponent {
 
       const currentPreferences = this.preferencesStoreService.getPreferences();
       this.preferencesService.setPreferences(Object.assign(Object.assign({}, currentPreferences), {
-        ShowByPeriod: this.periodFilter
+        showByPeriod: this.periodFilter
       }), 'showByPeriod').pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_23__.take)(1)).subscribe(_ => {
         this.pastTrainings$ = this.pastTrainingsService.getPastTrainings((0,date_fns__WEBPACK_IMPORTED_MODULE_24__["default"])(mondayDate, {
           weekStartsOn: 1

@@ -130,7 +130,7 @@ let AppComponent = class AppComponent {
             .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.take)(1), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.switchMap)(loggedUser => {
             if (loggedUser) {
                 return this.preferencesService.getPreferences(loggedUser._id)
-                    .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.tap)(preferences => this.preferencesStoreService.emitPreferences(preferences)), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.switchMap)(preferences => this.translateService.use(preferences.LanguageCode || 'en')));
+                    .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.tap)(preferences => this.preferencesStoreService.emitPreferences(preferences)), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.switchMap)(preferences => this.translateService.use(preferences.languageCode || 'en')));
             }
             else {
                 return rxjs__WEBPACK_IMPORTED_MODULE_11__.EMPTY;
@@ -1502,13 +1502,13 @@ let AuthService = class AuthService {
 
   signup(language, weightFormat, email, password, confirmPassword) {
     const signupData = {
-      Email: email,
-      Password: password,
-      ConfirmPassword: confirmPassword
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword
     };
     const preferences = {
-      LanguageCode: language,
-      WeightFormat: weightFormat
+      languageCode: language,
+      weightFormat: weightFormat
     };
     return this.http.post(_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.BACKEND + '/auth/signup', {
       signupData: signupData,
@@ -1520,8 +1520,8 @@ let AuthService = class AuthService {
     var _this = this;
 
     const authData = {
-      Email: email,
-      Password: password
+      email: email,
+      password: password
     };
     return this.http.post(_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.BACKEND + '/auth/login', authData).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.tap)( /*#__PURE__*/function () {
       var _ref = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (response) {
@@ -1720,7 +1720,7 @@ let DeleteTrainingActionService = class DeleteTrainingActionService {
 
   deleteTraining(trainingId, deleteTrainingMeta) {
     const params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_6__.HttpParams().set('meta', JSON.stringify(deleteTrainingMeta));
-    return this.http.delete(_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.BACKEND + `/training/delete_training/${trainingId}`, {
+    return this.http.delete(_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.BACKEND + `/training/delete-training/${trainingId}`, {
       params: params
     }).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_4__.map)(response => (0,_helpers_training_past_trainings_map_past_trainings_dates_helper__WEBPACK_IMPORTED_MODULE_2__.mapDateInterval)(response)));
   }
@@ -1800,10 +1800,10 @@ let TrainingService = class TrainingService {
         }));
     }
     addTraining(trainingData) {
-        return this.http.post(_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND + '/training/handle_training', { trainingData });
+        return this.http.post(_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND + '/training/handle-training', { trainingData });
     }
     updateTraining(trainingData, trainingId) {
-        return this.http.put(_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND + `/training/handle_training/${trainingId}`, { updatedTrainingData: trainingData });
+        return this.http.put(_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND + `/training/handle-training/${trainingId}`, { updatedTrainingData: trainingData });
     }
 };
 TrainingService.ctorParameters = () => [
@@ -1990,14 +1990,14 @@ let PreferencesService = class PreferencesService {
     var _this = this;
 
     const apiPreferences = {
-      LanguageCode: preferences.LanguageCode,
-      WeightFormat: preferences.WeightFormat,
-      ShowByPeriod: preferences.ShowByPeriod
+      languageCode: preferences.languageCode,
+      weightFormat: preferences.weightFormat,
+      showByPeriod: preferences.showByPeriod
     };
-    return this.http.put(_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.BACKEND + `/preferences/${preferences.UserId}`, {
+    return this.http.put(_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.BACKEND + `/preferences/${preferences.userId}`, {
       preferences: apiPreferences,
       preferenceChanged: preferenceChanged
-    }).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.switchMap)(response => this.translateService.use(preferences.LanguageCode).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.tap)( /*#__PURE__*/function () {
+    }).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.switchMap)(response => this.translateService.use(preferences.languageCode).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.tap)( /*#__PURE__*/function () {
       var _ref = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (_) {
         _this.preferencesStoreService.emitPreferences(preferences);
 
@@ -3115,10 +3115,10 @@ let LanguagesComponent = class LanguagesComponent {
     const currentPreferences = this.preferencesStoreService.getPreferences();
     this.authStoreService.loggedUser$.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.take)(1), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_7__.switchMap)(userData => {
       const preferences = {
-        UserId: userData._id,
-        LanguageCode: language,
-        WeightFormat: 'kg',
-        ShowByPeriod: currentPreferences.ShowByPeriod
+        userId: userData._id,
+        languageCode: language,
+        weightFormat: 'kg',
+        showByPeriod: currentPreferences.showByPeriod
       };
       return this.navigationService.setPreferences(preferences, 'language');
     })).subscribe( /*#__PURE__*/function () {
@@ -3242,7 +3242,7 @@ let SideNavComponent = class SideNavComponent {
           if (params) {
             queryParams = params;
           } else {
-            const showByPeriod = (_b = (_a = _this2.preferencesStoreService.getPreferences()) === null || _a === void 0 ? void 0 : _a.ShowByPeriod) !== null && _b !== void 0 ? _b : 'week';
+            const showByPeriod = (_b = (_a = _this2.preferencesStoreService.getPreferences()) === null || _a === void 0 ? void 0 : _a.showByPeriod) !== null && _b !== void 0 ? _b : 'week';
             const startDate = (0,date_fns__WEBPACK_IMPORTED_MODULE_10__["default"])((0,date_fns__WEBPACK_IMPORTED_MODULE_11__["default"])(new Date()), {
               weekStartsOn: 1
             });
@@ -5113,7 +5113,7 @@ module.exports = "<ion-header>\r\n    <ion-toolbar class=\"toolbar-title\">\r\n 
 /***/ ((module) => {
 
 "use strict";
-module.exports = "<ng-container *ngIf=\"(preferences$ | async) as preferences\">\r\n    <ion-list>\r\n        <ion-item\r\n            *ngFor=\"let language of languageData\"\r\n            lines=\"none\"\r\n            [disabled]=\"preferences.LanguageCode === language.LanguageCode\"\r\n            (click)=\"changeLanguage(language.LanguageCode)\">\r\n            <ion-img [src]=\"language.ImageUrl\"></ion-img>\r\n            <ion-text class=\"language-txt\">\r\n                {{ language.LanguageName | translate }}\r\n            </ion-text>\r\n            <ion-icon\r\n                *ngIf=\"preferences.LanguageCode === language.LanguageCode\"\r\n                name=\"checkmark-outline\"\r\n                class=\"checkmark\"\r\n                slot=\"end\"></ion-icon>\r\n        </ion-item>\r\n    </ion-list>\r\n</ng-container>\r\n";
+module.exports = "<ng-container *ngIf=\"(preferences$ | async) as preferences\">\r\n    <ion-list>\r\n        <ion-item\r\n            *ngFor=\"let language of languageData\"\r\n            lines=\"none\"\r\n            [disabled]=\"preferences.languageCode === language.LanguageCode\"\r\n            (click)=\"changeLanguage(language.LanguageCode)\">\r\n            <ion-img [src]=\"language.ImageUrl\"></ion-img>\r\n            <ion-text class=\"language-txt\">\r\n                {{ language.LanguageName | translate }}\r\n            </ion-text>\r\n            <ion-icon\r\n                *ngIf=\"preferences.languageCode === language.LanguageCode\"\r\n                name=\"checkmark-outline\"\r\n                class=\"checkmark\"\r\n                slot=\"end\"></ion-icon>\r\n        </ion-item>\r\n    </ion-list>\r\n</ng-container>\r\n";
 
 /***/ }),
 

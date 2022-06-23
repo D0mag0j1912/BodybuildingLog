@@ -54,7 +54,7 @@ export class DeleteTrainingActionService implements TrainingActions {
         },
     ): Observable<StreamData<Paginator<PastTrainings>>> {
         const params = new HttpParams().set('meta', JSON.stringify(deleteTrainingMeta));
-        return this.http.delete<StreamData<Paginator<PastTrainings>>>(environment.BACKEND + `/training/delete_training/${trainingId}`, { params: params })
+        return this.http.delete<StreamData<Paginator<PastTrainings>>>(environment.BACKEND + `/training/delete-training/${trainingId}`, { params: params })
             .pipe(
                 map((response: StreamData<Paginator<PastTrainings>>) => mapDateInterval(response)),
             );

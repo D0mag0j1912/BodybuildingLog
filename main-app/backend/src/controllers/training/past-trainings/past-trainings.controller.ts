@@ -12,7 +12,7 @@ import { StreamData } from '../../../models/common/response.model';
 import { PeriodFilterType } from '../../../models/training/past-trainings/past-trainings.model';
 
 @ApiTags('Training')
-@Controller('training/past_trainings')
+@Controller('training/past-trainings')
 @UseGuards(AuthGuard())
 export class PastTrainingsController {
 

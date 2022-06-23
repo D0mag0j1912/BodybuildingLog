@@ -11,7 +11,7 @@ import { DeleteTrainingMetaDto } from '../../../models/training/training-actions
 import { ParseDeleteTrainingRequest } from '../../../pipes/training/parse-delete-training-request.pipe';
 
 @ApiTags('Training')
-@Controller('training/delete_training')
+@Controller('training/delete-training')
 @UseGuards(AuthGuard())
 export class DeleteTrainingActionController {
 
