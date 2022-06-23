@@ -8,20 +8,20 @@ export type WeightFormat = 'lbs' | 'kg';
 export type PreferenceChangedType = 'language' | 'showByPeriod';
 
 export const PREFERENCES_SCHEMA = new Schema({
-    UserId: {
+    userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
-    LanguageCode: {
+    languageCode: {
         type: String,
         required: true,
     },
-    WeightFormat: {
+    weightFormat: {
         type: String,
         required: true,
     },
-    ShowByPeriod: String,
+    showByPeriod: String,
 });
 
 export class PreferencesDto {
@@ -29,21 +29,21 @@ export class PreferencesDto {
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.language_required' })
-    LanguageCode: LanguageCode;
+    languageCode: LanguageCode;
 
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.weight_format_required' })
-    WeightFormat: WeightFormat;
+    weightFormat: WeightFormat;
 
     @ApiProperty({ required: false })
     @IsOptional()
     @IsString({ message: '@common.errors.something_went_wrong' })
-    ShowByPeriod: PeriodFilterType;
+    showByPeriod: PeriodFilterType;
 
     @ApiProperty({ required: false })
     @IsOptional()
     @IsDefined({ message: '@common.errors.something_went_wrong' })
     @IsString({ message: '@common.errors.something_went_wrong' })
-    UserId: string;
+    userId: string;
 }

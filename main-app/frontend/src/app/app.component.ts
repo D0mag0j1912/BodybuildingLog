@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
                         return this.preferencesService.getPreferences(loggedUser._id)
                             .pipe(
                                 tap(preferences => this.preferencesStoreService.emitPreferences(preferences)),
-                                switchMap(preferences => this.translateService.use(preferences.LanguageCode || 'en')),
+                                switchMap(preferences => this.translateService.use(preferences.languageCode || 'en')),
                             );
                     }
                     else {

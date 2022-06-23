@@ -46,7 +46,7 @@ export class PastTrainingsComponent {
     searchText = '';
     currentQueryParams: PastTrainingsQueryParams;
 
-    periodFilter: PeriodFilterType = this.preferencesStoreService.getPreferences()?.ShowByPeriod ?? 'week';
+    periodFilter: PeriodFilterType = this.preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
     dayActivated: DayActivatedType = {
         Date: startOfDay(new Date()),
         DayNumber: 0,
@@ -188,7 +188,7 @@ export class PastTrainingsComponent {
             this.preferencesService.setPreferences(
                 {
                     ...currentPreferences,
-                    ShowByPeriod: this.periodFilter,
+                    showByPeriod: this.periodFilter,
                 },
                 'showByPeriod',
             ).pipe(

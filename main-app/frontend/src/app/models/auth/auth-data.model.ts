@@ -1,12 +1,8 @@
-export interface Signup {
+
+export interface AuthModel {
     readonly email: string;
     readonly password: string;
-    readonly confirmPassword: string;
-}
-
-export interface Login {
-    readonly Email: string;
-    readonly Password: string;
+    readonly confirmPassword?: string;
 }
 
 export interface AuthResponseData {

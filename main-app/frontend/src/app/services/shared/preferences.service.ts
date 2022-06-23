@@ -30,17 +30,17 @@ export class PreferencesService {
         preferenceChanged: PreferenceChangedType,
     ): Observable<GeneralResponseData> {
         const apiPreferences: Partial<Preferences> = {
-            LanguageCode: preferences.LanguageCode,
-            WeightFormat: preferences.WeightFormat,
-            ShowByPeriod: preferences.ShowByPeriod,
+            languageCode: preferences.languageCode,
+            weightFormat: preferences.weightFormat,
+            showByPeriod: preferences.showByPeriod,
         };
-        return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${preferences.UserId}`, {
+        return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${preferences.userId}`, {
             preferences: apiPreferences,
             preferenceChanged: preferenceChanged,
         })
         .pipe(
             switchMap((response: GeneralResponseData) =>
-                this.translateService.use(preferences.LanguageCode)
+                this.translateService.use(preferences.languageCode)
                     .pipe(
                         tap(async _ => {
                             this.preferencesStoreService.emitPreferences(preferences);

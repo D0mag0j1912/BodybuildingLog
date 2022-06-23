@@ -100,7 +100,7 @@ export class AuthService {
         signupDto: SignupDto,
     ): Promise<AuthResponse> {
         try {
-            const { LanguageCode: language, WeightFormat: weightFormat } = preferencesDto;
+            const { languageCode: language, weightFormat: weightFormat } = preferencesDto;
             const { email: email, password: password, confirmPassword: confirmPassword } = signupDto;
             const encryptedPassword: string = await hash(password, 10);
             const user = new this.userModel({
@@ -109,10 +109,10 @@ export class AuthService {
             });
             const savedUser: UserDto = await user.save();
             const preferences: PreferencesDto = {
-                UserId: savedUser._id,
-                LanguageCode: language,
-                WeightFormat: weightFormat,
-                ShowByPeriod: null,
+                userId: savedUser._id,
+                languageCode: language,
+                weightFormat: weightFormat,
+                showByPeriod: null,
             };
             await this.preferencesModel.create(preferences);
             return {

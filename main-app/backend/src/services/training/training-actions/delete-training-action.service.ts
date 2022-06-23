@@ -35,7 +35,7 @@ export class DeleteTrainingActionService {
             if (meta?.currentDate) {
                 pastTrainings = await this.pastTrainingService.getPastTrainings(
                     meta.currentDate,
-                    userPreferences.ShowByPeriod,
+                    userPreferences.showByPeriod,
                     loggedUserId,
                     true,
                 );

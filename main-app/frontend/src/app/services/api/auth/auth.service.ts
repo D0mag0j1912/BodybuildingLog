@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { Preferences } from '../../../models/interfaces/preferences.model';
 import { environment } from '../../../../environments/environment';
-import { Login, Signup } from '../../../models/auth/auth-data.model';
+import { AuthModel } from '../../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { LanguageCode, WeightFormat } from '../../../models/types/preferences.type';
 import { PreferencesService } from '../../shared/preferences.service';
@@ -30,14 +30,14 @@ export class AuthService {
         password: string,
         confirmPassword: string,
     ): Observable<AuthResponseData> {
-        const signupData: Signup = {
+        const signupData: AuthModel = {
             email: email,
             password: password,
             confirmPassword: confirmPassword,
         };
         const preferences: Partial<Preferences> = {
-            LanguageCode: language,
-            WeightFormat: weightFormat,
+            languageCode: language,
+            weightFormat: weightFormat,
         };
         return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/signup', {
             signupData: signupData,
@@ -49,9 +49,9 @@ export class AuthService {
         email: string,
         password: string,
     ): Observable<AuthResponseData> {
-        const authData: Login = {
-            Email: email,
-            Password: password,
+        const authData: Partial<AuthModel> = {
+            email: email,
+            password: password,
         };
         return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/login', authData)
             .pipe(
