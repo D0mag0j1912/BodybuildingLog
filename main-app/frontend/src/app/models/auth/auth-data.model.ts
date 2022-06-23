@@ -1,7 +1,7 @@
 export interface Signup {
-    readonly Email: string;
-    readonly Password: string;
-    readonly ConfirmPassword: string;
+    readonly email: string;
+    readonly password: string;
+    readonly confirmPassword: string;
 }
 
 export interface Login {

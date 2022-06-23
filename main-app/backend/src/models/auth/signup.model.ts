@@ -3,7 +3,7 @@ import {
     IsEmail,
     IsNotEmpty,
     IsString,
-    Length} from 'class-validator';
+    Length } from 'class-validator';
 
 export class SignupDto {
 

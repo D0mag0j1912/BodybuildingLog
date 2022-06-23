@@ -31,9 +31,9 @@ export class AuthService {
         confirmPassword: string,
     ): Observable<AuthResponseData> {
         const signupData: Signup = {
-            Email: email,
-            Password: password,
-            ConfirmPassword: confirmPassword,
+            email: email,
+            password: password,
+            confirmPassword: confirmPassword,
         };
         const preferences: Partial<Preferences> = {
             LanguageCode: language,

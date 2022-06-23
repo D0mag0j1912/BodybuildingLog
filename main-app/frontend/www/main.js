@@ -1636,7 +1636,7 @@ let SignupService = class SignupService {
     }
     getEmails(email) {
         const params = `?email=${email}`;
-        return this._http.get(_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND + '/auth/get_all_emails' + params);
+        return this._http.get(_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND + '/auth/get-all-emails' + params);
     }
 };
 SignupService.ctorParameters = () => [
