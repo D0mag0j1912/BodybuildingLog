@@ -11,6 +11,6 @@ export class SignupService {
 
     getEmails(email: string): Observable<boolean> {
         const params = `?email=${email}`;
-        return this._http.get<boolean>(environment.BACKEND + '/auth/get_all_emails' + params);
+        return this._http.get<boolean>(environment.BACKEND + '/auth/get-all-emails' + params);
     }
 }

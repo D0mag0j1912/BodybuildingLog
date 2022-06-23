@@ -14,7 +14,7 @@ export class SignupDto {
     @IsNotEmpty({
         message: 'auth.errors.email_required',
     })
-    Email: string;
+    email: string;
 
     @ApiProperty()
     @Length(6, 20, {
@@ -26,7 +26,7 @@ export class SignupDto {
     @IsNotEmpty({
         message: 'auth.errors.password_required',
     })
-    Password: string;
+    password: string;
 
     @ApiProperty()
     @Length(6, 20, {
@@ -38,5 +38,5 @@ export class SignupDto {
     @IsNotEmpty({
         message: 'auth.errors.confirm_password_required',
     })
-    ConfirmPassword: string;
+    confirmPassword: string;
 }

@@ -4,7 +4,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { GetAllEmails } from '../../../models/auth/signup/get-all-email.model';
 
 @ApiTags('Authentication')
-@Controller('auth/get_all_emails')
+@Controller('auth/get-all-emails')
 export class GetEmailsController {
 
     constructor(

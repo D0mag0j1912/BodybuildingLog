@@ -13,7 +13,7 @@ export class ConfirmPasswordGuard implements CanActivate {
         const request: Request = context.switchToHttp().getRequest();
         const signupDto: SignupDto = request.body.signupData;
 
-        if (signupDto.Password !== signupDto.ConfirmPassword) {
+        if (signupDto.password !== signupDto.confirmPassword) {
             throw new BadRequestException(this.responseMessage);
         }
         return true;

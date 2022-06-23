@@ -101,7 +101,7 @@ export class AuthService {
     ): Promise<AuthResponse> {
         try {
             const { LanguageCode: language, WeightFormat: weightFormat } = preferencesDto;
-            const { Email: email, Password: password, ConfirmPassword: confirmPassword } = signupDto;
+            const { email: email, password: password, confirmPassword: confirmPassword } = signupDto;
             const encryptedPassword: string = await hash(password, 10);
             const user = new this.userModel({
                 email: email,
