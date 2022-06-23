@@ -1596,8 +1596,8 @@ let LoginService = class LoginService {
         this._http = _http;
     }
     passwordFitsEmail(email, password) {
-        const params = `?Email=${email}&Password=${password}`;
-        return this._http.get(_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND + '/auth/check_pass' + params);
+        const params = `?email=${email}&password=${password}`;
+        return this._http.get(_environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.BACKEND + '/auth/check-pass' + params);
     }
 };
 LoginService.ctorParameters = () => [

@@ -11,12 +11,12 @@ import { Schema } from 'mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
 
 export const USER_SCHEMA = new Schema({
-    Email: {
+    email: {
         type: String,
         required: true,
         unique: true,
     },
-    Password: {
+    password: {
         type: String,
         required: true,
     },
@@ -39,7 +39,7 @@ export class UserDto {
     @IsNotEmpty({
         message: 'auth.errors.email_required',
     })
-    Email: string;
+    email: string;
 
     @ApiProperty()
     @Length(6, 20, {
@@ -51,5 +51,5 @@ export class UserDto {
     @IsNotEmpty({
         message: 'auth.errors.password_required',
     })
-    Password: string;
+    password: string;
 }

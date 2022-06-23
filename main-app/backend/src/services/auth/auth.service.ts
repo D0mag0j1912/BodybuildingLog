@@ -20,14 +20,14 @@ export class AuthService {
 
     async passwordFitsEmail(userDto: UserDto): Promise<boolean> {
         try {
-            const { Email: email, Password: password } = userDto;
-            const user: UserDto = await this.userModel.findOne({ Email: email }).exec();
+            const { email: email, password: password } = userDto;
+            const user: UserDto = await this.userModel.findOne({ email: email }).exec();
             if (!user) {
                 return false;
             }
             const comparison: boolean = await compare(
                 password,
-                user.Password,
+                user.password,
             );
             if (comparison) {
                 return true;
@@ -41,8 +41,8 @@ export class AuthService {
 
     async login(userDto: UserDto): Promise<AuthResponse> {
         try {
-            const { Email: email, Password: password } = userDto;
-            const user: UserDto = await this.userModel.findOne({ Email: email }).exec();
+            const { email: email, password: password } = userDto;
+            const user: UserDto = await this.userModel.findOne({ email: email }).exec();
             if (!user) {
                 return {
                     Success: false,
@@ -51,7 +51,7 @@ export class AuthService {
             }
             const comparison: boolean = await compare(
                 password,
-                user.Password,
+                user.password,
             );
             if (!comparison) {
                 return {
@@ -60,7 +60,7 @@ export class AuthService {
                 } as AuthResponse;
             }
             const payload: JwtPayload = {
-                email: user.Email,
+                email: user.email,
                 _id: user._id,
             };
             const accessToken: string = await Promise.resolve(this.jwtService.sign(payload));
@@ -80,9 +80,9 @@ export class AuthService {
         try {
             const result: {
                 _id: string;
-                Password: string;
+                password: string;
             } = await this.userModel.findOne(
-                { Email: email },
+                { email: email },
                 'password',
             ).exec();
             if (!result) {
@@ -104,8 +104,8 @@ export class AuthService {
             const { Email: email, Password: password, ConfirmPassword: confirmPassword } = signupDto;
             const encryptedPassword: string = await hash(password, 10);
             const user = new this.userModel({
-                Email: email,
-                Password: encryptedPassword,
+                email: email,
+                password: encryptedPassword,
             });
             const savedUser: UserDto = await user.save();
             const preferences: PreferencesDto = {
