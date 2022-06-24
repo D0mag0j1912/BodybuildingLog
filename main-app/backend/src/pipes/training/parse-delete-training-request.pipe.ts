@@ -1,5 +1,5 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
-import { INITIAL_PAGE, DEFAULT_SIZE } from '../../models/common/paginator.model';
+import { INITIAL_PAGE, DEFAULT_SIZE } from '../../constants/paginator.const';
 import { DeleteTrainingMetaDto } from '../../models/training/training-actions/delete-training-action.model';
 
 @Injectable()
