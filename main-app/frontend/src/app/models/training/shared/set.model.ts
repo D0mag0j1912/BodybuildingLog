@@ -23,16 +23,6 @@ export interface SetTrainingData {
     total: number;
 }
 
-export function createInitialSet(): Set[] {
-    const sets: Set[] = [];
-    sets.push({
-        setNumber: 1,
-        weightLifted: null,
-        reps: null,
-    } as Set);
-    return sets;
-}
-
 export type SetFormValidationErrors =
     'setNotFilled' |
     'setNotEntered' |
