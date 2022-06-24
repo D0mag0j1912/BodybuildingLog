@@ -7,7 +7,7 @@ import { UserDto } from '../../models/auth/login.model';
 import { PreferencesDto } from '../../models/preferences/preferences.model';
 import { AuthResponse } from '../../models/auth/auth-response.model';
 import { JwtPayload } from '../../models/auth/jwt-payload.model';
-import { SignupDto } from '../../models/auth/signup.model';
+import { SignupDto } from '../../models/auth/signup/signup.model';
 
 @Injectable()
 export class AuthService {

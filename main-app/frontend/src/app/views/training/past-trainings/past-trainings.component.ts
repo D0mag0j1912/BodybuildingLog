@@ -21,7 +21,7 @@ import { PastTrainingsStoreService } from '../../../services/store/training/past
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
 import { PreferencesService } from '../../../services/shared/preferences.service';
 import { calculateFirstWeekDay, calculateLastWeekDay, getCurrentDayIndex } from '../../../helpers/training/show-by-day.helper';
-import { DayActivatedType } from '../../../models/types/day-activated.type';
+import { DayActivatedType } from '../../../models/training/past-trainings/day-activated.type';
 import { INITIAL_PAGE, DEFAULT_SIZE } from '../../../constants/shared/paginator.const';
 
 enum Heights {

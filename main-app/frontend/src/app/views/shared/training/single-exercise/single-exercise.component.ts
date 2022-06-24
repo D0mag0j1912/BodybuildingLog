@@ -12,7 +12,7 @@ import { DEFAULT_WEIGHT_FORMAT } from '../../../../constants/shared/default-weig
 import { Exercise } from '../../../../models/training/exercise.model';
 import { EditNewTrainingData } from '../../../../models/training/new-training/edit-training.model';
 import { Training } from '../../../../models/training/new-training/training.model';
-import { createInitialSet, SetFormValidationErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
+import { SetFormValidationErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { FormControlExerciseData, FormGroupExerciseData, SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import { FormControlSingleExercise } from '../../../../models/training/shared/single-exercise.model';
@@ -26,6 +26,7 @@ import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
 import { ExerciseStateType } from '../../../../models/training/new-training/training.model';
 import { TrainingStoreService } from '../../../../services/store/training/training-store.service';
 import { EMPTY_TRAINING_EDIT } from '../../../../constants/training/new-training.const';
+import { createInitialSet } from '../../../../constants/shared/create-initial-set.const';
 
 const INITIAL_WEIGHT = 0;
 

@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { SignupDto } from '../../../models/auth/signup.model';
+import { SignupDto } from '../../../models/auth/signup/signup.model';
 import { PreferencesDto } from '../../../models/preferences/preferences.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { AuthResponse } from '../../../models/auth/auth-response.model';

@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { addDays, startOfDay, startOfWeek } from 'date-fns';
-import { DayActivatedType } from '../../../../models/types/day-activated.type';
+import { DayActivatedType } from '../../../../models/training/past-trainings/day-activated.type';
 import { getCurrentDayIndex } from '../../../../helpers/training/show-by-day.helper';
 
 @Component({
