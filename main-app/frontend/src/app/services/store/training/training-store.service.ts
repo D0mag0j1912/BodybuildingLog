@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { take, tap, map } from 'rxjs/operators';
-import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
+import { StorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { createEmptyExercise, EMPTY_TRAINING } from '../../../constants/training/new-training.const';
 import { Training } from '../../../models/training/new-training/training.model';
@@ -153,7 +153,7 @@ export class TrainingStoreService {
     }
 
     keepTrainingState(): void {
-        const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
+        const trainingState: Training = JSON.parse(localStorage.getItem(StorageItems.TRAINING_STATE));
         if (!trainingState) {
             return;
         }
@@ -189,7 +189,7 @@ export class TrainingStoreService {
 
     private saveTrainingData(updatedTraining: Training): void {
         this._currentTrainingChanged$$.next({ ...updatedTraining });
-        localStorage.setItem(LocalStorageItems.TRAINING_STATE, JSON.stringify({ ...updatedTraining }));
+        localStorage.setItem(StorageItems.TRAINING_STATE, JSON.stringify({ ...updatedTraining }));
     }
 
     private compare(

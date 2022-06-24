@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
+import { StorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator } from '../../../models/common/interfaces/paginator.model';
 import { PastTrainings, PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 
@@ -34,7 +34,7 @@ export class SharedStoreService {
     }
 
     keepQueryParams(): void {
-        const queryParams = JSON.parse(localStorage.getItem(LocalStorageItems.QUERY_PARAMS));
+        const queryParams = JSON.parse(localStorage.getItem(StorageItems.QUERY_PARAMS));
         if (!queryParams) {
             return;
         }

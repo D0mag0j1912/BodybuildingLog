@@ -10,7 +10,7 @@ import { SharedStoreService } from '../../../services/store/shared/shared-store.
 import { PastTrainingsService } from '../../../services/api/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
+import { StorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { DialogRoles } from '../../../models/common/types/modal-roles.type';
 import { Exercise } from '../../../models/training/exercise.model';
 import { EditNewTrainingData } from '../../../models/training/new-training/edit-training.model';
@@ -238,7 +238,7 @@ export class NewTrainingComponent implements OnDestroy {
             )
             .subscribe(async (params: PastTrainingsQueryParams) => {
                 await this.router.navigate(['/training/past-trainings'], { queryParams: params });
-                localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
+                localStorage.removeItem(StorageItems.QUERY_PARAMS);
             });
     }
 

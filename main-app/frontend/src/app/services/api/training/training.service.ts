@@ -5,7 +5,7 @@ import { switchMap, take, tap } from 'rxjs/operators';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { environment } from '../../../../environments/environment';
 import { StreamData } from '../../../models/common/interfaces/common.model';
-import { LocalStorageItems } from '../../../models/common/interfaces/common.model';
+import { StorageItems } from '../../../models/common/interfaces/common.model';
 import { GeneralResponseData } from '../../../models/interfaces/general-response.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { Training } from '../../../models/training/new-training/training.model';
@@ -31,7 +31,7 @@ export class TrainingService {
             .pipe(
                 switchMap((response: StreamData<Exercise[]>) => {
                     this.trainingStoreService.emitAllExercises(response);
-                    const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
+                    const trainingState: Training = JSON.parse(localStorage.getItem(StorageItems.TRAINING_STATE));
                     if (!trainingState) {
                         return this.authStoreService.loggedUser$
                             .pipe(

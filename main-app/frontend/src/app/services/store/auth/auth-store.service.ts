@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { Storage } from '@capacitor/storage';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
-import { LocalStorageItems } from '../../../models/common/interfaces/common.model';
+import { StorageItems } from '../../../models/common/interfaces/common.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthStoreService {
@@ -45,8 +46,8 @@ export class AuthStoreService {
     }
 
     autoLogin(): void {
-        if (JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA))) {
-            const userData: AuthResponseData = JSON.parse(localStorage.getItem(LocalStorageItems.USER_DATA));
+        if (JSON.parse(localStorage.getItem(StorageItems.USER_DATA))) {
+            const userData: AuthResponseData = JSON.parse(localStorage.getItem(StorageItems.USER_DATA));
             if (!userData.Token || !userData.ExpirationDate) {
                 return;
             }
@@ -90,12 +91,12 @@ export class AuthStoreService {
             ExpirationDate: expirationDate,
             _id: userId,
         };
-        localStorage.setItem(LocalStorageItems.USER_DATA, JSON.stringify(userData));
+        localStorage.setItem(StorageItems.USER_DATA, JSON.stringify(userData));
     }
 
     private clearData(): void {
-        localStorage.removeItem(LocalStorageItems.USER_DATA);
-        localStorage.removeItem(LocalStorageItems.TRAINING_STATE);
-        localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
+        localStorage.removeItem(StorageItems.USER_DATA);
+        localStorage.removeItem(StorageItems.TRAINING_STATE);
+        localStorage.removeItem(StorageItems.QUERY_PARAMS);
     }
 }

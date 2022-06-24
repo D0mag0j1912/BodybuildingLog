@@ -9,7 +9,7 @@ import { NavController } from '@ionic/angular';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
+import { StorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator, PaginatorChanged } from '../../../models/common/interfaces/paginator.model';
 import { DateInterval, PastTrainingsQueryParams, PastTrainings, PeriodFilterType } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
@@ -123,7 +123,7 @@ export class PastTrainingsComponent {
     }
 
     ionViewWillEnter(): void {
-        localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
+        localStorage.removeItem(StorageItems.QUERY_PARAMS);
         this.pastTrainingsStoreService.isSearch$
             .pipe(
                 takeUntil(this.unsubscribeService),
@@ -137,7 +137,7 @@ export class PastTrainingsComponent {
 
     ionViewWillLeave(): void {
         this.sharedStoreService.emitPastTrainingsQueryParams(this.currentQueryParams);
-        localStorage.setItem(LocalStorageItems.QUERY_PARAMS, JSON.stringify(this.currentQueryParams));
+        localStorage.setItem(StorageItems.QUERY_PARAMS, JSON.stringify(this.currentQueryParams));
     }
 
     searchEmitted(searchText: string): void {
