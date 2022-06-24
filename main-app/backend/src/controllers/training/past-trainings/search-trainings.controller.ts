@@ -1,7 +1,7 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
-import { GET_USER } from 'src/decorators/get-user.decorator';
+import { GET_USER } from '../../../decorators/get-user.decorator';
 import { UserDto } from '../../../models/auth/login.model';
 import { SearchDataDto, Paginator } from '../../../models/common/paginator.model';
 import { StreamData } from '../../../models/common/response.model';
@@ -11,12 +11,12 @@ import { PastTrainingsService } from '../../../services/training/past-trainings.
 
 @ApiTags('Training')
 @UseGuards(AuthGuard())
-@Controller('training/search_trainings')
+@Controller('training/search-trainings')
 export class SearchTrainingsController {
 
     constructor(
         private readonly pastTrainingsService: PastTrainingsService,
-    ) {}
+    ) { }
 
     @Get()
     async searchTrainings(
@@ -24,7 +24,7 @@ export class SearchTrainingsController {
         @Query(PaginatePipe) query: SearchDataDto,
     ): Promise<StreamData<Paginator<PastTrainings>>> {
         return this.pastTrainingsService.searchTrainings(
-            user._id as string,
+            user._id,
             query?.searchValue,
             query.size,
             query.page,

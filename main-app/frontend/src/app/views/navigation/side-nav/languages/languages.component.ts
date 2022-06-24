@@ -54,10 +54,10 @@ export class LanguagesComponent {
                 take(1),
                 switchMap((userData: AuthResponseData) => {
                     const preferences: Preferences = {
-                        UserId: userData._id,
-                        LanguageCode: language,
-                        WeightFormat: 'kg',
-                        ShowByPeriod: currentPreferences.ShowByPeriod,
+                        userId: userData._id,
+                        languageCode: language,
+                        weightFormat: 'kg',
+                        showByPeriod: currentPreferences.showByPeriod,
                     };
                     return this.navigationService.setPreferences(
                         preferences,

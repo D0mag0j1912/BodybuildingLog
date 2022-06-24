@@ -13,7 +13,7 @@ export class LoginService {
         email: string,
         password: string,
     ): Observable<boolean> {
-        const params = `?Email=${email}&Password=${password}`;
-        return this._http.get<boolean>(environment.BACKEND + '/auth/check_pass' + params);
+        const params = `?email=${email}&password=${password}`;
+        return this._http.get<boolean>(environment.BACKEND + '/auth/check-pass' + params);
     }
 }

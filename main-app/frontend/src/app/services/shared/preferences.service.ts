@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../environments/environment';
 import { MESSAGE_DURATION } from '../../constants/shared/message-duration.const';
 import { GeneralResponseData } from '../../models/interfaces/general-response.model';
 import { Preferences } from '../../models/interfaces/preferences.model';
@@ -30,17 +30,17 @@ export class PreferencesService {
         preferenceChanged: PreferenceChangedType,
     ): Observable<GeneralResponseData> {
         const apiPreferences: Partial<Preferences> = {
-            LanguageCode: preferences.LanguageCode,
-            WeightFormat: preferences.WeightFormat,
-            ShowByPeriod: preferences.ShowByPeriod,
+            languageCode: preferences.languageCode,
+            weightFormat: preferences.weightFormat,
+            showByPeriod: preferences.showByPeriod,
         };
-        return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${preferences.UserId}`, {
+        return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${preferences.userId}`, {
             preferences: apiPreferences,
             preferenceChanged: preferenceChanged,
         })
         .pipe(
             switchMap((response: GeneralResponseData) =>
-                this.translateService.use(preferences.LanguageCode)
+                this.translateService.use(preferences.languageCode)
                     .pipe(
                         tap(async _ => {
                             this.preferencesStoreService.emitPreferences(preferences);

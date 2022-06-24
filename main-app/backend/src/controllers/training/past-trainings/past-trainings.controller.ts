@@ -1,9 +1,9 @@
 import { BadRequestException, Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import { Training } from 'src/models/training/new-training/training.model';
-import { PastTrainings } from 'src/models/training/past-trainings/past-trainings.model';
-import { PastTrainingsService } from 'src/services/training/past-trainings.service';
+import { Training } from '../../../models/training/new-training/training.model';
+import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
+import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login.model';
@@ -12,7 +12,7 @@ import { StreamData } from '../../../models/common/response.model';
 import { PeriodFilterType } from '../../../models/training/past-trainings/past-trainings.model';
 
 @ApiTags('Training')
-@Controller('training/past_trainings')
+@Controller('training/past-trainings')
 @UseGuards(AuthGuard())
 export class PastTrainingsController {
 

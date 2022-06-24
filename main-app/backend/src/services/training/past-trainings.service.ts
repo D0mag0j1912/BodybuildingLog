@@ -54,7 +54,7 @@ export class PastTrainingsService {
                 const userPreferences = await this.preferencesService.getPreferences(loggedInUserId);
                 return this.getPastTrainings(
                     new Date(),
-                    userPreferences.ShowByPeriod,
+                    userPreferences.showByPeriod,
                     loggedInUserId,
                 );
             }

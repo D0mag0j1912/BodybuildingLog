@@ -18,7 +18,7 @@ import { EmptyTrainingPipe } from '../../../pipes/training/empty-training.pipe';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
 @ApiTags('Training')
-@Controller('training/handle_training')
+@Controller('training/handle-training')
 @UseGuards(AuthGuard())
 export class NewTrainingController {
 

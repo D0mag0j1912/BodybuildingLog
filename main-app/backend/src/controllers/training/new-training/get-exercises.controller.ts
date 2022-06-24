@@ -1,12 +1,12 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import { Exercise } from 'src/models/training/exercise.model';
-import { NewTrainingService } from 'src/services/training/new-training.service';
+import { Exercise } from '../../../models/training/exercise.model';
+import { NewTrainingService } from '../../../services/training/new-training.service';
 import { StreamData } from '../../../models/common/response.model';
 
 @ApiTags('Training')
-@Controller('training/get_exercises')
+@Controller('training/get-exercises')
 @UseGuards(AuthGuard())
 export class GetExercisesController {
 
@@ -19,4 +19,5 @@ export class GetExercisesController {
     async getExercises(): Promise<StreamData<Exercise[]>> {
         return this.newTrainingService.getExercises();
     }
+    
 }

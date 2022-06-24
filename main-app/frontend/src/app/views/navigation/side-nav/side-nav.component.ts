@@ -50,7 +50,7 @@ export class SideNavComponent {
                     queryParams = params;
                 }
                 else {
-                    const showByPeriod = this.preferencesStoreService.getPreferences()?.ShowByPeriod ?? 'week';
+                    const showByPeriod = this.preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
                     const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
                     const endDate = showByPeriod === 'week' ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 }) : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
                     queryParams = {

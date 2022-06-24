@@ -12,7 +12,7 @@ export class PreferencesService {
     ) { }
 
     async getPreferences(userId: string): Promise<PreferencesDto> {
-        const preferences = await this.preferencesModel.findOne({ UserId: userId }).exec();
+        const preferences = await this.preferencesModel.findOne({ userId: userId }).exec();
         return preferences;
     }
 
@@ -23,14 +23,14 @@ export class PreferencesService {
     ): Promise<GeneralResponseData> {
         try {
             const {
-                LanguageCode: language,
-                WeightFormat: weightFormat,
-                ShowByPeriod: showByPeriod,
+                languageCode: language,
+                weightFormat: weightFormat,
+                showByPeriod: showByPeriod,
             } = preferencesDto;
-            const preferences = await this.preferencesModel.findOne({ UserId: userId }).exec();
-            preferences.LanguageCode = language;
-            preferences.WeightFormat = weightFormat;
-            preferences.ShowByPeriod = showByPeriod;
+            const preferences = await this.preferencesModel.findOne({ userId: userId }).exec();
+            preferences.languageCode = language;
+            preferences.weightFormat = weightFormat;
+            preferences.showByPeriod = showByPeriod;
             await preferences.save();
             switch (preferenceChanged) {
                 case 'language': {

@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
-import { AuthResponseData } from 'src/app/models/auth/auth-data.model';
+import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { environment } from '../../../../environments/environment';
 import { StreamData } from '../../../models/common/interfaces/common.model';
 import { LocalStorageItems } from '../../../models/common/interfaces/common.model';
@@ -27,7 +27,7 @@ export class TrainingService {
     }
 
     getExercises(): Observable<StreamData<Exercise[]>> {
-        return this.http.get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get_exercises')
+        return this.http.get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get-exercises')
             .pipe(
                 switchMap((response: StreamData<Exercise[]>) => {
                     this.trainingStoreService.emitAllExercises(response);
@@ -55,14 +55,14 @@ export class TrainingService {
     }
 
     addTraining(trainingData: Training): Observable<GeneralResponseData> {
-        return this.http.post<GeneralResponseData>(environment.BACKEND + '/training/handle_training', { trainingData });
+        return this.http.post<GeneralResponseData>(environment.BACKEND + '/training/handle-training', { trainingData });
     }
 
     updateTraining(
         trainingData: Training,
         trainingId: string,
     ): Observable<GeneralResponseData> {
-        return this.http.put<GeneralResponseData>(environment.BACKEND + `/training/handle_training/${trainingId}`, { updatedTrainingData: trainingData });
+        return this.http.put<GeneralResponseData>(environment.BACKEND + `/training/handle-training/${trainingId}`, { updatedTrainingData: trainingData });
     }
 
 }
