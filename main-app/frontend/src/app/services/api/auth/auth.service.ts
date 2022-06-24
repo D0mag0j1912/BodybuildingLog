@@ -7,7 +7,7 @@ import { Preferences } from '../../../models/interfaces/preferences.model';
 import { environment } from '../../../../environments/environment';
 import { AuthModel } from '../../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
-import { LanguageCode, WeightFormat } from '../../../models/types/preferences.type';
+import { LanguageCode, WeightFormat } from '../../../models/common/types/preferences.type';
 import { PreferencesService } from '../../shared/preferences.service';
 import { AuthStoreService } from '../../store/auth/auth-store.service';
 import { PreferencesStoreService } from '../../store/shared/preferences-state.service';
