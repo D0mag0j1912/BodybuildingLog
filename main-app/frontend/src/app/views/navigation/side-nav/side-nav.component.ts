@@ -7,7 +7,6 @@ import { startOfWeek, startOfDay, endOfWeek, endOfDay, format } from 'date-fns';
 import { Preferences } from '../../../models/interfaces/preferences.model';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
-import { TrainingStoreService } from '../../../services/store/training/training-store.service';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
@@ -29,13 +28,11 @@ export class SideNavComponent {
         private readonly authStoreService: AuthStoreService,
         private readonly sharedStoreService: SharedStoreService,
         private readonly preferencesStoreService: PreferencesStoreService,
-        private readonly trainingStoreService: TrainingStoreService,
         private readonly popoverController: PopoverController,
         private readonly router: Router,
     ) { }
 
     async onLogout(): Promise<void> {
-        this.trainingStoreService.clearTrainingState();
         await this.authStoreService.logout();
     }
 

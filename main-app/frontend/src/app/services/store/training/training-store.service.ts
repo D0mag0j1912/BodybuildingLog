@@ -190,10 +190,6 @@ export class TrainingStoreService {
         this.saveTrainingData({ ...updatedTraining });
     }
 
-    clearTrainingState(): void {
-        this.saveTrainingData({ ...EMPTY_TRAINING });
-    }
-
     private saveTrainingData(updatedTraining: Training): void {
         this._currentTrainingChanged$$.next({ ...updatedTraining });
         localStorage.setItem(StorageItems.TRAINING_STATE, JSON.stringify({ ...updatedTraining }));
