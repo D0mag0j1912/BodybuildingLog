@@ -30,7 +30,8 @@ export class AppComponent implements OnInit {
 
     ngOnInit(): void {
         this.trainingStoreService.keepTrainingState();
-        this.sharedStoreService.keepQueryParams();
+        this.sharedStoreService.keepQueryParams()
+            .subscribe();
 
         this.translateService.setDefaultLang('en');
         this.authStoreService.loggedUser$

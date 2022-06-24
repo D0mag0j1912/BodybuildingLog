@@ -6,6 +6,7 @@ import { add, addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, sta
 import { Observable, of } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { NavController } from '@ionic/angular';
+import { Storage } from '@capacitor/storage';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
@@ -122,8 +123,8 @@ export class PastTrainingsComponent {
         return of('');
     }
 
-    ionViewWillEnter(): void {
-        localStorage.removeItem(StorageItems.QUERY_PARAMS);
+    async ionViewWillEnter(): Promise<void> {
+        await Storage.remove({ key: StorageItems.QUERY_PARAMS });
         this.pastTrainingsStoreService.isSearch$
             .pipe(
                 takeUntil(this.unsubscribeService),
@@ -135,9 +136,12 @@ export class PastTrainingsComponent {
         this.initView();
     }
 
-    ionViewWillLeave(): void {
+    async ionViewWillLeave(): Promise<void> {
         this.sharedStoreService.emitPastTrainingsQueryParams(this.currentQueryParams);
-        localStorage.setItem(StorageItems.QUERY_PARAMS, JSON.stringify(this.currentQueryParams));
+        await Storage.set({
+            key: StorageItems.QUERY_PARAMS,
+            value: JSON.stringify(this.currentQueryParams),
+        });
     }
 
     searchEmitted(searchText: string): void {

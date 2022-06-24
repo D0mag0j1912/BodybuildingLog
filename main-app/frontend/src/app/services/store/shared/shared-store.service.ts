@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Storage } from '@capacitor/storage';
+import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { StorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator } from '../../../models/common/interfaces/paginator.model';
 import { PastTrainings, PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
@@ -33,12 +35,18 @@ export class SharedStoreService {
         this._editingTraining$$.next(editMode);
     }
 
-    keepQueryParams(): void {
-        const queryParams = JSON.parse(localStorage.getItem(StorageItems.QUERY_PARAMS));
-        if (!queryParams) {
-            return;
-        }
-        this._pastTrainingsQueryParams$$.next(queryParams);
+    keepQueryParams(): Observable<boolean> {
+        return from(Storage.get({ key: StorageItems.QUERY_PARAMS }))
+            .pipe(
+                map(storedData => {
+                    if (!storedData || !storedData?.value) {
+                        return false;
+                    }
+                    const queryParams = JSON.parse(storedData.value);
+                    this._pastTrainingsQueryParams$$.next(queryParams);
+                    return true;
+                }),
+            );
     }
 
     emitPastTrainingsQueryParams(params: PastTrainingsQueryParams): void {

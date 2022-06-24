@@ -6,6 +6,7 @@ import { OverlayEventDetail } from '@ionic/core';
 import { format, parseISO } from 'date-fns';
 import { from, Observable, of } from 'rxjs';
 import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { Storage } from '@capacitor/storage';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { PastTrainingsService } from '../../../services/api/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
@@ -238,7 +239,7 @@ export class NewTrainingComponent implements OnDestroy {
             )
             .subscribe(async (params: PastTrainingsQueryParams) => {
                 await this.router.navigate(['/training/past-trainings'], { queryParams: params });
-                localStorage.removeItem(StorageItems.QUERY_PARAMS);
+                await Storage.remove({ key: StorageItems.QUERY_PARAMS });
             });
     }
 
