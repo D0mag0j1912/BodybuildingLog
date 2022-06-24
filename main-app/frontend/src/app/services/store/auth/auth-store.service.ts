@@ -81,20 +81,24 @@ export class AuthStoreService {
         }, duration * 1000);
     }
 
-    saveLS(
+    async saveLS(
         token: string,
         expirationDate: Date,
         userId: string,
-    ): void {
+    ): Promise<void> {
         const userData: AuthResponseData = {
             Token: token,
             ExpirationDate: expirationDate,
             _id: userId,
         };
-        localStorage.setItem(StorageItems.USER_DATA, JSON.stringify(userData));
+        await Storage.set({
+            key: StorageItems.USER_DATA,
+            value: JSON.stringify(userData),
+        });
     }
 
     private clearData(): void {
+
         localStorage.removeItem(StorageItems.USER_DATA);
         localStorage.removeItem(StorageItems.TRAINING_STATE);
         localStorage.removeItem(StorageItems.QUERY_PARAMS);
