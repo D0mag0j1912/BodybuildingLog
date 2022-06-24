@@ -29,7 +29,6 @@ export class AppComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.authStoreService.autoLogin();
         this.trainingStoreService.keepTrainingState();
         this.sharedStoreService.keepQueryParams();
 

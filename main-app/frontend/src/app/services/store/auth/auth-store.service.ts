@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { Storage } from '@capacitor/storage';
+import { map } from 'rxjs/operators';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { StorageItems } from '../../../models/common/interfaces/common.model';
 
@@ -45,33 +46,43 @@ export class AuthStoreService {
         this._isAuth$$.next(isAuth);
     }
 
-    autoLogin(): void {
-        if (JSON.parse(localStorage.getItem(StorageItems.USER_DATA))) {
-            const userData: AuthResponseData = JSON.parse(localStorage.getItem(StorageItems.USER_DATA));
-            if (!userData.Token || !userData.ExpirationDate) {
-                return;
-            }
-            const authData: AuthResponseData = {
-                Token: userData.Token,
-                ExpirationDate: new Date(userData.ExpirationDate),
-                _id: userData._id,
-            };
-            const now: Date = new Date();
-            const expiresIn = authData.ExpirationDate.getTime() - now.getTime();
-            if (expiresIn > 0) {
-                this.token = userData.Token;
-                this.setAuthTimer(expiresIn / 1000);
-                this.emitIsAuth(true);
-                this.emitLoggedUser(authData);
-            }
-        }
+    autoLogin(): Observable<boolean> {
+        return from(Storage.get({ key: StorageItems.USER_DATA }))
+            .pipe(
+                map(storedData => {
+                    if (!storedData || !storedData?.value) {
+                        return false;
+                    }
+                    const userData: AuthResponseData = JSON.parse(storedData.value);
+                    if (!userData.Token || !userData.ExpirationDate) {
+                        return false;
+                    }
+                    const authData: Partial<AuthResponseData> = {
+                        Token: userData.Token,
+                        ExpirationDate: new Date(userData.ExpirationDate),
+                        _id: userData._id,
+                    };
+                    const now = new Date();
+                    const expiresIn = authData.ExpirationDate.getTime() - now.getTime();
+                    if (expiresIn > 0) {
+                        this.token = userData.Token;
+                        this.setAuthTimer(expiresIn / 1000);
+                        this.emitIsAuth(true);
+                        this.emitLoggedUser(authData);
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }),
+            );
     }
 
     async logout(): Promise<void> {
         this.token = null;
         this.emitIsAuth(false);
         clearTimeout(this.tokenTimer);
-        this.clearData();
+        await this.clearData();
         await this.router.navigate(['/auth/login']);
     }
 
@@ -97,10 +108,9 @@ export class AuthStoreService {
         });
     }
 
-    private clearData(): void {
-
-        localStorage.removeItem(StorageItems.USER_DATA);
-        localStorage.removeItem(StorageItems.TRAINING_STATE);
-        localStorage.removeItem(StorageItems.QUERY_PARAMS);
+    private async clearData(): Promise<void> {
+        await Storage.remove({ key: StorageItems.USER_DATA });
+        await Storage.remove({ key: StorageItems.TRAINING_STATE });
+        await Storage.remove({ key: StorageItems.QUERY_PARAMS });
     }
 }
