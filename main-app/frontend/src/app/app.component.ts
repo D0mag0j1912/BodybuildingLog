@@ -29,7 +29,8 @@ export class AppComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.trainingStoreService.keepTrainingState();
+        this.trainingStoreService.keepTrainingState()
+            .subscribe();
         this.sharedStoreService.keepQueryParams()
             .subscribe();
 

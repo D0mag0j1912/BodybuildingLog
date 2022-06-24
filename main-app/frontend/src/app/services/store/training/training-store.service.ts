@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { take, tap, map } from 'rxjs/operators';
+import { Storage } from '@capacitor/storage';
 import { StorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { createEmptyExercise, EMPTY_TRAINING } from '../../../constants/training/new-training.const';
@@ -152,12 +153,18 @@ export class TrainingStoreService {
         this.saveTrainingData({ ...trainingToBeUpdated });
     }
 
-    keepTrainingState(): void {
-        const trainingState: Training = JSON.parse(localStorage.getItem(StorageItems.TRAINING_STATE));
-        if (!trainingState) {
-            return;
-        }
-        this._currentTrainingChanged$$.next({ ...trainingState });
+    keepTrainingState(): Observable<boolean> {
+        return from(Storage.get({ key: StorageItems.TRAINING_STATE }))
+            .pipe(
+                map(storedData => {
+                    if (!storedData || !storedData?.value) {
+                        return false;
+                    }
+                    const trainingState: Training = JSON.parse(storedData.value);
+                    this._currentTrainingChanged$$.next({ ...trainingState });
+                    return true;
+                }),
+            );
     }
 
     updateTrainingState(
