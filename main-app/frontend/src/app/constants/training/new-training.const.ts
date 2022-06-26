@@ -24,3 +24,5 @@ export const createEmptyExercise = (exercises: Exercise[]): SingleExercise =>
         disabledTooltip: true,
         availableExercises: [ ...exercises ],
     });
+
+export const TOTAL_INITIAL_WEIGHT = 0;

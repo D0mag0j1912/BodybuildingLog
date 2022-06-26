@@ -25,11 +25,9 @@ import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } f
 import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
 import { ExerciseStateType } from '../../../../models/training/new-training/training.model';
 import { TrainingStoreService } from '../../../../services/store/training/training-store.service';
-import { EMPTY_TRAINING_EDIT } from '../../../../constants/training/new-training.const';
+import { EMPTY_TRAINING_EDIT, TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-training.const';
 import { createInitialSet } from '../../../../constants/shared/create-initial-set.const';
 import { SetFormValidationErrors } from '../../../../models/training/shared/set.type';
-
-const INITIAL_WEIGHT = 0;
 
 @Component({
     selector: 'bl-single-exercise',
@@ -178,7 +176,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 translations: new FormControl(null),
             }),
             sets: new FormControl(createInitialSet()),
-            total: new FormControl(this.roundTotalWeightPipe.transform(INITIAL_WEIGHT), [Validators.required]),
+            total: new FormControl(this.roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT), [Validators.required]),
             disabledTooltip: new FormControl(true, [Validators.required]),
         }));
 
