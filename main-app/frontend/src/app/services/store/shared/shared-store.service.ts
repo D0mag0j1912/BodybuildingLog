@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@capacitor/storage';
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { StorageItems, StreamData } from '../../../models/common/interfaces/common.model';
+import { StorageItems } from '../../../constants/enums/storage-items.enum';
+import { StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator } from '../../../models/common/interfaces/paginator.model';
 import { PastTrainings, PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import { Storage } from '@capacitor/storage';
 import { map } from 'rxjs/operators';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
-import { StorageItems } from '../../../models/common/interfaces/common.model';
+import { StorageItems } from '../../../constants/enums/storage-items.enum';
 
 @Injectable({ providedIn: 'root' })
 export class AuthStoreService {

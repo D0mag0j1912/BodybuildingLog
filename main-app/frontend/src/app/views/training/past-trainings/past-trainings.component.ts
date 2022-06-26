@@ -10,7 +10,7 @@ import { Storage } from '@capacitor/storage';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { StorageItems, StreamData } from '../../../models/common/interfaces/common.model';
+import { StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator, PaginatorChanged } from '../../../models/common/interfaces/paginator.model';
 import { DateInterval, PastTrainingsQueryParams, PastTrainings, PeriodFilterType } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
@@ -24,6 +24,7 @@ import { PreferencesService } from '../../../services/shared/preferences.service
 import { calculateFirstWeekDay, calculateLastWeekDay, getCurrentDayIndex } from '../../../helpers/training/show-by-day.helper';
 import { DayActivatedType } from '../../../models/training/past-trainings/day-activated.type';
 import { INITIAL_PAGE, DEFAULT_SIZE } from '../../../constants/shared/paginator.const';
+import { StorageItems } from '../../../constants/enums/storage-items.enum';
 
 enum Heights {
     WEEK_HEIGHT = 315,
