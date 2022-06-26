@@ -2,8 +2,9 @@ import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { GeneralResponseData } from '../../models/common/response.model';
-import { PreferenceChangedType, PreferencesDto } from '../../models/preferences/preferences.model';
+import { PreferencesDto } from '../../models/preferences/preferences.model';
 import { PreferencesService } from '../../services/preferences/preferences.service';
+import { PreferenceChangedType } from '../../models/preferences/preferences.type';
 
 @ApiTags('Preferences')
 @Controller('preferences')
