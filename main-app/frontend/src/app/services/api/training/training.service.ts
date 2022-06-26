@@ -1,11 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { switchMap, take } from 'rxjs/operators';
+import { Storage } from '@capacitor/storage';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { environment } from '../../../../environments/environment';
 import { StreamData } from '../../../models/common/interfaces/common.model';
-import { LocalStorageItems } from '../../../models/common/interfaces/common.model';
+import { StorageItems } from '../../../models/common/interfaces/common.model';
 import { GeneralResponseData } from '../../../models/interfaces/general-response.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { Training } from '../../../models/training/new-training/training.model';
@@ -31,25 +32,27 @@ export class TrainingService {
             .pipe(
                 switchMap((response: StreamData<Exercise[]>) => {
                     this.trainingStoreService.emitAllExercises(response);
-                    const trainingState: Training = JSON.parse(localStorage.getItem(LocalStorageItems.TRAINING_STATE));
-                    if (!trainingState) {
-                        return this.authStoreService.loggedUser$
-                            .pipe(
-                                take(1),
-                                tap((authResponseData: AuthResponseData) => {
-                                    this.trainingStoreService.updateTrainingState(
-                                        undefined,
-                                        response.Value,
-                                        true,
-                                        authResponseData._id,
-                                    );
-                                }),
-                                switchMap(_ => of(response)),
-                            );
-                    }
-                    else {
-                        return of(response);
-                    }
+                    return from(Storage.get({ key: StorageItems.TRAINING_STATE }))
+                        .pipe(
+                            switchMap(storedData => {
+                                if (!storedData || !storedData?.value) {
+                                    return this.authStoreService.loggedUser$
+                                        .pipe(
+                                            take(1),
+                                            switchMap((authResponseData: AuthResponseData) =>
+                                                this.trainingStoreService.updateTrainingState(
+                                                    undefined,
+                                                    response.Value,
+                                                    true,
+                                                    authResponseData._id,
+                                                ),
+                                            ),
+                                            switchMap(_ => of(response)),
+                                        );
+                                }
+                                return of(response);
+                            }),
+                        );
                 }),
             );
     }

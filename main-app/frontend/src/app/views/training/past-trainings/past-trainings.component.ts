@@ -6,10 +6,11 @@ import { add, addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, sta
 import { Observable, of } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { NavController } from '@ionic/angular';
+import { Storage } from '@capacitor/storage';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { LocalStorageItems, StreamData } from '../../../models/common/interfaces/common.model';
+import { StorageItems, StreamData } from '../../../models/common/interfaces/common.model';
 import { Paginator, PaginatorChanged } from '../../../models/common/interfaces/paginator.model';
 import { DateInterval, PastTrainingsQueryParams, PastTrainings, PeriodFilterType } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT, TEMPLATE_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
@@ -18,7 +19,7 @@ import { PastTrainingsService } from '../../../services/api/training/past-traini
 import { Page } from '../../../models/common/types/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
-import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
+import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 import { PreferencesService } from '../../../services/shared/preferences.service';
 import { calculateFirstWeekDay, calculateLastWeekDay, getCurrentDayIndex } from '../../../helpers/training/show-by-day.helper';
 import { DayActivatedType } from '../../../models/training/past-trainings/day-activated.type';
@@ -122,8 +123,8 @@ export class PastTrainingsComponent {
         return of('');
     }
 
-    ionViewWillEnter(): void {
-        localStorage.removeItem(LocalStorageItems.QUERY_PARAMS);
+    async ionViewWillEnter(): Promise<void> {
+        await Storage.remove({ key: StorageItems.QUERY_PARAMS });
         this.pastTrainingsStoreService.isSearch$
             .pipe(
                 takeUntil(this.unsubscribeService),
@@ -135,9 +136,12 @@ export class PastTrainingsComponent {
         this.initView();
     }
 
-    ionViewWillLeave(): void {
+    async ionViewWillLeave(): Promise<void> {
         this.sharedStoreService.emitPastTrainingsQueryParams(this.currentQueryParams);
-        localStorage.setItem(LocalStorageItems.QUERY_PARAMS, JSON.stringify(this.currentQueryParams));
+        await Storage.set({
+            key: StorageItems.QUERY_PARAMS,
+            value: JSON.stringify(this.currentQueryParams),
+        });
     }
 
     searchEmitted(searchText: string): void {

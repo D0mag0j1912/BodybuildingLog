@@ -158,10 +158,13 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 this.accessFormField('disabledTooltip', indexExercise).value as boolean,
                 currentTraining,
                 selectedExerciseData,
-            );
-            this.exerciseChanged = !this.exerciseChanged;
-            this.exerciseStateChanged$$.next('Update');
-            this.changeDetectorRef.markForCheck();
+            ).pipe(
+                takeUntil(this.unsubscribeService),
+            ).subscribe(_ => {
+                this.exerciseChanged = !this.exerciseChanged;
+                this.exerciseStateChanged$$.next('Update');
+                this.changeDetectorRef.markForCheck();
+            });
         }
     }
 
@@ -179,9 +182,14 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         }));
 
         if (event) {
-            this.trainingStoreService.addNewExercise(this.getAlreadyUsedExercises());
-            this.exerciseStateChanged$$.next('Add');
-            this.exerciseAdded.next(event);
+            this.trainingStoreService.addNewExercise(this.getAlreadyUsedExercises())
+                .pipe(
+                    takeUntil(this.unsubscribeService),
+                )
+                .subscribe(_ => {
+                    this.exerciseStateChanged$$.next('Add');
+                    this.exerciseAdded.next(event);
+                });
         }
     }
 
@@ -217,6 +225,14 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                                             exerciseName,
                                         ),
                                     ),
+                                    switchMap((data: [Training, Exercise[]]) => {
+                                        this.exerciseChanged = !this.exerciseChanged;
+                                        this.form.removeAt(indexExercise);
+                                        return this.trainingStoreService.pushToAvailableExercises(
+                                            data[0] as Training,
+                                            data[1] as Exercise[],
+                                        );
+                                    }),
                                 );
                         }
                         else {
@@ -229,14 +245,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     }),
                     takeUntil(this.unsubscribeService),
                 )
-                .subscribe((data: [Training, Exercise[]]) => {
-                    this.exerciseChanged = !this.exerciseChanged;
-                    this.form.removeAt(indexExercise);
-                    this.trainingStoreService.pushToAvailableExercises(
-                        data[0] as Training,
-                        data[1] as Exercise[],
-                    );
-                });
+                .subscribe();
         }
         else {
             this.trainingStoreService.currentTrainingChanged$
@@ -244,7 +253,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     take(1),
                     switchMap((currentTrainingState: Training) =>
                         this.trainingStoreService.deleteExercise(
-                            currentTrainingState as Training,
+                            currentTrainingState,
                             null,
                             indexExercise,
                         ),
@@ -257,26 +266,30 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     }
 
     onChangeSets($event: SetStateChanged): void {
-        of(null).pipe(
-            takeUntil(this.unsubscribeService),
-        ).subscribe(_ => {
-            if ($event?.isWeightLiftedValid &&
-                $event?.isRepsValid &&
-                this.accessFormGroup('exerciseData', 'name', $event.indexExercise).value) {
-                    const trainingData: SetTrainingData = {
-                        exerciseName: this.accessFormGroup('exerciseData', 'name', $event.indexExercise).value as string,
-                        setNumber: $event.newSet.setNumber as number,
-                        weightLifted: $event.newSet.weightLifted as number,
-                        reps: $event.newSet.reps as number,
-                        total: $event.newTotal as number,
-                    };
-                    this.trainingStoreService.setsChanged(trainingData);
-                    this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform($event.newTotal));
-            }
-            else {
-                this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform(0));
-            }
-        });
+        let isExerciseValid = false;
+        of(null)
+            .pipe(
+                switchMap(_ => {
+                    if ($event?.isWeightLiftedValid &&
+                        $event?.isRepsValid &&
+                        this.accessFormGroup('exerciseData', 'name', $event.indexExercise).value) {
+                            isExerciseValid = true;
+                            const trainingData: SetTrainingData = {
+                                exerciseName: this.accessFormGroup('exerciseData', 'name', $event.indexExercise).value as string,
+                                setNumber: $event.newSet.setNumber as number,
+                                weightLifted: $event.newSet.weightLifted as number,
+                                reps: $event.newSet.reps as number,
+                                total: $event.newTotal as number,
+                            };
+                            return this.trainingStoreService.setsChanged(trainingData);
+                    }
+                    else {
+                        isExerciseValid = false;
+                        return EMPTY;
+                    }
+                }),
+                takeUntil(this.unsubscribeService),
+            ).subscribe(_ => this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform(isExerciseValid ? $event.newTotal : 0)));
     }
 
     deleteSet($event: Partial<SetStateChanged>): void {

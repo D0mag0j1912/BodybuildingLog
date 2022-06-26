@@ -8,7 +8,7 @@ import { MESSAGE_DURATION } from '../../constants/shared/message-duration.const'
 import { GeneralResponseData } from '../../models/interfaces/general-response.model';
 import { Preferences } from '../../models/interfaces/preferences.model';
 import { PreferenceChangedType } from '../../models/common/types/preferences.type';
-import { PreferencesStoreService } from '../store/shared/preferences-state.service';
+import { PreferencesStoreService } from '../store/shared/preferences-store.service';
 import { ToastControllerService } from './toast-controller.service';
 
 @Injectable({ providedIn: 'root' })

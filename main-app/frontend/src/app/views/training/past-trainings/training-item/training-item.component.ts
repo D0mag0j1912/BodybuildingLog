@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { format } from 'date-fns';
 import { take } from 'rxjs/operators';
-import { LocalStorageItems } from '../../../../models/common/interfaces/common.model';
+import { Storage } from '@capacitor/storage';
+import { StorageItems } from '../../../../models/common/interfaces/common.model';
 import { Training } from '../../../../models/training/new-training/training.model';
 import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
@@ -55,7 +56,10 @@ export class TrainingItemComponent implements OnInit {
             )
             .subscribe(async (params: Params) => {
                 this.sharedStoreService.emitPastTrainingsQueryParams(params as PastTrainingsQueryParams);
-                localStorage.setItem(LocalStorageItems.QUERY_PARAMS, JSON.stringify(params as PastTrainingsQueryParams));
+                await Storage.set({
+                    key: StorageItems.QUERY_PARAMS,
+                    value: JSON.stringify(params as PastTrainingsQueryParams),
+                });
                 await this.router.navigate(['/training/new-training', this.training._id]);
             });
     }

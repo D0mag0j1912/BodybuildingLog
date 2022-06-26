@@ -7,7 +7,7 @@ import { Preferences } from '../../../../models/interfaces/preferences.model';
 import { LanguageCode } from '../../../../models/common/types/preferences.type';
 import { PreferencesService } from '../../../../services/shared/preferences.service';
 import { AuthStoreService } from '../../../../services/store/auth/auth-store.service';
-import { PreferencesStoreService } from '../../../../services/store/shared/preferences-state.service';
+import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 
 interface LanguageData {
     LanguageCode: LanguageCode;
