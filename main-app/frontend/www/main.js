@@ -233,6 +233,50 @@ AppModule = (0,tslib__WEBPACK_IMPORTED_MODULE_9__.__decorate)([
 
 /***/ }),
 
+/***/ 36988:
+/*!*****************************************************!*\
+  !*** ./src/app/constants/enums/model-roles.enum.ts ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DialogRoles": () => (/* binding */ DialogRoles)
+/* harmony export */ });
+var DialogRoles;
+(function (DialogRoles) {
+    DialogRoles["CANCEL"] = "CANCEL";
+    DialogRoles["DELETE_EXERCISE"] = "DELETE_EXERCISE";
+    DialogRoles["DELETE_TRAINING"] = "DELETE_TRAINING";
+    DialogRoles["SELECT_DATE"] = "SELECT_DATE";
+    DialogRoles["REORDER_EXERCISES"] = "REORDER_EXERCISES";
+})(DialogRoles || (DialogRoles = {}));
+
+
+/***/ }),
+
+/***/ 63236:
+/*!*******************************************************!*\
+  !*** ./src/app/constants/enums/storage-items.enum.ts ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "StorageItems": () => (/* binding */ StorageItems)
+/* harmony export */ });
+var StorageItems;
+(function (StorageItems) {
+    StorageItems["TRAINING_STATE"] = "trainingState";
+    StorageItems["USER_DATA"] = "userData";
+    StorageItems["QUERY_PARAMS"] = "queryParams";
+})(StorageItems || (StorageItems = {}));
+
+
+/***/ }),
+
 /***/ 80760:
 /*!**************************************************************!*\
   !*** ./src/app/constants/shared/create-initial-set.const.ts ***!
@@ -341,7 +385,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "EMPTY_TRAINING_EDIT": () => (/* binding */ EMPTY_TRAINING_EDIT),
 /* harmony export */   "EMPTY_TRAINING": () => (/* binding */ EMPTY_TRAINING),
-/* harmony export */   "createEmptyExercise": () => (/* binding */ createEmptyExercise)
+/* harmony export */   "createEmptyExercise": () => (/* binding */ createEmptyExercise),
+/* harmony export */   "TOTAL_INITIAL_WEIGHT": () => (/* binding */ TOTAL_INITIAL_WEIGHT)
 /* harmony export */ });
 const EMPTY_TRAINING_EDIT = {
     editedDate: null,
@@ -361,6 +406,7 @@ const createEmptyExercise = (exercises) => ({
     disabledTooltip: true,
     availableExercises: [...exercises],
 });
+const TOTAL_INITIAL_WEIGHT = 0;
 
 
 /***/ }),
@@ -864,50 +910,6 @@ ErrorInterceptor = (0,tslib__WEBPACK_IMPORTED_MODULE_7__.__decorate)([
     (0,_angular_core__WEBPACK_IMPORTED_MODULE_8__.Injectable)()
 ], ErrorInterceptor);
 
-
-
-/***/ }),
-
-/***/ 66756:
-/*!**********************************************************!*\
-  !*** ./src/app/models/common/interfaces/common.model.ts ***!
-  \**********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "StorageItems": () => (/* binding */ StorageItems)
-/* harmony export */ });
-var StorageItems;
-(function (StorageItems) {
-    StorageItems["TRAINING_STATE"] = "trainingState";
-    StorageItems["USER_DATA"] = "userData";
-    StorageItems["QUERY_PARAMS"] = "queryParams";
-})(StorageItems || (StorageItems = {}));
-
-
-/***/ }),
-
-/***/ 78033:
-/*!*********************************************************!*\
-  !*** ./src/app/models/common/types/modal-roles.type.ts ***!
-  \*********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DialogRoles": () => (/* binding */ DialogRoles)
-/* harmony export */ });
-var DialogRoles;
-(function (DialogRoles) {
-    DialogRoles["CANCEL"] = "CANCEL";
-    DialogRoles["DELETE_EXERCISE"] = "DELETE_EXERCISE";
-    DialogRoles["DELETE_TRAINING"] = "DELETE_TRAINING";
-    DialogRoles["SELECT_DATE"] = "SELECT_DATE";
-    DialogRoles["REORDER_EXERCISES"] = "REORDER_EXERCISES";
-})(DialogRoles || (DialogRoles = {}));
 
 
 /***/ }),
@@ -1769,7 +1771,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs/operators */ 83910);
 /* harmony import */ var _capacitor_storage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @capacitor/storage */ 460);
 /* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../environments/environment */ 92340);
-/* harmony import */ var _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../models/common/interfaces/common.model */ 66756);
+/* harmony import */ var _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../constants/enums/storage-items.enum */ 63236);
 /* harmony import */ var _store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../store/auth/auth-store.service */ 88458);
 /* harmony import */ var _store_training_training_store_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../store/training/training-store.service */ 70788);
 
@@ -1796,7 +1798,7 @@ let TrainingService = class TrainingService {
         return this.http.get(_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.BACKEND + '/training/get-exercises')
             .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.switchMap)((response) => {
             this.trainingStoreService.emitAllExercises(response);
-            return (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.from)(_capacitor_storage__WEBPACK_IMPORTED_MODULE_0__.Storage.get({ key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_2__.StorageItems.TRAINING_STATE }))
+            return (0,rxjs__WEBPACK_IMPORTED_MODULE_7__.from)(_capacitor_storage__WEBPACK_IMPORTED_MODULE_0__.Storage.get({ key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_2__.StorageItems.TRAINING_STATE }))
                 .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.switchMap)(storedData => {
                 if (!storedData || !(storedData === null || storedData === void 0 ? void 0 : storedData.value)) {
                     return this.authStoreService.loggedUser$
@@ -1934,7 +1936,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/core */ 3184);
 /* harmony import */ var _capacitor_storage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @capacitor/storage */ 460);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ 24383);
-/* harmony import */ var _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../models/common/interfaces/common.model */ 66756);
+/* harmony import */ var _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../constants/enums/storage-items.enum */ 63236);
 
 
 
@@ -1942,7 +1944,7 @@ __webpack_require__.r(__webpack_exports__);
 
 let NotFoundResolverService = class NotFoundResolverService {
     resolve(_route, _state) {
-        return (0,rxjs__WEBPACK_IMPORTED_MODULE_2__.from)(_capacitor_storage__WEBPACK_IMPORTED_MODULE_0__.Storage.remove({ key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_1__.StorageItems.TRAINING_STATE }));
+        return (0,rxjs__WEBPACK_IMPORTED_MODULE_2__.from)(_capacitor_storage__WEBPACK_IMPORTED_MODULE_0__.Storage.remove({ key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_1__.StorageItems.TRAINING_STATE }));
     }
 };
 NotFoundResolverService = (0,tslib__WEBPACK_IMPORTED_MODULE_3__.__decorate)([
@@ -2151,7 +2153,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs */ 24383);
 /* harmony import */ var _capacitor_storage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @capacitor/storage */ 460);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs/operators */ 86942);
-/* harmony import */ var _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../models/common/interfaces/common.model */ 66756);
+/* harmony import */ var _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../constants/enums/storage-items.enum */ 63236);
 
 
 
@@ -2195,7 +2197,7 @@ let AuthStoreService = class AuthStoreService {
 
   autoLogin() {
     return (0,rxjs__WEBPACK_IMPORTED_MODULE_4__.from)(_capacitor_storage__WEBPACK_IMPORTED_MODULE_1__.Storage.get({
-      key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_2__.StorageItems.USER_DATA
+      key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_2__.StorageItems.USER_DATA
     })).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.map)(storedData => {
       if (!storedData || !(storedData === null || storedData === void 0 ? void 0 : storedData.value)) {
         return false;
@@ -2257,7 +2259,7 @@ let AuthStoreService = class AuthStoreService {
         _id: userId
       };
       yield _capacitor_storage__WEBPACK_IMPORTED_MODULE_1__.Storage.set({
-        key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_2__.StorageItems.USER_DATA,
+        key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_2__.StorageItems.USER_DATA,
         value: JSON.stringify(userData)
       });
     })();
@@ -2266,13 +2268,13 @@ let AuthStoreService = class AuthStoreService {
   clearData() {
     return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       yield _capacitor_storage__WEBPACK_IMPORTED_MODULE_1__.Storage.remove({
-        key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_2__.StorageItems.USER_DATA
+        key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_2__.StorageItems.USER_DATA
       });
       yield _capacitor_storage__WEBPACK_IMPORTED_MODULE_1__.Storage.remove({
-        key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_2__.StorageItems.TRAINING_STATE
+        key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_2__.StorageItems.TRAINING_STATE
       });
       yield _capacitor_storage__WEBPACK_IMPORTED_MODULE_1__.Storage.remove({
-        key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_2__.StorageItems.QUERY_PARAMS
+        key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_2__.StorageItems.QUERY_PARAMS
       });
     })();
   }
@@ -2345,7 +2347,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ 92218);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs */ 24383);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs/operators */ 86942);
-/* harmony import */ var _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../models/common/interfaces/common.model */ 66756);
+/* harmony import */ var _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../constants/enums/storage-items.enum */ 63236);
 
 
 
@@ -2374,7 +2376,7 @@ let SharedStoreService = class SharedStoreService {
         this._editingTraining$$.next(editMode);
     }
     keepQueryParams() {
-        return (0,rxjs__WEBPACK_IMPORTED_MODULE_4__.from)(_capacitor_storage__WEBPACK_IMPORTED_MODULE_0__.Storage.get({ key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_1__.StorageItems.QUERY_PARAMS }))
+        return (0,rxjs__WEBPACK_IMPORTED_MODULE_4__.from)(_capacitor_storage__WEBPACK_IMPORTED_MODULE_0__.Storage.get({ key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_1__.StorageItems.QUERY_PARAMS }))
             .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.map)(storedData => {
             if (!storedData || !(storedData === null || storedData === void 0 ? void 0 : storedData.value)) {
                 return false;
@@ -2417,8 +2419,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs/operators */ 88759);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs/operators */ 59095);
 /* harmony import */ var _capacitor_storage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @capacitor/storage */ 460);
-/* harmony import */ var _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../models/common/interfaces/common.model */ 66756);
-/* harmony import */ var _constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../constants/training/new-training.const */ 25675);
+/* harmony import */ var _constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../constants/training/new-training.const */ 25675);
+/* harmony import */ var _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../constants/enums/storage-items.enum */ 63236);
 
 
 
@@ -2430,7 +2432,7 @@ let TrainingStoreService = class TrainingStoreService {
     constructor() {
         this._allExercisesChanged$$ = new rxjs__WEBPACK_IMPORTED_MODULE_3__.BehaviorSubject(null);
         this.allExercisesChanged$ = this._allExercisesChanged$$.asObservable();
-        this._currentTrainingChanged$$ = new rxjs__WEBPACK_IMPORTED_MODULE_3__.BehaviorSubject(_constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_2__.EMPTY_TRAINING);
+        this._currentTrainingChanged$$ = new rxjs__WEBPACK_IMPORTED_MODULE_3__.BehaviorSubject(_constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_1__.EMPTY_TRAINING);
         this.currentTrainingChanged$ = this._currentTrainingChanged$$.asObservable();
     }
     emitAllExercises(exercises) {
@@ -2522,7 +2524,7 @@ let TrainingStoreService = class TrainingStoreService {
         return this.saveTrainingData(Object.assign({}, trainingToBeUpdated));
     }
     keepTrainingState() {
-        return (0,rxjs__WEBPACK_IMPORTED_MODULE_9__.from)(_capacitor_storage__WEBPACK_IMPORTED_MODULE_0__.Storage.get({ key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_1__.StorageItems.TRAINING_STATE }))
+        return (0,rxjs__WEBPACK_IMPORTED_MODULE_9__.from)(_capacitor_storage__WEBPACK_IMPORTED_MODULE_0__.Storage.get({ key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_2__.StorageItems.TRAINING_STATE }))
             .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.map)(storedData => {
             if (!storedData || !(storedData === null || storedData === void 0 ? void 0 : storedData.value)) {
                 return false;
@@ -2537,9 +2539,9 @@ let TrainingStoreService = class TrainingStoreService {
         if (exercises) {
             updatedTraining = this._currentTrainingChanged$$.getValue();
             if (restartAll) {
-                updatedTraining = Object.assign(Object.assign({}, _constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_2__.EMPTY_TRAINING), { userId: userId });
+                updatedTraining = Object.assign(Object.assign({}, _constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_1__.EMPTY_TRAINING), { userId: userId });
             }
-            updatedTraining.exercises.push((0,_constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_2__.createEmptyExercise)(exercises));
+            updatedTraining.exercises.push((0,_constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_1__.createEmptyExercise)(exercises));
         }
         else {
             updatedTraining = newTrainingState;
@@ -2549,7 +2551,7 @@ let TrainingStoreService = class TrainingStoreService {
     saveTrainingData(updatedTraining) {
         this._currentTrainingChanged$$.next(Object.assign({}, updatedTraining));
         return (0,rxjs__WEBPACK_IMPORTED_MODULE_9__.from)(_capacitor_storage__WEBPACK_IMPORTED_MODULE_0__.Storage.set({
-            key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_1__.StorageItems.TRAINING_STATE,
+            key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_2__.StorageItems.TRAINING_STATE,
             value: JSON.stringify(Object.assign({}, updatedTraining)),
         })).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_4__.take)(1));
     }
@@ -3376,7 +3378,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/core */ 3184);
 /* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @ionic/angular */ 93819);
 /* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! date-fns */ 86712);
-/* harmony import */ var _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../models/common/types/modal-roles.type */ 78033);
+/* harmony import */ var _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../constants/enums/model-roles.enum */ 36988);
 
 
 
@@ -3401,7 +3403,7 @@ let DateTimePickerComponent = class DateTimePickerComponent {
       var _a;
 
       yield (_a = _this.dateTimeEl) === null || _a === void 0 ? void 0 : _a.cancel();
-      yield _this.modalController.dismiss(undefined, _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_2__.DialogRoles.CANCEL);
+      yield _this.modalController.dismiss(undefined, _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_2__.DialogRoles.CANCEL);
     })();
   }
 
@@ -3412,7 +3414,7 @@ let DateTimePickerComponent = class DateTimePickerComponent {
       var _a;
 
       yield (_a = _this2.dateTimeEl) === null || _a === void 0 ? void 0 : _a.confirm();
-      yield _this2.modalController.dismiss(_this2.dateValue, _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_2__.DialogRoles.SELECT_DATE);
+      yield _this2.modalController.dismiss(_this2.dateValue, _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_2__.DialogRoles.SELECT_DATE);
     })();
   }
 
@@ -3458,7 +3460,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _delete_exercise_dialog_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./delete-exercise-dialog.component.scss?ngResource */ 79948);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/core */ 3184);
 /* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @ionic/angular */ 93819);
-/* harmony import */ var _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../models/common/types/modal-roles.type */ 78033);
+/* harmony import */ var _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../constants/enums/model-roles.enum */ 36988);
 
 
 
@@ -3476,7 +3478,7 @@ let DeleteExerciseDialogComponent = class DeleteExerciseDialogComponent {
     var _this = this;
 
     return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
-      yield _this.modalController.dismiss(false, _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.CANCEL);
+      yield _this.modalController.dismiss(false, _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.CANCEL);
     })();
   }
 
@@ -3484,7 +3486,7 @@ let DeleteExerciseDialogComponent = class DeleteExerciseDialogComponent {
     var _this2 = this;
 
     return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
-      yield _this2.modalController.dismiss(true, _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.DELETE_EXERCISE);
+      yield _this2.modalController.dismiss(true, _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.DELETE_EXERCISE);
     })();
   }
 
@@ -4046,7 +4048,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_api_training_training_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../../services/api/training/training.service */ 9935);
 /* harmony import */ var _validators_training_single_exercise_validators__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../../validators/training/single-exercise.validators */ 29651);
 /* harmony import */ var _delete_exercise_dialog_delete_exercise_dialog_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../delete-exercise-dialog/delete-exercise-dialog.component */ 89288);
-/* harmony import */ var _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../../models/common/types/modal-roles.type */ 78033);
+/* harmony import */ var _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../../constants/enums/model-roles.enum */ 36988);
 /* harmony import */ var _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../../services/store/training/training-store.service */ 70788);
 /* harmony import */ var _constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../../constants/training/new-training.const */ 25675);
 /* harmony import */ var _constants_shared_create_initial_set_const__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../../constants/shared/create-initial-set.const */ 80760);
@@ -4074,7 +4076,6 @@ var SingleExerciseComponent_1;
 
 
 
-const INITIAL_WEIGHT = 0;
 let SingleExerciseComponent = SingleExerciseComponent_1 = class SingleExerciseComponent {
   constructor(trainingStoreService, trainingService, unsubscribeService, translateService, changeDetectorRef, toastControllerService, modalController, roundTotalWeightPipe) {
     this.trainingStoreService = trainingStoreService;
@@ -4163,7 +4164,7 @@ let SingleExerciseComponent = SingleExerciseComponent_1 = class SingleExerciseCo
         translations: new _angular_forms__WEBPACK_IMPORTED_MODULE_18__.FormControl(null)
       }),
       sets: new _angular_forms__WEBPACK_IMPORTED_MODULE_18__.FormControl((0,_constants_shared_create_initial_set_const__WEBPACK_IMPORTED_MODULE_15__.createInitialSet)()),
-      total: new _angular_forms__WEBPACK_IMPORTED_MODULE_18__.FormControl(this.roundTotalWeightPipe.transform(INITIAL_WEIGHT), [_angular_forms__WEBPACK_IMPORTED_MODULE_18__.Validators.required]),
+      total: new _angular_forms__WEBPACK_IMPORTED_MODULE_18__.FormControl(this.roundTotalWeightPipe.transform(_constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_14__.TOTAL_INITIAL_WEIGHT), [_angular_forms__WEBPACK_IMPORTED_MODULE_18__.Validators.required]),
       disabledTooltip: new _angular_forms__WEBPACK_IMPORTED_MODULE_18__.FormControl(true, [_angular_forms__WEBPACK_IMPORTED_MODULE_18__.Validators.required])
     }));
 
@@ -4194,7 +4195,7 @@ let SingleExerciseComponent = SingleExerciseComponent_1 = class SingleExerciseCo
         });
         yield modal.present();
         (0,rxjs__WEBPACK_IMPORTED_MODULE_26__.from)(modal.onDidDismiss()).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_21__.switchMap)(response => {
-          if (response.role === _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_12__.DialogRoles.DELETE_EXERCISE) {
+          if (response.role === _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_12__.DialogRoles.DELETE_EXERCISE) {
             return _this.trainingStoreService.currentTrainingChanged$.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_23__.take)(1), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_21__.switchMap)(currentTrainingState => _this.trainingStoreService.deleteExercise(currentTrainingState, exerciseName)), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_21__.switchMap)(data => {
               _this.exerciseChanged = !_this.exerciseChanged;
 
@@ -4498,7 +4499,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! rxjs */ 26439);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs/operators */ 47418);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! rxjs/operators */ 44661);
-/* harmony import */ var _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../models/common/types/modal-roles.type */ 78033);
+/* harmony import */ var _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../constants/enums/model-roles.enum */ 36988);
 /* harmony import */ var _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../../services/store/shared/shared-store.service */ 81102);
 /* harmony import */ var _services_api_training_delete_training_action_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../../services/api/training/delete-training-action.service */ 64490);
 /* harmony import */ var _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../../constants/shared/paginator.const */ 69396);
@@ -4539,7 +4540,7 @@ let DeleteTrainingActionComponent = class DeleteTrainingActionComponent {
       var _ref = (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* (response) {
         _this.sharedStoreService.deletedTraining$$.next(response);
 
-        yield _this.modalController.dismiss(false, _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.DELETE_TRAINING);
+        yield _this.modalController.dismiss(false, _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.DELETE_TRAINING);
       });
 
       return function (_x) {
@@ -4552,7 +4553,7 @@ let DeleteTrainingActionComponent = class DeleteTrainingActionComponent {
     var _this2 = this;
 
     return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
-      yield _this2.modalController.dismiss(false, _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.CANCEL);
+      yield _this2.modalController.dismiss(false, _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.CANCEL);
     })();
   }
 
