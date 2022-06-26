@@ -82,27 +82,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AppComponent": () => (/* binding */ AppComponent)
 /* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! tslib */ 34929);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! tslib */ 34929);
 /* harmony import */ var _app_component_html_ngResource__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app.component.html?ngResource */ 33383);
 /* harmony import */ var _app_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./app.component.scss?ngResource */ 79259);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @angular/core */ 3184);
-/* harmony import */ var _ngx_translate_core__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @ngx-translate/core */ 33935);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! rxjs */ 26439);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs/operators */ 83910);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! rxjs/operators */ 59095);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! rxjs/operators */ 88759);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! rxjs/operators */ 85921);
-/* harmony import */ var _services_shared_preferences_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./services/shared/preferences.service */ 68476);
-/* harmony import */ var _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./services/shared/unsubscribe.service */ 50523);
-/* harmony import */ var _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./services/store/auth/auth-store.service */ 88458);
-/* harmony import */ var _services_store_shared_preferences_store_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./services/store/shared/preferences-store.service */ 97276);
-/* harmony import */ var _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./services/store/shared/shared-store.service */ 81102);
-/* harmony import */ var _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./services/store/training/training-store.service */ 70788);
-
-
-
-
-
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/core */ 3184);
+/* harmony import */ var _ngx_translate_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @ngx-translate/core */ 33935);
+/* harmony import */ var _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./services/shared/unsubscribe.service */ 50523);
+/* harmony import */ var _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./services/store/shared/shared-store.service */ 81102);
+/* harmony import */ var _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./services/store/training/training-store.service */ 70788);
 
 
 
@@ -112,14 +99,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let AppComponent = class AppComponent {
-    constructor(authStoreService, trainingStoreService, sharedStoreService, translateService, unsubscribeService, preferencesService, preferencesStoreService) {
-        this.authStoreService = authStoreService;
+    constructor(trainingStoreService, sharedStoreService, translateService) {
         this.trainingStoreService = trainingStoreService;
         this.sharedStoreService = sharedStoreService;
         this.translateService = translateService;
-        this.unsubscribeService = unsubscribeService;
-        this.preferencesService = preferencesService;
-        this.preferencesStoreService = preferencesStoreService;
     }
     ngOnInit() {
         this.trainingStoreService.keepTrainingState()
@@ -127,34 +110,19 @@ let AppComponent = class AppComponent {
         this.sharedStoreService.keepQueryParams()
             .subscribe();
         this.translateService.setDefaultLang('en');
-        this.authStoreService.loggedUser$
-            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.take)(1), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.switchMap)(loggedUser => {
-            if (loggedUser) {
-                return this.preferencesService.getPreferences(loggedUser._id)
-                    .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.tap)(preferences => this.preferencesStoreService.emitPreferences(preferences)), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.switchMap)(preferences => this.translateService.use(preferences.languageCode || 'en')));
-            }
-            else {
-                return rxjs__WEBPACK_IMPORTED_MODULE_11__.EMPTY;
-            }
-        }), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.takeUntil)(this.unsubscribeService))
-            .subscribe();
     }
 };
 AppComponent.ctorParameters = () => [
-    { type: _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_4__.AuthStoreService },
-    { type: _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_7__.TrainingStoreService },
-    { type: _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_6__.SharedStoreService },
-    { type: _ngx_translate_core__WEBPACK_IMPORTED_MODULE_13__.TranslateService },
-    { type: _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_3__.UnsubscribeService },
-    { type: _services_shared_preferences_service__WEBPACK_IMPORTED_MODULE_2__.PreferencesService },
-    { type: _services_store_shared_preferences_store_service__WEBPACK_IMPORTED_MODULE_5__.PreferencesStoreService }
+    { type: _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_4__.TrainingStoreService },
+    { type: _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_3__.SharedStoreService },
+    { type: _ngx_translate_core__WEBPACK_IMPORTED_MODULE_5__.TranslateService }
 ];
-AppComponent = (0,tslib__WEBPACK_IMPORTED_MODULE_14__.__decorate)([
-    (0,_angular_core__WEBPACK_IMPORTED_MODULE_15__.Component)({
+AppComponent = (0,tslib__WEBPACK_IMPORTED_MODULE_6__.__decorate)([
+    (0,_angular_core__WEBPACK_IMPORTED_MODULE_7__.Component)({
         selector: 'bl-root',
         template: _app_component_html_ngResource__WEBPACK_IMPORTED_MODULE_0__,
-        changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_15__.ChangeDetectionStrategy.OnPush,
-        providers: [_services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_3__.UnsubscribeService],
+        changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_7__.ChangeDetectionStrategy.OnPush,
+        providers: [_services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_2__.UnsubscribeService],
         styles: [_app_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_1__]
     })
 ], AppComponent);
@@ -634,15 +602,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AuthGuard": () => (/* binding */ AuthGuard)
 /* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! tslib */ 34929);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/core */ 3184);
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/router */ 52816);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ 24383);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs */ 64139);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ 83910);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs/operators */ 59095);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs/operators */ 86942);
-/* harmony import */ var _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/store/auth/auth-store.service */ 88458);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! tslib */ 34929);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @angular/core */ 3184);
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/router */ 52816);
+/* harmony import */ var _ngx_translate_core__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @ngx-translate/core */ 33935);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs */ 24383);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs */ 64139);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ 83910);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs/operators */ 59095);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs/operators */ 88759);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs/operators */ 86942);
+/* harmony import */ var _services_shared_preferences_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/shared/preferences.service */ 68476);
+/* harmony import */ var _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/store/auth/auth-store.service */ 88458);
+/* harmony import */ var _services_store_shared_preferences_store_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/store/shared/preferences-store.service */ 97276);
+
+
+
 
 
 
@@ -650,20 +625,39 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let AuthGuard = class AuthGuard {
-    constructor(authStoreService, router) {
+    constructor(preferencesService, preferencesStoreService, authStoreService, translateService, router) {
+        this.preferencesService = preferencesService;
+        this.preferencesStoreService = preferencesStoreService;
         this.authStoreService = authStoreService;
+        this.translateService = translateService;
         this.router = router;
     }
     canLoad(_route) {
         return this.authStoreService.isAuth$
-            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.take)(1), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_2__.switchMap)(isAuth => {
+            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_3__.take)(1), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_4__.switchMap)(isAuth => {
             if (!isAuth) {
-                return (0,rxjs__WEBPACK_IMPORTED_MODULE_3__.from)(this.authStoreService.autoLogin());
+                return (0,rxjs__WEBPACK_IMPORTED_MODULE_5__.from)(this.authStoreService.autoLogin());
             }
             else {
-                return (0,rxjs__WEBPACK_IMPORTED_MODULE_4__.of)(isAuth);
+                return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.of)(isAuth);
             }
-        }), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.map)(isAuth => {
+        }), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_4__.switchMap)(isAuth => {
+            if (!isAuth) {
+                return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.of)(isAuth);
+            }
+            else {
+                return this.authStoreService.loggedUser$
+                    .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_3__.take)(1), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_4__.switchMap)(loggedUser => {
+                    if (loggedUser) {
+                        return this.preferencesService.getPreferences(loggedUser._id)
+                            .pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_7__.tap)(preferences => this.preferencesStoreService.emitPreferences(preferences)), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_4__.switchMap)(preferences => this.translateService.use(preferences.languageCode || 'en')), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_4__.switchMap)(_ => (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.of)(isAuth)));
+                    }
+                    else {
+                        return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.of)(isAuth);
+                    }
+                }));
+            }
+        }), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.map)(isAuth => {
             if (!isAuth) {
                 return this.router.createUrlTree(['/auth/login']);
             }
@@ -672,11 +666,14 @@ let AuthGuard = class AuthGuard {
     }
 };
 AuthGuard.ctorParameters = () => [
-    { type: _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_0__.AuthStoreService },
-    { type: _angular_router__WEBPACK_IMPORTED_MODULE_6__.Router }
+    { type: _services_shared_preferences_service__WEBPACK_IMPORTED_MODULE_0__.PreferencesService },
+    { type: _services_store_shared_preferences_store_service__WEBPACK_IMPORTED_MODULE_2__.PreferencesStoreService },
+    { type: _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_1__.AuthStoreService },
+    { type: _ngx_translate_core__WEBPACK_IMPORTED_MODULE_9__.TranslateService },
+    { type: _angular_router__WEBPACK_IMPORTED_MODULE_10__.Router }
 ];
-AuthGuard = (0,tslib__WEBPACK_IMPORTED_MODULE_7__.__decorate)([
-    (0,_angular_core__WEBPACK_IMPORTED_MODULE_8__.Injectable)()
+AuthGuard = (0,tslib__WEBPACK_IMPORTED_MODULE_11__.__decorate)([
+    (0,_angular_core__WEBPACK_IMPORTED_MODULE_12__.Injectable)()
 ], AuthGuard);
 
 
@@ -4677,7 +4674,7 @@ __webpack_require__.r(__webpack_exports__);
 //if using mobile device emulator: http://192.168.0.114:3000
 const environment = {
     production: false,
-    BACKEND: 'http://localhost:3000',
+    BACKEND: 'http://192.168.0.114:3000',
 };
 /*
  * For easier debugging in development mode, you can import the following file
