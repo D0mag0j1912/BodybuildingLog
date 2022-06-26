@@ -7,9 +7,10 @@ import { paginate } from '../../helpers/pagination.helper';
 import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
 import { StreamData } from '../../models/common/response.model';
 import { Training } from '../../models/training/new-training/training.model';
-import { PastTrainings, PeriodFilterType } from '../../models/training/past-trainings/past-trainings.model';
+import { PastTrainings } from '../../models/training/past-trainings/past-trainings.model';
 import { DateInterval } from '../../models/common/dates.model';
 import { PreferencesService } from '../preferences/preferences.service';
+import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
 
 @Injectable()
 export class PastTrainingsService {
