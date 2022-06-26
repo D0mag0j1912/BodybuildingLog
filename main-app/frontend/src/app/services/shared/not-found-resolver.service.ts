@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { Storage } from '@capacitor/storage';
+import { from, Observable } from 'rxjs';
 import { StorageItems } from '../../models/common/interfaces/common.model';
 
 @Injectable()
 export class NotFoundResolverService implements Resolve<void> {
 
-    resolve(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): void {
-        localStorage.removeItem(StorageItems.TRAINING_STATE);
+    resolve(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): Observable<void> {
+        return from(Storage.remove({ key: StorageItems.TRAINING_STATE }));
     }
 }

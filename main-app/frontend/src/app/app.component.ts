@@ -5,7 +5,7 @@ import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { PreferencesService } from './services/shared/preferences.service';
 import { UnsubscribeService } from './services/shared/unsubscribe.service';
 import { AuthStoreService } from './services/store/auth/auth-store.service';
-import { PreferencesStoreService } from './services/store/shared/preferences-state.service';
+import { PreferencesStoreService } from './services/store/shared/preferences-store.service';
 import { SharedStoreService } from './services/store/shared/shared-store.service';
 import { TrainingStoreService } from './services/store/training/training-store.service';
 

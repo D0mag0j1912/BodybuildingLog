@@ -10,7 +10,7 @@ import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { LanguageCode, WeightFormat } from '../../../models/common/types/preferences.type';
 import { PreferencesService } from '../../shared/preferences.service';
 import { AuthStoreService } from '../../store/auth/auth-store.service';
-import { PreferencesStoreService } from '../../store/shared/preferences-state.service';
+import { PreferencesStoreService } from '../../store/shared/preferences-store.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {

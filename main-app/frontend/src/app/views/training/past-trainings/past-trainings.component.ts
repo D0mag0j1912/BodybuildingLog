@@ -19,7 +19,7 @@ import { PastTrainingsService } from '../../../services/api/training/past-traini
 import { Page } from '../../../models/common/types/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
-import { PreferencesStoreService } from '../../../services/store/shared/preferences-state.service';
+import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 import { PreferencesService } from '../../../services/shared/preferences.service';
 import { calculateFirstWeekDay, calculateLastWeekDay, getCurrentDayIndex } from '../../../helpers/training/show-by-day.helper';
 import { DayActivatedType } from '../../../models/training/past-trainings/day-activated.type';
