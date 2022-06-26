@@ -26,8 +26,8 @@ import { TrainingService } from '../../../services/api/training/training.service
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { EMPTY_TRAINING, EMPTY_TRAINING_EDIT, createEmptyExercise } from '../../../constants/training/new-training.const';
-import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
+import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 type FormData = {
     bodyweight: number;
