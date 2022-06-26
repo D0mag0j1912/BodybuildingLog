@@ -5,7 +5,7 @@ import { captureException } from '@sentry/minimal';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../constants/shared/message-duration.const';
-import { ErrorMessage } from '../models/common/interfaces/common.model';
+import { ErrorMessage } from '../models/common/common.model';
 import { ToastControllerService } from '../services/shared/toast-controller.service';
 
 @Injectable()

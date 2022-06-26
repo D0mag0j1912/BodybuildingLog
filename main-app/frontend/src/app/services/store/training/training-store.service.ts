@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { take, tap, map, switchMap } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
-import { StreamData } from '../../../models/common/interfaces/common.model';
+import { StreamData } from '../../../models/common/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { createEmptyExercise, EMPTY_TRAINING } from '../../../constants/training/new-training.const';
 import { Training } from '../../../models/training/new-training/training.model';

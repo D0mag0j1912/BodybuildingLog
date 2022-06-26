@@ -5,7 +5,7 @@ import { switchMap, take } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { environment } from '../../../../environments/environment';
-import { StreamData } from '../../../models/common/interfaces/common.model';
+import { StreamData } from '../../../models/common/common.model';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { GeneralResponseData } from '../../../models/interfaces/general-response.model';
 import { Exercise } from '../../../models/training/exercise.model';

@@ -1,6 +1,6 @@
 import { startOfDay } from 'date-fns';
-import { StreamData } from '../../../models/common/interfaces/common.model';
-import { Paginator } from '../../../models/common/interfaces/paginator.model';
+import { StreamData } from '../../../models/common/common.model';
+import { Paginator } from '../../../models/common/paginator.model';
 import { DateInterval, PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
 
 export function mapDateInterval(response: StreamData<Paginator<PastTrainings>>): StreamData<Paginator<PastTrainings>> {

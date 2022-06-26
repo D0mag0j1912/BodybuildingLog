@@ -11,7 +11,7 @@ import { SharedStoreService } from '../../../services/store/shared/shared-store.
 import { PastTrainingsService } from '../../../services/api/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { StreamData } from '../../../models/common/interfaces/common.model';
+import { StreamData } from '../../../models/common/common.model';
 import { DialogRoles } from '../../../constants/enums/model-roles.enum';
 import { Exercise } from '../../../models/training/exercise.model';
 import { EditNewTrainingData } from '../../../models/training/new-training/edit-training.model';
