@@ -443,17 +443,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_api_training_past_trainings_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../services/api/training/past-trainings.service */ 37587);
 /* harmony import */ var _handlers_new_training_handler__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../handlers/new-training.handler */ 10353);
 /* harmony import */ var _helpers_training_past_trainings_map_stream_data_helper__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../helpers/training/past-trainings/map-stream-data.helper */ 83037);
-/* harmony import */ var _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../models/common/interfaces/common.model */ 66756);
-/* harmony import */ var _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../models/common/types/modal-roles.type */ 78033);
-/* harmony import */ var _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../services/shared/unsubscribe.service */ 50523);
-/* harmony import */ var _validators_shared_common_validators__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../validators/shared/common.validators */ 9366);
-/* harmony import */ var _shared_datetime_picker_datetime_picker_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../shared/datetime-picker/datetime-picker.component */ 10185);
-/* harmony import */ var _shared_training_single_exercise_single_exercise_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../shared/training/single-exercise/single-exercise.component */ 72458);
-/* harmony import */ var _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../services/store/training/training-store.service */ 70788);
-/* harmony import */ var _services_api_training_training_service__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../services/api/training/training.service */ 9935);
-/* harmony import */ var _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../services/store/auth/auth-store.service */ 88458);
-/* harmony import */ var _constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../../constants/training/new-training.const */ 25675);
-/* harmony import */ var _reorder_exercises_reorder_exercises_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./reorder-exercises/reorder-exercises.component */ 38452);
+/* harmony import */ var _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../constants/enums/model-roles.enum */ 36988);
+/* harmony import */ var _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../services/shared/unsubscribe.service */ 50523);
+/* harmony import */ var _validators_shared_common_validators__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../validators/shared/common.validators */ 9366);
+/* harmony import */ var _shared_datetime_picker_datetime_picker_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../shared/datetime-picker/datetime-picker.component */ 10185);
+/* harmony import */ var _shared_training_single_exercise_single_exercise_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../shared/training/single-exercise/single-exercise.component */ 72458);
+/* harmony import */ var _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../services/store/training/training-store.service */ 70788);
+/* harmony import */ var _services_api_training_training_service__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../services/api/training/training.service */ 9935);
+/* harmony import */ var _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../services/store/auth/auth-store.service */ 88458);
+/* harmony import */ var _constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../constants/training/new-training.const */ 25675);
+/* harmony import */ var _reorder_exercises_reorder_exercises_component__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./reorder-exercises/reorder-exercises.component */ 38452);
+/* harmony import */ var _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../../constants/enums/storage-items.enum */ 63236);
 
 
 
@@ -493,7 +493,7 @@ let NewTrainingComponent = class NewTrainingComponent {
     this.router = router;
     this.modalController = modalController;
     this.changeDetectorRef = changeDetectorRef;
-    this.editData = _constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_17__.EMPTY_TRAINING_EDIT;
+    this.editData = _constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_16__.EMPTY_TRAINING_EDIT;
     this.editMode = false;
     this.trainingStream$ = undefined;
     this.isAuthenticated$ = this.authStoreService.isAuth$;
@@ -505,7 +505,7 @@ let NewTrainingComponent = class NewTrainingComponent {
     }));
     this.form = new _angular_forms__WEBPACK_IMPORTED_MODULE_20__.FormGroup({
       bodyweight: new _angular_forms__WEBPACK_IMPORTED_MODULE_20__.FormControl(null, {
-        validators: [_validators_shared_common_validators__WEBPACK_IMPORTED_MODULE_11__.isNumber(), _angular_forms__WEBPACK_IMPORTED_MODULE_20__.Validators.min(30), _angular_forms__WEBPACK_IMPORTED_MODULE_20__.Validators.max(300)],
+        validators: [_validators_shared_common_validators__WEBPACK_IMPORTED_MODULE_10__.isNumber(), _angular_forms__WEBPACK_IMPORTED_MODULE_20__.Validators.min(30), _angular_forms__WEBPACK_IMPORTED_MODULE_20__.Validators.max(300)],
         updateOn: 'blur'
       }),
       date: new _angular_forms__WEBPACK_IMPORTED_MODULE_20__.FormControl(new Date().toISOString(), [_angular_forms__WEBPACK_IMPORTED_MODULE_20__.Validators.required]),
@@ -543,8 +543,8 @@ let NewTrainingComponent = class NewTrainingComponent {
 
           if (currentTrainingState) {
             if (currentTrainingState.editMode && !this.editMode) {
-              return this.trainingStoreService.updateTrainingState(Object.assign(Object.assign({}, _constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_17__.EMPTY_TRAINING), {
-                exercises: [(0,_constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_17__.createEmptyExercise)(allExercisesChanged.Value)],
+              return this.trainingStoreService.updateTrainingState(Object.assign(Object.assign({}, _constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_16__.EMPTY_TRAINING), {
+                exercises: [(0,_constants_training_new_training_const__WEBPACK_IMPORTED_MODULE_16__.createEmptyExercise)(allExercisesChanged.Value)],
                 userId: (_a = currentTrainingState === null || currentTrainingState === void 0 ? void 0 : currentTrainingState.userId) !== null && _a !== void 0 ? _a : ''
               }));
             }
@@ -582,11 +582,11 @@ let NewTrainingComponent = class NewTrainingComponent {
 
     return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       const modal = yield _this2.modalController.create({
-        component: _reorder_exercises_reorder_exercises_component__WEBPACK_IMPORTED_MODULE_18__.ReorderExercisesComponent,
+        component: _reorder_exercises_reorder_exercises_component__WEBPACK_IMPORTED_MODULE_17__.ReorderExercisesComponent,
         keyboardClose: true
       });
       yield modal.present();
-      (0,rxjs__WEBPACK_IMPORTED_MODULE_25__.from)(modal.onDidDismiss()).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_26__.filter)(response => (response === null || response === void 0 ? void 0 : response.role) === _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_9__.DialogRoles.REORDER_EXERCISES), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_27__.takeUntil)(_this2.unsubscribeService)).subscribe(response => {
+      (0,rxjs__WEBPACK_IMPORTED_MODULE_25__.from)(modal.onDidDismiss()).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_26__.filter)(response => (response === null || response === void 0 ? void 0 : response.role) === _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_8__.DialogRoles.REORDER_EXERCISES), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_27__.takeUntil)(_this2.unsubscribeService)).subscribe(response => {
         if (response === null || response === void 0 ? void 0 : response.data) {
           let streamData;
           _this2.trainingStream$ = _this2.trainingStoreService.allExercisesChanged$.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_21__.take)(1), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_19__.map)(value => {
@@ -611,7 +611,7 @@ let NewTrainingComponent = class NewTrainingComponent {
 
     return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       const modal = yield _this3.modalController.create({
-        component: _shared_datetime_picker_datetime_picker_component__WEBPACK_IMPORTED_MODULE_12__.DateTimePickerComponent,
+        component: _shared_datetime_picker_datetime_picker_component__WEBPACK_IMPORTED_MODULE_11__.DateTimePickerComponent,
         componentProps: {
           dateValue: (0,date_fns__WEBPACK_IMPORTED_MODULE_29__["default"])(new Date(_this3.accessFormData('date').value), `yyyy-MM-dd'T'HH:mm:ss'Z'`)
         },
@@ -644,7 +644,7 @@ let NewTrainingComponent = class NewTrainingComponent {
             queryParams: params
           });
           yield _capacitor_storage__WEBPACK_IMPORTED_MODULE_3__.Storage.remove({
-            key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_8__.StorageItems.QUERY_PARAMS
+            key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_18__.StorageItems.QUERY_PARAMS
           });
         });
 
@@ -747,17 +747,17 @@ let NewTrainingComponent = class NewTrainingComponent {
 };
 
 NewTrainingComponent.ctorParameters = () => [{
-  type: _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_14__.TrainingStoreService
+  type: _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_13__.TrainingStoreService
 }, {
-  type: _services_api_training_training_service__WEBPACK_IMPORTED_MODULE_15__.TrainingService
+  type: _services_api_training_training_service__WEBPACK_IMPORTED_MODULE_14__.TrainingService
 }, {
   type: _services_api_training_past_trainings_service__WEBPACK_IMPORTED_MODULE_5__.PastTrainingsService
 }, {
   type: _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_4__.SharedStoreService
 }, {
-  type: _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_16__.AuthStoreService
+  type: _services_store_auth_auth_store_service__WEBPACK_IMPORTED_MODULE_15__.AuthStoreService
 }, {
-  type: _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_10__.UnsubscribeService
+  type: _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_9__.UnsubscribeService
 }, {
   type: _angular_router__WEBPACK_IMPORTED_MODULE_32__.ActivatedRoute
 }, {
@@ -777,14 +777,14 @@ NewTrainingComponent.propDecorators = {
   }],
   singleExerciseCmps: [{
     type: _angular_core__WEBPACK_IMPORTED_MODULE_34__.ViewChildren,
-    args: [_shared_training_single_exercise_single_exercise_component__WEBPACK_IMPORTED_MODULE_13__.SingleExerciseComponent]
+    args: [_shared_training_single_exercise_single_exercise_component__WEBPACK_IMPORTED_MODULE_12__.SingleExerciseComponent]
   }]
 };
 NewTrainingComponent = (0,tslib__WEBPACK_IMPORTED_MODULE_35__.__decorate)([(0,_angular_core__WEBPACK_IMPORTED_MODULE_34__.Component)({
   selector: 'bl-new-training',
   template: _new_training_component_html_ngResource__WEBPACK_IMPORTED_MODULE_1__,
   changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_34__.ChangeDetectionStrategy.OnPush,
-  providers: [_services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_10__.UnsubscribeService],
+  providers: [_services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_9__.UnsubscribeService],
   styles: [_new_training_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_2__]
 })], NewTrainingComponent);
 
@@ -808,7 +808,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/core */ 3184);
 /* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @ionic/angular */ 93819);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs/operators */ 86942);
-/* harmony import */ var _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../models/common/types/modal-roles.type */ 78033);
+/* harmony import */ var _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../constants/enums/model-roles.enum */ 36988);
 /* harmony import */ var _services_store_training_training_store_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../services/store/training/training-store.service */ 70788);
 
 
@@ -841,7 +841,7 @@ let ReorderExercisesComponent = class ReorderExercisesComponent {
     var _this = this;
 
     return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
-      yield _this.modalController.dismiss(_this.reorderedTrainingState, _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.REORDER_EXERCISES);
+      yield _this.modalController.dismiss(_this.reorderedTrainingState, _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.REORDER_EXERCISES);
     })();
   }
 
@@ -849,7 +849,7 @@ let ReorderExercisesComponent = class ReorderExercisesComponent {
     var _this2 = this;
 
     return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
-      yield _this2.modalController.dismiss(undefined, _models_common_types_modal_roles_type__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.CANCEL);
+      yield _this2.modalController.dismiss(undefined, _constants_enums_model_roles_enum__WEBPACK_IMPORTED_MODULE_3__.DialogRoles.CANCEL);
     })();
   }
 
@@ -1028,16 +1028,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../services/store/shared/shared-store.service */ 81102);
 /* harmony import */ var _helpers_months_helper__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../helpers/months.helper */ 73140);
 /* harmony import */ var _helpers_training_past_trainings_map_stream_data_helper__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../helpers/training/past-trainings/map-stream-data.helper */ 83037);
-/* harmony import */ var _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../models/common/interfaces/common.model */ 66756);
-/* harmony import */ var _constants_training_past_trainings_date_format_const__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../constants/training/past-trainings-date-format.const */ 31757);
-/* harmony import */ var _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../services/shared/unsubscribe.service */ 50523);
-/* harmony import */ var _services_api_training_past_trainings_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../services/api/training/past-trainings.service */ 37587);
-/* harmony import */ var _helpers_is_never_check_helper__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../helpers/is-never-check.helper */ 13899);
-/* harmony import */ var _services_store_training_past_trainings_store_service__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../services/store/training/past-trainings-store.service */ 58885);
-/* harmony import */ var _services_store_shared_preferences_store_service__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../services/store/shared/preferences-store.service */ 97276);
-/* harmony import */ var _services_shared_preferences_service__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../services/shared/preferences.service */ 68476);
-/* harmony import */ var _helpers_training_show_by_day_helper__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../helpers/training/show-by-day.helper */ 39511);
-/* harmony import */ var _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../constants/shared/paginator.const */ 69396);
+/* harmony import */ var _constants_training_past_trainings_date_format_const__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../constants/training/past-trainings-date-format.const */ 31757);
+/* harmony import */ var _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../services/shared/unsubscribe.service */ 50523);
+/* harmony import */ var _services_api_training_past_trainings_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../services/api/training/past-trainings.service */ 37587);
+/* harmony import */ var _helpers_is_never_check_helper__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../helpers/is-never-check.helper */ 13899);
+/* harmony import */ var _services_store_training_past_trainings_store_service__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../services/store/training/past-trainings-store.service */ 58885);
+/* harmony import */ var _services_store_shared_preferences_store_service__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../services/store/shared/preferences-store.service */ 97276);
+/* harmony import */ var _services_shared_preferences_service__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../services/shared/preferences.service */ 68476);
+/* harmony import */ var _helpers_training_show_by_day_helper__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../helpers/training/show-by-day.helper */ 39511);
+/* harmony import */ var _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../constants/shared/paginator.const */ 69396);
+/* harmony import */ var _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../constants/enums/storage-items.enum */ 63236);
 
 
 
@@ -1089,8 +1089,8 @@ let PastTrainingsComponent = class PastTrainingsComponent {
     this.navController = navController;
     this.food = 3000;
     this.pageSizeOptions = [1, 3, 5, 10];
-    this.size = _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_16__.DEFAULT_SIZE;
-    this.page = _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_16__.INITIAL_PAGE;
+    this.size = _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_15__.DEFAULT_SIZE;
+    this.page = _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_15__.INITIAL_PAGE;
     this.searchText = '';
     this.periodFilter = (_b = (_a = this.preferencesStoreService.getPreferences()) === null || _a === void 0 ? void 0 : _a.showByPeriod) !== null && _b !== void 0 ? _b : 'week';
     this.dayActivated = {
@@ -1121,7 +1121,7 @@ let PastTrainingsComponent = class PastTrainingsComponent {
   }
 
   get dateFormat() {
-    return _constants_training_past_trainings_date_format_const__WEBPACK_IMPORTED_MODULE_8__.TEMPLATE_DATE_FORMAT;
+    return _constants_training_past_trainings_date_format_const__WEBPACK_IMPORTED_MODULE_7__.TEMPLATE_DATE_FORMAT;
   } //TODO: make simple stream
 
 
@@ -1138,7 +1138,7 @@ let PastTrainingsComponent = class PastTrainingsComponent {
 
     return (0,C_Development_BodybuildingLog_main_app_frontend_node_modules_babel_runtime_helpers_esm_asyncToGenerator_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function* () {
       yield _capacitor_storage__WEBPACK_IMPORTED_MODULE_3__.Storage.remove({
-        key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_7__.StorageItems.QUERY_PARAMS
+        key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_16__.StorageItems.QUERY_PARAMS
       });
 
       _this.pastTrainingsStoreService.isSearch$.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_18__.takeUntil)(_this.unsubscribeService)).subscribe(isSearch => {
@@ -1158,7 +1158,7 @@ let PastTrainingsComponent = class PastTrainingsComponent {
       _this2.sharedStoreService.emitPastTrainingsQueryParams(_this2.currentQueryParams);
 
       yield _capacitor_storage__WEBPACK_IMPORTED_MODULE_3__.Storage.set({
-        key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_7__.StorageItems.QUERY_PARAMS,
+        key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_16__.StorageItems.QUERY_PARAMS,
         value: JSON.stringify(_this2.currentQueryParams)
       });
     })();
@@ -1168,7 +1168,7 @@ let PastTrainingsComponent = class PastTrainingsComponent {
     var _this3 = this;
 
     this.pastTrainingsStoreService.emitSearch(searchText);
-    this.page = _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_16__.INITIAL_PAGE;
+    this.page = _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_15__.INITIAL_PAGE;
     this.pastTrainings$ = (0,rxjs__WEBPACK_IMPORTED_MODULE_19__.of)(searchText).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_22__.switchMap)(searchText => {
       this.searchText = searchText;
       return this.pastTrainingsService.searchPastTrainings(this.searchText, this.size, this.page).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_23__.tap)( /*#__PURE__*/function () {
@@ -1204,7 +1204,7 @@ let PastTrainingsComponent = class PastTrainingsComponent {
         this.showByDayStartDate = mondayDate;
         this.dayActivated = {
           Date: this.showByDayStartDate,
-          DayNumber: (0,_helpers_training_show_by_day_helper__WEBPACK_IMPORTED_MODULE_15__.getCurrentDayIndex)(this.showByDayStartDate)
+          DayNumber: (0,_helpers_training_show_by_day_helper__WEBPACK_IMPORTED_MODULE_14__.getCurrentDayIndex)(this.showByDayStartDate)
         };
       }
 
@@ -1278,7 +1278,7 @@ let PastTrainingsComponent = class PastTrainingsComponent {
         this.showByDayStartDate = this.calculateDate($event.PageType, undefined, $event.EarliestTrainingDate, dayFilterDate);
         this.dayActivated = {
           Date: this.showByDayStartDate,
-          DayNumber: (0,_helpers_training_show_by_day_helper__WEBPACK_IMPORTED_MODULE_15__.getCurrentDayIndex)(this.showByDayStartDate)
+          DayNumber: (0,_helpers_training_show_by_day_helper__WEBPACK_IMPORTED_MODULE_14__.getCurrentDayIndex)(this.showByDayStartDate)
         };
       }
 
@@ -1352,8 +1352,8 @@ let PastTrainingsComponent = class PastTrainingsComponent {
   initView() {
     var _a, _b, _c, _d, _e;
 
-    this.page = ((_a = this.route.snapshot.queryParamMap) === null || _a === void 0 ? void 0 : _a.get('page')) ? +this.route.snapshot.queryParamMap.get('page') : _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_16__.INITIAL_PAGE;
-    this.size = ((_b = this.route.snapshot.queryParamMap) === null || _b === void 0 ? void 0 : _b.get('size')) ? +this.route.snapshot.queryParamMap.get('size') : _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_16__.DEFAULT_SIZE;
+    this.page = ((_a = this.route.snapshot.queryParamMap) === null || _a === void 0 ? void 0 : _a.get('page')) ? +this.route.snapshot.queryParamMap.get('page') : _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_15__.INITIAL_PAGE;
+    this.size = ((_b = this.route.snapshot.queryParamMap) === null || _b === void 0 ? void 0 : _b.get('size')) ? +this.route.snapshot.queryParamMap.get('size') : _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_15__.DEFAULT_SIZE;
     this.searchText = (_c = this.route.snapshot.queryParamMap) === null || _c === void 0 ? void 0 : _c.get('search');
 
     if (this.searchText) {
@@ -1365,7 +1365,7 @@ let PastTrainingsComponent = class PastTrainingsComponent {
         this.showByDayStartDate = this.getDateTimeQueryParams();
         this.dayActivated = {
           Date: this.showByDayStartDate,
-          DayNumber: (0,_helpers_training_show_by_day_helper__WEBPACK_IMPORTED_MODULE_15__.getCurrentDayIndex)(this.showByDayStartDate)
+          DayNumber: (0,_helpers_training_show_by_day_helper__WEBPACK_IMPORTED_MODULE_14__.getCurrentDayIndex)(this.showByDayStartDate)
         };
       }
 
@@ -1388,15 +1388,15 @@ let PastTrainingsComponent = class PastTrainingsComponent {
         }
 
       default:
-        (0,_helpers_is_never_check_helper__WEBPACK_IMPORTED_MODULE_11__.isNeverCheck)(periodFilterType);
+        (0,_helpers_is_never_check_helper__WEBPACK_IMPORTED_MODULE_10__.isNeverCheck)(periodFilterType);
     }
   }
 
   updatePageAndSize(response) {
     var _a, _b, _c, _d;
 
-    this.page = (_b = (_a = response === null || response === void 0 ? void 0 : response.Value) === null || _a === void 0 ? void 0 : _a.CurrentPage) !== null && _b !== void 0 ? _b : _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_16__.INITIAL_PAGE;
-    this.size = (_d = (_c = response === null || response === void 0 ? void 0 : response.Value) === null || _c === void 0 ? void 0 : _c.Size) !== null && _d !== void 0 ? _d : _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_16__.DEFAULT_SIZE;
+    this.page = (_b = (_a = response === null || response === void 0 ? void 0 : response.Value) === null || _a === void 0 ? void 0 : _a.CurrentPage) !== null && _b !== void 0 ? _b : _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_15__.INITIAL_PAGE;
+    this.size = (_d = (_c = response === null || response === void 0 ? void 0 : response.Value) === null || _c === void 0 ? void 0 : _c.Size) !== null && _d !== void 0 ? _d : _constants_shared_paginator_const__WEBPACK_IMPORTED_MODULE_15__.DEFAULT_SIZE;
     this.changeDetectorRef.markForCheck();
   }
 
@@ -1414,16 +1414,16 @@ let PastTrainingsComponent = class PastTrainingsComponent {
 
       case 'First':
         {
-          return this.periodFilter === 'week' ? new Date(earliestTrainingDate) : (0,_helpers_training_show_by_day_helper__WEBPACK_IMPORTED_MODULE_15__.calculateFirstWeekDay)(earliestTrainingDate, startingDate);
+          return this.periodFilter === 'week' ? new Date(earliestTrainingDate) : (0,_helpers_training_show_by_day_helper__WEBPACK_IMPORTED_MODULE_14__.calculateFirstWeekDay)(earliestTrainingDate, startingDate);
         }
 
       case 'Last':
         {
-          return this.periodFilter === 'week' ? new Date() : (0,_helpers_training_show_by_day_helper__WEBPACK_IMPORTED_MODULE_15__.calculateLastWeekDay)(startingDate);
+          return this.periodFilter === 'week' ? new Date() : (0,_helpers_training_show_by_day_helper__WEBPACK_IMPORTED_MODULE_14__.calculateLastWeekDay)(startingDate);
         }
 
       default:
-        return (0,_helpers_is_never_check_helper__WEBPACK_IMPORTED_MODULE_11__.isNeverCheck)(page);
+        return (0,_helpers_is_never_check_helper__WEBPACK_IMPORTED_MODULE_10__.isNeverCheck)(page);
     }
   }
 
@@ -1446,9 +1446,9 @@ let PastTrainingsComponent = class PastTrainingsComponent {
         if (queryParam === 'page') {
           return this.page.toString();
         } else if (queryParam === 'startDate') {
-          return (0,date_fns__WEBPACK_IMPORTED_MODULE_33__["default"])((_e = (_d = (_c = (_b = trainingData === null || trainingData === void 0 ? void 0 : trainingData.Value) === null || _b === void 0 ? void 0 : _b.Results) === null || _c === void 0 ? void 0 : _c.Dates) === null || _d === void 0 ? void 0 : _d.StartDate) !== null && _e !== void 0 ? _e : new Date(), _constants_training_past_trainings_date_format_const__WEBPACK_IMPORTED_MODULE_8__.QUERY_PARAMS_DATE_FORMAT);
+          return (0,date_fns__WEBPACK_IMPORTED_MODULE_33__["default"])((_e = (_d = (_c = (_b = trainingData === null || trainingData === void 0 ? void 0 : trainingData.Value) === null || _b === void 0 ? void 0 : _b.Results) === null || _c === void 0 ? void 0 : _c.Dates) === null || _d === void 0 ? void 0 : _d.StartDate) !== null && _e !== void 0 ? _e : new Date(), _constants_training_past_trainings_date_format_const__WEBPACK_IMPORTED_MODULE_7__.QUERY_PARAMS_DATE_FORMAT);
         } else if (queryParam === 'endDate') {
-          return (0,date_fns__WEBPACK_IMPORTED_MODULE_33__["default"])((_j = (_h = (_g = (_f = trainingData === null || trainingData === void 0 ? void 0 : trainingData.Value) === null || _f === void 0 ? void 0 : _f.Results) === null || _g === void 0 ? void 0 : _g.Dates) === null || _h === void 0 ? void 0 : _h.EndDate) !== null && _j !== void 0 ? _j : new Date(), _constants_training_past_trainings_date_format_const__WEBPACK_IMPORTED_MODULE_8__.QUERY_PARAMS_DATE_FORMAT);
+          return (0,date_fns__WEBPACK_IMPORTED_MODULE_33__["default"])((_j = (_h = (_g = (_f = trainingData === null || trainingData === void 0 ? void 0 : trainingData.Value) === null || _f === void 0 ? void 0 : _f.Results) === null || _g === void 0 ? void 0 : _g.Dates) === null || _h === void 0 ? void 0 : _h.EndDate) !== null && _j !== void 0 ? _j : new Date(), _constants_training_past_trainings_date_format_const__WEBPACK_IMPORTED_MODULE_7__.QUERY_PARAMS_DATE_FORMAT);
         } else {
           return this.size.toString();
         }
@@ -1457,9 +1457,9 @@ let PastTrainingsComponent = class PastTrainingsComponent {
       }
     } else {
       if (queryParam === 'startDate') {
-        return (0,date_fns__WEBPACK_IMPORTED_MODULE_33__["default"])((_o = (_m = (_l = (_k = trainingData === null || trainingData === void 0 ? void 0 : trainingData.Value) === null || _k === void 0 ? void 0 : _k.Results) === null || _l === void 0 ? void 0 : _l.Dates) === null || _m === void 0 ? void 0 : _m.StartDate) !== null && _o !== void 0 ? _o : new Date(), _constants_training_past_trainings_date_format_const__WEBPACK_IMPORTED_MODULE_8__.QUERY_PARAMS_DATE_FORMAT);
+        return (0,date_fns__WEBPACK_IMPORTED_MODULE_33__["default"])((_o = (_m = (_l = (_k = trainingData === null || trainingData === void 0 ? void 0 : trainingData.Value) === null || _k === void 0 ? void 0 : _k.Results) === null || _l === void 0 ? void 0 : _l.Dates) === null || _m === void 0 ? void 0 : _m.StartDate) !== null && _o !== void 0 ? _o : new Date(), _constants_training_past_trainings_date_format_const__WEBPACK_IMPORTED_MODULE_7__.QUERY_PARAMS_DATE_FORMAT);
       } else if (queryParam === 'endDate') {
-        return (0,date_fns__WEBPACK_IMPORTED_MODULE_33__["default"])((_s = (_r = (_q = (_p = trainingData === null || trainingData === void 0 ? void 0 : trainingData.Value) === null || _p === void 0 ? void 0 : _p.Results) === null || _q === void 0 ? void 0 : _q.Dates) === null || _r === void 0 ? void 0 : _r.EndDate) !== null && _s !== void 0 ? _s : new Date(), _constants_training_past_trainings_date_format_const__WEBPACK_IMPORTED_MODULE_8__.QUERY_PARAMS_DATE_FORMAT);
+        return (0,date_fns__WEBPACK_IMPORTED_MODULE_33__["default"])((_s = (_r = (_q = (_p = trainingData === null || trainingData === void 0 ? void 0 : trainingData.Value) === null || _p === void 0 ? void 0 : _p.Results) === null || _q === void 0 ? void 0 : _q.Dates) === null || _r === void 0 ? void 0 : _r.EndDate) !== null && _s !== void 0 ? _s : new Date(), _constants_training_past_trainings_date_format_const__WEBPACK_IMPORTED_MODULE_7__.QUERY_PARAMS_DATE_FORMAT);
       } else {
         return undefined;
       }
@@ -1502,19 +1502,19 @@ let PastTrainingsComponent = class PastTrainingsComponent {
 };
 
 PastTrainingsComponent.ctorParameters = () => [{
-  type: _services_api_training_past_trainings_service__WEBPACK_IMPORTED_MODULE_10__.PastTrainingsService
+  type: _services_api_training_past_trainings_service__WEBPACK_IMPORTED_MODULE_9__.PastTrainingsService
 }, {
-  type: _services_store_training_past_trainings_store_service__WEBPACK_IMPORTED_MODULE_12__.PastTrainingsStoreService
+  type: _services_store_training_past_trainings_store_service__WEBPACK_IMPORTED_MODULE_11__.PastTrainingsStoreService
 }, {
-  type: _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_9__.UnsubscribeService
+  type: _services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_8__.UnsubscribeService
 }, {
   type: _ngx_translate_core__WEBPACK_IMPORTED_MODULE_34__.TranslateService
 }, {
   type: _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_4__.SharedStoreService
 }, {
-  type: _services_shared_preferences_service__WEBPACK_IMPORTED_MODULE_14__.PreferencesService
+  type: _services_shared_preferences_service__WEBPACK_IMPORTED_MODULE_13__.PreferencesService
 }, {
-  type: _services_store_shared_preferences_store_service__WEBPACK_IMPORTED_MODULE_13__.PreferencesStoreService
+  type: _services_store_shared_preferences_store_service__WEBPACK_IMPORTED_MODULE_12__.PreferencesStoreService
 }, {
   type: _angular_core__WEBPACK_IMPORTED_MODULE_35__.ChangeDetectorRef
 }, {
@@ -1545,7 +1545,7 @@ PastTrainingsComponent = (0,tslib__WEBPACK_IMPORTED_MODULE_39__.__decorate)([(0,
   selector: 'bl-past-trainings',
   template: _past_trainings_component_html_ngResource__WEBPACK_IMPORTED_MODULE_1__,
   changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_35__.ChangeDetectionStrategy.OnPush,
-  providers: [_services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_9__.UnsubscribeService],
+  providers: [_services_shared_unsubscribe_service__WEBPACK_IMPORTED_MODULE_8__.UnsubscribeService],
   styles: [_past_trainings_component_scss_ngResource__WEBPACK_IMPORTED_MODULE_2__]
 })], PastTrainingsComponent);
 
@@ -1722,7 +1722,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! date-fns */ 86712);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs/operators */ 83910);
 /* harmony import */ var _capacitor_storage__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @capacitor/storage */ 460);
-/* harmony import */ var _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../models/common/interfaces/common.model */ 66756);
+/* harmony import */ var _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../constants/enums/storage-items.enum */ 63236);
 /* harmony import */ var _services_store_shared_shared_store_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../services/store/shared/shared-store.service */ 81102);
 
 
@@ -1758,7 +1758,7 @@ let TrainingItemComponent = class TrainingItemComponent {
           _this.sharedStoreService.emitPastTrainingsQueryParams(params);
 
           yield _capacitor_storage__WEBPACK_IMPORTED_MODULE_3__.Storage.set({
-            key: _models_common_interfaces_common_model__WEBPACK_IMPORTED_MODULE_4__.StorageItems.QUERY_PARAMS,
+            key: _constants_enums_storage_items_enum__WEBPACK_IMPORTED_MODULE_4__.StorageItems.QUERY_PARAMS,
             value: JSON.stringify(params)
           });
           yield _this.router.navigate(['/training/new-training', _this.training._id]);
