@@ -4674,7 +4674,7 @@ __webpack_require__.r(__webpack_exports__);
 //if using mobile device emulator: http://192.168.0.114:3000
 const environment = {
     production: false,
-    BACKEND: 'http://192.168.0.114:3000',
+    BACKEND: 'http://localhost:3000',
 };
 /*
  * For easier debugging in development mode, you can import the following file
