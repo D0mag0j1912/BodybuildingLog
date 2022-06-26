@@ -3,7 +3,7 @@ import { MenuController, PopoverController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { take, switchMap } from 'rxjs/operators';
 import { AuthResponseData } from '../../../../models/auth/auth-data.model';
-import { Preferences } from '../../../../models/interfaces/preferences.model';
+import { Preferences } from '../../../../models/common/preferences.model';
 import { LanguageCode } from '../../../../models/common/preferences.type';
 import { PreferencesService } from '../../../../services/shared/preferences.service';
 import { AuthStoreService } from '../../../../services/store/auth/auth-store.service';
