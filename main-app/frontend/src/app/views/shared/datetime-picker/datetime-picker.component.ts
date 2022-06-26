@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
 import { IonDatetime, ModalController } from '@ionic/angular';
 import { format } from 'date-fns';
-import { DialogRoles } from '../../../models/common/types/modal-roles.type';
+import { DialogRoles } from '../../../constants/enums/model-roles.enum';
 
 @Component({
     templateUrl: './datetime-picker.component.html',

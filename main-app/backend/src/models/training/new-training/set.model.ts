@@ -6,7 +6,7 @@ import {
     IsString,
     Max,
     Min,
-    NotEquals} from 'class-validator';
+    NotEquals } from 'class-validator';
 import { Schema } from 'mongoose';
 
 export const SET_SCHEMA = new Schema({

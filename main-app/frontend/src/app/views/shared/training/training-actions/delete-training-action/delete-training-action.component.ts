@@ -6,7 +6,7 @@ import { catchError, finalize } from 'rxjs/operators';
 import { Training } from '../../../../../models/training/new-training/training.model';
 import { StreamData } from '../../../../../models/common/interfaces/common.model';
 import { Paginator } from '../../../../../models/common/interfaces/paginator.model';
-import { DialogRoles } from '../../../../../models/common/types/modal-roles.type';
+import { DialogRoles } from '../../../../../constants/enums/model-roles.enum';
 import { PastTrainings } from '../../../../../models/training/past-trainings/past-trainings.model';
 import { SharedStoreService } from '../../../../../services/store/shared/shared-store.service';
 import { DeleteTrainingActionService } from '../../../../../services/api/training/delete-training-action.service';

@@ -12,7 +12,7 @@ import { PastTrainingsService } from '../../../services/api/training/past-traini
 import * as NewTrainingHandler from '../../../handlers/new-training.handler';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StorageItems, StreamData } from '../../../models/common/interfaces/common.model';
-import { DialogRoles } from '../../../models/common/types/modal-roles.type';
+import { DialogRoles } from '../../../constants/enums/model-roles.enum';
 import { Exercise } from '../../../models/training/exercise.model';
 import { EditNewTrainingData } from '../../../models/training/new-training/edit-training.model';
 import { Training } from '../../../models/training/new-training/training.model';

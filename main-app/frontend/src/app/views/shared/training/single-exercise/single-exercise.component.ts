@@ -22,7 +22,7 @@ import { UnsubscribeService } from '../../../../services/shared/unsubscribe.serv
 import { TrainingService } from '../../../../services/api/training/training.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } from '../../delete-exercise-dialog/delete-exercise-dialog.component';
-import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
+import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
 import { ExerciseStateType } from '../../../../models/training/new-training/training.model';
 import { TrainingStoreService } from '../../../../services/store/training/training-store.service';
 import { EMPTY_TRAINING_EDIT } from '../../../../constants/training/new-training.const';
