@@ -1,11 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
-import { PeriodFilterType } from '../training/past-trainings/past-trainings.model';
-
-export type LanguageCode = 'hr' | 'en';
-export type WeightFormat = 'lbs' | 'kg';
-export type PreferenceChangedType = 'language' | 'showByPeriod';
+import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
+import { LanguageCode, WeightFormat } from './preferences.type';
 
 export const PREFERENCES_SCHEMA = new Schema({
     userId: {

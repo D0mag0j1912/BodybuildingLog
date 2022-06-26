@@ -1,5 +1,5 @@
-import { DateInterval } from '../../training/past-trainings/past-trainings.model';
-import { Page } from '../types/page.type';
+import { DateInterval } from '../training/past-trainings/past-trainings.model';
+import { Page } from './page.type';
 
 export interface Paginator<T> {
     readonly Results?: T;

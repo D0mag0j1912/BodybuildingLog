@@ -9,7 +9,7 @@ import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login.model';
 import { Paginator } from '../../../models/common/paginator.model';
 import { StreamData } from '../../../models/common/response.model';
-import { PeriodFilterType } from '../../../models/training/past-trainings/past-trainings.model';
+import { PeriodFilterType } from '../../../models/training/past-trainings/period-filter.type';
 
 @ApiTags('Training')
 @Controller('training/past-trainings')

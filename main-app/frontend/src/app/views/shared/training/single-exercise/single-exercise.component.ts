@@ -7,28 +7,27 @@ import { BehaviorSubject, combineLatest, EMPTY, from, Observable, of, Subject } 
 import { finalize, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../../constants/shared/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { GeneralResponseData } from '../../../../models/interfaces/general-response.model';
+import { GeneralResponseData } from '../../../../models/common/general-response.model';
 import { DEFAULT_WEIGHT_FORMAT } from '../../../../constants/shared/default-weight-format.const';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { EditNewTrainingData } from '../../../../models/training/new-training/edit-training.model';
 import { Training } from '../../../../models/training/new-training/training.model';
-import { SetFormValidationErrors, SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
+import { SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
-import { FormControlExerciseData, FormGroupExerciseData, SingleExercise } from '../../../../models/training/shared/single-exercise.model';
-import { FormControlSingleExercise } from '../../../../models/training/shared/single-exercise.model';
+import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
+import { FormControlExerciseData, FormControlSingleExercise, FormGroupExerciseData } from '../../../../models/training/shared/single-exercise.type';
 import { RoundTotalWeightPipe } from '../../../../pipes/training/new-training/round-total-weight/round-total-weight.pipe';
 import { ToastControllerService } from '../../../../services/shared/toast-controller.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { TrainingService } from '../../../../services/api/training/training.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } from '../../delete-exercise-dialog/delete-exercise-dialog.component';
-import { DialogRoles } from '../../../../models/common/types/modal-roles.type';
+import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
 import { ExerciseStateType } from '../../../../models/training/new-training/training.model';
 import { TrainingStoreService } from '../../../../services/store/training/training-store.service';
-import { EMPTY_TRAINING_EDIT } from '../../../../constants/training/new-training.const';
+import { EMPTY_TRAINING_EDIT, TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-training.const';
 import { createInitialSet } from '../../../../constants/shared/create-initial-set.const';
-
-const INITIAL_WEIGHT = 0;
+import { SetFormValidationErrors } from '../../../../models/training/shared/set.type';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -177,7 +176,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 translations: new FormControl(null),
             }),
             sets: new FormControl(createInitialSet()),
-            total: new FormControl(this.roundTotalWeightPipe.transform(INITIAL_WEIGHT), [Validators.required]),
+            total: new FormControl(this.roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT), [Validators.required]),
             disabledTooltip: new FormControl(true, [Validators.required]),
         }));
 

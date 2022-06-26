@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Preferences } from '../../../models/interfaces/preferences.model';
+import { Preferences } from '../../../models/common/preferences.model';
 
 @Injectable({ providedIn: 'root' })
 export class PreferencesStoreService {

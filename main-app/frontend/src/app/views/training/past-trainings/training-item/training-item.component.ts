@@ -3,7 +3,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { format } from 'date-fns';
 import { take } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
-import { StorageItems } from '../../../../models/common/interfaces/common.model';
+import { StorageItems } from '../../../../constants/enums/storage-items.enum';
 import { Training } from '../../../../models/training/new-training/training.model';
 import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';

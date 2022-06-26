@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
-import { DialogRoles } from '../../../models/common/types/modal-roles.type';
+import { DialogRoles } from '../../../constants/enums/model-roles.enum';
 
 export interface DialogData {
     isError: boolean;

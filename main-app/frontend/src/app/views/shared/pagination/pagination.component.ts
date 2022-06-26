@@ -3,11 +3,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
-import { StreamData } from '../../../models/common/interfaces/common.model';
-import { Paginator } from '../../../models/common/interfaces/paginator.model';
-import { Page } from '../../../models/common/types/page.type';
+import { StreamData } from '../../../models/common/common.model';
+import { Paginator } from '../../../models/common/paginator.model';
+import { Page } from '../../../models/common/page.type';
 import { DateInterval, PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
-import { PaginatorChanged } from '../../../models/common/interfaces/paginator.model';
+import { PaginatorChanged } from '../../../models/common/paginator.model';
 import { DEFAULT_SIZE, INITIAL_PAGE } from '../../../constants/shared/paginator.const';
 
 @Component({

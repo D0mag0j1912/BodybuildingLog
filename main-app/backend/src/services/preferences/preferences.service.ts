@@ -2,7 +2,8 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { GeneralResponseData } from '../../models/common/response.model';
-import { PreferenceChangedType, PreferencesDto } from '../../models/preferences/preferences.model';
+import { PreferencesDto } from '../../models/preferences/preferences.model';
+import { PreferenceChangedType } from '../../models/preferences/preferences.type';
 
 @Injectable()
 export class PreferencesService {
