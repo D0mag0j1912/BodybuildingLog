@@ -284,7 +284,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     }
                     else {
                         isExerciseValid = false;
-                        return EMPTY;
+                        return of(null);
                     }
                 }),
                 takeUntil(this.unsubscribeService),
