@@ -114,7 +114,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 while (this.form.length !== 0) {
                     this.form.removeAt(0);
                 }
-                (exercises as SingleExercise[]).forEach((exercise: SingleExercise, indexExercise: number) => {
+                exercises.forEach((exercise: SingleExercise, indexExercise: number) => {
                     this.addExercise();
                     if (exercise?.exerciseData?.name) {
                         this.accessFormGroup('exerciseData', 'name', indexExercise).patchValue(exercise.exerciseData.name);
@@ -228,8 +228,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                                         this.exerciseChanged = !this.exerciseChanged;
                                         this.form.removeAt(indexExercise);
                                         return this.trainingStoreService.pushToAvailableExercises(
-                                            data[0] as Training,
-                                            data[1] as Exercise[],
+                                            data[0],
+                                            data[1],
                                         );
                                     }),
                                 );
@@ -275,10 +275,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                             isExerciseValid = true;
                             const trainingData: SetTrainingData = {
                                 exerciseName: this.accessFormGroup('exerciseData', 'name', $event.indexExercise).value as string,
-                                setNumber: $event.newSet.setNumber as number,
-                                weightLifted: $event.newSet.weightLifted as number,
-                                reps: $event.newSet.reps as number,
-                                total: $event.newTotal as number,
+                                setNumber: $event.newSet.setNumber,
+                                weightLifted: $event.newSet.weightLifted,
+                                reps: $event.newSet.reps,
+                                total: $event.newTotal,
                             };
                             return this.trainingStoreService.setsChanged(trainingData);
                     }
@@ -294,9 +294,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     deleteSet($event: Partial<SetStateChanged>): void {
         this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform($event.newTotal));
         this.trainingStoreService.deleteSet(
-            $event.indexExercise as number,
-            $event.indexSet as number,
-            $event.newTotal as number,
+            $event.indexExercise,
+            $event.indexSet,
+            $event.newTotal,
         );
     }
 
@@ -396,9 +396,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     const formSetData: Set[] = [];
                     (this.accessFormField('sets', indexExercise).value as Set[]).forEach((set: Set) => {
                         const apiSet: Set = {
-                            setNumber: +set.setNumber as number,
-                            weightLifted: +set.weightLifted as number,
-                            reps: +set.reps as number,
+                            setNumber: +set.setNumber,
+                            weightLifted: +set.weightLifted,
+                            reps: +set.reps,
                         };
                         formSetData.push(apiSet);
                     });
@@ -424,6 +424,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 alreadyUsedExercises.push(exercise.get('exerciseData.name').value as string);
             }
         }
-        return alreadyUsedExercises as string[];
+        return alreadyUsedExercises;
     }
 }
