@@ -120,7 +120,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         this.accessFormGroup('exerciseData', 'translations', indexExercise).patchValue(exercise.exerciseData.translations);
                         this.accessFormField('sets', indexExercise).patchValue(exercise.sets);
                         this.accessFormField('total', indexExercise).patchValue(exercise?.total ? this.roundTotalWeightPipe.transform(exercise.total) : `0 ${DEFAULT_WEIGHT_FORMAT}`);
-                        this.accessFormField('disabledTooltip', indexExercise).patchValue(exercise.disabledTooltip);
                     }
                 });
             }
@@ -151,7 +150,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
             this.trainingStoreService.updateExerciseChoices(
                 element.value as string,
                 indexExercise,
-                this.accessFormField('disabledTooltip', indexExercise).value as boolean,
                 currentTraining,
                 selectedExerciseData,
             ).pipe(
@@ -174,7 +172,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
             }),
             sets: new FormControl(createInitialSet()),
             total: new FormControl(this.roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT), [Validators.required]),
-            disabledTooltip: new FormControl(true, [Validators.required]),
         }));
 
         if (event) {
@@ -386,7 +383,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                         exerciseData,
                         sets: [],
                         total: +splittedTotal[0],
-                        disabledTooltip: this.accessFormField('disabledTooltip', indexExercise).value as boolean,
                         availableExercises: (currentTrainingState.exercises)[indexExercise]?.availableExercises || [],
                     });
 

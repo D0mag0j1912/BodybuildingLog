@@ -4,7 +4,6 @@ import { Set } from './set.model';
 export type FormControlSingleExercise = {
     sets?: Set[];
     total?: string;
-    disabledTooltip?: boolean;
 };
 
 export type FormGroupExerciseData = { exerciseData?: Exercise };

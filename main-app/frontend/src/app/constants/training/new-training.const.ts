@@ -21,7 +21,6 @@ export const createEmptyExercise = (exercises: Exercise[]): SingleExercise =>
         exerciseData: { name: null },
         sets: [],
         total: null,
-        disabledTooltip: true,
         availableExercises: [ ...exercises ],
     });
 
