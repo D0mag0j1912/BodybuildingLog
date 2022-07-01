@@ -65,16 +65,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     get formErrors(): SetFormValidationErrors[] {
         let errors: SetFormValidationErrors[] = [];
         if (this.form?.errors) {
-            const mappedKeys: SetFormValidationErrors[] =
-                Object.keys(this.form.errors)
-                    .map((key: string) => key as SetFormValidationErrors);
+            const mappedKeys: SetFormValidationErrors[] = Object.keys(this.form.errors).map((key: string) => key as SetFormValidationErrors);
             errors = errors.concat(mappedKeys);
         }
         this.form.controls.forEach((group: AbstractControl) => {
             if (group?.errors) {
-                const mappedKeys: SetFormValidationErrors[] =
-                    Object.keys(group.errors)
-                        .map((key: string) => key as SetFormValidationErrors);
+                const mappedKeys: SetFormValidationErrors[] = Object.keys(group.errors).map((key: string) => key as SetFormValidationErrors);
                 errors = errors.concat(mappedKeys);
             }
         });
