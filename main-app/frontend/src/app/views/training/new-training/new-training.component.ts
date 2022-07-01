@@ -209,7 +209,8 @@ export class NewTrainingComponent implements OnDestroy {
                             switchMap(_ => this.trainingStoreService.updateTrainingState(response.data)
                                 .pipe(
                                     tap(_ => this._formInit()),
-                                )),
+                                ),
+                            ),
                             switchMap(_ => of(streamData)),
                             mapStreamData<Exercise[]>(),
                             tap(_ => setTimeout(async () => await this.ionContent.scrollToBottom(300), 100)),

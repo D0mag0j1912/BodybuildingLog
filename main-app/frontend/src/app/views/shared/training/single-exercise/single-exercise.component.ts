@@ -109,20 +109,18 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     }
 
     writeValue(exercises: SingleExercise[]): void {
-        if (exercises) {
-            if (exercises.length > 0 && this.getExercises().length < exercises.length) {
-                exercises.forEach((exercise: SingleExercise, indexExercise: number) => {
-                    this.addExercise();
-                    if (exercise?.exerciseData?.name) {
-                        this.accessFormGroup('exerciseData', 'name', indexExercise).patchValue(exercise.exerciseData.name);
-                        this.accessFormGroup('exerciseData', 'imageUrl', indexExercise).patchValue(exercise.exerciseData.imageUrl);
-                        this.accessFormGroup('exerciseData', 'primaryMuscleGroup', indexExercise).patchValue(exercise.exerciseData.primaryMuscleGroup);
-                        this.accessFormGroup('exerciseData', 'translations', indexExercise).patchValue(exercise.exerciseData.translations);
-                        this.accessFormField('sets', indexExercise).patchValue(exercise.sets);
-                        this.accessFormField('total', indexExercise).patchValue(exercise?.total ? this.roundTotalWeightPipe.transform(exercise.total) : `0 ${DEFAULT_WEIGHT_FORMAT}`);
-                    }
-                });
-            }
+        if (exercises && exercises?.length > 0) {
+            exercises.forEach((exercise: SingleExercise, indexExercise: number) => {
+                this.addExercise();
+                if (exercise?.exerciseData?.name) {
+                    this.accessFormGroup('exerciseData', 'name', indexExercise).patchValue(exercise.exerciseData.name);
+                    this.accessFormGroup('exerciseData', 'imageUrl', indexExercise).patchValue(exercise.exerciseData.imageUrl);
+                    this.accessFormGroup('exerciseData', 'primaryMuscleGroup', indexExercise).patchValue(exercise.exerciseData.primaryMuscleGroup);
+                    this.accessFormGroup('exerciseData', 'translations', indexExercise).patchValue(exercise.exerciseData.translations);
+                    this.accessFormField('sets', indexExercise).patchValue(exercise.sets);
+                    this.accessFormField('total', indexExercise).patchValue(exercise?.total ? this.roundTotalWeightPipe.transform(exercise.total) : `0 ${DEFAULT_WEIGHT_FORMAT}`);
+                }
+            });
         }
     }
 
