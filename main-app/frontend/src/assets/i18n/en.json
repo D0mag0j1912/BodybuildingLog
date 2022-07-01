@@ -239,6 +239,8 @@
         "hammer_dumbbell_curl": "Hammer dumbbell curl",
         "seated_dumbbell_overhead_extension": "Seated dumbbell overhead extension",
         "pushup": "Pushup",
-        "chest_press_machine": "Machine chest press"
+        "chest_press_machine": "Machine chest press",
+        "plank": "Plank",
+        "side_plank": "Side plank"
     }
 }
