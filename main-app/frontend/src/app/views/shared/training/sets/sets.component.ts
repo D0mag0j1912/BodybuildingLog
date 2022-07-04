@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
@@ -104,7 +104,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             });
     }
 
-    ngOnChanges(): void {
+    ngOnChanges(_changes: SimpleChanges): void {
         this.form.updateValueAndValidity({ emitEvent: true });
     }
 
