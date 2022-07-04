@@ -27,7 +27,7 @@ import { ExerciseStateType } from '../../../../models/training/new-training/trai
 import { TrainingStoreService } from '../../../../services/store/training/training-store.service';
 import { EMPTY_TRAINING_EDIT, TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-training.const';
 import { createInitialSet } from '../../../../constants/shared/create-initial-set.const';
-import { SetFormValidationErrors } from '../../../../models/training/shared/set.type';
+import { SetsComponent } from '../sets/sets.component';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -46,7 +46,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
 
     readonly form: FormArray = new FormArray([]);
-    setErrors: SetFormValidationErrors[] = [];
 
     exerciseChanged = false;
     isApiLoading = false;
@@ -73,6 +72,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     @ViewChildren('exercisePicker')
     exercisePickerEls: QueryList<IonSelect>;
+
+    @ViewChildren(SetsComponent)
+    setsCmp: QueryList<SetsComponent>;
 
     readonly currentExerciseState$: Observable<[SingleExercise[], Exercise[]]> =
         this.exerciseStateChanged$$
@@ -314,20 +316,19 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         return this.form.at(indexExercise).get(formGroup)?.get(formField);
     }
 
-    onSetFormChange($event: SetFormValidationErrors[]): void {
-        this.setErrors = $event;
-        this.changeDetectorRef.markForCheck();
-    }
-
     isAddingExercisesDisabled(
         currentExercisesLength: number,
         allExercisesLength: number,
     ): boolean {
         if (this.getExercises().length > 0) {
-            return (currentExercisesLength >= allExercisesLength)
-                || ((!this.accessFormGroup('exerciseData', 'name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0)
-                || this.setErrors.includes('setNotEntered')
-                || this.setErrors.includes('setNotValid');
+            const setForm = this.setsCmp?.first?.form;
+            if (setForm) {
+                return (currentExercisesLength >= allExercisesLength) ||
+                    ((!this.accessFormGroup('exerciseData', 'name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0) ||
+                    'setNotEntered' in setForm?.errors ||
+                    'setNotValid' in setForm?.errors;
+            }
+            return false;
         }
         else {
             return false;
@@ -336,7 +337,8 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     onSubmit(): void {
         this.isSubmitted$$.next(true);
-        if (!this.form.valid || this.setErrors.length > 0) {
+        const setForm = this.setsCmp?.first?.form;
+        if (!this.form.valid || !setForm.valid) {
             return;
         }
         this.isApiLoading = true;

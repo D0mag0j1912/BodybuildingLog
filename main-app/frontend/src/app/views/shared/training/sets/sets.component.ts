@@ -7,7 +7,7 @@ import { getControlValueAccessor } from '../../../../helpers/control-value-acces
 import { ExerciseStateType } from '../../../../models/training/new-training/training.model';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
-import { FormSetData, SetConstituent, SetFormValidationErrors } from '../../../../models/training/shared/set.type';
+import { FormSetData, SetConstituent } from '../../../../models/training/shared/set.type';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as CommonValidators from '../../../../validators/shared/common.validators';
 import * as SetValidators from '../../../../validators/training/set.validators';
@@ -52,9 +52,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     @Output()
     readonly setDeleted: EventEmitter<Partial<SetStateChanged>> = new EventEmitter<Partial<SetStateChanged>>();
 
-    @Output()
-    readonly formStateChanged: EventEmitter<SetFormValidationErrors[]> = new EventEmitter<SetFormValidationErrors[]>();
-
     @ViewChildren('weightLiftedEl')
     readonly weightLiftedEl: QueryList<IonInput>;
 
@@ -62,25 +59,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         private readonly unsubscribeService: UnsubscribeService,
     ) { }
 
-    get formErrors(): SetFormValidationErrors[] {
-        let errors: SetFormValidationErrors[] = [];
-        if (this.form?.errors) {
-            const mappedKeys: SetFormValidationErrors[] = Object.keys(this.form.errors).map((key: string) => key as SetFormValidationErrors);
-            errors = errors.concat(mappedKeys);
-        }
-        this.form.controls.forEach((group: AbstractControl) => {
-            if (group?.errors) {
-                const mappedKeys: SetFormValidationErrors[] = Object.keys(group.errors).map((key: string) => key as SetFormValidationErrors);
-                errors = errors.concat(mappedKeys);
-            }
-        });
-        return errors;
-    }
-
     ngOnInit(): void {
         this.form.setValidators([SetValidators.allSetsFilled()]);
         this.form.updateValueAndValidity();
-        this.formStateChanged.emit(this.formErrors);
 
         this.exerciseNameControl.valueChanges
             .pipe(
@@ -126,10 +107,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             .pipe(
                 takeUntil(this.unsubscribeService),
             )
-            .subscribe((formValue: Partial<Set[]>) => {
-                this.formStateChanged.emit(this.formErrors);
-                fn(formValue as Partial<Set[]>);
-            });
+            .subscribe((formValue: Partial<Set[]>) => fn(formValue as Partial<Set[]>));
     }
 
     registerOnTouched(fn: () => void): void {
