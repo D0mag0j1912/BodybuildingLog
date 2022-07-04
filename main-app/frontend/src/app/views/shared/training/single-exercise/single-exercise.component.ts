@@ -96,6 +96,22 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 ),
             );
 
+    readonly isAddingExercisesDisabled$: Observable<boolean> = this.currentExerciseState$
+        .pipe(
+            map(([trainingState, allExercises]) => {
+                if (this.getExercises().length > 0) {
+                    const setForm = this.setsCmp?.first?.form;
+                    return (trainingState.length >= allExercises.length) ||
+                        ((!this.accessFormGroup('exerciseData', 'name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0) ||
+                        'setNotEntered' in (setForm?.errors ? setForm.errors : {}) ||
+                        'setNotValid' in (setForm?.errors ? setForm.errors : {});
+                }
+                else {
+                    return false;
+                }
+            }),
+        );
+
     constructor(
         private readonly trainingStoreService: TrainingStoreService,
         private readonly trainingService: TrainingService,
@@ -314,25 +330,6 @@ export class SingleExerciseComponent implements ControlValueAccessor {
         indexExercise: number,
     ): AbstractControl {
         return this.form.at(indexExercise).get(formGroup)?.get(formField);
-    }
-
-    isAddingExercisesDisabled(
-        currentExercisesLength: number,
-        allExercisesLength: number,
-    ): boolean {
-        if (this.getExercises().length > 0) {
-            const setForm = this.setsCmp?.first?.form;
-            if (setForm) {
-                return (currentExercisesLength >= allExercisesLength) ||
-                    ((!this.accessFormGroup('exerciseData', 'name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0) ||
-                    'setNotEntered' in setForm?.errors ||
-                    'setNotValid' in setForm?.errors;
-            }
-            return false;
-        }
-        else {
-            return false;
-        }
     }
 
     onSubmit(): void {
