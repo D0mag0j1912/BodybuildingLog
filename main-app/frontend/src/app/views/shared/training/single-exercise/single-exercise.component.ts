@@ -81,12 +81,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
 
     readonly currentTrainingDataState$: Observable<SingleExercise[]> = this.trainingStoreService.currentTrainingChanged$
         .pipe(
-            take(1),
             map(currentTrainingState => currentTrainingState.exercises),
         );
 
-    //TODO: Rename
-    readonly isAddingExercisesDisabled$: Observable<boolean> = combineLatest([
+    readonly isAddingExercisesAllowed$: Observable<boolean> = combineLatest([
         this.trainingStoreService.currentTrainingChanged$
             .pipe(
                 map(currentTrainingState => currentTrainingState.exercises),
@@ -109,15 +107,15 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                             isSetValid = false;
                         }
                     }
-                    return (trainingState.length >= allExercises.length) ||
-                        ((!this.accessFormGroup('exerciseData', 'name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0) ||
-                        'setNotFilled' in (lastSetForm?.errors ? lastSetForm.errors : {}) ||
-                        !isSetValid;
+                    return (trainingState.length <= allExercises.length) &&
+                        ((this.accessFormGroup('exerciseData', 'name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0) &&
+                        !('setNotFilled' in (lastSetForm?.errors ? lastSetForm.errors : {})) &&
+                        isSetValid;
                 }
-                return true;
+                return false;
             }
             else {
-                return false;
+                return true;
             }
         }),
     );
