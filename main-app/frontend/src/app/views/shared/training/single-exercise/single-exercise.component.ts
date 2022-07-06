@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChildren } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, EMPTY, from, Observable, of, Subject } from 'rxjs';
-import { finalize, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+import { delay, finalize, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../../constants/shared/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { GeneralResponseData } from '../../../../models/common/general-response.model';
@@ -39,8 +39,9 @@ import { SetsComponent } from '../sets/sets.component';
         UnsubscribeService,
     ],
 })
-export class SingleExerciseComponent implements ControlValueAccessor {
+export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy {
 
+    private readonly _setChanged$$: Subject<void> = new Subject<void>();
     readonly exerciseStateChanged$$: Subject<ExerciseStateType> = new Subject<ExerciseStateType>();
     readonly isSubmitted$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
@@ -74,9 +75,9 @@ export class SingleExerciseComponent implements ControlValueAccessor {
     exercisePickerEls: QueryList<IonSelect>;
 
     @ViewChildren(SetsComponent)
-    setsCmp: QueryList<SetsComponent>;
+    setsCmpRef: QueryList<SetsComponent>;
 
-    readonly currentExerciseState$: Observable<[SingleExercise[], Exercise[]]> =
+    readonly currentTrainingDataState$: Observable<[SingleExercise[], Exercise[]]> =
         this.exerciseStateChanged$$
             .pipe(
                 startWith(undefined as ExerciseStateType),
@@ -96,21 +97,41 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 ),
             );
 
-    readonly isAddingExercisesDisabled$: Observable<boolean> = this.currentExerciseState$
-        .pipe(
-            map(([trainingState, allExercises]) => {
-                if (this.getExercises().length > 0) {
-                    const setForm = this.setsCmp?.first?.form;
+    readonly isAddingExercisesDisabled$: Observable<boolean> = combineLatest([
+        this.trainingStoreService.currentTrainingChanged$
+            .pipe(
+                map(currentTrainingState => currentTrainingState.exercises),
+            ),
+        this.trainingStoreService.allExercisesChanged$
+            .pipe(
+                map(value => value.Value),
+            ),
+        this._setChanged$$,
+    ])
+    .pipe(
+        delay(0),
+        map(([trainingState, allExercises]) => {
+            if (this.getExercises().length > 0) {
+                if (this.setsCmpRef) {
+                    const lastSetForm = this.setsCmpRef.last.form;
+                    let isSetValid = true;
+                    for (const group of lastSetForm.controls) {
+                        if (('setNotEntered' in (group?.errors ? group.errors : {})) || 'setNotValid' in (group?.errors ? group.errors : {})) {
+                            isSetValid = false;
+                        }
+                    }
                     return (trainingState.length >= allExercises.length) ||
                         ((!this.accessFormGroup('exerciseData', 'name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0) ||
-                        'setNotEntered' in (setForm?.errors ? setForm.errors : {}) ||
-                        'setNotValid' in (setForm?.errors ? setForm.errors : {});
+                        'setNotFilled' in (lastSetForm?.errors ? lastSetForm.errors : {}) ||
+                        !isSetValid;
                 }
-                else {
-                    return false;
-                }
-            }),
-        );
+                return true;
+            }
+            else {
+                return false;
+            }
+        }),
+    );
 
     constructor(
         private readonly trainingStoreService: TrainingStoreService,
@@ -143,6 +164,10 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                 }
             });
         }
+    }
+
+    ngOnDestroy(): void {
+        this._setChanged$$.complete();
     }
 
     registerOnChange(fn: (formValue: Partial<SingleExercise[]>) => void): void {
@@ -297,6 +322,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
                     }
                     else {
                         isExerciseValid = false;
+                        this._setChanged$$.next();
                         return of(null);
                     }
                 }),
@@ -334,7 +360,7 @@ export class SingleExerciseComponent implements ControlValueAccessor {
 
     onSubmit(): void {
         this.isSubmitted$$.next(true);
-        const setForm = this.setsCmp?.first?.form;
+        const setForm = this.setsCmpRef?.first?.form;
         if (!this.form.valid || !setForm.valid) {
             return;
         }
