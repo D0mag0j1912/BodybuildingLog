@@ -2,9 +2,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnI
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
-import { delay, filter, takeUntil } from 'rxjs/operators';
+import { delay, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { ExerciseStateType } from '../../../../models/training/new-training/training.model';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { FormSetData, SetConstituent } from '../../../../models/training/shared/set.type';
@@ -32,7 +31,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     isExerciseFormSubmitted$: Observable<boolean> = of(false);
 
     @Input()
-    exerciseStateChanged$: Observable<ExerciseStateType> = of(null);
+    exerciseNameChanged$: Observable<void> = of(null);
 
     @Input()
     exerciseNameControl: AbstractControl | null;
@@ -72,9 +71,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                 value ? this.accessFormField('reps', 0).enable() : this.accessFormField('reps', 0).disable();
             });
 
-        this.exerciseStateChanged$
+        this.exerciseNameChanged$
             .pipe(
-                filter(state => state === 'Update'),
                 delay(200),
                 takeUntil(this.unsubscribeService),
             )

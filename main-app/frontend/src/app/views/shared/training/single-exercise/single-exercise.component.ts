@@ -4,7 +4,7 @@ import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, EMPTY, from, Observable, of, Subject } from 'rxjs';
-import { delay, finalize, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+import { delay, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../../constants/shared/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { GeneralResponseData } from '../../../../models/common/general-response.model';
@@ -23,7 +23,6 @@ import { TrainingService } from '../../../../services/api/training/training.serv
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } from '../../delete-exercise-dialog/delete-exercise-dialog.component';
 import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
-import { ExerciseStateType } from '../../../../models/training/new-training/training.model';
 import { TrainingStoreService } from '../../../../services/store/training/training-store.service';
 import { EMPTY_TRAINING_EDIT, TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-training.const';
 import { createInitialSet } from '../../../../constants/shared/create-initial-set.const';
@@ -41,8 +40,8 @@ import { SetsComponent } from '../sets/sets.component';
 })
 export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy {
 
-    private readonly _setChanged$$: Subject<void> = new Subject<void>();
-    readonly exerciseStateChanged$$: Subject<ExerciseStateType> = new Subject<ExerciseStateType>();
+    private readonly _invalidSetChanged$$: Subject<void> = new Subject<void>();
+    readonly exerciseNameChanged$$: Subject<void> = new Subject<void>();
     readonly isSubmitted$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
 
@@ -77,26 +76,13 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     @ViewChildren(SetsComponent)
     setsCmpRef: QueryList<SetsComponent>;
 
-    readonly currentTrainingDataState$: Observable<[SingleExercise[], Exercise[]]> =
-        this.exerciseStateChanged$$
-            .pipe(
-                startWith(undefined as ExerciseStateType),
-                switchMap(_ =>
-                    combineLatest([
-                        this.trainingStoreService.currentTrainingChanged$
-                            .pipe(
-                                take(1),
-                                map((currentTrainingState: Training) => currentTrainingState.exercises),
-                            ),
-                        this.trainingStoreService.allExercisesChanged$
-                            .pipe(
-                                take(1),
-                                map(value => value?.Value ?? []),
-                            ),
-                    ]),
-                ),
-            );
+    readonly currentTrainingDataState$: Observable<SingleExercise[]> = this.trainingStoreService.currentTrainingChanged$
+        .pipe(
+            take(1),
+            map(currentTrainingState => currentTrainingState.exercises),
+        );
 
+    //TODO: Rename
     readonly isAddingExercisesDisabled$: Observable<boolean> = combineLatest([
         this.trainingStoreService.currentTrainingChanged$
             .pipe(
@@ -106,7 +92,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             .pipe(
                 map(value => value.Value),
             ),
-        this._setChanged$$,
+        this._invalidSetChanged$$,
     ])
     .pipe(
         delay(0),
@@ -167,7 +153,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     ngOnDestroy(): void {
-        this._setChanged$$.complete();
+        this._invalidSetChanged$$.complete();
+        this.exerciseNameChanged$$.complete();
+        this.isSubmitted$$.complete();
     }
 
     registerOnChange(fn: (formValue: Partial<SingleExercise[]>) => void): void {
@@ -200,7 +188,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 takeUntil(this.unsubscribeService),
             ).subscribe(_ => {
                 this.exerciseChanged = !this.exerciseChanged;
-                this.exerciseStateChanged$$.next('Update');
+                this.exerciseNameChanged$$.next();
                 this.changeDetectorRef.markForCheck();
             });
         }
@@ -223,10 +211,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 .pipe(
                     takeUntil(this.unsubscribeService),
                 )
-                .subscribe(_ => {
-                    this.exerciseStateChanged$$.next('Add');
-                    this.exerciseAdded.next(event);
-                });
+                .subscribe(_ => this.exerciseAdded.next(event));
         }
     }
 
@@ -276,10 +261,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                             return EMPTY;
                         }
                     }),
-                    finalize(() => {
-                        this.exerciseStateChanged$$.next('Delete');
-                        this.changeDetectorRef.markForCheck();
-                    }),
+                    finalize(() => this.changeDetectorRef.markForCheck()),
                     takeUntil(this.unsubscribeService),
                 )
                 .subscribe();
@@ -295,7 +277,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                             indexExercise,
                         ),
                     ),
-                    finalize(() => this.exerciseStateChanged$$.next('Delete')),
                     takeUntil(this.unsubscribeService),
                 )
                 .subscribe(_ => this.form.removeAt(indexExercise));
@@ -322,7 +303,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     }
                     else {
                         isExerciseValid = false;
-                        this._setChanged$$.next();
+                        this._invalidSetChanged$$.next();
                         return of(null);
                     }
                 }),

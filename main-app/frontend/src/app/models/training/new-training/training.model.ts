@@ -8,5 +8,3 @@ export interface Training {
     readonly bodyweight?: number;
     readonly trainingDate?: Date;
 }
-
-export type ExerciseStateType = 'Update' | 'Add' | 'Delete';
