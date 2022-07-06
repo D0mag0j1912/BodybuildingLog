@@ -41,9 +41,12 @@ import { SetsComponent } from '../sets/sets.component';
 export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy {
 
     private readonly _invalidSetChanged$$: Subject<void> = new Subject<void>();
-    readonly exerciseNameChanged$$: Subject<void> = new Subject<void>();
-    readonly isSubmitted$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private readonly _exerciseNameChanged$$: Subject<void> = new Subject<void>();
+    private readonly _isSubmitted$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
+    readonly isSubmitted$: Observable<boolean> = this._isSubmitted$$.asObservable();
+    readonly exerciseNameChanged$: Observable<void> = this._exerciseNameChanged$$.asObservable();
 
     readonly form: FormArray = new FormArray([]);
 
@@ -154,8 +157,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
 
     ngOnDestroy(): void {
         this._invalidSetChanged$$.complete();
-        this.exerciseNameChanged$$.complete();
-        this.isSubmitted$$.complete();
+        this._exerciseNameChanged$$.complete();
+        this._isSubmitted$$.complete();
     }
 
     registerOnChange(fn: (formValue: Partial<SingleExercise[]>) => void): void {
@@ -188,7 +191,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 takeUntil(this.unsubscribeService),
             ).subscribe(_ => {
                 this.exerciseChanged = !this.exerciseChanged;
-                this.exerciseNameChanged$$.next();
+                this._exerciseNameChanged$$.next();
                 this.changeDetectorRef.markForCheck();
             });
         }
@@ -340,7 +343,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     onSubmit(): void {
-        this.isSubmitted$$.next(true);
+        this._isSubmitted$$.next(true);
         const setForm = this.setsCmpRef?.first?.form;
         if (!this.form.valid || !setForm.valid) {
             return;
