@@ -74,7 +74,7 @@
                     <ion-button
                         type="button"
                         color="primary"
-                        [disabled]="(isAddingExercisesAllowed$ | async) || isApiLoading"
+                        [disabled]="!(isAddingExercisesAllowed$ | async) || isApiLoading"
                         (click)="addExercise($event)">
                         {{ 'training.new_training.buttons.add_exercise' | translate }}
                     </ion-button>

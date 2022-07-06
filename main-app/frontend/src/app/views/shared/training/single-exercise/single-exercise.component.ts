@@ -4,7 +4,7 @@ import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, EMPTY, from, Observable, of, Subject } from 'rxjs';
-import { delay, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { delay, finalize, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../../constants/shared/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { GeneralResponseData } from '../../../../models/common/general-response.model';
@@ -93,7 +93,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             .pipe(
                 map(value => value.Value),
             ),
-        this._invalidSetChanged$$,
+        this._invalidSetChanged$$
+            .pipe(
+                startWith(undefined as void),
+            ),
     ])
     .pipe(
         delay(0),
