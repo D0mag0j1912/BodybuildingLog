@@ -240,6 +240,8 @@
         "hammer_dumbbell_curl": "Čekić pregib bučicama",
         "seated_dumbbell_overhead_extension": "Sjedeća triceps ekstenzija bučicom",
         "pushup": "Sklek",
-        "chest_press_machine": "Prsni potisak na mašini"
+        "chest_press_machine": "Prsni potisak na mašini",
+        "plank": "Izdržaj",
+        "side_plank": "Izdržaj u stranu"
     }
 }

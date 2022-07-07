@@ -142,12 +142,10 @@ export class TrainingStoreService {
     updateExerciseChoices(
         selectedExercise: string,
         selectedIndex: number,
-        disabledTooltip: boolean,
         trainingToBeUpdated: Training,
         selectedExerciseData: Exercise,
     ): Observable<void> {
         trainingToBeUpdated.exercises[selectedIndex].exerciseData = selectedExerciseData;
-        trainingToBeUpdated.exercises[selectedIndex].disabledTooltip = disabledTooltip;
         trainingToBeUpdated.exercises.forEach((exercise: SingleExercise, index: number) => {
             if (index !== selectedIndex) {
                 exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.name !== selectedExercise);

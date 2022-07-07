@@ -27,10 +27,6 @@ export const SINGLE_EXERCISE_SCHEMA = new Schema({
         type: Number,
         required: true,
     },
-    disabledTooltip: {
-        type: Boolean,
-        required: true,
-    },
     availableExercises: {
         type: [EXERCISE_SCHEMA],
         required: true,
@@ -59,11 +55,6 @@ export class SingleExercise {
     )
     @IsNotEmpty({ message: '@training.new_training.errors.error_save_training' })
     total: number;
-
-    @ApiProperty()
-    @IsBoolean({ message: '@training.new_training.errors.error_save_training' })
-    @IsNotEmpty({ message: '@training.new_training.errors.error_save_training' })
-    disabledTooltip: boolean;
 
     @ApiProperty()
     @ValidateNested({ each: true })

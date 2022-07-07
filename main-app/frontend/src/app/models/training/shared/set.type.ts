@@ -1,19 +1,7 @@
-
-export type SetFormValidationErrors =
-    'setNotFilled' |
-    'setNotEntered' |
-    'setNotValid' |
-    'repsRequired' |
-    'weightLiftedRequired' |
-    'min' |
-    'max' |
-    'pattern' |
-    'onlyNumbers';
+import { Set } from './set.model';
 
 export type FormSetData = {
-    setNumber?: number;
-    weightLifted?: number;
-    reps?: number;
+    readonly [P in keyof Omit<Set, '_id'>]?: Set[P];
 };
 
 export type SetConstituent = 'weightLifted' | 'reps';

@@ -26,8 +26,8 @@ import { TrainingService } from '../../../services/api/training/training.service
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { EMPTY_TRAINING, EMPTY_TRAINING_EDIT, createEmptyExercise } from '../../../constants/training/new-training.const';
-import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
+import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 type FormData = {
     bodyweight: number;
@@ -209,7 +209,8 @@ export class NewTrainingComponent implements OnDestroy {
                             switchMap(_ => this.trainingStoreService.updateTrainingState(response.data)
                                 .pipe(
                                     tap(_ => this._formInit()),
-                                )),
+                                ),
+                            ),
                             switchMap(_ => of(streamData)),
                             mapStreamData<Exercise[]>(),
                             tap(_ => setTimeout(async () => await this.ionContent.scrollToBottom(300), 100)),
