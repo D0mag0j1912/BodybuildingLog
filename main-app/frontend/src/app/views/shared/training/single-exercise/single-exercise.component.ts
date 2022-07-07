@@ -103,17 +103,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         map(([trainingState, allExercises]) => {
             if (this.getExercises().length > 0) {
                 if (this.setsCmpRef) {
-                    const lastSetForm = this.setsCmpRef.last.form;
-                    let isSetValid = true;
-                    for (const group of lastSetForm.controls) {
-                        if (('setNotEntered' in (group?.errors ? group.errors : {})) || 'setNotValid' in (group?.errors ? group.errors : {})) {
-                            isSetValid = false;
-                        }
-                    }
                     return (trainingState.length <= allExercises.length) &&
                         ((this.accessFormGroup('exerciseData', 'name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0) &&
-                        !('setNotFilled' in (lastSetForm?.errors ? lastSetForm.errors : {})) &&
-                        isSetValid;
+                        this.areSetsValid(this.setsCmpRef);
                 }
                 return false;
             }
@@ -345,8 +337,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
 
     onSubmit(): void {
         this._isSubmitted$$.next(true);
-        const setForm = this.setsCmpRef?.first?.form;
-        if (!this.form.valid || !setForm.valid) {
+        if (!this.form.valid || !this.areSetsValid(this.setsCmpRef)) {
             return;
         }
         this.isApiLoading = true;
@@ -430,5 +421,23 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             }
         }
         return alreadyUsedExercises;
+    }
+
+    private areSetsValid(setsCmpRef: QueryList<SetsComponent>): boolean {
+        let errors: string[] = [];
+        setsCmpRef.forEach(setCmp => {
+            const form = setCmp.form;
+            if (form?.errors) {
+                const mappedKeys: string[] = Object.keys(form.errors).map((key: string) => key as string);
+                errors = errors.concat(mappedKeys);
+            }
+            form.controls.forEach((group: AbstractControl) => {
+                if (group?.errors) {
+                    const mappedKeys: string[] = Object.keys(group.errors).map((key: string) => key as string);
+                    errors = errors.concat(mappedKeys);
+                }
+            });
+        });
+        return errors.length === 0;
     }
 }
