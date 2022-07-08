@@ -89,12 +89,11 @@
             </ion-row>
             <ion-row>
                 <ion-col class="at-least-one-exercise-txt">
-                    <ion-text
+                    <ion-note
                         *ngIf="form?.errors?.emptyTraining && (isSubmitted$ | async) && currentTrainingDataState?.length === 0"
-                        color="danger"
                         class="empty-training-msg">
                         {{ 'training.new_training.errors.at_least_one_exercise' | translate }}
-                    </ion-text>
+                    </ion-note>
                 </ion-col>
             </ion-row>
         </ion-grid>
