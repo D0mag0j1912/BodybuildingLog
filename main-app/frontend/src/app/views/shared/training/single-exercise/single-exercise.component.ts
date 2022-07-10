@@ -27,8 +27,6 @@ import { TrainingStoreService } from '../../../../services/store/training/traini
 import { EMPTY_TRAINING_EDIT, TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-training.const';
 import { createInitialSet } from '../../../../constants/shared/create-initial-set.const';
 import { SetsComponent } from '../sets/sets.component';
-import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
-import { Preferences } from '../../../../models/common/preferences.model';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -85,9 +83,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         }),
     );
 
-    readonly currentPreferences$: Observable<Preferences> = this.preferencesStoreService.preferencesChanged$
-        .pipe(take(1));
-
     readonly form: FormArray = new FormArray([]);
 
     exerciseChanged = false;
@@ -125,7 +120,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         private readonly trainingService: TrainingService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
-        private readonly preferencesStoreService: PreferencesStoreService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly toastControllerService: ToastControllerService,
         private readonly modalController: ModalController,
