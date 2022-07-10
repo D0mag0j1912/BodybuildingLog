@@ -20,36 +20,36 @@
                                 (ionChange)="onChangeSets(j)"
                                 (ionBlur)="onTouched()"></ion-input>
                             <ion-text
-                                *ngIf="accessFormField('weightLifted', j).errors?.onlyNumbers &&
-                                    !accessFormField('weightLifted', j).errors?.min &&
+                                *ngIf="accessFormField('weightLifted', j)?.errors?.onlyNumbers &&
+                                    !accessFormField('weightLifted', j)?.errors?.min &&
                                     !isLoading"
                                 slot="error">
                                 {{ 'training.new_training.errors.only_numbers' | translate }}
                             </ion-text>
                             <ion-text
-                                *ngIf="accessFormField('weightLifted', j).errors?.min &&
-                                    !accessFormField('weightLifted', j).errors?.onlyNumbers &&
+                                *ngIf="accessFormField('weightLifted', j)?.errors?.min &&
+                                    !accessFormField('weightLifted', j)?.errors?.onlyNumbers &&
                                     !isLoading"
                                 slot="error">
                                 {{ 'training.new_training.errors.weight_lifted_min' | translate }}
                             </ion-text>
                             <ion-text
-                                *ngIf="accessFormField('weightLifted', j).errors?.max &&
-                                    !accessFormField('weightLifted', j).errors?.onlyNumbers &&
+                                *ngIf="accessFormField('weightLifted', j)?.errors?.max &&
+                                    !accessFormField('weightLifted', j)?.errors?.onlyNumbers &&
                                     !isLoading"
                                 slot="error">
                                 {{ 'training.new_training.errors.weight_lifted_max' | translate }}
                             </ion-text>
+                            <ion-text
+                                *ngIf="(accessFormField('weightLifted', j)?.errors?.required &&
+                                    ((isExerciseFormSubmitted$ | async) || accessFormField('weightLifted', j).touched)) &&
+                                    !isLoading"
+                                slot="error">
+                                {{ 'training.new_training.errors.weight_lifted_required' | translate }}
+                            </ion-text>
                         </ion-item>
                         <ion-text
-                            *ngIf="(accessFormField('weightLifted', j)?.errors?.required && ((isExerciseFormSubmitted$ | async) || accessFormField('weightLifted', j)?.errors?.touched)) &&
-                                !accessFormField('weightLifted', j).errors?.min &&
-                                !isLoading"
-                            class="error">
-                            {{ 'training.new_training.errors.weight_lifted_required' | translate }}
-                        </ion-text>
-                        <ion-text
-                            *ngIf="set.errors?.setNotEntered
+                            *ngIf="set?.errors?.setNotEntered
                                 && (isExerciseFormSubmitted$ | async)
                                 && !accessFormField('weightLifted', j)?.errors?.required
                                 && !accessFormField('reps', j)?.errors?.required
@@ -82,36 +82,36 @@
                                 (ionChange)="onChangeSets(j)"
                                 (ionBlur)="onTouched()"></ion-input>
                             <ion-text
-                                *ngIf="accessFormField('reps', j).errors?.pattern &&
-                                    !accessFormField('reps', j).errors?.onlyNumbers &&
+                                *ngIf="accessFormField('reps', j)?.errors?.pattern &&
+                                    !accessFormField('reps', j)?.errors?.onlyNumbers &&
                                     !isLoading"
                                 slot="error">
                                 {{ 'training.new_training.errors.only_positive' | translate }}
                             </ion-text>
                             <ion-text
-                                *ngIf="accessFormField('reps', j).errors?.min &&
-                                    !accessFormField('reps', j).errors?.onlyNumbers &&
-                                    !accessFormField('reps', j).errors?.pattern &&
+                                *ngIf="accessFormField('reps', j)?.errors?.min &&
+                                    !accessFormField('reps', j)?.errors?.onlyNumbers &&
+                                    !accessFormField('reps', j)?.errors?.pattern &&
                                     !isLoading"
                                 slot="error">
                                 {{ 'training.new_training.errors.reps_min' | translate }}
                             </ion-text>
                             <ion-text
-                                *ngIf="accessFormField('reps', j).errors?.max &&
-                                    !accessFormField('reps', j).errors?.onlyNumbers &&
-                                    !accessFormField('reps', j).errors?.pattern &&
+                                *ngIf="accessFormField('reps', j)?.errors?.max &&
+                                    !accessFormField('reps', j)?.errors?.onlyNumbers &&
+                                    !accessFormField('reps', j)?.errors?.pattern &&
                                     !isLoading"
                                 slot="error">
                                 {{ 'training.new_training.errors.reps_max' | translate }}
                             </ion-text>
+                            <ion-text
+                                *ngIf="(accessFormField('reps', j)?.errors?.required &&
+                                    ((isExerciseFormSubmitted$ | async) || (accessFormField('reps', j).touched))) &&
+                                    !isLoading"
+                                slot="error">
+                                {{ 'training.new_training.errors.reps_required' | translate }}
+                            </ion-text>
                         </ion-item>
-                        <ion-text
-                            *ngIf="(accessFormField('reps', j)?.errors?.required &&
-                                ((isExerciseFormSubmitted$ | async) || (accessFormField('reps', j).touched))) &&
-                                !isLoading"
-                            class="error">
-                            {{ 'training.new_training.errors.reps_required' | translate }}
-                        </ion-text>
                     </ion-col>
                     <ion-col
                         size="2"
@@ -138,7 +138,7 @@
             <ion-button
                 type="button"
                 color="primary"
-                [disabled]="!exerciseNameControl.value || form.errors?.setNotFilled"
+                [disabled]="!exerciseNameControl.value || form?.errors?.setNotFilled"
                 (click)="addSet()">
                 {{ 'training.new_training.buttons.add_set' | translate }}
             </ion-button>
