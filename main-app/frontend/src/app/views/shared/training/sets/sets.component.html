@@ -86,7 +86,7 @@
                                     !accessFormField('reps', j)?.errors?.onlyNumbers &&
                                     !isLoading"
                                 slot="error">
-                                {{ 'training.new_training.errors.only_positive' | translate }}
+                                {{ 'training.new_training.errors.only_numbers' | translate }}
                             </ion-text>
                             <ion-text
                                 *ngIf="accessFormField('reps', j)?.errors?.min &&
