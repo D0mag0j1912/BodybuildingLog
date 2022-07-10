@@ -32,7 +32,8 @@ ion-grid:first-of-type {
 }
 
 .empty-training-msg {
-    font-size: 14px;
+    font-size: 12px;
+    color: var(--ion-color-danger-tint);
 }
 
 .at-least-one-exercise-txt {

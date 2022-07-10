@@ -129,7 +129,6 @@
                 "reps_min": "Minimum reps value is 1",
                 "reps_max": "Maximum reps value is 1000",
                 "only_numbers": "Only numbers are allowed",
-                "only_positive": "Only positive numbers",
                 "set_number_max": "Maximum set number is 50",
                 "total_numerical": "Total must be numerical value",
                 "new_training_error_title": "Training is not available",

@@ -130,7 +130,6 @@
                 "reps_min": "Minimalna vrijednost broja ponavljanja je 1",
                 "reps_max": "Maksimalna vrijednost broja ponavljanja je 1000",
                 "only_numbers": "Samo brojevi su dozvoljeni",
-                "only_positive": "Samo pozitivni brojevi",
                 "set_number_max": "Maksimalni broj seta je 50",
                 "total_numerical": "Ukupna kilaža mora biti numerička vrijednost",
                 "new_training_error_title": "Trening nije trenutno dostupan",

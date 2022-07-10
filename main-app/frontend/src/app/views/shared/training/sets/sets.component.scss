@@ -9,14 +9,6 @@ ion-grid {
     }
 }
 
-.ion-item-error {
-    --highlight-background: var(--ion-color-danger);
-}
-
-.ion-label-error {
-    color: var(--ion-color-danger) !important;
-}
-
 .set-row {
     align-items: flex-start;
 
