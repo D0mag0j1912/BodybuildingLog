@@ -27,6 +27,8 @@ import { TrainingStoreService } from '../../../../services/store/training/traini
 import { EMPTY_TRAINING_EDIT, TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-training.const';
 import { createInitialSet } from '../../../../constants/shared/create-initial-set.const';
 import { SetsComponent } from '../sets/sets.component';
+import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
+import { Preferences } from '../../../../models/common/preferences.model';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -47,39 +49,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
     readonly isSubmitted$: Observable<boolean> = this._isSubmitted$$.asObservable();
     readonly exerciseNameChanged$: Observable<void> = this._exerciseNameChanged$$.asObservable();
-
-    readonly form: FormArray = new FormArray([]);
-
-    exerciseChanged = false;
-    isApiLoading = false;
-    showSelects = true;
-
-    onTouched: () => void;
-
-    @Input()
-    editData: EditNewTrainingData = EMPTY_TRAINING_EDIT;
-
-    @Input()
-    bodyweight: AbstractControl | null;
-
-    @Input()
-    trainingDate: AbstractControl | null;
-
-    @Input()
-    isLoading = false;
-
-    @Input()
-    editMode = false;
-
-    @Output()
-    readonly exerciseAdded: EventEmitter<UIEvent> = new EventEmitter();
-
-    @ViewChildren('exercisePicker')
-    exercisePickerEls: QueryList<IonSelect>;
-
-    @ViewChildren(SetsComponent)
-    setsCmpRef: QueryList<SetsComponent>;
-
     readonly currentTrainingDataState$: Observable<SingleExercise[]> = this.trainingStoreService.currentTrainingChanged$
         .pipe(
             map(currentTrainingState => currentTrainingState.exercises),
@@ -116,11 +85,47 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         }),
     );
 
+    readonly currentPreferences$: Observable<Preferences> = this.preferencesStoreService.preferencesChanged$
+        .pipe(take(1));
+
+    readonly form: FormArray = new FormArray([]);
+
+    exerciseChanged = false;
+    isApiLoading = false;
+    showSelects = true;
+
+    onTouched: () => void;
+
+    @Input()
+    editData: EditNewTrainingData = EMPTY_TRAINING_EDIT;
+
+    @Input()
+    bodyweight: AbstractControl | null;
+
+    @Input()
+    trainingDate: AbstractControl | null;
+
+    @Input()
+    isLoading = false;
+
+    @Input()
+    editMode = false;
+
+    @Output()
+    readonly exerciseAdded: EventEmitter<UIEvent> = new EventEmitter();
+
+    @ViewChildren('exercisePicker')
+    exercisePickerEls: QueryList<IonSelect>;
+
+    @ViewChildren(SetsComponent)
+    setsCmpRef: QueryList<SetsComponent>;
+
     constructor(
         private readonly trainingStoreService: TrainingStoreService,
         private readonly trainingService: TrainingService,
         private readonly unsubscribeService: UnsubscribeService,
         private readonly translateService: TranslateService,
+        private readonly preferencesStoreService: PreferencesStoreService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly toastControllerService: ToastControllerService,
         private readonly modalController: ModalController,
