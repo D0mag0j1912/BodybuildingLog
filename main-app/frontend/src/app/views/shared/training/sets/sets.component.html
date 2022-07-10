@@ -6,21 +6,10 @@
             <ion-grid>
                 <ion-row class="ion-text-center set-row">
                     <ion-col size="5">
-                        <ion-item
-                            fill="outline"
-                            [class.ion-item-error]="setIonComponentClass(
-                                set,
-                                isExerciseFormSubmitted$ | async,
-                                exerciseNameControl?.value,
-                                'weightLifted')">
+                        <ion-item fill="outline">
                             <ion-label
                                 class="ion-label"
-                                position="floating"
-                                [class.ion-label-error]="setIonComponentClass(
-                                    set,
-                                    isExerciseFormSubmitted$ | async,
-                                    exerciseNameControl?.value,
-                                    'weightLifted')">
+                                position="floating">
                                 {{ 'training.new_training.weight_lifted' | translate }}
                             </ion-label>
                             <ion-input
@@ -82,21 +71,10 @@
                         </ion-text>
                     </ion-col>
                     <ion-col size="5">
-                        <ion-item
-                            fill="outline"
-                            [class.ion-item-error]="setIonComponentClass(
-                                set,
-                                isExerciseFormSubmitted$ | async,
-                                exerciseNameControl?.value,
-                                'reps')">
+                        <ion-item fill="outline">
                             <ion-label
                                 class="ion-label"
-                                position="floating"
-                                [class.ion-label-error]="setIonComponentClass(
-                                    set,
-                                    isExerciseFormSubmitted$ | async,
-                                    exerciseNameControl?.value,
-                                    'reps')">
+                                position="floating">
                                     {{ 'training.new_training.reps_performed' | translate }}
                                 </ion-label>
                             <ion-input
@@ -131,7 +109,7 @@
                         </ion-item>
                         <ion-text
                             *ngIf="(set.errors?.repsRequired &&
-                                ((isExerciseFormSubmitted$ | async) || exerciseNameControl?.value)) &&
+                                ((isExerciseFormSubmitted$ | async) || (accessFormField('reps', j).touched))) &&
                                 !isLoading"
                             class="error">
                             {{ 'training.new_training.errors.reps_required' | translate }}

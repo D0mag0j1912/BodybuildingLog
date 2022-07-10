@@ -6,7 +6,7 @@ import { delay, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
-import { FormSetData, SetConstituent } from '../../../../models/training/shared/set.type';
+import { FormSetData } from '../../../../models/training/shared/set.type';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as CommonValidators from '../../../../validators/shared/common.validators';
 import * as SetValidators from '../../../../validators/training/set.validators';
@@ -189,15 +189,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         indexSet: number,
     ): AbstractControl {
         return this.form.at(indexSet)?.get(formField);
-    }
-
-    setIonComponentClass(
-        set: AbstractControl,
-        isExerciseFormSubmitted: boolean,
-        exerciseName: string | undefined,
-        setConstituent: SetConstituent,
-    ): boolean {
-        return ((setConstituent === 'weightLifted' ? set.errors?.weightLiftedRequired : set.errors?.repsRequired) && (isExerciseFormSubmitted || !!exerciseName));
     }
 
     private calculateTotal(): number {
