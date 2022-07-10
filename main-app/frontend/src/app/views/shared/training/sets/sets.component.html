@@ -42,7 +42,7 @@
                             </ion-text>
                         </ion-item>
                         <ion-text
-                            *ngIf="(set.errors?.weightLiftedRequired && ((isExerciseFormSubmitted$ | async) || exerciseNameControl?.value)) &&
+                            *ngIf="(accessFormField('weightLifted', j)?.errors?.required && ((isExerciseFormSubmitted$ | async) || accessFormField('weightLifted', j)?.errors?.touched)) &&
                                 !accessFormField('weightLifted', j).errors?.min &&
                                 !isLoading"
                             class="error">
@@ -51,8 +51,8 @@
                         <ion-text
                             *ngIf="set.errors?.setNotEntered
                                 && (isExerciseFormSubmitted$ | async)
-                                && !set.errors?.weightLiftedRequired
-                                && !set.errors?.repsRequired
+                                && !accessFormField('weightLifted', j)?.errors?.required
+                                && !accessFormField('reps', j)?.errors?.required
                                 && !isLoading"
                             class="error">
                             {{ 'training.new_training.errors.set_required' | translate }}
@@ -62,8 +62,6 @@
                                 && accessFormField('weightLifted', j).valid
                                 && accessFormField('reps', j).value
                                 && accessFormField('reps', j).valid
-                                && !set.errors?.weightLiftedRequired
-                                && !set.errors?.repsRequired
                                 && !editMode
                                 && !isLoading"
                             class="set-saved-msg">
@@ -108,7 +106,7 @@
                             </ion-text>
                         </ion-item>
                         <ion-text
-                            *ngIf="(set.errors?.repsRequired &&
+                            *ngIf="(accessFormField('reps', j)?.errors?.required &&
                                 ((isExerciseFormSubmitted$ | async) || (accessFormField('reps', j).touched))) &&
                                 !isLoading"
                             class="error">
