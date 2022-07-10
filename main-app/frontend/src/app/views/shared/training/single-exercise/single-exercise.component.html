@@ -15,6 +15,7 @@
                                 <ion-item fill="outline">
                                     <ion-label position="floating">{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
                                     <ion-select
+                                        *ngIf="showSelects"
                                         #exercisePicker
                                         class="exercise-picker"
                                         interface="popover"

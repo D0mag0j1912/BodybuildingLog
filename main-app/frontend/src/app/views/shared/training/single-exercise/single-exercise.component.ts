@@ -52,6 +52,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
 
     exerciseChanged = false;
     isApiLoading = false;
+    showSelects = true;
 
     onTouched: () => void;
 
@@ -127,6 +128,18 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     ) {
         this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName(), SingleExerciseValidators.checkExerciseNumber()]);
         this.form.updateValueAndValidity();
+
+        this.translateService.onLangChange
+            .pipe(
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe(_ => {
+                this.showSelects = false;
+                setTimeout(() => {
+                    this.showSelects = true;
+                    this.changeDetectorRef.markForCheck();
+                }, 1);
+            });
     }
 
     writeValue(exercises: SingleExercise[]): void {
