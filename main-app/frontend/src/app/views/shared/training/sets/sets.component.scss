@@ -42,9 +42,17 @@ ion-grid {
 }
 
 .weight-lifted-input {
+    max-width: 65px;
+
     &--metric {
         position: absolute;
-        bottom: 0;
-        right: 0;
+        right: 15px;
+        font-weight: bold;
+        font-size: 16px;
+        color: var(--ion-color-primary);
     }
+}
+
+.invalid-weight-lifted {
+    color: var(--ion-color-danger);
 }

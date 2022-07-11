@@ -20,10 +20,13 @@
                                     formControlName="weightLifted"
                                     (ionChange)="onChangeSets(j)"
                                     (ionBlur)="onTouched()">
-                                    <span
-                                        class="weight-lifted-input--metric"
-                                        slot="start">{{ weightLiftedEl?.value ? currentPreferences.weightFormat : '' }}</span>
                                 </ion-input>
+                                <ion-text
+                                    class="weight-lifted-input--metric"
+                                    slot="end"
+                                    [class.invalid-weight-lifted]="accessFormField('weightLifted', j)?.invalid">
+                                    {{ weightLiftedEl?.value ? currentPreferences.weightFormat : '' }}
+                                </ion-text>
                             </ng-container>
                             <ion-text
                                 *ngIf="accessFormField('weightLifted', j)?.errors?.onlyNumbers &&
