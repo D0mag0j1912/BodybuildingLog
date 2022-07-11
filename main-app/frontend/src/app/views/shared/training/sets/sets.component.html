@@ -12,13 +12,22 @@
                                 position="floating">
                                 {{ 'training.new_training.weight_lifted' | translate }}
                             </ion-label>
-                            <ion-input
-                                #weightLiftedEl
-                                type="number"
-                                class="weight-lifted-input"
-                                formControlName="weightLifted"
-                                (ionChange)="onChangeSets(j)"
-                                (ionBlur)="onTouched()"></ion-input>
+                            <ng-container *ngIf="(currentPreferences$ | async) as currentPreferences">
+                                <ion-input
+                                    #weightLiftedEl
+                                    type="number"
+                                    class="weight-lifted-input"
+                                    formControlName="weightLifted"
+                                    (ionChange)="onChangeSets(j)"
+                                    (ionBlur)="onTouched()">
+                                </ion-input>
+                                <ion-text
+                                    class="weight-lifted-input--metric"
+                                    slot="end"
+                                    [class.invalid-weight-lifted]="accessFormField('weightLifted', j)?.invalid">
+                                    {{ weightLiftedEl?.value ? currentPreferences.weightFormat : '' }}
+                                </ion-text>
+                            </ng-container>
                             <ion-text
                                 *ngIf="accessFormField('weightLifted', j)?.errors?.onlyNumbers &&
                                     !accessFormField('weightLifted', j)?.errors?.min &&
