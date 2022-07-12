@@ -63,7 +63,7 @@
                 <ion-item
                     *ngIf="isAuthenticated$ | async"
                     lines="none"
-                    (click)="$event.stopPropagation(); openLanguagePopover($event);">
+                    (click)="openLanguagePopover($event);">
                     <ion-icon
                         slot="start"
                         name="language-sharp"
