@@ -10,6 +10,7 @@ import { PreferencesStoreService } from '../../../services/store/shared/preferen
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
+import { SidenavElements } from '../../../models/navigation/sidenav.model';
 import { LanguagesComponent } from './languages/languages.component';
 
 @Component({
