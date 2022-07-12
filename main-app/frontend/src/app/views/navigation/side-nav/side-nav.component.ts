@@ -72,4 +72,9 @@ export class SideNavComponent {
         await popover.present();
     }
 
+    async openUnitPopover($event: Event): Promise<void> {
+        $event.stopPropagation();
+
+    }
+
 }

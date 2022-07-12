@@ -75,7 +75,7 @@
                 <ion-item
                     *ngIf="isAuthenticated$ | async"
                     lines="none"
-                    (click)="$event.stopPropagation();">
+                    (click)="openUnitPopover($event)">
                     <ion-icon
                         slot="start"
                         name="calculator-sharp"
