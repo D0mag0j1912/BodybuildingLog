@@ -90,6 +90,7 @@
         "new_training": "Novi trening",
         "past_trainings": "Prošli treninzi",
         "language": "Jezik",
+        "unit": "Jedinica",
         "logout": "Odjava",
         "buttons": {
             "edit_go_back": "Idi nazad"

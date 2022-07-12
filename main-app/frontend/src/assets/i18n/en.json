@@ -89,6 +89,7 @@
         "new_training": "New training",
         "past_trainings": "Past trainings",
         "language": "Language",
+        "unit": "Unit",
         "logout": "Logout",
         "buttons": {
             "edit_go_back": "Go back"

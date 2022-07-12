@@ -60,7 +60,7 @@ export class SideNavComponent {
             });
     }
 
-    async openPopover($event: Event): Promise<void> {
+    async openLanguagePopover($event: Event): Promise<void> {
         const popover = await this.popoverController.create({
             component: LanguagesComponent,
             event: $event,

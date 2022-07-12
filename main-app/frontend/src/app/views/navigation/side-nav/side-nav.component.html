@@ -17,7 +17,7 @@
                     <ion-icon
                         slot="start"
                         name="log-in-sharp"
-                        class="icon"></ion-icon>
+                        color="primary"></ion-icon>
                     <ion-label>{{ 'navigation.login' | translate }}</ion-label>
                 </ion-item>
             </ion-menu-toggle>
@@ -30,7 +30,7 @@
                     <ion-icon
                         slot="start"
                         name="arrow-forward-sharp"
-                        class="icon"></ion-icon>
+                        color="primary"></ion-icon>
                     <ion-label>{{ 'navigation.signup' | translate }}</ion-label>
                 </ion-item>
             </ion-menu-toggle>
@@ -43,7 +43,7 @@
                     <ion-icon
                         slot="start"
                         name="barbell-sharp"
-                        class="icon"></ion-icon>
+                        color="primary"></ion-icon>
                     <ion-label>{{ 'navigation.new_training' | translate }}</ion-label>
                 </ion-item>
             </ion-menu-toggle>
@@ -55,7 +55,7 @@
                     <ion-icon
                         slot="start"
                         name="analytics-sharp"
-                        class="icon"></ion-icon>
+                        color="primary"></ion-icon>
                     <ion-label>{{ 'navigation.past_trainings' | translate }}</ion-label>
                 </ion-item>
             </ion-menu-toggle>
@@ -63,12 +63,24 @@
                 <ion-item
                     *ngIf="isAuthenticated$ | async"
                     lines="none"
-                    (click)="$event.stopPropagation(); openPopover($event);">
+                    (click)="$event.stopPropagation(); openLanguagePopover($event);">
                     <ion-icon
                         slot="start"
                         name="language-sharp"
-                        class="icon"></ion-icon>
+                        color="primary"></ion-icon>
                     <ion-label>{{ 'navigation.language' | translate }}</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                    *ngIf="isAuthenticated$ | async"
+                    lines="none"
+                    (click)="$event.stopPropagation();">
+                    <ion-icon
+                        slot="start"
+                        name="calculator-sharp"
+                        color="primary"></ion-icon>
+                    <ion-label>{{ 'navigation.unit' | translate }}</ion-label>
                 </ion-item>
             </ion-menu-toggle>
             <ion-menu-toggle [autoHide]="false">
@@ -80,7 +92,7 @@
                     <ion-icon
                         slot="start"
                         name="log-out-sharp"
-                        class="icon"></ion-icon>
+                        color="primary"></ion-icon>
                     <ion-label>{{ 'navigation.logout' | translate }}</ion-label>
                 </ion-item>
             </ion-menu-toggle>
