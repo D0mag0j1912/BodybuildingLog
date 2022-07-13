@@ -203,6 +203,10 @@
         "english": "English",
         "croatian": "Croatian"
     },
+    "units": {
+        "kilograms": "Kilograms",
+        "pounds": "Pounds"
+    },
     "preferences": {
         "language_changed": "Language successfully changed",
         "errors": {

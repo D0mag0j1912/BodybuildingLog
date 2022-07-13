@@ -204,6 +204,10 @@
         "english": "Engleski",
         "croatian": "Hrvatski"
     },
+    "units": {
+        "kilograms": "Kilogrami",
+        "pounds": "Funte"
+    },
     "preferences": {
         "language_changed": "Jezik je uspješno promijenjen",
         "errors": {
