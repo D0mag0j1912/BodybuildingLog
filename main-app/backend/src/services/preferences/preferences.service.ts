@@ -40,6 +40,9 @@ export class PreferencesService {
                 case 'showByPeriod': {
                     return { Message: '' } as GeneralResponseData;
                 }
+                case 'weightFormat': {
+                    return { Message: 'preferences.weight_format_changed' } as GeneralResponseData;
+                }
             }
         }
         catch (error: unknown) {
@@ -49,6 +52,9 @@ export class PreferencesService {
                 }
                 case 'showByPeriod': {
                     throw new InternalServerErrorException('preferences.errors.period_change');
+                }
+                case 'weightFormat': {
+                    throw new InternalServerErrorException('preferences.errors.weight_format_change');
                 }
             }
         }

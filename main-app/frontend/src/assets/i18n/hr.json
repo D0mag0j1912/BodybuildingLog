@@ -210,10 +210,12 @@
     },
     "preferences": {
         "language_changed": "Jezik je uspješno promijenjen",
+        "weight_format_changed": "Jedinica težine je uspješno promijenjena",
         "errors": {
             "language_required": "Jezik je obvezan",
             "language_change": "Došlo je do greške pri promjeni jezika",
             "weight_format_required": "Format težine je obvezan",
+            "weight_format_change": "Došlo je do greške pri promjeni formata težine",
             "period_change": "Došlo je do greške pri promjeni perioda"
         }
     },

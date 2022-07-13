@@ -209,10 +209,12 @@
     },
     "preferences": {
         "language_changed": "Language successfully changed",
+        "weight_format_changed": "Weight format successfully changed",
         "errors": {
             "language_required": "Language field is required",
             "language_change": "Error while trying to change language",
             "weight_format_required": "Weight format field is required",
+            "weight_format_change": "Error while trying to change weight format",
             "period_change": "Error while trying to change period"
         }
     },
