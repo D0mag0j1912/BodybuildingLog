@@ -1,5 +1,5 @@
 
-export type PreferenceChangedType = 'language' | 'showByPeriod';
+export type PreferenceChangedType = 'language' | 'showByPeriod' | 'weightFormat';
 
 export type LanguageCode = 'en' | 'hr';
 

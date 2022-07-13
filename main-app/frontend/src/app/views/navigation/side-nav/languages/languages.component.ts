@@ -42,7 +42,7 @@ export class LanguagesComponent {
     constructor(
         private readonly preferencesStoreService: PreferencesStoreService,
         private readonly authStoreService: AuthStoreService,
-        private readonly navigationService: PreferencesService,
+        private readonly preferencesService: PreferencesService,
         private readonly popoverController: PopoverController,
         private readonly menuController: MenuController,
     ) { }
@@ -56,10 +56,10 @@ export class LanguagesComponent {
                     const preferences: Preferences = {
                         userId: userData._id,
                         languageCode: language,
-                        weightFormat: 'kg',
+                        weightFormat: currentPreferences.weightFormat,
                         showByPeriod: currentPreferences.showByPeriod,
                     };
-                    return this.navigationService.setPreferences(
+                    return this.preferencesService.setPreferences(
                         preferences,
                         'language',
                     );
