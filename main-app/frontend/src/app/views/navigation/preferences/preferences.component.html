@@ -1,6 +1,6 @@
 <ion-list>
     <ng-container [ngSwitch]="preferenceType">
-        <ng-container *ngIf="'language'">
+        <ng-container *ngSwitchCase="'language'">
             <ion-item
                 *ngFor="let language of languageData"
                 lines="none"
@@ -17,7 +17,7 @@
                     slot="end"></ion-icon>
             </ion-item>
         </ng-container>
-        <ng-container *ngIf="'weightFormat'">
+        <ng-container *ngSwitchCase="'weightFormat'">
             <ion-item
                 *ngFor="let unit of unitData"
                 lines="none"

@@ -76,7 +76,7 @@ export class PreferencesComponent {
                     };
                     return this.preferencesService.setPreferences(
                         preferences,
-                        'language',
+                        this.preferenceType,
                     );
                 }),
             )
