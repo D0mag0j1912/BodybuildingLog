@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MenuController, PopoverController } from '@ionic/angular';
-import { Observable } from 'rxjs';
 import { take, switchMap } from 'rxjs/operators';
 import { AuthResponseData } from '../../../../models/auth/auth-data.model';
 import { Preferences } from '../../../../models/common/preferences.model';
@@ -24,7 +23,7 @@ interface LanguageData {
 export class LanguagesComponent {
 
     @Input()
-    preferences$: Observable<Preferences>;
+    preferences: Preferences;
 
     readonly languageData: Readonly<LanguageData[]> = [
         {

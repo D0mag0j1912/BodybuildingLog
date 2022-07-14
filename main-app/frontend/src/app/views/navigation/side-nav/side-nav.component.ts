@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
-import { Observable } from 'rxjs';
-import { share, take } from 'rxjs/operators';
+import { from, Observable } from 'rxjs';
+import { share, switchMap, take } from 'rxjs/operators';
 import { startOfWeek, startOfDay, endOfWeek, endOfDay, format } from 'date-fns';
 import { Preferences } from '../../../models/common/preferences.model';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
@@ -62,16 +62,21 @@ export class SideNavComponent {
             });
     }
 
-    async openLanguagePopover($event: Event): Promise<void> {
+    openLanguagePopover($event: Event): void {
         $event.stopPropagation();
-        const popover = await this.popoverController.create({
-            component: LanguagesComponent,
-            event: $event,
-            componentProps: { preferences$: this.preferences$ },
-            side: 'left',
-            keyboardClose: true,
-        });
-        await popover.present();
+        this.preferences$
+            .pipe(
+                switchMap(preferences => from(this.popoverController.create({
+                        component: LanguagesComponent,
+                        event: $event,
+                        componentProps: { preferences },
+                        side: 'left',
+                        keyboardClose: true,
+                    })),
+                ),
+                switchMap(popover => from(popover.present())),
+            )
+            .subscribe();
     }
 
     async openUnitPopover($event: Event): Promise<void> {
