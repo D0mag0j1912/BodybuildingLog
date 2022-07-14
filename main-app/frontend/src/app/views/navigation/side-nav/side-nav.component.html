@@ -63,7 +63,7 @@
                 <ion-item
                     *ngIf="isAuthenticated$ | async"
                     lines="none"
-                    (click)="openLanguagePopover($event);">
+                    (click)="openPreferencePopover($event, 'language');">
                     <ion-icon
                         slot="start"
                         name="language-sharp"
@@ -75,7 +75,7 @@
                 <ion-item
                     *ngIf="isAuthenticated$ | async"
                     lines="none"
-                    (click)="openUnitPopover($event)">
+                    (click)="openPreferencePopover($event, 'weightFormat')">
                     <ion-icon
                         slot="start"
                         name="calculator-sharp"

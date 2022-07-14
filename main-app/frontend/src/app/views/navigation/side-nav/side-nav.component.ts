@@ -10,8 +10,8 @@ import { PreferencesStoreService } from '../../../services/store/shared/preferen
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
-import { LanguagesComponent } from './languages/languages.component';
-import { UnitsComponent } from './units/units.component';
+import { PreferencesComponent } from '../preferences/preferences.component';
+import { PreferenceChangedType } from '../../../models/common/preferences.type';
 
 @Component({
     selector: 'bl-side-nav',
@@ -62,31 +62,20 @@ export class SideNavComponent {
             });
     }
 
-    openLanguagePopover($event: Event): void {
+    openPreferencePopover(
+        $event: Event,
+        preferenceType: PreferenceChangedType,
+    ): void {
         $event.stopPropagation();
         this.preferences$
             .pipe(
                 switchMap(preferences => from(this.popoverController.create({
-                        component: LanguagesComponent,
+                        component: PreferencesComponent,
                         event: $event,
-                        componentProps: { preferences },
-                        side: 'left',
-                        keyboardClose: true,
-                    })),
-                ),
-                switchMap(popover => from(popover.present())),
-            )
-            .subscribe();
-    }
-
-    openUnitPopover($event: Event): void {
-        $event.stopPropagation();
-        this.preferences$
-            .pipe(
-                switchMap(preferences => from(this.popoverController.create({
-                        component: UnitsComponent,
-                        event: $event,
-                        componentProps: { preferences },
+                        componentProps: {
+                            preferences,
+                            preferenceType,
+                        },
                         side: 'left',
                         keyboardClose: true,
                     })),

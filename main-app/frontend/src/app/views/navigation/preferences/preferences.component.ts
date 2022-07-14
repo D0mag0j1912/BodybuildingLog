@@ -3,7 +3,7 @@ import { PopoverController, MenuController } from '@ionic/angular';
 import { take, switchMap } from 'rxjs/operators';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { Preferences } from '../../../models/common/preferences.model';
-import { LanguageCode, PreferenceChangedType } from '../../../models/common/preferences.type';
+import { LanguageCode, PreferenceChangedType, WeightFormat } from '../../../models/common/preferences.type';
 import { PreferencesService } from '../../../services/shared/preferences.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
@@ -12,6 +12,11 @@ interface LanguageData {
     LanguageCode: LanguageCode;
     ImageUrl: string;
     LanguageName: string;
+}
+
+interface UnitData {
+    UnitName: string;
+    WeightFormat: WeightFormat;
 }
 
 @Component({
@@ -40,6 +45,14 @@ export class PreferencesComponent {
             LanguageName: 'languages.croatian',
         },
     ];
+
+    readonly unitData: UnitData[] = [{
+        UnitName: 'units.kilograms',
+        WeightFormat: 'kg',
+    }, {
+        UnitName: 'units.pounds',
+        WeightFormat: 'lbs',
+    }];
 
     constructor(
         private readonly preferencesStoreService: PreferencesStoreService,
