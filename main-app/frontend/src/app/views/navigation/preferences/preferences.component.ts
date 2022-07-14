@@ -62,7 +62,7 @@ export class PreferencesComponent {
         private readonly menuController: MenuController,
     ) { }
 
-    changePreference(language: LanguageCode): void {
+    changePreference(preference: LanguageCode | WeightFormat): void {
         const currentPreferences = this.preferencesStoreService.getPreferences();
         this.authStoreService.loggedUser$
             .pipe(
@@ -70,8 +70,8 @@ export class PreferencesComponent {
                 switchMap((userData: AuthResponseData) => {
                     const preferences: Preferences = {
                         userId: userData._id,
-                        languageCode: language,
-                        weightFormat: currentPreferences.weightFormat,
+                        languageCode: this.preferenceType === 'language' ? (preference as LanguageCode) : currentPreferences.languageCode,
+                        weightFormat: this.preferenceType === 'weightFormat' ? (preference as WeightFormat) : currentPreferences.weightFormat,
                         showByPeriod: currentPreferences.showByPeriod,
                     };
                     return this.preferencesService.setPreferences(
