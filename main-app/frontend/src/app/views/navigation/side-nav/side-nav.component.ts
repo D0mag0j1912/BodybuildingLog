@@ -79,7 +79,7 @@ export class SideNavComponent {
             .subscribe();
     }
 
-    async openUnitPopover($event: Event): Promise<void> {
+    openUnitPopover($event: Event): void {
         $event.stopPropagation();
         this.preferences$
             .pipe(
