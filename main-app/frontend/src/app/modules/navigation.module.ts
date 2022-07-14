@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { PreferencesComponent } from '../views/navigation/preferences/preferences.component';
 import { LanguagesComponent } from '../views/navigation/side-nav/languages/languages.component';
 import { SideNavComponent } from '../views/navigation/side-nav/side-nav.component';
 import { UnitsComponent } from '../views/navigation/side-nav/units/units.component';
@@ -12,6 +13,7 @@ const COMPONENTS = [
     SideNavComponent,
     LanguagesComponent,
     UnitsComponent,
+    PreferencesComponent,
 ];
 
 const EXTERNAL_IMPORTS = [
