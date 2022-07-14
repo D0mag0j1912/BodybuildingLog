@@ -53,7 +53,7 @@
     },
     "auth": {
         "pick_language": "Izaberite jezik",
-        "pick_weight_format": "Izaberite format težine",
+        "pick_weight_format": "Izaberite jedinicu težine",
         "email": "Email",
         "password": "Lozinka",
         "confirm_password": "Ponovno lozinka",
@@ -214,8 +214,8 @@
         "errors": {
             "language_required": "Jezik je obvezan",
             "language_change": "Došlo je do greške pri promjeni jezika",
-            "weight_format_required": "Format težine je obvezan",
-            "weight_format_change": "Došlo je do greške pri promjeni formata težine",
+            "weight_format_required": "Jedinica težine je obvezna",
+            "weight_format_change": "Došlo je do greške pri promjeni jedinice težine",
             "period_change": "Došlo je do greške pri promjeni perioda"
         }
     },
