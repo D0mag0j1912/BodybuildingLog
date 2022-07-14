@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnI
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
-import { delay, takeUntil, take } from 'rxjs/operators';
+import { delay, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
@@ -25,8 +25,7 @@ import * as SetValidators from '../../../../validators/training/set.validators';
 })
 export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
-    readonly currentPreferences$: Observable<Preferences> = this.preferencesStoreService.preferencesChanged$
-        .pipe(take(1));
+    readonly currentPreferences$: Observable<Preferences> = this.preferencesStoreService.preferencesChanged$;
 
     readonly form: FormArray = new FormArray([]);
 

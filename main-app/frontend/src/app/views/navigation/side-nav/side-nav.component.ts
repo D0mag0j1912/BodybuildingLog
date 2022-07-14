@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { from, Observable } from 'rxjs';
+import { share, switchMap, take } from 'rxjs/operators';
 import { startOfWeek, startOfDay, endOfWeek, endOfDay, format } from 'date-fns';
 import { Preferences } from '../../../models/common/preferences.model';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
@@ -10,7 +10,8 @@ import { PreferencesStoreService } from '../../../services/store/shared/preferen
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
-import { LanguagesComponent } from './languages/languages.component';
+import { PreferencesComponent } from '../preferences/preferences.component';
+import { PreferenceChangedType } from '../../../models/common/preferences.type';
 
 @Component({
     selector: 'bl-side-nav',
@@ -20,7 +21,8 @@ import { LanguagesComponent } from './languages/languages.component';
 })
 export class SideNavComponent {
 
-    readonly isAuthenticated$: Observable<boolean> = this.authStoreService.isAuth$;
+    readonly isAuthenticated$: Observable<boolean> = this.authStoreService.isAuth$
+        .pipe(share());
     private readonly preferences$: Observable<Preferences> = this.preferencesStoreService.preferencesChanged$
         .pipe(take(1));
 
@@ -60,15 +62,27 @@ export class SideNavComponent {
             });
     }
 
-    async openPopover($event: Event): Promise<void> {
-        const popover = await this.popoverController.create({
-            component: LanguagesComponent,
-            event: $event,
-            componentProps: { preferences$: this.preferences$ },
-            side: 'left',
-            keyboardClose: true,
-        });
-        await popover.present();
+    openPreferencePopover(
+        $event: Event,
+        preferenceType: PreferenceChangedType,
+    ): void {
+        $event.stopPropagation();
+        this.preferences$
+            .pipe(
+                switchMap(preferences => from(this.popoverController.create({
+                        component: PreferencesComponent,
+                        event: $event,
+                        componentProps: {
+                            preferences,
+                            preferenceType,
+                        },
+                        side: 'left',
+                        keyboardClose: true,
+                    })),
+                ),
+                switchMap(popover => from(popover.present())),
+            )
+            .subscribe();
     }
 
 }

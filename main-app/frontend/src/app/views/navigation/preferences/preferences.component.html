@@ -1,0 +1,37 @@
+<ion-list>
+    <ng-container [ngSwitch]="preferenceType">
+        <ng-container *ngSwitchCase="'language'">
+            <ion-item
+                *ngFor="let language of languageData"
+                lines="none"
+                [disabled]="preferences.languageCode === language.LanguageCode"
+                (click)="changePreference(language.LanguageCode)">
+                <ion-img [src]="language.ImageUrl"></ion-img>
+                <ion-text class="txt">
+                    {{ language.LanguageName | translate }}
+                </ion-text>
+                <ion-icon
+                    *ngIf="preferences.languageCode === language.LanguageCode"
+                    name="checkmark-outline"
+                    class="checkmark"
+                    slot="end"></ion-icon>
+            </ion-item>
+        </ng-container>
+        <ng-container *ngSwitchCase="'weightFormat'">
+            <ion-item
+                *ngFor="let unit of unitData"
+                lines="none"
+                [disabled]="preferences.weightFormat === unit.WeightFormat"
+                (click)="changePreference(unit.WeightFormat)">
+                <ion-text class="txt">
+                    {{ unit.UnitName | translate }}
+                </ion-text>
+                <ion-icon
+                    *ngIf="preferences.weightFormat === unit.WeightFormat"
+                    name="checkmark-outline"
+                    class="checkmark"
+                    slot="end"></ion-icon>
+            </ion-item>
+        </ng-container>
+    </ng-container>
+</ion-list>

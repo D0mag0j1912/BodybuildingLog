@@ -53,7 +53,7 @@
     },
     "auth": {
         "pick_language": "Izaberite jezik",
-        "pick_weight_format": "Izaberite format težine",
+        "pick_weight_format": "Izaberite jedinicu težine",
         "email": "Email",
         "password": "Lozinka",
         "confirm_password": "Ponovno lozinka",
@@ -90,6 +90,7 @@
         "new_training": "Novi trening",
         "past_trainings": "Prošli treninzi",
         "language": "Jezik",
+        "unit": "Jedinica",
         "logout": "Odjava",
         "buttons": {
             "edit_go_back": "Idi nazad"
@@ -203,12 +204,18 @@
         "english": "Engleski",
         "croatian": "Hrvatski"
     },
+    "units": {
+        "kilograms": "Kilogrami",
+        "pounds": "Funte"
+    },
     "preferences": {
         "language_changed": "Jezik je uspješno promijenjen",
+        "weight_format_changed": "Jedinica težine je uspješno promijenjena",
         "errors": {
             "language_required": "Jezik je obvezan",
             "language_change": "Došlo je do greške pri promjeni jezika",
-            "weight_format_required": "Format težine je obvezan",
+            "weight_format_required": "Jedinica težine je obvezna",
+            "weight_format_change": "Došlo je do greške pri promjeni jedinice težine",
             "period_change": "Došlo je do greške pri promjeni perioda"
         }
     },

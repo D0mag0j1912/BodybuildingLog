@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { MenuController, PopoverController } from '@ionic/angular';
-import { Observable } from 'rxjs';
+import { PopoverController, MenuController } from '@ionic/angular';
 import { take, switchMap } from 'rxjs/operators';
-import { AuthResponseData } from '../../../../models/auth/auth-data.model';
-import { Preferences } from '../../../../models/common/preferences.model';
-import { LanguageCode } from '../../../../models/common/preferences.type';
-import { PreferencesService } from '../../../../services/shared/preferences.service';
-import { AuthStoreService } from '../../../../services/store/auth/auth-store.service';
-import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
+import { AuthResponseData } from '../../../models/auth/auth-data.model';
+import { Preferences } from '../../../models/common/preferences.model';
+import { LanguageCode, PreferenceChangedType, WeightFormat } from '../../../models/common/preferences.type';
+import { PreferencesService } from '../../../services/shared/preferences.service';
+import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
+import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 
 interface LanguageData {
     LanguageCode: LanguageCode;
@@ -15,16 +14,24 @@ interface LanguageData {
     LanguageName: string;
 }
 
+interface UnitData {
+    UnitName: string;
+    WeightFormat: WeightFormat;
+}
+
 @Component({
-    selector: 'bl-languages',
-    templateUrl: './languages.component.html',
-    styleUrls: ['./languages.component.scss'],
+    selector: 'bl-preferences',
+    templateUrl: './preferences.component.html',
+    styleUrls: ['./preferences.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LanguagesComponent {
+export class PreferencesComponent {
 
     @Input()
-    preferences$: Observable<Preferences>;
+    preferences: Preferences;
+
+    @Input()
+    preferenceType: PreferenceChangedType = 'language';
 
     readonly languageData: Readonly<LanguageData[]> = [
         {
@@ -39,15 +46,23 @@ export class LanguagesComponent {
         },
     ];
 
+    readonly unitData: UnitData[] = [{
+        UnitName: 'units.kilograms',
+        WeightFormat: 'kg',
+    }, {
+        UnitName: 'units.pounds',
+        WeightFormat: 'lbs',
+    }];
+
     constructor(
         private readonly preferencesStoreService: PreferencesStoreService,
         private readonly authStoreService: AuthStoreService,
-        private readonly navigationService: PreferencesService,
+        private readonly preferencesService: PreferencesService,
         private readonly popoverController: PopoverController,
         private readonly menuController: MenuController,
     ) { }
 
-    changeLanguage(language: LanguageCode): void {
+    changePreference(preference: LanguageCode | WeightFormat): void {
         const currentPreferences = this.preferencesStoreService.getPreferences();
         this.authStoreService.loggedUser$
             .pipe(
@@ -55,13 +70,13 @@ export class LanguagesComponent {
                 switchMap((userData: AuthResponseData) => {
                     const preferences: Preferences = {
                         userId: userData._id,
-                        languageCode: language,
-                        weightFormat: 'kg',
+                        languageCode: this.preferenceType === 'language' ? (preference as LanguageCode) : currentPreferences.languageCode,
+                        weightFormat: this.preferenceType === 'weightFormat' ? (preference as WeightFormat) : currentPreferences.weightFormat,
                         showByPeriod: currentPreferences.showByPeriod,
                     };
-                    return this.navigationService.setPreferences(
+                    return this.preferencesService.setPreferences(
                         preferences,
-                        'language',
+                        this.preferenceType,
                     );
                 }),
             )
