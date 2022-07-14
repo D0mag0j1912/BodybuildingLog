@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { MenuController, PopoverController } from '@ionic/angular';
 import { AuthResponseData } from '../../../../models/auth/auth-data.model';
@@ -23,7 +22,7 @@ interface UnitData {
 export class UnitsComponent {
 
     @Input()
-    preferences$: Observable<Preferences>;
+    preferences: Preferences;
 
     readonly unitData: UnitData[] = [{
         UnitName: 'units.kilograms',

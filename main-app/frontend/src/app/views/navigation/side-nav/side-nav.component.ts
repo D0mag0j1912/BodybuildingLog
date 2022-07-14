@@ -81,14 +81,19 @@ export class SideNavComponent {
 
     async openUnitPopover($event: Event): Promise<void> {
         $event.stopPropagation();
-        const popover = await this.popoverController.create({
-            component: UnitsComponent,
-            event: $event,
-            componentProps: { preferences: this.preferences$ },
-            side: 'left',
-            keyboardClose: true,
-        });
-        await popover.present();
+        this.preferences$
+            .pipe(
+                switchMap(preferences => from(this.popoverController.create({
+                        component: UnitsComponent,
+                        event: $event,
+                        componentProps: { preferences },
+                        side: 'left',
+                        keyboardClose: true,
+                    })),
+                ),
+                switchMap(popover => from(popover.present())),
+            )
+            .subscribe();
     }
 
 }

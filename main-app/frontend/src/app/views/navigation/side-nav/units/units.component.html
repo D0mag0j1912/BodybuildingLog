@@ -1,18 +1,16 @@
-<ng-container *ngIf="(preferences$ | async) as preferences">
-    <ion-list>
-        <ion-item
-            *ngFor="let unit of unitData"
-            lines="none"
-            [disabled]="preferences.weightFormat === unit.WeightFormat"
-            (click)="changeUnit(unit.WeightFormat)">
-            <ion-text class="unit-txt">
-                {{ unit.UnitName | translate }}
-            </ion-text>
-            <ion-icon
-                *ngIf="preferences.weightFormat === unit.WeightFormat"
-                name="checkmark-outline"
-                class="checkmark"
-                slot="end"></ion-icon>
-        </ion-item>
-    </ion-list>
-</ng-container>
+<ion-list>
+    <ion-item
+        *ngFor="let unit of unitData"
+        lines="none"
+        [disabled]="preferences.weightFormat === unit.WeightFormat"
+        (click)="changeUnit(unit.WeightFormat)">
+        <ion-text class="unit-txt">
+            {{ unit.UnitName | translate }}
+        </ion-text>
+        <ion-icon
+            *ngIf="preferences.weightFormat === unit.WeightFormat"
+            name="checkmark-outline"
+            class="checkmark"
+            slot="end"></ion-icon>
+    </ion-item>
+</ion-list>
