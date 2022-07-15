@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnI
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
-import { delay, takeUntil } from 'rxjs/operators';
+import { delay, map, take, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
@@ -157,11 +157,17 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     deleteSet(indexSet: number): void {
         this.form.removeAt(indexSet);
-        this.setDeleted.emit({
-            indexExercise: this.indexExercise as number,
-            indexSet: indexSet as number,
-            newTotal: this.calculateTotal(),
-        } as Partial<SetStateChanged>);
+        this.calculateTotal()
+            .pipe(
+                take(1),
+            )
+            .subscribe(newTotal => {
+                this.setDeleted.emit({
+                    indexExercise: this.indexExercise as number,
+                    indexSet: indexSet as number,
+                    newTotal,
+                } as Partial<SetStateChanged>);
+            });
     }
 
     onChangeSets(indexSet: number): void {
@@ -175,7 +181,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             isRepsValid = true;
         }
         if (isWeightLiftedValid && isRepsValid) {
-            total = this.calculateTotal();
+            this.calculateTotal()
+                .pipe(
+                    take(1),
+                )
+                .subscribe(newTotal => total = newTotal);
         }
         this.setAdded.emit({
             indexExercise: this.indexExercise,
@@ -198,12 +208,21 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         return this.form.at(indexSet)?.get(formField);
     }
 
-    private calculateTotal(): number {
-        let total = 0;
-        for (const group of this.getSets()) {
-            total += (+group.get('weightLifted')?.value * +group.get('reps')?.value);
-        }
-        return total;
+    private calculateTotal(): Observable<number> {
+        return this.currentPreferences$
+            .pipe(
+                take(1),
+                map(preferences => preferences.weightFormat),
+                map(weightFormat => {
+                    let total = 0;
+                    if (weightFormat === 'kg') {
+                        for (const group of this.getSets()) {
+                            total += (+group.get('weightLifted')?.value * +group.get('reps')?.value);
+                        }
+                    }
+                    return total;
+                }),
+            );
     }
 
 }
