@@ -5,7 +5,7 @@ import { EMPTY } from 'rxjs';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
-import { LanguageCode, WeightFormat } from '../../../models/common/preferences.type';
+import { LanguageCode, WeightUnit } from '../../../models/common/preferences.type';
 import { AuthService } from '../../../services/api/auth/auth.service';
 import { SignupService } from '../../../services/api/auth/signup.service';
 import { LoadingControllerService } from '../../../services/shared/loading-controller.service';
@@ -16,7 +16,7 @@ import { IonFocusDurations } from '../../../constants/shared/ion-focus-durations
 
 type FormData = {
     language?: LanguageCode;
-    weightFormat?: WeightFormat;
+    weightFormat?: WeightUnit;
     email?: string;
     password?: string;
     confirmPassword?: string;
@@ -77,7 +77,7 @@ export class SignupComponent {
 
         this.authService.signup(
             this.accessFormData('language').value as LanguageCode,
-            this.accessFormData('weightFormat').value as WeightFormat,
+            this.accessFormData('weightFormat').value as WeightUnit,
             this.accessFormData('email').value,
             this.accessFormData('password').value,
             this.accessFormData('confirmPassword').value,

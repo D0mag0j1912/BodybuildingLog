@@ -157,17 +157,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     deleteSet(indexSet: number): void {
         this.form.removeAt(indexSet);
-        this.calculateTotal()
-            .pipe(
-                take(1),
-            )
-            .subscribe(newTotal => {
-                this.setDeleted.emit({
-                    indexExercise: this.indexExercise as number,
-                    indexSet: indexSet as number,
-                    newTotal,
-                } as Partial<SetStateChanged>);
-            });
+        this.setDeleted.emit({
+            indexExercise: this.indexExercise as number,
+            indexSet: indexSet as number,
+            newTotal: this.calculateTotal(),
+        } as Partial<SetStateChanged>);
     }
 
     onChangeSets(indexSet: number): void {
@@ -181,11 +175,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             isRepsValid = true;
         }
         if (isWeightLiftedValid && isRepsValid) {
-            this.calculateTotal()
-                .pipe(
-                    take(1),
-                )
-                .subscribe(newTotal => total = newTotal);
+            total = this.calculateTotal();
         }
         this.setAdded.emit({
             indexExercise: this.indexExercise,
@@ -208,21 +198,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         return this.form.at(indexSet)?.get(formField);
     }
 
-    private calculateTotal(): Observable<number> {
-        return this.currentPreferences$
-            .pipe(
-                take(1),
-                map(preferences => preferences.weightFormat),
-                map(weightFormat => {
-                    let total = 0;
-                    if (weightFormat === 'kg') {
-                        for (const group of this.getSets()) {
-                            total += (+group.get('weightLifted')?.value * +group.get('reps')?.value);
-                        }
-                    }
-                    return total;
-                }),
-            );
+    private calculateTotal(): number {
+        let total = 0;
+        for (const group of this.getSets()) {
+            total += (+group.get('weightLifted')?.value * +group.get('reps')?.value);
+        }
+        return total;
     }
 
 }

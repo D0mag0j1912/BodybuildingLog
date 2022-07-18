@@ -1,3 +1,3 @@
-import { WeightFormat } from '../../models/common/preferences.type';
+import { WeightUnit } from '../../models/common/preferences.type';
 
-export const DEFAULT_WEIGHT_FORMAT: WeightFormat = 'kg';
+export const DEFAULT_WEIGHT_UNIT: WeightUnit = 'kg';

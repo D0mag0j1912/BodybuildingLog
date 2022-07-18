@@ -8,7 +8,7 @@ import { delay, finalize, map, startWith, switchMap, take, takeUntil } from 'rxj
 import { MESSAGE_DURATION } from '../../../../constants/shared/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { GeneralResponseData } from '../../../../models/common/general-response.model';
-import { DEFAULT_WEIGHT_FORMAT } from '../../../../constants/shared/default-weight-format.const';
+import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { EditNewTrainingData } from '../../../../models/training/new-training/edit-training.model';
 import { Training } from '../../../../models/training/new-training/training.model';
@@ -27,6 +27,8 @@ import { TrainingStoreService } from '../../../../services/store/training/traini
 import { EMPTY_TRAINING_EDIT, TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-training.const';
 import { createInitialSet } from '../../../../constants/shared/create-initial-set.const';
 import { SetsComponent } from '../sets/sets.component';
+import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
+import { WeightUnit } from '../../../../models/common/preferences.type';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -119,9 +121,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         private readonly trainingStoreService: TrainingStoreService,
         private readonly trainingService: TrainingService,
         private readonly unsubscribeService: UnsubscribeService,
+        private readonly preferencesStoreService: PreferencesStoreService,
         private readonly translateService: TranslateService,
-        private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly toastControllerService: ToastControllerService,
+        private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly modalController: ModalController,
         private readonly roundTotalWeightPipe: RoundTotalWeightPipe,
     ) {
@@ -141,6 +144,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             });
     }
 
+    get currentWeightUnit(): WeightUnit {
+        return this.preferencesStoreService.getPreferences().weightFormat ?? DEFAULT_WEIGHT_UNIT;
+    }
+
     writeValue(exercises: SingleExercise[]): void {
         if (exercises && exercises?.length > 0) {
             while (this.form.length !== 0) {
@@ -154,7 +161,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     this.accessFormGroup('exerciseData', 'primaryMuscleGroup', indexExercise).patchValue(exercise.exerciseData.primaryMuscleGroup);
                     this.accessFormGroup('exerciseData', 'translations', indexExercise).patchValue(exercise.exerciseData.translations);
                     this.accessFormField('sets', indexExercise).patchValue(exercise.sets);
-                    this.accessFormField('total', indexExercise).patchValue(exercise?.total ? this.roundTotalWeightPipe.transform(exercise.total) : `0 ${DEFAULT_WEIGHT_FORMAT}`);
+                    this.accessFormField('total', indexExercise).patchValue(exercise?.total ? this.roundTotalWeightPipe.transform(exercise.total, this.currentWeightUnit) : `0 ${DEFAULT_WEIGHT_UNIT}`);
                 }
             });
         }
@@ -211,7 +218,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 translations: new FormControl(null),
             }),
             sets: new FormControl(createInitialSet()),
-            total: new FormControl(this.roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT), [Validators.required]),
+            total: new FormControl(this.roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT, this.currentWeightUnit), [Validators.required]),
         }));
 
         if (event) {
@@ -316,11 +323,11 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     }
                 }),
                 takeUntil(this.unsubscribeService),
-            ).subscribe(_ => this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform(isExerciseValid ? $event.newTotal : 0)));
+            ).subscribe(_ => this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform(isExerciseValid ? $event.newTotal : 0, this.currentWeightUnit)));
     }
 
     deleteSet($event: Partial<SetStateChanged>): void {
-        this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform($event.newTotal));
+        this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform($event.newTotal, this.currentWeightUnit));
         this.trainingStoreService.deleteSet(
             $event.indexExercise,
             $event.indexSet,
