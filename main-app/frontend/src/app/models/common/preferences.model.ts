@@ -4,6 +4,6 @@ import { LanguageCode, WeightUnit } from './preferences.type';
 export interface Preferences {
     userId?: string;
     languageCode?: LanguageCode;
-    weightFormat?: WeightUnit;
+    weightUnit?: WeightUnit;
     showByPeriod?: PeriodFilterType;
 }

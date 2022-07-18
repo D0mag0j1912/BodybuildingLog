@@ -21,7 +21,7 @@ export class AuthService {
 
     signup(
         language: LanguageCode,
-        weightFormat: WeightUnit,
+        weightUnit: WeightUnit,
         email: string,
         password: string,
         confirmPassword: string,
@@ -33,7 +33,7 @@ export class AuthService {
         };
         const preferences: Partial<Preferences> = {
             languageCode: language,
-            weightFormat: weightFormat,
+            weightUnit: weightUnit,
         };
         return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/signup', {
             signupData: signupData,

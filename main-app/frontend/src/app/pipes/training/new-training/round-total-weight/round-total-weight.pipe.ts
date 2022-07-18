@@ -6,9 +6,9 @@ export class RoundTotalWeightPipe implements PipeTransform {
 
     transform(
         totalWeight: number,
-        currentWeightFormat: WeightUnit,
+        currentWeightUnit: WeightUnit,
     ): string {
-        return totalWeight ? `${(Math.round(totalWeight * 100) / 100).toString()} ${currentWeightFormat}` : `0 ${currentWeightFormat}`;
+        return totalWeight ? `${(Math.round(totalWeight * 100) / 100).toString()} ${currentWeightUnit}` : `0 ${currentWeightUnit}`;
     }
 
 }

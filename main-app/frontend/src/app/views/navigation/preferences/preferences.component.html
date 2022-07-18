@@ -17,17 +17,17 @@
                     slot="end"></ion-icon>
             </ion-item>
         </ng-container>
-        <ng-container *ngSwitchCase="'weightFormat'">
+        <ng-container *ngSwitchCase="'weightUnit'">
             <ion-item
                 *ngFor="let unit of unitData"
                 lines="none"
-                [disabled]="preferences.weightFormat === unit.WeightFormat"
-                (click)="changePreference(unit.WeightFormat)">
+                [disabled]="preferences.weightUnit === unit.WeightUnit"
+                (click)="changePreference(unit.WeightUnit)">
                 <ion-text class="txt">
                     {{ unit.UnitName | translate }}
                 </ion-text>
                 <ion-icon
-                    *ngIf="preferences.weightFormat === unit.WeightFormat"
+                    *ngIf="preferences.weightUnit === unit.WeightUnit"
                     name="checkmark-outline"
                     class="checkmark"
                     slot="end"></ion-icon>

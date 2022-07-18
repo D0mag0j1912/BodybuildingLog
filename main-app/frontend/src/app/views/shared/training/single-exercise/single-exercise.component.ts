@@ -145,7 +145,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     get currentWeightUnit(): WeightUnit {
-        return this.preferencesStoreService.getPreferences().weightFormat ?? DEFAULT_WEIGHT_UNIT;
+        return this.preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
     }
 
     writeValue(exercises: SingleExercise[]): void {

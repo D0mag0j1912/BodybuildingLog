@@ -25,12 +25,12 @@ export class PreferencesService {
         try {
             const {
                 languageCode: language,
-                weightFormat: weightFormat,
+                weightUnit: weightUnit,
                 showByPeriod: showByPeriod,
             } = preferencesDto;
             const preferences = await this.preferencesModel.findOne({ userId: userId }).exec();
             preferences.languageCode = language;
-            preferences.weightFormat = weightFormat;
+            preferences.weightUnit = weightUnit;
             preferences.showByPeriod = showByPeriod;
             await preferences.save();
             switch (preferenceChanged) {
@@ -40,7 +40,7 @@ export class PreferencesService {
                 case 'showByPeriod': {
                     return { Message: '' } as GeneralResponseData;
                 }
-                case 'weightFormat': {
+                case 'weightUnit': {
                     return { Message: 'preferences.weight_format_changed' } as GeneralResponseData;
                 }
             }
@@ -53,7 +53,7 @@ export class PreferencesService {
                 case 'showByPeriod': {
                     throw new InternalServerErrorException('preferences.errors.period_change');
                 }
-                case 'weightFormat': {
+                case 'weightUnit': {
                     throw new InternalServerErrorException('preferences.errors.weight_format_change');
                 }
             }

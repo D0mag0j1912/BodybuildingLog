@@ -16,7 +16,7 @@ interface LanguageData {
 
 interface UnitData {
     UnitName: string;
-    WeightFormat: WeightUnit;
+    WeightUnit: WeightUnit;
 }
 
 @Component({
@@ -48,10 +48,10 @@ export class PreferencesComponent {
 
     readonly unitData: UnitData[] = [{
         UnitName: 'units.kilograms',
-        WeightFormat: 'kg',
+        WeightUnit: 'kg',
     }, {
         UnitName: 'units.pounds',
-        WeightFormat: 'lbs',
+        WeightUnit: 'lbs',
     }];
 
     constructor(
@@ -71,7 +71,7 @@ export class PreferencesComponent {
                     const preferences: Preferences = {
                         userId: userData._id,
                         languageCode: this.preferenceType === 'language' ? (preference as LanguageCode) : currentPreferences.languageCode,
-                        weightFormat: this.preferenceType === 'weightFormat' ? (preference as WeightUnit) : currentPreferences.weightFormat,
+                        weightUnit: this.preferenceType === 'weightUnit' ? (preference as WeightUnit) : currentPreferences.weightUnit,
                         showByPeriod: currentPreferences.showByPeriod,
                     };
                     return this.preferencesService.setPreferences(

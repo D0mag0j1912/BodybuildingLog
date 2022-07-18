@@ -13,10 +13,11 @@ import { ToastControllerService } from '../../../services/shared/toast-controlle
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
 import { IonFocusDurations } from '../../../constants/shared/ion-focus-durations.const';
+import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-format.const';
 
 type FormData = {
     language?: LanguageCode;
-    weightFormat?: WeightUnit;
+    weightUnit?: WeightUnit;
     email?: string;
     password?: string;
     confirmPassword?: string;
@@ -46,7 +47,7 @@ export class SignupComponent {
     ) {
         this.form = new FormGroup({
             language: new FormControl('en', [Validators.required]),
-            weightFormat: new FormControl('kg', [Validators.required]),
+            weightUnit: new FormControl(DEFAULT_WEIGHT_UNIT, [Validators.required]),
             email: new FormControl(null, {
                 validators: [Validators.required, Validators.email],
                 asyncValidators: [AuthCustomValidators.isEmailAvailable(this.signupService, this.changeDetectorRef)],
@@ -77,7 +78,7 @@ export class SignupComponent {
 
         this.authService.signup(
             this.accessFormData('language').value as LanguageCode,
-            this.accessFormData('weightFormat').value as WeightUnit,
+            this.accessFormData('weightUnit').value as WeightUnit,
             this.accessFormData('email').value,
             this.accessFormData('password').value,
             this.accessFormData('confirmPassword').value,

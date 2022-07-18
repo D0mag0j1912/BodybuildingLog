@@ -31,7 +31,7 @@ export class PreferencesService {
     ): Observable<GeneralResponseData> {
         const apiPreferences: Partial<Preferences> = {
             languageCode: preferences.languageCode,
-            weightFormat: preferences.weightFormat,
+            weightUnit: preferences.weightUnit,
             showByPeriod: preferences.showByPeriod,
         };
         return this.http.put<GeneralResponseData>(environment.BACKEND + `/preferences/${preferences.userId}`, {

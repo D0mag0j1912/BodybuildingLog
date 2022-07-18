@@ -14,7 +14,7 @@ export const PREFERENCES_SCHEMA = new Schema({
         type: String,
         required: true,
     },
-    weightFormat: {
+    weightUnit: {
         type: String,
         required: true,
     },
@@ -31,7 +31,7 @@ export class PreferencesDto {
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.weight_format_required' })
-    weightFormat: WeightUnit;
+    weightUnit: WeightUnit;
 
     @ApiProperty({ required: false })
     @IsOptional()
