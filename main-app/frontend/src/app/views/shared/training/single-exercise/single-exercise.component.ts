@@ -299,14 +299,12 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     onChangeSets($event: SetStateChanged): void {
-        let isExerciseValid = false;
         of(null)
             .pipe(
                 switchMap(_ => {
                     if ($event?.isWeightLiftedValid &&
                         $event?.isRepsValid &&
                         this.accessFormGroup('exerciseData', 'name', $event.indexExercise).value) {
-                            isExerciseValid = true;
                             const trainingData: SetTrainingData = {
                                 exerciseName: this.accessFormGroup('exerciseData', 'name', $event.indexExercise).value as string,
                                 setNumber: $event.newSet.setNumber,
@@ -317,13 +315,12 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                             return this.trainingStoreService.setsChanged(trainingData);
                     }
                     else {
-                        isExerciseValid = false;
                         this._invalidSetChanged$$.next();
                         return of(null);
                     }
                 }),
                 takeUntil(this.unsubscribeService),
-            ).subscribe(_ => this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform(isExerciseValid ? $event.newTotal : 0, this.currentWeightUnit)));
+            ).subscribe(_ => this.accessFormField('total', $event.indexExercise).patchValue(this.roundTotalWeightPipe.transform($event.newTotal, this.currentWeightUnit)));
     }
 
     deleteSet($event: Partial<SetStateChanged>): void {

@@ -174,9 +174,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         if (this.accessFormField('reps', indexSet)?.valid && this.accessFormField('reps', indexSet)?.value) {
             isRepsValid = true;
         }
-        if (isWeightLiftedValid && isRepsValid) {
-            total = this.calculateTotal();
-        }
+        total = this.calculateTotal();
         this.setAdded.emit({
             indexExercise: this.indexExercise,
             indexSet: indexSet,
