@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { roundToDecimalPlaces } from '../../../../helpers/round-to-decimal-places.helper';
 import { WeightUnit } from '../../../../models/common/preferences.type';
 
 @Pipe({ name: 'roundTotalWeight' })
@@ -8,7 +9,7 @@ export class RoundTotalWeightPipe implements PipeTransform {
         totalWeight: number,
         currentWeightUnit: WeightUnit,
     ): string {
-        return totalWeight ? `${(Math.round(totalWeight * 100) / 100).toString()} ${currentWeightUnit}` : `0 ${currentWeightUnit}`;
+        return totalWeight ? `${roundToDecimalPlaces(2, totalWeight)} ${currentWeightUnit}` : `0 ${currentWeightUnit}`;
     }
 
 }
