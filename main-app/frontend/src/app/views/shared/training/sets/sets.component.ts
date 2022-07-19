@@ -185,10 +185,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     onChangeSets(indexSet: number): void {
         let isWeightLiftedValid = false;
         let isRepsValid = false;
-        if (this.accessFormField('weightLifted', indexSet)?.valid && this.accessFormField('weightLifted', indexSet)?.value) {
+        const weightLiftedCtrl = this.accessFormField('weightLifted', indexSet);
+        const repsCtrl = this.accessFormField('reps', indexSet);
+        const setNumberCtrl = this.accessFormField('setNumber', indexSet);
+        if (weightLiftedCtrl.valid && weightLiftedCtrl?.value) {
             isWeightLiftedValid = true;
         }
-        if (this.accessFormField('reps', indexSet)?.valid && this.accessFormField('reps', indexSet)?.value) {
+        if (repsCtrl.valid && repsCtrl?.value) {
             isRepsValid = true;
         }
         this.setAdded.emit({
@@ -198,9 +201,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             isRepsValid: isRepsValid,
             newTotal: this.calculateTotal(),
             newSet: {
-                setNumber: +this.accessFormField('setNumber', indexSet).value,
-                weightLifted: +this.accessFormField('weightLifted', indexSet).value,
-                reps: +this.accessFormField('reps', indexSet).value,
+                setNumber: +setNumberCtrl.value,
+                weightLifted: +weightLiftedCtrl.value,
+                reps: +repsCtrl.value,
             } as Set,
         } as SetStateChanged);
     }
