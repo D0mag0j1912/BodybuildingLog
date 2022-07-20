@@ -5,7 +5,7 @@ import { EMPTY } from 'rxjs';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
-import { LanguageCode, WeightFormat } from '../../../models/common/preferences.type';
+import { LanguageCode, WeightUnit } from '../../../models/common/preferences.type';
 import { AuthService } from '../../../services/api/auth/auth.service';
 import { SignupService } from '../../../services/api/auth/signup.service';
 import { LoadingControllerService } from '../../../services/shared/loading-controller.service';
@@ -13,10 +13,11 @@ import { ToastControllerService } from '../../../services/shared/toast-controlle
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
 import { IonFocusDurations } from '../../../constants/shared/ion-focus-durations.const';
+import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-format.const';
 
 type FormData = {
     language?: LanguageCode;
-    weightFormat?: WeightFormat;
+    weightUnit?: WeightUnit;
     email?: string;
     password?: string;
     confirmPassword?: string;
@@ -46,7 +47,7 @@ export class SignupComponent {
     ) {
         this.form = new FormGroup({
             language: new FormControl('en', [Validators.required]),
-            weightFormat: new FormControl('kg', [Validators.required]),
+            weightUnit: new FormControl(DEFAULT_WEIGHT_UNIT, [Validators.required]),
             email: new FormControl(null, {
                 validators: [Validators.required, Validators.email],
                 asyncValidators: [AuthCustomValidators.isEmailAvailable(this.signupService, this.changeDetectorRef)],
@@ -77,7 +78,7 @@ export class SignupComponent {
 
         this.authService.signup(
             this.accessFormData('language').value as LanguageCode,
-            this.accessFormData('weightFormat').value as WeightFormat,
+            this.accessFormData('weightUnit').value as WeightUnit,
             this.accessFormData('email').value,
             this.accessFormData('password').value,
             this.accessFormData('confirmPassword').value,

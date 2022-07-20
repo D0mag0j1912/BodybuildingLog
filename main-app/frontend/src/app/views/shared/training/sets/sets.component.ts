@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnI
 import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
-import { delay, takeUntil } from 'rxjs/operators';
+import { delay, filter, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
@@ -12,6 +12,9 @@ import { UnsubscribeService } from '../../../../services/shared/unsubscribe.serv
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import * as CommonValidators from '../../../../validators/shared/common.validators';
 import * as SetValidators from '../../../../validators/training/set.validators';
+import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
+import { WeightUnit } from '../../../../models/common/preferences.type';
+import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
 
 @Component({
     selector: 'bl-sets',
@@ -28,6 +31,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     readonly currentPreferences$: Observable<Preferences> = this.preferencesStoreService.preferencesChanged$;
 
     readonly form: FormArray = new FormArray([]);
+    currentWeightUnit: WeightUnit;
 
     onTouched: () => void;
 
@@ -64,6 +68,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     ) { }
 
     ngOnInit(): void {
+        this.currentWeightUnit = this.preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
         this.form.setValidators([SetValidators.allSetsFilled()]);
         this.form.updateValueAndValidity();
 
@@ -85,6 +90,19 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                 if (this.weightLiftedEl?.first) {
                     await this.weightLiftedEl.first.setFocus();
                 }
+            });
+
+        this.currentPreferences$
+            .pipe(
+                filter(preferences => this.currentWeightUnit !== preferences.weightUnit),
+                takeUntil(this.unsubscribeService),
+            )
+            .subscribe(preferences => {
+                this.currentWeightUnit = preferences.weightUnit;
+                this.getSets().forEach((_control, index) => {
+                    const currentWeightLiftedValue = +this.accessFormField('weightLifted', index).value;
+                    this.accessFormField('weightLifted', index).patchValue(convertWeightUnit(preferences.weightUnit, currentWeightLiftedValue));
+                });
             });
     }
 
@@ -165,28 +183,27 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     }
 
     onChangeSets(indexSet: number): void {
-        let total = 0;
         let isWeightLiftedValid = false;
         let isRepsValid = false;
-        if (this.accessFormField('weightLifted', indexSet)?.valid && this.accessFormField('weightLifted', indexSet)?.value) {
+        const weightLiftedCtrl = this.accessFormField('weightLifted', indexSet);
+        const repsCtrl = this.accessFormField('reps', indexSet);
+        const setNumberCtrl = this.accessFormField('setNumber', indexSet);
+        if (weightLiftedCtrl.valid && weightLiftedCtrl?.value) {
             isWeightLiftedValid = true;
         }
-        if (this.accessFormField('reps', indexSet)?.valid && this.accessFormField('reps', indexSet)?.value) {
+        if (repsCtrl.valid && repsCtrl?.value) {
             isRepsValid = true;
-        }
-        if (isWeightLiftedValid && isRepsValid) {
-            total = this.calculateTotal();
         }
         this.setAdded.emit({
             indexExercise: this.indexExercise,
             indexSet: indexSet,
             isWeightLiftedValid: isWeightLiftedValid,
             isRepsValid: isRepsValid,
-            newTotal: total,
+            newTotal: this.calculateTotal(),
             newSet: {
-                setNumber: +this.accessFormField('setNumber', indexSet).value,
-                weightLifted: +this.accessFormField('weightLifted', indexSet).value,
-                reps: +this.accessFormField('reps', indexSet).value,
+                setNumber: +setNumberCtrl.value,
+                weightLifted: +weightLiftedCtrl.value,
+                reps: +repsCtrl.value,
             } as Set,
         } as SetStateChanged);
     }

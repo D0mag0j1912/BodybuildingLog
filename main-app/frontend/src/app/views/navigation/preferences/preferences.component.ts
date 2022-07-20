@@ -3,7 +3,7 @@ import { PopoverController, MenuController } from '@ionic/angular';
 import { take, switchMap } from 'rxjs/operators';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { Preferences } from '../../../models/common/preferences.model';
-import { LanguageCode, PreferenceChangedType, WeightFormat } from '../../../models/common/preferences.type';
+import { LanguageCode, PreferenceChangedType, WeightUnit } from '../../../models/common/preferences.type';
 import { PreferencesService } from '../../../services/shared/preferences.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
@@ -16,7 +16,7 @@ interface LanguageData {
 
 interface UnitData {
     UnitName: string;
-    WeightFormat: WeightFormat;
+    WeightUnit: WeightUnit;
 }
 
 @Component({
@@ -48,10 +48,10 @@ export class PreferencesComponent {
 
     readonly unitData: UnitData[] = [{
         UnitName: 'units.kilograms',
-        WeightFormat: 'kg',
+        WeightUnit: 'kg',
     }, {
         UnitName: 'units.pounds',
-        WeightFormat: 'lbs',
+        WeightUnit: 'lbs',
     }];
 
     constructor(
@@ -62,7 +62,7 @@ export class PreferencesComponent {
         private readonly menuController: MenuController,
     ) { }
 
-    changePreference(preference: LanguageCode | WeightFormat): void {
+    changePreference(preference: LanguageCode | WeightUnit): void {
         const currentPreferences = this.preferencesStoreService.getPreferences();
         this.authStoreService.loggedUser$
             .pipe(
@@ -71,7 +71,7 @@ export class PreferencesComponent {
                     const preferences: Preferences = {
                         userId: userData._id,
                         languageCode: this.preferenceType === 'language' ? (preference as LanguageCode) : currentPreferences.languageCode,
-                        weightFormat: this.preferenceType === 'weightFormat' ? (preference as WeightFormat) : currentPreferences.weightFormat,
+                        weightUnit: this.preferenceType === 'weightUnit' ? (preference as WeightUnit) : currentPreferences.weightUnit,
                         showByPeriod: currentPreferences.showByPeriod,
                     };
                     return this.preferencesService.setPreferences(

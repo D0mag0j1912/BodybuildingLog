@@ -61,7 +61,7 @@
                                         </ion-note>
                                     </ion-col>
                                 </ion-row>
-                                <ion-radio-group formControlName="weightFormat">
+                                <ion-radio-group formControlName="weightUnit">
                                     <ion-row>
                                         <ion-col>
                                             <ion-item lines="none">
@@ -85,7 +85,7 @@
                                         </ion-col>
                                     </ion-row>
                                     <ion-note
-                                        *ngIf="accessFormData('weightFormat').errors?.required"
+                                        *ngIf="accessFormData('weightUnit').errors?.required"
                                         class="error">
                                         {{ 'preferences.errors.weight_format_required' | translate }}
                                     </ion-note>
