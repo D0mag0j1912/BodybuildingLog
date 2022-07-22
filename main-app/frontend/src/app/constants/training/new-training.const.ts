@@ -2,6 +2,7 @@ import { Exercise } from '../../models/training/exercise.model';
 import { EditNewTrainingData } from '../../models/training/new-training/edit-training.model';
 import { Training } from '../../models/training/new-training/training.model';
 import { SingleExercise } from '../../models/training/shared/single-exercise.model';
+import { DEFAULT_WEIGHT_UNIT } from '../shared/default-weight-format.const';
 
 export const EMPTY_TRAINING_EDIT: EditNewTrainingData = {
     editedDate: null,
@@ -14,6 +15,7 @@ export const EMPTY_TRAINING: Training = {
     bodyweight: null,
     editMode: false,
     userId: null,
+    weightUnit: DEFAULT_WEIGHT_UNIT,
 };
 
 export const createEmptyExercise = (exercises: Exercise[]): SingleExercise =>

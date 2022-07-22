@@ -139,11 +139,12 @@ export class NewTrainingComponent implements OnDestroy {
                                     const currentTrainingState: Training = { ...trainingState };
                                     if (currentTrainingState) {
                                         if (currentTrainingState.editMode && !this.editMode) {
-                                            return this.trainingStoreService.updateTrainingState({
+                                            const newTrainingState = {
                                                 ...EMPTY_TRAINING,
                                                 exercises: [createEmptyExercise(allExercisesChanged.Value)],
                                                 userId: currentTrainingState?.userId ?? '',
-                                            });
+                                            };
+                                            return this.trainingStoreService.updateTrainingState(newTrainingState);
                                         }
                                         return of(null);
                                     }

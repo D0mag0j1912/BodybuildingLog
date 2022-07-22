@@ -424,6 +424,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                         trainingDate: new Date(this.trainingDate.value) ?? new Date(),
                         editMode: this.editMode,
                         userId: currentTrainingState.userId,
+                        weightUnit: currentTrainingState.weightUnit,
                     } as Training;
                 }),
             );
