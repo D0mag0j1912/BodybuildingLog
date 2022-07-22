@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeService } from './services/shared/unsubscribe.service';
 import { SharedStoreService } from './services/store/shared/shared-store.service';
-import { TrainingStoreService } from './services/store/training/training-store.service';
+import { NewTrainingStoreService } from './services/store/training/new-training-store.service';
 
 @Component({
     selector: 'bl-root',
@@ -14,13 +14,13 @@ import { TrainingStoreService } from './services/store/training/training-store.s
 export class AppComponent implements OnInit {
 
     constructor(
-        private readonly trainingStoreService: TrainingStoreService,
+        private readonly newTrainingStoreService: NewTrainingStoreService,
         private readonly sharedStoreService: SharedStoreService,
         private readonly translateService: TranslateService,
     ) { }
 
     ngOnInit(): void {
-        this.trainingStoreService.keepTrainingState()
+        this.newTrainingStoreService.keepTrainingState()
             .subscribe();
         this.sharedStoreService.keepQueryParams()
             .subscribe();

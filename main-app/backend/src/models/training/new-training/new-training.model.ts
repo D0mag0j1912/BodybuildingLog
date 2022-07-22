@@ -41,7 +41,7 @@ export const NEW_TRAINING_SCHEMA = new Schema({
     },
 });
 
-export class Training {
+export class NewTraining {
 
     @ApiProperty({ required: false })
     @IsOptional()

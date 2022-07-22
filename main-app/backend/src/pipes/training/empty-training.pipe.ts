@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
-import { Training } from '../../models/training/new-training/training.model';
+import { NewTraining } from '../../models/training/new-training/new-training.model';
 
 @Injectable()
 export class EmptyTrainingPipe implements PipeTransform {
 
-    transform(training: Training): Training {
+    transform(training: NewTraining): NewTraining {
         const numberOfExercises = training?.exercises?.length;
         if (numberOfExercises && numberOfExercises > 0) {
             return training;

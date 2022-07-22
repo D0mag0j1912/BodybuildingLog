@@ -1,6 +1,6 @@
-import { Training } from './training.model';
+import { NewTraining } from './new-training.model';
 
 export type EditNewTrainingData = {
     editedDate?: string | Date;
-    editTraining?: Training;
+    editTraining?: NewTraining;
 };

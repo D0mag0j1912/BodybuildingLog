@@ -1,7 +1,7 @@
-import { Training } from '../new-training/training.model';
+import { NewTraining } from '../new-training/new-training.model';
 
 export interface PastTrainings {
-    readonly Trainings: Training[];
+    readonly Trainings: NewTraining[];
     readonly Dates: DateInterval;
     readonly IsPreviousWeek?: boolean;
     readonly IsNextWeek?: boolean;

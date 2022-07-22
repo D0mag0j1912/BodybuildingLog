@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { take } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { StorageItems } from '../../../../constants/enums/storage-items.enum';
-import { Training } from '../../../../models/training/new-training/training.model';
+import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
 import { SharedStoreService } from '../../../../services/store/shared/shared-store.service';
@@ -36,7 +36,7 @@ export class TrainingItemComponent implements OnInit {
     dayIndex: number;
 
     @Input()
-    training: Training;
+    training: NewTraining;
 
     constructor(
         private readonly sharedStoreService: SharedStoreService,
