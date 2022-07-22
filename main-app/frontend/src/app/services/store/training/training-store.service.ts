@@ -9,6 +9,8 @@ import { Training } from '../../../models/training/new-training/training.model';
 import { SetTrainingData, Set } from '../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
+import { PreferencesStoreService } from '../shared/preferences-store.service';
+import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-format.const';
 
 @Injectable({ providedIn: 'root' })
 export class TrainingStoreService {
@@ -18,6 +20,10 @@ export class TrainingStoreService {
 
     private readonly _currentTrainingChanged$$: BehaviorSubject<Training> = new BehaviorSubject<Training>(EMPTY_TRAINING);
     readonly currentTrainingChanged$: Observable<Training> = this._currentTrainingChanged$$.asObservable();
+
+    constructor(
+        private readonly preferencesStoreService: PreferencesStoreService,
+    ) { }
 
     emitAllExercises(exercises: StreamData<Exercise[]>): void {
         this._allExercisesChanged$$.next(exercises);
@@ -178,9 +184,11 @@ export class TrainingStoreService {
         if (exercises) {
             updatedTraining = this._currentTrainingChanged$$.getValue();
             if (restartAll) {
+                const weightUnit = this.preferencesStoreService.getPreferences()?.weightUnit ?? DEFAULT_WEIGHT_UNIT;
                 updatedTraining = {
                     ...EMPTY_TRAINING,
-                    userId: userId,
+                    userId,
+                    weightUnit,
                 };
             }
             updatedTraining.exercises.push(createEmptyExercise(exercises));
