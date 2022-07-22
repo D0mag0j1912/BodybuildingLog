@@ -101,7 +101,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                 this.currentWeightUnit = preferences.weightUnit;
                 this.getSets().forEach((_control, index) => {
                     const currentWeightLiftedValue = +this.accessFormField('weightLifted', index).value;
-                    this.accessFormField('weightLifted', index).patchValue(convertWeightUnit(preferences.weightUnit, currentWeightLiftedValue));
+                    if (currentWeightLiftedValue) {
+                        this.accessFormField('weightLifted', index).patchValue(convertWeightUnit(preferences.weightUnit, currentWeightLiftedValue));
+                    }
                 });
             });
     }
