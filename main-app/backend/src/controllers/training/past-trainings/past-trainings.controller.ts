@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
-import { Training } from '../../../models/training/new-training/training.model';
+import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 import { GET_USER } from '../../../decorators/get-user.decorator';
@@ -37,10 +37,10 @@ export class PastTrainingsController {
         );
     }
 
-    @ApiCreatedResponse({ type: Training })
+    @ApiCreatedResponse({ type: NewTraining })
     @Get(':id')
     @UseGuards(new TrainingGuard('training.past_trainings.errors.get_training_error'))
-    async getPastTraining(@Param('id') trainingId: string): Promise<StreamData<Training>> {
+    async getPastTraining(@Param('id') trainingId: string): Promise<StreamData<NewTraining>> {
         return this.pastTrainingsService.getPastTraining(trainingId as string);
     }
 }

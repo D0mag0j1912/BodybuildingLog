@@ -2,14 +2,14 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { Exercise } from '../../../models/training/exercise.model';
-import { Training } from '../../../models/training/new-training/training.model';
-import { TrainingStoreService } from '../../../services/store/training/training-store.service';
+import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
 
 @Pipe({ name: 'newTraining' })
 export class NewTrainingPipe implements PipeTransform {
 
     constructor(
-        private readonly trainingStoreService: TrainingStoreService,
+        private readonly newTrainingStoreService: NewTrainingStoreService,
     ) { }
 
     transform(
@@ -17,10 +17,10 @@ export class NewTrainingPipe implements PipeTransform {
         index: number,
         _exerciseChanged: boolean,
     ): Observable<Exercise[]> {
-        return this.trainingStoreService.currentTrainingChanged$
+        return this.newTrainingStoreService.currentTrainingChanged$
             .pipe(
                 take(1),
-                map((training: Training) => training.exercises[index]?.availableExercises ?? []),
+                map((training: NewTraining) => training.exercises[index]?.availableExercises ?? []),
         );
     }
 

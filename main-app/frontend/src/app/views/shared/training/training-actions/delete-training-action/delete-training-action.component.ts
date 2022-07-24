@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
-import { Training } from '../../../../../models/training/new-training/training.model';
+import { NewTraining } from '../../../../../models/training/new-training/new-training.model';
 import { StreamData } from '../../../../../models/common/common.model';
 import { Paginator } from '../../../../../models/common/paginator.model';
 import { DialogRoles } from '../../../../../constants/enums/model-roles.enum';
@@ -17,7 +17,7 @@ export interface DeleteTrainingActionDialogData {
     readonly title$: Observable<string>;
     readonly dateCreated$: Observable<string>;
     readonly timeCreated$: Observable<string>;
-    readonly training$: Observable<Training>;
+    readonly training$: Observable<NewTraining>;
 }
 
 @Component({
@@ -37,7 +37,7 @@ export class DeleteTrainingActionComponent {
     timeCreated$: Observable<string> = of('');
 
     @Input()
-    training$: Observable<Training>;
+    training$: Observable<NewTraining>;
 
     isLoading = false;
 

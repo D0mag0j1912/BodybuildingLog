@@ -3,8 +3,8 @@ import { ItemReorderEventDetail, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
-import { Training } from '../../../../models/training/new-training/training.model';
-import { TrainingStoreService } from '../../../../services/store/training/training-store.service';
+import { NewTraining } from '../../../../models/training/new-training/new-training.model';
+import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
 
 @Component({
     templateUrl: './reorder-exercises.component.html',
@@ -13,20 +13,20 @@ import { TrainingStoreService } from '../../../../services/store/training/traini
 })
 export class ReorderExercisesComponent {
 
-    private reorderedTrainingState: Training;
+    private reorderedTrainingState: NewTraining;
 
-    readonly currentExercises$: Observable<string[]> = this.trainingStoreService.currentTrainingChanged$
+    readonly currentExercises$: Observable<string[]> = this.newTrainingStoreService.currentTrainingChanged$
         .pipe(
-            map((training: Training) => training.exercises.map(exercise => exercise.exerciseData.name)),
+            map((training: NewTraining) => training.exercises.map(exercise => exercise.exerciseData.name)),
         );
 
     constructor(
-        private readonly trainingStoreService: TrainingStoreService,
+        private readonly newTrainingStoreService: NewTrainingStoreService,
         private readonly modalController: ModalController,
     ) { }
 
     doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
-        const currentTrainingState = this.trainingStoreService.getCurrentTrainingState();
+        const currentTrainingState = this.newTrainingStoreService.getCurrentTrainingState();
         const exerciseFrom = (this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState).exercises.find((_exercise, index) => index === ev.detail.from);
         const remainingExercises = (this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState).exercises.filter((_exercise, index) => index !== ev.detail.from);
         const reorderedExercises = [

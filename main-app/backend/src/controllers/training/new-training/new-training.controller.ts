@@ -11,7 +11,7 @@ import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login.model';
 import { GeneralResponseData } from '../../../models/common/response.model';
-import { Training } from '../../../models/training/new-training/training.model';
+import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { DuplicateExercisePipe } from '../../../pipes/training/duplicate-exercise.pipe';
 import { EmptySetPipe } from '../../../pipes/training/empty-set.pipe';
 import { EmptyTrainingPipe } from '../../../pipes/training/empty-training.pipe';
@@ -27,7 +27,7 @@ export class NewTrainingController {
     ) { }
 
     @Post()
-    async addTraining(@Body('trainingData', EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe) trainingData: Training): Promise<GeneralResponseData> {
+    async addTraining(@Body('trainingData', EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe) trainingData: NewTraining): Promise<GeneralResponseData> {
         return this.newTrainingService.addTraining(trainingData);
     }
 
@@ -36,11 +36,11 @@ export class NewTrainingController {
     async updateTraining(
         @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
-        @Body('updatedTrainingData', EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe) updatedTrainingData: Training,
+        @Body('updatedTrainingData', EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe) updatedTrainingData: NewTraining,
     ): Promise<GeneralResponseData> {
         return this.newTrainingService.editTraining(
             trainingId as string,
-            updatedTrainingData as Training,
+            updatedTrainingData as NewTraining,
             user._id as string,
         );
     }

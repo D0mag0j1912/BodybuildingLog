@@ -4,23 +4,23 @@ import { Model } from 'mongoose';
 import { GeneralResponseData, StreamData } from '../../models/common/response.model';
 import { Error } from '../../models/errors/error';
 import { Exercise } from '../../models/training/exercise.model';
-import { Training } from '../../models/training/new-training/training.model';
+import { NewTraining } from '../../models/training/new-training/new-training.model';
 
 @Injectable()
 export class NewTrainingService {
 
     constructor(
         @InjectModel('Exercise') private readonly exerciseModel: Model<Exercise>,
-        @InjectModel('Training') private readonly trainingModel: Model<Training>,
+        @InjectModel('Training') private readonly trainingModel: Model<NewTraining>,
     ) { }
 
     async editTraining(
         trainingId: string,
-        updatedTrainingData: Training,
+        updatedTrainingData: NewTraining,
         loggedUserId: string,
     ): Promise<GeneralResponseData> {
         try {
-            const trainingToBeUpdated: Training = await this.trainingModel.findById(trainingId).exec();
+            const trainingToBeUpdated: NewTraining = await this.trainingModel.findById(trainingId).exec();
             if (trainingToBeUpdated.userId.toString() !== loggedUserId.toString()) {
                 throw new UnauthorizedException('common.errors.not_authorized');
             }
@@ -39,7 +39,7 @@ export class NewTrainingService {
         }
     }
 
-    async addTraining(trainingData: Training): Promise<GeneralResponseData> {
+    async addTraining(trainingData: NewTraining): Promise<GeneralResponseData> {
         try {
             await this.trainingModel.create(trainingData);
             return { Message: 'training.new_training.training_saved' } as GeneralResponseData;

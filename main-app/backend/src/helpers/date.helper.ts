@@ -1,13 +1,13 @@
 import { endOfWeek, startOfWeek, isSameWeek, eachDayOfInterval, startOfDay, endOfDay } from 'date-fns';
 import { max, min } from 'date-fns';
-import { Training } from '../models/training/new-training/training.model';
+import { NewTraining } from '../models/training/new-training/new-training.model';
 import { DateInterval } from '../models/common/dates.model';
 
-export function getIntervalDate(currentDateOrTrainings: Date | Training[]): DateInterval {
+export function getIntervalDate(currentDateOrTrainings: Date | NewTraining[]): DateInterval {
     let minDate: Date;
     let maxDate: Date;
     if (Array.isArray(currentDateOrTrainings)) {
-        const dates: Date[] = currentDateOrTrainings.map((x: Training) => x.trainingDate);
+        const dates: Date[] = currentDateOrTrainings.map((x: NewTraining) => x.trainingDate);
         minDate = startOfDay(min(dates));
         maxDate = startOfDay(max(dates));
     }

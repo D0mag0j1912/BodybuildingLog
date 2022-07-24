@@ -6,7 +6,7 @@ import { getIntervalDate, isNextWeek, isPreviousWeek } from '../../helpers/date.
 import { paginate } from '../../helpers/pagination.helper';
 import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
 import { StreamData } from '../../models/common/response.model';
-import { Training } from '../../models/training/new-training/training.model';
+import { NewTraining } from '../../models/training/new-training/new-training.model';
 import { PastTrainings } from '../../models/training/past-trainings/past-trainings.model';
 import { DateInterval } from '../../models/common/dates.model';
 import { PreferencesService } from '../preferences/preferences.service';
@@ -16,7 +16,7 @@ import { PeriodFilterType } from '../../models/training/past-trainings/period-fi
 export class PastTrainingsService {
 
     constructor(
-        @InjectModel('Training') private readonly trainingModel: Model<Training>,
+        @InjectModel('Training') private readonly trainingModel: Model<NewTraining>,
         private readonly preferencesService: PreferencesService,
     ) { }
     
@@ -33,7 +33,7 @@ export class PastTrainingsService {
                     Size: size,
                 };
                 const queryWordRegex = new RegExp(searchValue, 'i');
-                const condition: FilterQuery<Training> = {
+                const condition: FilterQuery<NewTraining> = {
                     $and: [{
                         $or: [
                             { 'exercises.exerciseData.translations.en': { $regex: queryWordRegex } },
@@ -65,14 +65,14 @@ export class PastTrainingsService {
         }
     }
 
-    async getPastTraining(trainingId: string): Promise<StreamData<Training>> {
+    async getPastTraining(trainingId: string): Promise<StreamData<NewTraining>> {
         try {
             const training = await this.trainingModel.findById(trainingId).exec();
             return {
                 IsLoading: true,
                 IsError: false,
                 Value: training,
-            } as StreamData<Training>;
+            } as StreamData<NewTraining>;
         }
         catch (error: unknown) {
             throw new InternalServerErrorException('training.past_trainings.errors.error_load_training');
@@ -87,7 +87,7 @@ export class PastTrainingsService {
     ): Promise<StreamData<Paginator<PastTrainings>>> {
         try {
             const dates: DateInterval = getIntervalDate(new Date(currentDate));
-            const condition: FilterQuery<Training> = {
+            const condition: FilterQuery<NewTraining> = {
                 userId: loggedUserId,
                 trainingDate: {
                     $gte: periodFilterType === 'week' ? dates.StartDate : startOfDay(new Date(currentDate)),

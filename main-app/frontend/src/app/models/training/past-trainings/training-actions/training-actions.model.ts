@@ -1,4 +1,4 @@
-import { Training } from '../../new-training/training.model';
+import { NewTraining } from '../../new-training/new-training.model';
 
 export type TrainingItemActions = 'delete' | 'more';
 
@@ -10,5 +10,5 @@ export interface DeleteTrainingActionData {
     readonly weekDays: string[];
     readonly timeCreated: string;
     readonly dayIndex: number;
-    readonly training: Training;
+    readonly training: NewTraining;
 }

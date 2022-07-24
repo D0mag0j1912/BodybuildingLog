@@ -6,7 +6,7 @@ import { environment } from '../../../../environments/environment';
 import { mapDateInterval } from '../../../helpers/training/past-trainings/map-past-trainings-dates.helper';
 import { StreamData } from '../../../models/common/common.model';
 import { Paginator } from '../../../models/common/paginator.model';
-import { Training } from '../../../models/training/new-training/training.model';
+import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { PastTrainings, PeriodFilterType } from '../../../models/training/past-trainings/past-trainings.model';
 
 const ROUTE_PREFIX = '/training/';
@@ -41,8 +41,8 @@ export class PastTrainingsService {
             );
     }
 
-    getPastTraining(id: string): Observable<StreamData<Training>> {
-        return this._http.get<StreamData<Training>>(`${environment.BACKEND}${ROUTE_PREFIX}past-trainings/${id}`);
+    getPastTraining(id: string): Observable<StreamData<NewTraining>> {
+        return this._http.get<StreamData<NewTraining>>(`${environment.BACKEND}${ROUTE_PREFIX}past-trainings/${id}`);
     }
 
 }

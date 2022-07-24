@@ -1,8 +1,8 @@
 import { DateInterval } from '../../common/dates.model';
-import { Training } from '../new-training/training.model';
+import { NewTraining } from '../new-training/new-training.model';
 
 export interface PastTrainings {
-    Trainings: Training[];
+    Trainings: NewTraining[];
     Dates: DateInterval;
     IsPreviousWeek?: boolean;
     IsNextWeek?: boolean;

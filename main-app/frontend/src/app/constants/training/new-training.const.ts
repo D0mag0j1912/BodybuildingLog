@@ -1,19 +1,21 @@
 import { Exercise } from '../../models/training/exercise.model';
 import { EditNewTrainingData } from '../../models/training/new-training/edit-training.model';
-import { Training } from '../../models/training/new-training/training.model';
+import { NewTraining } from '../../models/training/new-training/new-training.model';
 import { SingleExercise } from '../../models/training/shared/single-exercise.model';
+import { DEFAULT_WEIGHT_UNIT } from '../shared/default-weight-format.const';
 
 export const EMPTY_TRAINING_EDIT: EditNewTrainingData = {
     editedDate: null,
     editTraining: null,
 };
 
-export const EMPTY_TRAINING: Training = {
+export const EMPTY_TRAINING: NewTraining = {
     exercises: [],
     _id: '',
     bodyweight: null,
     editMode: false,
     userId: null,
+    weightUnit: DEFAULT_WEIGHT_UNIT,
 };
 
 export const createEmptyExercise = (exercises: Exercise[]): SingleExercise =>
