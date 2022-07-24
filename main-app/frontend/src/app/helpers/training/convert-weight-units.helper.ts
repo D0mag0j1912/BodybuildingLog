@@ -4,9 +4,9 @@ import { roundToDecimalPlaces } from '../round-to-decimal-places.helper';
 
 export function convertWeightUnit(
     weightUnit: WeightUnit,
-    currentWeightLiftedValue: number,
+    value: number,
 ): string {
     return weightUnit === 'lbs' ?
-        roundToDecimalPlaces(1, currentWeightLiftedValue * KG_TO_LBS) :
-        roundToDecimalPlaces(1, currentWeightLiftedValue / KG_TO_LBS);
+        roundToDecimalPlaces(1, value * KG_TO_LBS) :
+        roundToDecimalPlaces(1, value / KG_TO_LBS);
 }

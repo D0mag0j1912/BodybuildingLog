@@ -29,6 +29,7 @@ import { createInitialSet } from '../../../../constants/shared/create-initial-se
 import { SetsComponent } from '../sets/sets.component';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import { WeightUnit } from '../../../../models/common/preferences.type';
+import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -161,7 +162,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     this.accessFormGroup('exerciseData', 'primaryMuscleGroup', indexExercise).patchValue(exercise.exerciseData.primaryMuscleGroup);
                     this.accessFormGroup('exerciseData', 'translations', indexExercise).patchValue(exercise.exerciseData.translations);
                     this.accessFormField('sets', indexExercise).patchValue(exercise.sets);
-                    this.accessFormField('total', indexExercise).patchValue(exercise?.total ? this.roundTotalWeightPipe.transform(exercise.total, this.currentWeightUnit) : `0 ${DEFAULT_WEIGHT_UNIT}`);
+                    this.accessFormField('total', indexExercise).patchValue(this.setInitialTotalValue(exercise?.total));
                 }
             });
         }
@@ -461,4 +462,25 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         });
         return errors.length === 0;
     }
+
+    private setInitialTotalValue(total: number | undefined): string {
+        if (this.editData?.editTraining) {
+            const editTrainingWeightUnit = this.editData.editTraining.weightUnit ?? DEFAULT_WEIGHT_UNIT;
+            if (editTrainingWeightUnit !== this.currentWeightUnit) {
+                return this.roundTotalWeightPipe.transform(+convertWeightUnit(this.currentWeightUnit, total), this.currentWeightUnit);
+            }
+            else {
+                return this.roundTotalWeightPipe.transform(total, this.currentWeightUnit);
+            }
+        }
+        else {
+            if (total) {
+                return this.roundTotalWeightPipe.transform(total, this.currentWeightUnit);
+            }
+            else {
+                return `${TOTAL_INITIAL_WEIGHT} ${DEFAULT_WEIGHT_UNIT}`;
+            }
+        }
+    }
+
 }
