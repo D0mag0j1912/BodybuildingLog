@@ -48,12 +48,15 @@ export class NewTrainingStoreService {
         newTotal: number,
     ): void {
         const updatedTraining: NewTraining = { ...this._currentTrainingChanged$$.getValue() };
-        updatedTraining.exercises[indexExercise].sets.splice(indexSet, 1);
-        updatedTraining.exercises[indexExercise].sets.map((set: Set) => {
+        let sets = updatedTraining.exercises[indexExercise].sets;
+        sets.splice(indexSet, 1);
+        sets = sets.map((set: Set) => {
             if (set.setNumber > (indexSet + 1)) {
                 set.setNumber--;
             }
+            return set;
         });
+        updatedTraining.exercises[indexExercise].sets = sets;
         updatedTraining.exercises[indexExercise].total = newTotal;
         this.saveTrainingData({ ...updatedTraining })
             .subscribe();
@@ -64,13 +67,16 @@ export class NewTrainingStoreService {
         toBeAddedExercise: Exercise[],
     ): Observable<void> {
         const updatedTraining: NewTraining = { ...currentTrainingState };
-        updatedTraining.exercises.map((exercise: SingleExercise) => {
-            const isDeletedExerciseInAE: Exercise = exercise.availableExercises.find((exercise: Exercise) => exercise._id === toBeAddedExercise[0]._id);
+        let exercises = updatedTraining.exercises;
+        exercises = exercises.map(exercise => {
+            const isDeletedExerciseInAE = exercise.availableExercises.find(exercise => exercise._id === toBeAddedExercise[0]._id);
             if (!isDeletedExerciseInAE) {
                 exercise.availableExercises.push(toBeAddedExercise[0]);
                 exercise.availableExercises.sort(this.compare);
             }
+            return exercise;
         });
+        updatedTraining.exercises = exercises;
         return this.saveTrainingData({ ...updatedTraining });
     }
 
@@ -87,7 +93,7 @@ export class NewTrainingStoreService {
                     take(1),
                     map(value => value.Value),
                     tap(_ => {
-                        updatedExercises = updatedExercises.filter((exercise: SingleExercise) => exercise.exerciseData.name !== deletedExerciseName);
+                        updatedExercises = updatedExercises.filter(exercise => exercise.exerciseData.name !== deletedExerciseName);
                         updatedTraining = {
                             ...currentTrainingState,
                             exercises: updatedExercises,
@@ -121,11 +127,13 @@ export class NewTrainingStoreService {
         const indexFoundSet = updatedTraining.exercises[indexOfChangedExercise].sets.findIndex(set => set.setNumber === trainingData.setNumber);
 
         if (indexFoundSet > -1) {
-            updatedTraining.exercises[indexOfChangedExercise].sets[indexFoundSet] = {
+            let setToBeUpdated = updatedTraining.exercises[indexOfChangedExercise].sets[indexFoundSet];
+            setToBeUpdated = {
                 ...updatedTraining.exercises[indexOfChangedExercise].sets[indexFoundSet],
                 weightLifted: trainingData.weightLifted,
                 reps: trainingData.reps,
             };
+            updatedTraining.exercises[indexOfChangedExercise].sets[indexFoundSet] = setToBeUpdated;
             updatedTraining.exercises[indexOfChangedExercise].total = trainingData.total;
         }
         else {
@@ -140,8 +148,8 @@ export class NewTrainingStoreService {
     }
 
     addNewExercise(alreadyUsedExercises: string[]): Observable<void> {
-        const allExercises: Exercise[] = [ ...this._allExercisesChanged$$.getValue().Value ];
-        const availableExercises = allExercises.filter((exercise: Exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1);
+        const allExercises = [ ...this._allExercisesChanged$$.getValue().Value ];
+        const availableExercises = allExercises.filter(exercise => alreadyUsedExercises.indexOf(exercise.name) === -1);
         return this.updateTrainingState(undefined, availableExercises);
     }
 
