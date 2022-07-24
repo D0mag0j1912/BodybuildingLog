@@ -59,6 +59,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     @Output()
     readonly setDeleted: EventEmitter<Partial<SetStateChanged>> = new EventEmitter<Partial<SetStateChanged>>();
 
+    @Output()
+    readonly weightUnitChanged: EventEmitter<number> = new EventEmitter<number>();
+
     @ViewChildren('weightLiftedEl')
     readonly weightLiftedEl: QueryList<IonInput>;
 
@@ -103,6 +106,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                     const currentWeightLiftedValue = +this.accessFormField('weightLifted', index).value;
                     if (currentWeightLiftedValue) {
                         this.accessFormField('weightLifted', index).patchValue(convertWeightUnit(preferences.weightUnit, currentWeightLiftedValue));
+                    }
+                    else {
+                        this.weightUnitChanged.emit(index);
                     }
                 });
             });

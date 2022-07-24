@@ -61,7 +61,8 @@
                     [isLoading]="isLoading"
                     [editMode]="editMode"
                     (setAdded)="onChangeSets($event)"
-                    (setDeleted)="deleteSet($event)"></bl-sets>
+                    (setDeleted)="deleteSet($event)"
+                    (weightUnitChanged)="onWeightUnitChanged($event)"></bl-sets>
                 <bl-total-weight
                     formControlName="total"
                     [isLoading]="isLoading"></bl-total-weight>

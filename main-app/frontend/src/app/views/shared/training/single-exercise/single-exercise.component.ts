@@ -332,6 +332,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         );
     }
 
+    onWeightUnitChanged(exerciseIndex: number): void {
+        this.accessFormField('total', exerciseIndex).patchValue(this.roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT, this.currentWeightUnit));
+    }
+
     getExercises(): AbstractControl[] {
         return (this.form as FormArray).controls;
     }
