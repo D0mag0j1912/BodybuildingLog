@@ -15,6 +15,8 @@ import * as SetValidators from '../../../../validators/training/set.validators';
 import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
 import { WeightUnit } from '../../../../models/common/preferences.type';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
+import { EMPTY_TRAINING_EDIT } from '../../../../constants/training/new-training.const';
+import { EditNewTrainingData } from '../../../../models/training/new-training/edit-training.model';
 
 @Component({
     selector: 'bl-sets',
@@ -34,6 +36,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     currentWeightUnit: WeightUnit;
 
     onTouched: () => void;
+
+    @Input()
+    editData: EditNewTrainingData = EMPTY_TRAINING_EDIT;
 
     @Input()
     isExerciseFormSubmitted$: Observable<boolean> = of(false);
@@ -150,9 +155,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     addSet(set?: Set): void {
         this.form.push(
             new FormGroup({
-                setNumber: new FormControl(set ? (set.setNumber as number) : this.getSets().length + 1, [Validators.required]),
+                setNumber: new FormControl(set ? set.setNumber : this.getSets().length + 1, [Validators.required]),
                 weightLifted: new FormControl({
-                    value: set ? set.weightLifted : null,
+                    value: set ? this.setWeightLiftedValue(set.weightLifted) : null,
                     disabled: this.exerciseNameControl.value ? false : true,
                 }, [Validators.required,
                     Validators.min(1),
@@ -229,6 +234,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             total += (+group.get('weightLifted')?.value * +group.get('reps')?.value);
         }
         return total;
+    }
+
+    private setWeightLiftedValue(weightLifted: number): number {
+        if (this.editData?.editTraining) {
+            const editTrainingWeightUnit = this.editData.editTraining.weightUnit ?? DEFAULT_WEIGHT_UNIT;
+            if (editTrainingWeightUnit !== this.currentWeightUnit) {
+                return +convertWeightUnit(this.currentWeightUnit, weightLifted);
+            }
+        }
+        return weightLifted;
     }
 
 }
