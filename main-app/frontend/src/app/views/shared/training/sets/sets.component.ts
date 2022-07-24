@@ -150,7 +150,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     addSet(set?: Set): void {
         this.form.push(
             new FormGroup({
-                setNumber: new FormControl(set ? (set.setNumber as number) : this.getSets().length + 1, [Validators.required]),
+                setNumber: new FormControl(set ? set.setNumber : this.getSets().length + 1, [Validators.required]),
                 weightLifted: new FormControl({
                     value: set ? set.weightLifted : null,
                     disabled: this.exerciseNameControl.value ? false : true,
