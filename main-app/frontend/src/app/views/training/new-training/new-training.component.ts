@@ -256,7 +256,7 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     onBodyweightChange(bodyweight: string | number): void {
-        this.newTrainingStoreService.addBodyweightToStorage(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString());
+        this.newTrainingStoreService.updateBodyweight(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString());
     }
 
     async onExerciseAdded(event: UIEvent): Promise<void> {

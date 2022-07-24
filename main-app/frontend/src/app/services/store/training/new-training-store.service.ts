@@ -11,6 +11,7 @@ import { SingleExercise } from '../../../models/training/shared/single-exercise.
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { PreferencesStoreService } from '../shared/preferences-store.service';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-format.const';
+import { WeightUnit } from '../../../models/common/preferences.type';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingStoreService {
@@ -33,7 +34,15 @@ export class NewTrainingStoreService {
         return { ...this._currentTrainingChanged$$.getValue() };
     }
 
-    addBodyweightToStorage(value: string): void {
+    updateWeightUnit(weightUnit: WeightUnit): Observable<void> {
+        const updatedTraining = {
+            ...this._currentTrainingChanged$$.getValue(),
+            weightUnit,
+        };
+        return this.saveTrainingData({ ...updatedTraining });
+    }
+
+    updateBodyweight(value: string): void {
         const updatedTraining = {
             ...this._currentTrainingChanged$$.getValue(),
             bodyweight: +value,
