@@ -10,7 +10,6 @@ import { getControlValueAccessor } from '../../../../helpers/control-value-acces
 import { GeneralResponseData } from '../../../../models/common/general-response.model';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
 import { Exercise } from '../../../../models/training/exercise.model';
-import { EditNewTrainingData } from '../../../../models/training/new-training/edit-training.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
@@ -24,7 +23,7 @@ import * as SingleExerciseValidators from '../../../../validators/training/singl
 import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } from '../../delete-exercise-dialog/delete-exercise-dialog.component';
 import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
-import { EMPTY_TRAINING_EDIT, TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-training.const';
+import { TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-training.const';
 import { createInitialSet } from '../../../../constants/shared/create-initial-set.const';
 import { SetsComponent } from '../sets/sets.component';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
@@ -95,7 +94,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     onTouched: () => void;
 
     @Input()
-    editData: EditNewTrainingData = EMPTY_TRAINING_EDIT;
+    editTrainingData: NewTraining;
 
     @Input()
     bodyweight: AbstractControl | null;
@@ -369,7 +368,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     if (this.editMode) {
                         return this.newTrainingService.updateTraining(
                             apiNewTraining,
-                            this.editData.editTraining?._id,
+                            this.editTrainingData?._id,
                         );
                     }
                     else {
@@ -464,8 +463,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     private setInitialTotalValue(total: number | undefined): string {
-        if (this.editData?.editTraining) {
-            const editTrainingWeightUnit = this.editData.editTraining.weightUnit ?? DEFAULT_WEIGHT_UNIT;
+        if (this.editTrainingData) {
+            const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
             if (editTrainingWeightUnit !== this.currentWeightUnit) {
                 return this.roundTotalWeightPipe.transform(+convertWeightUnit(this.currentWeightUnit, total), this.currentWeightUnit);
             }
