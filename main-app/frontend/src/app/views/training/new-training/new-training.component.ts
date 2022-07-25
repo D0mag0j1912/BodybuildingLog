@@ -14,7 +14,6 @@ import { mapStreamData } from '../../../helpers/training/past-trainings/map-stre
 import { StreamData } from '../../../models/common/common.model';
 import { DialogRoles } from '../../../constants/enums/model-roles.enum';
 import { Exercise } from '../../../models/training/exercise.model';
-import { EditNewTrainingData } from '../../../models/training/new-training/edit-training.model';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
@@ -25,7 +24,7 @@ import { NewTrainingStoreService } from '../../../services/store/training/new-tr
 import { NewTrainingService } from '../../../services/api/training/new-training.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
-import { EMPTY_TRAINING, EMPTY_TRAINING_EDIT, createEmptyExercise } from '../../../constants/training/new-training.const';
+import { EMPTY_TRAINING, createEmptyExercise } from '../../../constants/training/new-training.const';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
@@ -48,7 +47,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     form: FormGroup;
 
-    editData: EditNewTrainingData = EMPTY_TRAINING_EDIT;
+    editTrainingData: NewTraining;
     editMode = false;
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
@@ -120,14 +119,12 @@ export class NewTrainingComponent implements OnDestroy {
                         return this.pastTrainingService.getPastTraining(params['id'])
                             .pipe(
                                 switchMap((response: StreamData<NewTraining>) => {
-                                    this.editData = {
-                                        editedDate: response?.Value?.trainingDate ?? new Date(),
-                                        editTraining: {
-                                            ...response?.Value,
-                                            editMode: true,
-                                        },
+                                    this.editTrainingData = {
+                                        ...response.Value,
+                                        editMode: true,
+                                        trainingDate: response?.Value?.trainingDate ?? new Date(),
                                     };
-                                    return this.newTrainingStoreService.updateTrainingState(this.editData.editTraining);
+                                    return this.newTrainingStoreService.updateTrainingState(this.editTrainingData);
                                 }),
                             );
                     }
@@ -274,18 +271,16 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     tryAgain(): void {
-        if (this.editData?.editTraining) {
-            this.trainingStream$ = this.pastTrainingService.getPastTraining(this.editData.editTraining?._id)
+        if (this.editTrainingData) {
+            this.trainingStream$ = this.pastTrainingService.getPastTraining(this.editTrainingData?._id)
                 .pipe(
                     switchMap((response: StreamData<NewTraining>) => {
-                        this.editData = {
-                            editedDate: response?.Value?.trainingDate ?? new Date(),
-                            editTraining: {
-                                ...response?.Value,
-                                editMode: this.editMode,
-                            },
+                        this.editTrainingData = {
+                            ...response.Value,
+                            editMode: true,
+                            trainingDate: response?.Value?.trainingDate ?? new Date(),
                         };
-                        return this.newTrainingStoreService.updateTrainingState(this.editData.editTraining);
+                        return this.newTrainingStoreService.updateTrainingState(this.editTrainingData);
                     }),
                     switchMap(_ => this.newTrainingService.getExercises()),
                     mapStreamData(),
@@ -318,8 +313,8 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     private _fillTrainingDate(dayClickedDate: string | undefined): string {
-        if (this.editData?.editedDate) {
-            return this.editData.editedDate as string;
+        if (this.editTrainingData) {
+            return this.editTrainingData.trainingDate.toString();
         }
         else {
             return dayClickedDate ? dayClickedDate : new Date().toISOString();
@@ -329,7 +324,7 @@ export class NewTrainingComponent implements OnDestroy {
     private _fillBodyweight(currentTrainingState: NewTraining): string {
         return NewTrainingHandler.fillBodyweight(
             currentTrainingState.bodyweight,
-            this.editData?.editTraining ? this.editData.editTraining?.bodyweight : null,
+            this.editTrainingData ? this.editTrainingData?.bodyweight : null,
         );
     }
 
