@@ -6,6 +6,7 @@
         firstDayOfWeek="1"
         [value]="dateValue"
         [max]="maxDate"
+        [min]="minDate"
         (ionChange)="dateChanged(datetime.value)">
         <ion-buttons slot="buttons">
             <ion-button (click)="close()">{{ 'common.actions.close' | translate }}</ion-button>
