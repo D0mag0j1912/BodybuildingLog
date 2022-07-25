@@ -26,6 +26,8 @@ import { AuthStoreService } from '../../../services/store/auth/auth-store.servic
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { EMPTY_TRAINING, createEmptyExercise } from '../../../constants/training/new-training.const';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
+import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
+import { Preferences } from '../../../models/common/preferences.model';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 type FormData = {
@@ -51,6 +53,7 @@ export class NewTrainingComponent implements OnDestroy {
     editMode = false;
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
+    readonly currentPreferences$: Observable<Preferences> = this.preferencesStoreService.preferencesChanged$;
     readonly isAuthenticated$: Observable<boolean> = this.authStoreService.isAuth$;
     readonly isEditing$: Observable<boolean> = this.sharedStoreService.editingTraining$;
     readonly isReorder$: Observable<boolean> = this.newTrainingStoreService.currentTrainingChanged$
@@ -75,6 +78,7 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly sharedStoreService: SharedStoreService,
         private readonly authStoreService: AuthStoreService,
         private readonly unsubscribeService: UnsubscribeService,
+        private readonly preferencesStoreService: PreferencesStoreService,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
         private readonly modalController: ModalController,

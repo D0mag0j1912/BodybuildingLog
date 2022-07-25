@@ -57,27 +57,29 @@
                 <ion-item
                     fill="outline">
                     <ion-label position="floating">{{ 'training.new_training.pick_bodyweight' | translate }}</ion-label>
-                    <ion-input
-                        #bodyweightRef
-                        class="bodyweight-input"
-                        type="number"
-                        formControlName="bodyweight"
-                        (ionChange)="onBodyweightChange(bodyweightRef.value)"></ion-input>
-                        <ion-note
-                            *ngIf="accessFormData('bodyweight')?.errors?.onlyNumbers"
-                            slot="error">
-                            {{ 'training.new_training.errors.only_numbers' | translate }}
-                        </ion-note>
-                        <ion-note
-                            *ngIf="accessFormData('bodyweight')?.errors?.min"
-                            slot="error">
-                            {{ 'training.new_training.errors.bodyweight_min' | translate }}
-                        </ion-note>
-                        <ion-note
-                            *ngIf="accessFormData('bodyweight')?.errors?.max"
-                            slot="error">
-                            {{ 'training.new_training.errors.bodyweight_max' | translate }}
-                        </ion-note>
+                    <ng-container *ngIf="currentPreferences$ | async as currentPreferences">
+                        <ion-input
+                            #bodyweightRef
+                            class="bodyweight-input"
+                            type="number"
+                            formControlName="bodyweight"
+                            (ionChange)="onBodyweightChange(bodyweightRef.value)"></ion-input>
+                    </ng-container>
+                    <ion-note
+                        *ngIf="accessFormData('bodyweight')?.errors?.onlyNumbers"
+                        slot="error">
+                        {{ 'training.new_training.errors.only_numbers' | translate }}
+                    </ion-note>
+                    <ion-note
+                        *ngIf="accessFormData('bodyweight')?.errors?.min"
+                        slot="error">
+                        {{ 'training.new_training.errors.bodyweight_min' | translate }}
+                    </ion-note>
+                    <ion-note
+                        *ngIf="accessFormData('bodyweight')?.errors?.max"
+                        slot="error">
+                        {{ 'training.new_training.errors.bodyweight_max' | translate }}
+                    </ion-note>
                 </ion-item>
 
                 <ion-item
