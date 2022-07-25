@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
 import { IonDatetime, ModalController } from '@ionic/angular';
-import { format } from 'date-fns';
+import { format, subMonths } from 'date-fns';
 import { DialogRoles } from '../../../constants/enums/model-roles.enum';
 
 @Component({
@@ -9,7 +9,8 @@ import { DialogRoles } from '../../../constants/enums/model-roles.enum';
 })
 export class DateTimePickerComponent {
 
-    maxDate: string = format(new Date(), 'yyyy-MM-dd');
+    maxDate = format(new Date(), 'yyyy-MM-dd');
+    minDate = format(subMonths(new Date(), 2), 'yyyy-MM-dd');
 
     @Input()
     dateValue: string;
