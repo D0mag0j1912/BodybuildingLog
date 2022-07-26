@@ -36,14 +36,14 @@ import { TrainingItemWrapperHeights } from '../../../constants/enums/training-it
 })
 export class PastTrainingsComponent {
 
-    readonly pageSizeOptions: number[] = [1, 3, 5, 10];
-    size: number = DEFAULT_SIZE;
-    page: number = INITIAL_PAGE;
+    readonly pageSizeOptions = [1, 3, 5, 10];
+    size = DEFAULT_SIZE;
+    page = INITIAL_PAGE;
 
     searchText = '';
     currentQueryParams: PastTrainingsQueryParams;
 
-    periodFilter: PeriodFilterType = this.preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
+    periodFilter = this.preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
     dayActivated: DayActivatedType = {
         Date: startOfDay(new Date()),
         DayNumber: 0,
@@ -108,7 +108,7 @@ export class PastTrainingsComponent {
     get dateFormat(): string {
         return TEMPLATE_DATE_FORMAT;
     }
-    //TODO: make simple stream
+
     getDayTranslation$(dayName: string): Observable<string> {
         if (dayName) {
             return this.translateService.stream(dayName)
