@@ -25,11 +25,7 @@ import { calculateFirstWeekDay, calculateLastWeekDay, getCurrentDayIndex } from 
 import { DayActivatedType } from '../../../models/training/past-trainings/day-activated.type';
 import { INITIAL_PAGE, DEFAULT_SIZE } from '../../../constants/shared/paginator.const';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
-
-enum Heights {
-    WEEK_HEIGHT = 315,
-    SEARCH_HEIGHT = 345,
-}
+import { TrainingItemWrapperHeights } from '../../../constants/enums/training-item-wrapper-heights.enum';
 
 @Component({
     selector: 'bl-past-trainings',
@@ -40,7 +36,6 @@ enum Heights {
 })
 export class PastTrainingsComponent {
 
-    readonly food: number = 3000;
     readonly pageSizeOptions: number[] = [1, 3, 5, 10];
     size: number = DEFAULT_SIZE;
     page: number = INITIAL_PAGE;
@@ -74,7 +69,7 @@ export class PastTrainingsComponent {
                         delay(0),
                         takeUntil(this.unsubscribeService),
                     )
-                    .subscribe(isSearch => trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? Heights.SEARCH_HEIGHT : Heights.WEEK_HEIGHT}px)`);
+                    .subscribe(isSearch => trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? TrainingItemWrapperHeights.SEARCH_HEIGHT : TrainingItemWrapperHeights.WEEK_HEIGHT}px)`);
             }
         }
     }

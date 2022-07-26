@@ -72,14 +72,6 @@
                                 [innerHTML]="setTimePeriod$(state.Value?.Results) | async"></div>
                         </ion-card-title>
                     </ion-card-header>
-                    <ion-card-content>
-                        <ng-container *skeleton="state.IsLoading; width: '305px'; height: '25px';">
-                            <strong class="food-key">
-                                {{ ('common.food' | translate) + ': ' }}
-                            </strong>
-                            <span class="food-value">{{ food + ' ' + ('common.kcal' | translate) }}</span>
-                        </ng-container>
-                    </ion-card-content>
                 </ion-card>
                 <div
                     #itemWrapper
