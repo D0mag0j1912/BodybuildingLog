@@ -357,7 +357,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
 
     onSubmit(): void {
         this._isSubmitted$$.next(true);
-        if (!this.form.valid || !this.areSetsValid(this.setsCmpRef)) {
+        const newTrainingFormValid = this.bodyweight.valid && this.trainingDate.valid;
+        if (!this.form.valid || !this.areSetsValid(this.setsCmpRef) || !newTrainingFormValid) {
             return;
         }
         this.isApiLoading = true;
