@@ -42,7 +42,6 @@ export class PastTrainingsComponent {
 
     searchText = '';
     currentQueryParams: PastTrainingsQueryParams;
-
     periodFilter = this.preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
     dayActivated: DayActivatedType = {
         Date: startOfDay(new Date()),
