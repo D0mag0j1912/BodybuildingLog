@@ -7,7 +7,7 @@ import { StorageItems } from '../../../../constants/enums/storage-items.enum';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
 import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
-import { SharedStoreService } from '../../../../services/store/shared/shared-store.service';
+import { PastTrainingsStoreService } from '../../../../services/store/training/past-trainings-store.service';
 
 @Component({
     selector: 'bl-training-item',
@@ -39,9 +39,9 @@ export class TrainingItemComponent implements OnInit {
     training: NewTraining;
 
     constructor(
-        private readonly sharedStoreService: SharedStoreService,
-        private readonly route: ActivatedRoute,
-        private readonly router: Router,
+        private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
+        private readonly _route: ActivatedRoute,
+        private readonly _router: Router,
     ) { }
 
     ngOnInit(): void {
@@ -50,17 +50,17 @@ export class TrainingItemComponent implements OnInit {
     }
 
     async trainingClicked(): Promise<void> {
-        this.route.queryParams
+        this._route.queryParams
             .pipe(
                 take(1),
             )
             .subscribe(async (params: Params) => {
-                this.sharedStoreService.emitPastTrainingsQueryParams(params as PastTrainingsQueryParams);
+                this._pastTrainingsStoreService.emitPastTrainingsQueryParams(params as PastTrainingsQueryParams);
                 await Storage.set({
                     key: StorageItems.QUERY_PARAMS,
                     value: JSON.stringify(params as PastTrainingsQueryParams),
                 });
-                await this.router.navigate(['/training/new-training', this.training._id]);
+                await this._router.navigate(['/training/new-training', this.training._id]);
             });
     }
 

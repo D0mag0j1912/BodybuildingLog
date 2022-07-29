@@ -42,7 +42,7 @@ export class PastTrainingsComponent implements OnDestroy {
 
     searchText = '';
     currentQueryParams: PastTrainingsQueryParams;
-    periodFilter = this.preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
+    periodFilter = this._preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
     dayActivated: DayActivatedType = {
         Date: startOfDay(new Date()),
         DayNumber: 0,
@@ -67,7 +67,7 @@ export class PastTrainingsComponent implements OnDestroy {
                 of(this.isSearch)
                     .pipe(
                         delay(0),
-                        takeUntil(this.unsubscribeService),
+                        takeUntil(this._unsubscribeService),
                     )
                     .subscribe(isSearch => trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? TrainingItemWrapperHeights.SEARCH_HEIGHT : TrainingItemWrapperHeights.WEEK_HEIGHT}px)`);
             }
@@ -75,33 +75,33 @@ export class PastTrainingsComponent implements OnDestroy {
     }
 
     constructor(
-        private readonly pastTrainingsService: PastTrainingsService,
-        private readonly pastTrainingsStoreService: PastTrainingsStoreService,
-        private readonly unsubscribeService: UnsubscribeService,
-        private readonly translateService: TranslateService,
-        private readonly sharedStoreService: SharedStoreService,
-        private readonly preferencesService: PreferencesService,
-        private readonly preferencesStoreService: PreferencesStoreService,
-        private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly route: ActivatedRoute,
-        private readonly datePipe: DatePipe,
-        private readonly router: Router,
-        private readonly navController: NavController,
+        private readonly _pastTrainingsService: PastTrainingsService,
+        private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
+        private readonly _unsubscribeService: UnsubscribeService,
+        private readonly _translateService: TranslateService,
+        private readonly _sharedStoreService: SharedStoreService,
+        private readonly _preferencesService: PreferencesService,
+        private readonly _preferencesStoreService: PreferencesStoreService,
+        private readonly _changeDetectorRef: ChangeDetectorRef,
+        private readonly _route: ActivatedRoute,
+        private readonly _datePipe: DatePipe,
+        private readonly _router: Router,
+        private readonly _navController: NavController,
     ) {
-        this.route.queryParams
+        this._route.queryParams
             .pipe(
-                takeUntil(this.unsubscribeService),
+                takeUntil(this._unsubscribeService),
             )
             .subscribe(params => this.currentQueryParams = params);
 
-        this.sharedStoreService.deletedTraining$$
+        this._sharedStoreService.deletedTraining$$
             .pipe(
-                takeUntil(this.unsubscribeService),
+                takeUntil(this._unsubscribeService),
             ).subscribe((response: StreamData<Paginator<PastTrainings>>) => {
                 this.pastTrainings$ =
                     of(response)
                         .pipe(mapStreamData());
-                this.changeDetectorRef.markForCheck();
+                this._changeDetectorRef.markForCheck();
             });
     }
 
@@ -111,7 +111,7 @@ export class PastTrainingsComponent implements OnDestroy {
 
     getDayTranslation$(dayName: string): Observable<string> {
         if (dayName) {
-            return this.translateService.stream(dayName)
+            return this._translateService.stream(dayName)
                 .pipe(
                     map(value => value?.toLowerCase()),
                 );
@@ -123,17 +123,17 @@ export class PastTrainingsComponent implements OnDestroy {
         await Storage.remove({ key: StorageItems.QUERY_PARAMS });
         this._isSearch$$
             .pipe(
-                takeUntil(this.unsubscribeService),
+                takeUntil(this._unsubscribeService),
             )
             .subscribe(isSearch => {
                 this.isSearch = isSearch;
-                this.changeDetectorRef.markForCheck();
+                this._changeDetectorRef.markForCheck();
             });
         this.initView();
     }
 
     async ionViewWillLeave(): Promise<void> {
-        this.sharedStoreService.emitPastTrainingsQueryParams(this.currentQueryParams);
+        this._pastTrainingsStoreService.emitPastTrainingsQueryParams(this.currentQueryParams);
         await Storage.set({
             key: StorageItems.QUERY_PARAMS,
             value: JSON.stringify(this.currentQueryParams),
@@ -156,7 +156,7 @@ export class PastTrainingsComponent implements OnDestroy {
                 .pipe(
                     switchMap((searchText: string) => {
                         this.searchText = searchText;
-                        return this.pastTrainingsService.searchPastTrainings(
+                        return this._pastTrainingsService.searchPastTrainings(
                             this.searchText,
                             this.size,
                             this.page,
@@ -164,8 +164,8 @@ export class PastTrainingsComponent implements OnDestroy {
                             tap(async (response: StreamData<Paginator<PastTrainings>>) => {
                                 this.showByDayStartDate = new Date();
                                 this.updatePageAndSize(response);
-                                await this.router.navigate([], {
-                                    relativeTo: this.route,
+                                await this._router.navigate([], {
+                                    relativeTo: this._route,
                                     queryParams: this.handleQueryParams(
                                         response,
                                         searchText?.trim() ?? undefined,
@@ -192,8 +192,8 @@ export class PastTrainingsComponent implements OnDestroy {
                     DayNumber: getCurrentDayIndex(this.showByDayStartDate),
                 };
             }
-            const currentPreferences = this.preferencesStoreService.getPreferences();
-            this.preferencesService.setPreferences(
+            const currentPreferences = this._preferencesStoreService.getPreferences();
+            this._preferencesService.setPreferences(
                 {
                     ...currentPreferences,
                     showByPeriod: this.periodFilter,
@@ -202,20 +202,20 @@ export class PastTrainingsComponent implements OnDestroy {
             ).pipe(
                 take(1),
             ).subscribe(_ => {
-                this.pastTrainings$ = this.pastTrainingsService
+                this.pastTrainings$ = this._pastTrainingsService
                     .getPastTrainings(
                         startOfWeek(mondayDate, { weekStartsOn: 1 }),
                         this.periodFilter,
                     ).pipe(
                         tap(async response => {
-                            await this.router.navigate([], {
-                                relativeTo: this.route,
+                            await this._router.navigate([], {
+                                relativeTo: this._route,
                                 queryParams: this.handleQueryParams(response),
                             });
                         }),
                         mapStreamData(),
                     );
-                this.changeDetectorRef.markForCheck();
+                this._changeDetectorRef.markForCheck();
             });
         }
     }
@@ -223,11 +223,11 @@ export class PastTrainingsComponent implements OnDestroy {
     onDayActivated($event: DayActivatedType): void {
         if (!this.isSearch) {
             this.dayActivated = $event;
-            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings($event.Date, 'day')
+            this.pastTrainings$ = this._pastTrainingsService.getPastTrainings($event.Date, 'day')
                 .pipe(
                     tap(async response => {
-                        await this.router.navigate([], {
-                            relativeTo: this.route,
+                        await this._router.navigate([], {
+                            relativeTo: this._route,
                             queryParams: this.handleQueryParams(response),
                         });
                     }),
@@ -242,15 +242,15 @@ export class PastTrainingsComponent implements OnDestroy {
     ): void {
         if ($event?.IsSearch) {
             this.pastTrainings$ =
-                this.pastTrainingsService.searchPastTrainings(
+                this._pastTrainingsService.searchPastTrainings(
                     this.searchText?.trim()?.toLowerCase() ?? '',
                     $event.Size,
                     $event.Page,
                 ).pipe(
                     tap(async (response: StreamData<Paginator<PastTrainings>>) => {
                         this.updatePageAndSize(response);
-                        await this.router.navigate([], {
-                            relativeTo: this.route,
+                        await this._router.navigate([], {
+                            relativeTo: this._route,
                             queryParams: this.handleQueryParams(
                                 response,
                                 this.searchText,
@@ -275,7 +275,7 @@ export class PastTrainingsComponent implements OnDestroy {
                 };
             }
             this.pastTrainings$ =
-                this.pastTrainingsService.getPastTrainings(
+                this._pastTrainingsService.getPastTrainings(
                     this.periodFilter === 'week'
                     ?   this.onPaginatorChangedFilterHandler(this.periodFilter, $event)
                     :   this.onPaginatorChangedFilterHandler(
@@ -287,8 +287,8 @@ export class PastTrainingsComponent implements OnDestroy {
                 ).pipe(
                     tap(async (response: StreamData<Paginator<PastTrainings>>) => {
                         this.handlePaginationArrows(response);
-                        await this.router.navigate([], {
-                            relativeTo: this.route,
+                        await this._router.navigate([], {
+                            relativeTo: this._route,
                             queryParams: this.handleQueryParams(response),
                         });
                     }),
@@ -299,8 +299,8 @@ export class PastTrainingsComponent implements OnDestroy {
 
     async logNewTraining(): Promise<void> {
         const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
-        this.sharedStoreService.emitDayClicked(dayClickedDate.toISOString());
-        await this.navController.navigateForward('/training/new-training');
+        this._sharedStoreService.emitDayClicked(dayClickedDate.toISOString());
+        await this._navController.navigateForward('/training/new-training');
     }
 
     //TODO: align with 'ShowByDay' feature
@@ -316,7 +316,7 @@ export class PastTrainingsComponent implements OnDestroy {
                 dateInterval.EndDate,
             );
             if (isDay) {
-                return this.translateService.stream(results.DayName)
+                return this._translateService.stream(results.DayName)
                     .pipe(
                         map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate)),
                     );
@@ -327,7 +327,7 @@ export class PastTrainingsComponent implements OnDestroy {
                 { weekStartsOn: 1 },
             );
             if (isWeek) {
-                return this.translateService.stream('common.week')
+                return this._translateService.stream('common.week')
                     .pipe(
                         map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
                     );
@@ -338,12 +338,12 @@ export class PastTrainingsComponent implements OnDestroy {
             );
             if (isMonth) {
                 const month = getMonth(dateInterval.StartDate);
-                return this.translateService.stream(`common.months.${ALL_MONTHS[month]}`)
+                return this._translateService.stream(`common.months.${ALL_MONTHS[month]}`)
                     .pipe(
                         map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
                     );
             }
-            return this.translateService.stream('common.period')
+            return this._translateService.stream('common.period')
                 .pipe(
                     map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
                 );
@@ -354,11 +354,11 @@ export class PastTrainingsComponent implements OnDestroy {
     }
 
     private initView(): void {
-        this.page = this.route.snapshot.queryParamMap?.get('page') ? +this.route.snapshot.queryParamMap.get('page') : INITIAL_PAGE;
-        this.size = this.route.snapshot.queryParamMap?.get('size') ? +this.route.snapshot.queryParamMap.get('size') : DEFAULT_SIZE;
-        this.searchText = this.route.snapshot.queryParamMap?.get('search');
+        this.page = this._route.snapshot.queryParamMap?.get('page') ? +this._route.snapshot.queryParamMap.get('page') : INITIAL_PAGE;
+        this.size = this._route.snapshot.queryParamMap?.get('size') ? +this._route.snapshot.queryParamMap.get('size') : DEFAULT_SIZE;
+        this.searchText = this._route.snapshot.queryParamMap?.get('search');
         if (this.searchText) {
-            this.pastTrainings$ = this.pastTrainingsService.searchPastTrainings(
+            this.pastTrainings$ = this._pastTrainingsService.searchPastTrainings(
                 this.searchText.trim().toLowerCase(),
                 this.size,
                 this.page,
@@ -368,7 +368,7 @@ export class PastTrainingsComponent implements OnDestroy {
             );
         }
         else {
-            this.periodFilter = this.route.snapshot.queryParamMap?.get('showBy') as PeriodFilterType;
+            this.periodFilter = this._route.snapshot.queryParamMap?.get('showBy') as PeriodFilterType;
             if (this.periodFilter === 'day') {
                 this.showByDayStartDate = this.getDateTimeQueryParams();
                 this.dayActivated = {
@@ -376,7 +376,7 @@ export class PastTrainingsComponent implements OnDestroy {
                     DayNumber: getCurrentDayIndex(this.showByDayStartDate),
                 };
             }
-            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
+            this.pastTrainings$ = this._pastTrainingsService.getPastTrainings(
                 this.getDateTimeQueryParams(),
                 this.periodFilter ?? 'week',
             ).pipe(
@@ -406,7 +406,7 @@ export class PastTrainingsComponent implements OnDestroy {
     private updatePageAndSize(response: StreamData<Paginator<PastTrainings>>): void {
         this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
         this.size = response?.Value?.Size ?? DEFAULT_SIZE;
-        this.changeDetectorRef.markForCheck();
+        this._changeDetectorRef.markForCheck();
     }
 
     private calculateDate(
@@ -491,11 +491,11 @@ export class PastTrainingsComponent implements OnDestroy {
             this.isNextPage = x.Value.Results.IsNextWeek;
             this.isPreviousPage = x.Value.Results.IsPreviousWeek;
         }
-        this.changeDetectorRef.markForCheck();
+        this._changeDetectorRef.markForCheck();
     }
 
     private getDateTimeQueryParams(): Date {
-        const splittedDate = this.route.snapshot.queryParams?.startDate?.split('-') ?? [];
+        const splittedDate = this._route.snapshot.queryParams?.startDate?.split('-') ?? [];
         const utc = splittedDate.length > 0 ? new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString() : new Date().toUTCString();
         return startOfDay(new Date(utc));
     }
@@ -508,11 +508,11 @@ export class PastTrainingsComponent implements OnDestroy {
         if (endDate) {
             return `
                 <strong class="header-title--key">${period}</strong>
-                <span class="header-title--value">(${this.datePipe.transform(startDate, this.dateFormat)} - ${this.datePipe.transform(endDate, this.dateFormat)})</span>`;
+                <span class="header-title--value">(${this._datePipe.transform(startDate, this.dateFormat)} - ${this._datePipe.transform(endDate, this.dateFormat)})</span>`;
         }
         else {
             return `<strong class="header-title--key">${period}</strong>
-                <span class="header-title--value">(${this.datePipe.transform(startDate, this.dateFormat)})</span`;
+                <span class="header-title--value">(${this._datePipe.transform(startDate, this.dateFormat)})</span`;
         }
     }
 

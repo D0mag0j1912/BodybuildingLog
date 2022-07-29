@@ -7,11 +7,11 @@ import { startOfWeek, startOfDay, endOfWeek, endOfDay, format } from 'date-fns';
 import { Preferences } from '../../../models/common/preferences.model';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
-import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
 import { PreferencesComponent } from '../preferences/preferences.component';
 import { PreferenceChangedType } from '../../../models/common/preferences.type';
+import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 
 @Component({
     selector: 'bl-side-nav',
@@ -21,25 +21,25 @@ import { PreferenceChangedType } from '../../../models/common/preferences.type';
 })
 export class SideNavComponent {
 
-    readonly isAuthenticated$: Observable<boolean> = this.authStoreService.isAuth$
+    readonly isAuthenticated$: Observable<boolean> = this._authStoreService.isAuth$
         .pipe(share());
-    private readonly preferences$: Observable<Preferences> = this.preferencesStoreService.preferencesChanged$
+    private readonly preferences$: Observable<Preferences> = this._preferencesStoreService.preferencesChanged$
         .pipe(take(1));
 
     constructor(
-        private readonly authStoreService: AuthStoreService,
-        private readonly sharedStoreService: SharedStoreService,
-        private readonly preferencesStoreService: PreferencesStoreService,
-        private readonly popoverController: PopoverController,
-        private readonly router: Router,
+        private readonly _authStoreService: AuthStoreService,
+        private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
+        private readonly _preferencesStoreService: PreferencesStoreService,
+        private readonly _popoverController: PopoverController,
+        private readonly _router: Router,
     ) { }
 
     async onLogout(): Promise<void> {
-        await this.authStoreService.logout();
+        await this._authStoreService.logout();
     }
 
     async goToPastTrainings(): Promise<void> {
-        this.sharedStoreService.pastTrainingsQueryParams$
+        this._pastTrainingsStoreService.pastTrainingsQueryParams$
             .pipe(
                 take(1),
             )
@@ -49,7 +49,7 @@ export class SideNavComponent {
                     queryParams = params;
                 }
                 else {
-                    const showByPeriod = this.preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
+                    const showByPeriod = this._preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
                     const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
                     const endDate = showByPeriod === 'week' ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 }) : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
                     queryParams = {
@@ -58,7 +58,7 @@ export class SideNavComponent {
                         showBy: showByPeriod,
                     };
                 }
-                await this.router.navigate(['/training/past-trainings'], { queryParams });
+                await this._router.navigate(['/training/past-trainings'], { queryParams });
             });
     }
 
@@ -69,7 +69,7 @@ export class SideNavComponent {
         $event.stopPropagation();
         this.preferences$
             .pipe(
-                switchMap(preferences => from(this.popoverController.create({
+                switchMap(preferences => from(this._popoverController.create({
                         component: PreferencesComponent,
                         event: $event,
                         componentProps: {

@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeService } from './services/shared/unsubscribe.service';
-import { SharedStoreService } from './services/store/shared/shared-store.service';
 import { NewTrainingStoreService } from './services/store/training/new-training-store.service';
+import { PastTrainingsStoreService } from './services/store/training/past-trainings-store.service';
 
 @Component({
     selector: 'bl-root',
@@ -14,17 +14,17 @@ import { NewTrainingStoreService } from './services/store/training/new-training-
 export class AppComponent implements OnInit {
 
     constructor(
-        private readonly newTrainingStoreService: NewTrainingStoreService,
-        private readonly sharedStoreService: SharedStoreService,
-        private readonly translateService: TranslateService,
+        private readonly _newTrainingStoreService: NewTrainingStoreService,
+        private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
+        private readonly _translateService: TranslateService,
     ) { }
 
     ngOnInit(): void {
-        this.newTrainingStoreService.keepTrainingState()
+        this._newTrainingStoreService.keepTrainingState()
             .subscribe();
-        this.sharedStoreService.keepQueryParams()
+        this._pastTrainingsStoreService.keepQueryParams()
             .subscribe();
 
-        this.translateService.setDefaultLang('en');
+        this._translateService.setDefaultLang('en');
     }
 }

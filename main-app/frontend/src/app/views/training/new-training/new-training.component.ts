@@ -28,6 +28,7 @@ import { EMPTY_TRAINING, createEmptyExercise } from '../../../constants/training
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 import { Preferences } from '../../../models/common/preferences.model';
+import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 type FormData = {
@@ -53,10 +54,10 @@ export class NewTrainingComponent implements OnDestroy {
     editMode = false;
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
-    readonly currentPreferences$: Observable<Preferences> = this.preferencesStoreService.preferencesChanged$;
-    readonly isAuthenticated$: Observable<boolean> = this.authStoreService.isAuth$;
-    readonly isEditing$: Observable<boolean> = this.sharedStoreService.editingTraining$;
-    readonly isReorder$: Observable<boolean> = this.newTrainingStoreService.currentTrainingChanged$
+    readonly currentPreferences$: Observable<Preferences> = this._preferencesStoreService.preferencesChanged$;
+    readonly isAuthenticated$: Observable<boolean> = this._authStoreService.isAuth$;
+    readonly isEditing$: Observable<boolean> = this._sharedStoreService.editingTraining$;
+    readonly isReorder$: Observable<boolean> = this._newTrainingStoreService.currentTrainingChanged$
         .pipe(
             map(training => {
                 const exercises = training.exercises;
@@ -72,17 +73,18 @@ export class NewTrainingComponent implements OnDestroy {
     singleExerciseCmps: QueryList<SingleExerciseComponent>;
 
     constructor(
-        private readonly newTrainingStoreService: NewTrainingStoreService,
-        private readonly newTrainingService: NewTrainingService,
-        private readonly pastTrainingService: PastTrainingsService,
-        private readonly sharedStoreService: SharedStoreService,
-        private readonly authStoreService: AuthStoreService,
-        private readonly unsubscribeService: UnsubscribeService,
-        private readonly preferencesStoreService: PreferencesStoreService,
-        private readonly route: ActivatedRoute,
-        private readonly router: Router,
-        private readonly modalController: ModalController,
-        private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly _newTrainingStoreService: NewTrainingStoreService,
+        private readonly _newTrainingService: NewTrainingService,
+        private readonly _pastTrainingService: PastTrainingsService,
+        private readonly _sharedStoreService: SharedStoreService,
+        private readonly _authStoreService: AuthStoreService,
+        private readonly _unsubscribeService: UnsubscribeService,
+        private readonly _preferencesStoreService: PreferencesStoreService,
+        private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
+        private readonly _route: ActivatedRoute,
+        private readonly _router: Router,
+        private readonly _modalController: ModalController,
+        private readonly _changeDetectorRef: ChangeDetectorRef,
     ) {
         this.form = new FormGroup({
             bodyweight: new FormControl(null,
@@ -98,11 +100,11 @@ export class NewTrainingComponent implements OnDestroy {
 
     ionViewWillEnter(): void {
         let allExercisesChanged: StreamData<Exercise[]>;
-        this.trainingStream$ = this.route.params
+        this.trainingStream$ = this._route.params
             .pipe(
                 take(1),
                 switchMap((params: Params) =>
-                    this.newTrainingStoreService.allExercisesChanged$
+                    this._newTrainingStoreService.allExercisesChanged$
                         .pipe(
                             take(1),
                             switchMap(value => {
@@ -110,7 +112,7 @@ export class NewTrainingComponent implements OnDestroy {
                                     return of(value);
                                 }
                                 else {
-                                    return this.newTrainingService.getExercises();
+                                    return this._newTrainingService.getExercises();
                                 }
                             }),
                             tap(exercisesData => allExercisesChanged = exercisesData),
@@ -120,7 +122,7 @@ export class NewTrainingComponent implements OnDestroy {
                 switchMap((params: Params) => {
                     if (params['id']) {
                         this.editMode = true;
-                        return this.pastTrainingService.getPastTraining(params['id'])
+                        return this._pastTrainingService.getPastTraining(params['id'])
                             .pipe(
                                 switchMap((response: StreamData<NewTraining>) => {
                                     this.editTrainingData = {
@@ -128,12 +130,12 @@ export class NewTrainingComponent implements OnDestroy {
                                         editMode: true,
                                         trainingDate: response?.Value?.trainingDate ?? new Date(),
                                     };
-                                    return this.newTrainingStoreService.updateTrainingState(this.editTrainingData);
+                                    return this._newTrainingStoreService.updateTrainingState(this.editTrainingData);
                                 }),
                             );
                     }
                     else {
-                        return this.newTrainingStoreService.currentTrainingChanged$
+                        return this._newTrainingStoreService.currentTrainingChanged$
                             .pipe(
                                 take(1),
                                 switchMap(trainingState => {
@@ -145,7 +147,7 @@ export class NewTrainingComponent implements OnDestroy {
                                                 exercises: [createEmptyExercise(allExercisesChanged.Value)],
                                                 userId: currentTrainingState?.userId ?? '',
                                             };
-                                            return this.newTrainingStoreService.updateTrainingState(newTrainingState);
+                                            return this._newTrainingStoreService.updateTrainingState(newTrainingState);
                                         }
                                         return of(null);
                                     }
@@ -156,7 +158,7 @@ export class NewTrainingComponent implements OnDestroy {
                             );
                     }
                 }),
-                tap(_ => this.sharedStoreService.emitEditingTraining(this.editMode)),
+                tap(_ => this._sharedStoreService.emitEditingTraining(this.editMode)),
                 switchMap(_ => of(allExercisesChanged)
                     .pipe(
                         tap(_ => this._formInit()),
@@ -164,7 +166,7 @@ export class NewTrainingComponent implements OnDestroy {
                     ),
                 ),
             );
-        this.changeDetectorRef.markForCheck();
+        this._changeDetectorRef.markForCheck();
     }
 
     ionViewDidEnter(): void {
@@ -174,15 +176,15 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     ionViewDidLeave(): void {
-        this.sharedStoreService.emitEditingTraining(false);
+        this._sharedStoreService.emitEditingTraining(false);
     }
 
     ngOnDestroy(): void {
-        this.sharedStoreService.completeDayClicked();
+        this._sharedStoreService.completeDayClicked();
     }
 
     async openReorderModal(): Promise<void> {
-        const modal = await this.modalController.create({
+        const modal = await this._modalController.create({
             component: ReorderExercisesComponent,
             keyboardClose: true,
         });
@@ -191,12 +193,12 @@ export class NewTrainingComponent implements OnDestroy {
         from(modal.onDidDismiss<NewTraining | undefined>())
             .pipe(
                 filter<OverlayEventDetail<NewTraining>>(response => response?.role === DialogRoles.REORDER_EXERCISES),
-                takeUntil(this.unsubscribeService),
+                takeUntil(this._unsubscribeService),
             )
             .subscribe(response => {
                 if (response?.data) {
                     let streamData: StreamData<Exercise[]>;
-                    this.trainingStream$ = this.newTrainingStoreService.allExercisesChanged$
+                    this.trainingStream$ = this._newTrainingStoreService.allExercisesChanged$
                         .pipe(
                             take(1),
                             map(value => {
@@ -208,7 +210,7 @@ export class NewTrainingComponent implements OnDestroy {
                                 return streamData;
                             }),
                             delay(300),
-                            switchMap(_ => this.newTrainingStoreService.updateTrainingState(response.data)
+                            switchMap(_ => this._newTrainingStoreService.updateTrainingState(response.data)
                                 .pipe(
                                     tap(_ => this._formInit()),
                                 ),
@@ -217,13 +219,13 @@ export class NewTrainingComponent implements OnDestroy {
                             mapStreamData<Exercise[]>(),
                             tap(_ => setTimeout(async () => await this.ionContent.scrollToBottom(300), 100)),
                         );
-                    this.changeDetectorRef.markForCheck();
+                    this._changeDetectorRef.markForCheck();
                 }
             });
     }
 
     async openDateTimePicker(): Promise<void> {
-        const modal = await this.modalController.create({
+        const modal = await this._modalController.create({
             component: DateTimePickerComponent,
             componentProps: { dateValue: format(new Date(this.accessFormData('date').value), `yyyy-MM-dd'T'HH:mm:ss'Z'`) },
             cssClass: 'datetime-picker',
@@ -233,8 +235,8 @@ export class NewTrainingComponent implements OnDestroy {
 
         from(modal.onDidDismiss<string | undefined>())
             .pipe(
-                finalize(() => this.changeDetectorRef.markForCheck()),
-                takeUntil(this.unsubscribeService),
+                finalize(() => this._changeDetectorRef.markForCheck()),
+                takeUntil(this._unsubscribeService),
             )
             .subscribe(response => {
                 const { data, role } = response;
@@ -246,18 +248,18 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     async goToPastTraining(): Promise<void> {
-        this.sharedStoreService.pastTrainingsQueryParams$
+        this._pastTrainingsStoreService.pastTrainingsQueryParams$
             .pipe(
                 take(1),
             )
             .subscribe(async (params: PastTrainingsQueryParams) => {
-                await this.router.navigate(['/training/past-trainings'], { queryParams: params });
+                await this._router.navigate(['/training/past-trainings'], { queryParams: params });
                 await Storage.remove({ key: StorageItems.QUERY_PARAMS });
             });
     }
 
     onBodyweightChange(bodyweight: string | number): void {
-        this.newTrainingStoreService.updateBodyweight(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString());
+        this._newTrainingStoreService.updateBodyweight(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString());
     }
 
     async onExerciseAdded(event: UIEvent): Promise<void> {
@@ -268,7 +270,7 @@ export class NewTrainingComponent implements OnDestroy {
                     tap(async _ => await this.ionContent.scrollToBottom(300)),
                     delay(200),
                     tap(async _ => await this.singleExerciseCmps.last?.exercisePickerEls?.last?.open(event)),
-                    takeUntil(this.unsubscribeService),
+                    takeUntil(this._unsubscribeService),
                 )
                 .subscribe();
         }
@@ -276,7 +278,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     tryAgain(): void {
         if (this.editTrainingData) {
-            this.trainingStream$ = this.pastTrainingService.getPastTraining(this.editTrainingData?._id)
+            this.trainingStream$ = this._pastTrainingService.getPastTraining(this.editTrainingData?._id)
                 .pipe(
                     switchMap((response: StreamData<NewTraining>) => {
                         this.editTrainingData = {
@@ -284,14 +286,14 @@ export class NewTrainingComponent implements OnDestroy {
                             editMode: true,
                             trainingDate: response?.Value?.trainingDate ?? new Date(),
                         };
-                        return this.newTrainingStoreService.updateTrainingState(this.editTrainingData);
+                        return this._newTrainingStoreService.updateTrainingState(this.editTrainingData);
                     }),
-                    switchMap(_ => this.newTrainingService.getExercises()),
+                    switchMap(_ => this._newTrainingService.getExercises()),
                     mapStreamData(),
             );
         }
         else {
-            this.trainingStream$ = this.newTrainingService.getExercises()
+            this.trainingStream$ = this._newTrainingService.getExercises()
                 .pipe(
                     mapStreamData(),
                 );
@@ -303,8 +305,8 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     private _formInit(): void {
-        const currentTrainingState = { ...this.newTrainingStoreService.getCurrentTrainingState() };
-        const dayClickedDate = this.sharedStoreService.getDayClickedDate();
+        const currentTrainingState = { ...this._newTrainingStoreService.getCurrentTrainingState() };
+        const dayClickedDate = this._sharedStoreService.getDayClickedDate();
         this.accessFormData('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
         this.accessFormData('date').patchValue(this._fillTrainingDate(dayClickedDate));
         this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);
