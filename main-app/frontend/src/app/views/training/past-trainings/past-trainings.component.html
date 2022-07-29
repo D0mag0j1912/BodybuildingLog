@@ -42,7 +42,8 @@
                 [periodDisabled]="isSearch"
                 [periodFilter]="periodFilter"
                 (trainingEmitted)="searchEmitted($event)"
-                (periodEmitted)="onPeriodEmitted($event, state.Value?.Results?.Dates?.StartDate)"></bl-past-trainings-filters>
+                (periodEmitted)="onPeriodEmitted($event, state.Value?.Results?.Dates?.StartDate)"
+                (searchEmitted)="onFiltersSearchEmitted($event)"></bl-past-trainings-filters>
             <ng-container *ngIf="isSearch && state.Value?.TotalCount === 0; else otherCases">
                 <ion-list class="ion-text-center">
                     <ion-item lines="none">

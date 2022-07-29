@@ -1,9 +1,9 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { add, addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { NavController } from '@ionic/angular';
 import { Storage } from '@capacitor/storage';
@@ -34,7 +34,7 @@ import { TrainingItemWrapperHeights } from '../../../constants/enums/training-it
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class PastTrainingsComponent {
+export class PastTrainingsComponent implements OnDestroy {
 
     readonly pageSizeOptions = [1, 3, 5, 10];
     size = DEFAULT_SIZE;
@@ -54,6 +54,7 @@ export class PastTrainingsComponent {
     isSearch = false;
 
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
+    private readonly _isSearch$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     @ViewChild('itemWrapper', { read: ElementRef })
     trainingItemWrapper: ElementRef | undefined;
@@ -120,7 +121,7 @@ export class PastTrainingsComponent {
 
     async ionViewWillEnter(): Promise<void> {
         await Storage.remove({ key: StorageItems.QUERY_PARAMS });
-        this.pastTrainingsStoreService.isSearch$
+        this._isSearch$$
             .pipe(
                 takeUntil(this.unsubscribeService),
             )
@@ -139,8 +140,16 @@ export class PastTrainingsComponent {
         });
     }
 
+    ngOnDestroy(): void {
+        this._isSearch$$.complete();
+    }
+
+    onFiltersSearchEmitted(isSearch: boolean): void {
+        this._isSearch$$.next(isSearch);
+    }
+
     searchEmitted(searchText: string): void {
-        this.pastTrainingsStoreService.emitSearch(searchText);
+        this._isSearch$$.next(!!searchText);
         this.page = INITIAL_PAGE;
         this.pastTrainings$ =
             of(searchText)
