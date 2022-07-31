@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { add, addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
@@ -34,7 +34,7 @@ import { TrainingItemWrapperHeights } from '../../../constants/enums/training-it
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class PastTrainingsComponent implements OnDestroy {
+export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     readonly pageSizeOptions = [1, 3, 5, 10];
     size = DEFAULT_SIZE;
@@ -130,6 +130,18 @@ export class PastTrainingsComponent implements OnDestroy {
             key: StorageItems.QUERY_PARAMS,
             value: JSON.stringify(this.currentQueryParams),
         });
+    }
+
+    ngAfterViewChecked(): void {
+        this._pastTrainingsStoreService.pastTrainingsWrapperScroll$
+            .pipe(
+                take(1),
+            )
+            .subscribe(scrollTop => {
+                if (this.trainingItemWrapper) {
+                    (this.trainingItemWrapper.nativeElement as HTMLDivElement).scrollTop = scrollTop;
+                }
+            });
     }
 
     ngOnDestroy(): void {
