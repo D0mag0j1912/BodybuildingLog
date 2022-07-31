@@ -1,17 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@capacitor/storage';
-import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { StorageItems } from '../../../constants/enums/storage-items.enum';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { StreamData } from '../../../models/common/common.model';
 import { Paginator } from '../../../models/common/paginator.model';
-import { PastTrainings, PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
+import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
 
 @Injectable({ providedIn: 'root' })
 export class SharedStoreService {
-
-    private readonly _pastTrainingsQueryParams$$: BehaviorSubject<PastTrainingsQueryParams> = new BehaviorSubject<PastTrainingsQueryParams>(null);
-    readonly pastTrainingsQueryParams$: Observable<PastTrainingsQueryParams> = this._pastTrainingsQueryParams$$.asObservable();
 
     private readonly _editingTraining$$: Subject<boolean> = new Subject<boolean>();
     readonly editingTraining$: Observable<boolean> = this._editingTraining$$.asObservable();
@@ -34,24 +28,6 @@ export class SharedStoreService {
 
     emitEditingTraining(editMode: boolean): void {
         this._editingTraining$$.next(editMode);
-    }
-
-    keepQueryParams(): Observable<boolean> {
-        return from(Storage.get({ key: StorageItems.QUERY_PARAMS }))
-            .pipe(
-                map(storedData => {
-                    if (!storedData || !storedData?.value) {
-                        return false;
-                    }
-                    const queryParams = JSON.parse(storedData.value);
-                    this._pastTrainingsQueryParams$$.next(queryParams);
-                    return true;
-                }),
-            );
-    }
-
-    emitPastTrainingsQueryParams(params: PastTrainingsQueryParams): void {
-        this._pastTrainingsQueryParams$$.next(params);
     }
 
 }

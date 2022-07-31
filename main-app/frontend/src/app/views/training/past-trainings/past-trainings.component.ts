@@ -1,9 +1,9 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { add, addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { NavController } from '@ionic/angular';
 import { Storage } from '@capacitor/storage';
@@ -25,11 +25,7 @@ import { calculateFirstWeekDay, calculateLastWeekDay, getCurrentDayIndex } from 
 import { DayActivatedType } from '../../../models/training/past-trainings/day-activated.type';
 import { INITIAL_PAGE, DEFAULT_SIZE } from '../../../constants/shared/paginator.const';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
-
-enum Heights {
-    WEEK_HEIGHT = 315,
-    SEARCH_HEIGHT = 345,
-}
+import { TrainingItemWrapperHeights } from '../../../constants/enums/training-item-wrapper-heights.enum';
 
 @Component({
     selector: 'bl-past-trainings',
@@ -38,17 +34,15 @@ enum Heights {
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class PastTrainingsComponent {
+export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
-    readonly food: number = 3000;
-    readonly pageSizeOptions: number[] = [1, 3, 5, 10];
-    size: number = DEFAULT_SIZE;
-    page: number = INITIAL_PAGE;
+    readonly pageSizeOptions = [1, 3, 5, 10];
+    size = DEFAULT_SIZE;
+    page = INITIAL_PAGE;
 
     searchText = '';
     currentQueryParams: PastTrainingsQueryParams;
-
-    periodFilter: PeriodFilterType = this.preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
+    periodFilter = this._preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
     dayActivated: DayActivatedType = {
         Date: startOfDay(new Date()),
         DayNumber: 0,
@@ -57,9 +51,10 @@ export class PastTrainingsComponent {
 
     isNextPage = true;
     isPreviousPage = true;
-    isSearch = false;
 
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
+    private readonly _isSearch$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    readonly isSearch$: Observable<boolean> = this._isSearch$$.asObservable();
 
     @ViewChild('itemWrapper', { read: ElementRef })
     trainingItemWrapper: ElementRef | undefined;
@@ -69,54 +64,54 @@ export class PastTrainingsComponent {
         if (timePeriodElement) {
             const trainingElement = (this.trainingItemWrapper?.nativeElement as HTMLDivElement);
             if (trainingElement) {
-                of(this.isSearch)
+                this._isSearch$$
                     .pipe(
                         delay(0),
-                        takeUntil(this.unsubscribeService),
+                        takeUntil(this._unsubscribeService),
                     )
-                    .subscribe(isSearch => trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? Heights.SEARCH_HEIGHT : Heights.WEEK_HEIGHT}px)`);
+                    .subscribe(isSearch => trainingElement.style.maxHeight = `calc(100vh - ${isSearch ? TrainingItemWrapperHeights.SEARCH_HEIGHT : TrainingItemWrapperHeights.WEEK_HEIGHT}px)`);
             }
         }
     }
 
     constructor(
-        private readonly pastTrainingsService: PastTrainingsService,
-        private readonly pastTrainingsStoreService: PastTrainingsStoreService,
-        private readonly unsubscribeService: UnsubscribeService,
-        private readonly translateService: TranslateService,
-        private readonly sharedStoreService: SharedStoreService,
-        private readonly preferencesService: PreferencesService,
-        private readonly preferencesStoreService: PreferencesStoreService,
-        private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly route: ActivatedRoute,
-        private readonly datePipe: DatePipe,
-        private readonly router: Router,
-        private readonly navController: NavController,
+        private readonly _pastTrainingsService: PastTrainingsService,
+        private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
+        private readonly _unsubscribeService: UnsubscribeService,
+        private readonly _translateService: TranslateService,
+        private readonly _sharedStoreService: SharedStoreService,
+        private readonly _preferencesService: PreferencesService,
+        private readonly _preferencesStoreService: PreferencesStoreService,
+        private readonly _changeDetectorRef: ChangeDetectorRef,
+        private readonly _route: ActivatedRoute,
+        private readonly _datePipe: DatePipe,
+        private readonly _router: Router,
+        private readonly _navController: NavController,
     ) {
-        this.route.queryParams
+        this._route.queryParams
             .pipe(
-                takeUntil(this.unsubscribeService),
+                takeUntil(this._unsubscribeService),
             )
             .subscribe(params => this.currentQueryParams = params);
 
-        this.sharedStoreService.deletedTraining$$
+        this._sharedStoreService.deletedTraining$$
             .pipe(
-                takeUntil(this.unsubscribeService),
+                takeUntil(this._unsubscribeService),
             ).subscribe((response: StreamData<Paginator<PastTrainings>>) => {
                 this.pastTrainings$ =
                     of(response)
                         .pipe(mapStreamData());
-                this.changeDetectorRef.markForCheck();
+                this._changeDetectorRef.markForCheck();
             });
     }
 
     get dateFormat(): string {
         return TEMPLATE_DATE_FORMAT;
     }
-    //TODO: make simple stream
+
     getDayTranslation$(dayName: string): Observable<string> {
         if (dayName) {
-            return this.translateService.stream(dayName)
+            return this._translateService.stream(dayName)
                 .pipe(
                     map(value => value?.toLowerCase()),
                 );
@@ -126,34 +121,42 @@ export class PastTrainingsComponent {
 
     async ionViewWillEnter(): Promise<void> {
         await Storage.remove({ key: StorageItems.QUERY_PARAMS });
-        this.pastTrainingsStoreService.isSearch$
-            .pipe(
-                takeUntil(this.unsubscribeService),
-            )
-            .subscribe(isSearch => {
-                this.isSearch = isSearch;
-                this.changeDetectorRef.markForCheck();
-            });
         this.initView();
     }
 
     async ionViewWillLeave(): Promise<void> {
-        this.sharedStoreService.emitPastTrainingsQueryParams(this.currentQueryParams);
-        await Storage.set({
-            key: StorageItems.QUERY_PARAMS,
-            value: JSON.stringify(this.currentQueryParams),
-        });
+        await this._pastTrainingsStoreService.emitPastTrainingsQueryParams(this.currentQueryParams);
+    }
+
+    ngAfterViewChecked(): void {
+        this._pastTrainingsStoreService.pastTrainingsWrapperScroll$
+            .pipe(
+                take(1),
+            )
+            .subscribe(scrollTop => {
+                if (this.trainingItemWrapper) {
+                    (this.trainingItemWrapper.nativeElement as HTMLDivElement).scrollTop = scrollTop;
+                }
+            });
+    }
+
+    ngOnDestroy(): void {
+        this._isSearch$$.complete();
+    }
+
+    onFiltersSearchEmitted(isSearch: boolean): void {
+        this._isSearch$$.next(isSearch);
     }
 
     searchEmitted(searchText: string): void {
-        this.pastTrainingsStoreService.emitSearch(searchText);
+        this._isSearch$$.next(!!searchText);
         this.page = INITIAL_PAGE;
         this.pastTrainings$ =
             of(searchText)
                 .pipe(
                     switchMap((searchText: string) => {
                         this.searchText = searchText;
-                        return this.pastTrainingsService.searchPastTrainings(
+                        return this._pastTrainingsService.searchPastTrainings(
                             this.searchText,
                             this.size,
                             this.page,
@@ -161,8 +164,8 @@ export class PastTrainingsComponent {
                             tap(async (response: StreamData<Paginator<PastTrainings>>) => {
                                 this.showByDayStartDate = new Date();
                                 this.updatePageAndSize(response);
-                                await this.router.navigate([], {
-                                    relativeTo: this.route,
+                                await this._router.navigate([], {
+                                    relativeTo: this._route,
                                     queryParams: this.handleQueryParams(
                                         response,
                                         searchText?.trim() ?? undefined,
@@ -189,8 +192,8 @@ export class PastTrainingsComponent {
                     DayNumber: getCurrentDayIndex(this.showByDayStartDate),
                 };
             }
-            const currentPreferences = this.preferencesStoreService.getPreferences();
-            this.preferencesService.setPreferences(
+            const currentPreferences = this._preferencesStoreService.getPreferences();
+            this._preferencesService.setPreferences(
                 {
                     ...currentPreferences,
                     showByPeriod: this.periodFilter,
@@ -199,32 +202,32 @@ export class PastTrainingsComponent {
             ).pipe(
                 take(1),
             ).subscribe(_ => {
-                this.pastTrainings$ = this.pastTrainingsService
+                this.pastTrainings$ = this._pastTrainingsService
                     .getPastTrainings(
                         startOfWeek(mondayDate, { weekStartsOn: 1 }),
                         this.periodFilter,
                     ).pipe(
                         tap(async response => {
-                            await this.router.navigate([], {
-                                relativeTo: this.route,
+                            await this._router.navigate([], {
+                                relativeTo: this._route,
                                 queryParams: this.handleQueryParams(response),
                             });
                         }),
                         mapStreamData(),
                     );
-                this.changeDetectorRef.markForCheck();
+                this._changeDetectorRef.markForCheck();
             });
         }
     }
 
     onDayActivated($event: DayActivatedType): void {
-        if (!this.isSearch) {
+        if (!this._isSearch$$.getValue()) {
             this.dayActivated = $event;
-            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings($event.Date, 'day')
+            this.pastTrainings$ = this._pastTrainingsService.getPastTrainings($event.Date, 'day')
                 .pipe(
                     tap(async response => {
-                        await this.router.navigate([], {
-                            relativeTo: this.route,
+                        await this._router.navigate([], {
+                            relativeTo: this._route,
                             queryParams: this.handleQueryParams(response),
                         });
                     }),
@@ -239,15 +242,15 @@ export class PastTrainingsComponent {
     ): void {
         if ($event?.IsSearch) {
             this.pastTrainings$ =
-                this.pastTrainingsService.searchPastTrainings(
+                this._pastTrainingsService.searchPastTrainings(
                     this.searchText?.trim()?.toLowerCase() ?? '',
                     $event.Size,
                     $event.Page,
                 ).pipe(
                     tap(async (response: StreamData<Paginator<PastTrainings>>) => {
                         this.updatePageAndSize(response);
-                        await this.router.navigate([], {
-                            relativeTo: this.route,
+                        await this._router.navigate([], {
+                            relativeTo: this._route,
                             queryParams: this.handleQueryParams(
                                 response,
                                 this.searchText,
@@ -272,7 +275,7 @@ export class PastTrainingsComponent {
                 };
             }
             this.pastTrainings$ =
-                this.pastTrainingsService.getPastTrainings(
+                this._pastTrainingsService.getPastTrainings(
                     this.periodFilter === 'week'
                     ?   this.onPaginatorChangedFilterHandler(this.periodFilter, $event)
                     :   this.onPaginatorChangedFilterHandler(
@@ -284,8 +287,8 @@ export class PastTrainingsComponent {
                 ).pipe(
                     tap(async (response: StreamData<Paginator<PastTrainings>>) => {
                         this.handlePaginationArrows(response);
-                        await this.router.navigate([], {
-                            relativeTo: this.route,
+                        await this._router.navigate([], {
+                            relativeTo: this._route,
                             queryParams: this.handleQueryParams(response),
                         });
                     }),
@@ -294,10 +297,17 @@ export class PastTrainingsComponent {
         }
     }
 
+    async onTrainingItemClicked(): Promise<void> {
+        if (this.trainingItemWrapper) {
+            const scrollTop = (this.trainingItemWrapper.nativeElement as HTMLDivElement).scrollTop;
+            await this._pastTrainingsStoreService.emitWrapperScroll(scrollTop);
+        }
+    }
+
     async logNewTraining(): Promise<void> {
         const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
-        this.sharedStoreService.emitDayClicked(dayClickedDate.toISOString());
-        await this.navController.navigateForward('/training/new-training');
+        this._sharedStoreService.emitDayClicked(dayClickedDate.toISOString());
+        await this._navController.navigateForward('/training/new-training');
     }
 
     //TODO: align with 'ShowByDay' feature
@@ -313,7 +323,7 @@ export class PastTrainingsComponent {
                 dateInterval.EndDate,
             );
             if (isDay) {
-                return this.translateService.stream(results.DayName)
+                return this._translateService.stream(results.DayName)
                     .pipe(
                         map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate)),
                     );
@@ -324,7 +334,7 @@ export class PastTrainingsComponent {
                 { weekStartsOn: 1 },
             );
             if (isWeek) {
-                return this.translateService.stream('common.week')
+                return this._translateService.stream('common.week')
                     .pipe(
                         map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
                     );
@@ -335,12 +345,12 @@ export class PastTrainingsComponent {
             );
             if (isMonth) {
                 const month = getMonth(dateInterval.StartDate);
-                return this.translateService.stream(`common.months.${ALL_MONTHS[month]}`)
+                return this._translateService.stream(`common.months.${ALL_MONTHS[month]}`)
                     .pipe(
                         map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
                     );
             }
-            return this.translateService.stream('common.period')
+            return this._translateService.stream('common.period')
                 .pipe(
                     map((value: string) => this.generateHeaderTitle(value, dateInterval.StartDate, dateInterval.EndDate)),
                 );
@@ -351,11 +361,11 @@ export class PastTrainingsComponent {
     }
 
     private initView(): void {
-        this.page = this.route.snapshot.queryParamMap?.get('page') ? +this.route.snapshot.queryParamMap.get('page') : INITIAL_PAGE;
-        this.size = this.route.snapshot.queryParamMap?.get('size') ? +this.route.snapshot.queryParamMap.get('size') : DEFAULT_SIZE;
-        this.searchText = this.route.snapshot.queryParamMap?.get('search');
+        this.page = this._route.snapshot.queryParamMap?.get('page') ? +this._route.snapshot.queryParamMap.get('page') : INITIAL_PAGE;
+        this.size = this._route.snapshot.queryParamMap?.get('size') ? +this._route.snapshot.queryParamMap.get('size') : DEFAULT_SIZE;
+        this.searchText = this._route.snapshot.queryParamMap?.get('search');
         if (this.searchText) {
-            this.pastTrainings$ = this.pastTrainingsService.searchPastTrainings(
+            this.pastTrainings$ = this._pastTrainingsService.searchPastTrainings(
                 this.searchText.trim().toLowerCase(),
                 this.size,
                 this.page,
@@ -365,7 +375,7 @@ export class PastTrainingsComponent {
             );
         }
         else {
-            this.periodFilter = this.route.snapshot.queryParamMap?.get('showBy') as PeriodFilterType;
+            this.periodFilter = this._route.snapshot.queryParamMap?.get('showBy') as PeriodFilterType;
             if (this.periodFilter === 'day') {
                 this.showByDayStartDate = this.getDateTimeQueryParams();
                 this.dayActivated = {
@@ -373,7 +383,7 @@ export class PastTrainingsComponent {
                     DayNumber: getCurrentDayIndex(this.showByDayStartDate),
                 };
             }
-            this.pastTrainings$ = this.pastTrainingsService.getPastTrainings(
+            this.pastTrainings$ = this._pastTrainingsService.getPastTrainings(
                 this.getDateTimeQueryParams(),
                 this.periodFilter ?? 'week',
             ).pipe(
@@ -381,6 +391,7 @@ export class PastTrainingsComponent {
                 mapStreamData(),
             );
         }
+        this._changeDetectorRef.markForCheck();
     }
 
     private onPaginatorChangedFilterHandler(
@@ -403,7 +414,7 @@ export class PastTrainingsComponent {
     private updatePageAndSize(response: StreamData<Paginator<PastTrainings>>): void {
         this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
         this.size = response?.Value?.Size ?? DEFAULT_SIZE;
-        this.changeDetectorRef.markForCheck();
+        this._changeDetectorRef.markForCheck();
     }
 
     private calculateDate(
@@ -488,11 +499,11 @@ export class PastTrainingsComponent {
             this.isNextPage = x.Value.Results.IsNextWeek;
             this.isPreviousPage = x.Value.Results.IsPreviousWeek;
         }
-        this.changeDetectorRef.markForCheck();
+        this._changeDetectorRef.markForCheck();
     }
 
     private getDateTimeQueryParams(): Date {
-        const splittedDate = this.route.snapshot.queryParams?.startDate?.split('-') ?? [];
+        const splittedDate = this._route.snapshot.queryParams?.startDate?.split('-') ?? [];
         const utc = splittedDate.length > 0 ? new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString() : new Date().toUTCString();
         return startOfDay(new Date(utc));
     }
@@ -505,11 +516,11 @@ export class PastTrainingsComponent {
         if (endDate) {
             return `
                 <strong class="header-title--key">${period}</strong>
-                <span class="header-title--value">(${this.datePipe.transform(startDate, this.dateFormat)} - ${this.datePipe.transform(endDate, this.dateFormat)})</span>`;
+                <span class="header-title--value">(${this._datePipe.transform(startDate, this.dateFormat)} - ${this._datePipe.transform(endDate, this.dateFormat)})</span>`;
         }
         else {
             return `<strong class="header-title--key">${period}</strong>
-                <span class="header-title--value">(${this.datePipe.transform(startDate, this.dateFormat)})</span`;
+                <span class="header-title--value">(${this._datePipe.transform(startDate, this.dateFormat)})</span`;
         }
     }
 

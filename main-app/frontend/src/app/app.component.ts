@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
+import { StorageItems } from './constants/enums/storage-items.enum';
 import { UnsubscribeService } from './services/shared/unsubscribe.service';
-import { SharedStoreService } from './services/store/shared/shared-store.service';
 import { NewTrainingStoreService } from './services/store/training/new-training-store.service';
+import { PastTrainingsStoreService } from './services/store/training/past-trainings-store.service';
 
 @Component({
     selector: 'bl-root',
@@ -14,17 +16,24 @@ import { NewTrainingStoreService } from './services/store/training/new-training-
 export class AppComponent implements OnInit {
 
     constructor(
-        private readonly newTrainingStoreService: NewTrainingStoreService,
-        private readonly sharedStoreService: SharedStoreService,
-        private readonly translateService: TranslateService,
+        private readonly _newTrainingStoreService: NewTrainingStoreService,
+        private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
+        private readonly _translateService: TranslateService,
+        private readonly _unsubscribeService: UnsubscribeService,
     ) { }
 
     ngOnInit(): void {
-        this.newTrainingStoreService.keepTrainingState()
-            .subscribe();
-        this.sharedStoreService.keepQueryParams()
+        this._newTrainingStoreService.keepTrainingState()
+            .pipe(takeUntil(this._unsubscribeService))
             .subscribe();
 
-        this.translateService.setDefaultLang('en');
+        this._pastTrainingsStoreService.keepStreamValues([
+            StorageItems.PAST_TRAININGS_SCROLL_WRAPPER,
+            StorageItems.QUERY_PARAMS,
+        ])
+        .pipe(takeUntil(this._unsubscribeService))
+        .subscribe();
+
+        this._translateService.setDefaultLang('en');
     }
 }
