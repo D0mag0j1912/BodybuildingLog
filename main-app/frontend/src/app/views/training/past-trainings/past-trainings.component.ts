@@ -125,11 +125,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     async ionViewWillLeave(): Promise<void> {
-        this._pastTrainingsStoreService.emitPastTrainingsQueryParams(this.currentQueryParams);
-        await Storage.set({
-            key: StorageItems.QUERY_PARAMS,
-            value: JSON.stringify(this.currentQueryParams),
-        });
+        await this._pastTrainingsStoreService.emitPastTrainingsQueryParams(this.currentQueryParams);
     }
 
     ngAfterViewChecked(): void {
@@ -301,10 +297,10 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         }
     }
 
-    onTrainingItemClicked(): void {
+    async onTrainingItemClicked(): Promise<void> {
         if (this.trainingItemWrapper) {
             const scrollTop = (this.trainingItemWrapper.nativeElement as HTMLDivElement).scrollTop;
-            this._pastTrainingsStoreService.emitWrapperScroll(scrollTop);
+            await this._pastTrainingsStoreService.emitWrapperScroll(scrollTop);
         }
     }
 

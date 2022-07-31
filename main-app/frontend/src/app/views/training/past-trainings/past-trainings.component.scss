@@ -92,6 +92,7 @@ ion-list {
 .training-item-wrapper {
     display: block;
     overflow: auto;
+    scroll-behavior: smooth;
 
     &::-webkit-scrollbar {
         width: 6px;
