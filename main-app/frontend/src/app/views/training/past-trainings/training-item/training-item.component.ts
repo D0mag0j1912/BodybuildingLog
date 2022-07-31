@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { format } from 'date-fns';
 import { take } from 'rxjs/operators';
@@ -38,6 +38,9 @@ export class TrainingItemComponent implements OnInit {
     @Input()
     training: NewTraining;
 
+    @Output()
+    readonly trainingItemClicked: EventEmitter<void> = new EventEmitter<void>();
+
     constructor(
         private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
         private readonly _route: ActivatedRoute,
@@ -55,6 +58,7 @@ export class TrainingItemComponent implements OnInit {
                 take(1),
             )
             .subscribe(async (params: Params) => {
+                this.trainingItemClicked.emit();
                 this._pastTrainingsStoreService.emitPastTrainingsQueryParams(params as PastTrainingsQueryParams);
                 await Storage.set({
                     key: StorageItems.QUERY_PARAMS,

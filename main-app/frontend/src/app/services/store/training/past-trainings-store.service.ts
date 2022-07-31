@@ -11,6 +11,9 @@ export class PastTrainingsStoreService {
     private readonly _pastTrainingsQueryParams$$: BehaviorSubject<PastTrainingsQueryParams> = new BehaviorSubject<PastTrainingsQueryParams>(null);
     readonly pastTrainingsQueryParams$: Observable<PastTrainingsQueryParams> = this._pastTrainingsQueryParams$$.asObservable();
 
+    private readonly _pastTrainingsWrapperScroll$$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    readonly pastTrainingsWrapperScroll$: Observable<number> = this._pastTrainingsWrapperScroll$$.asObservable();
+
     keepQueryParams(): Observable<boolean> {
         return from(Storage.get({ key: StorageItems.QUERY_PARAMS }))
             .pipe(
@@ -27,5 +30,9 @@ export class PastTrainingsStoreService {
 
     emitPastTrainingsQueryParams(params: PastTrainingsQueryParams): void {
         this._pastTrainingsQueryParams$$.next(params);
+    }
+
+    emitWrapperScroll(scrollTop: number): void {
+        this._pastTrainingsWrapperScroll$$.next(scrollTop);
     }
 }

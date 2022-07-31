@@ -80,7 +80,8 @@
                     <ng-container *ngIf="state.Value?.TotalCount > 0; else noTrainings">
                         <bl-training-item
                             *ngFor="let training of state.Value?.Results?.Trainings"
-                            [training]="training"></bl-training-item>
+                            [training]="training"
+                            (trainingItemClicked)="onTrainingItemClicked()"></bl-training-item>
                     </ng-container>
                     <ng-template #noTrainings>
                         <section class="no-trainings">

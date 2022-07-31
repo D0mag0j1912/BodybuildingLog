@@ -289,6 +289,13 @@ export class PastTrainingsComponent implements OnDestroy {
         }
     }
 
+    onTrainingItemClicked(): void {
+        if (this.trainingItemWrapper) {
+            const scrollTop = (this.trainingItemWrapper.nativeElement as HTMLDivElement).scrollTop;
+            this._pastTrainingsStoreService.emitWrapperScroll(scrollTop);
+        }
+    }
+
     async logNewTraining(): Promise<void> {
         const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
         this._sharedStoreService.emitDayClicked(dayClickedDate.toISOString());
