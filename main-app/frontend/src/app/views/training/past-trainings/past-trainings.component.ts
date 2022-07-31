@@ -51,10 +51,10 @@ export class PastTrainingsComponent implements OnDestroy {
 
     isNextPage = true;
     isPreviousPage = true;
-    isSearch = false;
 
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
     private readonly _isSearch$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    readonly isSearch$: Observable<boolean> = this._isSearch$$.asObservable();
 
     @ViewChild('itemWrapper', { read: ElementRef })
     trainingItemWrapper: ElementRef | undefined;
@@ -64,7 +64,7 @@ export class PastTrainingsComponent implements OnDestroy {
         if (timePeriodElement) {
             const trainingElement = (this.trainingItemWrapper?.nativeElement as HTMLDivElement);
             if (trainingElement) {
-                of(this.isSearch)
+                this._isSearch$$
                     .pipe(
                         delay(0),
                         takeUntil(this._unsubscribeService),
@@ -121,14 +121,6 @@ export class PastTrainingsComponent implements OnDestroy {
 
     async ionViewWillEnter(): Promise<void> {
         await Storage.remove({ key: StorageItems.QUERY_PARAMS });
-        this._isSearch$$
-            .pipe(
-                takeUntil(this._unsubscribeService),
-            )
-            .subscribe(isSearch => {
-                this.isSearch = isSearch;
-                this._changeDetectorRef.markForCheck();
-            });
         this.initView();
     }
 
@@ -221,7 +213,7 @@ export class PastTrainingsComponent implements OnDestroy {
     }
 
     onDayActivated($event: DayActivatedType): void {
-        if (!this.isSearch) {
+        if (!this._isSearch$$.getValue()) {
             this.dayActivated = $event;
             this.pastTrainings$ = this._pastTrainingsService.getPastTrainings($event.Date, 'day')
                 .pipe(
@@ -384,6 +376,7 @@ export class PastTrainingsComponent implements OnDestroy {
                 mapStreamData(),
             );
         }
+        this._changeDetectorRef.markForCheck();
     }
 
     private onPaginatorChangedFilterHandler(

@@ -9,7 +9,7 @@
 <ion-content>
     <ng-container *ngIf="pastTrainings$ | async as state">
         <bl-show-by-day
-            *ngIf="periodFilter === 'day' && !isSearch && !state.IsError"
+            *ngIf="periodFilter === 'day' && !(isSearch$ | async) && !state.IsError"
             [startDate]="showByDayStartDate"
             (dayActivated)="onDayActivated($event)"></bl-show-by-day>
         <ng-container *ngIf="state.IsError; else valueOrLoading">
@@ -39,12 +39,12 @@
                     color="primary"></ion-spinner>
             </ng-container>
             <bl-past-trainings-filters
-                [periodDisabled]="isSearch"
+                [periodDisabled]="isSearch$ | async"
                 [periodFilter]="periodFilter"
                 (trainingEmitted)="searchEmitted($event)"
                 (periodEmitted)="onPeriodEmitted($event, state.Value?.Results?.Dates?.StartDate)"
                 (searchEmitted)="onFiltersSearchEmitted($event)"></bl-past-trainings-filters>
-            <ng-container *ngIf="isSearch && state.Value?.TotalCount === 0; else otherCases">
+            <ng-container *ngIf="(isSearch$ | async) && state.Value?.TotalCount === 0; else otherCases">
                 <ion-list class="ion-text-center">
                     <ion-item lines="none">
                         <img
@@ -84,7 +84,7 @@
                     </ng-container>
                     <ng-template #noTrainings>
                         <section class="no-trainings">
-                            <ng-container *ngIf="!isSearch && state.Value?.TotalCount === 0">
+                            <ng-container *ngIf="!(isSearch$ | async) && state.Value?.TotalCount === 0">
                                 <h1 class="no-trainings-title">
                                     {{ periodFilter === 'week' ?
                                         ('training.past_trainings.no_trainings_week' | translate) :
@@ -102,7 +102,7 @@
                     </ng-template>
                 </div>
                 <bl-pagination
-                    [isSearch]="isSearch"
+                    [isSearch]="isSearch$ | async"
                     [page]="page"
                     [size]="size"
                     [isPreviousPage]="isPreviousPage"
