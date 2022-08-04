@@ -59,7 +59,7 @@ export class TrainingItemComponent implements OnInit {
             )
             .subscribe(async (params: Params) => {
                 this.trainingItemClicked.emit();
-                this._pastTrainingsStoreService.emitPastTrainingsQueryParams(params as PastTrainingsQueryParams);
+                await this._pastTrainingsStoreService.emitPastTrainingsQueryParams(params as PastTrainingsQueryParams);
                 await Storage.set({
                     key: StorageItems.QUERY_PARAMS,
                     value: JSON.stringify(params as PastTrainingsQueryParams),
