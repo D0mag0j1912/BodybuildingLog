@@ -147,6 +147,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         this.onTouched = fn;
     }
 
+    async onRepsKeydown(repsInput: IonInput, index: number): Promise<void> {
+        if (!repsInput.value) {
+            const weightLiftedInput = this.weightLiftedEl?.find((_item, i) => i === index);
+            await weightLiftedInput?.setFocus();
+        }
+    }
+
     getSets(): AbstractControl[] {
         return (this.form as FormArray).controls;
     }
