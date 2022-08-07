@@ -67,7 +67,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     readonly weightUnitChanged: EventEmitter<number> = new EventEmitter<number>();
 
     @ViewChildren('weightLiftedEl')
-    readonly weightLiftedEl: QueryList<IonInput>;
+    readonly weightLiftedElements: QueryList<IonInput>;
+
+    @ViewChildren('repsEl')
+    readonly repsElements: QueryList<IonInput>;
 
     constructor(
         private readonly unsubscribeService: UnsubscribeService,
@@ -94,8 +97,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                 takeUntil(this.unsubscribeService),
             )
             .subscribe(async _ => {
-                if (this.weightLiftedEl?.first) {
-                    await this.weightLiftedEl.first.setFocus();
+                if (this.weightLiftedElements?.first) {
+                    await this.weightLiftedElements.first.setFocus();
                 }
             });
 
@@ -147,6 +150,23 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         this.onTouched = fn;
     }
 
+    async onWeightLiftedKeydown(index: number): Promise<void> {
+        const weightLiftedInput = this.weightLiftedElements.find((_item, i) => i === index);
+        if (index > 0 && !weightLiftedInput?.value) {
+            this.deleteSet(index);
+            const previousRepsElement = this.repsElements.find((_item, i) => i === (index - 1));
+            await previousRepsElement?.setFocus();
+        }
+    }
+
+    async onRepsKeydown(index: number): Promise<void> {
+        const repsInput = this.repsElements.find((_item, i) => i === index);
+        if (!repsInput?.value) {
+            const weightLiftedInput = this.weightLiftedElements?.find((_item, i) => i === index);
+            await weightLiftedInput?.setFocus();
+        }
+    }
+
     getSets(): AbstractControl[] {
         return (this.form as FormArray).controls;
     }
@@ -179,8 +199,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                 takeUntil(this.unsubscribeService),
             )
             .subscribe(async _ => {
-                if (this.weightLiftedEl) {
-                    await this.weightLiftedEl.last?.setFocus();
+                if (this.weightLiftedElements) {
+                    await this.weightLiftedElements.last?.setFocus();
                 }
             });
     }
