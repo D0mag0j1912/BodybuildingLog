@@ -3,7 +3,7 @@
     autocomplete="off">
     <ng-container *ngFor="let set of getSets(); let j = index">
         <ng-container [formGroupName]="j">
-            <ion-grid>
+            <ion-grid class="set-grid">
                 <ion-row class="ion-text-center set-row">
                     <ion-col size="5">
                         <ion-item fill="outline">
@@ -66,16 +66,6 @@
                                 && !isLoading"
                             class="error">
                             {{ 'training.new_training.errors.set_required' | translate }}
-                        </ion-text>
-                        <ion-text
-                            *ngIf="accessFormField('weightLifted', j).value
-                                && accessFormField('weightLifted', j).valid
-                                && accessFormField('reps', j).value
-                                && accessFormField('reps', j).valid
-                                && !editMode
-                                && !isLoading"
-                            class="set-saved-msg">
-                            {{ 'training.new_training.set_saved' | translate }}
                         </ion-text>
                     </ion-col>
                     <ion-col size="5">

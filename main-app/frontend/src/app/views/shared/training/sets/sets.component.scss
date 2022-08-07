@@ -1,11 +1,15 @@
 
-ion-grid {
+.set-grid {
     &:first-of-type {
         padding-bottom: 0;
     }
 
     &:not(:first-of-type) {
         padding-top: 0;
+    }
+
+    &:not(:last-of-type) {
+        margin-bottom: 5px;
     }
 }
 
@@ -23,12 +27,6 @@ ion-grid {
     .ion-label {
         font-size: 14px;
     }
-}
-
-.set-saved-msg {
-    color: var(--ion-color-primary);
-    font-weight: bold;
-    font-size: 14px;
 }
 
 .delete-set-col {
