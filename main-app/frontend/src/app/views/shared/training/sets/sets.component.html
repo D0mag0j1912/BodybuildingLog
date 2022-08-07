@@ -19,7 +19,8 @@
                                     class="weight-lifted-input"
                                     formControlName="weightLifted"
                                     (ionChange)="onChangeSets(j)"
-                                    (ionBlur)="onTouched()">
+                                    (ionBlur)="onTouched()"
+                                    (keydown.backspace)="onWeightLiftedKeydown(j)">
                                 </ion-input>
                                 <ion-text
                                     class="weight-lifted-input--unit"
@@ -91,7 +92,7 @@
                                 formControlName="reps"
                                 (ionChange)="onChangeSets(j)"
                                 (ionBlur)="onTouched()"
-                                (keydown.backspace)="onRepsKeydown(repsEl, j)"></ion-input>
+                                (keydown.backspace)="onRepsKeydown(j)"></ion-input>
                             <ion-text
                                 *ngIf="accessFormField('reps', j)?.errors?.pattern &&
                                     !accessFormField('reps', j)?.errors?.onlyNumbers &&
