@@ -17,7 +17,6 @@ import { Exercise } from '../../../models/training/exercise.model';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
-import * as CommonValidators from '../../../validators/shared/common.validators';
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
 import { SingleExerciseComponent } from '../../shared/training/single-exercise/single-exercise.component';
 import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
@@ -89,7 +88,11 @@ export class NewTrainingComponent implements OnDestroy {
         this.form = new FormGroup({
             bodyweight: new FormControl(null,
                 {
-                    validators: [CommonValidators.isNumber(), Validators.min(30), Validators.max(300)],
+                    validators: [
+                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                        Validators.min(30),
+                        Validators.max(300),
+                    ],
                     updateOn: 'blur',
                 },
             ),

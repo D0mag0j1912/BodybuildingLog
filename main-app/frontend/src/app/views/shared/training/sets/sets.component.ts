@@ -10,7 +10,6 @@ import { Set } from '../../../../models/training/shared/set.model';
 import { FormSetData } from '../../../../models/training/shared/set.type';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
-import * as CommonValidators from '../../../../validators/shared/common.validators';
 import * as SetValidators from '../../../../validators/training/set.validators';
 import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
 import { WeightUnit } from '../../../../models/common/preferences.type';
@@ -181,16 +180,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                 }, [Validators.required,
                     Validators.min(1),
                     Validators.max(1000),
-                    CommonValidators.isNumber()]),
+                    Validators.pattern(/^[1-9]\d*(\.\d+)?$/)]),
                 reps: new FormControl({
                     value: set ? set.reps : null,
                     disabled: this.exerciseNameControl.value ? false : true,
                 }, [Validators.required,
                     Validators.min(1),
                     Validators.max(1000),
-                    Validators.pattern('^[0-9]*$')]),
-            }, {
-                validators: [SetValidators.isSetValid()],
+                    Validators.pattern(/^[1-9]\d*(\.\d+)?$/)]),
             }),
         );
         of(null)
