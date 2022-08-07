@@ -18,24 +18,3 @@ export function allSetsFilled(): ValidatorFn {
         return null;
     };
 }
-
-export function isSetValid(): ValidatorFn {
-    return (group: AbstractControl): ValidationErrors | null => {
-        if (group) {
-            const weightLifted: AbstractControl = group?.get('weightLifted');
-            const reps: AbstractControl = group?.get('reps');
-            if (weightLifted && reps) {
-                if (!weightLifted.value || !reps.value) {
-                    return { 'setNotEntered': true };
-                }
-                if (!weightLifted.valid || !reps.valid) {
-                    return { 'setNotValid': true };
-                }
-            }
-            return null;
-        }
-        else {
-            return null;
-        }
-    };
-}

@@ -71,7 +71,7 @@
                             </ion-text>
                     </ng-container>
                     <ion-note
-                        *ngIf="accessFormData('bodyweight')?.errors?.onlyNumbers"
+                        *ngIf="accessFormData('bodyweight')?.errors?.pattern"
                         slot="error">
                         {{ 'training.new_training.errors.only_numbers' | translate }}
                     </ion-note>
