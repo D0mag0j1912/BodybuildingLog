@@ -49,12 +49,14 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     };
     showByDayStartDate: Date;
 
-    isNextPage = true;
-    isPreviousPage = true;
-
-    pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
     private readonly _isSearch$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private readonly _isNextPage$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private readonly _isPreviousPage$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
     readonly isSearch$: Observable<boolean> = this._isSearch$$.asObservable();
+    readonly isNextPage$: Observable<boolean> = this._isNextPage$$.asObservable();
+    readonly isPreviousPage$: Observable<boolean> = this._isPreviousPage$$.asObservable();
+    pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
 
     @ViewChild('itemWrapper', { read: ElementRef })
     trainingItemWrapper: ElementRef | undefined;
@@ -492,14 +494,15 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         }
     }
 
-    private handlePaginationArrows(x: StreamData<Paginator<PastTrainings>>): void {
-        this.isPreviousPage = !!x?.Value?.Previous;
-        this.isNextPage = !!x?.Value?.Next;
-        if (x?.Value?.Results?.IsPreviousWeek !== undefined && x?.Value?.Results?.IsNextWeek !== undefined) {
-            this.isNextPage = x.Value.Results.IsNextWeek;
-            this.isPreviousPage = x.Value.Results.IsPreviousWeek;
+    private handlePaginationArrows(response: StreamData<Paginator<PastTrainings>>): void {
+        if (response.Value.Results.EarliestTrainingDate) {
+            this._isPreviousPage$$.next(response.Value.Results.IsPreviousWeek ?? false);
+            this._isNextPage$$.next(response.Value.Results.IsNextWeek ?? false);
         }
-        this._changeDetectorRef.markForCheck();
+        else {
+            this._isPreviousPage$$.next(!!response.Value.Previous);
+            this._isNextPage$$.next(!!response.Value.Next);
+        }
     }
 
     private getDateTimeQueryParams(): Date {

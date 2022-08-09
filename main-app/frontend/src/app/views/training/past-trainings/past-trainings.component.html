@@ -106,8 +106,8 @@
                     [isSearch]="isSearch$ | async"
                     [page]="page"
                     [size]="size"
-                    [isPreviousPage]="isPreviousPage"
-                    [isNextPage]="isNextPage"
+                    [isPreviousPage]="isPreviousPage$ | async"
+                    [isNextPage]="isNextPage$ | async"
                     [data]="state"
                     [isLoading]="state.IsLoading"
                     (paginatorChanged)="onPaginatorChanged(
