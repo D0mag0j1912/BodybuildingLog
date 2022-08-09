@@ -64,55 +64,57 @@
                 </ion-list>
             </ng-container>
             <ng-template #otherCases>
-                <ion-card class="card-info-wrapper ion-text-center">
-                    <ion-card-header class="card-info-wrapper--header">
-                        <ion-card-title class="header-title">
-                            <div
-                                *skeleton="state.IsLoading; width: '305px'; height: '25px';"
-                                #timePeriod
-                                [innerHTML]="setTimePeriod$(state.Value?.Results) | async"></div>
-                        </ion-card-title>
-                    </ion-card-header>
-                </ion-card>
-                <div
-                    #itemWrapper
-                    class="training-item-wrapper">
-                    <ng-container *ngIf="state.Value?.TotalCount > 0; else noTrainings">
-                        <bl-training-item
-                            *ngFor="let training of state.Value?.Results?.Trainings"
-                            [training]="training"
-                            (trainingItemClicked)="onTrainingItemClicked()"></bl-training-item>
-                    </ng-container>
-                    <ng-template #noTrainings>
-                        <section class="no-trainings">
-                            <ng-container *ngIf="!(isSearch$ | async) && state.Value?.TotalCount === 0">
-                                <h1 class="no-trainings-title">
-                                    {{ periodFilter === 'week' ?
-                                        ('training.past_trainings.no_trainings_week' | translate) :
-                                        ('training.past_trainings.no_trainings_day' | translate: { dayName: getDayTranslation$(state.Value?.Results?.DayName) | async }) }}
-                                </h1>
-                                <ion-button
-                                    mode="md"
-                                    type="button"
-                                    color="primary"
-                                    (click)="logNewTraining()">
-                                    {{ 'training.past_trainings.log_training' | translate }}
-                                </ion-button>
-                            </ng-container>
-                        </section>
-                    </ng-template>
-                </div>
-                <bl-pagination
-                    [isSearch]="isSearch$ | async"
-                    [page]="page"
-                    [size]="size"
-                    [isPreviousPage]="isPreviousPage$ | async"
-                    [isNextPage]="isNextPage$ | async"
-                    [data]="state"
-                    [isLoading]="state.IsLoading"
-                    (paginatorChanged)="onPaginatorChanged(
-                        $event,
-                        state.Value?.Results?.Dates?.StartDate)"></bl-pagination>
+                <ng-container *ngIf="!(isSearching$ | async)">
+                    <ion-card class="card-info-wrapper ion-text-center">
+                        <ion-card-header class="card-info-wrapper--header">
+                            <ion-card-title class="header-title">
+                                <div
+                                    *skeleton="state.IsLoading; width: '305px'; height: '25px';"
+                                    #timePeriod
+                                    [innerHTML]="setTimePeriod$(state.Value?.Results) | async"></div>
+                            </ion-card-title>
+                        </ion-card-header>
+                    </ion-card>
+                    <div
+                        #itemWrapper
+                        class="training-item-wrapper">
+                        <ng-container *ngIf="state.Value?.TotalCount > 0; else noTrainings">
+                            <bl-training-item
+                                *ngFor="let training of state.Value?.Results?.Trainings"
+                                [training]="training"
+                                (trainingItemClicked)="onTrainingItemClicked()"></bl-training-item>
+                        </ng-container>
+                        <ng-template #noTrainings>
+                            <section class="no-trainings">
+                                <ng-container *ngIf="!(isSearch$ | async) && state.Value?.TotalCount === 0">
+                                    <h1 class="no-trainings-title">
+                                        {{ periodFilter === 'week' ?
+                                            ('training.past_trainings.no_trainings_week' | translate) :
+                                            ('training.past_trainings.no_trainings_day' | translate: { dayName: getDayTranslation$(state.Value?.Results?.DayName) | async }) }}
+                                    </h1>
+                                    <ion-button
+                                        mode="md"
+                                        type="button"
+                                        color="primary"
+                                        (click)="logNewTraining()">
+                                        {{ 'training.past_trainings.log_training' | translate }}
+                                    </ion-button>
+                                </ng-container>
+                            </section>
+                        </ng-template>
+                    </div>
+                    <bl-pagination
+                        [isSearch]="isSearch$ | async"
+                        [page]="page"
+                        [size]="size"
+                        [isPreviousPage]="isPreviousPage$ | async"
+                        [isNextPage]="isNextPage$ | async"
+                        [data]="state"
+                        [isLoading]="state.IsLoading"
+                        (paginatorChanged)="onPaginatorChanged(
+                            $event,
+                            state.Value?.Results?.Dates?.StartDate)"></bl-pagination>
+                </ng-container>
             </ng-template>
         </ng-template>
     </ng-container>
