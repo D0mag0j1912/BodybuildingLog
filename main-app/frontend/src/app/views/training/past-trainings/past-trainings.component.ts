@@ -507,7 +507,9 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     private getDateTimeQueryParams(): Date {
         const splittedDate = this._route.snapshot.queryParams?.startDate?.split('-') ?? [];
-        const utc = splittedDate.length > 0 ? new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString() : new Date().toUTCString();
+        const utc = splittedDate.length > 0 ?
+            new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString() :
+            new Date().toUTCString();
         return startOfDay(new Date(utc));
     }
 
