@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { add, addDays, format, getMonth, isSameDay, isSameMonth, isSameWeek, startOfDay, startOfWeek, subDays } from 'date-fns';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { delay, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { NavController } from '@ionic/angular';
 import { Storage } from '@capacitor/storage';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
@@ -50,12 +50,10 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     showByDayStartDate: Date;
 
     private readonly _isSearch$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private readonly _isSearching$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private readonly _isNextPage$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private readonly _isPreviousPage$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     readonly isSearch$: Observable<boolean> = this._isSearch$$.asObservable();
-    readonly isSearching$: Observable<boolean> = this._isSearching$$.asObservable();
     readonly isNextPage$: Observable<boolean> = this._isNextPage$$.asObservable();
     readonly isPreviousPage$: Observable<boolean> = this._isPreviousPage$$.asObservable();
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
@@ -146,7 +144,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     ngOnDestroy(): void {
         this._isSearch$$.complete();
-        this._isSearching$$.complete();
         this._isPreviousPage$$.complete();
         this._isNextPage$$.complete();
     }
@@ -157,7 +154,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     searchEmitted(searchText: string): void {
         this._isSearch$$.next(!!searchText);
-        this._isSearching$$.next(true);
         this.page = INITIAL_PAGE;
         this.pastTrainings$ =
             of(searchText)
@@ -182,7 +178,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                                 this.handlePaginationArrows(response);
                             }),
                             mapStreamData(),
-                            finalize(() => this._isSearching$$.next(false)),
                         );
                     }),
                 );
