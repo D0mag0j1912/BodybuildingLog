@@ -39,7 +39,7 @@
                     color="primary"></ion-spinner>
             </ng-container>
             <bl-past-trainings-filters
-                [periodDisabled]="isSearch$ | async"
+                [periodDisabled]="(isSearch$ | async) || state.IsLoading"
                 [periodFilter]="periodFilter"
                 (trainingEmitted)="searchEmitted($event)"
                 (periodEmitted)="onPeriodEmitted($event, state.Value?.Results?.Dates?.StartDate)"
