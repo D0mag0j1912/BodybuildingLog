@@ -64,12 +64,7 @@ const IMPORTS = [
         ...EXTERNAL_IMPORTS,
         ...IMPORTS,
     ],
-    exports: [ ...COMPONENTS ],
-    entryComponents: [
-        DeleteExerciseDialogComponent,
-        DeleteTrainingActionComponent,
-        DateTimePickerComponent,
-    ],
+    exports: [...COMPONENTS],
     providers: [
         NotFoundResolverService,
         DeleteTrainingActionService,

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY } from 'rxjs';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
@@ -33,7 +33,7 @@ export class SignupComponent {
 
     isLoading = false;
 
-    form: FormGroup;
+    form: UntypedFormGroup;
 
     constructor(
         private readonly authService: AuthService,
@@ -45,19 +45,19 @@ export class SignupComponent {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly router: Router,
     ) {
-        this.form = new FormGroup({
-            language: new FormControl('en', [Validators.required]),
-            weightUnit: new FormControl(DEFAULT_WEIGHT_UNIT, [Validators.required]),
-            email: new FormControl(null, {
+        this.form = new UntypedFormGroup({
+            language: new UntypedFormControl('en', [Validators.required]),
+            weightUnit: new UntypedFormControl(DEFAULT_WEIGHT_UNIT, [Validators.required]),
+            email: new UntypedFormControl(null, {
                 validators: [Validators.required, Validators.email],
                 asyncValidators: [AuthCustomValidators.isEmailAvailable(this.signupService, this.changeDetectorRef)],
             }),
-            password: new FormControl(null, [
+            password: new UntypedFormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
                 Validators.maxLength(20)],
             ),
-            confirmPassword: new FormControl(null, [
+            confirmPassword: new UntypedFormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
                 Validators.maxLength(20)],
@@ -103,8 +103,8 @@ export class SignupComponent {
         });
     }
 
-    accessFormData(formFieldName: keyof FormData): FormControl {
-        return this.form.get(formFieldName) as FormControl;
+    accessFormData(formFieldName: keyof FormData): UntypedFormControl {
+        return this.form.get(formFieldName) as UntypedFormControl;
     }
 
 }

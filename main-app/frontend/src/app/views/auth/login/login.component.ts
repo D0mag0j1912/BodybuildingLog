@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { IonInput } from '@ionic/angular';
@@ -31,7 +31,7 @@ export class LoginComponent {
 
     isLoading = false;
 
-    form: FormGroup;
+    form: UntypedFormGroup;
 
     @ViewChild('passwordEl', { read: IonInput })
     private readonly passwordInput: IonInput;
@@ -46,12 +46,12 @@ export class LoginComponent {
         private readonly loadingControllerService: LoadingControllerService,
         private readonly toastControllerService: ToastControllerService,
     ) {
-        this.form = new FormGroup({
-            email: new FormControl(null, [
+        this.form = new UntypedFormGroup({
+            email: new UntypedFormControl(null, [
                 Validators.required,
                 Validators.email,
             ]),
-            password: new FormControl(null, [
+            password: new UntypedFormControl(null, [
                 Validators.required,
                 Validators.minLength(6),
                 Validators.maxLength(20),
@@ -95,8 +95,8 @@ export class LoginComponent {
         });
     }
 
-    accessFormData(formFieldName: keyof FormData): FormControl {
-        return this.form.get(formFieldName) as FormControl;
+    accessFormData(formFieldName: keyof FormData): UntypedFormControl {
+        return this.form.get(formFieldName) as UntypedFormControl;
     }
 
 }

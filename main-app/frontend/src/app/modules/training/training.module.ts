@@ -58,8 +58,7 @@ const PIPES_MODULES = [ShowAllExercisesModule];
         ...IMPORTS,
         ...PIPES_MODULES,
     ],
-    exports: [ ...COMPONENTS ],
-    entryComponents: [ReorderExercisesComponent],
+    exports: [...COMPONENTS],
     providers: [DatePipe],
 })
 export class TrainingModule { }
