@@ -3,17 +3,26 @@ import { max, min } from 'date-fns';
 import { NewTraining } from '../models/training/new-training/new-training.model';
 import { DateInterval } from '../models/common/dates.model';
 
-export function getIntervalDate(currentDateOrTrainings: Date | NewTraining[]): DateInterval {
+export function setTrainingDate(
+    weekOrSearch: Date | NewTraining[],
+    searchEmptyDates?: DateInterval,
+): DateInterval {
     let minDate: Date;
     let maxDate: Date;
-    if (Array.isArray(currentDateOrTrainings)) {
-        const dates: Date[] = currentDateOrTrainings.map((x: NewTraining) => x.trainingDate);
-        minDate = startOfDay(min(dates));
-        maxDate = startOfDay(max(dates));
+    if (Array.isArray(weekOrSearch)) {
+        if (weekOrSearch.length > 0) {
+            const dates: Date[] = weekOrSearch.map((x: NewTraining) => x.trainingDate);
+            minDate = startOfDay(min(dates));
+            maxDate = startOfDay(max(dates));
+        }
+        else {
+            minDate = startOfDay(searchEmptyDates.StartDate);
+            maxDate = startOfDay(searchEmptyDates.EndDate);
+        }
     }
     else {
-        minDate = startOfWeek(startOfDay(currentDateOrTrainings), { weekStartsOn: 1 });
-        maxDate = endOfWeek(endOfDay(currentDateOrTrainings), { weekStartsOn: 1 });
+        minDate = startOfWeek(startOfDay(weekOrSearch), { weekStartsOn: 1 });
+        maxDate = endOfWeek(endOfDay(weekOrSearch), { weekStartsOn: 1 });
     }
     return {
         StartDate: minDate,

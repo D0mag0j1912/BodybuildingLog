@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { endOfDay, getDay, startOfDay } from 'date-fns';
-import { getIntervalDate, isNextWeek, isPreviousWeek } from '../../helpers/date.helper';
+import { setTrainingDate, isNextWeek, isPreviousWeek } from '../../helpers/date.helper';
 import { paginate } from '../../helpers/pagination.helper';
 import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
 import { StreamData } from '../../models/common/response.model';
@@ -21,7 +21,7 @@ export class PastTrainingsService {
     ) { }
     
     async searchTrainings(
-        loggedInUserId: string,
+        loggedUserId: string,
         searchValue: string,
         size: number,
         page: number,
@@ -39,11 +39,17 @@ export class PastTrainingsService {
                             { 'exercises.exerciseData.translations.en': { $regex: queryWordRegex } },
                             { 'exercises.exerciseData.translations.hr': { $regex: queryWordRegex } },
                         ],
-                        userId: loggedInUserId,
+                        userId: loggedUserId,
                     }],
                 };
                 const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition, query);
-                results.Results.Dates = getIntervalDate(results?.Results.Trainings);
+                results.Results.Dates = setTrainingDate(
+                    results?.Results.Trainings,
+                    {
+                        StartDate: new Date(await this.getEarliestDate(loggedUserId)),
+                        EndDate: new Date(await this.getLatestDate(loggedUserId)),
+                    },
+                );
                 results.Results.DayName = this.getWeekDayName(results.Results.Dates.StartDate);
                 return {
                     IsLoading: true,
@@ -52,11 +58,11 @@ export class PastTrainingsService {
                 } as StreamData<Paginator<PastTrainings>>;
             }
             else {
-                const userPreferences = await this.preferencesService.getPreferences(loggedInUserId);
+                const userPreferences = await this.preferencesService.getPreferences(loggedUserId);
                 return this.getPastTrainings(
                     new Date(),
                     userPreferences.showByPeriod,
-                    loggedInUserId,
+                    loggedUserId,
                 );
             }
         }
@@ -86,7 +92,7 @@ export class PastTrainingsService {
         isDeleteTraining?: boolean,
     ): Promise<StreamData<Paginator<PastTrainings>>> {
         try {
-            const dates: DateInterval = getIntervalDate(new Date(currentDate));
+            const dates: DateInterval = setTrainingDate(new Date(currentDate));
             const condition: FilterQuery<NewTraining> = {
                 userId: loggedUserId,
                 trainingDate: {
@@ -145,6 +151,17 @@ export class PastTrainingsService {
             .limit(1)
             .exec();
         return minDate?.trainingDate?.toString() ?? new Date().toISOString();
+    }
+
+    private async getLatestDate(loggedUserId: string): Promise<string> {
+        const maxDate = await this.trainingModel
+            .findOne({
+                userId: loggedUserId,
+            }, 'trainingDate -_id')
+            .sort({ trainingDate: -1 })
+            .limit(1)
+            .exec();
+        return maxDate?.trainingDate?.toString() ?? new Date().toISOString();
     }
 
 }
