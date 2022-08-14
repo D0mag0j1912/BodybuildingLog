@@ -73,7 +73,8 @@
                                         ('training.past_trainings.no_trainings_day' | translate: { dayName: getDayTranslation$(state.Value?.Results?.DayName) | async }) }}
                                 </ng-container>
                                 <ng-template #noResultSearch>
-                                    {{ 'training.past_trainings.no_trainings_search' | translate: { searchText } }}
+                                    {{ 'training.past_trainings.no_trainings_search' | translate }}
+                                    <strong class="no-trainings-title--keyword">{{ searchText }}</strong>
                                 </ng-template>
                             </h1>
                             <ion-button

@@ -96,6 +96,10 @@ ion-content {
             font-weight: normal;
             text-align: center;
             width: 100%;
+
+            &--keyword {
+                color: var(--ion-color-primary);
+            }
         }
     }
 }
