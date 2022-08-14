@@ -80,7 +80,7 @@
                 <div
                     *skeleton="isLoading; width: '75px'; height: '25px'"
                     class="label"
-                    [innerHTML]="setPageText$(data.Value?.TotalPages) | async"></div>
+                    [innerHTML]="(setPageText$(data.Value?.TotalPages) | async) | sanitizeHtml"></div>
             </ng-container>
         </div>
     </ion-card-content>

@@ -7,6 +7,7 @@ import { AutofocusModule } from '../../directives/autofocus/autofocus.module';
 import { SkeletonLoaderModule } from '../../directives/skeleton-loader/skeleton-loader.module';
 import { TrainingItemDirective } from '../../directives/training-item/training-item.directive';
 import { PipesModule } from '../../pipes/pipes.module';
+import { SanitizeHtmlModule } from '../../pipes/shared/sanitize-html/sanitize-html.module';
 import { ShowAllExercisesModule } from '../../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NewTrainingComponent } from '../../views/training/new-training/new-training.component';
 import { ReorderExercisesComponent } from '../../views/training/new-training/reorder-exercises/reorder-exercises.component';
@@ -46,7 +47,10 @@ const IMPORTS = [
     SkeletonLoaderModule,
 ];
 
-const PIPES_MODULES = [ShowAllExercisesModule];
+const PIPES_MODULES = [
+    ShowAllExercisesModule,
+    SanitizeHtmlModule,
+];
 
 @NgModule({
     declarations: [

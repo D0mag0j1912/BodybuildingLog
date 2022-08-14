@@ -50,7 +50,7 @@
                         <div
                             *skeleton="state.IsLoading; width: '305px'; height: '25px';"
                             #timePeriod
-                            [innerHTML]="setTimePeriod$(state.Value?.Results) | async"></div>
+                            [innerHTML]="(setTimePeriod$(state.Value?.Results) | async) | sanitizeHtml"></div>
                     </ion-card-title>
                 </ion-card-header>
             </ion-card>
@@ -73,7 +73,7 @@
                                         ('training.past_trainings.no_trainings_day' | translate: { dayName: getDayTranslation$(state.Value?.Results?.DayName) | async }) }}
                                 </ng-container>
                                 <ng-template #noResultSearch>
-                                    <span [innerHTML]="'training.past_trainings.no_trainings_search' | translate: { searchText }"></span>
+                                    <span [innerHTML]="('training.past_trainings.no_trainings_search' | translate: { searchText }) | sanitizeHtml"></span>
                                 </ng-template>
                             </h1>
                             <ion-button

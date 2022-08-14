@@ -20,6 +20,7 @@ import { PaginationDirective } from '../directives/pagination/pagination.directi
 import { DateTimePickerComponent } from '../views/shared/datetime-picker/datetime-picker.component';
 import { SkeletonLoaderComponent } from '../views/shared/skeleton-loader/skeleton-loader.component';
 import { SkeletonLoaderModule } from '../directives/skeleton-loader/skeleton-loader.module';
+import { SanitizeHtmlModule } from '../pipes/shared/sanitize-html/sanitize-html.module';
 
 const DIRECTIVES = [PaginationDirective];
 
@@ -52,6 +53,7 @@ const IMPORTS = [
     PipesModule,
     RoundTotalWeightModule,
     SkeletonLoaderModule,
+    SanitizeHtmlModule,
 ];
 
 @NgModule({
