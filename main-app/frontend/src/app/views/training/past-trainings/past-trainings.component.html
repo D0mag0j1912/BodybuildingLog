@@ -65,13 +65,19 @@
                 </ng-container>
                 <ng-template #noTrainings>
                     <section class="no-trainings">
-                        <ng-container *ngIf="!(isSearch$ | async) && state.Value?.TotalCount === 0">
+                        <ng-container *ngIf="state.Value?.TotalCount === 0">
                             <h1 class="no-trainings-title">
-                                {{ periodFilter === 'week' ?
-                                    ('training.past_trainings.no_trainings_week' | translate) :
-                                    ('training.past_trainings.no_trainings_day' | translate: { dayName: getDayTranslation$(state.Value?.Results?.DayName) | async }) }}
+                                <ng-container *ngIf="!(isSearch$ | async); else noResultSearch">
+                                    {{ periodFilter === 'week' ?
+                                        ('training.past_trainings.no_trainings_week' | translate) :
+                                        ('training.past_trainings.no_trainings_day' | translate: { dayName: getDayTranslation$(state.Value?.Results?.DayName) | async }) }}
+                                </ng-container>
+                                <ng-template #noResultSearch>
+                                    {{ 'training.past_trainings.no_trainings_search' | translate: { searchText } }}
+                                </ng-template>
                             </h1>
                             <ion-button
+                                *ngIf="!(isSearch$ | async)"
                                 mode="md"
                                 type="button"
                                 color="primary"
