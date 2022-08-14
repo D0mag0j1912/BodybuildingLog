@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChildren } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -85,7 +85,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         }),
     );
 
-    readonly form: FormArray = new FormArray([]);
+    readonly form: UntypedFormArray = new UntypedFormArray([]);
 
     exerciseChanged = false;
     isApiLoading = false;
@@ -210,15 +210,15 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     addExercise(event?: UIEvent): void {
-        this.form.push(new FormGroup({
-            exerciseData: new FormGroup({
-                name: new FormControl(null, [Validators.required]),
-                imageUrl: new FormControl(null),
-                primaryMuscleGroup: new FormControl(null),
-                translations: new FormControl(null),
+        this.form.push(new UntypedFormGroup({
+            exerciseData: new UntypedFormGroup({
+                name: new UntypedFormControl(null, [Validators.required]),
+                imageUrl: new UntypedFormControl(null),
+                primaryMuscleGroup: new UntypedFormControl(null),
+                translations: new UntypedFormControl(null),
             }),
-            sets: new FormControl(createInitialSet()),
-            total: new FormControl(this.roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT, this.currentWeightUnit), [Validators.required]),
+            sets: new UntypedFormControl(createInitialSet()),
+            total: new UntypedFormControl(this.roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT, this.currentWeightUnit), [Validators.required]),
         }));
 
         if (event) {
@@ -337,7 +337,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     getExercises(): AbstractControl[] {
-        return (this.form as FormArray).controls;
+        return (this.form as UntypedFormArray).controls;
     }
 
     accessFormField(

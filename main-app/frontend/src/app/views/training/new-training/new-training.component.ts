@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
@@ -47,7 +47,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     formattedTodayDate: string;
 
-    form: FormGroup;
+    form: UntypedFormGroup;
 
     editTrainingData: NewTraining;
     editMode = false;
@@ -85,8 +85,8 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly _modalController: ModalController,
         private readonly _changeDetectorRef: ChangeDetectorRef,
     ) {
-        this.form = new FormGroup({
-            bodyweight: new FormControl(null,
+        this.form = new UntypedFormGroup({
+            bodyweight: new UntypedFormControl(null,
                 {
                     validators: [
                         Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
@@ -96,8 +96,8 @@ export class NewTrainingComponent implements OnDestroy {
                     updateOn: 'blur',
                 },
             ),
-            date: new FormControl(new Date().toISOString(), [Validators.required]),
-            exercises: new FormControl([]),
+            date: new UntypedFormControl(new Date().toISOString(), [Validators.required]),
+            exercises: new UntypedFormControl([]),
         });
     }
 
@@ -303,8 +303,8 @@ export class NewTrainingComponent implements OnDestroy {
         }
     }
 
-    accessFormData(formControl: keyof FormData): FormControl {
-        return this.form.get(formControl) as FormControl;
+    accessFormData(formControl: keyof FormData): UntypedFormControl {
+        return this.form.get(formControl) as UntypedFormControl;
     }
 
     private _formInit(): void {

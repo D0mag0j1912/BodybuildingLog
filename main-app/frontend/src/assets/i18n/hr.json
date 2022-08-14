@@ -157,6 +157,7 @@
         "past_trainings": {
             "no_trainings_week": "Nema pronađenih treninga za ovaj tjedan",
             "no_trainings_day": "Nema pronađenih treninga za {{ dayName }}",
+            "no_trainings_search": "Nema pronađenih treninga za",
             "log_training": "Unesite novi trening",
             "training_number": "Broj treninga: ",
             "disabled_next_week": "Idući tjedni nisu dostupni",
@@ -167,8 +168,6 @@
                 "enter_search_term": "Pretražite po nazivu vježbe",
                 "choose_custom_query": "Izaberite Vaš upit",
                 "apply_filters": "Primjenite filtere",
-                "search_no_result_title": "Nije pronađen nijedan rezultat za Vašu pretragu",
-                "search_no_result_description": "Pokušajte ponovno s različitom pretragom ili upotrijebite filtere",
                 "errors": {
                     "search_empty": "Morate unijeti vrijednost u pretrazi",
                     "search_error": "Greška pri pretraživanju treninga",

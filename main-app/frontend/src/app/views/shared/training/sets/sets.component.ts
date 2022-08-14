@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { delay, filter, takeUntil } from 'rxjs/operators';
@@ -30,7 +30,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     readonly currentPreferences$: Observable<Preferences> = this.preferencesStoreService.preferencesChanged$;
 
-    readonly form: FormArray = new FormArray([]);
+    readonly form: UntypedFormArray = new UntypedFormArray([]);
     currentWeightUnit: WeightUnit;
 
     onTouched: () => void;
@@ -167,21 +167,21 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     }
 
     getSets(): AbstractControl[] {
-        return (this.form as FormArray).controls;
+        return (this.form as UntypedFormArray).controls;
     }
 
     addSet(set?: Set): void {
         this.form.push(
-            new FormGroup({
-                setNumber: new FormControl(set ? set.setNumber : this.getSets().length + 1, [Validators.required]),
-                weightLifted: new FormControl({
+            new UntypedFormGroup({
+                setNumber: new UntypedFormControl(set ? set.setNumber : this.getSets().length + 1, [Validators.required]),
+                weightLifted: new UntypedFormControl({
                     value: set ? this.setWeightLiftedValue(set.weightLifted) : null,
                     disabled: this.exerciseNameControl.value ? false : true,
                 }, [Validators.required,
                     Validators.min(1),
                     Validators.max(1000),
                     Validators.pattern(/^[1-9]\d*(\.\d+)?$/)]),
-                reps: new FormControl({
+                reps: new UntypedFormControl({
                     value: set ? set.reps : null,
                     disabled: this.exerciseNameControl.value ? false : true,
                 }, [Validators.required,

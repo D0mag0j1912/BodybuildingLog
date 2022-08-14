@@ -155,6 +155,7 @@
         "past_trainings": {
             "no_trainings_week": "No trainings found for this week",
             "no_trainings_day": "No trainings found for {{ dayName }}",
+            "no_trainings_search": "No trainings found for",
             "log_training": "Log new training",
             "training_number": "Number of trainings: ",
             "disabled_next_week": "Future weeks are not available",
@@ -166,8 +167,6 @@
                 "enter_search_term": "Search by exercise name",
                 "choose_custom_query": "Choose custom query",
                 "apply_filters": "Apply filters",
-                "search_no_result_title": "We couldn't find any results for your search",
-                "search_no_result_description": "Try again with different search term or apply filters",
                 "errors": {
                     "search_empty": "Your search needs a value",
                     "search_error": "Error searching training",
