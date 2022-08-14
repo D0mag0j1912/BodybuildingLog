@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
@@ -32,7 +32,7 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
 
 type FormData = {
     bodyweight: number;
-    date: Date;
+    trainingDate: string;
     exercises: SingleExercise[];
 };
 
@@ -47,7 +47,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     formattedTodayDate: string;
 
-    form: UntypedFormGroup;
+    form: FormGroup;
 
     editTrainingData: NewTraining;
     editMode = false;
@@ -85,8 +85,8 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly _modalController: ModalController,
         private readonly _changeDetectorRef: ChangeDetectorRef,
     ) {
-        this.form = new UntypedFormGroup({
-            bodyweight: new UntypedFormControl(null,
+        this.form = new FormGroup<unknown>({
+            bodyweight: new FormControl<number>(null,
                 {
                     validators: [
                         Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
@@ -96,8 +96,8 @@ export class NewTrainingComponent implements OnDestroy {
                     updateOn: 'blur',
                 },
             ),
-            date: new UntypedFormControl(new Date().toISOString(), [Validators.required]),
-            exercises: new UntypedFormControl([]),
+            trainingDate: new FormControl<string>(new Date().toISOString(), [Validators.required]),
+            exercises: new FormControl<SingleExercise[]>([]),
         });
     }
 
@@ -230,7 +230,7 @@ export class NewTrainingComponent implements OnDestroy {
     async openDateTimePicker(): Promise<void> {
         const modal = await this._modalController.create({
             component: DateTimePickerComponent,
-            componentProps: { dateValue: format(new Date(this.accessFormData('date').value), `yyyy-MM-dd'T'HH:mm:ss'Z'`) },
+            componentProps: { dateValue: format(new Date(this.accessFormData('trainingDate').value), `yyyy-MM-dd'T'HH:mm:ss'Z'`) },
             cssClass: 'datetime-picker',
             mode: 'md',
         });
@@ -244,7 +244,7 @@ export class NewTrainingComponent implements OnDestroy {
             .subscribe(response => {
                 const { data, role } = response;
                 if (role === 'SELECT_DATE') {
-                    this.accessFormData('date').patchValue(data);
+                    this.accessFormData('trainingDate').patchValue(data);
                     this._setFormattedDate(data);
                 }
             });
@@ -303,17 +303,17 @@ export class NewTrainingComponent implements OnDestroy {
         }
     }
 
-    accessFormData(formControl: keyof FormData): UntypedFormControl {
-        return this.form.get(formControl) as UntypedFormControl;
+    accessFormData(formControl: keyof FormData): FormControl {
+        return this.form.get(formControl) as FormControl;
     }
 
     private _formInit(): void {
         const currentTrainingState = { ...this._newTrainingStoreService.getCurrentTrainingState() };
         const dayClickedDate = this._sharedStoreService.getDayClickedDate();
         this.accessFormData('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
-        this.accessFormData('date').patchValue(this._fillTrainingDate(dayClickedDate));
+        this.accessFormData('trainingDate').patchValue(this._fillTrainingDate(dayClickedDate));
         this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);
-        this._setFormattedDate(this.accessFormData('date').value);
+        this._setFormattedDate(this.accessFormData('trainingDate').value);
     }
 
     private _setFormattedDate(dateValue: string): void {
