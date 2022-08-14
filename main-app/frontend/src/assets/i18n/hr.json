@@ -167,8 +167,6 @@
                 "enter_search_term": "Pretražite po nazivu vježbe",
                 "choose_custom_query": "Izaberite Vaš upit",
                 "apply_filters": "Primjenite filtere",
-                "search_no_result_title": "Nije pronađen nijedan rezultat za Vašu pretragu",
-                "search_no_result_description": "Pokušajte ponovno s različitom pretragom ili upotrijebite filtere",
                 "errors": {
                     "search_empty": "Morate unijeti vrijednost u pretrazi",
                     "search_error": "Greška pri pretraživanju treninga",
