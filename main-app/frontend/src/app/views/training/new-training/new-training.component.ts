@@ -85,8 +85,8 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly _modalController: ModalController,
         private readonly _changeDetectorRef: ChangeDetectorRef,
     ) {
-        this.form = new FormGroup<unknown>({
-            bodyweight: new FormControl<number>(null,
+        this.form = new FormGroup({
+            bodyweight: new FormControl<number | null>(null,
                 {
                     validators: [
                         Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
