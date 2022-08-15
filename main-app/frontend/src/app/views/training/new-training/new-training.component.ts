@@ -30,12 +30,6 @@ import { Preferences } from '../../../models/common/preferences.model';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
-type FormData = {
-    bodyweight: number;
-    trainingDate: string;
-    exercises: SingleExercise[];
-};
-
 @Component({
     selector: 'bl-new-training',
     templateUrl: './new-training.component.html',
@@ -231,7 +225,7 @@ export class NewTrainingComponent implements OnDestroy {
     async openDateTimePicker(): Promise<void> {
         const modal = await this._modalController.create({
             component: DateTimePickerComponent,
-            componentProps: { dateValue: format(new Date(this.accessFormData('trainingDate').value), `yyyy-MM-dd'T'HH:mm:ss'Z'`) },
+            componentProps: { dateValue: format(new Date(this.form.get('trainingDate').value), `yyyy-MM-dd'T'HH:mm:ss'Z'`) },
             cssClass: 'datetime-picker',
             mode: 'md',
         });
@@ -245,7 +239,7 @@ export class NewTrainingComponent implements OnDestroy {
             .subscribe(response => {
                 const { data, role } = response;
                 if (role === 'SELECT_DATE') {
-                    this.accessFormData('trainingDate').patchValue(data);
+                    this.form.get('trainingDate').patchValue(data);
                     this._setFormattedDate(data);
                 }
             });
@@ -304,17 +298,13 @@ export class NewTrainingComponent implements OnDestroy {
         }
     }
 
-    accessFormData(formControl: keyof FormData): FormControl {
-        return this.form.get(formControl) as FormControl;
-    }
-
     private _formInit(): void {
         const currentTrainingState = { ...this._newTrainingStoreService.getCurrentTrainingState() };
         const dayClickedDate = this._sharedStoreService.getDayClickedDate();
-        this.accessFormData('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
-        this.accessFormData('trainingDate').patchValue(this._fillTrainingDate(dayClickedDate));
-        this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);
-        this._setFormattedDate(this.accessFormData('trainingDate').value);
+        this.form.get('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
+        this.form.get('trainingDate').patchValue(this._fillTrainingDate(dayClickedDate));
+        this.form.get('exercises').patchValue(currentTrainingState?.exercises ?? []);
+        this._setFormattedDate(this.form.get('trainingDate').value);
     }
 
     private _setFormattedDate(dateValue: string): void {
