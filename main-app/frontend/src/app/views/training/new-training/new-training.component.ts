@@ -334,7 +334,7 @@ export class NewTrainingComponent implements OnDestroy {
     private _fillBodyweight(currentTrainingState: NewTraining): number {
         return NewTrainingHandler.fillBodyweight(
             currentTrainingState.bodyweight,
-            this.editTrainingData ? this.editTrainingData?.bodyweight : null,
+            this.editTrainingData ? this.editTrainingData.bodyweight : null,
         );
     }
 
