@@ -9,7 +9,7 @@ import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'r
 import { Storage } from '@capacitor/storage';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { PastTrainingsService } from '../../../services/api/training/past-trainings.service';
-import * as NewTrainingHandler from '../../../handlers/new-training.handler';
+import * as NewTrainingHandler from '../../../helpers/training/new-training/bodyweight.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/common.model';
 import { DialogRoles } from '../../../constants/enums/model-roles.enum';
@@ -47,7 +47,23 @@ export class NewTrainingComponent implements OnDestroy {
 
     formattedTodayDate: string;
 
-    form: FormGroup;
+    form = new FormGroup({
+        bodyweight: new FormControl<number | null>(null,
+            {
+                validators: [
+                    Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                    Validators.min(30),
+                    Validators.max(300),
+                ],
+                updateOn: 'blur',
+            },
+        ),
+        trainingDate: new FormControl<string>(new Date().toISOString(), {
+            validators: [Validators.required],
+            nonNullable: true,
+        }),
+        exercises: new FormControl<SingleExercise[]>([], { nonNullable: true }),
+    });;
 
     editTrainingData: NewTraining;
     editMode = false;
@@ -84,22 +100,7 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly _router: Router,
         private readonly _modalController: ModalController,
         private readonly _changeDetectorRef: ChangeDetectorRef,
-    ) {
-        this.form = new FormGroup({
-            bodyweight: new FormControl<number | null>(null,
-                {
-                    validators: [
-                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                        Validators.min(30),
-                        Validators.max(300),
-                    ],
-                    updateOn: 'blur',
-                },
-            ),
-            trainingDate: new FormControl<string>(new Date().toISOString(), [Validators.required]),
-            exercises: new FormControl<SingleExercise[]>([]),
-        });
-    }
+    ) { }
 
     ionViewWillEnter(): void {
         let allExercisesChanged: StreamData<Exercise[]>;
@@ -330,7 +331,7 @@ export class NewTrainingComponent implements OnDestroy {
         }
     }
 
-    private _fillBodyweight(currentTrainingState: NewTraining): string {
+    private _fillBodyweight(currentTrainingState: NewTraining): number {
         return NewTrainingHandler.fillBodyweight(
             currentTrainingState.bodyweight,
             this.editTrainingData ? this.editTrainingData?.bodyweight : null,
