@@ -81,7 +81,7 @@
                                             class="submit"
                                             type="submit"
                                             color="primary"
-                                            [disabled]="!form.valid || isLoading">
+                                            [disabled]="!form.valid || (isLoading$ | async)">
                                             {{ 'auth.login' | translate }}
                                         </ion-button>
                                     </ion-col>

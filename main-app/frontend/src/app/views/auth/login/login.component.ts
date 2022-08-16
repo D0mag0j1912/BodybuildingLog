@@ -1,15 +1,14 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { catchError, finalize, takeUntil } from 'rxjs/operators';
-import { EMPTY } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
 import { AuthService } from '../../../services/api/auth/auth.service';
 import { LoginService } from '../../../services/api/auth/login.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
-import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { IonFocusDurations } from '../../../constants/shared/ion-focus-durations.const';
 import { LoadingControllerService } from '../../../services/shared/loading-controller.service';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
@@ -19,11 +18,11 @@ import { ToastControllerService } from '../../../services/shared/toast-controlle
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [UnsubscribeService],
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy {
 
-    isLoading = false;
+    private readonly _isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    readonly isLoading$: Observable<boolean> = this._isLoading$.asObservable();
 
     form = new FormGroup({
         email: new FormControl('', [
@@ -40,7 +39,6 @@ export class LoginComponent {
         this._changeDetectorRef) });
 
     constructor(
-        private readonly _unsubscribeService: UnsubscribeService,
         private readonly _translateService: TranslateService,
         private readonly _loginService: LoginService,
         private readonly _authService: AuthService,
@@ -54,11 +52,15 @@ export class LoginComponent {
         return IonFocusDurations.LOGIN;
     }
 
+    ngOnDestroy(): void {
+        this._isLoading$.complete();
+    }
+
     async onSubmit(): Promise<void> {
         if (!this.form.valid) {
             return;
         }
-        this.isLoading = true;
+        this._isLoading$.next(true);
         await this._loadingControllerService.displayLoader({ message: 'auth.logging_in' });
 
         this._authService.login(
@@ -67,11 +69,9 @@ export class LoginComponent {
         ).pipe(
             catchError(_ => EMPTY),
             finalize(async () => {
-                this.isLoading = false;
+                this._isLoading$.next(false);
                 await this._loadingControllerService.dismissLoader();
-                this._changeDetectorRef.markForCheck();
             }),
-            takeUntil(this._unsubscribeService),
         ).subscribe(async (response: AuthResponseData) => {
             if (response) {
                 await this._toastControllerService.displayToast({
