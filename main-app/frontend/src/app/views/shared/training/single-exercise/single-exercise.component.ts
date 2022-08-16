@@ -32,7 +32,7 @@ import { convertWeightUnit } from '../../../../helpers/training/convert-weight-u
 
 type SingleExerciseFormData = {
     exerciseData: FormGroup<FormData<Exercise>>;
-    sets: FormControl<FormData<Set[]>>;
+    sets: FormControl<Set[]>;
     total: FormControl<string>;
 };
 
@@ -95,7 +95,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         }),
     );
 
-    readonly form = new UntypedFormArray([]);
+    readonly form = new FormArray([]);
 
     exerciseChanged = false;
     isApiLoading = false;
@@ -220,15 +220,15 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     addExercise(event?: UIEvent): void {
-        this.form.push(new UntypedFormGroup({
-            exerciseData: new UntypedFormGroup({
-                name: new UntypedFormControl(null, [Validators.required]),
-                imageUrl: new UntypedFormControl(null),
-                primaryMuscleGroup: new UntypedFormControl(null),
-                translations: new UntypedFormControl(null),
+        this.form.push(new FormGroup<SingleExerciseFormData>({
+            exerciseData: new FormGroup({
+                name: new FormControl(null, [Validators.required]),
+                imageUrl: new FormControl(null),
+                primaryMuscleGroup: new FormControl(null),
+                translations: new FormControl(null),
             }),
-            sets: new UntypedFormControl(createInitialSet()),
-            total: new UntypedFormControl(this._roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT, this.currentWeightUnit), [Validators.required]),
+            sets: new FormControl(createInitialSet()),
+            total: new FormControl(this._roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT, this.currentWeightUnit), [Validators.required]),
         }));
 
         if (event) {
