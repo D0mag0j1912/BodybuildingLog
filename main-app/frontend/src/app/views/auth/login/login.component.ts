@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
-import { IonInput } from '@ionic/angular';
 import { EMPTY } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
@@ -15,11 +14,6 @@ import { IonFocusDurations } from '../../../constants/shared/ion-focus-durations
 import { LoadingControllerService } from '../../../services/shared/loading-controller.service';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
 
-type FormData = {
-    email?: string;
-    password?: string;
-};
-
 @Component({
     selector: 'bl-login',
     templateUrl: './login.component.html',
@@ -31,35 +25,30 @@ export class LoginComponent {
 
     isLoading = false;
 
-    form: UntypedFormGroup;
-
-    @ViewChild('passwordEl', { read: IonInput })
-    private readonly passwordInput: IonInput;
+    form = new FormGroup({
+        email: new FormControl('', [
+            Validators.required,
+            Validators.email,
+        ]),
+        password: new FormControl('', [
+            Validators.required,
+            Validators.minLength(6),
+            Validators.maxLength(20),
+        ]),
+    }, { asyncValidators: AuthCustomValidators.passwordFitsEmail(
+        this._loginService,
+        this._changeDetectorRef) });
 
     constructor(
-        private readonly unsubscribeService: UnsubscribeService,
-        private readonly translateService: TranslateService,
-        private readonly loginService: LoginService,
-        private readonly authService: AuthService,
-        private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly router: Router,
-        private readonly loadingControllerService: LoadingControllerService,
-        private readonly toastControllerService: ToastControllerService,
-    ) {
-        this.form = new UntypedFormGroup({
-            email: new UntypedFormControl(null, [
-                Validators.required,
-                Validators.email,
-            ]),
-            password: new UntypedFormControl(null, [
-                Validators.required,
-                Validators.minLength(6),
-                Validators.maxLength(20),
-            ]),
-        }, { asyncValidators: AuthCustomValidators.passwordFitsEmail(
-            this.loginService,
-            this.changeDetectorRef) });
-    }
+        private readonly _unsubscribeService: UnsubscribeService,
+        private readonly _translateService: TranslateService,
+        private readonly _loginService: LoginService,
+        private readonly _authService: AuthService,
+        private readonly _changeDetectorRef: ChangeDetectorRef,
+        private readonly _router: Router,
+        private readonly _loadingControllerService: LoadingControllerService,
+        private readonly _toastControllerService: ToastControllerService,
+    ) { }
 
     get focusDuration(): number {
         return IonFocusDurations.LOGIN;
@@ -70,33 +59,29 @@ export class LoginComponent {
             return;
         }
         this.isLoading = true;
-        await this.loadingControllerService.displayLoader({ message: 'auth.logging_in' });
+        await this._loadingControllerService.displayLoader({ message: 'auth.logging_in' });
 
-        this.authService.login(
-            this.accessFormData('email').value as string,
-            this.accessFormData('password').value as string,
+        this._authService.login(
+            this.form.get('email').value,
+            this.form.get('password').value,
         ).pipe(
             catchError(_ => EMPTY),
             finalize(async () => {
                 this.isLoading = false;
-                await this.loadingControllerService.dismissLoader();
-                this.changeDetectorRef.markForCheck();
+                await this._loadingControllerService.dismissLoader();
+                this._changeDetectorRef.markForCheck();
             }),
-            takeUntil(this.unsubscribeService),
+            takeUntil(this._unsubscribeService),
         ).subscribe(async (response: AuthResponseData) => {
             if (response) {
-                await this.toastControllerService.displayToast({
-                    message: this.translateService.instant(response.Message),
+                await this._toastControllerService.displayToast({
+                    message: this._translateService.instant(response.Message),
                     duration: MESSAGE_DURATION.GENERAL,
                     color: response.Token ? 'primary' : 'danger',
                 });
-                await this.router.navigate(['/training/new-training']);
+                await this._router.navigate(['/training/new-training']);
             }
         });
-    }
-
-    accessFormData(formFieldName: keyof FormData): UntypedFormControl {
-        return this.form.get(formFieldName) as UntypedFormControl;
     }
 
 }
