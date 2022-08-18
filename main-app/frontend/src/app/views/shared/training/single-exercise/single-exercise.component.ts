@@ -14,7 +14,7 @@ import { NewTraining } from '../../../../models/training/new-training/new-traini
 import { SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
-import { FormControlExerciseData, FormControlSingleExercise, FormGroupExerciseData } from '../../../../models/training/shared/single-exercise.type';
+import { FormControlExerciseData, FormControlSingleExercise, FormGroupExerciseData } from '../../../../models/training/shared/single-exercise-form.type';
 import { RoundTotalWeightPipe } from '../../../../pipes/training/new-training/round-total-weight/round-total-weight.pipe';
 import { ToastControllerService } from '../../../../services/shared/toast-controller.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
