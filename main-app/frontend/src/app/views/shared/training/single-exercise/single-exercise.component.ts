@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChildren } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, UntypedFormArray, Validators } from '@angular/forms';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -29,6 +29,7 @@ import { SetsComponent } from '../sets/sets.component';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import { WeightUnit } from '../../../../models/common/preferences.type';
 import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
+import { Translations } from '../../../../models/common/translations.model';
 
 type SingleExerciseFormData = {
     exerciseData: FormGroup<FormData<Exercise>>;
@@ -221,11 +222,11 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
 
     addExercise(event?: UIEvent): void {
         this.form.push(new FormGroup<SingleExerciseFormData>({
-            exerciseData: new FormGroup({
-                name: new FormControl(null, [Validators.required]),
-                imageUrl: new FormControl(null),
-                primaryMuscleGroup: new FormControl(null),
-                translations: new FormControl(null),
+            exerciseData: new FormGroup<FormData<Exercise>>({
+                name: new FormControl('', [Validators.required]),
+                imageUrl: new FormControl(''),
+                primaryMuscleGroup: new FormControl(''),
+                translations: new FormControl<Translations>(null),
             }),
             sets: new FormControl(createInitialSet()),
             total: new FormControl(this._roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT, this.currentWeightUnit), [Validators.required]),
