@@ -175,7 +175,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             new UntypedFormGroup({
                 setNumber: new UntypedFormControl(set ? set.setNumber : this.getSets().length + 1, [Validators.required]),
                 weightLifted: new UntypedFormControl({
-                    value: set ? this.setWeightLiftedValue(set.weightLifted) : null,
+                    value: set ? this._setWeightLiftedValue(set.weightLifted) : null,
                     disabled: this.exerciseNameControl.value ? false : true,
                 }, [Validators.required,
                     Validators.min(1),
@@ -207,7 +207,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         this.setDeleted.emit({
             indexExercise: this.indexExercise as number,
             indexSet: indexSet as number,
-            newTotal: this.calculateTotal(),
+            newTotal: this._calculateTotal(),
         } as Partial<SetStateChanged>);
     }
 
@@ -228,7 +228,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             indexSet: indexSet,
             isWeightLiftedValid: isWeightLiftedValid,
             isRepsValid: isRepsValid,
-            newTotal: this.calculateTotal(),
+            newTotal: this._calculateTotal(),
             newSet: {
                 setNumber: +setNumberCtrl.value,
                 weightLifted: +weightLiftedCtrl.value,
@@ -244,7 +244,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         return this.form.at(indexSet)?.get(formField);
     }
 
-    private calculateTotal(): number {
+    private _calculateTotal(): number {
         let total = 0;
         for (const group of this.getSets()) {
             total += (+group.get('weightLifted')?.value * +group.get('reps')?.value);
@@ -252,7 +252,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         return total;
     }
 
-    private setWeightLiftedValue(weightLifted: number): number {
+    private _setWeightLiftedValue(weightLifted: number): number {
         if (this.editTrainingData) {
             const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
             if (editTrainingWeightUnit !== this.currentWeightUnit) {

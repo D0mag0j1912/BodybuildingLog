@@ -88,7 +88,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 if (this.setsCmpRef) {
                     return (trainingState.length <= allExercises.length) &&
                         ((this.accessFormGroup('exerciseData', 'name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0) &&
-                        this.areSetsValid(this.setsCmpRef);
+                        this._areSetsValid(this.setsCmpRef);
                 }
                 return false;
             }
@@ -170,7 +170,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     this.accessFormGroup('exerciseData', 'primaryMuscleGroup', indexExercise).patchValue(exercise.exerciseData.primaryMuscleGroup);
                     this.accessFormGroup('exerciseData', 'translations', indexExercise).patchValue(exercise.exerciseData.translations);
                     this.accessFormField('sets', indexExercise).patchValue(exercise.sets);
-                    this.accessFormField('total', indexExercise).patchValue(this.setInitialTotalValue(exercise?.total));
+                    this.accessFormField('total', indexExercise).patchValue(this._setInitialTotalValue(exercise?.total));
                 }
             });
         }
@@ -232,7 +232,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         }));
 
         if (event) {
-            this._newTrainingStoreService.addNewExercise(this.getAlreadyUsedExercises())
+            this._newTrainingStoreService.addNewExercise(this._getAlreadyUsedExercises())
                 .pipe(
                     takeUntil(this._unsubscribeService),
                 )
@@ -368,12 +368,12 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     onSubmit(): void {
         this._isSubmitted$$.next(true);
         const newTrainingFormValid = this.bodyweight.valid && this.trainingDate.valid;
-        if (!this.form.valid || !this.areSetsValid(this.setsCmpRef) || !newTrainingFormValid) {
+        if (!this.form.valid || !this._areSetsValid(this.setsCmpRef) || !newTrainingFormValid) {
             return;
         }
         this.isApiLoading = true;
 
-        this.gatherAllFormData()
+        this._gatherAllFormData()
             .pipe(
                 switchMap((apiNewTraining: NewTraining) => {
                     if (this.editMode) {
@@ -399,7 +399,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             });
     }
 
-    private gatherAllFormData(): Observable<NewTraining> {
+    private _gatherAllFormData(): Observable<NewTraining> {
         return this._newTrainingStoreService.currentTrainingChanged$
             .pipe(
                 take(1),
@@ -445,7 +445,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             );
     }
 
-    private getAlreadyUsedExercises(): string[] {
+    private _getAlreadyUsedExercises(): string[] {
         const alreadyUsedExercises: string[] = [];
         for (const exercise of this.getExercises()) {
             if (exercise.get('exerciseData.name').value) {
@@ -455,7 +455,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         return alreadyUsedExercises;
     }
 
-    private areSetsValid(setsCmpRef: QueryList<SetsComponent>): boolean {
+    private _areSetsValid(setsCmpRef: QueryList<SetsComponent>): boolean {
         let errors: string[] = [];
         setsCmpRef.forEach(setCmp => {
             const form = setCmp.form;
@@ -473,7 +473,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         return errors.length === 0;
     }
 
-    private setInitialTotalValue(total: number | undefined): string {
+    private _setInitialTotalValue(total: number | undefined): string {
         if (this.editTrainingData) {
             const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
             if (editTrainingWeightUnit !== this.currentWeightUnit) {
