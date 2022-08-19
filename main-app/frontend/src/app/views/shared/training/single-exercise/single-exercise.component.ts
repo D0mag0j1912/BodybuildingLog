@@ -102,7 +102,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
 
     isExerciseChanged = false;
     isApiLoading = false;
-    showSelects = true;
 
     onTouched: () => void;
 
