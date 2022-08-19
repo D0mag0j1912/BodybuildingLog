@@ -28,7 +28,7 @@
                                         </ion-select-option>
                                     </ion-select>
                                     <ion-note
-                                        *ngIf="accessFormGroup('exerciseData', 'name', i)?.errors?.required &&
+                                        *ngIf="accessFormGroup('exerciseData', 'name', i).errors?.required &&
                                             ((accessFormGroup('exerciseData', 'name', i).touched || accessFormGroup('exerciseData', 'name', i).dirty) || (isSubmitted$ | async)) &&
                                             !isLoading"
                                         slot="error">
@@ -36,8 +36,8 @@
                                     </ion-note>
                                 </ion-item>
                                 <ion-note
-                                    *ngIf="form?.errors?.duplicateExerciseName &&
-                                        form?.errors?.duplicateExerciseName === accessFormGroup('exerciseData', 'name', i)?.value &&
+                                    *ngIf="form.errors?.duplicateExerciseName &&
+                                        form.errors?.duplicateExerciseName === accessFormGroup('exerciseData', 'name', i)?.value &&
                                         !isLoading"
                                     class="error">
                                     {{ 'training.new_training.errors.exercise_name_duplicate' | translate }}
@@ -53,7 +53,7 @@
                     </ion-grid>
                 </ng-container>
                 <bl-sets
-                    [formControl]="$any(form.controls[i].get('sets'))"
+                    formControlName="sets"
                     [isExerciseFormSubmitted$]="isSubmitted$"
                     [exerciseNameChanged$]="exerciseNameChanged$"
                     [exerciseNameControl]="accessFormGroup('exerciseData', 'name', i)"
@@ -93,7 +93,7 @@
             <ion-row>
                 <ion-col class="at-least-one-exercise-txt">
                     <ion-note
-                        *ngIf="form?.errors?.emptyTraining && (isSubmitted$ | async) && currentTrainingDataState?.length === 0"
+                        *ngIf="form.errors?.emptyTraining && (isSubmitted$ | async) && currentTrainingDataState?.length === 0"
                         class="empty-training-msg">
                         {{ 'training.new_training.errors.at_least_one_exercise' | translate }}
                     </ion-note>
