@@ -56,10 +56,12 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     private readonly _invalidSetChanged$$: Subject<void> = new Subject<void>();
     private readonly _exerciseNameChanged$$: Subject<void> = new Subject<void>();
     private readonly _isSubmitted$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private readonly _isExercisePicker$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
     readonly isSubmitted$: Observable<boolean> = this._isSubmitted$$.asObservable();
     readonly exerciseNameChanged$: Observable<void> = this._exerciseNameChanged$$.asObservable();
+    readonly isExercisePicker$: Observable<boolean> = this._isExercisePicker$$.asObservable();
     readonly currentTrainingDataState$: Observable<SingleExercise[]> = this._newTrainingStoreService.currentTrainingChanged$
         .pipe(
             map(currentTrainingState => currentTrainingState.exercises),
@@ -98,7 +100,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
 
     readonly form = new FormArray([]);
 
-    exerciseChanged = false;
+    isExerciseChanged = false;
     isApiLoading = false;
     showSelects = true;
 
@@ -147,11 +149,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 takeUntil(this._unsubscribeService),
             )
             .subscribe(_ => {
-                this.showSelects = false;
-                setTimeout(() => {
-                    this.showSelects = true;
-                    this._changeDetectorRef.markForCheck();
-                }, 1);
+                this._isExercisePicker$$.next(false);
+                setTimeout(() => this._isExercisePicker$$.next(true), 1);
             });
     }
 
@@ -182,6 +181,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         this._invalidSetChanged$$.complete();
         this._exerciseNameChanged$$.complete();
         this._isSubmitted$$.complete();
+        this._isExercisePicker$$.complete();
     }
 
     registerOnChange(fn: (formValue: Partial<SingleExercise[]>) => void): void {
@@ -213,7 +213,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             ).pipe(
                 takeUntil(this._unsubscribeService),
             ).subscribe(_ => {
-                this.exerciseChanged = !this.exerciseChanged;
+                this.isExerciseChanged = !this.isExerciseChanged;
                 this._exerciseNameChanged$$.next();
                 this._changeDetectorRef.markForCheck();
             });
@@ -274,7 +274,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                                         ),
                                     ),
                                     switchMap((data: [NewTraining, Exercise[]]) => {
-                                        this.exerciseChanged = !this.exerciseChanged;
+                                        this.isExerciseChanged = !this.isExerciseChanged;
                                         this.form.removeAt(indexExercise);
                                         return this._newTrainingStoreService.pushToAvailableExercises(
                                             data[0],

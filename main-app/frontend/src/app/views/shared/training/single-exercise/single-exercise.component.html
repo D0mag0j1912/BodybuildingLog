@@ -15,14 +15,14 @@
                                 <ion-item fill="outline">
                                     <ion-label position="floating">{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
                                     <ion-select
-                                        *ngIf="showSelects"
+                                        *ngIf="isExercisePicker$ | async"
                                         #exercisePicker
                                         class="exercise-picker"
                                         interface="popover"
                                         formControlName="name"
                                         (ionChange)="onExerciseNameChange(i, exercisePicker)">
                                         <ion-select-option
-                                            *ngFor="let exercise of exercises$ | newTraining:i:exerciseChanged | async"
+                                            *ngFor="let exercise of exercises$ | newTraining: i: isExerciseChanged | async"
                                             [value]="exercise.name">
                                             {{ exercise.name | translate }}
                                         </ion-select-option>
