@@ -125,15 +125,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     }
 
     writeValue(sets: Set[]): void {
-        if (sets) {
-            if (sets.length > 0) {
-                for (const set of sets) {
-                    this.addSet(set);
-                }
+        if (sets.length > 0) {
+            for (const set of sets) {
+                this.addSet(set);
             }
-            else {
-                this.addSet();
-            }
+        }
+        else {
+            this.addSet();
         }
     }
     //Sending parent new form value when form value changes
