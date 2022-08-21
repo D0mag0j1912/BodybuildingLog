@@ -1,5 +1,6 @@
 import { FormControl } from '@angular/forms';
 
-export type FormType<SomeType> = {
-    -readonly[P in keyof Omit<SomeType, '_id'>]-?: FormControl<SomeType[P]>;
+export type FormType<T> = {
+    -readonly[P in keyof Omit<T, '_id'>]-?: FormControl<T[P]>;
 };
+
