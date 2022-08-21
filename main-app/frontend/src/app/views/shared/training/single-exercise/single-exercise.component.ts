@@ -29,15 +29,12 @@ import { PreferencesStoreService } from '../../../../services/store/shared/prefe
 import { WeightUnit } from '../../../../models/common/preferences.type';
 import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
 import { Translations } from '../../../../models/common/translations.model';
+import { FormType } from '../../../../models/common/form.type';
 
 type SingleExerciseFormData = {
-    exerciseData: FormGroup<FormData<Exercise>>;
+    exerciseData: FormGroup<FormType<Exercise>>;
     sets: FormControl<Set[]>;
     total: FormControl<string>;
-};
-
-type FormData<SomeType> = {
-    -readonly[P in keyof Omit<SomeType, '_id'>]-?: FormControl<SomeType[P]>;
 };
 
 @Component({
@@ -212,7 +209,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
 
     addExercise(exercise?: SingleExercise, event?: UIEvent): void {
         this.form.push(new FormGroup<SingleExerciseFormData>({
-            exerciseData: new FormGroup<FormData<Exercise>>({
+            exerciseData: new FormGroup<FormType<Exercise>>({
                 name: new FormControl(exercise?.exerciseData?.name ?? '', [Validators.required]),
                 imageUrl: new FormControl(exercise?.exerciseData?.imageUrl ?? ''),
                 primaryMuscleGroup: new FormControl(exercise?.exerciseData?.primaryMuscleGroup ?? ''),

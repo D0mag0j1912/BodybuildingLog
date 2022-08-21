@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormControl, FormGroup, UntypedFormArray, Validators } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { delay, filter, takeUntil } from 'rxjs/operators';
@@ -15,6 +15,7 @@ import { convertWeightUnit } from '../../../../helpers/training/convert-weight-u
 import { WeightUnit } from '../../../../models/common/preferences.type';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
+import { FormType } from '../../../../models/common/form.type';
 
 @Component({
     selector: 'bl-sets',
@@ -28,10 +29,10 @@ import { NewTraining } from '../../../../models/training/new-training/new-traini
 })
 export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
-    readonly currentPreferences$: Observable<Preferences> = this.preferencesStoreService.preferencesChanged$;
+    readonly currentPreferences$: Observable<Preferences> = this._preferencesStoreService.preferencesChanged$;
 
     readonly form: UntypedFormArray = new UntypedFormArray([]);
-    currentWeightUnit: WeightUnit;
+    _currentWeightUnit: WeightUnit;
 
     onTouched: () => void;
 
@@ -72,18 +73,18 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     readonly repsElements: QueryList<IonInput>;
 
     constructor(
-        private readonly unsubscribeService: UnsubscribeService,
-        private readonly preferencesStoreService: PreferencesStoreService,
+        private readonly _unsubscribeService: UnsubscribeService,
+        private readonly _preferencesStoreService: PreferencesStoreService,
     ) { }
 
     ngOnInit(): void {
-        this.currentWeightUnit = this.preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
+        this._currentWeightUnit = this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
         this.form.setValidators([SetValidators.allSetsFilled()]);
         this.form.updateValueAndValidity();
 
         this.exerciseNameControl.valueChanges
             .pipe(
-                takeUntil(this.unsubscribeService),
+                takeUntil(this._unsubscribeService),
             )
             .subscribe((value: string) => {
                 value ? this.accessFormField('weightLifted', 0).enable() : this.accessFormField('weightLifted', 0).disable();
@@ -93,7 +94,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         this.exerciseNameChanged$
             .pipe(
                 delay(200),
-                takeUntil(this.unsubscribeService),
+                takeUntil(this._unsubscribeService),
             )
             .subscribe(async _ => {
                 if (this.weightLiftedElements?.first) {
@@ -103,11 +104,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
         this.currentPreferences$
             .pipe(
-                filter(preferences => this.currentWeightUnit !== preferences.weightUnit),
-                takeUntil(this.unsubscribeService),
+                filter(preferences => this._currentWeightUnit !== preferences.weightUnit),
+                takeUntil(this._unsubscribeService),
             )
             .subscribe(preferences => {
-                this.currentWeightUnit = preferences.weightUnit;
+                this._currentWeightUnit = preferences.weightUnit;
                 this.getSets().forEach((_control, index) => {
                     const currentWeightLiftedValue = +this.accessFormField('weightLifted', index).value;
                     if (currentWeightLiftedValue) {
@@ -138,7 +139,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     registerOnChange(fn: (formValue: Partial<Set[]>) => void): void {
         this.form.valueChanges
             .pipe(
-                takeUntil(this.unsubscribeService),
+                takeUntil(this._unsubscribeService),
             )
             .subscribe((formValue: Partial<Set[]>) => fn(formValue as Partial<Set[]>));
     }
@@ -170,16 +171,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     addSet(set?: Set): void {
         this.form.push(
-            new UntypedFormGroup({
-                setNumber: new UntypedFormControl(set ? set.setNumber : this.getSets().length + 1, [Validators.required]),
-                weightLifted: new UntypedFormControl({
+            new FormGroup<FormType<Set>>({
+                setNumber: new FormControl(set ? set.setNumber : this.getSets().length + 1, [Validators.required]),
+                weightLifted: new FormControl({
                     value: set ? this._setWeightLiftedValue(set.weightLifted) : null,
                     disabled: this.exerciseNameControl.value ? false : true,
                 }, [Validators.required,
                     Validators.min(1),
                     Validators.max(1000),
                     Validators.pattern(/^[1-9]\d*(\.\d+)?$/)]),
-                reps: new UntypedFormControl({
+                reps: new FormControl({
                     value: set ? set.reps : null,
                     disabled: this.exerciseNameControl.value ? false : true,
                 }, [Validators.required,
@@ -191,7 +192,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         of(null)
             .pipe(
                 delay(200),
-                takeUntil(this.unsubscribeService),
+                takeUntil(this._unsubscribeService),
             )
             .subscribe(async _ => {
                 if (this.weightLiftedElements) {
@@ -253,8 +254,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     private _setWeightLiftedValue(weightLifted: number): number {
         if (this.editTrainingData) {
             const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
-            if (editTrainingWeightUnit !== this.currentWeightUnit) {
-                return +convertWeightUnit(this.currentWeightUnit, weightLifted);
+            if (editTrainingWeightUnit !== this._currentWeightUnit) {
+                return +convertWeightUnit(this._currentWeightUnit, weightLifted);
             }
         }
         return weightLifted;
