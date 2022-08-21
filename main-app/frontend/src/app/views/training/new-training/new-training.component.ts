@@ -136,22 +136,28 @@ export class NewTrainingComponent implements OnDestroy {
                         return this._newTrainingStoreService.currentTrainingChanged$
                             .pipe(
                                 take(1),
-                                switchMap(trainingState => {
-                                    const currentTrainingState: NewTraining = { ...trainingState };
-                                    if (currentTrainingState) {
-                                        if (currentTrainingState.editMode && !this.editMode) {
-                                            const newTrainingState = {
+                                switchMap(currentTrainingState => {
+                                    let newTrainingState: NewTraining;
+                                    if (currentTrainingState.editMode && !this.editMode) {
+                                        newTrainingState = {
+                                            ...EMPTY_TRAINING,
+                                            exercises: [createEmptyExercise(allExercisesChanged.Value)],
+                                            userId: currentTrainingState?.userId ?? '',
+                                        };
+                                    }
+                                    else if (!currentTrainingState.editMode && !this.editMode) {
+                                        if (!currentTrainingState.exercises[0].exerciseData?.name) {
+                                            newTrainingState = {
                                                 ...EMPTY_TRAINING,
                                                 exercises: [createEmptyExercise(allExercisesChanged.Value)],
                                                 userId: currentTrainingState?.userId ?? '',
                                             };
-                                            return this._newTrainingStoreService.updateTrainingState(newTrainingState);
                                         }
-                                        return of(null);
+                                        else {
+                                            newTrainingState = currentTrainingState;
+                                        }
                                     }
-                                    else {
-                                        return of(null);
-                                    }
+                                    return this._newTrainingStoreService.updateTrainingState(newTrainingState);
                                 }),
                             );
                     }
