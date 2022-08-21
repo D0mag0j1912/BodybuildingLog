@@ -222,7 +222,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             total: new FormControl(exercise?.total
                 ? this._setInitialTotalValue(exercise.total)
                 : this._roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT, this.currentWeightUnit),
-                { nonNullable: true, validators: [Validators.required] }),
+                {
+                    nonNullable: true,
+                    validators: [Validators.required],
+                }),
         }));
 
         if (event) {
