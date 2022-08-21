@@ -218,7 +218,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 primaryMuscleGroup: new FormControl(exercise?.exerciseData?.primaryMuscleGroup ?? ''),
                 translations: new FormControl<Translations>(exercise?.exerciseData?.translations),
             }),
-            sets: new FormControl<Set[]>(exercise?.sets ?? [], { nonNullable: true }),
+            sets: new FormControl(exercise?.sets ?? [], { nonNullable: true }),
             total: new FormControl(exercise?.total
                 ? this._setInitialTotalValue(exercise.total)
                 : this._roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT, this.currentWeightUnit),
