@@ -146,7 +146,7 @@ export class NewTrainingComponent implements OnDestroy {
                                         };
                                     }
                                     else if (!currentTrainingState.editMode && !this.editMode) {
-                                        if (!currentTrainingState.exercises[0].exerciseData?.name) {
+                                        if (!currentTrainingState.exercises[0]?.exerciseData?.name) {
                                             newTrainingState = {
                                                 ...EMPTY_TRAINING,
                                                 exercises: [createEmptyExercise(allExercisesChanged.Value)],

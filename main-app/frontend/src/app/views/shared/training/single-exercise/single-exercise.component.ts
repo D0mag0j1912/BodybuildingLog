@@ -31,7 +31,7 @@ import { convertWeightUnit } from '../../../../helpers/training/convert-weight-u
 import { Translations } from '../../../../models/common/translations.model';
 import { FormType } from '../../../../models/common/form.type';
 
-type SingleExerciseFormData = {
+type SingleExerciseFormModel = {
     exerciseData: FormGroup<FormType<Exercise>>;
     sets: FormControl<Set[]>;
     total: FormControl<string>;
@@ -208,7 +208,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     addExercise(exercise?: SingleExercise, event?: UIEvent): void {
-        this.form.push(new FormGroup<SingleExerciseFormData>({
+        this.form.push(new FormGroup<SingleExerciseFormModel>({
             exerciseData: new FormGroup<FormType<Exercise>>({
                 name: new FormControl(exercise?.exerciseData?.name ?? '', [Validators.required]),
                 imageUrl: new FormControl(exercise?.exerciseData?.imageUrl ?? ''),

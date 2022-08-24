@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormControl, FormGroup, UntypedFormArray, Validators } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { delay, filter, takeUntil } from 'rxjs/operators';
@@ -31,8 +31,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     readonly currentPreferences$: Observable<Preferences> = this._preferencesStoreService.preferencesChanged$;
 
-    readonly form: UntypedFormArray = new UntypedFormArray([]);
-    _currentWeightUnit: WeightUnit;
+    readonly form = new FormArray([]);
+    private _currentWeightUnit: WeightUnit;
 
     onTouched: () => void;
 
@@ -136,12 +136,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         }
     }
     //Sending parent new form value when form value changes
-    registerOnChange(fn: (formValue: Partial<Set[]>) => void): void {
+    registerOnChange(fn: (value: Set[]) => void): void {
         this.form.valueChanges
             .pipe(
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe((formValue: Partial<Set[]>) => fn(formValue as Partial<Set[]>));
+            .subscribe((formValue: Set[]) => fn(formValue));
     }
 
     registerOnTouched(fn: () => void): void {
@@ -166,13 +166,18 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     }
 
     getSets(): AbstractControl[] {
-        return (this.form as UntypedFormArray).controls;
+        return (this.form as FormArray<FormGroup<FormType<Set>>>).controls;
     }
 
     addSet(set?: Set): void {
         this.form.push(
             new FormGroup<FormType<Set>>({
-                setNumber: new FormControl(set ? set.setNumber : this.getSets().length + 1, [Validators.required]),
+                setNumber: new FormControl(
+                    set ? set.setNumber : this.getSets().length + 1,
+                    {
+                        nonNullable: true,
+                        validators: [Validators.required],
+                    }),
                 weightLifted: new FormControl({
                     value: set ? this._setWeightLiftedValue(set.weightLifted) : null,
                     disabled: this.exerciseNameControl.value ? false : true,
