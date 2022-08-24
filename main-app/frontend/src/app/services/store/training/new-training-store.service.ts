@@ -82,22 +82,27 @@ export class NewTrainingStoreService {
         this.saveTrainingData(updatedTraining)
             .subscribe();
     }
-    //TODO: Rewrite
+
     pushToAvailableExercises(
         currentTrainingState: NewTraining,
         toBeAddedExercise: Exercise[],
     ): Observable<void> {
-        const updatedTraining: NewTraining = { ...currentTrainingState };
-        let exercises = updatedTraining.exercises;
-        exercises = exercises.map(exercise => {
-            const isDeletedExerciseInAE = exercise.availableExercises.find(exercise => exercise._id === toBeAddedExercise[0]._id);
-            if (!isDeletedExerciseInAE) {
-                exercise.availableExercises.push(toBeAddedExercise[0]);
-                exercise.availableExercises.sort(this.compare);
-            }
-            return exercise;
-        });
-        updatedTraining.exercises = exercises;
+        let updatedTraining: NewTraining = { ...currentTrainingState };
+        updatedTraining = {
+            ...updatedTraining,
+            exercises: [...updatedTraining.exercises]
+                .map(exercise => {
+                    const isDeletedExerciseInAE = exercise.availableExercises.find(exercise => exercise._id === toBeAddedExercise[0]._id);
+                    if (!isDeletedExerciseInAE) {
+                        return {
+                            ...exercise,
+                            availableExercises: [...exercise.availableExercises, toBeAddedExercise[0]]
+                                .sort(this.compare),
+                        };
+                    }
+                    return exercise;
+                }),
+        };
         return this.saveTrainingData(updatedTraining);
     }
 
