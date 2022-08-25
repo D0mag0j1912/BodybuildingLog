@@ -7,7 +7,6 @@ import { getControlValueAccessor } from '../../../../helpers/control-value-acces
 import { Preferences } from '../../../../models/common/preferences.model';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
-import { FormSetData } from '../../../../models/training/shared/set.type';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import * as SetValidators from '../../../../validators/training/set.validators';
@@ -16,6 +15,7 @@ import { WeightUnit } from '../../../../models/common/preferences.type';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { FormType } from '../../../../models/common/form.type';
+import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 
 @Component({
     selector: 'bl-sets',
@@ -242,7 +242,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     }
 
     accessFormField(
-        formField: keyof FormSetData,
+        formField: keyof ModelWithoutIdType<Set>,
         indexSet: number,
     ): AbstractControl {
         return this.form.at(indexSet)?.get(formField);

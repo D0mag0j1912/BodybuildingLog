@@ -1,3 +1,5 @@
+import { ModelWithoutIdType } from '../../common/raw.model';
+import { Exercise } from '../exercise.model';
 import { SingleExercise } from './single-exercise.model';
 
 export type SingleExerciseFormControlType = {
@@ -6,12 +8,4 @@ export type SingleExerciseFormControlType = {
 
 export type SingleExerciseFormGroupType = Pick<SingleExercise, 'exerciseData'>;
 
-export type FormControlExerciseData = {
-    name?: string;
-    imageUrl?: string;
-    primaryMuscleGroup?: string;
-    translations?: {
-        hr?: string;
-        en?: string;
-    };
-};
+export type FormControlExerciseData = ModelWithoutIdType<Exercise>;
