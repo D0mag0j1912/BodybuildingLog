@@ -1,6 +1,6 @@
 
 export interface Set {
-    setNumber: number;
+    readonly setNumber: number;
     weightLifted: number;
     reps: number;
     _id?: string;

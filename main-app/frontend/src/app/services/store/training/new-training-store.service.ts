@@ -69,7 +69,10 @@ export class NewTrainingStoreService {
                                 .filter((_set: Set, i: number) => i !== indexSet)
                                 .map((set: Set) => {
                                     if (set.setNumber > (indexSet + 1)) {
-                                        set.setNumber--;
+                                        return {
+                                            ...set,
+                                            setNumber: set.setNumber - 1,
+                                        };
                                     }
                                     return set;
                                 }),
