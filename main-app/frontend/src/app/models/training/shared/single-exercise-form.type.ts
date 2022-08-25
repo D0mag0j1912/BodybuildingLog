@@ -1,9 +1,8 @@
 import { Exercise } from '../exercise.model';
-import { Set } from './set.model';
+import { SingleExercise } from './single-exercise.model';
 
-export type FormControlSingleExercise = {
-    sets?: Set[];
-    total?: string;
+export type SingleExerciseFormControlType = {
+    [P in keyof Pick<SingleExercise, 'sets' | 'total'>]: SingleExercise[P] extends number ? string : SingleExercise[P];
 };
 
 export type FormGroupExerciseData = { exerciseData?: Exercise };
