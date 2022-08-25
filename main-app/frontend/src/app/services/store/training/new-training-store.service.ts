@@ -207,20 +207,34 @@ export class NewTrainingStoreService {
         const availableExercises = allExercises.filter(exercise => alreadyUsedExercises.indexOf(exercise.name) === -1);
         return this.updateTrainingState(undefined, availableExercises);
     }
-    //TODO: Rewrite
+
     updateExerciseChoices(
         selectedExercise: string,
         selectedIndex: number,
         trainingToBeUpdated: NewTraining,
         selectedExerciseData: Exercise,
     ): Observable<void> {
-        trainingToBeUpdated.exercises[selectedIndex].exerciseData = selectedExerciseData;
-        trainingToBeUpdated.exercises.forEach((exercise: SingleExercise, index: number) => {
-            if (index !== selectedIndex) {
-                exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.name !== selectedExercise);
-            }
-        });
-        return this.saveTrainingData({ ...trainingToBeUpdated });
+        let updatedTraining: NewTraining = { ...trainingToBeUpdated };
+        updatedTraining = {
+            ...updatedTraining,
+            exercises: [...updatedTraining.exercises]
+                .map((exercise: SingleExercise, i: number) => {
+                    if (i === selectedIndex) {
+                        return {
+                            ...exercise,
+                            exerciseData: selectedExerciseData,
+                        };
+                    }
+                    else {
+                        return {
+                            ...exercise,
+                            availableExercises: [...exercise.availableExercises]
+                                .filter((exercise: Exercise) => exercise.name !== selectedExercise),
+                        };
+                    }
+                }),
+        };
+        return this.saveTrainingData(updatedTraining);
     }
 
     keepTrainingState(): Observable<boolean> {
