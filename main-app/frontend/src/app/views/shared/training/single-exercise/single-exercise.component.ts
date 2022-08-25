@@ -187,23 +187,27 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         element: IonSelect,
     ): void {
         if (element?.value) {
-            const currentTraining = { ...this._newTrainingStoreService.getCurrentTrainingState() };
-            const selectedExerciseData = currentTraining.exercises[indexExercise].availableExercises.find(exercise => exercise.name === element.value as string);
-            this.accessFormGroup('exerciseData', 'imageUrl', indexExercise).patchValue(selectedExerciseData.imageUrl);
-            this.accessFormGroup('exerciseData', 'primaryMuscleGroup', indexExercise).patchValue(selectedExerciseData.primaryMuscleGroup);
-            this.accessFormGroup('exerciseData', 'translations', indexExercise).patchValue(selectedExerciseData.translations);
-            this._newTrainingStoreService.updateExerciseChoices(
-                element.value as string,
-                indexExercise,
-                currentTraining,
-                selectedExerciseData,
-            ).pipe(
-                takeUntil(this._unsubscribeService),
-            ).subscribe(_ => {
-                this.isExerciseChanged = !this.isExerciseChanged;
-                this._exerciseNameChanged$.next();
-                this._changeDetectorRef.markForCheck();
-            });
+            this._newTrainingStoreService.currentTrainingChanged$
+                .pipe(
+                    take(1),
+                    switchMap((currentTrainingState: NewTraining) => {
+                        const selectedExerciseData = currentTrainingState.exercises[indexExercise].availableExercises.find(exercise => exercise.name === element.value as string);
+                        this.accessFormGroup('exerciseData', 'imageUrl', indexExercise).patchValue(selectedExerciseData.imageUrl);
+                        this.accessFormGroup('exerciseData', 'primaryMuscleGroup', indexExercise).patchValue(selectedExerciseData.primaryMuscleGroup);
+                        this.accessFormGroup('exerciseData', 'translations', indexExercise).patchValue(selectedExerciseData.translations);
+                        return this._newTrainingStoreService.updateExerciseChoices(
+                            element.value as string,
+                            indexExercise,
+                            currentTrainingState,
+                            selectedExerciseData,
+                        );
+                    }),
+                )
+                .subscribe(_ => {
+                    this.isExerciseChanged = !this.isExerciseChanged;
+                    this._exerciseNameChanged$.next();
+                    this._changeDetectorRef.markForCheck();
+                });
         }
     }
 
