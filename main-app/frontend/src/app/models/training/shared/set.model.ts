@@ -1,9 +1,9 @@
 
 export interface Set {
     readonly setNumber: number;
-    weightLifted: number;
-    reps: number;
-    _id?: string;
+    readonly weightLifted: number;
+    readonly reps: number;
+    readonly _id?: string;
 }
 
 export interface SetStateChanged {
