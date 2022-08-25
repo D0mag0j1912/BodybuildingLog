@@ -146,29 +146,58 @@ export class NewTrainingStoreService {
                 );
         }
     }
-    //TODO: Rewrite
+
     setsChanged(trainingData: SetTrainingData): Observable<void> {
-        const updatedTraining: NewTraining = { ...this._currentTrainingChanged$$.getValue() };
+        let updatedTraining: NewTraining = this._currentTrainingChanged$$.getValue();
         const indexOfChangedExercise = updatedTraining.exercises.findIndex((singleExercise: SingleExercise) => singleExercise.exerciseData.name === trainingData.exerciseName);
         const indexFoundSet = updatedTraining.exercises[indexOfChangedExercise].sets.findIndex(set => set.setNumber === trainingData.setNumber);
 
         if (indexFoundSet > -1) {
-            let setToBeUpdated = updatedTraining.exercises[indexOfChangedExercise].sets[indexFoundSet];
-            setToBeUpdated = {
-                ...updatedTraining.exercises[indexOfChangedExercise].sets[indexFoundSet],
-                weightLifted: trainingData.weightLifted,
-                reps: trainingData.reps,
+            updatedTraining = {
+                ...updatedTraining,
+                exercises: [...updatedTraining.exercises]
+                    .map((exercise: SingleExercise, i: number) => {
+                        if (i === indexOfChangedExercise) {
+                            return {
+                                ...exercise,
+                                sets: [...exercise.sets]
+                                    .map((set: Set, j: number) => {
+                                        if (j === indexFoundSet) {
+                                            return {
+                                                ...set,
+                                                weightLifted: trainingData.weightLifted,
+                                                reps: trainingData.reps,
+                                            };
+                                        }
+                                        return set;
+                                    }),
+                                total: trainingData.total,
+                            };
+                        }
+                        return exercise;
+                    }),
             };
-            updatedTraining.exercises[indexOfChangedExercise].sets[indexFoundSet] = setToBeUpdated;
-            updatedTraining.exercises[indexOfChangedExercise].total = trainingData.total;
         }
         else {
-            updatedTraining.exercises[indexOfChangedExercise].sets.push({
+            const newSet = {
                 setNumber: trainingData.setNumber,
                 weightLifted: trainingData.weightLifted,
                 reps: trainingData.reps,
-            });
-            updatedTraining.exercises[indexOfChangedExercise].total = trainingData.total;
+            } as Set;
+            updatedTraining = {
+                ...updatedTraining,
+                exercises: [...updatedTraining.exercises]
+                    .map((exercise: SingleExercise, i: number) => {
+                        if (i === indexOfChangedExercise) {
+                            return {
+                                ...exercise,
+                                sets: [...exercise.sets, newSet],
+                                total: trainingData.total,
+                            };
+                        }
+                        return exercise;
+                    }),
+            };
         }
         return this.saveTrainingData(updatedTraining);
     }
