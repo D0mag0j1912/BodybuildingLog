@@ -402,7 +402,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             .pipe(
                 take(1),
                 map((currentTrainingState: NewTraining) => {
-                    const exerciseFormData: SingleExercise[] = [];
+                    let exerciseFormData: SingleExercise[] = [];
 
                     this.getExercises().forEach((_exercise: AbstractControl, indexExercise: number) => {
                         const splittedTotal: string[] = (this.accessFormField('total', indexExercise).value as string).split(' ');
@@ -412,12 +412,13 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                             primaryMuscleGroup: this.accessFormGroup('exerciseData', 'primaryMuscleGroup', indexExercise).value as string,
                             translations: this.accessFormGroup('exerciseData', 'translations', indexExercise).value as { hr: string; en: string },
                         };
-                        exerciseFormData.push({
+                        const initialExercise = {
                             exerciseData,
                             sets: [],
                             total: +splittedTotal[0],
                             availableExercises: (currentTrainingState.exercises)[indexExercise]?.availableExercises || [],
-                        });
+                        } as SingleExercise;
+                        exerciseFormData = [...exerciseFormData, initialExercise];
 
                         const formSetData: Set[] = [];
                         (this.accessFormField('sets', indexExercise).value as Set[]).forEach((set: Set) => {
@@ -428,7 +429,16 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                             };
                             formSetData.push(apiSet);
                         });
-                        exerciseFormData[indexExercise].sets = formSetData;
+                        exerciseFormData = [...exerciseFormData]
+                            .map((exercise: SingleExercise, index: number) => {
+                                if (index === indexExercise) {
+                                    return {
+                                        ...exercise,
+                                        sets: formSetData,
+                                    };
+                                }
+                                return exercise;
+                            });
                     });
 
                     return {
