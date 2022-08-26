@@ -19,9 +19,7 @@ import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 
 type SetFormType = FormType<Set>;
 
-type SetFormValue = {
-    [P in keyof ModelWithoutIdType<Set>]: Set[P];
-};
+type SetFormValue = ModelWithoutIdType<Set>;
 
 @Component({
     selector: 'bl-sets',
