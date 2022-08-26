@@ -1,5 +1,5 @@
 
 export type Translations = {
-    hr: string;
-    en: string;
+    readonly hr: string;
+    readonly en: string;
 };

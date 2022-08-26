@@ -2,7 +2,7 @@ import { WeightUnit } from '../../common/preferences.type';
 import { SingleExercise } from '../shared/single-exercise.model';
 
 export interface NewTraining {
-    exercises: SingleExercise[];
+    readonly exercises: SingleExercise[];
     readonly editMode: boolean;
     readonly userId: string;
     readonly _id?: string;
