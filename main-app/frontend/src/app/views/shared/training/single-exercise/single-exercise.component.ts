@@ -15,7 +15,6 @@ import { SetStateChanged, SetTrainingData } from '../../../../models/training/sh
 import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import { FormControlExerciseData, SingleExerciseFormControlType, SingleExerciseFormGroupType } from '../../../../models/training/shared/single-exercise-form.type';
-import { RoundTotalWeightPipe } from '../../../../pipes/training/new-training/round-total-weight/round-total-weight.pipe';
 import { ToastControllerService } from '../../../../services/shared/toast-controller.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../../services/api/training/new-training.service';
@@ -27,14 +26,14 @@ import { TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-trainin
 import { SetsComponent } from '../sets/sets.component';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import { WeightUnit } from '../../../../models/common/preferences.type';
-import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
 import { Translations } from '../../../../models/common/translations.model';
 import { FormType } from '../../../../models/common/form.type';
 
 type SingleExerciseFormModel = {
-    exerciseData: FormGroup<FormType<Exercise>>;
-    sets: FormControl<Set[]>;
-    total: FormControl<string>;
+    [P in keyof Omit<FormType<SingleExercise>, 'availableExercises'>]:
+        SingleExercise[P] extends Exercise ?
+        FormGroup<FormType<Exercise>> :
+        FormType<SingleExercise>[P];
 };
 
 @Component({
@@ -134,7 +133,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         private readonly _toastControllerService: ToastControllerService,
         private readonly _changeDetectorRef: ChangeDetectorRef,
         private readonly _modalController: ModalController,
-        private readonly _roundTotalWeightPipe: RoundTotalWeightPipe,
     ) {
         this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName(), SingleExerciseValidators.checkExerciseNumber()]);
         this.form.updateValueAndValidity();
@@ -220,10 +218,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 translations: new FormControl<Translations>(exercise?.exerciseData?.translations),
             }),
             sets: new FormControl(exercise?.sets ?? [], { nonNullable: true }),
-            total: new FormControl(exercise?.total
-                ? this._setInitialTotalValue(exercise.total)
-                : this._roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT, this.currentWeightUnit),
-                {
+            total: new FormControl(exercise?.total, {
                     nonNullable: true,
                     validators: [Validators.required],
                 }),
@@ -328,11 +323,11 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     }
                 }),
                 takeUntil(this._unsubscribeService),
-            ).subscribe(_ => this.accessFormField('total', $event.indexExercise).patchValue(this._roundTotalWeightPipe.transform($event.newTotal, this.currentWeightUnit)));
+            ).subscribe(_ => this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal));
     }
 
     deleteSet($event: Partial<SetStateChanged>): void {
-        this.accessFormField('total', $event.indexExercise).patchValue(this._roundTotalWeightPipe.transform($event.newTotal, this.currentWeightUnit));
+        this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal);
         this._newTrainingStoreService.deleteSet(
             $event.indexExercise,
             $event.indexSet,
@@ -341,7 +336,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     onWeightUnitChanged(exerciseIndex: number): void {
-        this.accessFormField('total', exerciseIndex).patchValue(this._roundTotalWeightPipe.transform(TOTAL_INITIAL_WEIGHT, this.currentWeightUnit));
+        this.accessFormField('total', exerciseIndex).patchValue(TOTAL_INITIAL_WEIGHT);
     }
 
     getExercises(): AbstractControl[] {
@@ -405,7 +400,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     let exerciseFormData: SingleExercise[] = [];
 
                     this.getExercises().forEach((_exercise: AbstractControl, indexExercise: number) => {
-                        const splittedTotal: string[] = (this.accessFormField('total', indexExercise).value as string).split(' ');
+                        const total = this.accessFormField('total', indexExercise).value as number;
                         const exerciseData: Exercise = {
                             name: this.accessFormGroup('exerciseData', 'name', indexExercise).value as string,
                             imageUrl: this.accessFormGroup('exerciseData', 'imageUrl', indexExercise).value as string,
@@ -415,7 +410,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                         const initialExercise = {
                             exerciseData,
                             sets: [],
-                            total: +splittedTotal[0],
+                            total,
                             availableExercises: (currentTrainingState.exercises)[indexExercise]?.availableExercises || [],
                         } as SingleExercise;
                         exerciseFormData = [...exerciseFormData, initialExercise];
@@ -479,26 +474,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             });
         });
         return errors.length === 0;
-    }
-
-    private _setInitialTotalValue(total: number | undefined): string {
-        if (this.editTrainingData) {
-            const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
-            if (editTrainingWeightUnit !== this.currentWeightUnit) {
-                return this._roundTotalWeightPipe.transform(+convertWeightUnit(this.currentWeightUnit, total), this.currentWeightUnit);
-            }
-            else {
-                return this._roundTotalWeightPipe.transform(total, this.currentWeightUnit);
-            }
-        }
-        else {
-            if (total) {
-                return this._roundTotalWeightPipe.transform(total, this.currentWeightUnit);
-            }
-            else {
-                return `${TOTAL_INITIAL_WEIGHT} ${DEFAULT_WEIGHT_UNIT}`;
-            }
-        }
     }
 
 }
