@@ -28,12 +28,17 @@ import { PreferencesStoreService } from '../../../../services/store/shared/prefe
 import { WeightUnit } from '../../../../models/common/preferences.type';
 import { Translations } from '../../../../models/common/translations.model';
 import { FormType } from '../../../../models/common/form.type';
+import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 
-type SingleExerciseFormModel = {
+type SingleExerciseFormType = {
     [P in keyof Omit<FormType<SingleExercise>, 'availableExercises'>]:
         SingleExercise[P] extends Exercise ?
         FormGroup<FormType<Exercise>> :
         FormType<SingleExercise>[P];
+};
+
+type SingleExerciseFormValueType = {
+    [P in keyof Omit<ModelWithoutIdType<SingleExercise>, 'availableExercises'>]: SingleExercise[P];
 };
 
 @Component({
@@ -93,7 +98,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         }),
     );
 
-    readonly form = new FormArray([]);
+    readonly form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
 
     isExerciseChanged = false;
     isApiLoading = false;
@@ -169,7 +174,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         this._isExercisePicker$.complete();
     }
 
-    registerOnChange(fn: (formValue: Partial<SingleExercise[]>) => void): void {
+    registerOnChange(fn: (formValue: SingleExerciseFormValueType[]) => void): void {
         this.form.valueChanges
             .pipe(
                 takeUntil(this._unsubscribeService),
@@ -210,7 +215,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     addExercise(exercise?: SingleExercise, event?: UIEvent): void {
-        this.form.push(new FormGroup<SingleExerciseFormModel>({
+        this.form.push(new FormGroup<SingleExerciseFormType>({
             exerciseData: new FormGroup<FormType<Exercise>>({
                 name: new FormControl(exercise?.exerciseData?.name ?? '', [Validators.required]),
                 imageUrl: new FormControl(exercise?.exerciseData?.imageUrl ?? ''),

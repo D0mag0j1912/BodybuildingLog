@@ -17,6 +17,12 @@ import { NewTraining } from '../../../../models/training/new-training/new-traini
 import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 
+type SetFormType = FormType<Set>;
+
+type SetFormValue = {
+    [P in keyof ModelWithoutIdType<Set>]: Set[P];
+};
+
 @Component({
     selector: 'bl-sets',
     templateUrl: './sets.component.html',
@@ -31,7 +37,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     readonly currentPreferences$: Observable<Preferences> = this._preferencesStoreService.preferencesChanged$;
 
-    readonly form = new FormArray([]);
+    readonly form = new FormArray<FormGroup<SetFormType>>([]);
     private _currentWeightUnit: WeightUnit;
 
     onTouched: () => void;
@@ -136,12 +142,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         }
     }
     //Sending parent new form value when form value changes
-    registerOnChange(fn: (value: Set[]) => void): void {
+    registerOnChange(fn: (value: SetFormValue[]) => void): void {
         this.form.valueChanges
             .pipe(
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe((formValue: Set[]) => fn(formValue));
+            .subscribe((formValue: SetFormValue[]) => fn(formValue));
     }
 
     registerOnTouched(fn: () => void): void {
