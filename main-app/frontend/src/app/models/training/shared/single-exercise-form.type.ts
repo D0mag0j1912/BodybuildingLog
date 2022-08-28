@@ -3,7 +3,7 @@ import { Exercise } from '../exercise.model';
 import { SingleExercise } from './single-exercise.model';
 
 export type SingleExerciseFormControlType = {
-    [P in keyof Pick<SingleExercise, 'sets' | 'total'>]: SingleExercise[P] extends number ? string : SingleExercise[P];
+    [P in keyof Pick<SingleExercise, 'sets' | 'total'>]: SingleExercise[P];
 };
 
 export type SingleExerciseFormGroupType = Pick<SingleExercise, 'exerciseData'>;
