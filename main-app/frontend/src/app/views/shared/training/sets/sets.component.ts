@@ -17,7 +17,7 @@ import { NewTraining } from '../../../../models/training/new-training/new-traini
 import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 
-type SetFormType = FormType<Set>;
+export type SetFormType = FormType<Set>;
 
 type SetFormValue = ModelWithoutIdType<Set>;
 

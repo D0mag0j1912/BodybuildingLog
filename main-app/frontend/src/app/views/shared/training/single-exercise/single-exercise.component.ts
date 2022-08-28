@@ -30,7 +30,7 @@ import { Translations } from '../../../../models/common/translations.model';
 import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 
-type SingleExerciseFormType = {
+export type SingleExerciseFormType = {
     [P in keyof Omit<FormType<SingleExercise>, 'availableExercises'>]:
         SingleExercise[P] extends Exercise ?
         FormGroup<FormType<Exercise>> :
@@ -89,7 +89,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             if (this.getExercises().length > 0) {
                 if (this.setsCmpRef) {
                     return (trainingState.length <= allExercises.length) &&
-                        ((this.accessFormGroup('exerciseData', 'name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0) &&
+                        ((this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0) &&
                         this._areSetsValid(this.setsCmpRef);
                 }
                 return false;
@@ -197,9 +197,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     take(1),
                     switchMap((currentTrainingState: NewTraining) => {
                         const selectedExerciseData = currentTrainingState.exercises[indexExercise].availableExercises.find(exercise => exercise.name === element.value as string);
-                        this.accessFormGroup('exerciseData', 'imageUrl', indexExercise).patchValue(selectedExerciseData.imageUrl);
-                        this.accessFormGroup('exerciseData', 'primaryMuscleGroup', indexExercise).patchValue(selectedExerciseData.primaryMuscleGroup);
-                        this.accessFormGroup('exerciseData', 'translations', indexExercise).patchValue(selectedExerciseData.translations);
+                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'imageUrl', indexExercise).patchValue(selectedExerciseData.imageUrl);
+                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'primaryMuscleGroup', indexExercise).patchValue(selectedExerciseData.primaryMuscleGroup);
+                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'translations', indexExercise).patchValue(selectedExerciseData.translations);
                         return this._newTrainingStoreService.updateExerciseChoices(
                             element.value as string,
                             indexExercise,
@@ -314,9 +314,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 switchMap(_ => {
                     if ($event?.isWeightLiftedValid &&
                         $event?.isRepsValid &&
-                        this.accessFormGroup('exerciseData', 'name', $event.indexExercise).value) {
+                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'name', $event.indexExercise).value) {
                             const trainingData: SetTrainingData = {
-                                exerciseName: this.accessFormGroup('exerciseData', 'name', $event.indexExercise).value as string,
+                                exerciseName: this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'name', $event.indexExercise).value as string,
                                 setNumber: $event.newSet.setNumber,
                                 weightLifted: $event.newSet.weightLifted,
                                 reps: $event.newSet.reps,
@@ -357,12 +357,12 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         return this.form.at(indexExercise)?.get(formField as string);
     }
 
-    accessFormGroup(
-        formGroup: keyof SingleExerciseFormGroupType,
-        formField: keyof FormControlExerciseData,
+    accessFormGroup<T, K>(
+        formGroup: keyof T,
+        formField: keyof K,
         indexExercise: number,
-    ): AbstractControl {
-        return this.form.at(indexExercise).get(formGroup)?.get(formField);
+    ): AbstractControl<K[typeof formField]> {
+        return this.form.at(indexExercise).get(formGroup as string)?.get(formField as string);
     }
 
     onSubmit(): void {
@@ -406,10 +406,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     this.getExercises().forEach((_exercise: AbstractControl, indexExercise: number) => {
                         const total = this.accessFormField<SingleExerciseFormControlType>('total', indexExercise).value as number;
                         const exerciseData: Exercise = {
-                            name: this.accessFormGroup('exerciseData', 'name', indexExercise).value as string,
-                            imageUrl: this.accessFormGroup('exerciseData', 'imageUrl', indexExercise).value as string,
-                            primaryMuscleGroup: this.accessFormGroup('exerciseData', 'primaryMuscleGroup', indexExercise).value as string,
-                            translations: this.accessFormGroup('exerciseData', 'translations', indexExercise).value as { hr: string; en: string },
+                            name: this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'name', indexExercise).value as string,
+                            imageUrl: this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'imageUrl', indexExercise).value as string,
+                            primaryMuscleGroup: this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'primaryMuscleGroup', indexExercise).value as string,
+                            translations: this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'translations', indexExercise).value as { hr: string; en: string },
                         };
                         const initialExercise = {
                             exerciseData,

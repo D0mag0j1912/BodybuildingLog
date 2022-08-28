@@ -1,10 +1,11 @@
-import { AbstractControl, UntypedFormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { SetFormType } from '../../views/shared/training/sets/sets.component';
 
 export function allSetsFilled(): ValidatorFn {
     return (array: AbstractControl): ValidationErrors | null => {
         if (array) {
             let isSetFilled = true;
-            (array as UntypedFormArray).controls.forEach((set: AbstractControl) => {
+            (array as FormArray<FormGroup<SetFormType>>).controls.forEach((set: AbstractControl) => {
                 if (!set.get('weightLifted').value || !set.get('reps').value ||
                     set.get('weightLifted').errors || set.get('reps').errors) {
                     isSetFilled = false;
