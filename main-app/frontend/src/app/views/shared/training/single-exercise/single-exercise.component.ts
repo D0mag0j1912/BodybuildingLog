@@ -57,11 +57,13 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     private readonly _exerciseNameChanged$: Subject<void> = new Subject<void>();
     private readonly _isSubmitted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private readonly _isExercisePicker$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+    private readonly _isApiLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
     readonly isSubmitted$: Observable<boolean> = this._isSubmitted$.asObservable();
     readonly exerciseNameChanged$: Observable<void> = this._exerciseNameChanged$.asObservable();
     readonly isExercisePicker$: Observable<boolean> = this._isExercisePicker$.asObservable();
+    readonly isApiLoading$: Observable<boolean> = this._isApiLoading$.asObservable();
     readonly currentTrainingDataState$: Observable<SingleExercise[]> = this._newTrainingStoreService.currentTrainingChanged$
         .pipe(
             map(currentTrainingState => currentTrainingState.exercises),
@@ -101,7 +103,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     readonly form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
 
     isExerciseChanged = false;
-    isApiLoading = false;
 
     onTouched: () => void;
 
@@ -172,6 +173,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         this._exerciseNameChanged$.complete();
         this._isSubmitted$.complete();
         this._isExercisePicker$.complete();
+        this._isApiLoading$.complete();
     }
 
     registerOnChange(fn: (formValue: SingleExerciseFormValueType[]) => void): void {
@@ -369,7 +371,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         if (!this.form.valid || !this._areSetsValid(this.setsCmpRef) || !newTrainingFormValid) {
             return;
         }
-        this.isApiLoading = true;
+        this._isApiLoading$.next(true);
 
         this._gatherAllFormData()
             .pipe(
@@ -384,10 +386,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                         return this._newTrainingService.addTraining(apiNewTraining);
                     }
                 }),
-                finalize(() => {
-                    this.isApiLoading = false;
-                    this._changeDetectorRef.markForCheck();
-                }),
+                finalize(() => this._isApiLoading$.next(false)),
             ).subscribe(async (response: GeneralResponseData) => {
                 await this._toastControllerService.displayToast({
                     message: this._translateService.instant(response.Message),
