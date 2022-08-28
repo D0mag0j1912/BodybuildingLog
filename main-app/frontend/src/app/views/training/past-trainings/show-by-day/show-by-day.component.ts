@@ -24,6 +24,9 @@ export class ShowByDayComponent implements OnChanges {
     @Input()
     startDate = startOfDay(new Date());
 
+    @Input()
+    isLoading = false;
+
     @Output()
     readonly dayActivated: EventEmitter<DayActivatedType> = new EventEmitter<DayActivatedType>();
 
