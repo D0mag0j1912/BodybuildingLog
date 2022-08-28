@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChildren } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, UntypedFormArray, Validators } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -347,13 +347,13 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     getExercises(): AbstractControl[] {
-        return (this.form as UntypedFormArray).controls;
+        return (this.form as FormArray<FormGroup<SingleExerciseFormType>>).controls;
     }
 
     accessFormField<T>(
         formField: keyof T,
         indexExercise: number,
-    ): AbstractControl<T[keyof T]> {
+    ): AbstractControl<T[typeof formField]> {
         return this.form.at(indexExercise)?.get(formField as string);
     }
 
