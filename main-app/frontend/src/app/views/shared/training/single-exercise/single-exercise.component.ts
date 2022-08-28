@@ -330,11 +330,11 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     }
                 }),
                 takeUntil(this._unsubscribeService),
-            ).subscribe(_ => this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal));
+            ).subscribe(_ => this.accessFormField<SingleExerciseFormControlType>('total', $event.indexExercise).patchValue($event.newTotal));
     }
 
     deleteSet($event: Partial<SetStateChanged>): void {
-        this.accessFormField('total', $event.indexExercise).patchValue($event.newTotal);
+        this.accessFormField<SingleExerciseFormControlType>('total', $event.indexExercise).patchValue($event.newTotal);
         this._newTrainingStoreService.deleteSet(
             $event.indexExercise,
             $event.indexSet,
@@ -343,18 +343,18 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     onWeightUnitChanged(exerciseIndex: number): void {
-        this.accessFormField('total', exerciseIndex).patchValue(TOTAL_INITIAL_WEIGHT);
+        this.accessFormField<SingleExerciseFormControlType>('total', exerciseIndex).patchValue(TOTAL_INITIAL_WEIGHT);
     }
 
     getExercises(): AbstractControl[] {
         return (this.form as UntypedFormArray).controls;
     }
 
-    accessFormField(
-        formField: keyof SingleExerciseFormControlType,
+    accessFormField<T>(
+        formField: keyof T,
         indexExercise: number,
-    ): AbstractControl {
-        return this.form.at(indexExercise)?.get(formField);
+    ): AbstractControl<T[keyof T]> {
+        return this.form.at(indexExercise)?.get(formField as string);
     }
 
     accessFormGroup(
@@ -404,7 +404,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     let exerciseFormData: SingleExercise[] = [];
 
                     this.getExercises().forEach((_exercise: AbstractControl, indexExercise: number) => {
-                        const total = this.accessFormField('total', indexExercise).value as number;
+                        const total = this.accessFormField<SingleExerciseFormControlType>('total', indexExercise).value as number;
                         const exerciseData: Exercise = {
                             name: this.accessFormGroup('exerciseData', 'name', indexExercise).value as string,
                             imageUrl: this.accessFormGroup('exerciseData', 'imageUrl', indexExercise).value as string,
@@ -420,7 +420,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                         exerciseFormData = [...exerciseFormData, initialExercise];
 
                         const formSetData: Set[] = [];
-                        (this.accessFormField('sets', indexExercise).value as Set[]).forEach((set: Set) => {
+                        (this.accessFormField<SingleExerciseFormControlType>('sets', indexExercise).value as Set[]).forEach((set: Set) => {
                             const apiSet: Set = {
                                 setNumber: +set.setNumber,
                                 weightLifted: +set.weightLifted,
