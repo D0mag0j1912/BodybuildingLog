@@ -7,7 +7,7 @@
             *ngFor="let day of daysOfWeek$ | async; let i = index"
             type="button"
             [class.active-day]="(activeDay$$ | async) === i + 1"
-            (click)="$event.stopPropagation(); onDayActivated(i)"
+            (click)="$event.stopImmediatePropagation(); onDayActivated(i)"
         >
             {{ day.substring(0, 3) }}
         </ion-fab-button>
