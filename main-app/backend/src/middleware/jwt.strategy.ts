@@ -9,10 +9,7 @@ import { UserDto } from '../models/auth/login.model';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-
-    constructor(
-        @InjectModel('User') private readonly userModel: Model<UserDto>,
-    ) {
+    constructor(@InjectModel('User') private readonly userModel: Model<UserDto>) {
         super({
             secretOrKey: JWT_TOKEN,
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

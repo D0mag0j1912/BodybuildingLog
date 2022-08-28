@@ -11,12 +11,11 @@ import { SignupDto } from '../../models/auth/signup/signup.model';
 
 @Injectable()
 export class AuthService {
-
     constructor(
         @InjectModel('User') private readonly userModel: Model<UserDto>,
         @InjectModel('Preferences') private readonly preferencesModel: Model<PreferencesDto>,
         private readonly jwtService: JwtService,
-    ) { }
+    ) {}
 
     async passwordFitsEmail(userDto: UserDto): Promise<boolean> {
         try {
@@ -25,16 +24,12 @@ export class AuthService {
             if (!user) {
                 return false;
             }
-            const comparison: boolean = await compare(
-                password,
-                user.password,
-            );
+            const comparison: boolean = await compare(password, user.password);
             if (comparison) {
                 return true;
             }
             return false;
-        }
-        catch (error: unknown) {
+        } catch (error: unknown) {
             return false;
         }
     }
@@ -49,10 +44,7 @@ export class AuthService {
                     Message: 'auth.errors.email_not_registered',
                 } as AuthResponse;
             }
-            const comparison: boolean = await compare(
-                password,
-                user.password,
-            );
+            const comparison: boolean = await compare(password, user.password);
             if (!comparison) {
                 return {
                     Success: false,
@@ -70,8 +62,7 @@ export class AuthService {
                 _id: user._id,
                 Message: 'auth.login_success',
             } as AuthResponse;
-        }
-        catch (error: unknown) {
+        } catch (error: unknown) {
             throw new InternalServerErrorException('auth.errors.login_error');
         }
     }
@@ -81,27 +72,24 @@ export class AuthService {
             const result: {
                 _id: string;
                 password: string;
-            } = await this.userModel.findOne(
-                { email: email },
-                'password',
-            ).exec();
+            } = await this.userModel.findOne({ email: email }, 'password').exec();
             if (!result) {
                 return true;
             }
             return false;
-        }
-        catch (error: unknown) {
+        } catch (error: unknown) {
             return false;
         }
     }
 
-    async signup(
-        preferencesDto: PreferencesDto,
-        signupDto: SignupDto,
-    ): Promise<AuthResponse> {
+    async signup(preferencesDto: PreferencesDto, signupDto: SignupDto): Promise<AuthResponse> {
         try {
             const { languageCode: language, weightUnit: weightUnit } = preferencesDto;
-            const { email: email, password: password, confirmPassword: confirmPassword } = signupDto;
+            const {
+                email: email,
+                password: password,
+                confirmPassword: confirmPassword,
+            } = signupDto;
             const encryptedPassword: string = await hash(password, 10);
             const user = new this.userModel({
                 email: email,
@@ -119,8 +107,7 @@ export class AuthService {
                 Success: true,
                 Message: 'auth.signup_success',
             } as AuthResponse;
-        }
-        catch (error: unknown) {
+        } catch (error: unknown) {
             throw new InternalServerErrorException('auth.errors.signup_error');
         }
     }

@@ -3,10 +3,7 @@ import { Request } from 'express';
 
 @Injectable()
 export class TrainingGuard implements CanActivate {
-
-    constructor(
-        private readonly message: string,
-    ) {}
+    constructor(private readonly message: string) {}
 
     canActivate(context: ExecutionContext): boolean {
         const request: Request = context.switchToHttp().getRequest();

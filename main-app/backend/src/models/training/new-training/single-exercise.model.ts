@@ -7,7 +7,8 @@ import {
     IsNumber,
     IsOptional,
     IsString,
-    ValidateNested } from 'class-validator';
+    ValidateNested,
+} from 'class-validator';
 import { Schema } from 'mongoose';
 import { EXERCISE_SCHEMA } from '../exercise.model';
 import { Exercise } from '../exercise.model';
@@ -34,7 +35,6 @@ export const SINGLE_EXERCISE_SCHEMA = new Schema({
 });
 
 export class SingleExercise {
-
     @ApiProperty({ required: false })
     @IsOptional()
     @IsString()
@@ -50,9 +50,7 @@ export class SingleExercise {
     sets: Set[];
 
     @ApiProperty()
-    @IsNumber({},
-        { message: '@training.new_training.errors.total_numerical' },
-    )
+    @IsNumber({}, { message: '@training.new_training.errors.total_numerical' })
     @IsNotEmpty({ message: '@training.new_training.errors.error_save_training' })
     total: number;
 

@@ -7,10 +7,12 @@ import { AuthModule } from '../auth/auth.module';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{
-            name: 'Preferences',
-            schema: PREFERENCES_SCHEMA,
-        }]),
+        MongooseModule.forFeature([
+            {
+                name: 'Preferences',
+                schema: PREFERENCES_SCHEMA,
+            },
+        ]),
         AuthModule,
     ],
     controllers: [PreferencesController],

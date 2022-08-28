@@ -6,10 +6,7 @@ import { GetAllEmails } from '../../../models/auth/signup/get-all-email.model';
 @ApiTags('Authentication')
 @Controller('auth/get-all-emails')
 export class GetEmailsController {
-
-    constructor(
-        private readonly authService: AuthService,
-    ) { }
+    constructor(private readonly authService: AuthService) {}
 
     @Get()
     async getEmails(@Query() params: GetAllEmails): Promise<boolean> {

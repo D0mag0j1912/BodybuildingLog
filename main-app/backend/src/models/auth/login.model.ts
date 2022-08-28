@@ -6,7 +6,8 @@ import {
     IsNotEmpty,
     IsOptional,
     IsString,
-    Length } from 'class-validator';
+    Length,
+} from 'class-validator';
 import { Schema } from 'mongoose';
 import * as uniqueValidator from 'mongoose-unique-validator';
 
@@ -25,17 +26,19 @@ export const USER_SCHEMA = new Schema({
 USER_SCHEMA.plugin(uniqueValidator);
 
 export class UserDto {
-    
     @ApiProperty({ required: false })
     @IsOptional()
     @IsDefined()
     @IsMongoId()
     _id: string;
-    
+
     @ApiProperty()
-    @IsEmail({}, {
-        message: 'auth.errors.invalid_email',
-    })
+    @IsEmail(
+        {},
+        {
+            message: 'auth.errors.invalid_email',
+        },
+    )
     @IsNotEmpty({
         message: 'auth.errors.email_required',
     })

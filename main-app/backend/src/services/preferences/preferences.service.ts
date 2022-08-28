@@ -7,10 +7,9 @@ import { PreferenceChangedType } from '../../models/preferences/preferences.type
 
 @Injectable()
 export class PreferencesService {
-
     constructor(
         @InjectModel('Preferences') private readonly preferencesModel: Model<PreferencesDto>,
-    ) { }
+    ) {}
 
     async getPreferences(userId: string): Promise<PreferencesDto> {
         const preferences = await this.preferencesModel.findOne({ userId: userId }).exec();
@@ -44,8 +43,7 @@ export class PreferencesService {
                     return { Message: 'preferences.weight_format_changed' } as GeneralResponseData;
                 }
             }
-        }
-        catch (error: unknown) {
+        } catch (error: unknown) {
             switch (preferenceChanged) {
                 case 'language': {
                     throw new InternalServerErrorException('preferences.errors.language_change');
@@ -54,7 +52,9 @@ export class PreferencesService {
                     throw new InternalServerErrorException('preferences.errors.period_change');
                 }
                 case 'weightUnit': {
-                    throw new InternalServerErrorException('preferences.errors.weight_format_change');
+                    throw new InternalServerErrorException(
+                        'preferences.errors.weight_format_change',
+                    );
                 }
             }
         }

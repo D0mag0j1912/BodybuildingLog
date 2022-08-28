@@ -3,7 +3,6 @@ import { NewTraining } from '../../models/training/new-training/new-training.mod
 
 @Injectable()
 export class EmptyTrainingPipe implements PipeTransform {
-
     transform(training: NewTraining): NewTraining {
         const numberOfExercises = training?.exercises?.length;
         if (numberOfExercises && numberOfExercises > 0) {

@@ -6,10 +6,7 @@ import { AuthResponse } from '../../../models/auth/auth-response.model';
 @ApiTags('Authentication')
 @Controller('auth/login')
 export class LoginController {
-
-    constructor(
-        private readonly authService: AuthService,
-    ) { }
+    constructor(private readonly authService: AuthService) {}
 
     //TODO
     /* @ApiCreatedResponse({ type: LoginDto }) */
