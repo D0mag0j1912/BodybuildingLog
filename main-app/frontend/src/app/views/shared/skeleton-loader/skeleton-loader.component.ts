@@ -7,16 +7,13 @@ import { ChangeDetectionStrategy, Component, ElementRef, OnInit } from '@angular
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SkeletonLoaderComponent implements OnInit {
-
     width: string;
     height: string;
     borderRadius: string;
     margin: string;
     className: string;
 
-    constructor(
-        private readonly elementRef: ElementRef<HTMLElement>,
-    ) { }
+    constructor(private readonly elementRef: ElementRef<HTMLElement>) {}
 
     ngOnInit(): void {
         const host = this.elementRef.nativeElement;
@@ -27,10 +24,10 @@ export class SkeletonLoaderComponent implements OnInit {
 
     styleSkeleton(): { [key: string]: string } {
         return {
-            'width': this.width ?? '',
-            'height': this.height ?? '',
+            width: this.width ?? '',
+            height: this.height ?? '',
             'border-radius': this.borderRadius ?? '',
-            'margin': this.margin ?? '',
+            margin: this.margin ?? '',
         };
     }
 }

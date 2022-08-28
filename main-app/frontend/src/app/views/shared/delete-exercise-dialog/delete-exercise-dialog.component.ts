@@ -19,16 +19,13 @@ export interface DeleteExerciseDialogData {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteExerciseDialogComponent {
-
     @Input()
     isError = false;
 
     @Input()
     deleteExercise: DeleteExerciseDialogData;
 
-    constructor(
-        private readonly modalController: ModalController,
-    ) { }
+    constructor(private readonly modalController: ModalController) {}
 
     async onCancel(): Promise<void> {
         await this.modalController.dismiss(false, DialogRoles.CANCEL);
@@ -37,5 +34,4 @@ export class DeleteExerciseDialogComponent {
     async onDeleteExercise(): Promise<void> {
         await this.modalController.dismiss(true, DialogRoles.DELETE_EXERCISE);
     }
-
 }

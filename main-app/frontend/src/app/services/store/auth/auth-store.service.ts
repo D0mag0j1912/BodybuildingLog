@@ -8,8 +8,8 @@ import { StorageItems } from '../../../constants/enums/storage-items.enum';
 
 @Injectable({ providedIn: 'root' })
 export class AuthStoreService {
-
-    private readonly _loggedUser$$: BehaviorSubject<AuthResponseData> = new BehaviorSubject<AuthResponseData>(null);
+    private readonly _loggedUser$$: BehaviorSubject<AuthResponseData> =
+        new BehaviorSubject<AuthResponseData>(null);
     readonly loggedUser$: Observable<AuthResponseData> = this._loggedUser$$.asObservable();
 
     private readonly _isAuth$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -18,9 +18,7 @@ export class AuthStoreService {
     private tokenTimer: NodeJS.Timeout;
     private token: string;
 
-    constructor(
-        private readonly router: Router,
-    ) { }
+    constructor(private readonly router: Router) {}
 
     getToken(): string {
         return this.token;
@@ -47,35 +45,33 @@ export class AuthStoreService {
     }
 
     autoLogin(): Observable<boolean> {
-        return from(Storage.get({ key: StorageItems.USER_DATA }))
-            .pipe(
-                map(storedData => {
-                    if (!storedData || !storedData?.value) {
-                        return false;
-                    }
-                    const userData: AuthResponseData = JSON.parse(storedData.value);
-                    if (!userData.Token || !userData.ExpirationDate) {
-                        return false;
-                    }
-                    const authData: Partial<AuthResponseData> = {
-                        Token: userData.Token,
-                        ExpirationDate: new Date(userData.ExpirationDate),
-                        _id: userData._id,
-                    };
-                    const now = new Date();
-                    const expiresIn = authData.ExpirationDate.getTime() - now.getTime();
-                    if (expiresIn > 0) {
-                        this.token = userData.Token;
-                        this.setAuthTimer(expiresIn / 1000);
-                        this.emitIsAuth(true);
-                        this.emitLoggedUser(authData);
-                        return true;
-                    }
-                    else {
-                        return false;
-                    }
-                }),
-            );
+        return from(Storage.get({ key: StorageItems.USER_DATA })).pipe(
+            map((storedData) => {
+                if (!storedData || !storedData?.value) {
+                    return false;
+                }
+                const userData: AuthResponseData = JSON.parse(storedData.value);
+                if (!userData.Token || !userData.ExpirationDate) {
+                    return false;
+                }
+                const authData: Partial<AuthResponseData> = {
+                    Token: userData.Token,
+                    ExpirationDate: new Date(userData.ExpirationDate),
+                    _id: userData._id,
+                };
+                const now = new Date();
+                const expiresIn = authData.ExpirationDate.getTime() - now.getTime();
+                if (expiresIn > 0) {
+                    this.token = userData.Token;
+                    this.setAuthTimer(expiresIn / 1000);
+                    this.emitIsAuth(true);
+                    this.emitLoggedUser(authData);
+                    return true;
+                } else {
+                    return false;
+                }
+            }),
+        );
     }
 
     async logout(): Promise<void> {
@@ -92,11 +88,7 @@ export class AuthStoreService {
         }, duration * 1000);
     }
 
-    async saveLS(
-        token: string,
-        expirationDate: Date,
-        userId: string,
-    ): Promise<void> {
+    async saveLS(token: string, expirationDate: Date, userId: string): Promise<void> {
         const userData: AuthResponseData = {
             Token: token,
             ExpirationDate: expirationDate,

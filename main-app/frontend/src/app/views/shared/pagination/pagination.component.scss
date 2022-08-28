@@ -1,4 +1,3 @@
-
 ion-card {
     position: fixed;
     bottom: 0;
@@ -54,7 +53,7 @@ ion-card {
         position: absolute;
         top: 40%;
         right: 5px;
-        content: "";
+        content: '';
         z-index: 98;
     }
 }
@@ -99,7 +98,6 @@ ion-card {
 }
 
 @media (min-width: 640px) {
-
     ion-card {
         width: 1020px;
         position: relative;

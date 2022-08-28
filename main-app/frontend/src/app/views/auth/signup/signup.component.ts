@@ -22,28 +22,35 @@ import { DEFAULT_LANGUAGE } from '../../../constants/shared/default-language.con
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignupComponent implements OnDestroy {
-
     private readonly _isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     readonly isLoading$: Observable<boolean> = this._isLoading$.asObservable();
 
-    form = new FormGroup({
-        language: new FormControl<LanguageCode>(DEFAULT_LANGUAGE, [Validators.required]),
-        weightUnit: new FormControl<WeightUnit>(DEFAULT_WEIGHT_UNIT, [Validators.required]),
-        email: new FormControl('', {
-            validators: [Validators.required, Validators.email],
-            asyncValidators: [AuthCustomValidators.isEmailAvailable(this._signupService, this._changeDetectorRef)],
-        }),
-        password: new FormControl('', [
-            Validators.required,
-            Validators.minLength(6),
-            Validators.maxLength(20)],
-        ),
-        confirmPassword: new FormControl('', [
-            Validators.required,
-            Validators.minLength(6),
-            Validators.maxLength(20)],
-        ),
-    }, { validators: AuthCustomValidators.samePasswords() });
+    form = new FormGroup(
+        {
+            language: new FormControl<LanguageCode>(DEFAULT_LANGUAGE, [Validators.required]),
+            weightUnit: new FormControl<WeightUnit>(DEFAULT_WEIGHT_UNIT, [Validators.required]),
+            email: new FormControl('', {
+                validators: [Validators.required, Validators.email],
+                asyncValidators: [
+                    AuthCustomValidators.isEmailAvailable(
+                        this._signupService,
+                        this._changeDetectorRef,
+                    ),
+                ],
+            }),
+            password: new FormControl('', [
+                Validators.required,
+                Validators.minLength(6),
+                Validators.maxLength(20),
+            ]),
+            confirmPassword: new FormControl('', [
+                Validators.required,
+                Validators.minLength(6),
+                Validators.maxLength(20),
+            ]),
+        },
+        { validators: AuthCustomValidators.samePasswords() },
+    );
 
     constructor(
         private readonly _authService: AuthService,
@@ -53,7 +60,7 @@ export class SignupComponent implements OnDestroy {
         private readonly _toastControllerService: ToastControllerService,
         private readonly _changeDetectorRef: ChangeDetectorRef,
         private readonly _router: Router,
-    ) { }
+    ) {}
 
     get focusDuration(): number {
         return IonFocusDurations.SIGNUP;
@@ -70,28 +77,30 @@ export class SignupComponent implements OnDestroy {
         this._isLoading$.next(true);
         await this._loadingControllerService.displayLoader({ message: 'auth.signing_in' });
 
-        this._authService.signup(
-            this.form.get('language').value,
-            this.form.get('weightUnit').value,
-            this.form.get('email').value,
-            this.form.get('password').value,
-            this.form.get('confirmPassword').value,
-        ).pipe(
-            catchError(_ => EMPTY),
-            finalize(async () => {
-                this._isLoading$.next(false);
-                await this._loadingControllerService.dismissLoader();
-            }),
-        )
-        .subscribe(async response => {
-            if (response.Success) {
-                await this._toastControllerService.displayToast({
-                    message: this._translateService.instant(response.Message),
-                    duration: MESSAGE_DURATION.GENERAL,
-                    color: response.Success ? 'primary' : 'danger',
-                });
-                await this._router.navigate(['/auth/login']);
-            }
-        });
+        this._authService
+            .signup(
+                this.form.get('language').value,
+                this.form.get('weightUnit').value,
+                this.form.get('email').value,
+                this.form.get('password').value,
+                this.form.get('confirmPassword').value,
+            )
+            .pipe(
+                catchError((_) => EMPTY),
+                finalize(async () => {
+                    this._isLoading$.next(false);
+                    await this._loadingControllerService.dismissLoader();
+                }),
+            )
+            .subscribe(async (response) => {
+                if (response.Success) {
+                    await this._toastControllerService.displayToast({
+                        message: this._translateService.instant(response.Message),
+                        duration: MESSAGE_DURATION.GENERAL,
+                        color: response.Success ? 'primary' : 'danger',
+                    });
+                    await this._router.navigate(['/auth/login']);
+                }
+            });
     }
 }

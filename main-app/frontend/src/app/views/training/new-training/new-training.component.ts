@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    QueryList,
+    ViewChild,
+    ViewChildren,
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
@@ -23,7 +31,10 @@ import { NewTrainingStoreService } from '../../../services/store/training/new-tr
 import { NewTrainingService } from '../../../services/api/training/new-training.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
-import { EMPTY_TRAINING, createEmptyExercise } from '../../../constants/training/new-training.const';
+import {
+    EMPTY_TRAINING,
+    createEmptyExercise,
+} from '../../../constants/training/new-training.const';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 import { Preferences } from '../../../models/common/preferences.model';
@@ -38,39 +49,41 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
     providers: [UnsubscribeService],
 })
 export class NewTrainingComponent implements OnDestroy {
-
     formattedTodayDate: string;
 
     form = new FormGroup({
-        bodyweight: new FormControl<number | null>(null,
-            {
-                validators: [
-                    Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                    Validators.min(30),
-                    Validators.max(300),
-                ],
-                updateOn: 'blur',
-            },
-        ),
+        bodyweight: new FormControl<number | null>(null, {
+            validators: [
+                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                Validators.min(30),
+                Validators.max(300),
+            ],
+            updateOn: 'blur',
+        }),
         trainingDate: new FormControl<string>(new Date().toISOString(), {
             validators: [Validators.required],
             nonNullable: true,
         }),
         exercises: new FormControl<SingleExercise[]>([], { nonNullable: true }),
-    });;
+    });
 
     editTrainingData: NewTraining;
     editMode = false;
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
-    readonly currentPreferences$: Observable<Preferences> = this._preferencesStoreService.preferencesChanged$;
+    readonly currentPreferences$: Observable<Preferences> =
+        this._preferencesStoreService.preferencesChanged$;
     readonly isAuthenticated$: Observable<boolean> = this._authStoreService.isAuth$;
     readonly isEditing$: Observable<boolean> = this._sharedStoreService.editingTraining$;
-    readonly isReorder$: Observable<boolean> = this._newTrainingStoreService.currentTrainingChanged$
-        .pipe(
-            map(training => {
+    readonly isReorder$: Observable<boolean> =
+        this._newTrainingStoreService.currentTrainingChanged$.pipe(
+            map((training) => {
                 const exercises = training.exercises;
-                const areAtLeastTwoExercises = exercises.length >= 2 && exercises.every(exercise => !!exercise.exerciseData.name && exercise.sets.length > 0);
+                const areAtLeastTwoExercises =
+                    exercises.length >= 2 &&
+                    exercises.every(
+                        (exercise) => !!exercise.exerciseData.name && exercise.sets.length > 0,
+                    );
                 return areAtLeastTwoExercises;
             }),
         );
@@ -94,82 +107,78 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly _router: Router,
         private readonly _modalController: ModalController,
         private readonly _changeDetectorRef: ChangeDetectorRef,
-    ) { }
+    ) {}
 
     ionViewWillEnter(): void {
         let allExercisesChanged: StreamData<Exercise[]>;
-        this.trainingStream$ = this._route.params
-            .pipe(
-                take(1),
-                switchMap((params: Params) =>
-                    this._newTrainingStoreService.allExercisesChanged$
-                        .pipe(
-                            take(1),
-                            switchMap(value => {
-                                if (value) {
-                                    return of(value);
-                                }
-                                else {
-                                    return this._newTrainingService.getExercises();
-                                }
-                            }),
-                            tap(exercisesData => allExercisesChanged = exercisesData),
-                            map(_ => params),
-                        ),
+        this.trainingStream$ = this._route.params.pipe(
+            take(1),
+            switchMap((params: Params) =>
+                this._newTrainingStoreService.allExercisesChanged$.pipe(
+                    take(1),
+                    switchMap((value) => {
+                        if (value) {
+                            return of(value);
+                        } else {
+                            return this._newTrainingService.getExercises();
+                        }
+                    }),
+                    tap((exercisesData) => (allExercisesChanged = exercisesData)),
+                    map((_) => params),
                 ),
-                switchMap((params: Params) => {
-                    if (params['id']) {
-                        this.editMode = true;
-                        return this._pastTrainingService.getPastTraining(params['id'])
-                            .pipe(
-                                switchMap((response: StreamData<NewTraining>) => {
-                                    this.editTrainingData = {
-                                        ...response.Value,
-                                        editMode: true,
-                                        trainingDate: response?.Value?.trainingDate ?? new Date(),
+            ),
+            switchMap((params: Params) => {
+                if (params['id']) {
+                    this.editMode = true;
+                    return this._pastTrainingService.getPastTraining(params['id']).pipe(
+                        switchMap((response: StreamData<NewTraining>) => {
+                            this.editTrainingData = {
+                                ...response.Value,
+                                editMode: true,
+                                trainingDate: response?.Value?.trainingDate ?? new Date(),
+                            };
+                            return this._newTrainingStoreService.updateTrainingState(
+                                this.editTrainingData,
+                            );
+                        }),
+                    );
+                } else {
+                    return this._newTrainingStoreService.currentTrainingChanged$.pipe(
+                        take(1),
+                        switchMap((currentTrainingState) => {
+                            let newTrainingState: NewTraining;
+                            if (currentTrainingState.editMode && !this.editMode) {
+                                newTrainingState = {
+                                    ...EMPTY_TRAINING,
+                                    exercises: [createEmptyExercise(allExercisesChanged.Value)],
+                                    userId: currentTrainingState?.userId ?? '',
+                                };
+                            } else if (!currentTrainingState.editMode && !this.editMode) {
+                                if (!currentTrainingState.exercises[0]?.exerciseData?.name) {
+                                    newTrainingState = {
+                                        ...EMPTY_TRAINING,
+                                        exercises: [createEmptyExercise(allExercisesChanged.Value)],
+                                        userId: currentTrainingState?.userId ?? '',
                                     };
-                                    return this._newTrainingStoreService.updateTrainingState(this.editTrainingData);
-                                }),
+                                } else {
+                                    newTrainingState = currentTrainingState;
+                                }
+                            }
+                            return this._newTrainingStoreService.updateTrainingState(
+                                newTrainingState,
                             );
-                    }
-                    else {
-                        return this._newTrainingStoreService.currentTrainingChanged$
-                            .pipe(
-                                take(1),
-                                switchMap(currentTrainingState => {
-                                    let newTrainingState: NewTraining;
-                                    if (currentTrainingState.editMode && !this.editMode) {
-                                        newTrainingState = {
-                                            ...EMPTY_TRAINING,
-                                            exercises: [createEmptyExercise(allExercisesChanged.Value)],
-                                            userId: currentTrainingState?.userId ?? '',
-                                        };
-                                    }
-                                    else if (!currentTrainingState.editMode && !this.editMode) {
-                                        if (!currentTrainingState.exercises[0]?.exerciseData?.name) {
-                                            newTrainingState = {
-                                                ...EMPTY_TRAINING,
-                                                exercises: [createEmptyExercise(allExercisesChanged.Value)],
-                                                userId: currentTrainingState?.userId ?? '',
-                                            };
-                                        }
-                                        else {
-                                            newTrainingState = currentTrainingState;
-                                        }
-                                    }
-                                    return this._newTrainingStoreService.updateTrainingState(newTrainingState);
-                                }),
-                            );
-                    }
-                }),
-                tap(_ => this._sharedStoreService.emitEditingTraining(this.editMode)),
-                switchMap(_ => of(allExercisesChanged)
-                    .pipe(
-                        tap(_ => this._formInit()),
-                        mapStreamData(),
-                    ),
+                        }),
+                    );
+                }
+            }),
+            tap((_) => this._sharedStoreService.emitEditingTraining(this.editMode)),
+            switchMap((_) =>
+                of(allExercisesChanged).pipe(
+                    tap((_) => this._formInit()),
+                    mapStreamData(),
                 ),
-            );
+            ),
+        );
         this._changeDetectorRef.markForCheck();
     }
 
@@ -196,33 +205,36 @@ export class NewTrainingComponent implements OnDestroy {
 
         from(modal.onDidDismiss<NewTraining | undefined>())
             .pipe(
-                filter<OverlayEventDetail<NewTraining>>(response => response?.role === DialogRoles.REORDER_EXERCISES),
+                filter<OverlayEventDetail<NewTraining>>(
+                    (response) => response?.role === DialogRoles.REORDER_EXERCISES,
+                ),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe(response => {
+            .subscribe((response) => {
                 if (response?.data) {
                     let streamData: StreamData<Exercise[]>;
-                    this.trainingStream$ = this._newTrainingStoreService.allExercisesChanged$
-                        .pipe(
-                            take(1),
-                            map(value => {
-                                streamData = {
-                                    IsLoading: true,
-                                    Value: value.Value,
-                                    IsError: false,
-                                };
-                                return streamData;
-                            }),
-                            delay(300),
-                            switchMap(_ => this._newTrainingStoreService.updateTrainingState(response.data)
-                                .pipe(
-                                    tap(_ => this._formInit()),
-                                ),
-                            ),
-                            switchMap(_ => of(streamData)),
-                            mapStreamData<Exercise[]>(),
-                            tap(_ => setTimeout(async () => await this.ionContent.scrollToBottom(300), 100)),
-                        );
+                    this.trainingStream$ = this._newTrainingStoreService.allExercisesChanged$.pipe(
+                        take(1),
+                        map((value) => {
+                            streamData = {
+                                IsLoading: true,
+                                Value: value.Value,
+                                IsError: false,
+                            };
+                            return streamData;
+                        }),
+                        delay(300),
+                        switchMap((_) =>
+                            this._newTrainingStoreService
+                                .updateTrainingState(response.data)
+                                .pipe(tap((_) => this._formInit())),
+                        ),
+                        switchMap((_) => of(streamData)),
+                        mapStreamData<Exercise[]>(),
+                        tap((_) =>
+                            setTimeout(async () => await this.ionContent.scrollToBottom(300), 100),
+                        ),
+                    );
                     this._changeDetectorRef.markForCheck();
                 }
             });
@@ -231,7 +243,12 @@ export class NewTrainingComponent implements OnDestroy {
     async openDateTimePicker(): Promise<void> {
         const modal = await this._modalController.create({
             component: DateTimePickerComponent,
-            componentProps: { dateValue: format(new Date(this.form.get('trainingDate').value), `yyyy-MM-dd'T'HH:mm:ss'Z'`) },
+            componentProps: {
+                dateValue: format(
+                    new Date(this.form.get('trainingDate').value),
+                    `yyyy-MM-dd'T'HH:mm:ss'Z'`,
+                ),
+            },
             cssClass: 'datetime-picker',
             mode: 'md',
         });
@@ -242,7 +259,7 @@ export class NewTrainingComponent implements OnDestroy {
                 finalize(() => this._changeDetectorRef.markForCheck()),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe(response => {
+            .subscribe((response) => {
                 const { data, role } = response;
                 if (role === 'SELECT_DATE') {
                     this.form.get('trainingDate').patchValue(data);
@@ -253,9 +270,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     async goToPastTraining(): Promise<void> {
         this._pastTrainingsStoreService.pastTrainingsQueryParams$
-            .pipe(
-                take(1),
-            )
+            .pipe(take(1))
             .subscribe(async (params: PastTrainingsQueryParams) => {
                 await this._router.navigate(['/training/past-trainings'], { queryParams: params });
                 await Storage.remove({ key: StorageItems.QUERY_PARAMS });
@@ -263,7 +278,9 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     onBodyweightChange(bodyweight: string | number): void {
-        this._newTrainingStoreService.updateBodyweight(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString());
+        this._newTrainingStoreService.updateBodyweight(
+            typeof bodyweight === 'string' ? bodyweight : bodyweight.toString(),
+        );
     }
 
     async onExerciseAdded(event: UIEvent): Promise<void> {
@@ -271,9 +288,14 @@ export class NewTrainingComponent implements OnDestroy {
             of(null)
                 .pipe(
                     delay(100),
-                    tap(async _ => await this.ionContent.scrollToBottom(300)),
+                    tap(async (_) => await this.ionContent.scrollToBottom(300)),
                     delay(200),
-                    tap(async _ => await this.singleExerciseCmps.last?.exercisePickerEls?.last?.open(event)),
+                    tap(
+                        async (_) =>
+                            await this.singleExerciseCmps.last?.exercisePickerEls?.last?.open(
+                                event,
+                            ),
+                    ),
                     takeUntil(this._unsubscribeService),
                 )
                 .subscribe();
@@ -282,7 +304,8 @@ export class NewTrainingComponent implements OnDestroy {
 
     tryAgain(): void {
         if (this.editTrainingData) {
-            this.trainingStream$ = this._pastTrainingService.getPastTraining(this.editTrainingData?._id)
+            this.trainingStream$ = this._pastTrainingService
+                .getPastTraining(this.editTrainingData?._id)
                 .pipe(
                     switchMap((response: StreamData<NewTraining>) => {
                         this.editTrainingData = {
@@ -290,17 +313,15 @@ export class NewTrainingComponent implements OnDestroy {
                             editMode: true,
                             trainingDate: response?.Value?.trainingDate ?? new Date(),
                         };
-                        return this._newTrainingStoreService.updateTrainingState(this.editTrainingData);
+                        return this._newTrainingStoreService.updateTrainingState(
+                            this.editTrainingData,
+                        );
                     }),
-                    switchMap(_ => this._newTrainingService.getExercises()),
-                    mapStreamData(),
-            );
-        }
-        else {
-            this.trainingStream$ = this._newTrainingService.getExercises()
-                .pipe(
+                    switchMap((_) => this._newTrainingService.getExercises()),
                     mapStreamData(),
                 );
+        } else {
+            this.trainingStream$ = this._newTrainingService.getExercises().pipe(mapStreamData());
         }
     }
 
@@ -314,15 +335,17 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     private _setFormattedDate(dateValue: string): void {
-        const [ date, time ] = dateValue.split('T');
-        this.formattedTodayDate = format(parseISO(format(new Date(date), 'yyyy-MM-dd') + `T${time}`), 'HH:mm, MMM d, yyyy');
+        const [date, time] = dateValue.split('T');
+        this.formattedTodayDate = format(
+            parseISO(format(new Date(date), 'yyyy-MM-dd') + `T${time}`),
+            'HH:mm, MMM d, yyyy',
+        );
     }
 
     private _fillTrainingDate(dayClickedDate: string | undefined): string {
         if (this.editTrainingData) {
             return this.editTrainingData.trainingDate.toString();
-        }
-        else {
+        } else {
             return dayClickedDate ? dayClickedDate : new Date().toISOString();
         }
     }
@@ -333,5 +356,4 @@ export class NewTrainingComponent implements OnDestroy {
             this.editTrainingData ? this.editTrainingData.bodyweight : null,
         );
     }
-
 }

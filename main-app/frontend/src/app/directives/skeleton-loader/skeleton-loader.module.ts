@@ -5,4 +5,4 @@ import { SkeletonLoaderDirective } from './skeleton-loader.directive';
     declarations: [SkeletonLoaderDirective],
     exports: [SkeletonLoaderDirective],
 })
-export class SkeletonLoaderModule { }
+export class SkeletonLoaderModule {}

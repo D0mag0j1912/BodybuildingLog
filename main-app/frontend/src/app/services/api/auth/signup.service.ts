@@ -4,10 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 @Injectable()
 export class SignupService {
-
-    constructor(
-        private readonly _http: HttpClient,
-    ) { }
+    constructor(private readonly _http: HttpClient) {}
 
     getEmails(email: string): Observable<boolean> {
         const params = `?email=${email}`;

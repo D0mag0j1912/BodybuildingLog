@@ -7,12 +7,15 @@ import { PastTrainingsQueryParams } from '../../../models/training/past-training
 
 @Injectable({ providedIn: 'root' })
 export class PastTrainingsStoreService {
+    private readonly _pastTrainingsQueryParams$$: BehaviorSubject<PastTrainingsQueryParams> =
+        new BehaviorSubject<PastTrainingsQueryParams>(null);
+    readonly pastTrainingsQueryParams$: Observable<PastTrainingsQueryParams> =
+        this._pastTrainingsQueryParams$$.asObservable();
 
-    private readonly _pastTrainingsQueryParams$$: BehaviorSubject<PastTrainingsQueryParams> = new BehaviorSubject<PastTrainingsQueryParams>(null);
-    readonly pastTrainingsQueryParams$: Observable<PastTrainingsQueryParams> = this._pastTrainingsQueryParams$$.asObservable();
-
-    private readonly _pastTrainingsWrapperScroll$$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-    readonly pastTrainingsWrapperScroll$: Observable<number> = this._pastTrainingsWrapperScroll$$.asObservable();
+    private readonly _pastTrainingsWrapperScroll$$: BehaviorSubject<number> =
+        new BehaviorSubject<number>(0);
+    readonly pastTrainingsWrapperScroll$: Observable<number> =
+        this._pastTrainingsWrapperScroll$$.asObservable();
 
     async emitPastTrainingsQueryParams(params: PastTrainingsQueryParams): Promise<void> {
         this._pastTrainingsQueryParams$$.next(params);
@@ -35,31 +38,30 @@ export class PastTrainingsStoreService {
         for (const key of storageItems) {
             storageStreams.push(from(Storage.get({ key })));
         }
-        return combineLatest(storageStreams)
-            .pipe(
-                map(storedData => {
-                    const isStoredData = storedData.every(item => !!item?.value);
-                    if (!storedData || !storedData.length || !isStoredData) {
-                        return false;
-                    }
-                    storedData.forEach((item, index) => {
-                        if (item?.value) {
-                            const parsedData = JSON.parse(item.value);
-                            const selectedStorageItem = storageItems.find((_item, i) => i === index);
-                            switch (selectedStorageItem) {
-                                case 'pastTrainingsScrollWrapper': {
-                                    this._pastTrainingsWrapperScroll$$.next(parsedData);
-                                    break;
-                                }
-                                case 'queryParams': {
-                                    this._pastTrainingsQueryParams$$.next(parsedData);
-                                    break;
-                                }
+        return combineLatest(storageStreams).pipe(
+            map((storedData) => {
+                const isStoredData = storedData.every((item) => !!item?.value);
+                if (!storedData || !storedData.length || !isStoredData) {
+                    return false;
+                }
+                storedData.forEach((item, index) => {
+                    if (item?.value) {
+                        const parsedData = JSON.parse(item.value);
+                        const selectedStorageItem = storageItems.find((_item, i) => i === index);
+                        switch (selectedStorageItem) {
+                            case 'pastTrainingsScrollWrapper': {
+                                this._pastTrainingsWrapperScroll$$.next(parsedData);
+                                break;
+                            }
+                            case 'queryParams': {
+                                this._pastTrainingsQueryParams$$.next(parsedData);
+                                break;
                             }
                         }
-                    });
-                    return true;
-                }),
-            );
+                    }
+                });
+                return true;
+            }),
+        );
     }
 }

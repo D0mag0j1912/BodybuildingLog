@@ -1,5 +1,22 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChildren } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    Output,
+    QueryList,
+    ViewChildren,
+} from '@angular/core';
+import {
+    AbstractControl,
+    ControlValueAccessor,
+    FormArray,
+    FormControl,
+    FormGroup,
+    Validators,
+} from '@angular/forms';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -14,12 +31,20 @@ import { NewTraining } from '../../../../models/training/new-training/new-traini
 import { SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
-import { FormControlExerciseData, SingleExerciseFormControlType, SingleExerciseFormGroupType } from '../../../../models/training/shared/single-exercise-form.type';
+import {
+    FormControlExerciseData,
+    SingleExerciseFormControlType,
+    SingleExerciseFormGroupType,
+} from '../../../../models/training/shared/single-exercise-form.type';
 import { ToastControllerService } from '../../../../services/shared/toast-controller.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { NewTrainingService } from '../../../../services/api/training/new-training.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
-import { DeleteExerciseDialogData, DeleteExerciseDialogComponent, DialogData } from '../../delete-exercise-dialog/delete-exercise-dialog.component';
+import {
+    DeleteExerciseDialogData,
+    DeleteExerciseDialogComponent,
+    DialogData,
+} from '../../delete-exercise-dialog/delete-exercise-dialog.component';
 import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
 import { TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-training.const';
@@ -29,12 +54,15 @@ import { WeightUnit } from '../../../../models/common/preferences.type';
 import { Translations } from '../../../../models/common/translations.model';
 import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
+import { StreamData } from '../../../../models/common/common.model';
 
 export type SingleExerciseFormType = {
-    [P in keyof Omit<FormType<SingleExercise>, 'availableExercises'>]:
-        SingleExercise[P] extends Exercise ?
-        FormGroup<FormType<Exercise>> :
-        FormType<SingleExercise>[P];
+    [P in keyof Omit<
+        FormType<SingleExercise>,
+        'availableExercises'
+    >]: SingleExercise[P] extends Exercise
+        ? FormGroup<FormType<Exercise>>
+        : FormType<SingleExercise>[P];
 };
 
 type SingleExerciseFormValueType = {
@@ -46,17 +74,15 @@ type SingleExerciseFormValueType = {
     templateUrl: './single-exercise.component.html',
     styleUrls: ['./single-exercise.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        getControlValueAccessor(SingleExerciseComponent),
-        UnsubscribeService,
-    ],
+    providers: [getControlValueAccessor(SingleExerciseComponent), UnsubscribeService],
 })
 export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy {
-
     private readonly _invalidSetChanged$: Subject<void> = new Subject<void>();
     private readonly _exerciseNameChanged$: Subject<void> = new Subject<void>();
     private readonly _isSubmitted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private readonly _isExercisePicker$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+    private readonly _isExercisePicker$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+        true,
+    );
     private readonly _isApiLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
@@ -64,37 +90,37 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     readonly exerciseNameChanged$: Observable<void> = this._exerciseNameChanged$.asObservable();
     readonly isExercisePicker$: Observable<boolean> = this._isExercisePicker$.asObservable();
     readonly isApiLoading$: Observable<boolean> = this._isApiLoading$.asObservable();
-    readonly currentTrainingDataState$: Observable<SingleExercise[]> = this._newTrainingStoreService.currentTrainingChanged$
-        .pipe(
-            map(currentTrainingState => currentTrainingState.exercises),
+    readonly currentTrainingDataState$: Observable<SingleExercise[]> =
+        this._newTrainingStoreService.currentTrainingChanged$.pipe(
+            map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         );
 
     readonly isAddingExercisesAllowed$: Observable<boolean> = combineLatest([
-        this._newTrainingStoreService.currentTrainingChanged$
-            .pipe(
-                map(currentTrainingState => currentTrainingState.exercises),
-            ),
-        this._newTrainingStoreService.allExercisesChanged$
-            .pipe(
-                map(value => value.Value),
-            ),
-        this._invalidSetChanged$
-            .pipe(
-                startWith(undefined as void),
-            ),
-    ])
-    .pipe(
+        this._newTrainingStoreService.currentTrainingChanged$.pipe(
+            map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
+        ),
+        this._newTrainingStoreService.allExercisesChanged$.pipe(
+            map((value: StreamData<Exercise[]>) => value.Value),
+        ),
+        this._invalidSetChanged$.pipe(startWith(undefined as void)),
+    ]).pipe(
         delay(0),
         map(([trainingState, allExercises]) => {
             if (this.getExercises().length > 0) {
                 if (this.setsCmpRef) {
-                    return (trainingState.length <= allExercises.length) &&
-                        ((this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'name', this.getExercises().length - 1)?.value) && this.getExercises().length > 0) &&
-                        this._areSetsValid(this.setsCmpRef);
+                    return (
+                        trainingState.length <= allExercises.length &&
+                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>(
+                            'exerciseData',
+                            'name',
+                            this.getExercises().length - 1,
+                        )?.value &&
+                        this.getExercises().length > 0 &&
+                        this._areSetsValid(this.setsCmpRef)
+                    );
                 }
                 return false;
-            }
-            else {
+            } else {
                 return true;
             }
         }),
@@ -140,14 +166,15 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         private readonly _changeDetectorRef: ChangeDetectorRef,
         private readonly _modalController: ModalController,
     ) {
-        this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName(), SingleExerciseValidators.checkExerciseNumber()]);
+        this.form.setValidators([
+            SingleExerciseValidators.checkDuplicateExerciseName(),
+            SingleExerciseValidators.checkExerciseNumber(),
+        ]);
         this.form.updateValueAndValidity();
 
         this._translateService.onLangChange
-            .pipe(
-                takeUntil(this._unsubscribeService),
-            )
-            .subscribe(_ => {
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe((_) => {
                 this._isExercisePicker$.next(false);
                 setTimeout(() => this._isExercisePicker$.next(true), 1);
             });
@@ -177,29 +204,39 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     registerOnChange(fn: (formValue: SingleExerciseFormValueType[]) => void): void {
-        this.form.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribeService),
-            ).subscribe(fn);
+        this.form.valueChanges.pipe(takeUntil(this._unsubscribeService)).subscribe(fn);
     }
 
     registerOnTouched(fn: () => void): void {
         this.onTouched = fn;
     }
 
-    onExerciseNameChange(
-        indexExercise: number,
-        element: IonSelect,
-    ): void {
+    onExerciseNameChange(indexExercise: number, element: IonSelect): void {
         if (element?.value) {
             this._newTrainingStoreService.currentTrainingChanged$
                 .pipe(
                     take(1),
                     switchMap((currentTrainingState: NewTraining) => {
-                        const selectedExerciseData = currentTrainingState.exercises[indexExercise].availableExercises.find(exercise => exercise.name === element.value as string);
-                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'imageUrl', indexExercise).patchValue(selectedExerciseData.imageUrl);
-                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'primaryMuscleGroup', indexExercise).patchValue(selectedExerciseData.primaryMuscleGroup);
-                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'translations', indexExercise).patchValue(selectedExerciseData.translations);
+                        const selectedExerciseData = currentTrainingState.exercises[
+                            indexExercise
+                        ].availableExercises.find(
+                            (exercise: Exercise) => exercise.name === (element.value as string),
+                        );
+                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>(
+                            'exerciseData',
+                            'imageUrl',
+                            indexExercise,
+                        ).patchValue(selectedExerciseData.imageUrl);
+                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>(
+                            'exerciseData',
+                            'primaryMuscleGroup',
+                            indexExercise,
+                        ).patchValue(selectedExerciseData.primaryMuscleGroup);
+                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>(
+                            'exerciseData',
+                            'translations',
+                            indexExercise,
+                        ).patchValue(selectedExerciseData.translations);
                         return this._newTrainingStoreService.updateExerciseChoices(
                             element.value as string,
                             indexExercise,
@@ -208,7 +245,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                         );
                     }),
                 )
-                .subscribe(_ => {
+                .subscribe((_) => {
                     this.isExerciseChanged = !this.isExerciseChanged;
                     this._exerciseNameChanged$.next();
                     this._changeDetectorRef.markForCheck();
@@ -217,40 +254,46 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     addExercise(exercise?: SingleExercise, event?: UIEvent): void {
-        this.form.push(new FormGroup<SingleExerciseFormType>({
-            exerciseData: new FormGroup<FormType<Exercise>>({
-                name: new FormControl(exercise?.exerciseData?.name ?? '', [Validators.required]),
-                imageUrl: new FormControl(exercise?.exerciseData?.imageUrl ?? ''),
-                primaryMuscleGroup: new FormControl(exercise?.exerciseData?.primaryMuscleGroup ?? ''),
-                translations: new FormControl<Translations>(exercise?.exerciseData?.translations),
-            }),
-            sets: new FormControl(exercise?.sets ?? [], { nonNullable: true }),
-            total: new FormControl(exercise?.total, {
+        this.form.push(
+            new FormGroup<SingleExerciseFormType>({
+                exerciseData: new FormGroup<FormType<Exercise>>({
+                    name: new FormControl(exercise?.exerciseData?.name ?? '', [
+                        Validators.required,
+                    ]),
+                    imageUrl: new FormControl(exercise?.exerciseData?.imageUrl ?? ''),
+                    primaryMuscleGroup: new FormControl(
+                        exercise?.exerciseData?.primaryMuscleGroup ?? '',
+                    ),
+                    translations: new FormControl<Translations>(
+                        exercise?.exerciseData?.translations,
+                    ),
+                }),
+                sets: new FormControl(exercise?.sets ?? [], { nonNullable: true }),
+                total: new FormControl(exercise?.total, {
                     nonNullable: true,
                     validators: [Validators.required],
                 }),
-        }));
+            }),
+        );
 
         if (event) {
-            this._newTrainingStoreService.addNewExercise(this._getAlreadyUsedExercises())
-                .pipe(
-                    takeUntil(this._unsubscribeService),
-                )
-                .subscribe(_ => this.exerciseAdded.next(event));
+            this._newTrainingStoreService
+                .addNewExercise(this._getAlreadyUsedExercises())
+                .pipe(takeUntil(this._unsubscribeService))
+                .subscribe((_) => this.exerciseAdded.next(event));
         }
     }
 
-    async deleteExercise(
-        indexExercise: number,
-        exerciseName: string,
-    ): Promise<void> {
+    async deleteExercise(indexExercise: number, exerciseName: string): Promise<void> {
         if (exerciseName) {
             const modal = await this._modalController.create({
                 component: DeleteExerciseDialogComponent,
                 componentProps: {
                     isError: false,
                     deleteExercise: {
-                        message$: this._translateService.stream('training.new_training.delete_exercise_prompt'),
+                        message$: this._translateService.stream(
+                            'training.new_training.delete_exercise_prompt',
+                        ),
                         exerciseName: exerciseName,
                     } as DeleteExerciseDialogData,
                 } as DialogData,
@@ -263,26 +306,24 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 .pipe(
                     switchMap((response: OverlayEventDetail<boolean>) => {
                         if (response.role === DialogRoles.DELETE_EXERCISE) {
-                            return this._newTrainingStoreService.currentTrainingChanged$
-                                .pipe(
-                                    take(1),
-                                    switchMap((currentTrainingState: NewTraining) =>
-                                        this._newTrainingStoreService.deleteExercise(
-                                            currentTrainingState,
-                                            exerciseName,
-                                        ),
+                            return this._newTrainingStoreService.currentTrainingChanged$.pipe(
+                                take(1),
+                                switchMap((currentTrainingState: NewTraining) =>
+                                    this._newTrainingStoreService.deleteExercise(
+                                        currentTrainingState,
+                                        exerciseName,
                                     ),
-                                    switchMap((data: [NewTraining, Exercise[]]) => {
-                                        this.isExerciseChanged = !this.isExerciseChanged;
-                                        this.form.removeAt(indexExercise);
-                                        return this._newTrainingStoreService.pushToAvailableExercises(
-                                            data[0],
-                                            data[1],
-                                        );
-                                    }),
-                                );
-                        }
-                        else {
+                                ),
+                                switchMap((data: [NewTraining, Exercise[]]) => {
+                                    this.isExerciseChanged = !this.isExerciseChanged;
+                                    this.form.removeAt(indexExercise);
+                                    return this._newTrainingStoreService.pushToAvailableExercises(
+                                        data[0],
+                                        data[1],
+                                    );
+                                }),
+                            );
+                        } else {
                             return EMPTY;
                         }
                     }),
@@ -290,8 +331,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     takeUntil(this._unsubscribeService),
                 )
                 .subscribe();
-        }
-        else {
+        } else {
             this._newTrainingStoreService.currentTrainingChanged$
                 .pipe(
                     take(1),
@@ -304,37 +344,54 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     ),
                     takeUntil(this._unsubscribeService),
                 )
-                .subscribe(_ => this.form.removeAt(indexExercise));
+                .subscribe((_) => this.form.removeAt(indexExercise));
         }
     }
 
     onChangeSets($event: SetStateChanged): void {
         of(null)
             .pipe(
-                switchMap(_ => {
-                    if ($event?.isWeightLiftedValid &&
+                switchMap((_) => {
+                    if (
+                        $event?.isWeightLiftedValid &&
                         $event?.isRepsValid &&
-                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'name', $event.indexExercise).value) {
-                            const trainingData: SetTrainingData = {
-                                exerciseName: this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'name', $event.indexExercise).value as string,
-                                setNumber: $event.newSet.setNumber,
-                                weightLifted: $event.newSet.weightLifted,
-                                reps: $event.newSet.reps,
-                                total: $event.newTotal,
-                            };
-                            return this._newTrainingStoreService.setsChanged(trainingData);
-                    }
-                    else {
+                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>(
+                            'exerciseData',
+                            'name',
+                            $event.indexExercise,
+                        ).value
+                    ) {
+                        const trainingData: SetTrainingData = {
+                            exerciseName: this.accessFormGroup<
+                                SingleExerciseFormGroupType,
+                                FormControlExerciseData
+                            >('exerciseData', 'name', $event.indexExercise).value as string,
+                            setNumber: $event.newSet.setNumber,
+                            weightLifted: $event.newSet.weightLifted,
+                            reps: $event.newSet.reps,
+                            total: $event.newTotal,
+                        };
+                        return this._newTrainingStoreService.setsChanged(trainingData);
+                    } else {
                         this._invalidSetChanged$.next();
                         return of(null);
                     }
                 }),
                 takeUntil(this._unsubscribeService),
-            ).subscribe(_ => this.accessFormField<SingleExerciseFormControlType>('total', $event.indexExercise).patchValue($event.newTotal));
+            )
+            .subscribe((_) =>
+                this.accessFormField<SingleExerciseFormControlType>(
+                    'total',
+                    $event.indexExercise,
+                ).patchValue($event.newTotal),
+            );
     }
 
     deleteSet($event: Partial<SetStateChanged>): void {
-        this.accessFormField<SingleExerciseFormControlType>('total', $event.indexExercise).patchValue($event.newTotal);
+        this.accessFormField<SingleExerciseFormControlType>(
+            'total',
+            $event.indexExercise,
+        ).patchValue($event.newTotal);
         this._newTrainingStoreService.deleteSet(
             $event.indexExercise,
             $event.indexSet,
@@ -343,7 +400,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     onWeightUnitChanged(exerciseIndex: number): void {
-        this.accessFormField<SingleExerciseFormControlType>('total', exerciseIndex).patchValue(TOTAL_INITIAL_WEIGHT);
+        this.accessFormField<SingleExerciseFormControlType>('total', exerciseIndex).patchValue(
+            TOTAL_INITIAL_WEIGHT,
+        );
     }
 
     getExercises(): AbstractControl[] {
@@ -362,7 +421,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         formField: keyof K,
         indexExercise: number,
     ): AbstractControl<K[typeof formField]> {
-        return this.form.at(indexExercise).get(formGroup as string)?.get(formField as string);
+        return this.form
+            .at(indexExercise)
+            .get(formGroup as string)
+            ?.get(formField as string);
     }
 
     onSubmit(): void {
@@ -381,13 +443,13 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                             apiNewTraining,
                             this.editTrainingData?._id,
                         );
-                    }
-                    else {
+                    } else {
                         return this._newTrainingService.addTraining(apiNewTraining);
                     }
                 }),
                 finalize(() => this._isApiLoading$.next(false)),
-            ).subscribe(async (response: GeneralResponseData) => {
+            )
+            .subscribe(async (response: GeneralResponseData) => {
                 await this._toastControllerService.displayToast({
                     message: this._translateService.instant(response.Message),
                     duration: MESSAGE_DURATION.GENERAL,
@@ -397,59 +459,81 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     private _gatherAllFormData(): Observable<NewTraining> {
-        return this._newTrainingStoreService.currentTrainingChanged$
-            .pipe(
-                take(1),
-                map((currentTrainingState: NewTraining) => {
-                    let exerciseFormData: SingleExercise[] = [];
+        return this._newTrainingStoreService.currentTrainingChanged$.pipe(
+            take(1),
+            map((currentTrainingState: NewTraining) => {
+                let exerciseFormData: SingleExercise[] = [];
 
-                    this.getExercises().forEach((_exercise: AbstractControl, indexExercise: number) => {
-                        const total = this.accessFormField<SingleExerciseFormControlType>('total', indexExercise).value as number;
-                        const exerciseData: Exercise = {
-                            name: this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'name', indexExercise).value as string,
-                            imageUrl: this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'imageUrl', indexExercise).value as string,
-                            primaryMuscleGroup: this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'primaryMuscleGroup', indexExercise).value as string,
-                            translations: this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>('exerciseData', 'translations', indexExercise).value as { hr: string; en: string },
+                this.getExercises().forEach((_exercise: AbstractControl, indexExercise: number) => {
+                    const total = this.accessFormField<SingleExerciseFormControlType>(
+                        'total',
+                        indexExercise,
+                    ).value as number;
+                    const exerciseData: Exercise = {
+                        name: this.accessFormGroup<
+                            SingleExerciseFormGroupType,
+                            FormControlExerciseData
+                        >('exerciseData', 'name', indexExercise).value as string,
+                        imageUrl: this.accessFormGroup<
+                            SingleExerciseFormGroupType,
+                            FormControlExerciseData
+                        >('exerciseData', 'imageUrl', indexExercise).value as string,
+                        primaryMuscleGroup: this.accessFormGroup<
+                            SingleExerciseFormGroupType,
+                            FormControlExerciseData
+                        >('exerciseData', 'primaryMuscleGroup', indexExercise).value as string,
+                        translations: this.accessFormGroup<
+                            SingleExerciseFormGroupType,
+                            FormControlExerciseData
+                        >('exerciseData', 'translations', indexExercise).value as {
+                            hr: string;
+                            en: string;
+                        },
+                    };
+                    const initialExercise = {
+                        exerciseData,
+                        sets: [],
+                        total,
+                        availableExercises:
+                            currentTrainingState.exercises[indexExercise]?.availableExercises || [],
+                    } as SingleExercise;
+                    exerciseFormData = [...exerciseFormData, initialExercise];
+
+                    const formSetData: Set[] = [];
+                    (
+                        this.accessFormField<SingleExerciseFormControlType>('sets', indexExercise)
+                            .value as Set[]
+                    ).forEach((set: Set) => {
+                        const apiSet: Set = {
+                            setNumber: +set.setNumber,
+                            weightLifted: +set.weightLifted,
+                            reps: +set.reps,
                         };
-                        const initialExercise = {
-                            exerciseData,
-                            sets: [],
-                            total,
-                            availableExercises: (currentTrainingState.exercises)[indexExercise]?.availableExercises || [],
-                        } as SingleExercise;
-                        exerciseFormData = [...exerciseFormData, initialExercise];
-
-                        const formSetData: Set[] = [];
-                        (this.accessFormField<SingleExerciseFormControlType>('sets', indexExercise).value as Set[]).forEach((set: Set) => {
-                            const apiSet: Set = {
-                                setNumber: +set.setNumber,
-                                weightLifted: +set.weightLifted,
-                                reps: +set.reps,
-                            };
-                            formSetData.push(apiSet);
-                        });
-                        exerciseFormData = [...exerciseFormData]
-                            .map((exercise: SingleExercise, index: number) => {
-                                if (index === indexExercise) {
-                                    return {
-                                        ...exercise,
-                                        sets: formSetData,
-                                    };
-                                }
-                                return exercise;
-                            });
+                        formSetData.push(apiSet);
                     });
+                    exerciseFormData = [...exerciseFormData].map(
+                        (exercise: SingleExercise, index: number) => {
+                            if (index === indexExercise) {
+                                return {
+                                    ...exercise,
+                                    sets: formSetData,
+                                };
+                            }
+                            return exercise;
+                        },
+                    );
+                });
 
-                    return {
-                        exercises: exerciseFormData,
-                        bodyweight: this.bodyweight.value ? +this.bodyweight.value : null,
-                        trainingDate: new Date(this.trainingDate.value) ?? new Date(),
-                        editMode: this.editMode,
-                        userId: currentTrainingState.userId,
-                        weightUnit: currentTrainingState.weightUnit,
-                    } as NewTraining;
-                }),
-            );
+                return {
+                    exercises: exerciseFormData,
+                    bodyweight: this.bodyweight.value ? +this.bodyweight.value : null,
+                    trainingDate: new Date(this.trainingDate.value) ?? new Date(),
+                    editMode: this.editMode,
+                    userId: currentTrainingState.userId,
+                    weightUnit: currentTrainingState.weightUnit,
+                } as NewTraining;
+            }),
+        );
     }
 
     private _getAlreadyUsedExercises(): string[] {
@@ -464,20 +548,23 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
 
     private _areSetsValid(setsCmpRef: QueryList<SetsComponent>): boolean {
         let errors: string[] = [];
-        setsCmpRef.forEach(setCmp => {
+        setsCmpRef.forEach((setCmp) => {
             const form = setCmp.form;
             if (form?.errors) {
-                const mappedKeys: string[] = Object.keys(form.errors).map((key: string) => key as string);
+                const mappedKeys: string[] = Object.keys(form.errors).map(
+                    (key: string) => key as string,
+                );
                 errors = errors.concat(mappedKeys);
             }
             form.controls.forEach((group: AbstractControl) => {
                 if (group?.errors) {
-                    const mappedKeys: string[] = Object.keys(group.errors).map((key: string) => key as string);
+                    const mappedKeys: string[] = Object.keys(group.errors).map(
+                        (key: string) => key as string,
+                    );
                     errors = errors.concat(mappedKeys);
                 }
             });
         });
         return errors.length === 0;
     }
-
 }

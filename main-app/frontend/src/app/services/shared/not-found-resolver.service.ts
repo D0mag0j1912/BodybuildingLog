@@ -6,7 +6,6 @@ import { StorageItems } from '../../constants/enums/storage-items.enum';
 
 @Injectable()
 export class NotFoundResolverService implements Resolve<void> {
-
     resolve(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): Observable<void> {
         return from(Storage.remove({ key: StorageItems.TRAINING_STATE }));
     }

@@ -3,7 +3,11 @@ import { PopoverController, MenuController } from '@ionic/angular';
 import { take, switchMap } from 'rxjs/operators';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { Preferences } from '../../../models/common/preferences.model';
-import { LanguageCode, PreferenceChangedType, WeightUnit } from '../../../models/common/preferences.type';
+import {
+    LanguageCode,
+    PreferenceChangedType,
+    WeightUnit,
+} from '../../../models/common/preferences.type';
 import { PreferencesService } from '../../../services/shared/preferences.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
@@ -26,7 +30,6 @@ interface UnitData {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreferencesComponent {
-
     @Input()
     preferences: Preferences;
 
@@ -46,13 +49,16 @@ export class PreferencesComponent {
         },
     ];
 
-    readonly unitData: UnitData[] = [{
-        UnitName: 'units.kilograms',
-        WeightUnit: 'kg',
-    }, {
-        UnitName: 'units.pounds',
-        WeightUnit: 'lbs',
-    }];
+    readonly unitData: UnitData[] = [
+        {
+            UnitName: 'units.kilograms',
+            WeightUnit: 'kg',
+        },
+        {
+            UnitName: 'units.pounds',
+            WeightUnit: 'lbs',
+        },
+    ];
 
     constructor(
         private readonly preferencesStoreService: PreferencesStoreService,
@@ -60,7 +66,7 @@ export class PreferencesComponent {
         private readonly preferencesService: PreferencesService,
         private readonly popoverController: PopoverController,
         private readonly menuController: MenuController,
-    ) { }
+    ) {}
 
     changePreference(preference: LanguageCode | WeightUnit): void {
         const currentPreferences = this.preferencesStoreService.getPreferences();
@@ -70,17 +76,20 @@ export class PreferencesComponent {
                 switchMap((userData: AuthResponseData) => {
                     const preferences: Preferences = {
                         userId: userData._id,
-                        languageCode: this.preferenceType === 'language' ? (preference as LanguageCode) : currentPreferences.languageCode,
-                        weightUnit: this.preferenceType === 'weightUnit' ? (preference as WeightUnit) : currentPreferences.weightUnit,
+                        languageCode:
+                            this.preferenceType === 'language'
+                                ? (preference as LanguageCode)
+                                : currentPreferences.languageCode,
+                        weightUnit:
+                            this.preferenceType === 'weightUnit'
+                                ? (preference as WeightUnit)
+                                : currentPreferences.weightUnit,
                         showByPeriod: currentPreferences.showByPeriod,
                     };
-                    return this.preferencesService.setPreferences(
-                        preferences,
-                        this.preferenceType,
-                    );
+                    return this.preferencesService.setPreferences(preferences, this.preferenceType);
                 }),
             )
-            .subscribe(async _ => {
+            .subscribe(async (_) => {
                 await this.popoverController.dismiss();
                 await this.menuController.close();
             });

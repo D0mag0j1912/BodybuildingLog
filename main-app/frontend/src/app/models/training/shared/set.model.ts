@@ -1,4 +1,3 @@
-
 export interface Set {
     readonly setNumber: number;
     readonly weightLifted: number;

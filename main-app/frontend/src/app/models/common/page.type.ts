@@ -1,6 +1,1 @@
-
-export type Page =
-    'First' |
-    'Previous' |
-    'Next' |
-    'Last';
+export type Page = 'First' | 'Previous' | 'Next' | 'Last';

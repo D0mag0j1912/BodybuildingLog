@@ -4,11 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({ providedIn: 'root' })
 export class LoadingControllerService {
-
     constructor(
         private readonly translateService: TranslateService,
         private readonly loadingController: LoadingController,
-    ) { }
+    ) {}
 
     async displayLoader(options: LoadingOptions): Promise<void> {
         const loading = await this.loadingController.create({
@@ -21,5 +20,4 @@ export class LoadingControllerService {
     async dismissLoader(): Promise<void> {
         await this.loadingController.dismiss();
     }
-
 }

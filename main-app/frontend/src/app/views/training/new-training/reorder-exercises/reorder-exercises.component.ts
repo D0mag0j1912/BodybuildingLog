@@ -12,23 +12,28 @@ import { NewTrainingStoreService } from '../../../../services/store/training/new
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReorderExercisesComponent {
-
     private reorderedTrainingState: NewTraining;
 
-    readonly currentExercises$: Observable<string[]> = this.newTrainingStoreService.currentTrainingChanged$
-        .pipe(
-            map((training: NewTraining) => training.exercises.map(exercise => exercise.exerciseData.name)),
+    readonly currentExercises$: Observable<string[]> =
+        this.newTrainingStoreService.currentTrainingChanged$.pipe(
+            map((training: NewTraining) =>
+                training.exercises.map((exercise) => exercise.exerciseData.name),
+            ),
         );
 
     constructor(
         private readonly newTrainingStoreService: NewTrainingStoreService,
         private readonly modalController: ModalController,
-    ) { }
+    ) {}
 
     doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
         const currentTrainingState = this.newTrainingStoreService.getCurrentTrainingState();
-        const exerciseFrom = (this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState).exercises.find((_exercise, index) => index === ev.detail.from);
-        const remainingExercises = (this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState).exercises.filter((_exercise, index) => index !== ev.detail.from);
+        const exerciseFrom = (
+            this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState
+        ).exercises.find((_exercise, index) => index === ev.detail.from);
+        const remainingExercises = (
+            this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState
+        ).exercises.filter((_exercise, index) => index !== ev.detail.from);
         const reorderedExercises = [
             ...remainingExercises.slice(0, ev.detail.to),
             exerciseFrom,
@@ -42,7 +47,10 @@ export class ReorderExercisesComponent {
     }
 
     async reorderExercises(): Promise<void> {
-        await this.modalController.dismiss(this.reorderedTrainingState, DialogRoles.REORDER_EXERCISES);
+        await this.modalController.dismiss(
+            this.reorderedTrainingState,
+            DialogRoles.REORDER_EXERCISES,
+        );
     }
 
     async onCancel(): Promise<void> {

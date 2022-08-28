@@ -6,7 +6,10 @@ import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { StreamData } from '../../../models/common/common.model';
 import { Paginator } from '../../../models/common/paginator.model';
 import { Page } from '../../../models/common/page.type';
-import { DateInterval, PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
+import {
+    DateInterval,
+    PastTrainings,
+} from '../../../models/training/past-trainings/past-trainings.model';
 import { PaginatorChanged } from '../../../models/common/paginator.model';
 import { DEFAULT_SIZE, INITIAL_PAGE } from '../../../constants/shared/paginator.const';
 
@@ -17,7 +20,6 @@ import { DEFAULT_SIZE, INITIAL_PAGE } from '../../../constants/shared/paginator.
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginationComponent {
-
     readonly pageSizeOptions: number[] = [1, 3, 5, 10];
 
     @Input()
@@ -44,9 +46,7 @@ export class PaginationComponent {
     @Output()
     readonly paginatorChanged: EventEmitter<PaginatorChanged> = new EventEmitter<PaginatorChanged>();
 
-    constructor(
-        private readonly translateService: TranslateService,
-    ) { }
+    constructor(private readonly translateService: TranslateService) {}
 
     loadPage(
         page?: Page,
@@ -82,8 +82,7 @@ export class PaginationComponent {
                 Size: +this.size,
                 IsSearch: true,
             } as PaginatorChanged);
-        }
-        else {
+        } else {
             this.paginatorChanged.emit({
                 Page: +this.page,
                 Size: +this.size,
@@ -96,16 +95,16 @@ export class PaginationComponent {
     }
 
     setPageText$(totalPages: number): Observable<string> {
-        return this.translateService.stream('common')
-            .pipe(
-                map((value: { [key: string]: string }) =>
+        return this.translateService.stream('common').pipe(
+            map(
+                (value: { [key: string]: string }) =>
                     `
                         ${value['page']}
                         <strong class="primary">${this.page?.toString() ?? '1'}</strong>
                         ${value['of']}
                         <strong class="primary">${totalPages?.toString() ?? '1'}</strong>
-                    `),
-            );
+                    `,
+            ),
+        );
     }
-
 }

@@ -4,9 +4,11 @@ import { Preferences } from '../../../models/common/preferences.model';
 
 @Injectable({ providedIn: 'root' })
 export class PreferencesStoreService {
-
-    private readonly _preferencesChanged$$: BehaviorSubject<Preferences> = new BehaviorSubject(null);
-    readonly preferencesChanged$: Observable<Preferences> = this._preferencesChanged$$.asObservable();
+    private readonly _preferencesChanged$$: BehaviorSubject<Preferences> = new BehaviorSubject(
+        null,
+    );
+    readonly preferencesChanged$: Observable<Preferences> =
+        this._preferencesChanged$$.asObservable();
 
     emitPreferences(preferences: Preferences): void {
         this._preferencesChanged$$.next(preferences);
@@ -15,5 +17,4 @@ export class PreferencesStoreService {
     getPreferences(): Preferences {
         return { ...this._preferencesChanged$$.getValue() };
     }
-
 }

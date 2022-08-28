@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+} from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { format } from 'date-fns';
 import { take } from 'rxjs/operators';
@@ -16,7 +23,6 @@ import { PastTrainingsStoreService } from '../../../../services/store/training/p
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrainingItemComponent implements OnInit {
-
     readonly weekDays: string[] = [
         'sunday',
         'monday',
@@ -27,10 +33,7 @@ export class TrainingItemComponent implements OnInit {
         'saturday',
     ];
 
-    readonly actions: TrainingItemActions[] = [
-        'delete',
-        'more',
-    ];
+    readonly actions: TrainingItemActions[] = ['delete', 'more'];
 
     timeCreated: string;
     dayIndex: number;
@@ -45,7 +48,7 @@ export class TrainingItemComponent implements OnInit {
         private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
         private readonly _route: ActivatedRoute,
         private readonly _router: Router,
-    ) { }
+    ) {}
 
     ngOnInit(): void {
         this.timeCreated = format(new Date(this.training.trainingDate), 'HH:mm');
@@ -53,19 +56,16 @@ export class TrainingItemComponent implements OnInit {
     }
 
     async trainingClicked(): Promise<void> {
-        this._route.queryParams
-            .pipe(
-                take(1),
-            )
-            .subscribe(async (params: Params) => {
-                this.trainingItemClicked.emit();
-                await this._pastTrainingsStoreService.emitPastTrainingsQueryParams(params as PastTrainingsQueryParams);
-                await Storage.set({
-                    key: StorageItems.QUERY_PARAMS,
-                    value: JSON.stringify(params as PastTrainingsQueryParams),
-                });
-                await this._router.navigate(['/training/new-training', this.training._id]);
+        this._route.queryParams.pipe(take(1)).subscribe(async (params: Params) => {
+            this.trainingItemClicked.emit();
+            await this._pastTrainingsStoreService.emitPastTrainingsQueryParams(
+                params as PastTrainingsQueryParams,
+            );
+            await Storage.set({
+                key: StorageItems.QUERY_PARAMS,
+                value: JSON.stringify(params as PastTrainingsQueryParams),
             });
+            await this._router.navigate(['/training/new-training', this.training._id]);
+        });
     }
-
 }

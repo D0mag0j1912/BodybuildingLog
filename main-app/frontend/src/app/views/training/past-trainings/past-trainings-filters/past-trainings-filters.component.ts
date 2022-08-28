@@ -1,5 +1,13 @@
 import { KeyValue } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewChild,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IonInput, SegmentChangeEventDetail } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,7 +25,6 @@ import { PeriodFilterType } from '../../../../models/training/past-trainings/pas
     providers: [UnsubscribeService],
 })
 export class PastTrainingsFiltersComponent implements AfterViewInit {
-
     private readonly keyUp$$: Subject<KeyboardEvent> = new Subject<KeyboardEvent>();
 
     @Input()
@@ -40,11 +47,15 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
 
     searchValue = '';
 
-    sortOptions: [KeyValue<PeriodFilterType, Observable<string>>, KeyValue<PeriodFilterType, Observable<string>>] = [
+    sortOptions: [
+        KeyValue<PeriodFilterType, Observable<string>>,
+        KeyValue<PeriodFilterType, Observable<string>>,
+    ] = [
         {
             key: 'week',
             value: this.translateService.stream('training.past_trainings.show_by_week'),
-        }, {
+        },
+        {
             key: 'day',
             value: this.translateService.stream('training.past_trainings.show_by_day'),
         },
@@ -70,7 +81,6 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
                 takeUntil(this.unsubscribeService),
             )
             .subscribe((value: string) => this.trainingEmitted.next(value));
-
     }
 
     get inputMaxLength(): number {
@@ -97,5 +107,4 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     openFilterDialog(): void {
         //TODO
     }
-
 }

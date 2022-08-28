@@ -6,13 +6,8 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [
-                AppComponent,
-            ],
-            imports:[
-                HttpClientTestingModule,
-                RouterTestingModule,
-            ],
+            declarations: [AppComponent],
+            imports: [HttpClientTestingModule, RouterTestingModule],
         }).compileComponents();
     });
 
@@ -21,5 +16,4 @@ describe('AppComponent', () => {
         const app = fixture.componentInstance;
         expect(app).toBeTruthy();
     });
-
 });

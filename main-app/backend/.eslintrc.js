@@ -119,7 +119,7 @@ module.exports = {
         ],
         "arrow-parens": [
             "error",
-            "as-needed"
+            "always"
         ],
         "arrow-spacing": "off",
         "babel/object-curly-spacing": "off",
@@ -127,14 +127,7 @@ module.exports = {
         "babel/semi": "off",
         "block-spacing": "off",
         "brace-style": "off",
-        "comma-dangle": [
-            "error",
-            {
-                "objects": "always-multiline",
-                "arrays": "always-multiline",
-                "functions": "always-multiline"
-            }
-        ],
+        "comma-dangle": ["error", "always-multiline"],
         "comma-spacing": "off",
         "comma-style": "off",
         "computed-property-spacing": "off",

@@ -1,4 +1,3 @@
-
 export enum DialogRoles {
     CANCEL = 'CANCEL',
     DELETE_EXERCISE = 'DELETE_EXERCISE',
