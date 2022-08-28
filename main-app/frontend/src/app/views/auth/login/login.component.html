@@ -29,14 +29,14 @@
                                                 type="email"
                                                 formControlName="email"></ion-input>
                                             <ion-note
-                                                *ngIf="accessFormData('email').errors?.required &&
-                                                    (accessFormData('email').dirty || accessFormData('email').touched)"
+                                                *ngIf="form.get('email').errors?.required &&
+                                                    (form.get('email').dirty || form.get('email').touched)"
                                                 slot="error">
                                                 {{ 'auth.errors.email_required' | translate }}
                                             </ion-note>
                                             <ion-note
-                                                *ngIf="accessFormData('email').errors?.email &&
-                                                    !accessFormData('email').errors?.required"
+                                                *ngIf="form.get('email').errors?.email &&
+                                                    !form.get('email').errors?.required"
                                                 slot="error">
                                                 {{ 'auth.errors.invalid_email' | translate }}
                                             </ion-note>
@@ -50,27 +50,26 @@
                                                 {{ 'auth.password' | translate }}
                                             </ion-label>
                                             <ion-input
-                                                #passwordEl
                                                 type="password"
                                                 formControlName="password"></ion-input>
                                             <ion-note
-                                                *ngIf="accessFormData('password').errors?.required &&
-                                                    (accessFormData('password').dirty || accessFormData('password').touched)"
+                                                *ngIf="form.get('password').errors?.required &&
+                                                    (form.get('password').dirty || form.get('password').touched)"
                                                 slot="error">
                                                 {{ 'auth.errors.password_required' | translate }}
                                             </ion-note>
                                             <ion-note
-                                                *ngIf="accessFormData('password').errors?.minlength
-                                                    || accessFormData('password').errors?.maxlength"
+                                                *ngIf="form.get('password').errors?.minlength
+                                                    || form.get('password').errors?.maxlength"
                                                 slot="error">
                                                 {{ 'auth.errors.password_length' | translate }}
                                             </ion-note>
                                         </ion-item>
                                         <ion-note
                                             *ngIf="form.errors?.passwordFitsEmail
-                                                && !accessFormData('password').errors?.required
-                                                && !accessFormData('password').errors?.minlength
-                                                && !accessFormData('password').errors?.maxlength"
+                                                && !form.get('password').errors?.required
+                                                && !form.get('password').errors?.minlength
+                                                && !form.get('password').errors?.maxlength"
                                             class="error">
                                             {{ 'auth.errors.password_wrong_email' | translate }}
                                         </ion-note>
@@ -82,7 +81,7 @@
                                             class="submit"
                                             type="submit"
                                             color="primary"
-                                            [disabled]="!form.valid || isLoading">
+                                            [disabled]="!form.valid || (isLoading$ | async)">
                                             {{ 'auth.login' | translate }}
                                         </ion-button>
                                     </ion-col>

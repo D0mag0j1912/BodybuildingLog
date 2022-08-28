@@ -1,24 +1,24 @@
 
 export interface Set {
-    setNumber: number;
-    weightLifted: number;
-    reps: number;
-    _id?: string;
+    readonly setNumber: number;
+    readonly weightLifted: number;
+    readonly reps: number;
+    readonly _id?: string;
 }
 
 export interface SetStateChanged {
-    indexExercise: number;
-    indexSet: number;
-    isWeightLiftedValid?: boolean;
-    isRepsValid?: boolean;
-    newTotal?: number;
-    newSet?: Set;
+    readonly indexExercise: number;
+    readonly indexSet: number;
+    readonly isWeightLiftedValid?: boolean;
+    readonly isRepsValid?: boolean;
+    readonly newTotal?: number;
+    readonly newSet?: Set;
 }
 
 export interface SetTrainingData {
-    exerciseName: string;
-    setNumber: number;
-    weightLifted: number;
-    reps: number;
-    total: number;
+    readonly exerciseName: string;
+    readonly setNumber: number;
+    readonly weightLifted: number;
+    readonly reps: number;
+    readonly total: number;
 }

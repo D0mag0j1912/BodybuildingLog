@@ -2,9 +2,9 @@ import { Exercise } from '../exercise.model';
 import { Set } from './set.model';
 
 export interface SingleExercise {
-    exerciseData: Exercise;
-    sets: Set[];
-    total: number;
-    availableExercises: Exercise[];
-    _id?: string;
+    readonly exerciseData: Exercise;
+    readonly sets: Set[];
+    readonly total: number;
+    readonly availableExercises: Exercise[];
+    readonly _id?: string;
 }

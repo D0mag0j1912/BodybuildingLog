@@ -66,22 +66,22 @@
                             <ion-text
                                 class="bodyweight-input--unit"
                                 slot="end"
-                                [class.invalid-bodyweight]="accessFormData('bodyweight')?.invalid">
+                                [class.invalid-bodyweight]="form.get('bodyweight').invalid">
                                 {{ bodyweightRef?.value ? currentPreferences.weightUnit : '' }}
                             </ion-text>
                     </ng-container>
                     <ion-note
-                        *ngIf="accessFormData('bodyweight')?.errors?.pattern"
+                        *ngIf="form.get('bodyweight').errors?.pattern"
                         slot="error">
                         {{ 'training.new_training.errors.only_numbers' | translate }}
                     </ion-note>
                     <ion-note
-                        *ngIf="accessFormData('bodyweight')?.errors?.min"
+                        *ngIf="form.get('bodyweight').errors?.min"
                         slot="error">
                         {{ 'training.new_training.errors.bodyweight_min' | translate }}
                     </ion-note>
                     <ion-note
-                        *ngIf="accessFormData('bodyweight')?.errors?.max"
+                        *ngIf="form.get('bodyweight').errors?.max"
                         slot="error">
                         {{ 'training.new_training.errors.bodyweight_max' | translate }}
                     </ion-note>
@@ -100,14 +100,14 @@
                     <ion-label>{{ 'common.date' | translate }}</ion-label>
                     <ion-text color="primary">{{ formattedTodayDate }}</ion-text>
                 </ion-item>
-                <ng-container *ngIf="accessFormData('date')?.errors?.required">
+                <ng-container *ngIf="form.get('trainingDate').errors?.required">
                     <ion-note class="error">{{ 'training.new_training.errors.date_required' | translate }}</ion-note>
                 </ng-container>
 
                 <bl-single-exercise
                     formControlName="exercises"
-                    [bodyweight]="accessFormData('bodyweight')"
-                    [trainingDate]="accessFormData('date')"
+                    [bodyweight]="form.get('bodyweight')"
+                    [trainingDate]="form.get('trainingDate')"
                     [editTrainingData]="editTrainingData"
                     [isLoading]="trainingData.IsLoading"
                     [editMode]="editMode"

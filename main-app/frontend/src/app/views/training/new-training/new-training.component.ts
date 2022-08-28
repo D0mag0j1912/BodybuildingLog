@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
@@ -9,7 +9,7 @@ import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'r
 import { Storage } from '@capacitor/storage';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { PastTrainingsService } from '../../../services/api/training/past-trainings.service';
-import * as NewTrainingHandler from '../../../handlers/new-training.handler';
+import * as NewTrainingHandler from '../../../helpers/training/new-training/bodyweight.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/common.model';
 import { DialogRoles } from '../../../constants/enums/model-roles.enum';
@@ -30,12 +30,6 @@ import { Preferences } from '../../../models/common/preferences.model';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
-type FormData = {
-    bodyweight: number;
-    date: Date;
-    exercises: SingleExercise[];
-};
-
 @Component({
     selector: 'bl-new-training',
     templateUrl: './new-training.component.html',
@@ -47,7 +41,23 @@ export class NewTrainingComponent implements OnDestroy {
 
     formattedTodayDate: string;
 
-    form: UntypedFormGroup;
+    form = new FormGroup({
+        bodyweight: new FormControl<number | null>(null,
+            {
+                validators: [
+                    Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                    Validators.min(30),
+                    Validators.max(300),
+                ],
+                updateOn: 'blur',
+            },
+        ),
+        trainingDate: new FormControl<string>(new Date().toISOString(), {
+            validators: [Validators.required],
+            nonNullable: true,
+        }),
+        exercises: new FormControl<SingleExercise[]>([], { nonNullable: true }),
+    });;
 
     editTrainingData: NewTraining;
     editMode = false;
@@ -84,22 +94,7 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly _router: Router,
         private readonly _modalController: ModalController,
         private readonly _changeDetectorRef: ChangeDetectorRef,
-    ) {
-        this.form = new UntypedFormGroup({
-            bodyweight: new UntypedFormControl(null,
-                {
-                    validators: [
-                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                        Validators.min(30),
-                        Validators.max(300),
-                    ],
-                    updateOn: 'blur',
-                },
-            ),
-            date: new UntypedFormControl(new Date().toISOString(), [Validators.required]),
-            exercises: new UntypedFormControl([]),
-        });
-    }
+    ) { }
 
     ionViewWillEnter(): void {
         let allExercisesChanged: StreamData<Exercise[]>;
@@ -141,22 +136,28 @@ export class NewTrainingComponent implements OnDestroy {
                         return this._newTrainingStoreService.currentTrainingChanged$
                             .pipe(
                                 take(1),
-                                switchMap(trainingState => {
-                                    const currentTrainingState: NewTraining = { ...trainingState };
-                                    if (currentTrainingState) {
-                                        if (currentTrainingState.editMode && !this.editMode) {
-                                            const newTrainingState = {
+                                switchMap(currentTrainingState => {
+                                    let newTrainingState: NewTraining;
+                                    if (currentTrainingState.editMode && !this.editMode) {
+                                        newTrainingState = {
+                                            ...EMPTY_TRAINING,
+                                            exercises: [createEmptyExercise(allExercisesChanged.Value)],
+                                            userId: currentTrainingState?.userId ?? '',
+                                        };
+                                    }
+                                    else if (!currentTrainingState.editMode && !this.editMode) {
+                                        if (!currentTrainingState.exercises[0]?.exerciseData?.name) {
+                                            newTrainingState = {
                                                 ...EMPTY_TRAINING,
                                                 exercises: [createEmptyExercise(allExercisesChanged.Value)],
                                                 userId: currentTrainingState?.userId ?? '',
                                             };
-                                            return this._newTrainingStoreService.updateTrainingState(newTrainingState);
                                         }
-                                        return of(null);
+                                        else {
+                                            newTrainingState = currentTrainingState;
+                                        }
                                     }
-                                    else {
-                                        return of(null);
-                                    }
+                                    return this._newTrainingStoreService.updateTrainingState(newTrainingState);
                                 }),
                             );
                     }
@@ -230,7 +231,7 @@ export class NewTrainingComponent implements OnDestroy {
     async openDateTimePicker(): Promise<void> {
         const modal = await this._modalController.create({
             component: DateTimePickerComponent,
-            componentProps: { dateValue: format(new Date(this.accessFormData('date').value), `yyyy-MM-dd'T'HH:mm:ss'Z'`) },
+            componentProps: { dateValue: format(new Date(this.form.get('trainingDate').value), `yyyy-MM-dd'T'HH:mm:ss'Z'`) },
             cssClass: 'datetime-picker',
             mode: 'md',
         });
@@ -244,7 +245,7 @@ export class NewTrainingComponent implements OnDestroy {
             .subscribe(response => {
                 const { data, role } = response;
                 if (role === 'SELECT_DATE') {
-                    this.accessFormData('date').patchValue(data);
+                    this.form.get('trainingDate').patchValue(data);
                     this._setFormattedDate(data);
                 }
             });
@@ -303,17 +304,13 @@ export class NewTrainingComponent implements OnDestroy {
         }
     }
 
-    accessFormData(formControl: keyof FormData): UntypedFormControl {
-        return this.form.get(formControl) as UntypedFormControl;
-    }
-
     private _formInit(): void {
         const currentTrainingState = { ...this._newTrainingStoreService.getCurrentTrainingState() };
         const dayClickedDate = this._sharedStoreService.getDayClickedDate();
-        this.accessFormData('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
-        this.accessFormData('date').patchValue(this._fillTrainingDate(dayClickedDate));
-        this.accessFormData('exercises').patchValue(currentTrainingState?.exercises ?? []);
-        this._setFormattedDate(this.accessFormData('date').value);
+        this.form.get('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
+        this.form.get('trainingDate').patchValue(this._fillTrainingDate(dayClickedDate));
+        this.form.get('exercises').patchValue(currentTrainingState?.exercises ?? []);
+        this._setFormattedDate(this.form.get('trainingDate').value);
     }
 
     private _setFormattedDate(dateValue: string): void {
@@ -330,10 +327,10 @@ export class NewTrainingComponent implements OnDestroy {
         }
     }
 
-    private _fillBodyweight(currentTrainingState: NewTraining): string {
+    private _fillBodyweight(currentTrainingState: NewTraining): number {
         return NewTrainingHandler.fillBodyweight(
             currentTrainingState.bodyweight,
-            this.editTrainingData ? this.editTrainingData?.bodyweight : null,
+            this.editTrainingData ? this.editTrainingData.bodyweight : null,
         );
     }
 

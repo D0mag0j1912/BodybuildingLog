@@ -2,13 +2,13 @@
 export function fillBodyweight(
     initialBodyweight: number,
     editBodyweight: number,
-): string {
+): number {
     if (initialBodyweight) {
         if (!editBodyweight) {
-            return initialBodyweight.toString();
+            return initialBodyweight;
         }
         else {
-            return editBodyweight.toString();
+            return editBodyweight;
         }
     }
     else {
@@ -16,7 +16,7 @@ export function fillBodyweight(
             return null;
         }
         else {
-            return editBodyweight.toString();
+            return editBodyweight;
         }
     }
 }

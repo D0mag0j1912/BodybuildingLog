@@ -1,10 +1,10 @@
-import { AbstractControl, UntypedFormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { SingleExerciseFormType } from '../../views/shared/training/single-exercise/single-exercise.component';
 
-//TODO: create no empty training validator (exercises.length === 0)
 export function checkExerciseNumber(): ValidatorFn {
     return (array: AbstractControl): ValidationErrors | null => {
         if (array) {
-            const exerciseNumber = (array as UntypedFormArray)?.controls?.length;
+            const exerciseNumber = (array as FormArray<FormGroup<SingleExerciseFormType>>)?.controls?.length;
             if (exerciseNumber) {
                 return null;
             }
@@ -18,7 +18,7 @@ export function checkDuplicateExerciseName(): ValidatorFn {
     return (array: AbstractControl): ValidationErrors | null => {
         if (array) {
             const exerciseNames: string[] = [];
-            for (const group of (array as UntypedFormArray).controls) {
+            for (const group of (array as FormArray<FormGroup<SingleExerciseFormType>>).controls) {
                 if (exerciseNames.indexOf(group.get('exerciseData.name')?.value) !== -1) {
                     return { 'duplicateExerciseName': group.get('exerciseData.name').value };
                 }

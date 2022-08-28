@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable, of } from 'rxjs';
 import { take, tap, map, switchMap } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { StreamData } from '../../../models/common/common.model';
@@ -12,6 +12,7 @@ import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { PreferencesStoreService } from '../shared/preferences-store.service';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-format.const';
 import { WeightUnit } from '../../../models/common/preferences.type';
+import { Preferences } from '../../../models/common/preferences.model';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingStoreService {
@@ -39,7 +40,7 @@ export class NewTrainingStoreService {
             ...this._currentTrainingChanged$$.getValue(),
             weightUnit,
         };
-        return this.saveTrainingData({ ...updatedTraining });
+        return this.saveTrainingData(updatedTraining);
     }
 
     updateBodyweight(value: string): void {
@@ -47,7 +48,7 @@ export class NewTrainingStoreService {
             ...this._currentTrainingChanged$$.getValue(),
             bodyweight: +value,
         };
-        this.saveTrainingData({ ...updatedTraining })
+        this.saveTrainingData(updatedTraining)
             .subscribe();
     }
 
@@ -56,18 +57,32 @@ export class NewTrainingStoreService {
         indexSet: number,
         newTotal: number,
     ): void {
-        const updatedTraining: NewTraining = { ...this._currentTrainingChanged$$.getValue() };
-        let sets = updatedTraining.exercises[indexExercise].sets;
-        sets.splice(indexSet, 1);
-        sets = sets.map((set: Set) => {
-            if (set.setNumber > (indexSet + 1)) {
-                set.setNumber--;
-            }
-            return set;
-        });
-        updatedTraining.exercises[indexExercise].sets = sets;
-        updatedTraining.exercises[indexExercise].total = newTotal;
-        this.saveTrainingData({ ...updatedTraining })
+        let updatedTraining: NewTraining = this._currentTrainingChanged$$.getValue();
+        updatedTraining = {
+            ...updatedTraining,
+            exercises: [...updatedTraining.exercises]
+                .map((exercise: SingleExercise, i: number) => {
+                    if (i === indexExercise) {
+                        return {
+                            ...exercise,
+                            sets: [...exercise.sets]
+                                .filter((_set: Set, i: number) => i !== indexSet)
+                                .map((set: Set) => {
+                                    if (set.setNumber > (indexSet + 1)) {
+                                        return {
+                                            ...set,
+                                            setNumber: set.setNumber - 1,
+                                        };
+                                    }
+                                    return set;
+                                }),
+                            total: newTotal,
+                        };
+                    }
+                    return exercise;
+                }),
+        };
+        this.saveTrainingData(updatedTraining)
             .subscribe();
     }
 
@@ -75,18 +90,23 @@ export class NewTrainingStoreService {
         currentTrainingState: NewTraining,
         toBeAddedExercise: Exercise[],
     ): Observable<void> {
-        const updatedTraining: NewTraining = { ...currentTrainingState };
-        let exercises = updatedTraining.exercises;
-        exercises = exercises.map(exercise => {
-            const isDeletedExerciseInAE = exercise.availableExercises.find(exercise => exercise._id === toBeAddedExercise[0]._id);
-            if (!isDeletedExerciseInAE) {
-                exercise.availableExercises.push(toBeAddedExercise[0]);
-                exercise.availableExercises.sort(this.compare);
-            }
-            return exercise;
-        });
-        updatedTraining.exercises = exercises;
-        return this.saveTrainingData({ ...updatedTraining });
+        let updatedTraining: NewTraining = { ...currentTrainingState };
+        updatedTraining = {
+            ...updatedTraining,
+            exercises: [...updatedTraining.exercises]
+                .map(exercise => {
+                    const isDeletedExerciseInAE = exercise.availableExercises.find(exercise => exercise._id === toBeAddedExercise[0]._id);
+                    if (!isDeletedExerciseInAE) {
+                        return {
+                            ...exercise,
+                            availableExercises: [...exercise.availableExercises, toBeAddedExercise[0]]
+                                .sort(this.compare),
+                        };
+                    }
+                    return exercise;
+                }),
+        };
+        return this.saveTrainingData(updatedTraining);
     }
 
     deleteExercise(
@@ -131,29 +151,58 @@ export class NewTrainingStoreService {
     }
 
     setsChanged(trainingData: SetTrainingData): Observable<void> {
-        const updatedTraining: NewTraining = { ...this._currentTrainingChanged$$.getValue() };
+        let updatedTraining: NewTraining = this._currentTrainingChanged$$.getValue();
         const indexOfChangedExercise = updatedTraining.exercises.findIndex((singleExercise: SingleExercise) => singleExercise.exerciseData.name === trainingData.exerciseName);
         const indexFoundSet = updatedTraining.exercises[indexOfChangedExercise].sets.findIndex(set => set.setNumber === trainingData.setNumber);
 
         if (indexFoundSet > -1) {
-            let setToBeUpdated = updatedTraining.exercises[indexOfChangedExercise].sets[indexFoundSet];
-            setToBeUpdated = {
-                ...updatedTraining.exercises[indexOfChangedExercise].sets[indexFoundSet],
-                weightLifted: trainingData.weightLifted,
-                reps: trainingData.reps,
+            updatedTraining = {
+                ...updatedTraining,
+                exercises: [...updatedTraining.exercises]
+                    .map((exercise: SingleExercise, i: number) => {
+                        if (i === indexOfChangedExercise) {
+                            return {
+                                ...exercise,
+                                sets: [...exercise.sets]
+                                    .map((set: Set, j: number) => {
+                                        if (j === indexFoundSet) {
+                                            return {
+                                                ...set,
+                                                weightLifted: trainingData.weightLifted,
+                                                reps: trainingData.reps,
+                                            };
+                                        }
+                                        return set;
+                                    }),
+                                total: trainingData.total,
+                            };
+                        }
+                        return exercise;
+                    }),
             };
-            updatedTraining.exercises[indexOfChangedExercise].sets[indexFoundSet] = setToBeUpdated;
-            updatedTraining.exercises[indexOfChangedExercise].total = trainingData.total;
         }
         else {
-            updatedTraining.exercises[indexOfChangedExercise].sets.push({
+            const newSet = {
                 setNumber: trainingData.setNumber,
                 weightLifted: trainingData.weightLifted,
                 reps: trainingData.reps,
-            });
-            updatedTraining.exercises[indexOfChangedExercise].total = trainingData.total;
+            } as Set;
+            updatedTraining = {
+                ...updatedTraining,
+                exercises: [...updatedTraining.exercises]
+                    .map((exercise: SingleExercise, i: number) => {
+                        if (i === indexOfChangedExercise) {
+                            return {
+                                ...exercise,
+                                sets: [...exercise.sets, newSet],
+                                total: trainingData.total,
+                            };
+                        }
+                        return exercise;
+                    }),
+            };
         }
-        return this.saveTrainingData({ ...updatedTraining });
+        return this.saveTrainingData(updatedTraining);
     }
 
     addNewExercise(alreadyUsedExercises: string[]): Observable<void> {
@@ -168,13 +217,27 @@ export class NewTrainingStoreService {
         trainingToBeUpdated: NewTraining,
         selectedExerciseData: Exercise,
     ): Observable<void> {
-        trainingToBeUpdated.exercises[selectedIndex].exerciseData = selectedExerciseData;
-        trainingToBeUpdated.exercises.forEach((exercise: SingleExercise, index: number) => {
-            if (index !== selectedIndex) {
-                exercise.availableExercises = exercise.availableExercises.filter((exercise: Exercise) => exercise.name !== selectedExercise);
-            }
-        });
-        return this.saveTrainingData({ ...trainingToBeUpdated });
+        let updatedTraining: NewTraining = { ...trainingToBeUpdated };
+        updatedTraining = {
+            ...updatedTraining,
+            exercises: [...updatedTraining.exercises]
+                .map((exercise: SingleExercise, i: number) => {
+                    if (i === selectedIndex) {
+                        return {
+                            ...exercise,
+                            exerciseData: selectedExerciseData,
+                        };
+                    }
+                    else {
+                        return {
+                            ...exercise,
+                            availableExercises: [...exercise.availableExercises]
+                                .filter((exercise: Exercise) => exercise.name !== selectedExercise),
+                        };
+                    }
+                }),
+        };
+        return this.saveTrainingData(updatedTraining);
     }
 
     keepTrainingState(): Observable<boolean> {
@@ -197,30 +260,42 @@ export class NewTrainingStoreService {
         restartAll?: boolean,
         userId?: string,
     ): Observable<void> {
-        let updatedTraining: NewTraining;
-        if (exercises) {
-            updatedTraining = this._currentTrainingChanged$$.getValue();
-            if (restartAll) {
-                const weightUnit = this.preferencesStoreService.getPreferences()?.weightUnit ?? DEFAULT_WEIGHT_UNIT;
-                updatedTraining = {
-                    ...EMPTY_TRAINING,
-                    userId,
-                    weightUnit,
-                };
-            }
-            updatedTraining.exercises.push(createEmptyExercise(exercises));
-        }
-        else {
-            updatedTraining = newTrainingState;
-        }
-        return this.saveTrainingData({ ...updatedTraining });
+        return combineLatest([
+            this.currentTrainingChanged$,
+            this.preferencesStoreService.preferencesChanged$,
+        ]).pipe(
+            take(1),
+            map(([currentTrainingState, currentPreferences]: [NewTraining, Preferences]) => {
+                let updatedTraining: NewTraining;
+                if (exercises) {
+                    updatedTraining = currentTrainingState;
+                    if (restartAll) {
+                        const weightUnit = currentPreferences?.weightUnit ?? DEFAULT_WEIGHT_UNIT;
+                        updatedTraining = {
+                            ...EMPTY_TRAINING,
+                            userId,
+                            weightUnit,
+                        };
+                    }
+                    updatedTraining = {
+                        ...updatedTraining,
+                        exercises: [...updatedTraining.exercises, createEmptyExercise(exercises)],
+                    };
+                }
+                else {
+                    updatedTraining = newTrainingState;
+                }
+                return updatedTraining;
+            }),
+            switchMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+        );
     }
 
     private saveTrainingData(updatedTraining: NewTraining): Observable<void> {
-        this._currentTrainingChanged$$.next({ ...updatedTraining });
+        this._currentTrainingChanged$$.next(updatedTraining);
         return from(Storage.set({
             key: StorageItems.TRAINING_STATE,
-            value: JSON.stringify({ ...updatedTraining }),
+            value: JSON.stringify(updatedTraining),
         })).pipe(take(1));
     }
 

@@ -5,7 +5,7 @@ export interface ErrorMessage {
 }
 
 export interface StreamData<T> {
-    IsLoading: boolean;
-    IsError: boolean;
-    Value?: T;
+    readonly IsLoading: boolean;
+    readonly IsError: boolean;
+    readonly Value?: T;
 }

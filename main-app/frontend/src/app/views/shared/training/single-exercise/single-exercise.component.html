@@ -15,20 +15,20 @@
                                 <ion-item fill="outline">
                                     <ion-label position="floating">{{ 'training.new_training.pick_exercise' | translate }}</ion-label>
                                     <ion-select
-                                        *ngIf="showSelects"
+                                        *ngIf="isExercisePicker$ | async"
                                         #exercisePicker
                                         class="exercise-picker"
                                         interface="popover"
                                         formControlName="name"
                                         (ionChange)="onExerciseNameChange(i, exercisePicker)">
                                         <ion-select-option
-                                            *ngFor="let exercise of exercises$ | newTraining:i:exerciseChanged | async"
+                                            *ngFor="let exercise of exercises$ | newTraining: i: isExerciseChanged | async"
                                             [value]="exercise.name">
                                             {{ exercise.name | translate }}
                                         </ion-select-option>
                                     </ion-select>
                                     <ion-note
-                                        *ngIf="accessFormGroup('exerciseData', 'name', i)?.errors?.required &&
+                                        *ngIf="accessFormGroup('exerciseData', 'name', i).errors?.required &&
                                             ((accessFormGroup('exerciseData', 'name', i).touched || accessFormGroup('exerciseData', 'name', i).dirty) || (isSubmitted$ | async)) &&
                                             !isLoading"
                                         slot="error">
@@ -36,8 +36,8 @@
                                     </ion-note>
                                 </ion-item>
                                 <ion-note
-                                    *ngIf="form?.errors?.duplicateExerciseName &&
-                                        form?.errors?.duplicateExerciseName === accessFormGroup('exerciseData', 'name', i)?.value &&
+                                    *ngIf="form.errors?.duplicateExerciseName &&
+                                        form.errors?.duplicateExerciseName === accessFormGroup('exerciseData', 'name', i)?.value &&
                                         !isLoading"
                                     class="error">
                                     {{ 'training.new_training.errors.exercise_name_duplicate' | translate }}
@@ -53,7 +53,7 @@
                     </ion-grid>
                 </ng-container>
                 <bl-sets
-                    [formControl]="$any(form.controls[i].get('sets'))"
+                    formControlName="sets"
                     [isExerciseFormSubmitted$]="isSubmitted$"
                     [exerciseNameChanged$]="exerciseNameChanged$"
                     [exerciseNameControl]="accessFormGroup('exerciseData', 'name', i)"
@@ -66,7 +66,9 @@
                     (weightUnitChanged)="onWeightUnitChanged($event)"></bl-sets>
                 <bl-total-weight
                     formControlName="total"
-                    [isLoading]="isLoading"></bl-total-weight>
+                    [isLoading]="isLoading"
+                    [editTrainingData]="editTrainingData"
+                    [currentWeightUnit]="currentWeightUnit"></bl-total-weight>
             </div>
         </ng-container>
     </ng-container>
@@ -77,15 +79,15 @@
                     <ion-button
                         type="button"
                         color="primary"
-                        [disabled]="!(isAddingExercisesAllowed$ | async) || isApiLoading"
-                        (click)="addExercise($event)">
+                        [disabled]="!(isAddingExercisesAllowed$ | async) || (isApiLoading$ | async)"
+                        (click)="addExercise(undefined, $event)">
                         {{ 'training.new_training.buttons.add_exercise' | translate }}
                     </ion-button>
                 </ion-col>
                 <ion-col>
                     <ion-button
                         type="submit"
-                        [disabled]="currentTrainingDataState?.length === 0 || isApiLoading">
+                        [disabled]="currentTrainingDataState?.length === 0 || (isApiLoading$ | async)">
                         <ion-icon name="checkmark-sharp"></ion-icon>
                     </ion-button>
                 </ion-col>
@@ -93,7 +95,7 @@
             <ion-row>
                 <ion-col class="at-least-one-exercise-txt">
                     <ion-note
-                        *ngIf="form?.errors?.emptyTraining && (isSubmitted$ | async) && currentTrainingDataState?.length === 0"
+                        *ngIf="form.errors?.emptyTraining && (isSubmitted$ | async) && currentTrainingDataState?.length === 0"
                         class="empty-training-msg">
                         {{ 'training.new_training.errors.at_least_one_exercise' | translate }}
                     </ion-note>
