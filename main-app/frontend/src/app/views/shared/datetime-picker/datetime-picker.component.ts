@@ -8,7 +8,6 @@ import { DialogRoles } from '../../../constants/enums/model-roles.enum';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DateTimePickerComponent {
-
     maxDate = format(new Date(), 'yyyy-MM-dd');
     minDate = format(subMonths(new Date(), 2), 'yyyy-MM-dd');
 
@@ -18,9 +17,7 @@ export class DateTimePickerComponent {
     @ViewChild('datetime', { read: IonDatetime })
     dateTimeEl: IonDatetime;
 
-    constructor(
-        private readonly modalController: ModalController,
-    ) { }
+    constructor(private readonly modalController: ModalController) {}
 
     dateChanged(currentDateValue: string): void {
         this.dateValue = currentDateValue;

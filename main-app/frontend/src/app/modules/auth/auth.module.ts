@@ -12,10 +12,7 @@ import { SharedModule } from '../shared.module';
 import { AutofocusModule } from '../../directives/autofocus/autofocus.module';
 import { AuthRoutingModule } from './auth-routing.module';
 
-const COMPONENTS = [
-    SignupComponent,
-    LoginComponent,
-];
+const COMPONENTS = [SignupComponent, LoginComponent];
 
 const EXTERNAL_IMPORTS = [
     CommonModule,
@@ -25,24 +22,14 @@ const EXTERNAL_IMPORTS = [
     IonicModule,
 ];
 
-const MY_IMPORTS = [
-    SharedModule,
-    AuthRoutingModule,
-    AutofocusModule,
-];
+const MY_IMPORTS = [SharedModule, AuthRoutingModule, AutofocusModule];
 
-const SERVICES = [
-    SignupService,
-    LoginService,
-];
+const SERVICES = [SignupService, LoginService];
 
 @NgModule({
-    declarations: [ ...COMPONENTS ],
-    imports: [
-        ...EXTERNAL_IMPORTS,
-        ...MY_IMPORTS,
-    ],
-    exports: [ ...COMPONENTS ],
-    providers: [ ...SERVICES ],
+    declarations: [...COMPONENTS],
+    imports: [...EXTERNAL_IMPORTS, ...MY_IMPORTS],
+    exports: [...COMPONENTS],
+    providers: [...SERVICES],
 })
 export class AuthModule {}

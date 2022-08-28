@@ -47,22 +47,12 @@ const IMPORTS = [
     SkeletonLoaderModule,
 ];
 
-const PIPES_MODULES = [
-    ShowAllExercisesModule,
-    SanitizeHtmlModule,
-];
+const PIPES_MODULES = [ShowAllExercisesModule, SanitizeHtmlModule];
 
 @NgModule({
-    declarations: [
-        ...COMPONENTS,
-        ...DIRECTIVES,
-    ],
-    imports: [
-        ...EXTERNAL_IMPORTS,
-        ...IMPORTS,
-        ...PIPES_MODULES,
-    ],
+    declarations: [...COMPONENTS, ...DIRECTIVES],
+    imports: [...EXTERNAL_IMPORTS, ...IMPORTS, ...PIPES_MODULES],
     exports: [...COMPONENTS],
     providers: [DatePipe],
 })
-export class TrainingModule { }
+export class TrainingModule {}

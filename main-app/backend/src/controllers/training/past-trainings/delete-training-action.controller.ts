@@ -14,10 +14,7 @@ import { ParseDeleteTrainingRequest } from '../../../pipes/training/parse-delete
 @Controller('training/delete-training')
 @UseGuards(AuthGuard())
 export class DeleteTrainingActionController {
-
-    constructor(
-        private readonly deleteTrainingActionService: DeleteTrainingActionService,
-    ) { }
+    constructor(private readonly deleteTrainingActionService: DeleteTrainingActionService) {}
 
     @Delete(':id')
     @UseGuards(new TrainingGuard('training.past_trainings.actions.errors.error_delete_training'))
@@ -26,10 +23,6 @@ export class DeleteTrainingActionController {
         @Param('id') trainingId: string,
         @Query(ParseDeleteTrainingRequest) meta: DeleteTrainingMetaDto,
     ): Promise<StreamData<PastTrainings>> {
-        return this.deleteTrainingActionService.deleteTraining(
-            trainingId,
-            user._id,
-            meta,
-        );
+        return this.deleteTrainingActionService.deleteTraining(trainingId, user._id, meta);
     }
 }

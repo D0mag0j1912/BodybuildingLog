@@ -1,4 +1,3 @@
-
 export const ALL_MONTHS = [
     'january',
     'february',

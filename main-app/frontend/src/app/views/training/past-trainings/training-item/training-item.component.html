@@ -1,10 +1,7 @@
-<ion-card
-    mode="md"
-    class="ion-text-center"
-    (click)="trainingClicked()">
+<ion-card mode="md" class="ion-text-center" (click)="trainingClicked()">
     <ion-card-header>
         <ion-card-title>
-            <strong class="day-name">{{ ('weekdays.' + weekDays[dayIndex] | translate) }}</strong>
+            <strong class="day-name">{{ 'weekdays.' + weekDays[dayIndex] | translate }}</strong>
             <ion-text class="day-date">{{ '(' + (training.trainingDate | date: 'dd.MM.yyyy') + ')' }}</ion-text>
         </ion-card-title>
     </ion-card-header>
@@ -22,9 +19,7 @@
                     </div>
                 </ion-col>
                 <ion-col>
-                    <div
-                        class="created-at"
-                        [class.created-at--no-bodyweight]="!training?.bodyweight">
+                    <div class="created-at" [class.created-at--no-bodyweight]="!training?.bodyweight">
                         <strong class="created-at--key">
                             {{ 'common.created_at_time' | translate }}
                         </strong>
@@ -35,19 +30,11 @@
                 </ion-col>
             </ion-row>
         </ion-grid>
-        <div
-            class="exercise-wrapper"
-            [class.exercise-wrapper-no-dots]="training.exercises.length <= 2">
-            <span
-                *ngFor="let data of (training.exercises | slice:0:2); let i = index"
-                class="exercise-name">
-                {{ (i+1) + '. ' + (data.exerciseData.name | translate) }}
+        <div class="exercise-wrapper" [class.exercise-wrapper-no-dots]="training.exercises.length <= 2">
+            <span *ngFor="let data of training.exercises | slice: 0:2; let i = index" class="exercise-name">
+                {{ i + 1 + '. ' + (data.exerciseData.name | translate) }}
             </span>
-            <span
-                *ngIf="training.exercises.length > 2"
-                class="exercise-dots">
-                &#8942;
-            </span>
+            <span *ngIf="training.exercises.length > 2" class="exercise-dots"> &#8942; </span>
         </div>
         <div class="actions">
             <bl-training-item-actions
@@ -56,7 +43,8 @@
                 [training]="training"
                 [weekDays]="weekDays"
                 [dayIndex]="dayIndex"
-                [timeCreated]="timeCreated"></bl-training-item-actions>
+                [timeCreated]="timeCreated"
+            ></bl-training-item-actions>
         </div>
     </ion-card-content>
 </ion-card>

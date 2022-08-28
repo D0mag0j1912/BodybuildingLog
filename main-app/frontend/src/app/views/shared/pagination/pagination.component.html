@@ -5,14 +5,10 @@
                 <ng-container *ngIf="isSearch">
                     <div
                         *skeleton="isLoading; width: '50px'; height: '35px'; margin: '0 10px 0 0'"
-                        class="page-size-wrapper">
-                        <select
-                            class="page-size"
-                            [(ngModel)]="size"
-                            (change)="loadPage()">
-                            <option
-                                *ngFor="let size of pageSizeOptions"
-                                [value]="size">
+                        class="page-size-wrapper"
+                    >
+                        <select class="page-size" [(ngModel)]="size" (change)="loadPage()">
+                            <option *ngFor="let size of pageSizeOptions" [value]="size">
                                 {{ size }}
                             </option>
                         </select>
@@ -26,11 +22,9 @@
                         type="button"
                         color="primary"
                         fill="outline"
-                        (click)="loadPage(
-                            'First',
-                            undefined,
-                            data?.Value?.Results?.EarliestTrainingDate)"
-                        [disabled]="!isPreviousPage">
+                        (click)="loadPage('First', undefined, data?.Value?.Results?.EarliestTrainingDate)"
+                        [disabled]="!isPreviousPage"
+                    >
                         <ion-icon name="play-back-sharp"></ion-icon>
                     </ion-button>
                     <ion-button
@@ -41,9 +35,8 @@
                         color="primary"
                         fill="outline"
                         [disabled]="data?.IsLoading || !isPreviousPage"
-                        (click)="loadPage(
-                            'Previous',
-                            data.Value?.Results?.Dates)">
+                        (click)="loadPage('Previous', data.Value?.Results?.Dates)"
+                    >
                         <ion-icon name="chevron-back-sharp"></ion-icon>
                     </ion-button>
                     <ion-button
@@ -54,9 +47,8 @@
                         color="primary"
                         fill="outline"
                         [disabled]="data.IsLoading || !isNextPage"
-                        (click)="loadPage(
-                            'Next',
-                            data.Value?.Results?.Dates)">
+                        (click)="loadPage('Next', data.Value?.Results?.Dates)"
+                    >
                         <ion-icon name="chevron-forward-sharp"></ion-icon>
                     </ion-button>
                     <ion-button
@@ -66,12 +58,9 @@
                         class="last"
                         color="primary"
                         fill="outline"
-                        (click)="loadPage(
-                            'Last',
-                            undefined,
-                            undefined,
-                            data?.Value?.TotalPages)"
-                        [disabled]="!isNextPage">
+                        (click)="loadPage('Last', undefined, undefined, data?.Value?.TotalPages)"
+                        [disabled]="!isNextPage"
+                    >
                         <ion-icon name="play-forward-sharp"></ion-icon>
                     </ion-button>
                 </div>
@@ -80,7 +69,8 @@
                 <div
                     *skeleton="isLoading; width: '75px'; height: '25px'"
                     class="label"
-                    [innerHTML]="(setPageText$(data.Value?.TotalPages) | async) | sanitizeHtml"></div>
+                    [innerHTML]="setPageText$(data.Value?.TotalPages) | async | sanitizeHtml"
+                ></div>
             </ng-container>
         </div>
     </ion-card-content>

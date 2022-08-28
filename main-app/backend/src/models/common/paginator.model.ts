@@ -16,7 +16,6 @@ export interface PaginatorParams {
 }
 
 export class SearchDataDto {
-
     @IsNotEmpty()
     page: number;
 

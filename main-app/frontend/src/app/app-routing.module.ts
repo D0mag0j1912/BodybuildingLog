@@ -13,11 +13,13 @@ const routes: Routes = [
     },
     {
         path: 'auth',
-        loadChildren: async (): Promise<Routes | Type<AuthModule>> => import('./modules/auth/auth.module').then(module => module.AuthModule),
+        loadChildren: async (): Promise<Routes | Type<AuthModule>> =>
+            import('./modules/auth/auth.module').then((module) => module.AuthModule),
     },
     {
         path: 'training',
-        loadChildren: async (): Promise<Routes | Type<AuthModule>> => import('./modules/training/training.module').then(module => module.TrainingModule),
+        loadChildren: async (): Promise<Routes | Type<AuthModule>> =>
+            import('./modules/training/training.module').then((module) => module.TrainingModule),
         canLoad: [AuthGuard],
     },
     {

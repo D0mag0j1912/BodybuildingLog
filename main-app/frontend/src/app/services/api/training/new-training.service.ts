@@ -15,57 +15,61 @@ import { NewTrainingStoreService } from '../../store/training/new-training-store
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingService {
-
     constructor(
         private readonly http: HttpClient,
         private readonly authStoreService: AuthStoreService,
         private readonly newTrainingStoreService: NewTrainingStoreService,
-    ) { }
+    ) {}
 
     getExerciseByName(exerciseName: string): Observable<Exercise> {
         const params = new HttpParams().set('exerciseName', exerciseName);
-        return this.http.get<Exercise>(environment.BACKEND + '/training/get_exercise', { params: params });
+        return this.http.get<Exercise>(environment.BACKEND + '/training/get_exercise', {
+            params: params,
+        });
     }
 
     getExercises(): Observable<StreamData<Exercise[]>> {
-        return this.http.get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get-exercises')
+        return this.http
+            .get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get-exercises')
             .pipe(
                 switchMap((response: StreamData<Exercise[]>) => {
                     this.newTrainingStoreService.emitAllExercises(response);
-                    return from(Storage.get({ key: StorageItems.TRAINING_STATE }))
-                        .pipe(
-                            switchMap(storedData => {
-                                if (!storedData || !storedData?.value) {
-                                    return this.authStoreService.loggedUser$
-                                        .pipe(
-                                            take(1),
-                                            switchMap((authResponseData: AuthResponseData) =>
-                                                this.newTrainingStoreService.updateTrainingState(
-                                                    undefined,
-                                                    response.Value,
-                                                    true,
-                                                    authResponseData._id,
-                                                ),
-                                            ),
-                                            switchMap(_ => of(response)),
-                                        );
-                                }
-                                return of(response);
-                            }),
-                        );
+                    return from(Storage.get({ key: StorageItems.TRAINING_STATE })).pipe(
+                        switchMap((storedData) => {
+                            if (!storedData || !storedData?.value) {
+                                return this.authStoreService.loggedUser$.pipe(
+                                    take(1),
+                                    switchMap((authResponseData: AuthResponseData) =>
+                                        this.newTrainingStoreService.updateTrainingState(
+                                            undefined,
+                                            response.Value,
+                                            true,
+                                            authResponseData._id,
+                                        ),
+                                    ),
+                                    switchMap((_) => of(response)),
+                                );
+                            }
+                            return of(response);
+                        }),
+                    );
                 }),
             );
     }
 
     addTraining(trainingData: NewTraining): Observable<GeneralResponseData> {
-        return this.http.post<GeneralResponseData>(environment.BACKEND + '/training/handle-training', { trainingData });
+        return this.http.post<GeneralResponseData>(
+            environment.BACKEND + '/training/handle-training',
+            { trainingData },
+        );
     }
 
-    updateTraining(
-        trainingData: NewTraining,
-        trainingId: string,
-    ): Observable<GeneralResponseData> {
-        return this.http.put<GeneralResponseData>(environment.BACKEND + `/training/handle-training/${trainingId}`, { updatedTrainingData: trainingData });
+    updateTraining(trainingData: NewTraining, trainingId: string): Observable<GeneralResponseData> {
+        return this.http.put<GeneralResponseData>(
+            environment.BACKEND + `/training/handle-training/${trainingId}`,
+            {
+                updatedTrainingData: trainingData,
+            },
+        );
     }
-
 }

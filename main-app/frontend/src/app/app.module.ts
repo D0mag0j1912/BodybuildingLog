@@ -24,9 +24,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 @NgModule({
-    declarations: [
-        AppComponent,
-    ],
+    declarations: [AppComponent],
     imports: [
         BrowserModule,
         HttpClientModule,
@@ -47,11 +45,13 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,
             multi: true,
-        }, {
+        },
+        {
             provide: HTTP_INTERCEPTORS,
             useClass: ErrorInterceptor,
             multi: true,
-        }, {
+        },
+        {
             provide: ErrorHandler,
             useClass: SentryService,
         },
@@ -61,8 +61,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         },
         HttpClient,
         AuthGuard,
-
     ],
     bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -9,10 +9,7 @@ import { ConfirmPasswordGuard } from '../../../guards/auth/confirm-password.guar
 @ApiTags('Authentication')
 @Controller('auth/signup')
 export class SignupController {
-
-    constructor(
-        private readonly authService: AuthService,
-    ) { }
+    constructor(private readonly authService: AuthService) {}
 
     @Post()
     @UseGuards(new ConfirmPasswordGuard('auth.errors.equal_passwords'))
@@ -20,9 +17,6 @@ export class SignupController {
         @Body('signupData') signupDto: SignupDto,
         @Body('preferences') preferencesDto: PreferencesDto,
     ): Promise<AuthResponse> {
-        return this.authService.signup(
-            preferencesDto,
-            signupDto,
-        );
+        return this.authService.signup(preferencesDto, signupDto);
     }
 }

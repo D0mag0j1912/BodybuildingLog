@@ -8,15 +8,11 @@ import { NewTrainingService } from '../../../services/training/new-training.serv
 @Controller('training/get_exercise')
 @UseGuards(AuthGuard())
 export class ExerciseController {
-
-    constructor(
-        private readonly newTrainingService: NewTrainingService,
-    ) { }
+    constructor(private readonly newTrainingService: NewTrainingService) {}
 
     @ApiCreatedResponse({ type: Exercise })
     @Get()
     async getExercise(@Param('exerciseName') exerciseName: string): Promise<Exercise> {
         return this.newTrainingService.getExerciseByName(exerciseName);
     }
-    
 }

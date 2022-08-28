@@ -13,10 +13,7 @@ import { PastTrainingsService } from '../../../services/training/past-trainings.
 @UseGuards(AuthGuard())
 @Controller('training/search-trainings')
 export class SearchTrainingsController {
-
-    constructor(
-        private readonly pastTrainingsService: PastTrainingsService,
-    ) { }
+    constructor(private readonly pastTrainingsService: PastTrainingsService) {}
 
     @Get()
     async searchTrainings(

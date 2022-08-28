@@ -19,7 +19,7 @@ async function bootstrap(): Promise<void> {
         .build();
     const document: OpenAPIObject = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('/', app, document);
-    
+
     await app.listen(3000);
 }
 void bootstrap();

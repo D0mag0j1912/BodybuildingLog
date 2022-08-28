@@ -1,21 +1,14 @@
-
-export function fillBodyweight(
-    initialBodyweight: number,
-    editBodyweight: number,
-): number {
+export function fillBodyweight(initialBodyweight: number, editBodyweight: number): number {
     if (initialBodyweight) {
         if (!editBodyweight) {
             return initialBodyweight;
-        }
-        else {
+        } else {
             return editBodyweight;
         }
-    }
-    else {
+    } else {
         if (!editBodyweight) {
             return null;
-        }
-        else {
+        } else {
             return editBodyweight;
         }
     }

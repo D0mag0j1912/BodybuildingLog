@@ -4,7 +4,6 @@ import { DeleteTrainingMetaDto } from '../../models/training/training-actions/de
 
 @Injectable()
 export class ParseDeleteTrainingRequest implements PipeTransform {
-
     transform(jsonObject: { meta: string }): DeleteTrainingMetaDto {
         const meta = JSON.parse(jsonObject.meta) as DeleteTrainingMetaDto;
         if (meta?.searchData) {
@@ -22,8 +21,7 @@ export class ParseDeleteTrainingRequest implements PipeTransform {
                     size: +meta.searchData.size,
                 },
             };
-        }
-        else {
+        } else {
             return meta;
         }
     }

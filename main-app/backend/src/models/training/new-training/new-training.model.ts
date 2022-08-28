@@ -11,7 +11,8 @@ import {
     IsString,
     Max,
     Min,
-    ValidateNested } from 'class-validator';
+    ValidateNested,
+} from 'class-validator';
 import { Schema } from 'mongoose';
 import { WeightUnit } from '../../preferences/preferences.type';
 import { SingleExercise, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model';
@@ -42,7 +43,6 @@ export const NEW_TRAINING_SCHEMA = new Schema({
 });
 
 export class NewTraining {
-
     @ApiProperty({ required: false })
     @IsOptional()
     @IsString({ message: '@training.new_training.errors.error_save_training' })
@@ -62,9 +62,12 @@ export class NewTraining {
 
     @ApiProperty({ required: false })
     @IsOptional()
-    @IsNumber({}, {
-        message: '@training.new_training.errors.bodyweight_number',
-    })
+    @IsNumber(
+        {},
+        {
+            message: '@training.new_training.errors.bodyweight_number',
+        },
+    )
     @Min(30, {
         message: '@training.new_training.errors.bodyweight_min',
     })
@@ -74,9 +77,12 @@ export class NewTraining {
     bodyweight: number;
 
     @ApiProperty()
-    @IsDateString({}, {
-        message: '@common.errors.invalid_date',
-    })
+    @IsDateString(
+        {},
+        {
+            message: '@common.errors.invalid_date',
+        },
+    )
     trainingDate: Date;
 
     @ApiProperty()

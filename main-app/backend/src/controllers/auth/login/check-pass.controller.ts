@@ -6,10 +6,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 @ApiTags('Authentication')
 @Controller('auth/check-pass')
 export class CheckPassController {
-
-    constructor(
-        private readonly authService: AuthService,
-    ) { }
+    constructor(private readonly authService: AuthService) {}
 
     @Get()
     async passwordFitsEmail(@Query() userDto: UserDto): Promise<boolean> {

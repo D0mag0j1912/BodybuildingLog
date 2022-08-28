@@ -11,7 +11,6 @@ import { DeleteTrainingActionData } from '../../../../../models/training/past-tr
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrainingItemActionsComponent {
-
     @Input()
     action: TrainingItemActions;
 
@@ -27,9 +26,7 @@ export class TrainingItemActionsComponent {
     @Input()
     timeCreated: string;
 
-    constructor(
-        private readonly deleteTrainingActionService: DeleteTrainingActionService,
-    ) { }
+    constructor(private readonly deleteTrainingActionService: DeleteTrainingActionService) {}
 
     async performAction(action: TrainingItemActions): Promise<void> {
         const data: DeleteTrainingActionData = {

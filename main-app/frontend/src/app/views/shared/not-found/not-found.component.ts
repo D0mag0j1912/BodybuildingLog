@@ -9,10 +9,7 @@ import { AuthStoreService } from '../../../services/store/auth/auth-store.servic
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotFoundComponent {
-
     isAuth$: Observable<boolean> = this.authStoreService.isAuth$;
 
-    constructor(
-        private readonly authStoreService: AuthStoreService,
-    ) { }
+    constructor(private readonly authStoreService: AuthStoreService) {}
 }

@@ -1,4 +1,3 @@
-
 export enum StorageItems {
     TRAINING_STATE = 'trainingState',
     USER_DATA = 'userData',

@@ -14,25 +14,26 @@ import { PastTrainingsStoreService } from './services/store/training/past-traini
     providers: [UnsubscribeService],
 })
 export class AppComponent implements OnInit {
-
     constructor(
         private readonly _newTrainingStoreService: NewTrainingStoreService,
         private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
         private readonly _translateService: TranslateService,
         private readonly _unsubscribeService: UnsubscribeService,
-    ) { }
+    ) {}
 
     ngOnInit(): void {
-        this._newTrainingStoreService.keepTrainingState()
+        this._newTrainingStoreService
+            .keepTrainingState()
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe();
 
-        this._pastTrainingsStoreService.keepStreamValues([
-            StorageItems.PAST_TRAININGS_SCROLL_WRAPPER,
-            StorageItems.QUERY_PARAMS,
-        ])
-        .pipe(takeUntil(this._unsubscribeService))
-        .subscribe();
+        this._pastTrainingsStoreService
+            .keepStreamValues([
+                StorageItems.PAST_TRAININGS_SCROLL_WRAPPER,
+                StorageItems.QUERY_PARAMS,
+            ])
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe();
 
         this._translateService.setDefaultLang('en');
     }

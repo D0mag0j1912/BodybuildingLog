@@ -7,20 +7,19 @@ import { SingleExercise } from '../../../../models/training/shared/single-exerci
 
 @Pipe({ name: 'showAllExercises' })
 export class ShowAllExercisesPipe implements PipeTransform {
-
-    constructor(
-        private readonly translateService: TranslateService,
-    ) {}
+    constructor(private readonly translateService: TranslateService) {}
 
     transform(training: NewTraining): Observable<string> {
-        return this.translateService.stream(training.exercises?.map((x: SingleExercise) => x?.exerciseData.name) ?? []).pipe(
-            map((value: {[key: string]: string}) => {
-                let exercisesToConcat = '';
-                Object.values(value).forEach((exerciseName: string, index: number) => {
-                    exercisesToConcat += `${index+1}. ${exerciseName}\n`;
-                });
-                return exercisesToConcat as string;
-            }),
-        );
+        return this.translateService
+            .stream(training.exercises?.map((x: SingleExercise) => x?.exerciseData.name) ?? [])
+            .pipe(
+                map((value: { [key: string]: string }) => {
+                    let exercisesToConcat = '';
+                    Object.values(value).forEach((exerciseName: string, index: number) => {
+                        exercisesToConcat += `${index + 1}. ${exerciseName}\n`;
+                    });
+                    return exercisesToConcat as string;
+                }),
+            );
     }
 }

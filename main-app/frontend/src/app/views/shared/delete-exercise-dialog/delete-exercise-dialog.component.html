@@ -9,9 +9,7 @@
     </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding ion-text-center">
-    <ion-text
-        *ngIf="(deleteExercise?.message$ | async) as message"
-        class="delete-exercise-msg">
+    <ion-text *ngIf="deleteExercise?.message$ | async as message" class="delete-exercise-msg">
         {{ message }}
     </ion-text>
     <ion-text>
@@ -20,11 +18,7 @@
             <strong>{{ (deleteExercise?.exerciseName | translate) ?? '' }}</strong>
         </p>
     </ion-text>
-    <ion-button
-        *ngIf="deleteExercise"
-        type="button"
-        color="primary"
-        (click)="onDeleteExercise()">
+    <ion-button *ngIf="deleteExercise" type="button" color="primary" (click)="onDeleteExercise()">
         {{ 'common.actions.delete' | translate }}
     </ion-button>
 </ion-content>

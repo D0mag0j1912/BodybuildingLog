@@ -4,11 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({ providedIn: 'root' })
 export class ToastControllerService {
-
     constructor(
         private readonly translateService: TranslateService,
         private readonly toastController: ToastController,
-    ) { }
+    ) {}
 
     async displayToast(options: ToastOptions): Promise<void> {
         const toast = await this.toastController.create({

@@ -14,12 +14,11 @@ import { PeriodFilterType } from '../../models/training/past-trainings/period-fi
 
 @Injectable()
 export class PastTrainingsService {
-
     constructor(
         @InjectModel('Training') private readonly trainingModel: Model<NewTraining>,
         private readonly preferencesService: PreferencesService,
-    ) { }
-    
+    ) {}
+
     async searchTrainings(
         loggedUserId: string,
         searchValue: string,
@@ -34,30 +33,40 @@ export class PastTrainingsService {
                 };
                 const queryWordRegex = new RegExp(searchValue, 'i');
                 const condition: FilterQuery<NewTraining> = {
-                    $and: [{
-                        $or: [
-                            { 'exercises.exerciseData.translations.en': { $regex: queryWordRegex } },
-                            { 'exercises.exerciseData.translations.hr': { $regex: queryWordRegex } },
-                        ],
-                        userId: loggedUserId,
-                    }],
+                    $and: [
+                        {
+                            $or: [
+                                {
+                                    'exercises.exerciseData.translations.en': {
+                                        $regex: queryWordRegex,
+                                    },
+                                },
+                                {
+                                    'exercises.exerciseData.translations.hr': {
+                                        $regex: queryWordRegex,
+                                    },
+                                },
+                            ],
+                            userId: loggedUserId,
+                        },
+                    ],
                 };
-                const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition, query);
-                results.Results.Dates = setTrainingDate(
-                    results?.Results.Trainings,
-                    {
-                        StartDate: new Date(await this.getEarliestDate(loggedUserId)),
-                        EndDate: new Date(await this.getLatestDate(loggedUserId)),
-                    },
+                const results: Paginator<PastTrainings> = await paginate(
+                    this.trainingModel,
+                    condition,
+                    query,
                 );
+                results.Results.Dates = setTrainingDate(results?.Results.Trainings, {
+                    StartDate: new Date(await this.getEarliestDate(loggedUserId)),
+                    EndDate: new Date(await this.getLatestDate(loggedUserId)),
+                });
                 results.Results.DayName = this.getWeekDayName(results.Results.Dates.StartDate);
                 return {
                     IsLoading: true,
                     Value: results,
                     IsError: false,
                 } as StreamData<Paginator<PastTrainings>>;
-            }
-            else {
+            } else {
                 const userPreferences = await this.preferencesService.getPreferences(loggedUserId);
                 return this.getPastTrainings(
                     new Date(),
@@ -65,9 +74,10 @@ export class PastTrainingsService {
                     loggedUserId,
                 );
             }
-        }
-        catch (error: unknown) {
-            throw new InternalServerErrorException('training.past_trainings.filters.errors.search_error');
+        } catch (error: unknown) {
+            throw new InternalServerErrorException(
+                'training.past_trainings.filters.errors.search_error',
+            );
         }
     }
 
@@ -79,9 +89,10 @@ export class PastTrainingsService {
                 IsError: false,
                 Value: training,
             } as StreamData<NewTraining>;
-        }
-        catch (error: unknown) {
-            throw new InternalServerErrorException('training.past_trainings.errors.error_load_training');
+        } catch (error: unknown) {
+            throw new InternalServerErrorException(
+                'training.past_trainings.errors.error_load_training',
+            );
         }
     }
 
@@ -96,14 +107,27 @@ export class PastTrainingsService {
             const condition: FilterQuery<NewTraining> = {
                 userId: loggedUserId,
                 trainingDate: {
-                    $gte: periodFilterType === 'week' ? dates.StartDate : startOfDay(new Date(currentDate)),
-                    $lt: periodFilterType === 'week' ? dates.EndDate : endOfDay(new Date(currentDate)),
+                    $gte:
+                        periodFilterType === 'week'
+                            ? dates.StartDate
+                            : startOfDay(new Date(currentDate)),
+                    $lt:
+                        periodFilterType === 'week'
+                            ? dates.EndDate
+                            : endOfDay(new Date(currentDate)),
                 },
             };
             const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition);
-            results.Results.Dates = periodFilterType === 'week' ? dates : { StartDate: new Date(currentDate), EndDate: new Date(currentDate) };
-            results.Results.EarliestTrainingDate = (await this.getEarliestDate(loggedUserId)) ?? new Date().toString();
-            results.Results.IsPreviousWeek = isPreviousWeek(new Date(results.Results?.EarliestTrainingDate), dates);
+            results.Results.Dates =
+                periodFilterType === 'week'
+                    ? dates
+                    : { StartDate: new Date(currentDate), EndDate: new Date(currentDate) };
+            results.Results.EarliestTrainingDate =
+                (await this.getEarliestDate(loggedUserId)) ?? new Date().toString();
+            results.Results.IsPreviousWeek = isPreviousWeek(
+                new Date(results.Results?.EarliestTrainingDate),
+                dates,
+            );
             results.Results.IsNextWeek = isNextWeek(dates);
             if (periodFilterType === 'day') {
                 results.Results.DayName = this.getWeekDayName(new Date(currentDate));
@@ -116,9 +140,10 @@ export class PastTrainingsService {
                 Value: results,
                 IsError: false,
             } as StreamData<Paginator<PastTrainings>>;
-        }
-        catch (error: unknown) {
-            throw new InternalServerErrorException('training.past_trainings.errors.past_trainings_error_title');
+        } catch (error: unknown) {
+            throw new InternalServerErrorException(
+                'training.past_trainings.errors.past_trainings_error_title',
+            );
         }
     }
 
@@ -144,9 +169,12 @@ export class PastTrainingsService {
 
     private async getEarliestDate(loggedUserId: string): Promise<string> {
         const minDate = await this.trainingModel
-            .findOne({
-                userId: loggedUserId,
-            }, 'trainingDate -_id')
+            .findOne(
+                {
+                    userId: loggedUserId,
+                },
+                'trainingDate -_id',
+            )
             .sort({ trainingDate: 1 })
             .limit(1)
             .exec();
@@ -155,13 +183,15 @@ export class PastTrainingsService {
 
     private async getLatestDate(loggedUserId: string): Promise<string> {
         const maxDate = await this.trainingModel
-            .findOne({
-                userId: loggedUserId,
-            }, 'trainingDate -_id')
+            .findOne(
+                {
+                    userId: loggedUserId,
+                },
+                'trainingDate -_id',
+            )
             .sort({ trainingDate: -1 })
             .limit(1)
             .exec();
         return maxDate?.trainingDate?.toString() ?? new Date().toISOString();
     }
-
 }

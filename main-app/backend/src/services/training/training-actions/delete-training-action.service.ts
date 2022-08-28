@@ -12,12 +12,11 @@ import { PastTrainingsService } from '../past-trainings.service';
 
 @Injectable()
 export class DeleteTrainingActionService {
-
     constructor(
         @InjectModel('Training') private readonly trainingModel: Model<NewTraining>,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly preferencesService: PreferencesService,
-    ) { }
+    ) {}
 
     async deleteTraining(
         trainingId: string,
@@ -25,11 +24,15 @@ export class DeleteTrainingActionService {
         meta: DeleteTrainingMetaDto,
     ): Promise<StreamData<PastTrainings>> {
         try {
-            const trainingToBeRemoved: NewTraining = await this.trainingModel.findById(trainingId as string).exec();
+            const trainingToBeRemoved: NewTraining = await this.trainingModel
+                .findById(trainingId as string)
+                .exec();
             if (loggedUserId.toString() !== trainingToBeRemoved.userId.toString()) {
                 throw new UnauthorizedException('common.errors.not_authorized');
             }
-            await this.trainingModel.findByIdAndRemove(trainingId, { useFindAndModify: false }).exec();
+            await this.trainingModel
+                .findByIdAndRemove(trainingId, { useFindAndModify: false })
+                .exec();
             const userPreferences = await this.preferencesService.getPreferences(loggedUserId);
             let pastTrainings: StreamData<Paginator<PastTrainings>>;
             if (meta?.currentDate) {
@@ -39,8 +42,7 @@ export class DeleteTrainingActionService {
                     loggedUserId,
                     true,
                 );
-            }
-            else {
+            } else {
                 pastTrainings = await this.pastTrainingService.searchTrainings(
                     loggedUserId,
                     meta.searchData.searchValue,
@@ -53,15 +55,18 @@ export class DeleteTrainingActionService {
                 Value: pastTrainings.Value,
                 IsError: false,
             } as StreamData<PastTrainings>;
-        }
-        catch(error: unknown) {
-            switch((error as Error).status) {
+        } catch (error: unknown) {
+            switch ((error as Error).status) {
                 case 500:
-                    throw new InternalServerErrorException('training.past_trainings.actions.errors.error_delete_training');
+                    throw new InternalServerErrorException(
+                        'training.past_trainings.actions.errors.error_delete_training',
+                    );
                 case 401:
                     throw new UnauthorizedException('common.errors.not_authorized');
                 default:
-                    throw new InternalServerErrorException('training.past_trainings.actions.errors.error_delete_training');
+                    throw new InternalServerErrorException(
+                        'training.past_trainings.actions.errors.error_delete_training',
+                    );
             }
         }
     }

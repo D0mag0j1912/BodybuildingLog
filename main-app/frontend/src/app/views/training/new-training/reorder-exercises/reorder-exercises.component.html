@@ -9,29 +9,20 @@
     </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
-    <div
-        *ngIf="(currentExercises$ | async) as currentExercises"
-        class="wrapper">
-        <ion-reorder-group
-            [disabled]="false"
-            (ionItemReorder)="doReorder($any($event))">
+    <div *ngIf="currentExercises$ | async as currentExercises" class="wrapper">
+        <ion-reorder-group [disabled]="false" (ionItemReorder)="doReorder($any($event))">
             <ion-item *ngFor="let exerciseName of currentExercises">
                 <ion-label>
                     {{ exerciseName | translate }}
                 </ion-label>
                 <ion-reorder slot="end">
-                    <ion-icon
-                        color="primary"
-                        name="repeat"></ion-icon>
+                    <ion-icon color="primary" name="repeat"></ion-icon>
                 </ion-reorder>
             </ion-item>
         </ion-reorder-group>
     </div>
     <div class="actions">
-        <ion-button
-            type="button"
-            color="primary"
-            (click)="reorderExercises()">
+        <ion-button type="button" color="primary" (click)="reorderExercises()">
             {{ 'common.actions.confirm' | translate }}
         </ion-button>
     </div>

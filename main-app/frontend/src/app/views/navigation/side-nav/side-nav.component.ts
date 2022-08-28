@@ -20,11 +20,9 @@ import { PastTrainingsStoreService } from '../../../services/store/training/past
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SideNavComponent {
-
-    readonly isAuthenticated$: Observable<boolean> = this._authStoreService.isAuth$
-        .pipe(share());
-    private readonly preferences$: Observable<Preferences> = this._preferencesStoreService.preferencesChanged$
-        .pipe(take(1));
+    readonly isAuthenticated$: Observable<boolean> = this._authStoreService.isAuth$.pipe(share());
+    private readonly preferences$: Observable<Preferences> =
+        this._preferencesStoreService.preferencesChanged$.pipe(take(1));
 
     constructor(
         private readonly _authStoreService: AuthStoreService,
@@ -32,7 +30,7 @@ export class SideNavComponent {
         private readonly _preferencesStoreService: PreferencesStoreService,
         private readonly _popoverController: PopoverController,
         private readonly _router: Router,
-    ) { }
+    ) {}
 
     async onLogout(): Promise<void> {
         await this._authStoreService.logout();
@@ -40,18 +38,19 @@ export class SideNavComponent {
 
     async goToPastTrainings(): Promise<void> {
         this._pastTrainingsStoreService.pastTrainingsQueryParams$
-            .pipe(
-                take(1),
-            )
-            .subscribe(async params => {
+            .pipe(take(1))
+            .subscribe(async (params) => {
                 let queryParams: PastTrainingsQueryParams;
                 if (params) {
                     queryParams = params;
-                }
-                else {
-                    const showByPeriod = this._preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
+                } else {
+                    const showByPeriod =
+                        this._preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
                     const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
-                    const endDate = showByPeriod === 'week' ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 }) : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
+                    const endDate =
+                        showByPeriod === 'week'
+                            ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 })
+                            : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
                     queryParams = {
                         startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
                         endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
@@ -62,27 +61,26 @@ export class SideNavComponent {
             });
     }
 
-    openPreferencePopover(
-        $event: Event,
-        preferenceType: PreferenceChangedType,
-    ): void {
+    openPreferencePopover($event: Event, preferenceType: PreferenceChangedType): void {
         $event.stopPropagation();
         this.preferences$
             .pipe(
-                switchMap(preferences => from(this._popoverController.create({
-                        component: PreferencesComponent,
-                        event: $event,
-                        componentProps: {
-                            preferences,
-                            preferenceType,
-                        },
-                        side: 'left',
-                        keyboardClose: true,
-                    })),
+                switchMap((preferences) =>
+                    from(
+                        this._popoverController.create({
+                            component: PreferencesComponent,
+                            event: $event,
+                            componentProps: {
+                                preferences,
+                                preferenceType,
+                            },
+                            side: 'left',
+                            keyboardClose: true,
+                        }),
+                    ),
                 ),
-                switchMap(popover => from(popover.present())),
+                switchMap((popover) => from(popover.present())),
             )
             .subscribe();
     }
-
 }

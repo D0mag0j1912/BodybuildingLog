@@ -12,12 +12,11 @@ import { AuthStoreService } from '../../store/auth/auth-store.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-
     constructor(
         private readonly http: HttpClient,
         private readonly router: Router,
         private readonly authStoreService: AuthStoreService,
-    ) { }
+    ) {}
 
     signup(
         language: LanguageCode,
@@ -41,34 +40,29 @@ export class AuthService {
         });
     }
 
-    login(
-        email: string,
-        password: string,
-    ): Observable<AuthResponseData> {
+    login(email: string, password: string): Observable<AuthResponseData> {
         const authData: Partial<AuthModel> = {
             email: email,
             password: password,
         };
-        return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/login', authData)
-            .pipe(
-                tap(async (response: AuthResponseData) => {
-                    if (response.Token) {
-                        this.authStoreService.emitLoggedUser(response);
-                        this.authStoreService.emitIsAuth(true);
-                        this.authStoreService.setToken(response.Token);
-                        const expiresInDuration = response.ExpiresIn;
-                        this.authStoreService.setAuthTimer(expiresInDuration);
-                        const now = new Date();
-                        const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
-                        await this.authStoreService.saveLS(
-                            this.authStoreService.getToken(),
-                            expirationDate,
-                            response._id,
-                        );
-                        await this.router.navigate(['/training/new-training']);
-                    }
-                }),
-            );
+        return this.http.post<AuthResponseData>(environment.BACKEND + '/auth/login', authData).pipe(
+            tap(async (response: AuthResponseData) => {
+                if (response.Token) {
+                    this.authStoreService.emitLoggedUser(response);
+                    this.authStoreService.emitIsAuth(true);
+                    this.authStoreService.setToken(response.Token);
+                    const expiresInDuration = response.ExpiresIn;
+                    this.authStoreService.setAuthTimer(expiresInDuration);
+                    const now = new Date();
+                    const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+                    await this.authStoreService.saveLS(
+                        this.authStoreService.getToken(),
+                        expirationDate,
+                        response._id,
+                    );
+                    await this.router.navigate(['/training/new-training']);
+                }
+            }),
+        );
     }
-
 }

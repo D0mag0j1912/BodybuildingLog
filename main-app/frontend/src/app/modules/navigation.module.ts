@@ -7,26 +7,15 @@ import { PreferencesComponent } from '../views/navigation/preferences/preference
 import { SideNavComponent } from '../views/navigation/side-nav/side-nav.component';
 import { AuthModule } from './auth/auth.module';
 
-const COMPONENTS = [
-    SideNavComponent,
-    PreferencesComponent,
-];
+const COMPONENTS = [SideNavComponent, PreferencesComponent];
 
-const EXTERNAL_IMPORTS = [
-    CommonModule,
-    TranslateModule,
-    RouterModule,
-    IonicModule,
-];
+const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, RouterModule, IonicModule];
 
 const IMPORTS = [AuthModule];
 
 @NgModule({
-    declarations: [ ...COMPONENTS ],
-    imports: [
-        ...EXTERNAL_IMPORTS,
-        ...IMPORTS,
-    ],
-    exports: [ ...COMPONENTS ],
+    declarations: [...COMPONENTS],
+    imports: [...EXTERNAL_IMPORTS, ...IMPORTS],
+    exports: [...COMPONENTS],
 })
-export class NavigationModule { }
+export class NavigationModule {}

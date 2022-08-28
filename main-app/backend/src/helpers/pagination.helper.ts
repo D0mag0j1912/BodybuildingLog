@@ -4,7 +4,11 @@ import { Paginator, PaginatorParams } from '../models/common/paginator.model';
 import { NewTraining } from '../models/training/new-training/new-training.model';
 import { PastTrainings } from '../models/training/past-trainings/past-trainings.model';
 
-export const paginate = async <T extends Partial<PastTrainings>, U extends Model<K>, K extends NewTraining>(
+export const paginate = async <
+    T extends Partial<PastTrainings>,
+    U extends Model<K>,
+    K extends NewTraining,
+>(
     model: U,
     condition: FilterQuery<K>,
     query?: PaginatorParams,
@@ -15,9 +19,9 @@ export const paginate = async <T extends Partial<PastTrainings>, U extends Model
     let startIndex: number;
     let endIndex: number;
 
-    const total = await model.countDocuments(condition).exec() ?? 0;
+    const total = (await model.countDocuments(condition).exec()) ?? 0;
     results.TotalCount = total;
-    
+
     if (query) {
         page = +query.Page;
         size = +query.Size;
@@ -57,16 +61,16 @@ export const paginate = async <T extends Partial<PastTrainings>, U extends Model
                 .skip(startIndex)
                 .sort({ trainingDate: 'desc' })
                 .exec();
-        }
-        else {
+        } else {
             results.Results.Trainings = await model
                 .find(condition)
                 .sort({ trainingDate: 'desc' })
                 .exec();
         }
         return results;
-    }
-    catch (error) {
-        throw new InternalServerErrorException('training.past_trainings.filters.errors.search_error');
+    } catch (error) {
+        throw new InternalServerErrorException(
+            'training.past_trainings.filters.errors.search_error',
+        );
     }
 };

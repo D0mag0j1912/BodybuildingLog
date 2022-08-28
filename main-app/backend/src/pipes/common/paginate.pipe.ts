@@ -4,7 +4,6 @@ import { INITIAL_PAGE, DEFAULT_SIZE } from '../../constants/paginator.const';
 
 @Injectable()
 export class PaginatePipe implements PipeTransform {
-
     transform(query: SearchDataDto): SearchDataDto {
         if (!query?.page) {
             query.page = INITIAL_PAGE;

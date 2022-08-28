@@ -12,17 +12,9 @@ import { JWT_TOKEN } from '../../constants/jwt-web-token';
 import { JwtStrategy } from '../../middleware/jwt.strategy';
 import { AuthService } from '../../services/auth/auth.service';
 
-const CONTROLLERS = [
-    GetEmailsController,
-    SignupController,
-    LoginController,
-    CheckPassController,
-];
+const CONTROLLERS = [GetEmailsController, SignupController, LoginController, CheckPassController];
 
-const SERVICES = [
-    AuthService,
-    JwtStrategy,
-];
+const SERVICES = [AuthService, JwtStrategy];
 
 @Module({
     imports: [
@@ -33,20 +25,19 @@ const SERVICES = [
                 expiresIn: 10800,
             },
         }),
-        MongooseModule.forFeature([{
-            name: 'User',
-            schema: USER_SCHEMA,
-        },
-        {
-            name: 'Preferences',
-            schema: PREFERENCES_SCHEMA,
-        }]),
+        MongooseModule.forFeature([
+            {
+                name: 'User',
+                schema: USER_SCHEMA,
+            },
+            {
+                name: 'Preferences',
+                schema: PREFERENCES_SCHEMA,
+            },
+        ]),
     ],
-    controllers: [ ...CONTROLLERS ],
-    providers: [ ...SERVICES ],
-    exports: [
-        JwtStrategy,
-        PassportModule,
-    ],
+    controllers: [...CONTROLLERS],
+    providers: [...SERVICES],
+    exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}

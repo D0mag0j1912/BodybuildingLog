@@ -1,9 +1,15 @@
-import { Directive, Input, OnChanges, SimpleChanges, TemplateRef, ViewContainerRef } from '@angular/core';
+import {
+    Directive,
+    Input,
+    OnChanges,
+    SimpleChanges,
+    TemplateRef,
+    ViewContainerRef,
+} from '@angular/core';
 import { SkeletonLoaderComponent } from '../../views/shared/skeleton-loader/skeleton-loader.component';
 
 @Directive({ selector: '[skeleton]' })
 export class SkeletonLoaderDirective implements OnChanges {
-
     @Input('skeleton')
     isLoading = false;
 
@@ -28,14 +34,14 @@ export class SkeletonLoaderDirective implements OnChanges {
     constructor(
         private readonly _template: TemplateRef<unknown>,
         private readonly _viewContainerRef: ViewContainerRef,
-    ) { }
+    ) {}
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes?.isLoading) {
             this._viewContainerRef.clear();
 
             if (changes?.isLoading?.currentValue) {
-                Array.from({ length: this.size }).forEach(_ => {
+                Array.from({ length: this.size }).forEach((_) => {
                     const ref = this._viewContainerRef.createComponent(SkeletonLoaderComponent);
 
                     Object.assign(ref.instance, {
@@ -46,8 +52,7 @@ export class SkeletonLoaderDirective implements OnChanges {
                         className: this.className,
                     });
                 });
-            }
-            else {
+            } else {
                 this._viewContainerRef.createEmbeddedView(this._template);
             }
         }

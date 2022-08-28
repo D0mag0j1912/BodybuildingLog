@@ -16,7 +16,6 @@ import { RoundTotalWeightPipe } from '../../../../pipes/training/new-training/ro
     providers: [getControlValueAccessor(TotalWeightComponent)],
 })
 export class TotalWeightComponent implements ControlValueAccessor {
-
     totalValue: string;
 
     @Input()
@@ -34,7 +33,7 @@ export class TotalWeightComponent implements ControlValueAccessor {
     constructor(
         private readonly _changeDetectorRef: ChangeDetectorRef,
         private readonly _roundTotalWeightPipe: RoundTotalWeightPipe,
-    ) { }
+    ) {}
 
     writeValue(value: number): void {
         this.totalValue = value
@@ -55,20 +54,19 @@ export class TotalWeightComponent implements ControlValueAccessor {
         if (this.editTrainingData) {
             const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
             if (editTrainingWeightUnit !== this.currentWeightUnit) {
-                return this._roundTotalWeightPipe.transform(+convertWeightUnit(this.currentWeightUnit, total), this.currentWeightUnit);
-            }
-            else {
+                return this._roundTotalWeightPipe.transform(
+                    +convertWeightUnit(this.currentWeightUnit, total),
+                    this.currentWeightUnit,
+                );
+            } else {
                 return this._roundTotalWeightPipe.transform(total, this.currentWeightUnit);
             }
-        }
-        else {
+        } else {
             if (total) {
                 return this._roundTotalWeightPipe.transform(total, this.currentWeightUnit);
-            }
-            else {
+            } else {
                 return `${TOTAL_INITIAL_WEIGHT} ${DEFAULT_WEIGHT_UNIT}`;
             }
         }
     }
-
 }

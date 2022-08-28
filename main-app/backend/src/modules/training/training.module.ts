@@ -25,35 +25,33 @@ const CONTROLLERS = [
     GetExercisesController,
 ];
 
-const SERVICES = [
-    NewTrainingService,
-    PastTrainingsService,
-    DeleteTrainingActionService,
-];
+const SERVICES = [NewTrainingService, PastTrainingsService, DeleteTrainingActionService];
 
-const IMPORTS = [
-    AuthModule,
-    PreferencesModule,
-];
+const IMPORTS = [AuthModule, PreferencesModule];
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{
-            name: 'Exercise',
-            schema: EXERCISE_SCHEMA,
-        }, {
-            name: 'Set',
-            schema: SET_SCHEMA,
-        }, {
-            name: 'SingleExercise',
-            schema: SINGLE_EXERCISE_SCHEMA,
-        }, {
-            name: 'Training',
-            schema: NEW_TRAINING_SCHEMA,
-        }]),
+        MongooseModule.forFeature([
+            {
+                name: 'Exercise',
+                schema: EXERCISE_SCHEMA,
+            },
+            {
+                name: 'Set',
+                schema: SET_SCHEMA,
+            },
+            {
+                name: 'SingleExercise',
+                schema: SINGLE_EXERCISE_SCHEMA,
+            },
+            {
+                name: 'Training',
+                schema: NEW_TRAINING_SCHEMA,
+            },
+        ]),
         ...IMPORTS,
     ],
-    controllers: [ ...CONTROLLERS ],
-    providers: [ ...SERVICES ],
+    controllers: [...CONTROLLERS],
+    providers: [...SERVICES],
 })
 export class TrainingModule {}

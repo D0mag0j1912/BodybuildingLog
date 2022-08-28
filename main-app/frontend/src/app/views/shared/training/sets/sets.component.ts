@@ -1,5 +1,23 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    QueryList,
+    SimpleChanges,
+    ViewChildren,
+} from '@angular/core';
+import {
+    AbstractControl,
+    ControlValueAccessor,
+    FormArray,
+    FormControl,
+    FormGroup,
+    Validators,
+} from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { delay, filter, takeUntil } from 'rxjs/operators';
@@ -26,14 +44,11 @@ type SetFormValue = ModelWithoutIdType<Set>;
     templateUrl: './sets.component.html',
     styleUrls: ['./sets.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        getControlValueAccessor(SetsComponent),
-        UnsubscribeService,
-    ],
+    providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
 export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
-
-    readonly currentPreferences$: Observable<Preferences> = this._preferencesStoreService.preferencesChanged$;
+    readonly currentPreferences$: Observable<Preferences> =
+        this._preferencesStoreService.preferencesChanged$;
 
     readonly form = new FormArray<FormGroup<SetFormType>>([]);
     private _currentWeightUnit: WeightUnit;
@@ -65,7 +80,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     readonly setAdded: EventEmitter<SetStateChanged> = new EventEmitter<SetStateChanged>();
 
     @Output()
-    readonly setDeleted: EventEmitter<Partial<SetStateChanged>> = new EventEmitter<Partial<SetStateChanged>>();
+    readonly setDeleted: EventEmitter<Partial<SetStateChanged>> = new EventEmitter<
+        Partial<SetStateChanged>
+    >();
 
     @Output()
     readonly weightUnitChanged: EventEmitter<number> = new EventEmitter<number>();
@@ -79,28 +96,28 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     constructor(
         private readonly _unsubscribeService: UnsubscribeService,
         private readonly _preferencesStoreService: PreferencesStoreService,
-    ) { }
+    ) {}
 
     ngOnInit(): void {
-        this._currentWeightUnit = this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
+        this._currentWeightUnit =
+            this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
         this.form.setValidators([SetValidators.allSetsFilled()]);
         this.form.updateValueAndValidity();
 
         this.exerciseNameControl.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribeService),
-            )
+            .pipe(takeUntil(this._unsubscribeService))
             .subscribe((value: string) => {
-                value ? this.accessFormField('weightLifted', 0).enable() : this.accessFormField('weightLifted', 0).disable();
-                value ? this.accessFormField('reps', 0).enable() : this.accessFormField('reps', 0).disable();
+                value
+                    ? this.accessFormField('weightLifted', 0).enable()
+                    : this.accessFormField('weightLifted', 0).disable();
+                value
+                    ? this.accessFormField('reps', 0).enable()
+                    : this.accessFormField('reps', 0).disable();
             });
 
         this.exerciseNameChanged$
-            .pipe(
-                delay(200),
-                takeUntil(this._unsubscribeService),
-            )
-            .subscribe(async _ => {
+            .pipe(delay(200), takeUntil(this._unsubscribeService))
+            .subscribe(async (_) => {
                 if (this.weightLiftedElements?.first) {
                     await this.weightLiftedElements.first.setFocus();
                 }
@@ -108,17 +125,19 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
         this.currentPreferences$
             .pipe(
-                filter(preferences => this._currentWeightUnit !== preferences.weightUnit),
+                filter((preferences) => this._currentWeightUnit !== preferences.weightUnit),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe(preferences => {
+            .subscribe((preferences) => {
                 this._currentWeightUnit = preferences.weightUnit;
                 this.getSets().forEach((_control, index) => {
-                    const currentWeightLiftedValue = +this.accessFormField('weightLifted', index).value;
+                    const currentWeightLiftedValue = +this.accessFormField('weightLifted', index)
+                        .value;
                     if (currentWeightLiftedValue) {
-                        this.accessFormField('weightLifted', index).patchValue(convertWeightUnit(preferences.weightUnit, currentWeightLiftedValue));
-                    }
-                    else {
+                        this.accessFormField('weightLifted', index).patchValue(
+                            convertWeightUnit(preferences.weightUnit, currentWeightLiftedValue),
+                        );
+                    } else {
                         this.weightUnitChanged.emit(index);
                     }
                 });
@@ -134,17 +153,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             for (const set of sets) {
                 this.addSet(set);
             }
-        }
-        else {
+        } else {
             this.addSet();
         }
     }
     //Sending parent new form value when form value changes
     registerOnChange(fn: (value: SetFormValue[]) => void): void {
         this.form.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribeService),
-            )
+            .pipe(takeUntil(this._unsubscribeService))
             .subscribe((formValue: SetFormValue[]) => fn(formValue));
     }
 
@@ -156,7 +172,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         const weightLiftedInput = this.weightLiftedElements.find((_item, i) => i === index);
         if (index > 0 && !weightLiftedInput?.value) {
             this.deleteSet(index);
-            const previousRepsElement = this.repsElements.find((_item, i) => i === (index - 1));
+            const previousRepsElement = this.repsElements.find((_item, i) => i === index - 1);
             await previousRepsElement?.setFocus();
         }
     }
@@ -176,34 +192,39 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     addSet(set?: Set): void {
         this.form.push(
             new FormGroup<FormType<Set>>({
-                setNumber: new FormControl(
-                    set ? set.setNumber : this.getSets().length + 1,
+                setNumber: new FormControl(set ? set.setNumber : this.getSets().length + 1, {
+                    nonNullable: true,
+                    validators: [Validators.required],
+                }),
+                weightLifted: new FormControl(
                     {
-                        nonNullable: true,
-                        validators: [Validators.required],
-                    }),
-                weightLifted: new FormControl({
-                    value: set ? this._setWeightLiftedValue(set.weightLifted) : null,
-                    disabled: this.exerciseNameControl.value ? false : true,
-                }, [Validators.required,
-                    Validators.min(1),
-                    Validators.max(1000),
-                    Validators.pattern(/^[1-9]\d*(\.\d+)?$/)]),
-                reps: new FormControl({
-                    value: set ? set.reps : null,
-                    disabled: this.exerciseNameControl.value ? false : true,
-                }, [Validators.required,
-                    Validators.min(1),
-                    Validators.max(1000),
-                    Validators.pattern(/^[1-9]\d*(\.\d+)?$/)]),
+                        value: set ? this._setWeightLiftedValue(set.weightLifted) : null,
+                        disabled: this.exerciseNameControl.value ? false : true,
+                    },
+                    [
+                        Validators.required,
+                        Validators.min(1),
+                        Validators.max(1000),
+                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                    ],
+                ),
+                reps: new FormControl(
+                    {
+                        value: set ? set.reps : null,
+                        disabled: this.exerciseNameControl.value ? false : true,
+                    },
+                    [
+                        Validators.required,
+                        Validators.min(1),
+                        Validators.max(1000),
+                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                    ],
+                ),
             }),
         );
         of(null)
-            .pipe(
-                delay(200),
-                takeUntil(this._unsubscribeService),
-            )
-            .subscribe(async _ => {
+            .pipe(delay(200), takeUntil(this._unsubscribeService))
+            .subscribe(async (_) => {
                 if (this.weightLiftedElements) {
                     await this.weightLiftedElements.last?.setFocus();
                 }
@@ -245,17 +266,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         } as SetStateChanged);
     }
 
-    accessFormField(
-        formField: keyof ModelWithoutIdType<Set>,
-        indexSet: number,
-    ): AbstractControl {
+    accessFormField(formField: keyof ModelWithoutIdType<Set>, indexSet: number): AbstractControl {
         return this.form.at(indexSet)?.get(formField);
     }
 
     private _calculateTotal(): number {
         let total = 0;
         for (const group of this.getSets()) {
-            total += (+group.get('weightLifted')?.value * +group.get('reps')?.value);
+            total += +group.get('weightLifted')?.value * +group.get('reps')?.value;
         }
         return total;
     }
@@ -269,5 +287,4 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         }
         return weightLifted;
     }
-
 }

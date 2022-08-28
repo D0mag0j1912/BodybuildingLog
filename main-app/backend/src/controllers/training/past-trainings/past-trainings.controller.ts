@@ -15,10 +15,7 @@ import { PeriodFilterType } from '../../../models/training/past-trainings/period
 @Controller('training/past-trainings')
 @UseGuards(AuthGuard())
 export class PastTrainingsController {
-
-    constructor(
-        private readonly pastTrainingsService: PastTrainingsService,
-    ) { }
+    constructor(private readonly pastTrainingsService: PastTrainingsService) {}
 
     @Get()
     async getPastTrainings(
@@ -28,13 +25,11 @@ export class PastTrainingsController {
     ): Promise<StreamData<Paginator<PastTrainings>>> {
         //TODO: Create custom Pipe
         if (!currentDate || !filterType) {
-            throw new BadRequestException('training.past_trainings.errors.past_trainings_error_title');
+            throw new BadRequestException(
+                'training.past_trainings.errors.past_trainings_error_title',
+            );
         }
-        return this.pastTrainingsService.getPastTrainings(
-            currentDate,
-            filterType,
-            user._id,
-        );
+        return this.pastTrainingsService.getPastTrainings(currentDate, filterType, user._id);
     }
 
     @ApiCreatedResponse({ type: NewTraining })

@@ -9,13 +9,9 @@ describe('SideNavComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ SideNavComponent ],
-            imports:[
-                HttpClientTestingModule,
-                RouterTestingModule,
-            ],
-        })
-        .compileComponents();
+            declarations: [SideNavComponent],
+            imports: [HttpClientTestingModule, RouterTestingModule],
+        }).compileComponents();
     });
 
     beforeEach(() => {

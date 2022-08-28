@@ -5,4 +5,4 @@ import { SanitizePipe } from './sanitize-html.pipe';
     declarations: [SanitizePipe],
     exports: [SanitizePipe],
 })
-export class SanitizeHtmlModule { }
+export class SanitizeHtmlModule {}

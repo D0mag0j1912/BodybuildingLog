@@ -22,7 +22,6 @@ export const PREFERENCES_SCHEMA = new Schema({
 });
 
 export class PreferencesDto {
-
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.language_required' })

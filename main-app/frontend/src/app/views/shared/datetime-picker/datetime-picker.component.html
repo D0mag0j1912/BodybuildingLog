@@ -7,12 +7,11 @@
         [value]="dateValue"
         [max]="maxDate"
         [min]="minDate"
-        (ionChange)="dateChanged(datetime.value)">
+        (ionChange)="dateChanged(datetime.value)"
+    >
         <ion-buttons slot="buttons">
             <ion-button (click)="close()">{{ 'common.actions.close' | translate }}</ion-button>
-            <ion-button
-                color="primary"
-                (click)="select()">{{ 'common.actions.confirm' | translate }}</ion-button>
+            <ion-button color="primary" (click)="select()">{{ 'common.actions.confirm' | translate }}</ion-button>
         </ion-buttons>
     </ion-datetime>
 </ion-content>

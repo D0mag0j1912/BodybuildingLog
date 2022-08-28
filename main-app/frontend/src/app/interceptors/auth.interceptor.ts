@@ -5,14 +5,13 @@ import { AuthStoreService } from '../services/store/auth/auth-store.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-
-    constructor(
-        private readonly authStoreService: AuthStoreService,
-    ) { }
+    constructor(private readonly authStoreService: AuthStoreService) {}
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         const token = this.authStoreService.getToken();
-        const authRequest: HttpRequest<unknown> = request.clone({ headers: request.headers.set('authorization', 'Bearer ' + token) });
+        const authRequest: HttpRequest<unknown> = request.clone({
+            headers: request.headers.set('authorization', 'Bearer ' + token),
+        });
         return next.handle(authRequest);
     }
 }

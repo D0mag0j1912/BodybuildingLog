@@ -35,10 +35,7 @@ const COMPONENTS = [
     SkeletonLoaderComponent,
 ];
 
-const ACTION_COMPONENTS = [
-    DeleteTrainingActionComponent,
-    MoreTrainingActionComponent,
-];
+const ACTION_COMPONENTS = [DeleteTrainingActionComponent, MoreTrainingActionComponent];
 
 const EXTERNAL_IMPORTS = [
     CommonModule,
@@ -57,19 +54,9 @@ const IMPORTS = [
 ];
 
 @NgModule({
-    declarations: [
-        ...COMPONENTS,
-        ...DIRECTIVES,
-        ...ACTION_COMPONENTS,
-    ],
-    imports: [
-        ...EXTERNAL_IMPORTS,
-        ...IMPORTS,
-    ],
+    declarations: [...COMPONENTS, ...DIRECTIVES, ...ACTION_COMPONENTS],
+    imports: [...EXTERNAL_IMPORTS, ...IMPORTS],
     exports: [...COMPONENTS],
-    providers: [
-        NotFoundResolverService,
-        DeleteTrainingActionService,
-    ],
+    providers: [NotFoundResolverService, DeleteTrainingActionService],
 })
-export class SharedModule { }
+export class SharedModule {}

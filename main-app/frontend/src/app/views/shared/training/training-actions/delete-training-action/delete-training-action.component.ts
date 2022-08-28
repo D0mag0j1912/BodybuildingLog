@@ -26,7 +26,6 @@ export interface DeleteTrainingActionDialogData {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteTrainingActionComponent {
-
     @Input()
     title$: Observable<string> = of('');
 
@@ -47,23 +46,23 @@ export class DeleteTrainingActionComponent {
         private readonly modalController: ModalController,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly route: ActivatedRoute,
-    ) { }
+    ) {}
 
     deleteTraining(trainingId: string): void {
         this.isLoading = true;
-        this.deleteTrainingActionService.deleteTraining(
-            trainingId,
-            this.getDeleteTrainingMeta(),
-        ).pipe(
-            catchError(_ => EMPTY),
-            finalize(() => {
-                this.isLoading = false;
-                this.changeDetectorRef.markForCheck();
-            }),
-        ).subscribe(async (response: StreamData<Paginator<PastTrainings>>) => {
-            this.sharedStoreService.deletedTraining$$.next(response);
-            await this.modalController.dismiss(false, DialogRoles.DELETE_TRAINING);
-        });
+        this.deleteTrainingActionService
+            .deleteTraining(trainingId, this.getDeleteTrainingMeta())
+            .pipe(
+                catchError((_) => EMPTY),
+                finalize(() => {
+                    this.isLoading = false;
+                    this.changeDetectorRef.markForCheck();
+                }),
+            )
+            .subscribe(async (response: StreamData<Paginator<PastTrainings>>) => {
+                this.sharedStoreService.deletedTraining$$.next(response);
+                await this.modalController.dismiss(false, DialogRoles.DELETE_TRAINING);
+            });
     }
 
     async onCancel(): Promise<void> {
@@ -87,8 +86,7 @@ export class DeleteTrainingActionComponent {
                 } as SearchDataDto,
                 currentDate: undefined,
             };
-        }
-        else {
+        } else {
             const splittedDate = (this.route.snapshot.queryParams.startDate as string)?.split('-');
             return {
                 searchData: undefined,

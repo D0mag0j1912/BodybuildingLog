@@ -10,10 +10,7 @@ import { PreferenceChangedType } from '../../models/preferences/preferences.type
 @Controller('preferences')
 @UseGuards(AuthGuard())
 export class PreferencesController {
-
-    constructor(
-        private readonly preferencesService: PreferencesService,
-    ) {}
+    constructor(private readonly preferencesService: PreferencesService) {}
 
     @Get(':userId')
     async getPreferences(@Param('userId') userId: string): Promise<PreferencesDto> {
@@ -26,10 +23,6 @@ export class PreferencesController {
         @Body('preferenceChanged') preferenceChanged: PreferenceChangedType,
         @Param('userId') userId: string,
     ): Promise<GeneralResponseData> {
-        return this.preferencesService.setPreferences(
-            userId,
-            preferencesDto,
-            preferenceChanged,
-        );
+        return this.preferencesService.setPreferences(userId, preferencesDto, preferenceChanged);
     }
 }

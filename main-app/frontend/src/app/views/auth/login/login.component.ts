@@ -20,23 +20,25 @@ import { ToastControllerService } from '../../../services/shared/toast-controlle
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnDestroy {
-
     private readonly _isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     readonly isLoading$: Observable<boolean> = this._isLoading$.asObservable();
 
-    form = new FormGroup({
-        email: new FormControl('', [
-            Validators.required,
-            Validators.email,
-        ]),
-        password: new FormControl('', [
-            Validators.required,
-            Validators.minLength(6),
-            Validators.maxLength(20),
-        ]),
-    }, { asyncValidators: AuthCustomValidators.passwordFitsEmail(
-        this._loginService,
-        this._changeDetectorRef) });
+    form = new FormGroup(
+        {
+            email: new FormControl('', [Validators.required, Validators.email]),
+            password: new FormControl('', [
+                Validators.required,
+                Validators.minLength(6),
+                Validators.maxLength(20),
+            ]),
+        },
+        {
+            asyncValidators: AuthCustomValidators.passwordFitsEmail(
+                this._loginService,
+                this._changeDetectorRef,
+            ),
+        },
+    );
 
     constructor(
         private readonly _translateService: TranslateService,
@@ -46,7 +48,7 @@ export class LoginComponent implements OnDestroy {
         private readonly _router: Router,
         private readonly _loadingControllerService: LoadingControllerService,
         private readonly _toastControllerService: ToastControllerService,
-    ) { }
+    ) {}
 
     get focusDuration(): number {
         return IonFocusDurations.LOGIN;
@@ -63,25 +65,24 @@ export class LoginComponent implements OnDestroy {
         this._isLoading$.next(true);
         await this._loadingControllerService.displayLoader({ message: 'auth.logging_in' });
 
-        this._authService.login(
-            this.form.get('email').value,
-            this.form.get('password').value,
-        ).pipe(
-            catchError(_ => EMPTY),
-            finalize(async () => {
-                this._isLoading$.next(false);
-                await this._loadingControllerService.dismissLoader();
-            }),
-        ).subscribe(async (response: AuthResponseData) => {
-            if (response) {
-                await this._toastControllerService.displayToast({
-                    message: this._translateService.instant(response.Message),
-                    duration: MESSAGE_DURATION.GENERAL,
-                    color: response.Token ? 'primary' : 'danger',
-                });
-                await this._router.navigate(['/training/new-training']);
-            }
-        });
+        this._authService
+            .login(this.form.get('email').value, this.form.get('password').value)
+            .pipe(
+                catchError((_) => EMPTY),
+                finalize(async () => {
+                    this._isLoading$.next(false);
+                    await this._loadingControllerService.dismissLoader();
+                }),
+            )
+            .subscribe(async (response: AuthResponseData) => {
+                if (response) {
+                    await this._toastControllerService.displayToast({
+                        message: this._translateService.instant(response.Message),
+                        duration: MESSAGE_DURATION.GENERAL,
+                        color: response.Token ? 'primary' : 'danger',
+                    });
+                    await this._router.navigate(['/training/new-training']);
+                }
+            });
     }
-
 }
