@@ -11,6 +11,7 @@
         <bl-show-by-day
             *ngIf="periodFilter === 'day' && !(isSearch$ | async) && !state.IsError"
             [startDate]="showByDayStartDate"
+            [isLoading]="state.IsLoading"
             (dayActivated)="onDayActivated($event)"
         ></bl-show-by-day>
         <ng-container *ngIf="state.IsError; else valueOrLoading">
