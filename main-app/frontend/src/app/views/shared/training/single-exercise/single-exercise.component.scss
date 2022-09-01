@@ -40,6 +40,11 @@ ion-grid:first-of-type {
     color: var(--ion-color-danger-tint);
 }
 
+.ios .add-exercise-btn,
+.ios .finish-exercise-btn {
+    height: 40px;
+}
+
 .at-least-one-exercise-txt {
     text-align: start;
 }
