@@ -21,6 +21,12 @@ ion-item {
     }
 }
 
+.ios .bodyweight-input {
+    &--unit {
+        top: 28px;
+    }
+}
+
 .invalid-bodyweight {
     color: var(--ion-color-danger);
 }

@@ -5,7 +5,7 @@ import {
     ValidationErrors,
     ValidatorFn,
 } from '@angular/forms';
-import { SetFormType } from '../../views/shared/training/sets/sets.component';
+import { SetFormType } from '../../views/shared/training/set/set.component';
 
 export function allSetsFilled(): ValidatorFn {
     return (array: AbstractControl): ValidationErrors | null => {
