@@ -1,4 +1,4 @@
-<ion-header mode="md">
+<ion-header>
     <ion-toolbar class="toolbar-title">
         <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
@@ -86,7 +86,6 @@
                             </h1>
                             <ion-button
                                 *ngIf="!(isSearch$ | async)"
-                                mode="md"
                                 type="button"
                                 color="primary"
                                 (click)="logNewTraining()"
