@@ -40,9 +40,9 @@ export type SetFormType = FormType<Set>;
 type SetFormValue = ModelWithoutIdType<Set>;
 
 @Component({
-    selector: 'bl-sets',
-    templateUrl: './sets.component.html',
-    styleUrls: ['./sets.component.scss'],
+    selector: 'bl-set',
+    templateUrl: './set.component.html',
+    styleUrls: ['./set.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })

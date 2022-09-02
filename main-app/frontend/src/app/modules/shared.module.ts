@@ -9,7 +9,7 @@ import { NotFoundResolverService } from '../services/shared/not-found-resolver.s
 import { DeleteTrainingActionService } from '../services/api/training/delete-training-action.service';
 import { DeleteExerciseDialogComponent } from '../views/shared/delete-exercise-dialog/delete-exercise-dialog.component';
 import { NotFoundComponent } from '../views/shared/not-found/not-found.component';
-import { SetsComponent } from '../views/shared/training/sets/sets.component';
+import { SetsComponent } from '../views/shared/training/set/set.component';
 import { SingleExerciseComponent } from '../views/shared/training/single-exercise/single-exercise.component';
 import { DeleteTrainingActionComponent } from '../views/shared/training/training-actions/delete-training-action/delete-training-action.component';
 import { MoreTrainingActionComponent } from '../views/shared/training/training-actions/more-training-action/more-training-action.component';

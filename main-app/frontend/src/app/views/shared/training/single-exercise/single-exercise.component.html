@@ -63,7 +63,7 @@
                         </ion-row>
                     </ion-grid>
                 </ng-container>
-                <bl-sets
+                <bl-set
                     formControlName="sets"
                     [isExerciseFormSubmitted$]="isSubmitted$"
                     [exerciseNameChanged$]="exerciseNameChanged$"
@@ -75,7 +75,7 @@
                     (setAdded)="onChangeSets($event)"
                     (setDeleted)="deleteSet($event)"
                     (weightUnitChanged)="onWeightUnitChanged($event)"
-                ></bl-sets>
+                ></bl-set>
             </div>
         </ng-container>
     </ng-container>
