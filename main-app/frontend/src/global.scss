@@ -31,6 +31,13 @@ ion-modal {
     }
 }
 
+ion-toolbar {
+    ion-title {
+        font-size: 20px;
+        font-weight: 400;
+    }
+}
+
 .datetime-picker {
     --background: rgba(44, 39, 45, 0.2);
 
