@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
-    IsBoolean,
+    IsArray,
     IsMongoId,
     IsNotEmpty,
     IsNumber,
@@ -12,7 +12,7 @@ import {
 import { Schema } from 'mongoose';
 import { EXERCISE_SCHEMA } from '../exercise.model';
 import { Exercise } from '../exercise.model';
-import { SET_SCHEMA } from './set.model';
+import { SetCategoryType, SET_SCHEMA } from './set.model';
 import { Set } from './set.model';
 
 export const SINGLE_EXERCISE_SCHEMA = new Schema({
@@ -30,6 +30,10 @@ export const SINGLE_EXERCISE_SCHEMA = new Schema({
     },
     availableExercises: {
         type: [EXERCISE_SCHEMA],
+        required: true,
+    },
+    setCategory: {
+        type: [String],
         required: true,
     },
 });
@@ -58,4 +62,9 @@ export class SingleExercise {
     @ValidateNested({ each: true })
     @Type(() => Exercise)
     availableExercises: Exercise[];
+
+    @ApiProperty()
+    @IsArray()
+    @IsNotEmpty()
+    setCategory: SetCategoryType[];
 }
