@@ -1,13 +1,8 @@
 .form {
     padding: 0 10px;
-}
 
-.wrapper {
-    border-radius: 4px;
-    margin-top: 10px;
-
-    &--not-loading {
-        box-shadow: var(--ion-box-shadow);
+    .wrapper {
+        margin: 15px 0 0 0;
     }
 }
 

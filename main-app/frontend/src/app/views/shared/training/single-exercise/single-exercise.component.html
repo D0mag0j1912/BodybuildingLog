@@ -1,7 +1,7 @@
 <form class="form" [formGroup]="$any(form)" (ngSubmit)="onSubmit()">
     <ng-container *ngFor="let group of getExercises(); let i = index">
         <ng-container [formGroupName]="i">
-            <div class="wrapper" [class.wrapper--not-loading]="!isLoading">
+            <ion-card class="wrapper">
                 <ng-container formGroupName="exerciseData">
                     <ion-grid>
                         <ion-row class="ion-text-center exercise-row">
@@ -76,7 +76,7 @@
                     (setDeleted)="deleteSet($event)"
                     (weightUnitChanged)="onWeightUnitChanged($event)"
                 ></bl-set>
-            </div>
+            </ion-card>
         </ng-container>
     </ng-container>
     <ng-container *ngIf="currentTrainingDataState$ | async as currentTrainingDataState">
