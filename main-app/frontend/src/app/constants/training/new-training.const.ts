@@ -15,6 +15,7 @@ export const createEmptyExercise = (exercises: Exercise[]): SingleExercise => ({
     ],
     total: null,
     availableExercises: [...exercises],
+    setCategory: [],
 });
 
 export const EMPTY_TRAINING: NewTraining = {

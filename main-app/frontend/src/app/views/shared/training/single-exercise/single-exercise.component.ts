@@ -59,7 +59,7 @@ import { StreamData } from '../../../../models/common/common.model';
 export type SingleExerciseFormType = {
     [P in keyof Omit<
         FormType<SingleExercise>,
-        'availableExercises'
+        'availableExercises' | 'setCategory'
     >]: SingleExercise[P] extends Exercise
         ? FormGroup<FormType<Exercise>>
         : FormType<SingleExercise>[P];
