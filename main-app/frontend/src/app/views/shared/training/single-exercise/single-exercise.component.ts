@@ -32,9 +32,10 @@ import { SetStateChanged, SetTrainingData } from '../../../../models/training/sh
 import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import {
-    FormControlExerciseData,
-    SingleExerciseFormControlType,
-    SingleExerciseFormGroupType,
+    ExerciseValueType,
+    ExerciseFormType,
+    SingleExerciseFormType,
+    SingleExerciseValueType,
 } from '../../../../models/training/shared/single-exercise-form.type';
 import { ToastControllerService } from '../../../../services/shared/toast-controller.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
@@ -51,23 +52,8 @@ import { TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-trainin
 import { SetsComponent } from '../set/set.component';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import { WeightUnit } from '../../../../models/common/preferences.type';
-import { Translations } from '../../../../models/common/translations.model';
 import { FormType } from '../../../../models/common/form.type';
-import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 import { StreamData } from '../../../../models/common/common.model';
-
-export type SingleExerciseFormType = {
-    [P in keyof Omit<
-        FormType<SingleExercise>,
-        'availableExercises' | 'setCategory'
-    >]: SingleExercise[P] extends Exercise
-        ? FormGroup<FormType<Exercise>>
-        : FormType<SingleExercise>[P];
-};
-
-type SingleExerciseFormValueType = {
-    [P in keyof Omit<ModelWithoutIdType<SingleExercise>, 'availableExercises'>]: SingleExercise[P];
-};
 
 @Component({
     selector: 'bl-single-exercise',
@@ -110,7 +96,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 if (this.setsCmpRef) {
                     return (
                         trainingState.length <= allExercises.length &&
-                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>(
+                        this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
                             'exerciseData',
                             'name',
                             this.getExercises().length - 1,
@@ -203,7 +189,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         this._isApiLoading$.complete();
     }
 
-    registerOnChange(fn: (formValue: SingleExerciseFormValueType[]) => void): void {
+    registerOnChange(fn: (formValue: SingleExerciseValueType[]) => void): void {
         this.form.valueChanges.pipe(takeUntil(this._unsubscribeService)).subscribe(fn);
     }
 
@@ -222,21 +208,16 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                         ].availableExercises.find(
                             (exercise: Exercise) => exercise.name === (element.value as string),
                         );
-                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>(
+                        this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
                             'exerciseData',
                             'imageUrl',
                             indexExercise,
                         ).patchValue(selectedExerciseData.imageUrl);
-                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>(
+                        this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
                             'exerciseData',
                             'primaryMuscleGroup',
                             indexExercise,
                         ).patchValue(selectedExerciseData.primaryMuscleGroup);
-                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>(
-                            'exerciseData',
-                            'translations',
-                            indexExercise,
-                        ).patchValue(selectedExerciseData.translations);
                         return this._newTrainingStoreService.updateExerciseChoices(
                             element.value as string,
                             indexExercise,
@@ -256,16 +237,13 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     addExercise(exercise?: SingleExercise, event?: UIEvent): void {
         this.form.push(
             new FormGroup<SingleExerciseFormType>({
-                exerciseData: new FormGroup<FormType<Exercise>>({
+                exerciseData: new FormGroup<ExerciseFormType>({
                     name: new FormControl(exercise?.exerciseData?.name ?? '', [
                         Validators.required,
                     ]),
                     imageUrl: new FormControl(exercise?.exerciseData?.imageUrl ?? ''),
                     primaryMuscleGroup: new FormControl(
                         exercise?.exerciseData?.primaryMuscleGroup ?? '',
-                    ),
-                    translations: new FormControl<Translations>(
-                        exercise?.exerciseData?.translations,
                     ),
                 }),
                 sets: new FormControl(exercise?.sets ?? [], { nonNullable: true }),
@@ -355,7 +333,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     if (
                         $event?.isWeightLiftedValid &&
                         $event?.isRepsValid &&
-                        this.accessFormGroup<SingleExerciseFormGroupType, FormControlExerciseData>(
+                        this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
                             'exerciseData',
                             'name',
                             $event.indexExercise,
@@ -363,8 +341,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     ) {
                         const trainingData: SetTrainingData = {
                             exerciseName: this.accessFormGroup<
-                                SingleExerciseFormGroupType,
-                                FormControlExerciseData
+                                SingleExerciseFormType,
+                                ExerciseValueType
                             >('exerciseData', 'name', $event.indexExercise).value as string,
                             setNumber: $event.newSet.setNumber,
                             weightLifted: $event.newSet.weightLifted,
@@ -380,7 +358,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 takeUntil(this._unsubscribeService),
             )
             .subscribe((_) =>
-                this.accessFormField<SingleExerciseFormControlType>(
+                this.accessFormField<SingleExerciseValueType>(
                     'total',
                     $event.indexExercise,
                 ).patchValue($event.newTotal),
@@ -388,10 +366,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     deleteSet($event: Partial<SetStateChanged>): void {
-        this.accessFormField<SingleExerciseFormControlType>(
-            'total',
-            $event.indexExercise,
-        ).patchValue($event.newTotal);
+        this.accessFormField<SingleExerciseValueType>('total', $event.indexExercise).patchValue(
+            $event.newTotal,
+        );
         this._newTrainingStoreService.deleteSet(
             $event.indexExercise,
             $event.indexSet,
@@ -400,7 +377,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     onWeightUnitChanged(exerciseIndex: number): void {
-        this.accessFormField<SingleExerciseFormControlType>('total', exerciseIndex).patchValue(
+        this.accessFormField<SingleExerciseValueType>('total', exerciseIndex).patchValue(
             TOTAL_INITIAL_WEIGHT,
         );
     }
@@ -465,30 +442,25 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 let exerciseFormData: SingleExercise[] = [];
 
                 this.getExercises().forEach((_exercise: AbstractControl, indexExercise: number) => {
-                    const total = this.accessFormField<SingleExerciseFormControlType>(
+                    const total = this.accessFormField<SingleExerciseValueType>(
                         'total',
                         indexExercise,
                     ).value as number;
-                    const exerciseData: Exercise = {
-                        name: this.accessFormGroup<
-                            SingleExerciseFormGroupType,
-                            FormControlExerciseData
-                        >('exerciseData', 'name', indexExercise).value as string,
-                        imageUrl: this.accessFormGroup<
-                            SingleExerciseFormGroupType,
-                            FormControlExerciseData
-                        >('exerciseData', 'imageUrl', indexExercise).value as string,
+                    const exerciseData: ExerciseValueType = {
+                        name: this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
+                            'exerciseData',
+                            'name',
+                            indexExercise,
+                        ).value as string,
+                        imageUrl: this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
+                            'exerciseData',
+                            'imageUrl',
+                            indexExercise,
+                        ).value as string,
                         primaryMuscleGroup: this.accessFormGroup<
-                            SingleExerciseFormGroupType,
-                            FormControlExerciseData
+                            SingleExerciseFormType,
+                            ExerciseValueType
                         >('exerciseData', 'primaryMuscleGroup', indexExercise).value as string,
-                        translations: this.accessFormGroup<
-                            SingleExerciseFormGroupType,
-                            FormControlExerciseData
-                        >('exerciseData', 'translations', indexExercise).value as {
-                            hr: string;
-                            en: string;
-                        },
                     };
                     const initialExercise = {
                         exerciseData,
@@ -501,7 +473,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
 
                     const formSetData: Set[] = [];
                     (
-                        this.accessFormField<SingleExerciseFormControlType>('sets', indexExercise)
+                        this.accessFormField<SingleExerciseValueType>('sets', indexExercise)
                             .value as Set[]
                     ).forEach((set: Set) => {
                         const apiSet: Set = {

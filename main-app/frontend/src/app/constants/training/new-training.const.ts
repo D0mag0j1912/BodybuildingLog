@@ -5,7 +5,16 @@ import { DEFAULT_WEIGHT_UNIT } from '../shared/default-weight-format.const';
 import { Set } from '../../models/training/shared/set.model';
 
 export const createEmptyExercise = (exercises: Exercise[]): SingleExercise => ({
-    exerciseData: { name: null },
+    exerciseData: {
+        name: '',
+        imageUrl: '',
+        primaryMuscleGroup: '',
+        setCategory: [],
+        translations: {
+            hr: '',
+            en: '',
+        },
+    },
     sets: [
         {
             setNumber: 1,
@@ -15,7 +24,6 @@ export const createEmptyExercise = (exercises: Exercise[]): SingleExercise => ({
     ],
     total: null,
     availableExercises: [...exercises],
-    setCategory: [],
 });
 
 export const EMPTY_TRAINING: NewTraining = {

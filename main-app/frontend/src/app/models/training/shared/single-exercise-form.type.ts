@@ -1,11 +1,26 @@
-import { ModelWithoutIdType } from '../../common/raw.model';
+import { FormControl, FormGroup } from '@angular/forms';
+import { FormType } from '../../common/form.type';
 import { Exercise } from '../exercise.model';
+import { Set } from './set.model';
 import { SingleExercise } from './single-exercise.model';
 
-export type SingleExerciseFormControlType = {
-    [P in keyof Pick<SingleExercise, 'sets' | 'total'>]: SingleExercise[P];
+export type SingleExerciseFormType = {
+    [P in keyof Omit<
+        FormType<SingleExercise>,
+        'availableExercises'
+    >]: SingleExercise[P] extends Exercise
+        ? FormGroup<ExerciseFormType>
+        : FormType<SingleExercise>[P];
 };
 
-export type SingleExerciseFormGroupType = Pick<SingleExercise, 'exerciseData'>;
+export type SingleExerciseValueType = {
+    exerciseData?: ExerciseValueType;
+    sets?: Set[];
+    total?: number;
+};
 
-export type FormControlExerciseData = ModelWithoutIdType<Exercise>;
+export type ExerciseValueType = Partial<Pick<Exercise, 'name' | 'imageUrl' | 'primaryMuscleGroup'>>;
+
+export type ExerciseFormType = {
+    [P in keyof ExerciseValueType]: FormControl<ExerciseValueType[P]>;
+};

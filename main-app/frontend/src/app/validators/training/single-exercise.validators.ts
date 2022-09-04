@@ -5,7 +5,7 @@ import {
     ValidationErrors,
     ValidatorFn,
 } from '@angular/forms';
-import { SingleExerciseFormType } from '../../views/shared/training/single-exercise/single-exercise.component';
+import { SingleExerciseFormType } from '../../models/training/shared/single-exercise-form.type';
 
 export function checkExerciseNumber(): ValidatorFn {
     return (array: AbstractControl): ValidationErrors | null => {
