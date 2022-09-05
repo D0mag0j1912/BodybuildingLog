@@ -4,4 +4,5 @@ export type SetCategoryType =
     | 'dynamicBodyweight'
     | 'dynamicWeighted'
     | 'staticBodyweight'
-    | 'staticWeighted';
+    | 'staticWeighted'
+    | 'freeWeighted';

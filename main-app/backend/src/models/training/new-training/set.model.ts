@@ -6,7 +6,8 @@ export type SetCategoryType =
     | 'dynamicBodyweight'
     | 'dynamicWeighted'
     | 'staticBodyweight'
-    | 'staticWeighted';
+    | 'staticWeighted'
+    | 'freeWeighted';
 
 export const SET_SCHEMA = new Schema({
     setNumber: {
