@@ -52,7 +52,6 @@ import { TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-trainin
 import { SetsComponent } from '../set/set.component';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import { WeightUnit } from '../../../../models/common/preferences.type';
-import { FormType } from '../../../../models/common/form.type';
 import { StreamData } from '../../../../models/common/common.model';
 
 @Component({
@@ -446,7 +445,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                         'total',
                         indexExercise,
                     ).value as number;
-                    const exerciseData: ExerciseValueType = {
+                    const exerciseData: Exercise = {
                         name: this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
                             'exerciseData',
                             'name',
@@ -461,6 +460,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                             SingleExerciseFormType,
                             ExerciseValueType
                         >('exerciseData', 'primaryMuscleGroup', indexExercise).value as string,
+                        translations:
+                            currentTrainingState.exercises[indexExercise].exerciseData.translations,
+                        setCategory:
+                            currentTrainingState.exercises[indexExercise].exerciseData.setCategory,
                     };
                     const initialExercise = {
                         exerciseData,
