@@ -62,7 +62,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     isExerciseFormSubmitted$: Observable<boolean> = of(false);
 
     @Input()
-    exerciseNameChanged$: Observable<void> = of(null);
+    isExerciseChanged$: Observable<boolean> = of(false);
 
     @Input()
     exerciseNameControl: AbstractControl | null;
@@ -115,8 +115,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                     : this.accessFormField('reps', 0).disable();
             });
 
-        this.exerciseNameChanged$
-            .pipe(delay(200), takeUntil(this._unsubscribeService))
+        this.isExerciseChanged$
+            .pipe(delay(400), takeUntil(this._unsubscribeService))
             .subscribe(async (_) => {
                 if (this.weightLiftedElements?.first) {
                     await this.weightLiftedElements.first.setFocus();

@@ -63,16 +63,18 @@ import { StreamData } from '../../../../models/common/common.model';
 })
 export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy {
     private readonly _invalidSetChanged$: Subject<void> = new Subject<void>();
-    private readonly _exerciseNameChanged$: Subject<void> = new Subject<void>();
     private readonly _isSubmitted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private readonly _isExercisePicker$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
         true,
     );
     private readonly _isApiLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private readonly _isExerciseChanged$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+        false,
+    );
 
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
+    readonly isExerciseChanged$: Observable<boolean> = this._isExerciseChanged$.asObservable();
     readonly isSubmitted$: Observable<boolean> = this._isSubmitted$.asObservable();
-    readonly exerciseNameChanged$: Observable<void> = this._exerciseNameChanged$.asObservable();
     readonly isExercisePicker$: Observable<boolean> = this._isExercisePicker$.asObservable();
     readonly isApiLoading$: Observable<boolean> = this._isApiLoading$.asObservable();
     readonly currentTrainingDataState$: Observable<SingleExercise[]> =
@@ -112,8 +114,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     );
 
     readonly form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
-
-    isExerciseChanged = false;
 
     onTouched: () => void;
 
@@ -182,10 +182,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
 
     ngOnDestroy(): void {
         this._invalidSetChanged$.complete();
-        this._exerciseNameChanged$.complete();
         this._isSubmitted$.complete();
         this._isExercisePicker$.complete();
         this._isApiLoading$.complete();
+        this._isExerciseChanged$.complete();
     }
 
     registerOnChange(fn: (formValue: SingleExerciseValueType[]) => void): void {
@@ -225,11 +225,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                         );
                     }),
                 )
-                .subscribe((_) => {
-                    this.isExerciseChanged = !this.isExerciseChanged;
-                    this._exerciseNameChanged$.next();
-                    this._changeDetectorRef.markForCheck();
-                });
+                .subscribe((_) =>
+                    this._isExerciseChanged$.next(!this._isExerciseChanged$.getValue()),
+                );
         }
     }
 
@@ -292,7 +290,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                                     ),
                                 ),
                                 switchMap((data: [NewTraining, Exercise[]]) => {
-                                    this.isExerciseChanged = !this.isExerciseChanged;
+                                    this._isExerciseChanged$.next(
+                                        !this._isExerciseChanged$.getValue(),
+                                    );
                                     this.form.removeAt(indexExercise);
                                     return this._newTrainingStoreService.pushToAvailableExercises(
                                         data[0],
