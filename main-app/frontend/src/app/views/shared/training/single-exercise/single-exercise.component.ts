@@ -53,6 +53,7 @@ import { SetsComponent } from '../set/set.component';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import { WeightUnit } from '../../../../models/common/preferences.type';
 import { StreamData } from '../../../../models/common/common.model';
+import { SetCategoryType } from '../../../../models/training/shared/set.type';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -68,12 +69,13 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         true,
     );
     private readonly _isApiLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private readonly _isExerciseChanged$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-        false,
-    );
+    private readonly _isExerciseChanged$: BehaviorSubject<SetCategoryType[]> = new BehaviorSubject<
+        SetCategoryType[]
+    >([]);
 
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
-    readonly isExerciseChanged$: Observable<boolean> = this._isExerciseChanged$.asObservable();
+    readonly isExerciseChanged$: Observable<SetCategoryType[]> =
+        this._isExerciseChanged$.asObservable();
     readonly isSubmitted$: Observable<boolean> = this._isSubmitted$.asObservable();
     readonly isExercisePicker$: Observable<boolean> = this._isExercisePicker$.asObservable();
     readonly isApiLoading$: Observable<boolean> = this._isApiLoading$.asObservable();
@@ -197,11 +199,13 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     onExerciseNameChange(indexExercise: number, element: IonSelect): void {
+        let trainingState: NewTraining;
         if (element?.value) {
             this._newTrainingStoreService.currentTrainingChanged$
                 .pipe(
                     take(1),
                     switchMap((currentTrainingState: NewTraining) => {
+                        trainingState = currentTrainingState;
                         const selectedExerciseData = currentTrainingState.exercises[
                             indexExercise
                         ].availableExercises.find(
@@ -226,7 +230,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     }),
                 )
                 .subscribe((_) =>
-                    this._isExerciseChanged$.next(!this._isExerciseChanged$.getValue()),
+                    this._isExerciseChanged$.next(
+                        trainingState.exercises[indexExercise].exerciseData.setCategory,
+                    ),
                 );
         }
     }
@@ -290,9 +296,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                                     ),
                                 ),
                                 switchMap((data: [NewTraining, Exercise[]]) => {
-                                    this._isExerciseChanged$.next(
-                                        !this._isExerciseChanged$.getValue(),
-                                    );
+                                    this._isExerciseChanged$.next([]);
                                     this.form.removeAt(indexExercise);
                                     return this._newTrainingStoreService.pushToAvailableExercises(
                                         data[0],

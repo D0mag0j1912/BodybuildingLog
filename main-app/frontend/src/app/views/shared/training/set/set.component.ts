@@ -34,6 +34,7 @@ import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
+import { SetCategoryType } from '../../../../models/training/shared/set.type';
 
 export type SetFormType = FormType<Set>;
 
@@ -49,6 +50,7 @@ type SetFormValue = ModelWithoutIdType<Set>;
 export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     readonly currentPreferences$: Observable<Preferences> =
         this._preferencesStoreService.preferencesChanged$;
+    isDynamicBodyweight$: Observable<boolean> | undefined;
 
     readonly form = new FormArray<FormGroup<SetFormType>>([]);
     private _currentWeightUnit: WeightUnit;
@@ -62,7 +64,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     isExerciseFormSubmitted$: Observable<boolean> = of(false);
 
     @Input()
-    isExerciseChanged$: Observable<boolean> = of(false);
+    isExerciseChanged$: Observable<SetCategoryType[]> = of([]);
 
     @Input()
     exerciseNameControl: AbstractControl | null;
@@ -114,7 +116,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                     ? this.accessFormField('reps', 0).enable()
                     : this.accessFormField('reps', 0).disable();
             });
-
+        //TODO: Make logic for dynamic bodyweight stream
         this.isExerciseChanged$
             .pipe(delay(400), takeUntil(this._unsubscribeService))
             .subscribe(async (_) => {
