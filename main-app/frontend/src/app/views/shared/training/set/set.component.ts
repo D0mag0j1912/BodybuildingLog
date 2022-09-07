@@ -36,7 +36,10 @@ import { NewTraining } from '../../../../models/training/new-training/new-traini
 import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 import { SetCategoryType } from '../../../../models/training/shared/set.type';
-import { REPS_SET_CATEGORIES } from '../../../../helpers/training/set-category.helper';
+import {
+    REPS_SET_CATEGORIES,
+    WEIGHT_LIFTED_SET_CATEGORIES,
+} from '../../../../helpers/training/set-category.helper';
 
 export type SetFormType = FormType<Set>;
 
@@ -129,10 +132,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
             .pipe(
                 filter((setCategories: SetCategoryType[]) => setCategories.length > 0),
                 switchMap((setCategories: SetCategoryType[]) => {
-                    const isWeightLifted = false;
+                    let isWeightLifted = setCategories.some((setCategory: SetCategoryType) =>
+                        WEIGHT_LIFTED_SET_CATEGORIES.includes(setCategory),
+                    );
                     const isReps = setCategories.some((setCategory: SetCategoryType) =>
                         REPS_SET_CATEGORIES.includes(setCategory),
                     );
+                    /** If 'dynamicBodyweight' is in the list, it has highest priority  */
+                    if (isWeightLifted && isReps && setCategories.includes('dynamicBodyweight')) {
+                        isWeightLifted = false;
+                    }
                     this._isWeightLifted$.next(isWeightLifted);
                     this._isReps$.next(isReps);
                     return of([isWeightLifted, isReps]);
