@@ -229,9 +229,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                         );
                     }),
                 )
-                .subscribe((_) =>
+                .subscribe((updatedTraining: NewTraining) =>
                     this._isExerciseChanged$.next(
-                        trainingState.exercises[indexExercise].exerciseData.setCategory,
+                        updatedTraining.exercises[indexExercise].exerciseData.setCategory,
                     ),
                 );
         }

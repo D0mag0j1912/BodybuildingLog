@@ -220,7 +220,7 @@ export class NewTrainingStoreService {
         selectedIndex: number,
         trainingToBeUpdated: NewTraining,
         selectedExerciseData: Exercise,
-    ): Observable<void> {
+    ): Observable<NewTraining> {
         let updatedTraining: NewTraining = { ...trainingToBeUpdated };
         updatedTraining = {
             ...updatedTraining,
@@ -240,7 +240,7 @@ export class NewTrainingStoreService {
                 }
             }),
         };
-        return this.saveTrainingData(updatedTraining);
+        return this.saveTrainingData(updatedTraining).pipe(switchMap((_) => of(updatedTraining)));
     }
 
     keepTrainingState(): Observable<boolean> {
