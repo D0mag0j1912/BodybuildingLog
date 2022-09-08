@@ -54,6 +54,10 @@ import { PreferencesStoreService } from '../../../../services/store/shared/prefe
 import { WeightUnit } from '../../../../models/common/preferences.type';
 import { StreamData } from '../../../../models/common/common.model';
 import { SetCategoryType } from '../../../../models/training/shared/set.type';
+import {
+    REPS_SET_CATEGORIES,
+    WEIGHT_LIFTED_SET_CATEGORIES,
+} from '../../../../helpers/training/set-category.helper';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -72,6 +76,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     private readonly _isExerciseChanged$: BehaviorSubject<SetCategoryType[]> = new BehaviorSubject<
         SetCategoryType[]
     >([]);
+    private readonly _isWeightLifted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+        true,
+    );
+    private readonly _isReps$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
     readonly isExerciseChanged$: Observable<SetCategoryType[]> =
@@ -83,7 +91,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         this._newTrainingStoreService.currentTrainingChanged$.pipe(
             map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         );
-
     readonly isAddingExercisesAllowed$: Observable<boolean> = combineLatest([
         this._newTrainingStoreService.currentTrainingChanged$.pipe(
             map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
@@ -114,6 +121,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             }
         }),
     );
+    readonly isWeightLifted$: Observable<boolean> = this._isWeightLifted$.asObservable();
+    readonly isReps$: Observable<boolean> = this._isReps$.asObservable();
 
     readonly form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
 
@@ -199,13 +208,11 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
     }
 
     onExerciseNameChange(indexExercise: number, element: IonSelect): void {
-        let trainingState: NewTraining;
         if (element?.value) {
             this._newTrainingStoreService.currentTrainingChanged$
                 .pipe(
                     take(1),
                     switchMap((currentTrainingState: NewTraining) => {
-                        trainingState = currentTrainingState;
                         const selectedExerciseData = currentTrainingState.exercises[
                             indexExercise
                         ].availableExercises.find(
@@ -229,11 +236,25 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                         );
                     }),
                 )
-                .subscribe((updatedTraining: NewTraining) =>
+                .subscribe((updatedTraining: NewTraining) => {
+                    const setCategories =
+                        updatedTraining.exercises[indexExercise].exerciseData.setCategory;
+                    let isWeightLifted = setCategories.some((setCategory: SetCategoryType) =>
+                        WEIGHT_LIFTED_SET_CATEGORIES.includes(setCategory),
+                    );
+                    const isReps = setCategories.some((setCategory: SetCategoryType) =>
+                        REPS_SET_CATEGORIES.includes(setCategory),
+                    );
+                    /** If 'dynamicBodyweight' is in the list, it has highest priority  */
+                    if (isWeightLifted && isReps && setCategories.includes('dynamicBodyweight')) {
+                        isWeightLifted = false;
+                    }
+                    this._isWeightLifted$.next(isWeightLifted);
+                    this._isReps$.next(isReps);
                     this._isExerciseChanged$.next(
                         updatedTraining.exercises[indexExercise].exerciseData.setCategory,
-                    ),
-                );
+                    );
+                });
         }
     }
 

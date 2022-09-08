@@ -4,9 +4,9 @@
             <ion-grid class="set-grid">
                 <ion-row
                     class="ion-text-center set-row"
-                    [class.ion-justify-content-center]="!(isWeightLifted$ | async) && (isReps$ | async)">
+                    [class.ion-justify-content-center]="!isWeightLifted && isReps">
                     <ion-col
-                        *ngIf="isWeightLifted$ | async"
+                        *ngIf="isWeightLifted"
                         size="5">
                         <ion-item fill="outline">
                             <ion-label class="ion-label" position="floating">
@@ -75,7 +75,7 @@
                         </ion-item>
                     </ion-col>
                     <ion-col
-                        *ngIf="isReps$ | async"
+                        *ngIf="isReps"
                         size="5">
                         <ion-item fill="outline">
                             <ion-label class="ion-label" position="floating">

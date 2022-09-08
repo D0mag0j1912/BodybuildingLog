@@ -4,7 +4,6 @@ import {
     EventEmitter,
     Input,
     OnChanges,
-    OnDestroy,
     OnInit,
     Output,
     QueryList,
@@ -20,8 +19,8 @@ import {
     Validators,
 } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { delay, filter, switchMap, takeUntil } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { delay, filter, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
 import { SetStateChanged } from '../../../../models/training/shared/set.model';
@@ -36,10 +35,6 @@ import { NewTraining } from '../../../../models/training/new-training/new-traini
 import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 import { SetCategoryType } from '../../../../models/training/shared/set.type';
-import {
-    REPS_SET_CATEGORIES,
-    WEIGHT_LIFTED_SET_CATEGORIES,
-} from '../../../../helpers/training/set-category.helper';
 
 export type SetFormType = FormType<Set>;
 
@@ -52,16 +47,9 @@ type SetFormValue = ModelWithoutIdType<Set>;
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
-export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, OnDestroy {
-    private readonly _isWeightLifted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-        true,
-    );
-    private readonly _isReps$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
-
+export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     readonly currentPreferences$: Observable<Preferences> =
         this._preferencesStoreService.preferencesChanged$;
-    readonly isWeightLifted$: Observable<boolean> = this._isWeightLifted$.asObservable();
-    readonly isReps$: Observable<boolean> = this._isReps$.asObservable();
 
     readonly form = new FormArray<FormGroup<SetFormType>>([]);
     private _currentWeightUnit: WeightUnit;
@@ -88,6 +76,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
 
     @Input()
     isLoading = false;
+
+    @Input()
+    isWeightLifted = true;
+
+    @Input()
+    isReps = true;
 
     @Output()
     readonly setAdded: EventEmitter<SetStateChanged> = new EventEmitter<SetStateChanged>();
@@ -129,33 +123,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
             });
 
         this.isExerciseChanged$
-            .pipe(
-                filter((setCategories: SetCategoryType[]) => setCategories.length > 0),
-                switchMap((setCategories: SetCategoryType[]) => {
-                    let isWeightLifted = setCategories.some((setCategory: SetCategoryType) =>
-                        WEIGHT_LIFTED_SET_CATEGORIES.includes(setCategory),
-                    );
-                    const isReps = setCategories.some((setCategory: SetCategoryType) =>
-                        REPS_SET_CATEGORIES.includes(setCategory),
-                    );
-                    /** If 'dynamicBodyweight' is in the list, it has highest priority  */
-                    if (isWeightLifted && isReps && setCategories.includes('dynamicBodyweight')) {
-                        isWeightLifted = false;
-                    }
-                    this._isWeightLifted$.next(isWeightLifted);
-                    this._isReps$.next(isReps);
-                    return of([isWeightLifted, isReps]);
-                }),
-                delay(400),
-                takeUntil(this._unsubscribeService),
-            )
-            .subscribe(async ([isWeightLifted, isReps]) => {
-                if (isWeightLifted) {
+            .pipe(delay(400), takeUntil(this._unsubscribeService))
+            .subscribe(async (_) => {
+                if (this.isWeightLifted) {
                     if (this.weightLiftedElements?.first) {
                         await this.weightLiftedElements.first.setFocus();
                     }
                 }
-                if (isReps) {
+                if (this.isReps) {
                     if (this.repsElements?.first) {
                         await this.repsElements.first.setFocus();
                     }
@@ -185,11 +160,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
 
     ngOnChanges(_changes: SimpleChanges): void {
         this.form.updateValueAndValidity({ emitEvent: true });
-    }
-
-    ngOnDestroy(): void {
-        this._isWeightLifted$.complete();
-        this._isReps$.complete();
     }
 
     writeValue(sets: Set[]): void {
