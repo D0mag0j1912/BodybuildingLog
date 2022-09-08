@@ -34,7 +34,6 @@ import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
-import { SetCategoryType } from '../../../../models/training/shared/set.type';
 
 export type SetFormType = FormType<Set>;
 
@@ -60,10 +59,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     editTrainingData: NewTraining;
 
     @Input()
-    isExerciseFormSubmitted$: Observable<boolean> = of(false);
+    isExerciseFormSubmitted$: Observable<boolean>;
 
     @Input()
-    isExerciseChanged$: Observable<SetCategoryType[]> = of([]);
+    isExerciseChanged$: Observable<void>;
 
     @Input()
     exerciseNameControl: AbstractControl | null;

@@ -67,23 +67,20 @@ import {
     providers: [getControlValueAccessor(SingleExerciseComponent), UnsubscribeService],
 })
 export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy {
+    private readonly _isExerciseChanged$: Subject<void> = new Subject<void>();
     private readonly _invalidSetChanged$: Subject<void> = new Subject<void>();
     private readonly _isSubmitted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private readonly _isExercisePicker$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
         true,
     );
     private readonly _isApiLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private readonly _isExerciseChanged$: BehaviorSubject<SetCategoryType[]> = new BehaviorSubject<
-        SetCategoryType[]
-    >([]);
     private readonly _isWeightLifted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
         true,
     );
     private readonly _isReps$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
     readonly exercises$: Observable<Exercise[]> | undefined = undefined;
-    readonly isExerciseChanged$: Observable<SetCategoryType[]> =
-        this._isExerciseChanged$.asObservable();
+    readonly isExerciseChanged$: Observable<void> = this._isExerciseChanged$.asObservable();
     readonly isSubmitted$: Observable<boolean> = this._isSubmitted$.asObservable();
     readonly isExercisePicker$: Observable<boolean> = this._isExercisePicker$.asObservable();
     readonly isApiLoading$: Observable<boolean> = this._isApiLoading$.asObservable();
@@ -251,9 +248,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     }
                     this._isWeightLifted$.next(isWeightLifted);
                     this._isReps$.next(isReps);
-                    this._isExerciseChanged$.next(
-                        updatedTraining.exercises[indexExercise].exerciseData.setCategory,
-                    );
+                    this._isExerciseChanged$.next();
                 });
         }
     }
@@ -317,7 +312,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                                     ),
                                 ),
                                 switchMap((data: [NewTraining, Exercise[]]) => {
-                                    this._isExerciseChanged$.next([]);
+                                    this._isExerciseChanged$.next();
                                     this.form.removeAt(indexExercise);
                                     return this._newTrainingStoreService.pushToAvailableExercises(
                                         data[0],
