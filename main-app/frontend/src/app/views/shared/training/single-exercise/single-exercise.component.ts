@@ -5,6 +5,7 @@ import {
     EventEmitter,
     Input,
     OnDestroy,
+    OnInit,
     Output,
     QueryList,
     ViewChildren,
@@ -66,7 +67,7 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [getControlValueAccessor(SingleExerciseComponent), UnsubscribeService],
 })
-export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy {
+export class SingleExerciseComponent implements ControlValueAccessor, OnInit, OnDestroy {
     private readonly _isExerciseChanged$: Subject<void> = new Subject<void>();
     private readonly _invalidSetChanged$: Subject<void> = new Subject<void>();
     private readonly _isSubmitted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -158,7 +159,13 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
         private readonly _toastControllerService: ToastControllerService,
         private readonly _changeDetectorRef: ChangeDetectorRef,
         private readonly _modalController: ModalController,
-    ) {
+    ) {}
+
+    get currentWeightUnit(): WeightUnit {
+        return this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
+    }
+
+    ngOnInit(): void {
         this.form.setValidators([
             SingleExerciseValidators.checkDuplicateExerciseName(),
             SingleExerciseValidators.checkExerciseNumber(),
@@ -173,8 +180,12 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             });
     }
 
-    get currentWeightUnit(): WeightUnit {
-        return this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
+    ngOnDestroy(): void {
+        this._invalidSetChanged$.complete();
+        this._isSubmitted$.complete();
+        this._isExercisePicker$.complete();
+        this._isApiLoading$.complete();
+        this._isExerciseChanged$.complete();
     }
 
     writeValue(exercises: SingleExercise[]): void {
@@ -186,14 +197,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                 this.addExercise(exercise);
             }
         }
-    }
-
-    ngOnDestroy(): void {
-        this._invalidSetChanged$.complete();
-        this._isSubmitted$.complete();
-        this._isExercisePicker$.complete();
-        this._isApiLoading$.complete();
-        this._isExerciseChanged$.complete();
     }
 
     registerOnChange(fn: (formValue: SingleExerciseValueType[]) => void): void {
