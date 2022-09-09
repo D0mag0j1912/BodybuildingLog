@@ -221,10 +221,9 @@ export class NewTrainingStoreService {
         trainingToBeUpdated: NewTraining,
         selectedExerciseData: Exercise,
     ): Observable<NewTraining> {
-        let updatedTraining: NewTraining = { ...trainingToBeUpdated };
-        updatedTraining = {
-            ...updatedTraining,
-            exercises: [...updatedTraining.exercises].map((exercise: SingleExercise, i: number) => {
+        const updatedTraining: NewTraining = {
+            ...trainingToBeUpdated,
+            exercises: trainingToBeUpdated.exercises.map((exercise: SingleExercise, i: number) => {
                 if (i === selectedIndex) {
                     return {
                         ...exercise,
@@ -233,7 +232,7 @@ export class NewTrainingStoreService {
                 } else {
                     return {
                         ...exercise,
-                        availableExercises: [...exercise.availableExercises].filter(
+                        availableExercises: exercise.availableExercises.filter(
                             (exercise: Exercise) => exercise.name !== selectedExercise,
                         ),
                     };

@@ -237,7 +237,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     }),
                 )
                 .subscribe((updatedTraining: NewTraining) => {
-                    this._prepareSet(updatedTraining, indexExercise);
+                    this._prepareSet(updatedTraining.exercises[indexExercise]);
                     this._isExerciseChanged$.next();
                 });
         }
@@ -262,12 +262,13 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 }),
             }),
         );
-
         if (event) {
             this._newTrainingStoreService
                 .addNewExercise(this._getAlreadyUsedExercises())
                 .pipe(takeUntil(this._unsubscribeService))
                 .subscribe((_) => this.exerciseAdded.next(event));
+        } else {
+            this._prepareSet(exercise);
         }
     }
 
@@ -553,8 +554,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return errors.length === 0;
     }
 
-    private _prepareSet(trainingState: NewTraining, indexExercise: number): void {
-        const setCategories = trainingState.exercises[indexExercise].exerciseData.setCategory;
+    private _prepareSet(exercise: SingleExercise): void {
+        const setCategories = exercise.exerciseData.setCategory;
         let isWeightLifted = setCategories.some((setCategory: SetCategoryType) =>
             WEIGHT_LIFTED_SET_CATEGORIES.includes(setCategory),
         );
