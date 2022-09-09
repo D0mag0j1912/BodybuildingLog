@@ -5,7 +5,7 @@ import { Exercise } from '../../../models/training/exercise.model';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
 
-@Pipe({ name: 'newTraining' })
+@Pipe({ name: 'filterAvailableExercises' })
 export class NewTrainingPipe implements PipeTransform {
     constructor(private readonly newTrainingStoreService: NewTrainingStoreService) {}
 
