@@ -20,7 +20,7 @@
                                     >
                                         <ion-select-option
                                             *ngFor="
-                                                let exercise of exercises$ | filterAvailableExercises: i | async
+                                                let exercise of currentExercisesState$ | async | filterAvailableExercises: i
                                             "
                                             [value]="exercise.name"
                                         >
@@ -81,7 +81,7 @@
             </ion-card>
         </ng-container>
     </ng-container>
-    <ng-container *ngIf="currentTrainingDataState$ | async as currentTrainingDataState">
+    <ng-container *ngIf="currentExercisesState$ | async as currentExercisesState">
         <ion-grid>
             <ion-row>
                 <ion-col>
@@ -97,7 +97,7 @@
                 <ion-col>
                     <ion-button
                         type="submit"
-                        [disabled]="currentTrainingDataState?.length === 0 || (isApiLoading$ | async)"
+                        [disabled]="currentExercisesState?.length === 0 || (isApiLoading$ | async)"
                     >
                         <ion-icon name="checkmark-sharp"></ion-icon>
                     </ion-button>
@@ -109,7 +109,7 @@
                         *ngIf="
                             form.errors?.emptyTraining &&
                             (isSubmitted$ | async) &&
-                            currentTrainingDataState?.length === 0
+                            currentExercisesState?.length === 0
                         "
                         class="empty-training-msg"
                     >

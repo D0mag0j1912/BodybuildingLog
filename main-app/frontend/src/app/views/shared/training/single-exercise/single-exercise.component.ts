@@ -80,12 +80,11 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     );
     private readonly _isReps$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
-    readonly exercises$: Observable<Exercise[]> | undefined = undefined;
     readonly isExerciseChanged$: Observable<void> = this._isExerciseChanged$.asObservable();
     readonly isSubmitted$: Observable<boolean> = this._isSubmitted$.asObservable();
     readonly isExercisePicker$: Observable<boolean> = this._isExercisePicker$.asObservable();
     readonly isApiLoading$: Observable<boolean> = this._isApiLoading$.asObservable();
-    readonly currentTrainingDataState$: Observable<SingleExercise[]> =
+    readonly currentExercisesState$: Observable<SingleExercise[]> =
         this._newTrainingStoreService.currentTrainingChanged$.pipe(
             map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         );
