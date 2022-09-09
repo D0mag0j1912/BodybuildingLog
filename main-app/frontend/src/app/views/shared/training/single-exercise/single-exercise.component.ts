@@ -267,8 +267,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 .addNewExercise(this._getAlreadyUsedExercises())
                 .pipe(takeUntil(this._unsubscribeService))
                 .subscribe((_) => this.exerciseAdded.next(event));
-        } else {
-            this._prepareSet(exercise);
         }
     }
 
