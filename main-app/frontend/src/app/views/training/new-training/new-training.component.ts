@@ -326,11 +326,11 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     private _formInit(): void {
-        const currentTrainingState = { ...this._newTrainingStoreService.getCurrentTrainingState() };
+        const currentTrainingState = this._newTrainingStoreService.getCurrentTrainingState();
         const dayClickedDate = this._sharedStoreService.getDayClickedDate();
         this.form.get('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
         this.form.get('trainingDate').patchValue(this._fillTrainingDate(dayClickedDate));
-        this.form.get('exercises').patchValue(currentTrainingState?.exercises ?? []);
+        this.form.get('exercises').patchValue(currentTrainingState.exercises);
         this._setFormattedDate(this.form.get('trainingDate').value);
     }
 
