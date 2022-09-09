@@ -234,20 +234,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
                     }),
                 )
                 .subscribe((updatedTraining: NewTraining) => {
-                    const setCategories =
-                        updatedTraining.exercises[indexExercise].exerciseData.setCategory;
-                    let isWeightLifted = setCategories.some((setCategory: SetCategoryType) =>
-                        WEIGHT_LIFTED_SET_CATEGORIES.includes(setCategory),
-                    );
-                    const isReps = setCategories.some((setCategory: SetCategoryType) =>
-                        REPS_SET_CATEGORIES.includes(setCategory),
-                    );
-                    /** If 'dynamicBodyweight' is in the list, it has highest priority  */
-                    if (isWeightLifted && isReps && setCategories.includes('dynamicBodyweight')) {
-                        isWeightLifted = false;
-                    }
-                    this._isWeightLifted$.next(isWeightLifted);
-                    this._isReps$.next(isReps);
+                    this._prepareSet(updatedTraining, indexExercise);
                     this._isExerciseChanged$.next();
                 });
         }
@@ -561,5 +548,21 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnDestroy 
             });
         });
         return errors.length === 0;
+    }
+
+    private _prepareSet(trainingState: NewTraining, indexExercise: number): void {
+        const setCategories = trainingState.exercises[indexExercise].exerciseData.setCategory;
+        let isWeightLifted = setCategories.some((setCategory: SetCategoryType) =>
+            WEIGHT_LIFTED_SET_CATEGORIES.includes(setCategory),
+        );
+        const isReps = setCategories.some((setCategory: SetCategoryType) =>
+            REPS_SET_CATEGORIES.includes(setCategory),
+        );
+        /** If 'dynamicBodyweight' is in the list, it has highest priority  */
+        if (isWeightLifted && isReps && setCategories.includes('dynamicBodyweight')) {
+            isWeightLifted = false;
+        }
+        this._isWeightLifted$.next(isWeightLifted);
+        this._isReps$.next(isReps);
     }
 }

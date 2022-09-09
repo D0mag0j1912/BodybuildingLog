@@ -9,11 +9,7 @@ import { NewTrainingStoreService } from '../../../services/store/training/new-tr
 export class NewTrainingPipe implements PipeTransform {
     constructor(private readonly newTrainingStoreService: NewTrainingStoreService) {}
 
-    transform(
-        _value: Observable<Exercise[]>,
-        index: number,
-        _exerciseChanged: void,
-    ): Observable<Exercise[]> {
+    transform(_value: Observable<Exercise[]>, index: number): Observable<Exercise[]> {
         return this.newTrainingStoreService.currentTrainingChanged$.pipe(
             take(1),
             map((training: NewTraining) => training.exercises[index]?.availableExercises ?? []),

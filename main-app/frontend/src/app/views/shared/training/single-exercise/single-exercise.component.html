@@ -20,7 +20,7 @@
                                     >
                                         <ion-select-option
                                             *ngFor="
-                                                let exercise of exercises$ | newTraining: i: (isExerciseChanged$ | async) | async
+                                                let exercise of exercises$ | newTraining: i | async
                                             "
                                             [value]="exercise.name"
                                         >
