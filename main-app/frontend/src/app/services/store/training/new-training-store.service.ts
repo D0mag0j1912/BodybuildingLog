@@ -114,19 +114,17 @@ export class NewTrainingStoreService {
         deletedExerciseName?: string,
         indexExercise?: number,
     ): Observable<[NewTraining, Exercise[]]> {
-        let updatedExercises: SingleExercise[] = [...currentTrainingState.exercises];
         let updatedTraining: NewTraining;
         if (deletedExerciseName) {
             return this.allExercisesChanged$.pipe(
                 take(1),
                 map((value) => value.Value),
                 tap((_) => {
-                    updatedExercises = updatedExercises.filter(
-                        (exercise) => exercise.exerciseData.name !== deletedExerciseName,
-                    );
                     updatedTraining = {
                         ...currentTrainingState,
-                        exercises: updatedExercises,
+                        exercises: currentTrainingState.exercises.filter(
+                            (exercise) => exercise.exerciseData.name !== deletedExerciseName,
+                        ),
                     };
                 }),
                 map((allExercises: Exercise[]) => [
@@ -135,12 +133,11 @@ export class NewTrainingStoreService {
                 ]),
             );
         } else {
-            updatedExercises = updatedExercises.filter(
-                (_exercise: SingleExercise, index: number) => index !== indexExercise,
-            );
             updatedTraining = {
                 ...currentTrainingState,
-                exercises: updatedExercises,
+                exercises: currentTrainingState.exercises.filter(
+                    (_exercise: SingleExercise, index: number) => index !== indexExercise,
+                ),
             };
             const response = [updatedTraining, [] as Exercise[]] as [NewTraining, Exercise[]];
             return this.saveTrainingData(updatedTraining).pipe(switchMap((_) => of(response)));
