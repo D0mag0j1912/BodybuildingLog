@@ -49,7 +49,6 @@ import {
 } from '../../delete-exercise-dialog/delete-exercise-dialog.component';
 import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
-import { TOTAL_INITIAL_WEIGHT } from '../../../../constants/training/new-training.const';
 import { SetsComponent } from '../set/set.component';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import { WeightUnit } from '../../../../models/common/preferences.type';
@@ -255,10 +254,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     ),
                 }),
                 sets: new FormControl(exercise?.sets ?? [], { nonNullable: true }),
-                total: new FormControl(exercise?.total, {
-                    nonNullable: true,
-                    validators: [Validators.required],
-                }),
             }),
         );
         if (event) {
@@ -364,29 +359,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 }),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe((_) =>
-                this.accessFormField<SingleExerciseValueType>(
-                    'total',
-                    $event.indexExercise,
-                ).patchValue($event.newTotal),
-            );
-    }
-
-    deleteSet($event: Partial<SetStateChanged>): void {
-        this.accessFormField<SingleExerciseValueType>('total', $event.indexExercise).patchValue(
-            $event.newTotal,
-        );
-        this._newTrainingStoreService.deleteSet(
-            $event.indexExercise,
-            $event.indexSet,
-            $event.newTotal,
-        );
-    }
-
-    onWeightUnitChanged(exerciseIndex: number): void {
-        this.accessFormField<SingleExerciseValueType>('total', exerciseIndex).patchValue(
-            TOTAL_INITIAL_WEIGHT,
-        );
+            .subscribe();
     }
 
     getExercises(): AbstractControl[] {
@@ -449,10 +422,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 let exerciseFormData: SingleExercise[] = [];
 
                 this.getExercises().forEach((_exercise: AbstractControl, indexExercise: number) => {
-                    const total = this.accessFormField<SingleExerciseValueType>(
-                        'total',
-                        indexExercise,
-                    ).value as number;
+                    const total = currentTrainingState.exercises[indexExercise].total;
                     const exerciseData: Exercise = {
                         name: this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
                             'exerciseData',

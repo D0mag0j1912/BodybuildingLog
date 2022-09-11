@@ -74,9 +74,7 @@
                     [editTrainingData]="editTrainingData"
                     [isWeightLifted]="isWeightLifted$ | async"
                     [isReps]="isReps$ | async"
-                    (setAdded)="onChangeSets($event)"
-                    (setDeleted)="deleteSet($event)"
-                    (weightUnitChanged)="onWeightUnitChanged($event)"
+                    (setUpdated)="onChangeSets($event)"
                 ></bl-set>
             </ion-card>
         </ng-container>

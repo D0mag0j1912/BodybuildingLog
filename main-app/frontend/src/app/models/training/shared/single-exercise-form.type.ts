@@ -5,9 +5,9 @@ import { Set } from './set.model';
 import { SingleExercise } from './single-exercise.model';
 
 export type SingleExerciseFormType = {
-    [P in keyof Omit<
+    [P in keyof Pick<
         FormType<SingleExercise>,
-        'availableExercises'
+        'exerciseData' | 'sets'
     >]: SingleExercise[P] extends Exercise
         ? FormGroup<ExerciseFormType>
         : FormType<SingleExercise>[P];
@@ -16,7 +16,6 @@ export type SingleExerciseFormType = {
 export type SingleExerciseValueType = {
     exerciseData?: ExerciseValueType;
     sets?: Set[];
-    total?: number;
 };
 
 export type ExerciseValueType = Partial<Pick<Exercise, 'name' | 'imageUrl' | 'primaryMuscleGroup'>>;

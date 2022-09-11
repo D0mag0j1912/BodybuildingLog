@@ -34,6 +34,7 @@ import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
+import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
 
 export type SetFormType = FormType<Set>;
 
@@ -83,15 +84,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     isReps = true;
 
     @Output()
-    readonly setAdded: EventEmitter<SetStateChanged> = new EventEmitter<SetStateChanged>();
-
-    @Output()
-    readonly setDeleted: EventEmitter<Partial<SetStateChanged>> = new EventEmitter<
-        Partial<SetStateChanged>
-    >();
-
-    @Output()
-    readonly weightUnitChanged: EventEmitter<number> = new EventEmitter<number>();
+    readonly setUpdated: EventEmitter<SetStateChanged> = new EventEmitter<SetStateChanged>();
 
     @ViewChildren('weightLiftedEl')
     readonly weightLiftedElements: QueryList<IonInput>;
@@ -102,6 +95,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     constructor(
         private readonly _unsubscribeService: UnsubscribeService,
         private readonly _preferencesStoreService: PreferencesStoreService,
+        private readonly _newTrainingStoreService: NewTrainingStoreService,
     ) {}
 
     ngOnInit(): void {
@@ -150,8 +144,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                         this.accessFormField('weightLifted', index).patchValue(
                             convertWeightUnit(preferences.weightUnit, currentWeightLiftedValue),
                         );
-                    } else {
-                        this.weightUnitChanged.emit(index);
                     }
                 });
             });
@@ -246,11 +238,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     deleteSet(indexSet: number): void {
         this.form.removeAt(indexSet);
-        this.setDeleted.emit({
-            indexExercise: this.indexExercise,
-            indexSet: indexSet,
-            newTotal: this._calculateTotal(),
-        } as Partial<SetStateChanged>);
+        this._newTrainingStoreService.deleteSet(
+            this.indexExercise,
+            indexSet,
+            this._calculateTotal(),
+        );
     }
 
     onChangeSets(indexSet: number): void {
@@ -265,7 +257,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         if (repsCtrl.valid && repsCtrl?.value) {
             isRepsValid = true;
         }
-        this.setAdded.emit({
+        this.setUpdated.emit({
             indexExercise: this.indexExercise,
             indexSet: indexSet,
             isWeightLiftedValid: isWeightLiftedValid,
