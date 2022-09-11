@@ -2,12 +2,8 @@
     <ng-container *ngFor="let set of getSets(); let j = index">
         <ng-container [formGroupName]="j">
             <ion-grid class="set-grid">
-                <ion-row
-                    class="ion-text-center set-row"
-                    [class.ion-justify-content-center]="!isWeightLifted && isReps">
-                    <ion-col
-                        *ngIf="isWeightLifted"
-                        size="5">
+                <ion-row class="ion-text-center set-row">
+                    <ion-col size="5">
                         <ion-item fill="outline">
                             <ion-label class="ion-label" position="floating">
                                 {{ 'training.new_training.weight_lifted' | translate }}
@@ -74,9 +70,7 @@
                             </ion-text>
                         </ion-item>
                     </ion-col>
-                    <ion-col
-                        *ngIf="isReps"
-                        size="5">
+                    <ion-col size="5">
                         <ion-item fill="outline">
                             <ion-label class="ion-label" position="floating">
                                 {{ 'training.new_training.reps_performed' | translate }}
