@@ -247,8 +247,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     deleteSet(indexSet: number): void {
         this.form.removeAt(indexSet);
         this.setDeleted.emit({
-            indexExercise: this.indexExercise as number,
-            indexSet: indexSet as number,
+            indexExercise: this.indexExercise,
+            indexSet: indexSet,
             newTotal: this._calculateTotal(),
         } as Partial<SetStateChanged>);
     }
