@@ -218,6 +218,9 @@ export class NewTrainingStoreService {
         trainingToBeUpdated: NewTraining,
         selectedExerciseData: Exercise,
     ): Observable<NewTraining> {
+        const previousSelectedExercise = trainingToBeUpdated.exercises.find(
+            (_exercise: SingleExercise, index: number) => index === selectedIndex,
+        ).exerciseData;
         const updatedTraining: NewTraining = {
             ...trainingToBeUpdated,
             exercises: trainingToBeUpdated.exercises.map((exercise: SingleExercise, i: number) => {
@@ -227,9 +230,18 @@ export class NewTrainingStoreService {
                         exerciseData: selectedExerciseData,
                     };
                 } else {
+                    let availableExercises: Exercise[];
+                    if (previousSelectedExercise.name) {
+                        availableExercises = [
+                            ...exercise.availableExercises,
+                            previousSelectedExercise,
+                        ].sort(this.compare);
+                    } else {
+                        availableExercises = [...exercise.availableExercises].sort(this.compare);
+                    }
                     return {
                         ...exercise,
-                        availableExercises: exercise.availableExercises.filter(
+                        availableExercises: availableExercises.filter(
                             (exercise: Exercise) => exercise.name !== selectedExercise,
                         ),
                     };
