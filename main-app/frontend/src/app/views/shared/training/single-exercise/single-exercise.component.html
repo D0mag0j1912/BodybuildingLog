@@ -1,5 +1,5 @@
 <form class="form" [formGroup]="$any(form)" (ngSubmit)="onSubmit()">
-    <ng-container *ngFor="let group of getExercises(); let i = index">
+    <ng-container *ngFor="let group of form.controls; let i = index">
         <ng-container [formGroupName]="i">
             <ion-card class="wrapper">
                 <ng-container formGroupName="exerciseData">
