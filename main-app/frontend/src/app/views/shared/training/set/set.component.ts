@@ -96,9 +96,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     ngOnInit(): void {
         this._currentWeightUnit =
             this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
-        //Comment for now
-        /* this.form.setValidators([SetValidators.allSetsFilled()]);
-        this.form.updateValueAndValidity(); */
+        this.form.setValidators([SetValidators.allSetsFilled()]);
+        this.form.updateValueAndValidity();
 
         this.exerciseNameControl.valueChanges
             .pipe(takeUntil(this._unsubscribeService))
@@ -291,11 +290,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     }
 
     private _setFormValue(setConstituent: SetConstituent, set: Set): number | null {
-        if (setConstituent in set) {
-            if (setConstituent === 'weightLifted') {
-                return this._setWeightLiftedValue(set.weightLifted);
-            } else {
-                return set.reps;
+        if (set) {
+            if (setConstituent in set) {
+                if (setConstituent === 'weightLifted') {
+                    return this._setWeightLiftedValue(set.weightLifted);
+                } else {
+                    return set.reps;
+                }
             }
         }
         return null;
