@@ -74,10 +74,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         true,
     );
     private readonly _isApiLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private readonly _isWeightLifted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-        true,
-    );
-    private readonly _isReps$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
     readonly isExerciseChanged$: Observable<void> = this._isExerciseChanged$.asObservable();
     readonly isSubmitted$: Observable<boolean> = this._isSubmitted$.asObservable();
@@ -117,8 +113,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
             }
         }),
     );
-    readonly isWeightLifted$: Observable<boolean> = this._isWeightLifted$.asObservable();
-    readonly isReps$: Observable<boolean> = this._isReps$.asObservable();
 
     readonly form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
 
@@ -242,6 +236,21 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     }
 
     addExercise(exercise?: SingleExercise, event?: UIEvent): void {
+        if (exercise) {
+            const { isWeightLifted, isReps } = this._prepareSet(exercise);
+            exercise = {
+                ...exercise,
+                sets: [...exercise.sets].map((set: Set) => {
+                    if (!isWeightLifted) {
+                        delete set.weightLifted;
+                    }
+                    if (!isReps) {
+                        delete set.reps;
+                    }
+                    return set;
+                }),
+            };
+        }
         this.form.push(
             new FormGroup<SingleExerciseFormType>({
                 exerciseData: new FormGroup<ExerciseFormType>({
@@ -521,19 +530,28 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return errors.length === 0;
     }
 
-    private _prepareSet(exercise: SingleExercise): void {
+    private _prepareSet(exercise: SingleExercise): {
+        isWeightLifted: boolean;
+        isReps: boolean;
+    } {
+        let isWeightLifted = true;
+        let isReps = true;
         const setCategories = exercise.exerciseData.setCategory;
-        let isWeightLifted = setCategories.some((setCategory: SetCategoryType) =>
-            WEIGHT_LIFTED_SET_CATEGORIES.includes(setCategory),
-        );
-        const isReps = setCategories.some((setCategory: SetCategoryType) =>
-            REPS_SET_CATEGORIES.includes(setCategory),
-        );
-        /** If 'dynamicBodyweight' is in the list, it has highest priority  */
-        if (isWeightLifted && isReps && setCategories.includes('dynamicBodyweight')) {
-            isWeightLifted = false;
+        if (setCategories.length > 0) {
+            isWeightLifted = setCategories.some((setCategory: SetCategoryType) =>
+                WEIGHT_LIFTED_SET_CATEGORIES.includes(setCategory),
+            );
+            isReps = setCategories.some((setCategory: SetCategoryType) =>
+                REPS_SET_CATEGORIES.includes(setCategory),
+            );
+            /** If 'dynamicBodyweight' is in the list, it has highest priority  */
+            if (isWeightLifted && isReps && setCategories.includes('dynamicBodyweight')) {
+                isWeightLifted = false;
+            }
         }
-        this._isWeightLifted$.next(isWeightLifted);
-        this._isReps$.next(isReps);
+        return {
+            isWeightLifted,
+            isReps,
+        };
     }
 }

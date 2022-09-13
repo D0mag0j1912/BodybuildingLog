@@ -77,12 +77,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     @Input()
     isLoading = false;
 
-    @Input()
-    isWeightLifted = true;
-
-    @Input()
-    isReps = true;
-
     @Output()
     readonly setUpdated: EventEmitter<SetStateChanged> = new EventEmitter<SetStateChanged>();
 
@@ -101,8 +95,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     ngOnInit(): void {
         this._currentWeightUnit =
             this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
-        this.form.setValidators([SetValidators.allSetsFilled()]);
-        this.form.updateValueAndValidity();
+        //Comment for now
+        /* this.form.setValidators([SetValidators.allSetsFilled()]);
+        this.form.updateValueAndValidity(); */
 
         this.exerciseNameControl.valueChanges
             .pipe(takeUntil(this._unsubscribeService))
@@ -118,7 +113,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         this.isExerciseChanged$
             .pipe(delay(400), takeUntil(this._unsubscribeService))
             .subscribe(async (_) => {
-                if (this.isWeightLifted) {
+                /* if (this.isWeightLifted) {
                     if (this.weightLiftedElements?.first) {
                         await this.weightLiftedElements.first.setFocus();
                     }
@@ -127,7 +122,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                     if (this.repsElements?.first) {
                         await this.repsElements.first.setFocus();
                     }
-                }
+                } */
             });
 
         this.currentPreferences$
@@ -195,38 +190,70 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     }
 
     addSet(set?: Set): void {
-        this.form.push(
-            new FormGroup<FormType<Set>>({
-                setNumber: new FormControl(set ? set.setNumber : this.getSets().length + 1, {
-                    nonNullable: true,
-                    validators: [Validators.required],
-                }),
-                weightLifted: new FormControl(
-                    {
-                        value: set ? this._setWeightLiftedValue(set.weightLifted) : null,
-                        disabled: this.exerciseNameControl.value ? false : true,
-                    },
-                    [
-                        Validators.required,
-                        Validators.min(1),
-                        Validators.max(1000),
-                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                    ],
-                ),
-                reps: new FormControl(
-                    {
-                        value: set ? set.reps : null,
-                        disabled: this.exerciseNameControl.value ? false : true,
-                    },
-                    [
-                        Validators.required,
-                        Validators.min(1),
-                        Validators.max(1000),
-                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                    ],
-                ),
-            }),
+        const setProperties: FormType<Set> = Object.assign({});
+        setProperties['setNumber'] = new FormControl(
+            set ? set.setNumber : this.getSets().length + 1,
+            {
+                nonNullable: true,
+                validators: [Validators.required],
+            },
         );
+        if (set) {
+            if ('weightLifted' in set) {
+                setProperties['weightLifted'] = new FormControl(
+                    {
+                        value: this._setWeightLiftedValue(set.weightLifted),
+                        disabled: this.exerciseNameControl.value ? false : true,
+                    },
+                    [
+                        Validators.required,
+                        Validators.min(1),
+                        Validators.max(1000),
+                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                    ],
+                );
+            }
+            if ('reps' in set) {
+                setProperties['reps'] = new FormControl(
+                    {
+                        value: set.reps,
+                        disabled: this.exerciseNameControl.value ? false : true,
+                    },
+                    [
+                        Validators.required,
+                        Validators.min(1),
+                        Validators.max(1000),
+                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                    ],
+                );
+            }
+        } else {
+            setProperties['weightLifted'] = new FormControl(
+                {
+                    value: null,
+                    disabled: this.exerciseNameControl.value ? false : true,
+                },
+                [
+                    Validators.required,
+                    Validators.min(1),
+                    Validators.max(1000),
+                    Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                ],
+            );
+            setProperties['reps'] = new FormControl(
+                {
+                    value: null,
+                    disabled: this.exerciseNameControl.value ? false : true,
+                },
+                [
+                    Validators.required,
+                    Validators.min(1),
+                    Validators.max(1000),
+                    Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                ],
+            );
+        }
+        this.form.push(new FormGroup<FormType<Set>>(setProperties));
         of(null)
             .pipe(delay(200), takeUntil(this._unsubscribeService))
             .subscribe(async (_) => {
