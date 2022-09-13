@@ -35,6 +35,7 @@ import { NewTraining } from '../../../../models/training/new-training/new-traini
 import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
+import { SetConstituent } from '../../../../models/training/shared/set.type';
 
 export type SetFormType = FormType<Set>;
 
@@ -198,61 +199,30 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                 validators: [Validators.required],
             },
         );
-        if (set) {
-            if ('weightLifted' in set) {
-                setProperties['weightLifted'] = new FormControl(
-                    {
-                        value: this._setWeightLiftedValue(set.weightLifted),
-                        disabled: this.exerciseNameControl.value ? false : true,
-                    },
-                    [
-                        Validators.required,
-                        Validators.min(1),
-                        Validators.max(1000),
-                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                    ],
-                );
-            }
-            if ('reps' in set) {
-                setProperties['reps'] = new FormControl(
-                    {
-                        value: set.reps,
-                        disabled: this.exerciseNameControl.value ? false : true,
-                    },
-                    [
-                        Validators.required,
-                        Validators.min(1),
-                        Validators.max(1000),
-                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                    ],
-                );
-            }
-        } else {
-            setProperties['weightLifted'] = new FormControl(
-                {
-                    value: null,
-                    disabled: this.exerciseNameControl.value ? false : true,
-                },
-                [
-                    Validators.required,
-                    Validators.min(1),
-                    Validators.max(1000),
-                    Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                ],
-            );
-            setProperties['reps'] = new FormControl(
-                {
-                    value: null,
-                    disabled: this.exerciseNameControl.value ? false : true,
-                },
-                [
-                    Validators.required,
-                    Validators.min(1),
-                    Validators.max(1000),
-                    Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                ],
-            );
-        }
+        setProperties['weightLifted'] = new FormControl(
+            {
+                value: this._setFormValue('weightLifted', set),
+                disabled: this.exerciseNameControl.value ? false : true,
+            },
+            [
+                Validators.required,
+                Validators.min(1),
+                Validators.max(1000),
+                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+            ],
+        );
+        setProperties['reps'] = new FormControl(
+            {
+                value: this._setFormValue('reps', set),
+                disabled: this.exerciseNameControl.value ? false : true,
+            },
+            [
+                Validators.required,
+                Validators.min(1),
+                Validators.max(1000),
+                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+            ],
+        );
         this.form.push(new FormGroup<FormType<Set>>(setProperties));
         of(null)
             .pipe(delay(200), takeUntil(this._unsubscribeService))
@@ -318,5 +288,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             }
         }
         return weightLifted;
+    }
+
+    private _setFormValue(setConstituent: SetConstituent, set: Set): number | null {
+        if (setConstituent in set) {
+            if (setConstituent === 'weightLifted') {
+                return this._setWeightLiftedValue(set.weightLifted);
+            } else {
+                return set.reps;
+            }
+        }
+        return null;
     }
 }
