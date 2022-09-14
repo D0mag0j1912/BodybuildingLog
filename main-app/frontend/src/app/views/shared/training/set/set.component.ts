@@ -248,7 +248,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         } as SetStateChanged);
     }
 
-    accessFormField(formField: keyof ModelWithoutIdType<Set>, indexSet: number): AbstractControl {
+    accessFormField(
+        formField: keyof ModelWithoutIdType<Set>,
+        indexSet: number,
+    ): AbstractControl<number> {
         return this.form.at(indexSet)?.get(formField);
     }
 
@@ -264,7 +267,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         if (this.editTrainingData) {
             const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
             if (editTrainingWeightUnit !== this._currentWeightUnit) {
-                return +convertWeightUnit(this._currentWeightUnit, weightLifted);
+                return convertWeightUnit(this._currentWeightUnit, weightLifted);
             }
         }
         return weightLifted;
