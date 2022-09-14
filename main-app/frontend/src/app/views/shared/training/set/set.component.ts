@@ -96,8 +96,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     ngOnInit(): void {
         this._currentWeightUnit =
             this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
-        this.form.setValidators([SetValidators.allSetsFilled()]);
-        this.form.updateValueAndValidity();
+        //TODO: Update set validator to match new set category feature
+        /* this.form.setValidators([SetValidators.allSetsFilled()]);
+        this.form.updateValueAndValidity(); */
 
         this.exerciseNameControl.valueChanges
             .pipe(takeUntil(this._unsubscribeService))
@@ -189,40 +190,20 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         return (this.form as FormArray<FormGroup<FormType<Set>>>).controls;
     }
 
-    addSet(set?: Set): void {
-        const setProperties: FormType<Set> = Object.assign({});
-        setProperties['setNumber'] = new FormControl(
+    addSet(set?: Set, $event?: Event): void {
+        let setControls: FormType<Set> = Object.assign({});
+        setControls['setNumber'] = new FormControl(
             set ? set.setNumber : this.getSets().length + 1,
             {
                 nonNullable: true,
                 validators: [Validators.required],
             },
         );
-        setProperties['weightLifted'] = new FormControl(
-            {
-                value: this._setFormValue('weightLifted', set),
-                disabled: this.exerciseNameControl.value ? false : true,
-            },
-            [
-                Validators.required,
-                Validators.min(1),
-                Validators.max(1000),
-                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-            ],
-        );
-        setProperties['reps'] = new FormControl(
-            {
-                value: this._setFormValue('reps', set),
-                disabled: this.exerciseNameControl.value ? false : true,
-            },
-            [
-                Validators.required,
-                Validators.min(1),
-                Validators.max(1000),
-                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-            ],
-        );
-        this.form.push(new FormGroup<FormType<Set>>(setProperties));
+        if ($event || set.weightLifted) {
+            setControls = this._constructSetForm('weightLifted', set, setControls);
+        }
+        setControls = this._constructSetForm('reps', set, setControls);
+        this.form.push(new FormGroup<FormType<Set>>(setControls));
         of(null)
             .pipe(delay(200), takeUntil(this._unsubscribeService))
             .subscribe(async (_) => {
@@ -287,6 +268,26 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             }
         }
         return weightLifted;
+    }
+
+    private _constructSetForm(
+        setConstituent: SetConstituent,
+        set: Set,
+        setControls: FormType<Set>,
+    ): FormType<Set> {
+        setControls[setConstituent] = new FormControl(
+            {
+                value: this._setFormValue(setConstituent, set),
+                disabled: this.exerciseNameControl.value ? false : true,
+            },
+            [
+                Validators.required,
+                Validators.min(1),
+                Validators.max(1000),
+                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+            ],
+        );
+        return setControls;
     }
 
     private _setFormValue(setConstituent: SetConstituent, set: Set): number | null {

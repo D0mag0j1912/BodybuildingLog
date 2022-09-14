@@ -2,7 +2,9 @@
     <ng-container *ngFor="let set of form.controls; let j = index">
         <ng-container [formGroupName]="j">
             <ion-grid class="set-grid">
-                <ion-row class="ion-text-center set-row">
+                <ion-row
+                    class="ion-text-center set-row"
+                    [class.ion-justify-content-center]="!accessFormField('weightLifted', j)">
                     <ion-col
                         *ngIf="accessFormField('weightLifted', j)"
                         size="5">
@@ -154,7 +156,7 @@
                 type="button"
                 color="primary"
                 [disabled]="!exerciseNameControl.value || form?.errors?.setNotFilled"
-                (click)="addSet()"
+                (click)="addSet(undefined, $event)"
             >
                 {{ 'training.new_training.buttons.add_set' | translate }}
             </ion-button>
