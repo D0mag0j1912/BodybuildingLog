@@ -1,7 +1,10 @@
+import { SetCategoryType } from './set.type';
+
 export interface Set {
     readonly setNumber: number;
-    weightLifted?: number;
-    reps?: number;
+    readonly category: SetCategoryType;
+    readonly weightLifted?: number;
+    readonly reps?: number;
     readonly _id?: string;
 }
 

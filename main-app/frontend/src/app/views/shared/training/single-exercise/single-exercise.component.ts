@@ -232,21 +232,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     }
 
     addExercise(exercise?: SingleExercise, event?: UIEvent): void {
-        if (exercise) {
-            const { isWeightLifted, isReps } = this._prepareSet(exercise);
-            exercise = {
-                ...exercise,
-                sets: [...exercise.sets].map((set: Set) => {
-                    if (!isWeightLifted) {
-                        delete set.weightLifted;
-                    }
-                    if (!isReps) {
-                        delete set.reps;
-                    }
-                    return set;
-                }),
-            };
-        }
         this.form.push(
             new FormGroup<SingleExerciseFormType>({
                 exerciseData: new FormGroup<ExerciseFormType>({
@@ -430,6 +415,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     ).forEach((set: Set) => {
                         const apiSet: Set = {
                             setNumber: +set.setNumber,
+                            //TODO: Implement dynamic category
+                            category: 'freeWeighted',
                             weightLifted: +set.weightLifted,
                             reps: +set.reps,
                         };

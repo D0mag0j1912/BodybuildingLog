@@ -18,7 +18,7 @@ import {
     Validators,
 } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
-import { BehaviorSubject, combineLatest, EMPTY, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { delay, filter, switchMap, take, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
@@ -196,29 +196,41 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
         return (this.form as FormArray<FormGroup<FormType<Set>>>).controls;
     }
 
-    addSet(set?: Set, $event?: Event): void {
-        let setControls: FormType<Set> = Object.assign({});
-        setControls['setNumber'] = new FormControl(
-            set ? set.setNumber : this.getSets().length + 1,
-            {
-                nonNullable: true,
-                validators: [Validators.required],
-            },
+    addSet(set?: Set): void {
+        this.form.push(
+            new FormGroup<FormType<Set>>({
+                setNumber: new FormControl(set ? set.setNumber : this.getSets().length + 1, {
+                    nonNullable: true,
+                    validators: [Validators.required],
+                }),
+                weightLifted: new FormControl(
+                    {
+                        value: set ? this._setWeightLiftedValue(set.weightLifted) : null,
+                        disabled: this.exerciseNameControl.value ? false : true,
+                    },
+                    [
+                        Validators.required,
+                        Validators.min(1),
+                        Validators.max(1000),
+                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                    ],
+                ),
+                reps: new FormControl(
+                    {
+                        value: set ? set.reps : null,
+                        disabled: this.exerciseNameControl.value ? false : true,
+                    },
+                    [
+                        Validators.required,
+                        Validators.min(1),
+                        Validators.max(1000),
+                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                    ],
+                ),
+                //TODO: Remove this from form. Refactor form type
+                category: new FormControl(),
+            }),
         );
-        if ($event || 'weightLifted' in set) {
-            setControls = this._constructSetForm('weightLifted', set, setControls);
-        }
-        setControls = this._constructSetForm('reps', set, setControls);
-        this.form.push(new FormGroup<FormType<Set>>(setControls));
-        this._isWeightLifted$.next('weightLifted' in set);
-        this._isReps$.next('reps' in set);
-        of(null)
-            .pipe(delay(200), takeUntil(this._unsubscribeService))
-            .subscribe(async (_) => {
-                if (this.weightLiftedElements) {
-                    await this.weightLiftedElements.last?.setFocus();
-                }
-            });
     }
 
     deleteSet(indexSet: number): void {
@@ -238,10 +250,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
                     const trainingData: SetTrainingData = {
                         exerciseName: this.exerciseNameControl.value,
                         setNumber: this.accessFormField('setNumber', indexSet).value,
-                        weightLifted: isWeightLifted
-                            ? this.accessFormField('weightLifted', indexSet).value
-                            : undefined,
-                        reps: isReps ? this.accessFormField('reps', indexSet).value : undefined,
+                        weightLifted:
+                            isWeightLifted && this._isSetConstituentValid('weightLifted', indexSet)
+                                ? this.accessFormField('weightLifted', indexSet).value
+                                : undefined,
+                        reps:
+                            isReps && this._isSetConstituentValid('reps', indexSet)
+                                ? this.accessFormField('reps', indexSet).value
+                                : undefined,
                         total: this._calculateTotal(),
                     };
                     return this._newTrainingStoreService.setsChanged(trainingData);
@@ -249,11 +265,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
             )
             .subscribe();
     }
-
+    //TODO: Fix return type
     accessFormField(
         formField: keyof ModelWithoutIdType<Set>,
         indexSet: number,
-    ): AbstractControl<number> {
+    ): AbstractControl<any> {
         return this.form.at(indexSet)?.get(formField);
     }
 

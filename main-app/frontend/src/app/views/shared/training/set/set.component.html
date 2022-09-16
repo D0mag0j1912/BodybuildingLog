@@ -156,7 +156,7 @@
                 type="button"
                 color="primary"
                 [disabled]="!exerciseNameControl.value || form?.errors?.setNotFilled"
-                (click)="addSet(undefined, $event)"
+                (click)="addSet()"
             >
                 {{ 'training.new_training.buttons.add_set' | translate }}
             </ion-button>
