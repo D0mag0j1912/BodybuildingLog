@@ -227,8 +227,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
                         Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
                     ],
                 ),
-                //TODO: Remove this from form. Refactor form type
-                category: new FormControl(),
             }),
         );
     }
@@ -265,11 +263,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
             )
             .subscribe();
     }
-    //TODO: Fix return type
+
     accessFormField(
         formField: keyof ModelWithoutIdType<Set>,
         indexSet: number,
-    ): AbstractControl<any> {
+    ): AbstractControl<number> {
         return this.form.at(indexSet)?.get(formField);
     }
 

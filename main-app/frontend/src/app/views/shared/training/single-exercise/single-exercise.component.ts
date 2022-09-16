@@ -415,8 +415,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     ).forEach((set: Set) => {
                         const apiSet: Set = {
                             setNumber: +set.setNumber,
-                            //TODO: Implement dynamic category
-                            category: 'freeWeighted',
                             weightLifted: +set.weightLifted,
                             reps: +set.reps,
                         };

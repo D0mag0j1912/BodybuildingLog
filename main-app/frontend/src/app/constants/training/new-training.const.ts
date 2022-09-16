@@ -18,7 +18,6 @@ export const createEmptyExercise = (exercises: Exercise[]): SingleExercise => ({
     sets: [
         {
             setNumber: 1,
-            category: 'freeWeighted',
             weightLifted: null,
             reps: null,
         } as Set,
