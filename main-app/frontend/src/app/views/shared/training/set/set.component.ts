@@ -1,11 +1,10 @@
 import {
     ChangeDetectionStrategy,
     Component,
-    EventEmitter,
     Input,
     OnChanges,
+    OnDestroy,
     OnInit,
-    Output,
     QueryList,
     SimpleChanges,
     ViewChildren,
@@ -19,11 +18,11 @@ import {
     Validators,
 } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
-import { Observable, of } from 'rxjs';
-import { delay, filter, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, EMPTY, Observable, of } from 'rxjs';
+import { delay, filter, switchMap, take, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
-import { SetStateChanged } from '../../../../models/training/shared/set.model';
+import { SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
@@ -48,7 +47,12 @@ type SetFormValue = ModelWithoutIdType<Set>;
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
-export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
+export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, OnDestroy {
+    private readonly _isWeightLifted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+        true,
+    );
+    private readonly _isReps$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+
     readonly currentPreferences$: Observable<Preferences> =
         this._preferencesStoreService.preferencesChanged$;
 
@@ -77,9 +81,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     @Input()
     isLoading = false;
-
-    @Output()
-    readonly setUpdated: EventEmitter<SetStateChanged> = new EventEmitter<SetStateChanged>();
 
     @ViewChildren('weightLiftedEl')
     readonly weightLiftedElements: QueryList<IonInput>;
@@ -149,6 +150,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         this.form.updateValueAndValidity({ emitEvent: true });
     }
 
+    ngOnDestroy(): void {
+        this._isWeightLifted$.complete();
+        this._isReps$.complete();
+    }
+
     writeValue(sets: Set[]): void {
         if (sets.length > 0) {
             for (const set of sets) {
@@ -199,11 +205,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                 validators: [Validators.required],
             },
         );
-        if ($event || set.weightLifted) {
+        if ($event || 'weightLifted' in set) {
             setControls = this._constructSetForm('weightLifted', set, setControls);
         }
         setControls = this._constructSetForm('reps', set, setControls);
         this.form.push(new FormGroup<FormType<Set>>(setControls));
+        this._isWeightLifted$.next('weightLifted' in set);
+        this._isReps$.next('reps' in set);
         of(null)
             .pipe(delay(200), takeUntil(this._unsubscribeService))
             .subscribe(async (_) => {
@@ -223,29 +231,23 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     }
 
     onChangeSets(indexSet: number): void {
-        let isWeightLiftedValid = false;
-        let isRepsValid = false;
-        const weightLiftedCtrl = this.accessFormField('weightLifted', indexSet);
-        const repsCtrl = this.accessFormField('reps', indexSet);
-        const setNumberCtrl = this.accessFormField('setNumber', indexSet);
-        if (weightLiftedCtrl.valid && weightLiftedCtrl?.value) {
-            isWeightLiftedValid = true;
-        }
-        if (repsCtrl.valid && repsCtrl?.value) {
-            isRepsValid = true;
-        }
-        this.setUpdated.emit({
-            indexExercise: this.indexExercise,
-            indexSet: indexSet,
-            isWeightLiftedValid: isWeightLiftedValid,
-            isRepsValid: isRepsValid,
-            newTotal: this._calculateTotal(),
-            newSet: {
-                setNumber: +setNumberCtrl.value,
-                weightLifted: +weightLiftedCtrl.value,
-                reps: +repsCtrl.value,
-            } as Set,
-        } as SetStateChanged);
+        combineLatest([this._isWeightLifted$, this._isReps$])
+            .pipe(
+                take(1),
+                switchMap(([isWeightLifted, isReps]: [boolean, boolean]) => {
+                    const trainingData: SetTrainingData = {
+                        exerciseName: this.exerciseNameControl.value,
+                        setNumber: this.accessFormField('setNumber', indexSet).value,
+                        weightLifted: isWeightLifted
+                            ? this.accessFormField('weightLifted', indexSet).value
+                            : undefined,
+                        reps: isReps ? this.accessFormField('reps', indexSet).value : undefined,
+                        total: this._calculateTotal(),
+                    };
+                    return this._newTrainingStoreService.setsChanged(trainingData);
+                }),
+            )
+            .subscribe();
     }
 
     accessFormField(
@@ -304,5 +306,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             }
         }
         return null;
+    }
+
+    private _isSetConstituentValid(setConstituent: SetConstituent, indexSet: number): boolean {
+        return this.accessFormField(setConstituent, indexSet)?.valid;
     }
 }

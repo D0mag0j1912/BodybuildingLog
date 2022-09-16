@@ -5,15 +5,6 @@ export interface Set {
     readonly _id?: string;
 }
 
-export interface SetStateChanged {
-    readonly indexExercise: number;
-    readonly indexSet: number;
-    readonly isWeightLiftedValid?: boolean;
-    readonly isRepsValid?: boolean;
-    readonly newTotal?: number;
-    readonly newSet?: Set;
-}
-
 export interface SetTrainingData {
     readonly exerciseName: string;
     readonly setNumber: number;

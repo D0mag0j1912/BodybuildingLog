@@ -151,7 +151,7 @@ export class NewTrainingStoreService {
                 singleExercise.exerciseData.name === trainingData.exerciseName,
         );
         const indexFoundSet = updatedTraining.exercises[indexOfChangedExercise].sets.findIndex(
-            (set) => set.setNumber === trainingData.setNumber,
+            (set: Set) => set.setNumber === trainingData.setNumber,
         );
 
         if (indexFoundSet > -1) {
@@ -164,11 +164,20 @@ export class NewTrainingStoreService {
                                 ...exercise,
                                 sets: [...exercise.sets].map((set: Set, j: number) => {
                                     if (j === indexFoundSet) {
-                                        return {
-                                            ...set,
-                                            weightLifted: trainingData.weightLifted,
-                                            reps: trainingData.reps,
-                                        };
+                                        let updatedSet: Set;
+                                        if (trainingData?.weightLifted) {
+                                            updatedSet = {
+                                                ...set,
+                                                weightLifted: trainingData.weightLifted,
+                                                reps: trainingData.reps,
+                                            };
+                                        } else {
+                                            updatedSet = {
+                                                ...set,
+                                                reps: trainingData.reps,
+                                            };
+                                        }
+                                        return updatedSet;
                                     }
                                     return set;
                                 }),
@@ -180,11 +189,19 @@ export class NewTrainingStoreService {
                 ),
             };
         } else {
-            const newSet = {
-                setNumber: trainingData.setNumber,
-                weightLifted: trainingData.weightLifted,
-                reps: trainingData.reps,
-            } as Set;
+            let newSet: Set;
+            if (trainingData.weightLifted) {
+                newSet = {
+                    setNumber: trainingData.setNumber,
+                    weightLifted: trainingData.weightLifted,
+                    reps: trainingData.reps,
+                } as Set;
+            } else {
+                newSet = {
+                    setNumber: trainingData.setNumber,
+                    reps: trainingData.reps,
+                } as Set;
+            }
             updatedTraining = {
                 ...updatedTraining,
                 exercises: [...updatedTraining.exercises].map(

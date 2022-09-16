@@ -22,14 +22,13 @@ import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, EMPTY, from, Observable, of, Subject } from 'rxjs';
-import { delay, finalize, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+import { delay, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../../constants/shared/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { GeneralResponseData } from '../../../../models/common/general-response.model';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
-import { SetStateChanged, SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import {
@@ -68,7 +67,6 @@ import {
 })
 export class SingleExerciseComponent implements ControlValueAccessor, OnInit, OnDestroy {
     private readonly _isExerciseChanged$: Subject<void> = new Subject<void>();
-    private readonly _invalidSetChanged$: Subject<void> = new Subject<void>();
     private readonly _isSubmitted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private readonly _isExercisePicker$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
         true,
@@ -90,7 +88,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         this._newTrainingStoreService.allExercisesChanged$.pipe(
             map((value: StreamData<Exercise[]>) => value.Value),
         ),
-        this._invalidSetChanged$.pipe(startWith(undefined as void)),
     ]).pipe(
         delay(0),
         map(([trainingState, allExercises]) => {
@@ -173,7 +170,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     }
 
     ngOnDestroy(): void {
-        this._invalidSetChanged$.complete();
         this._isSubmitted$.complete();
         this._isExercisePicker$.complete();
         this._isApiLoading$.complete();
@@ -335,40 +331,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 )
                 .subscribe((_) => this.form.removeAt(indexExercise));
         }
-    }
-
-    onChangeSets($event: SetStateChanged): void {
-        of(null)
-            .pipe(
-                switchMap((_) => {
-                    if (
-                        $event?.isWeightLiftedValid &&
-                        $event?.isRepsValid &&
-                        this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
-                            'exerciseData',
-                            'name',
-                            $event.indexExercise,
-                        ).value
-                    ) {
-                        const trainingData: SetTrainingData = {
-                            exerciseName: this.accessFormGroup<
-                                SingleExerciseFormType,
-                                ExerciseValueType
-                            >('exerciseData', 'name', $event.indexExercise).value as string,
-                            setNumber: $event.newSet.setNumber,
-                            weightLifted: $event.newSet.weightLifted,
-                            reps: $event.newSet.reps,
-                            total: $event.newTotal,
-                        };
-                        return this._newTrainingStoreService.setsChanged(trainingData);
-                    } else {
-                        this._invalidSetChanged$.next();
-                        return of(null);
-                    }
-                }),
-                takeUntil(this._unsubscribeService),
-            )
-            .subscribe();
     }
 
     getExercises(): AbstractControl[] {
