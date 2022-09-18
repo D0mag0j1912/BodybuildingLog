@@ -192,7 +192,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
         }
     }
 
-    getSets(): AbstractControl[] {
+    getSets(): FormGroup<FormType<Set>>[] {
         return (this.form as FormArray<FormGroup<FormType<Set>>>).controls;
     }
 
@@ -270,11 +270,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
     ): AbstractControl<number> {
         return this.form.at(indexSet)?.get(formField);
     }
-
+    //TODO: Refactor logic for 'dynamicBodyweight' category
     private _calculateTotal(): number {
         let total = 0;
         for (const group of this.getSets()) {
-            total += +group.get('weightLifted')?.value * +group.get('reps')?.value;
+            total += group.get('weightLifted')?.value * group.get('reps')?.value;
         }
         return total;
     }
