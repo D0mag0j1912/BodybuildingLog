@@ -214,6 +214,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
         if (set.reps) {
             setControls = this._constructSetForm('reps', set, setControls);
         }
+        this._isWeightLifted$.next('weightLifted' in set);
+        this._isReps$.next('reps' in set);
         this.form.push(new FormGroup<SetFormType>(setControls));
     }
 
