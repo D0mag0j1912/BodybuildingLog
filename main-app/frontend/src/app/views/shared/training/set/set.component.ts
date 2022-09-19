@@ -61,6 +61,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
             take(1),
             map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         );
+    readonly isWeightLifted$: Observable<boolean> = this._isWeightLifted$
+        .asObservable()
+        .pipe(take(1));
+    readonly isReps$: Observable<boolean> = this._isReps$.asObservable().pipe(take(1));
 
     readonly form = new FormArray<FormGroup<SetFormType>>([]);
     private _currentWeightUnit: WeightUnit;
@@ -223,9 +227,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
     }
 
     onChangeSets(indexSet: number): void {
-        combineLatest([this._isWeightLifted$, this._isReps$, this.currentExerciseState$])
+        combineLatest([this.isWeightLifted$, this.isReps$, this.currentExerciseState$])
             .pipe(
-                take(1),
                 switchMap(
                     ([isWeightLifted, isReps, currentExerciseState]: [
                         boolean,
