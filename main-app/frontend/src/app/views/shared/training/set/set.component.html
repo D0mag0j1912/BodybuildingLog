@@ -1,9 +1,11 @@
 <form [formGroup]="$any(form)" autocomplete="off">
-    <ng-container *ngFor="let set of form.controls; let j = index">
-        <ng-container [formGroupName]="j">
+    <ng-container *ngFor="let set of form.controls; let i = index">
+        <ng-container [formGroupName]="i">
             <ion-grid class="set-grid">
                 <ion-row class="ion-text-center set-row">
-                    <ion-col size="5">
+                    <ion-col
+                        *ngIf="accessFormField('weightLifted', i)"
+                        size="5">
                         <ion-item fill="outline">
                             <ion-label class="ion-label" position="floating">
                                 {{ 'training.new_training.weight_lifted' | translate }}
@@ -14,23 +16,23 @@
                                     type="number"
                                     class="weight-lifted-input"
                                     formControlName="weightLifted"
-                                    (ionChange)="onChangeSets(j)"
+                                    (ionChange)="onChangeSets(i)"
                                     (ionBlur)="onTouched()"
-                                    (keydown.backspace)="onWeightLiftedKeydown(j)"
+                                    (keydown.backspace)="onWeightLiftedKeydown(i)"
                                 >
                                 </ion-input>
                                 <ion-text
                                     class="weight-lifted-input--unit"
                                     slot="end"
-                                    [class.invalid-weight-lifted]="accessFormField('weightLifted', j)?.invalid"
+                                    [class.invalid-weight-lifted]="accessFormField('weightLifted', i)?.invalid"
                                 >
                                     {{ weightLiftedEl?.value ? currentPreferences.weightUnit : '' }}
                                 </ion-text>
                             </ng-container>
                             <ion-text
                                 *ngIf="
-                                    accessFormField('weightLifted', j)?.errors?.pattern &&
-                                    !accessFormField('weightLifted', j)?.errors?.min &&
+                                    accessFormField('weightLifted', i)?.errors?.pattern &&
+                                    !accessFormField('weightLifted', i)?.errors?.min &&
                                     !isLoading
                                 "
                                 slot="error"
@@ -39,8 +41,8 @@
                             </ion-text>
                             <ion-text
                                 *ngIf="
-                                    accessFormField('weightLifted', j)?.errors?.min &&
-                                    !accessFormField('weightLifted', j)?.errors?.pattern &&
+                                    accessFormField('weightLifted', i)?.errors?.min &&
+                                    !accessFormField('weightLifted', i)?.errors?.pattern &&
                                     !isLoading
                                 "
                                 slot="error"
@@ -49,8 +51,8 @@
                             </ion-text>
                             <ion-text
                                 *ngIf="
-                                    accessFormField('weightLifted', j)?.errors?.max &&
-                                    !accessFormField('weightLifted', j)?.errors?.pattern &&
+                                    accessFormField('weightLifted', i)?.errors?.max &&
+                                    !accessFormField('weightLifted', i)?.errors?.pattern &&
                                     !isLoading
                                 "
                                 slot="error"
@@ -59,9 +61,9 @@
                             </ion-text>
                             <ion-text
                                 *ngIf="
-                                    accessFormField('weightLifted', j)?.errors?.required &&
+                                    accessFormField('weightLifted', i)?.errors?.required &&
                                     ((isExerciseFormSubmitted$ | async) ||
-                                        accessFormField('weightLifted', j).touched) &&
+                                        accessFormField('weightLifted', i).touched) &&
                                     !isLoading
                                 "
                                 slot="error"
@@ -70,7 +72,9 @@
                             </ion-text>
                         </ion-item>
                     </ion-col>
-                    <ion-col size="5">
+                    <ion-col
+                        *ngIf="accessFormField('reps', i)"
+                        size="5">
                         <ion-item fill="outline">
                             <ion-label class="ion-label" position="floating">
                                 {{ 'training.new_training.reps_performed' | translate }}
@@ -80,14 +84,14 @@
                                 type="number"
                                 class="reps-input"
                                 formControlName="reps"
-                                (ionChange)="onChangeSets(j)"
+                                (ionChange)="onChangeSets(i)"
                                 (ionBlur)="onTouched()"
-                                (keydown.backspace)="onRepsKeydown(j)"
+                                (keydown.backspace)="onRepsKeydown(i)"
                             ></ion-input>
                             <ion-text
                                 *ngIf="
-                                    accessFormField('reps', j)?.errors?.pattern &&
-                                    !accessFormField('reps', j)?.errors?.pattern &&
+                                    accessFormField('reps', i)?.errors?.pattern &&
+                                    !accessFormField('reps', i)?.errors?.pattern &&
                                     !isLoading
                                 "
                                 slot="error"
@@ -96,9 +100,9 @@
                             </ion-text>
                             <ion-text
                                 *ngIf="
-                                    accessFormField('reps', j)?.errors?.min &&
-                                    !accessFormField('reps', j)?.errors?.pattern &&
-                                    !accessFormField('reps', j)?.errors?.pattern &&
+                                    accessFormField('reps', i)?.errors?.min &&
+                                    !accessFormField('reps', i)?.errors?.pattern &&
+                                    !accessFormField('reps', i)?.errors?.pattern &&
                                     !isLoading
                                 "
                                 slot="error"
@@ -107,9 +111,9 @@
                             </ion-text>
                             <ion-text
                                 *ngIf="
-                                    accessFormField('reps', j)?.errors?.max &&
-                                    !accessFormField('reps', j)?.errors?.pattern &&
-                                    !accessFormField('reps', j)?.errors?.pattern &&
+                                    accessFormField('reps', i)?.errors?.max &&
+                                    !accessFormField('reps', i)?.errors?.pattern &&
+                                    !accessFormField('reps', i)?.errors?.pattern &&
                                     !isLoading
                                 "
                                 slot="error"
@@ -118,8 +122,8 @@
                             </ion-text>
                             <ion-text
                                 *ngIf="
-                                    accessFormField('reps', j)?.errors?.required &&
-                                    ((isExerciseFormSubmitted$ | async) || accessFormField('reps', j).touched) &&
+                                    accessFormField('reps', i)?.errors?.required &&
+                                    ((isExerciseFormSubmitted$ | async) || accessFormField('reps', i).touched) &&
                                     !isLoading
                                 "
                                 slot="error"
@@ -132,8 +136,8 @@
                         <ion-button
                             class="button-no-background delete-set-btn"
                             type="button"
-                            [disabled]="j === 0 || isLoading"
-                            (click)="deleteSet(j)"
+                            [disabled]="i === 0 || isLoading"
+                            (click)="deleteSet(i)"
                         >
                             <ion-icon name="trash-sharp" color="primary" class="delete-set-icon"></ion-icon>
                         </ion-button>

@@ -21,7 +21,7 @@ import {
 import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, combineLatest, EMPTY, from, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, EMPTY, from, Observable, Subject } from 'rxjs';
 import { delay, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../../constants/shared/message-duration.const';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
@@ -232,6 +232,21 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     }
 
     addExercise(exercise?: SingleExercise, event?: UIEvent): void {
+        if (exercise) {
+            const { isWeightLifted, isReps } = this._prepareSet(exercise);
+            exercise = {
+                ...exercise,
+                sets: [...exercise.sets].map((set: Set) => {
+                    if (!isWeightLifted) {
+                        delete set.weightLifted;
+                    }
+                    if (!isReps) {
+                        delete set.reps;
+                    }
+                    return set;
+                }),
+            };
+        }
         this.form.push(
             new FormGroup<SingleExerciseFormType>({
                 exerciseData: new FormGroup<ExerciseFormType>({
