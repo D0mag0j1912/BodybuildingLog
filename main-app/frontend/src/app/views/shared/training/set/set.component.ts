@@ -193,7 +193,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
     }
 
     getSets(): FormGroup<FormType<Set>>[] {
-        return (this.form as FormArray<FormGroup<FormType<Set>>>).controls;
+        return this.form.controls;
     }
 
     addSet(set?: Set): void {

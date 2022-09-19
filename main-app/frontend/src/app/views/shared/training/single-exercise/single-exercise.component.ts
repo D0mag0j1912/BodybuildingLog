@@ -318,8 +318,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         }
     }
 
-    getExercises(): AbstractControl[] {
-        return (this.form as FormArray<FormGroup<SingleExerciseFormType>>).controls;
+    getExercises(): FormGroup<SingleExerciseFormType>[] {
+        return this.form.controls;
     }
 
     accessFormField<T>(
@@ -384,16 +384,16 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                             'exerciseData',
                             'name',
                             indexExercise,
-                        ).value as string,
+                        ).value,
                         imageUrl: this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
                             'exerciseData',
                             'imageUrl',
                             indexExercise,
-                        ).value as string,
+                        ).value,
                         primaryMuscleGroup: this.accessFormGroup<
                             SingleExerciseFormType,
                             ExerciseValueType
-                        >('exerciseData', 'primaryMuscleGroup', indexExercise).value as string,
+                        >('exerciseData', 'primaryMuscleGroup', indexExercise).value,
                         translations:
                             currentTrainingState.exercises[indexExercise].exerciseData.translations,
                         setCategory:
@@ -449,7 +449,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         const alreadyUsedExercises: string[] = [];
         for (const exercise of this.getExercises()) {
             if (exercise.get('exerciseData.name').value) {
-                alreadyUsedExercises.push(exercise.get('exerciseData.name').value as string);
+                alreadyUsedExercises.push(exercise.get('exerciseData.name').value);
             }
         }
         return alreadyUsedExercises;
