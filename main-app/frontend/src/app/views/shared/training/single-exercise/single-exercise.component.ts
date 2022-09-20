@@ -414,6 +414,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         setCategories:
                             currentTrainingState.exercises[indexExercise].exerciseData
                                 .setCategories,
+                        primarySetCategory:
+                            currentTrainingState.exercises[indexExercise].exerciseData
+                                .primarySetCategory,
                     };
                     const initialExercise = {
                         exerciseData,

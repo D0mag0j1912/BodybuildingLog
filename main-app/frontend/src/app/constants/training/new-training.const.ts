@@ -10,6 +10,7 @@ export const createEmptyExercise = (exercises: Exercise[]): SingleExercise => ({
         imageUrl: '',
         primaryMuscleGroup: '',
         setCategories: [],
+        primarySetCategory: 'freeWeighted',
         translations: {
             hr: '',
             en: '',
