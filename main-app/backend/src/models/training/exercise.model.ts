@@ -23,7 +23,7 @@ export const EXERCISE_SCHEMA = new Schema({
             required: true,
         },
     },
-    setCategory: {
+    setCategories: {
         type: [String],
         required: true,
     },
@@ -61,5 +61,5 @@ export class Exercise {
     @ApiProperty()
     @IsArray()
     @IsNotEmpty()
-    setCategory: SetCategoryType[];
+    setCategories: SetCategoryType[];
 }

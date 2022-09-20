@@ -411,8 +411,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         >('exerciseData', 'primaryMuscleGroup', indexExercise).value,
                         translations:
                             currentTrainingState.exercises[indexExercise].exerciseData.translations,
-                        setCategory:
-                            currentTrainingState.exercises[indexExercise].exerciseData.setCategory,
+                        setCategories:
+                            currentTrainingState.exercises[indexExercise].exerciseData
+                                .setCategories,
                     };
                     const initialExercise = {
                         exerciseData,
@@ -498,7 +499,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     } {
         let isWeightLifted = true;
         let isReps = true;
-        const setCategories = exercise.exerciseData.setCategory;
+        const setCategories = exercise.exerciseData.setCategories;
         if (setCategories.length > 0) {
             isWeightLifted = setCategories.some((setCategory: SetCategoryType) =>
                 WEIGHT_LIFTED_SET_CATEGORIES.includes(setCategory),
