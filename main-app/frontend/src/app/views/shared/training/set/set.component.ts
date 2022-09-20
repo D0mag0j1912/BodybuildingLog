@@ -208,14 +208,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
 
     addSet(set?: Set): void {
         let setControls: SetFormType = Object.assign({});
-        if (set.weightLifted) {
+        const weightLiftedInSet = 'weightLifted' in set;
+        const repsInSet = 'reps' in set;
+        if (weightLiftedInSet) {
             setControls = this._constructSetForm('weightLifted', set, setControls);
         }
-        if (set.reps) {
+        if (repsInSet) {
             setControls = this._constructSetForm('reps', set, setControls);
         }
-        this._isWeightLifted$.next('weightLifted' in set);
-        this._isReps$.next('reps' in set);
+        this._isWeightLifted$.next(weightLiftedInSet);
+        this._isReps$.next(repsInSet);
         this.form.push(new FormGroup<SetFormType>(setControls));
     }
 
