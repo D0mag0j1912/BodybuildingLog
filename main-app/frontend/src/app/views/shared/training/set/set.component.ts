@@ -115,11 +115,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe((value: string) => {
                 value
-                    ? this.accessFormField('weightLifted', 0).enable()
-                    : this.accessFormField('weightLifted', 0).disable();
+                    ? this.accessFormField('weightLifted', 0)?.enable()
+                    : this.accessFormField('weightLifted', 0)?.disable();
                 value
-                    ? this.accessFormField('reps', 0).enable()
-                    : this.accessFormField('reps', 0).disable();
+                    ? this.accessFormField('reps', 0)?.enable()
+                    : this.accessFormField('reps', 0)?.disable();
             });
 
         this.isExerciseChanged$
@@ -208,8 +208,15 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
 
     addSet(set?: Set): void {
         let setControls: SetFormType = Object.assign({});
-        const weightLiftedInSet = 'weightLifted' in set;
-        const repsInSet = 'reps' in set;
+        let weightLiftedInSet: boolean;
+        let repsInSet: boolean;
+        if (!set) {
+            weightLiftedInSet = !!this.accessFormField('weightLifted', this.getSets().length - 1);
+            repsInSet = !!this.accessFormField('reps', this.getSets().length - 1);
+        } else {
+            weightLiftedInSet = 'weightLifted' in set;
+            repsInSet = 'reps' in set;
+        }
         if (weightLiftedInSet) {
             setControls = this._constructSetForm('weightLifted', set, setControls);
         }
