@@ -127,7 +127,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
 
         this.isExerciseChanged$
             .pipe(delay(400), takeUntil(this._unsubscribeService))
-            .subscribe(async (_) => {
+            .subscribe(async (setConstituentsExists: SetConstituentExistsType) => {
                 /* if (this.isWeightLifted) {
                     if (this.weightLiftedElements?.first) {
                         await this.weightLiftedElements.first.setFocus();
