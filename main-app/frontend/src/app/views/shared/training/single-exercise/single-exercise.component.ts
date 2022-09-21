@@ -82,15 +82,14 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
             map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         );
     readonly isAddingExercisesAllowed$: Observable<boolean> = combineLatest([
-        this._newTrainingStoreService.currentTrainingChanged$.pipe(
-            map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
-        ),
+        this.currentExercisesState$,
         this._newTrainingStoreService.allExercisesChanged$.pipe(
             map((value: StreamData<Exercise[]>) => value.Value),
         ),
     ]).pipe(
         delay(0),
-        map(([trainingState, allExercises]) => {
+        map(([trainingState, allExercises]: [SingleExercise[], Exercise[]]) => {
+            //TODO: Fix
             if (this.getExercises().length > 0) {
                 if (this.setsCmpRef) {
                     return (
