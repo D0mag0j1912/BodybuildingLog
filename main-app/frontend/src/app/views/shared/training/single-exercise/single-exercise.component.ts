@@ -52,11 +52,11 @@ import { SetsComponent } from '../set/set.component';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import { WeightUnit } from '../../../../models/common/preferences.type';
 import { StreamData } from '../../../../models/common/common.model';
-import { SetCategoryType } from '../../../../models/training/shared/set.type';
 import {
-    REPS_SET_CATEGORIES,
-    WEIGHT_LIFTED_SET_CATEGORIES,
-} from '../../../../helpers/training/set-category.helper';
+    SetCategoryType,
+    SetConstituentExistsType,
+} from '../../../../models/training/shared/set.type';
+import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -66,14 +66,16 @@ import {
     providers: [getControlValueAccessor(SingleExerciseComponent), UnsubscribeService],
 })
 export class SingleExerciseComponent implements ControlValueAccessor, OnInit, OnDestroy {
-    private readonly _isExerciseChanged$: Subject<void> = new Subject<void>();
+    private readonly _isExerciseChanged$: Subject<SetConstituentExistsType> =
+        new Subject<SetConstituentExistsType>();
     private readonly _isSubmitted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private readonly _isExercisePicker$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
         true,
     );
     private readonly _isApiLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-    readonly isExerciseChanged$: Observable<void> = this._isExerciseChanged$.asObservable();
+    readonly isExerciseChanged$: Observable<SetConstituentExistsType> =
+        this._isExerciseChanged$.asObservable();
     readonly isSubmitted$: Observable<boolean> = this._isSubmitted$.asObservable();
     readonly isExercisePicker$: Observable<boolean> = this._isExercisePicker$.asObservable();
     readonly isApiLoading$: Observable<boolean> = this._isApiLoading$.asObservable();
@@ -224,22 +226,28 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     }),
                 )
                 .subscribe((updatedTraining: NewTraining) => {
-                    this._prepareSet(updatedTraining.exercises[indexExercise]);
-                    this._isExerciseChanged$.next();
+                    this._isExerciseChanged$.next(
+                        this._prepareSet(
+                            updatedTraining.exercises[indexExercise].exerciseData
+                                .primarySetCategory,
+                        ),
+                    );
                 });
         }
     }
 
     addExercise(exercise?: SingleExercise, event?: UIEvent): void {
         if (exercise) {
-            const { isWeightLifted, isReps } = this._prepareSet(exercise);
+            const { weightLifted, reps } = this._prepareSet(
+                exercise.exerciseData.primarySetCategory,
+            );
             exercise = {
                 ...exercise,
                 sets: [...exercise.sets].map((set: Set) => {
-                    if (!isWeightLifted) {
+                    if (!weightLifted) {
                         delete set.weightLifted;
                     }
-                    if (!isReps) {
+                    if (!reps) {
                         delete set.reps;
                     }
                     return set;
@@ -495,28 +503,40 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return errors.length === 0;
     }
 
-    private _prepareSet(exercise: SingleExercise): {
-        isWeightLifted: boolean;
-        isReps: boolean;
-    } {
-        let isWeightLifted = true;
-        let isReps = true;
-        const setCategories = exercise.exerciseData.setCategories;
-        if (setCategories.length > 0) {
-            isWeightLifted = setCategories.some((setCategory: SetCategoryType) =>
-                WEIGHT_LIFTED_SET_CATEGORIES.includes(setCategory),
-            );
-            isReps = setCategories.some((setCategory: SetCategoryType) =>
-                REPS_SET_CATEGORIES.includes(setCategory),
-            );
-            /** If 'dynamicBodyweight' is in the list, it has highest priority  */
-            if (isWeightLifted && isReps && setCategories.includes('dynamicBodyweight')) {
-                isWeightLifted = false;
+    private _prepareSet(primarySetCategory: SetCategoryType): SetConstituentExistsType {
+        let weightLifted: boolean;
+        let reps: boolean;
+        switch (primarySetCategory) {
+            case 'dynamicBodyweight': {
+                weightLifted = false;
+                reps = true;
+                break;
+            }
+            case 'dynamicWeighted': {
+                weightLifted = true;
+                reps = true;
+                break;
+            }
+            case 'freeWeighted': {
+                weightLifted = true;
+                reps = true;
+                break;
+            }
+            case 'staticBodyweight': {
+                //TODO: BL-128
+                break;
+            }
+            case 'staticWeighted': {
+                //TODO: BL-123
+                break;
+            }
+            default: {
+                isNeverCheck(primarySetCategory);
             }
         }
         return {
-            isWeightLifted,
-            isReps,
+            weightLifted,
+            reps,
         };
     }
 }

@@ -34,7 +34,10 @@ import { NewTraining } from '../../../../models/training/new-training/new-traini
 import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
-import { SetConstituent } from '../../../../models/training/shared/set.type';
+import {
+    SetConstituent,
+    SetConstituentExistsType,
+} from '../../../../models/training/shared/set.type';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 
 export type SetFormType = Pick<FormType<Set>, SetConstituent>;
@@ -78,7 +81,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
     isExerciseFormSubmitted$: Observable<boolean>;
 
     @Input()
-    isExerciseChanged$: Observable<void>;
+    isExerciseChanged$: Observable<SetConstituentExistsType>;
 
     @Input()
     exerciseNameControl: AbstractControl | null;
