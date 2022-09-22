@@ -2,7 +2,9 @@
     <ng-container *ngFor="let set of form.controls; let i = index">
         <ng-container [formGroupName]="i">
             <ion-grid class="set-grid">
-                <ion-row class="ion-text-center set-row">
+                <ion-row
+                    class="ion-text-center set-row"
+                    [class.ion-justify-content-center]="!accessFormField('weightLifted', i)">
                     <ion-col
                         *ngIf="accessFormField('weightLifted', i)"
                         size="5">
