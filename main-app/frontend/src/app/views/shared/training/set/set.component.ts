@@ -19,7 +19,7 @@ import {
     Validators,
 } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { delay, filter, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
@@ -151,6 +151,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
                         );
                     }
                     this.form.push(new FormGroup(setControls));
+                    //TODO: Empty set state
                     this._changeDetectorRef.markForCheck();
                 }),
                 delay(400),
@@ -258,6 +259,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
         this._isWeightLifted$.next(weightLiftedInSet);
         this._isReps$.next(repsInSet);
         this.form.push(new FormGroup<SetFormType>(setControls));
+        of(null)
+            .pipe(delay(200), takeUntil(this._unsubscribeService))
+            .subscribe(async (_) => {
+                if (this.weightLiftedElements && weightLiftedInSet) {
+                    await this.weightLiftedElements.last?.setFocus();
+                }
+                if (this.repsElements && repsInSet && !weightLiftedInSet) {
+                    await this.repsElements.last?.setFocus();
+                }
+            });
     }
 
     deleteSet(indexSet: number): void {
@@ -270,32 +281,24 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
     }
 
     onChangeSets(indexSet: number): void {
-        combineLatest([this.isWeightLifted$, this.isReps$, this.currentExerciseState$])
+        combineLatest([this.isWeightLifted$, this.isReps$])
             .pipe(
-                switchMap(
-                    ([isWeightLifted, isReps, currentExerciseState]: [
-                        boolean,
-                        boolean,
-                        SingleExercise[],
-                    ]) => {
-                        const trainingData: SetTrainingData = {
-                            exerciseName: this.exerciseNameControl.value,
-                            setNumber:
-                                currentExerciseState[this.indexExercise].sets[indexSet].setNumber,
-                            weightLifted:
-                                isWeightLifted &&
-                                this._isSetConstituentValid('weightLifted', indexSet)
-                                    ? this.accessFormField('weightLifted', indexSet).value
-                                    : undefined,
-                            reps:
-                                isReps && this._isSetConstituentValid('reps', indexSet)
-                                    ? this.accessFormField('reps', indexSet).value
-                                    : undefined,
-                            total: this._calculateTotal(),
-                        };
-                        return this._newTrainingStoreService.setsChanged(trainingData);
-                    },
-                ),
+                switchMap(([isWeightLifted, isReps]: [boolean, boolean]) => {
+                    const trainingData: SetTrainingData = {
+                        exerciseName: this.exerciseNameControl.value,
+                        setNumber: indexSet + 1,
+                        weightLifted:
+                            isWeightLifted && this._isSetConstituentValid('weightLifted', indexSet)
+                                ? this.accessFormField('weightLifted', indexSet).value
+                                : undefined,
+                        reps:
+                            isReps && this._isSetConstituentValid('reps', indexSet)
+                                ? this.accessFormField('reps', indexSet).value
+                                : undefined,
+                        total: this._calculateTotal(),
+                    };
+                    return this._newTrainingStoreService.setsChanged(trainingData);
+                }),
             )
             .subscribe();
     }
