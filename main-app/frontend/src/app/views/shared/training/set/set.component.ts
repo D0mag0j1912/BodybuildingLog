@@ -1,5 +1,6 @@
 import {
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     Input,
     OnChanges,
@@ -19,7 +20,7 @@ import {
 } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { delay, filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { delay, filter, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
 import { SetTrainingData } from '../../../../models/training/shared/set.model';
@@ -105,6 +106,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
         private readonly _unsubscribeService: UnsubscribeService,
         private readonly _preferencesStoreService: PreferencesStoreService,
         private readonly _newTrainingStoreService: NewTrainingStoreService,
+        private readonly _changeDetectorRef: ChangeDetectorRef,
     ) {}
 
     ngOnInit(): void {
@@ -126,7 +128,34 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
             });
 
         this.isExerciseChanged$
-            .pipe(delay(400), takeUntil(this._unsubscribeService))
+            .pipe(
+                tap((setConstituentsExists: SetConstituentExistsType) => {
+                    let setControls: SetFormType = Object.assign({});
+                    const weightLifted = setConstituentsExists.weightLifted;
+                    const reps = setConstituentsExists.reps;
+                    while (this.form.length !== 0) {
+                        this.form.removeAt(0);
+                    }
+                    if (weightLifted) {
+                        setControls = this._constructSetForm(
+                            'weightLifted',
+                            { setNumber: 1, weightLifted: null },
+                            setControls,
+                        );
+                    }
+                    if (reps) {
+                        setControls = this._constructSetForm(
+                            'reps',
+                            { setNumber: 1, reps: null },
+                            setControls,
+                        );
+                    }
+                    this.form.push(new FormGroup(setControls));
+                    this._changeDetectorRef.markForCheck();
+                }),
+                delay(400),
+                takeUntil(this._unsubscribeService),
+            )
             .subscribe(async (setConstituentsExists: SetConstituentExistsType) => {
                 if (setConstituentsExists.weightLifted) {
                     if (this.weightLiftedElements?.first) {
