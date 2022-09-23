@@ -7,6 +7,7 @@ import { Exercise } from '../../../models/training/exercise.model';
 import {
     createEmptyExercise,
     EMPTY_TRAINING,
+    TOTAL_INITIAL_WEIGHT,
 } from '../../../constants/training/new-training.const';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { SetTrainingData, Set } from '../../../models/training/shared/set.model';
@@ -244,6 +245,7 @@ export class NewTrainingStoreService {
                                 return {
                                     ...exercise,
                                     sets: [set],
+                                    total: TOTAL_INITIAL_WEIGHT,
                                 };
                             }
                             return exercise;

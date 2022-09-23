@@ -69,6 +69,15 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
         .asObservable()
         .pipe(take(1));
     readonly isReps$: Observable<boolean> = this._isReps$.asObservable().pipe(take(1));
+    readonly isSetConstituent$: Observable<SetConstituentExistsType> = combineLatest([
+        this.isWeightLifted$,
+        this.isReps$,
+    ]).pipe(
+        map(([weightLifted, reps]: [boolean, boolean]) => ({
+            weightLifted,
+            reps,
+        })),
+    );
 
     readonly form = new FormArray<FormGroup<SetFormType>>([]);
     private _currentWeightUnit: WeightUnit;
@@ -285,30 +294,39 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
     }
 
     deleteSet(indexSet: number): void {
-        this.form.removeAt(indexSet);
-        this._newTrainingStoreService.deleteSet(
-            this.indexExercise,
-            indexSet,
-            this._calculateTotal(),
-        );
+        this.isSetConstituent$
+            .pipe(take(1))
+            .subscribe((setConstituentsExists: SetConstituentExistsType) => {
+                this.form.removeAt(indexSet);
+                this._newTrainingStoreService.deleteSet(
+                    this.indexExercise,
+                    indexSet,
+                    this._calculateTotal(
+                        setConstituentsExists.weightLifted,
+                        setConstituentsExists.reps,
+                    ),
+                );
+            });
     }
 
     onChangeSets(indexSet: number): void {
-        combineLatest([this.isWeightLifted$, this.isReps$])
+        this.isSetConstituent$
             .pipe(
-                switchMap(([isWeightLifted, isReps]: [boolean, boolean]) => {
+                switchMap((setConstituentExists: SetConstituentExistsType) => {
+                    const weightLifted = setConstituentExists.weightLifted;
+                    const reps = setConstituentExists.reps;
                     const trainingData: SetTrainingData = {
                         exerciseName: this.exerciseNameControl.value,
                         setNumber: indexSet + 1,
                         weightLifted:
-                            isWeightLifted && this._isSetConstituentValid('weightLifted', indexSet)
+                            weightLifted && this._isSetConstituentValid('weightLifted', indexSet)
                                 ? this.accessFormField('weightLifted', indexSet).value
                                 : undefined,
                         reps:
-                            isReps && this._isSetConstituentValid('reps', indexSet)
+                            reps && this._isSetConstituentValid('reps', indexSet)
                                 ? this.accessFormField('reps', indexSet).value
                                 : undefined,
-                        total: this._calculateTotal(),
+                        total: this._calculateTotal(weightLifted, reps),
                     };
                     return this._newTrainingStoreService.setsChanged(trainingData);
                 }),
@@ -319,11 +337,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
     accessFormField(formField: keyof SetFormValue, indexSet: number): AbstractControl<number> {
         return this.form.at(indexSet)?.get(formField);
     }
-    //TODO: Refactor logic for 'dynamicBodyweight' category
-    private _calculateTotal(): number {
+
+    private _calculateTotal(weightLifted: boolean, reps: boolean): number {
         let total = 0;
         for (const group of this.getSets()) {
-            total += group.get('weightLifted')?.value * group.get('reps')?.value;
+            if (weightLifted && reps) {
+                total += group.get('weightLifted')?.value * group.get('reps')?.value;
+            }
+            if (reps && !weightLifted) {
+                total += group.get('reps')?.value;
+            }
         }
         return total;
     }
