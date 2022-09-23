@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, Observable, of } from 'rxjs';
-import { take, tap, map, switchMap } from 'rxjs/operators';
+import { take, tap, map, switchMap, concatMap } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { StreamData } from '../../../models/common/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
@@ -16,6 +16,7 @@ import { PreferencesStoreService } from '../shared/preferences-store.service';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-format.const';
 import { WeightUnit } from '../../../models/common/preferences.type';
 import { Preferences } from '../../../models/common/preferences.model';
+import { SetConstituentExistsType } from '../../../models/training/shared/set.type';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingStoreService {
@@ -219,6 +220,40 @@ export class NewTrainingStoreService {
             };
         }
         return this.saveTrainingData(updatedTraining);
+    }
+
+    restartSets(
+        indexExercise: number,
+        setConstituentsExists: SetConstituentExistsType,
+    ): Observable<void> {
+        return this._currentTrainingChanged$$.pipe(
+            take(1),
+            map((currentTrainingState: NewTraining) => {
+                let set: Set;
+                if (setConstituentsExists.weightLifted && setConstituentsExists.reps) {
+                    set = { setNumber: 1, weightLifted: null, reps: null };
+                }
+                if (setConstituentsExists.reps && !setConstituentsExists.weightLifted) {
+                    set = { setNumber: 1, reps: null };
+                }
+                const updatedTraining = {
+                    ...currentTrainingState,
+                    exercises: [...currentTrainingState.exercises].map(
+                        (exercise: SingleExercise, index: number) => {
+                            if (index === indexExercise) {
+                                return {
+                                    ...exercise,
+                                    sets: [set],
+                                };
+                            }
+                            return exercise;
+                        },
+                    ),
+                };
+                return updatedTraining;
+            }),
+            concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+        );
     }
 
     addNewExercise(alreadyUsedExercises: string[]): Observable<void> {

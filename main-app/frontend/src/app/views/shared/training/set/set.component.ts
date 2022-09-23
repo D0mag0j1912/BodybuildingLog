@@ -72,6 +72,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
 
     readonly form = new FormArray<FormGroup<SetFormType>>([]);
     private _currentWeightUnit: WeightUnit;
+    private _setConstituentsExists: SetConstituentExistsType;
 
     onTouched: () => void;
 
@@ -130,20 +131,26 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
         this.isExerciseChanged$
             .pipe(
                 tap((setConstituentsExists: SetConstituentExistsType) => {
+                    this._setConstituentsExists = setConstituentsExists;
                     let setControls: SetFormType = Object.assign({});
                     const weightLifted = setConstituentsExists.weightLifted;
                     const reps = setConstituentsExists.reps;
                     while (this.form.length !== 0) {
                         this.form.removeAt(0);
                     }
-                    if (weightLifted) {
+                    if (weightLifted && reps) {
                         setControls = this._constructSetForm(
                             'weightLifted',
                             { setNumber: 1, weightLifted: null },
                             setControls,
                         );
+                        setControls = this._constructSetForm(
+                            'reps',
+                            { setNumber: 1, reps: null },
+                            setControls,
+                        );
                     }
-                    if (reps) {
+                    if (reps && !weightLifted) {
                         setControls = this._constructSetForm(
                             'reps',
                             { setNumber: 1, reps: null },
@@ -151,9 +158,15 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
                         );
                     }
                     this.form.push(new FormGroup(setControls));
-                    //TODO: Empty set state
                     this._changeDetectorRef.markForCheck();
                 }),
+                switchMap((setConstituentsExists: SetConstituentExistsType) =>
+                    this._newTrainingStoreService.restartSets(
+                        this.indexExercise,
+                        setConstituentsExists,
+                    ),
+                ),
+                switchMap((_) => of(this._setConstituentsExists)),
                 delay(400),
                 takeUntil(this._unsubscribeService),
             )
