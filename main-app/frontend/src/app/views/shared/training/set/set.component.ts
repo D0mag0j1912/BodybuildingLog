@@ -3,11 +3,9 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
-    OnChanges,
     OnDestroy,
     OnInit,
     QueryList,
-    SimpleChanges,
     ViewChildren,
 } from '@angular/core';
 import {
@@ -52,7 +50,7 @@ type SetFormValue = Pick<ModelWithoutIdType<Set>, SetConstituent>;
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
-export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, OnDestroy {
+export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     private readonly _isWeightLifted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
         true,
     );
@@ -209,10 +207,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges, O
                     }
                 });
             });
-    }
-
-    ngOnChanges(_changes: SimpleChanges): void {
-        this.form.updateValueAndValidity({ emitEvent: true });
     }
 
     ngOnDestroy(): void {
