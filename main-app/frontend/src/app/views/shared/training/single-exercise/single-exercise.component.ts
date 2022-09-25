@@ -102,7 +102,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                             this.getExercises().length - 1,
                         )?.value &&
                         this.getExercises().length > 0 &&
-                        this._areSetsValid(this.setsCmpRef)
+                        this._areSetsValid()
                     );
                 }
                 return false;
@@ -365,7 +365,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     onSubmit(): void {
         this._isSubmitted$.next(true);
         const newTrainingFormValid = this.bodyweight.valid && this.trainingDate.valid;
-        if (!this.form.valid || !this._areSetsValid(this.setsCmpRef) || !newTrainingFormValid) {
+        if (!this.form.valid || !this._areSetsValid() || !newTrainingFormValid) {
             return;
         }
         this._isApiLoading$.next(true);
@@ -481,9 +481,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return alreadyUsedExercises;
     }
 
-    private _areSetsValid(setsCmpRef: QueryList<SetsComponent>): boolean {
+    private _areSetsValid(): boolean {
         let errors: string[] = [];
-        setsCmpRef.forEach((setCmp) => {
+        this.setsCmpRef.forEach((setCmp: SetsComponent) => {
             const form = setCmp.form;
             if (form?.errors) {
                 const mappedKeys: string[] = Object.keys(form.errors).map(
