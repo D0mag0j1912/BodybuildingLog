@@ -7,20 +7,6 @@ import {
 } from '@angular/forms';
 import { SingleExerciseFormType } from '../../models/training/shared/single-exercise-form.type';
 
-export function checkExerciseNumber(): ValidatorFn {
-    return (array: AbstractControl): ValidationErrors | null => {
-        if (array) {
-            const exerciseNumber = (array as FormArray<FormGroup<SingleExerciseFormType>>)?.controls
-                ?.length;
-            if (exerciseNumber) {
-                return null;
-            }
-            return { emptyTraining: true };
-        }
-        return null;
-    };
-}
-
 export function checkDuplicateExerciseName(): ValidatorFn {
     return (array: AbstractControl): ValidationErrors | null => {
         if (array) {

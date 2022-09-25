@@ -63,7 +63,7 @@
                         <ion-text
                             *ngIf="
                                 accessFormField('weightLifted', i)?.errors?.required &&
-                                ((isExerciseFormSubmitted$ | async) ||
+                                (isSubmitted ||
                                     accessFormField('weightLifted', i).touched) &&
                                 !isLoading
                             "
@@ -124,7 +124,7 @@
                         <ion-text
                             *ngIf="
                                 accessFormField('reps', i)?.errors?.required &&
-                                ((isExerciseFormSubmitted$ | async) || accessFormField('reps', i).touched) &&
+                                (isSubmitted || accessFormField('reps', i).touched) &&
                                 !isLoading
                             "
                             slot="error"

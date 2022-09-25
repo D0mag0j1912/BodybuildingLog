@@ -12,9 +12,10 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { format, parseISO } from 'date-fns';
-import { from, Observable, of } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
+import { TranslateService } from '@ngx-translate/core';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { PastTrainingsService } from '../../../services/api/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../helpers/training/new-training/bodyweight.helper';
@@ -39,6 +40,10 @@ import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 import { Preferences } from '../../../models/common/preferences.model';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
+import { GeneralResponseData } from '../../../models/common/general-response.model';
+import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
+import { ToastControllerService } from '../../../services/shared/toast-controller.service';
+import { Set } from '../../../models/training/shared/set.model';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 @Component({
@@ -49,10 +54,13 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
     providers: [UnsubscribeService],
 })
 export class NewTrainingComponent implements OnDestroy {
+    private readonly _isSubmitted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private readonly _isApiLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
     formattedTodayDate: string;
 
     form = new FormGroup({
-        bodyweight: new FormControl<number | null>(null, {
+        bodyweight: new FormControl(0, {
             validators: [
                 Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
                 Validators.min(30),
@@ -60,7 +68,7 @@ export class NewTrainingComponent implements OnDestroy {
             ],
             updateOn: 'blur',
         }),
-        trainingDate: new FormControl<string>(new Date().toISOString(), {
+        trainingDate: new FormControl(new Date().toISOString(), {
             validators: [Validators.required],
             nonNullable: true,
         }),
@@ -87,6 +95,12 @@ export class NewTrainingComponent implements OnDestroy {
                 return areAtLeastTwoExercises;
             }),
         );
+    readonly currentExercisesState$: Observable<SingleExercise[]> =
+        this._newTrainingStoreService.currentTrainingChanged$.pipe(
+            map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
+        );
+    readonly isSubmitted$: Observable<boolean> = this._isSubmitted$.asObservable();
+    readonly isApiLoading$: Observable<boolean> = this._isApiLoading$.asObservable();
 
     @ViewChild(IonContent, { read: IonContent })
     ionContent: IonContent;
@@ -103,6 +117,8 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly _unsubscribeService: UnsubscribeService,
         private readonly _preferencesStoreService: PreferencesStoreService,
         private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
+        private readonly _toastControllerService: ToastControllerService,
+        private readonly _translateService: TranslateService,
         private readonly _route: ActivatedRoute,
         private readonly _router: Router,
         private readonly _modalController: ModalController,
@@ -194,6 +210,102 @@ export class NewTrainingComponent implements OnDestroy {
 
     ngOnDestroy(): void {
         this._sharedStoreService.completeDayClicked();
+        this._isSubmitted$.complete();
+        this._isApiLoading$.complete();
+    }
+
+    onSubmit(): void {
+        this._isSubmitted$.next(true);
+        const newTrainingFormValid =
+            this.form.get('bodyweight').valid && this.form.get('trainingDate').valid;
+        if (!this.form.valid || /* !this._areSetsValid() || */ !newTrainingFormValid) {
+            return;
+        }
+        this._isApiLoading$.next(true);
+
+        this._gatherAllFormData()
+            .pipe(
+                switchMap((apiNewTraining: NewTraining) => {
+                    if (this.editMode) {
+                        return this._newTrainingService.updateTraining(
+                            apiNewTraining,
+                            this.editTrainingData._id,
+                        );
+                    } else {
+                        return this._newTrainingService.addTraining(apiNewTraining);
+                    }
+                }),
+                finalize(() => this._isApiLoading$.next(false)),
+            )
+            .subscribe(async (response: GeneralResponseData) => {
+                await this._toastControllerService.displayToast({
+                    message: this._translateService.instant(response.Message),
+                    duration: MESSAGE_DURATION.GENERAL,
+                    color: 'primary',
+                });
+            });
+    }
+
+    private _gatherAllFormData(): Observable<NewTraining> {
+        return this._newTrainingStoreService.currentTrainingChanged$.pipe(
+            take(1),
+            map((currentTrainingState: NewTraining) => {
+                let exerciseFormData: SingleExercise[] = [];
+
+                currentTrainingState.exercises.forEach(
+                    (exercise: SingleExercise, indexExercise: number) => {
+                        const total = currentTrainingState.exercises[indexExercise].total;
+                        const exerciseData: Exercise = {
+                            name: exercise.exerciseData.name,
+                            imageUrl: exercise.exerciseData.imageUrl,
+                            primaryMuscleGroup: exercise.exerciseData.primaryMuscleGroup,
+                            translations: exercise.exerciseData.translations,
+                            setCategories: exercise.exerciseData.setCategories,
+                            primarySetCategory: exercise.exerciseData.primarySetCategory,
+                        };
+                        const initialExercise = {
+                            exerciseData,
+                            sets: [],
+                            total,
+                            availableExercises: exercise.availableExercises,
+                        } as SingleExercise;
+                        exerciseFormData = [...exerciseFormData, initialExercise];
+
+                        const formSetData: Set[] = [];
+                        exercise.sets.forEach((set: Set) => {
+                            const apiSet: Set = {
+                                setNumber: set.setNumber,
+                                weightLifted: set.weightLifted,
+                                reps: set.reps,
+                            };
+                            formSetData.push(apiSet);
+                        });
+                        exerciseFormData = [...exerciseFormData].map(
+                            (exercise: SingleExercise, index: number) => {
+                                if (index === indexExercise) {
+                                    return {
+                                        ...exercise,
+                                        sets: formSetData,
+                                    };
+                                }
+                                return exercise;
+                            },
+                        );
+                    },
+                );
+
+                return {
+                    exercises: exerciseFormData,
+                    bodyweight: this.form.get('bodyweight').value
+                        ? this.form.get('bodyweight').value
+                        : null,
+                    trainingDate: new Date(this.form.get('trainingDate').value) ?? new Date(),
+                    editMode: this.editMode,
+                    userId: currentTrainingState.userId,
+                    weightUnit: currentTrainingState.weightUnit,
+                } as NewTraining;
+            }),
+        );
     }
 
     async openReorderModal(): Promise<void> {

@@ -44,6 +44,23 @@ ion-item {
     }
 }
 
+.log-training-col {
+    margin-right: 20px;
+
+    .button-disabled {
+        --background: var(--ion-color-primary, #3880ff);
+    }
+}
+
+.at-least-one-exercise-txt {
+    text-align: start;
+
+    .empty-training-msg {
+        font-size: 12px;
+        color: var(--ion-color-danger-tint);
+    }
+}
+
 .error-wrapper {
     width: 250px;
     margin: 80px auto;

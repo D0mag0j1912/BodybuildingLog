@@ -87,9 +87,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     editTrainingData: NewTraining;
 
     @Input()
-    isExerciseFormSubmitted$: Observable<boolean>;
-
-    @Input()
     isExerciseChanged$: Observable<SetConstituentExistsType>;
 
     @Input()
@@ -97,6 +94,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
     @Input()
     indexExercise = 0;
+
+    @Input()
+    isSubmitted = false;
 
     @Input()
     editMode = false;
