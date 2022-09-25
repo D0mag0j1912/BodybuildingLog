@@ -59,7 +59,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     formattedTodayDate: string;
 
-    form = new FormGroup({
+    newTrainingForm = new FormGroup({
         bodyweight: new FormControl(0, {
             validators: [
                 Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
@@ -216,7 +216,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     onSubmit(): void {
         this._isSubmitted$.next(true);
-        if (!this.form.valid /*|| !this._areSetsValid() || */) {
+        if (!this.newTrainingForm.valid /*|| !this._areSetsValid() || */) {
             return;
         }
         this._isApiLoading$.next(true);
@@ -293,7 +293,7 @@ export class NewTrainingComponent implements OnDestroy {
             component: DateTimePickerComponent,
             componentProps: {
                 dateValue: format(
-                    new Date(this.form.get('trainingDate').value),
+                    new Date(this.newTrainingForm.get('trainingDate').value),
                     `yyyy-MM-dd'T'HH:mm:ss'Z'`,
                 ),
             },
@@ -310,7 +310,7 @@ export class NewTrainingComponent implements OnDestroy {
             .subscribe((response) => {
                 const { data, role } = response;
                 if (role === 'SELECT_DATE') {
-                    this.form.get('trainingDate').patchValue(data);
+                    this.newTrainingForm.get('trainingDate').patchValue(data);
                     this._setFormattedDate(data);
                 }
             });
@@ -423,10 +423,11 @@ export class NewTrainingComponent implements OnDestroy {
 
                 return {
                     exercises: exerciseFormData,
-                    bodyweight: this.form.get('bodyweight').value
-                        ? this.form.get('bodyweight').value
+                    bodyweight: this.newTrainingForm.get('bodyweight').value
+                        ? this.newTrainingForm.get('bodyweight').value
                         : null,
-                    trainingDate: new Date(this.form.get('trainingDate').value) ?? new Date(),
+                    trainingDate:
+                        new Date(this.newTrainingForm.get('trainingDate').value) ?? new Date(),
                     editMode: this.editMode,
                     userId: currentTrainingState.userId,
                     weightUnit: currentTrainingState.weightUnit,
@@ -438,10 +439,12 @@ export class NewTrainingComponent implements OnDestroy {
     private _formInit(): void {
         const currentTrainingState = this._newTrainingStoreService.getCurrentTrainingState();
         const dayClickedDate = this._sharedStoreService.getDayClickedDate();
-        this.form.get('bodyweight').patchValue(this._fillBodyweight(currentTrainingState));
-        this.form.get('trainingDate').patchValue(this._fillTrainingDate(dayClickedDate));
-        this.form.get('exercises').patchValue(currentTrainingState.exercises);
-        this._setFormattedDate(this.form.get('trainingDate').value);
+        this.newTrainingForm
+            .get('bodyweight')
+            .patchValue(this._fillBodyweight(currentTrainingState));
+        this.newTrainingForm.get('trainingDate').patchValue(this._fillTrainingDate(dayClickedDate));
+        this.newTrainingForm.get('exercises').patchValue(currentTrainingState.exercises);
+        this._setFormattedDate(this.newTrainingForm.get('trainingDate').value);
     }
 
     private _setFormattedDate(dateValue: string): void {
