@@ -4,7 +4,7 @@
         "page": "Page",
         "of": "of",
         "page_not_found": "Page not found",
-        "exercises":"Exercises: ",
+        "exercises": "Exercises: ",
         "change_preference_registration": "Your preferences can be changed during application use anytime",
         "did_you_know": "Did you know?",
         "kilograms": "Kilograms",
@@ -110,7 +110,7 @@
             "set_saved": "Set saved",
             "first_add_previous_set": "You need to enter set number {{ setNumber }}",
             "training_saved": "Training saved",
-            "finish_training": "Finish training",
+            "log_training": "Log",
             "reorder_exercises": "Reorder exercises",
             "errors": {
                 "date_required": "Date is required",

@@ -92,14 +92,14 @@
             <ion-col class="ion-text-end log-training-col">
                 <ion-button
                     (click)="onSubmit()"
-                    [disabled]="currentExercisesState?.length === 0 || (isApiLoading$ | async)"
+                    [disabled]="!currentExercisesState?.length || (isApiLoading$ | async)"
                 >
-                    <ion-icon name="checkmark-sharp"></ion-icon>
+                {{ 'training.new_training.log_training' | translate }}
                 </ion-button>
             </ion-col>
         </ion-row>
         <ion-row>
-            <ion-col class="at-least-one-exercise-txt">
+            <ion-col class="ion-text-center at-least-one-exercise-txt">
                 <ion-note
                     *ngIf="
                         form.errors?.emptyTraining &&

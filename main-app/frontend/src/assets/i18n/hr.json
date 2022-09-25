@@ -111,7 +111,7 @@
             "set_saved": "Set spremljen",
             "first_add_previous_set": "Prvo morate unijeti set broj {{ setNumber }}",
             "training_saved": "Trening spremljen",
-            "finish_training": "Završi trening",
+            "log_training": "Završi",
             "reorder_exercises": "Promjena redoslijeda",
             "errors": {
                 "date_required": "Datum je obvezan",

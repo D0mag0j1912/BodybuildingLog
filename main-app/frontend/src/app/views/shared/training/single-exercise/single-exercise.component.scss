@@ -36,6 +36,10 @@ ion-grid:first-of-type {
 
 .log-training-col {
     margin-right: 20px;
+
+    .button-disabled {
+        --background: var(--ion-color-primary, #3880ff);
+    }
 }
 
 .at-least-one-exercise-txt {
