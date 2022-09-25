@@ -94,7 +94,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                             exerciseState.length - 1,
                         )?.value &&
                         exerciseState.length > 0 &&
-                        this._areSetsValid()
+                        this.areSetsValid()
                     );
                 }
                 return false;
@@ -354,6 +354,30 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
             ?.get(formField as string);
     }
 
+    areSetsValid(): boolean {
+        let isFormValid = true;
+        this.setsCmpRef.forEach((setCmp: SetsComponent) => {
+            const form = setCmp.form;
+            if (form?.errors) {
+                isFormValid = false;
+            }
+            form.controls.forEach((group: AbstractControl) => {
+                if (group?.errors) {
+                    isFormValid = false;
+                }
+                const weightLiftedErrors = group.get('weightLifted')?.errors;
+                const repsErrors = group.get('reps')?.errors;
+                if (weightLiftedErrors) {
+                    isFormValid = false;
+                }
+                if (repsErrors) {
+                    isFormValid = false;
+                }
+            });
+        });
+        return isFormValid;
+    }
+
     private _getAlreadyUsedExercises(): string[] {
         const alreadyUsedExercises: string[] = [];
         for (const exercise of this.getExercises()) {
@@ -362,35 +386,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
             }
         }
         return alreadyUsedExercises;
-    }
-
-    private _areSetsValid(): boolean {
-        let errors: string[] = [];
-        this.setsCmpRef.forEach((setCmp: SetsComponent) => {
-            const form = setCmp.form;
-            let mappedKeys: string[] = [];
-            if (form?.errors) {
-                mappedKeys = Object.keys(form.errors).map((key: string) => key as string);
-                errors = [...errors, ...mappedKeys];
-            }
-            form.controls.forEach((group: AbstractControl) => {
-                if (group?.errors) {
-                    mappedKeys = Object.keys(group.errors).map((key: string) => key as string);
-                }
-                const weightLiftedErrors = group.get('weightLifted')?.errors;
-                const repsErrors = group.get('reps')?.errors;
-                if (weightLiftedErrors) {
-                    mappedKeys = Object.keys(weightLiftedErrors).map(
-                        (key: string) => key as string,
-                    );
-                }
-                if (repsErrors) {
-                    mappedKeys = Object.keys(repsErrors).map((key: string) => key as string);
-                }
-                errors = [...errors, ...mappedKeys];
-            });
-        });
-        return errors.length === 0;
     }
 
     private _prepareSet(

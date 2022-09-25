@@ -216,7 +216,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     onSubmit(): void {
         this._isSubmitted$.next(true);
-        if (!this.newTrainingForm.valid /*|| !this._areSetsValid() || */) {
+        if (!this.newTrainingForm.valid || !this._isExerciseFormValid()) {
             return;
         }
         this._isApiLoading$.next(true);
@@ -468,5 +468,19 @@ export class NewTrainingComponent implements OnDestroy {
             currentTrainingState.bodyweight,
             this.editTrainingData ? this.editTrainingData.bodyweight : null,
         );
+    }
+
+    private _isExerciseFormValid(): boolean {
+        let isFormValid = true;
+        this.singleExerciseCmps.forEach((component: SingleExerciseComponent) => {
+            const exerciseForm = component.form;
+            if (exerciseForm.invalid) {
+                isFormValid = false;
+            }
+            if (!component.areSetsValid()) {
+                isFormValid = false;
+            }
+        });
+        return isFormValid;
     }
 }
