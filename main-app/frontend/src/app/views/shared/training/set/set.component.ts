@@ -223,11 +223,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             this.addSet();
         }
     }
-    //Sending parent new form value when form value changes
+
     registerOnChange(fn: (value: SetFormValue[]) => void): void {
-        this.form.valueChanges
-            .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((formValue: SetFormValue[]) => fn(formValue));
+        this.form.valueChanges.pipe(takeUntil(this._unsubscribeService)).subscribe(fn);
     }
 
     registerOnTouched(fn: () => void): void {
