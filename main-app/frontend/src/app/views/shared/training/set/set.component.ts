@@ -14,6 +14,9 @@ import {
     FormArray,
     FormControl,
     FormGroup,
+    NG_VALIDATORS,
+    ValidationErrors,
+    Validator,
     Validators,
 } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
@@ -48,9 +51,17 @@ type SetFormValue = Pick<ModelWithoutIdType<Set>, SetConstituent>;
     templateUrl: './set.component.html',
     styleUrls: ['./set.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
+    providers: [
+        getControlValueAccessor(SetsComponent),
+        UnsubscribeService,
+        {
+            provide: NG_VALIDATORS,
+            multi: true,
+            useExisting: SetsComponent,
+        },
+    ],
 })
-export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
+export class SetsComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
     private readonly _isWeightLifted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
         true,
     );
@@ -212,6 +223,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     ngOnDestroy(): void {
         this._isWeightLifted$.complete();
         this._isReps$.complete();
+    }
+
+    validate(control: AbstractControl<number, number>): ValidationErrors {
+        return null;
     }
 
     writeValue(sets: Set[]): void {
