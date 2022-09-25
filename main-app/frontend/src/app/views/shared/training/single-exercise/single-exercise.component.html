@@ -76,42 +76,42 @@
             [editTrainingData]="editTrainingData"
         ></bl-set>
     </ion-card>
-    <ng-container *ngIf="currentExercisesState$ | async as currentExercisesState">
-        <ion-grid>
-            <ion-row>
-                <ion-col>
-                    <ion-button
-                        type="button"
-                        color="primary"
-                        [disabled]="!(isAddingExercisesAllowed$ | async) || (isApiLoading$ | async)"
-                        (click)="addExercise(undefined, $event)"
-                    >
-                        {{ 'training.new_training.buttons.add_exercise' | translate }}
-                    </ion-button>
-                </ion-col>
-                <ion-col>
-                    <ion-button
-                        type="submit"
-                        [disabled]="currentExercisesState?.length === 0 || (isApiLoading$ | async)"
-                    >
-                        <ion-icon name="checkmark-sharp"></ion-icon>
-                    </ion-button>
-                </ion-col>
-            </ion-row>
-            <ion-row>
-                <ion-col class="at-least-one-exercise-txt">
-                    <ion-note
-                        *ngIf="
-                            form.errors?.emptyTraining &&
-                            (isSubmitted$ | async) &&
-                            currentExercisesState?.length === 0
-                        "
-                        class="empty-training-msg"
-                    >
-                        {{ 'training.new_training.errors.at_least_one_exercise' | translate }}
-                    </ion-note>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
-    </ng-container>
 </form>
+<ng-container *ngIf="currentExercisesState$ | async as currentExercisesState">
+    <ion-grid>
+        <ion-row>
+            <ion-col class="add-exercise-col">
+                <ion-button
+                    type="button"
+                    color="primary"
+                    [disabled]="!(isAddingExercisesAllowed$ | async) || (isApiLoading$ | async)"
+                    (click)="addExercise(undefined, $event)"
+                >
+                    {{ 'training.new_training.buttons.add_exercise' | translate }}
+                </ion-button>
+            </ion-col>
+            <ion-col class="ion-text-end log-training-col">
+                <ion-button
+                    type="submit"
+                    [disabled]="currentExercisesState?.length === 0 || (isApiLoading$ | async)"
+                >
+                    <ion-icon name="checkmark-sharp"></ion-icon>
+                </ion-button>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col class="at-least-one-exercise-txt">
+                <ion-note
+                    *ngIf="
+                        form.errors?.emptyTraining &&
+                        (isSubmitted$ | async) &&
+                        currentExercisesState?.length === 0
+                    "
+                    class="empty-training-msg"
+                >
+                    {{ 'training.new_training.errors.at_least_one_exercise' | translate }}
+                </ion-note>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ng-container>
