@@ -137,6 +137,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
         this.isExerciseChanged$
             .pipe(
+                filter(
+                    (value: SetConstituentExistsType) => value.indexExercise === this.indexExercise,
+                ),
                 tap((setConstituentsExists: SetConstituentExistsType) => {
                     this._setConstituentsExists = setConstituentsExists;
                     let setControls: SetFormType = Object.assign({});

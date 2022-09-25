@@ -230,6 +230,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         this._prepareSet(
                             updatedTraining.exercises[indexExercise].exerciseData
                                 .primarySetCategory,
+                            indexExercise,
                         ),
                     );
                 });
@@ -240,6 +241,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         if (exercise) {
             const { weightLifted, reps } = this._prepareSet(
                 exercise.exerciseData.primarySetCategory,
+                this.getExercises().length - 1,
             );
             exercise = {
                 ...exercise,
@@ -485,7 +487,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         let errors: string[] = [];
         this.setsCmpRef.forEach((setCmp: SetsComponent) => {
             const form = setCmp.form;
-            let mappedKeys: string[];
+            let mappedKeys: string[] = [];
             if (form?.errors) {
                 mappedKeys = Object.keys(form.errors).map((key: string) => key as string);
                 errors = [...errors, ...mappedKeys];
@@ -510,7 +512,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return errors.length === 0;
     }
 
-    private _prepareSet(primarySetCategory: SetCategoryType): SetConstituentExistsType {
+    private _prepareSet(
+        primarySetCategory: SetCategoryType,
+        indexExercise: number,
+    ): SetConstituentExistsType {
         let weightLifted: boolean;
         let reps: boolean;
         switch (primarySetCategory) {
@@ -544,6 +549,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return {
             weightLifted,
             reps,
+            indexExercise,
         };
     }
 }
