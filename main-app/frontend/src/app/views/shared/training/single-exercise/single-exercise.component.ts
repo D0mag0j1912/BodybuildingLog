@@ -485,19 +485,26 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         let errors: string[] = [];
         this.setsCmpRef.forEach((setCmp: SetsComponent) => {
             const form = setCmp.form;
+            let mappedKeys: string[];
             if (form?.errors) {
-                const mappedKeys: string[] = Object.keys(form.errors).map(
-                    (key: string) => key as string,
-                );
-                errors = errors.concat(mappedKeys);
+                mappedKeys = Object.keys(form.errors).map((key: string) => key as string);
+                errors = [...errors, ...mappedKeys];
             }
             form.controls.forEach((group: AbstractControl) => {
                 if (group?.errors) {
-                    const mappedKeys: string[] = Object.keys(group.errors).map(
+                    mappedKeys = Object.keys(group.errors).map((key: string) => key as string);
+                }
+                const weightLiftedErrors = group.get('weightLifted')?.errors;
+                const repsErrors = group.get('reps')?.errors;
+                if (weightLiftedErrors) {
+                    mappedKeys = Object.keys(weightLiftedErrors).map(
                         (key: string) => key as string,
                     );
-                    errors = errors.concat(mappedKeys);
                 }
+                if (repsErrors) {
+                    mappedKeys = Object.keys(repsErrors).map((key: string) => key as string);
+                }
+                errors = [...errors, ...mappedKeys];
             });
         });
         return errors.length === 0;
