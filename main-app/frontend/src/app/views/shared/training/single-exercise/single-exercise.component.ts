@@ -309,7 +309,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                                     ),
                                 ),
                                 switchMap((data: [NewTraining, Exercise[]]) => {
-                                    this._isExerciseChanged$.next();
                                     this.form.removeAt(indexExercise);
                                     return this._newTrainingStoreService.pushToAvailableExercises(
                                         data[0],
