@@ -167,6 +167,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                             setControls,
                         );
                     }
+                    this._isWeightLifted$.next(weightLifted);
+                    this._isReps$.next(reps);
                     this.form.push(new FormGroup(setControls));
                     this._changeDetectorRef.markForCheck();
                 }),
