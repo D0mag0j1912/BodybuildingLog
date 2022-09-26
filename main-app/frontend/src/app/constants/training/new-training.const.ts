@@ -6,6 +6,12 @@ import { Set } from '../../models/training/shared/set.model';
 
 export const TOTAL_INITIAL_WEIGHT = 0;
 
+export const EMPTY_SET: Set = {
+    setNumber: 1,
+    weightLifted: null,
+    reps: null,
+};
+
 export const createEmptyExercise = (exercises: Exercise[]): SingleExercise => ({
     exerciseData: {
         name: '',
@@ -18,13 +24,7 @@ export const createEmptyExercise = (exercises: Exercise[]): SingleExercise => ({
             en: '',
         },
     },
-    sets: [
-        {
-            setNumber: 1,
-            weightLifted: null,
-            reps: null,
-        } as Set,
-    ],
+    sets: [EMPTY_SET],
     total: TOTAL_INITIAL_WEIGHT,
     availableExercises: [...exercises],
 });
