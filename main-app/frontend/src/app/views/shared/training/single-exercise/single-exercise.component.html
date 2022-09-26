@@ -1,120 +1,95 @@
-<form class="form" [formGroup]="$any(form)" (ngSubmit)="onSubmit()">
-    <ng-container *ngFor="let group of getExercises(); let i = index">
-        <ng-container [formGroupName]="i">
-            <div class="wrapper" [class.wrapper--not-loading]="!isLoading">
-                <ng-container formGroupName="exerciseData">
-                    <ion-grid>
-                        <ion-row class="ion-text-center exercise-row">
-                            <ion-col size="10">
-                                <ion-item fill="outline">
-                                    <ion-label position="floating">{{
-                                        'training.new_training.pick_exercise' | translate
-                                    }}</ion-label>
-                                    <ion-select
-                                        *ngIf="isExercisePicker$ | async"
-                                        #exercisePicker
-                                        class="exercise-picker"
-                                        interface="popover"
-                                        formControlName="name"
-                                        (ionChange)="onExerciseNameChange(i, exercisePicker)"
-                                    >
-                                        <ion-select-option
-                                            *ngFor="
-                                                let exercise of exercises$ | newTraining: i:isExerciseChanged | async
-                                            "
-                                            [value]="exercise.name"
-                                        >
-                                            {{ exercise.name | translate }}
-                                        </ion-select-option>
-                                    </ion-select>
-                                    <ion-note
-                                        *ngIf="
-                                            accessFormGroup('exerciseData', 'name', i).errors?.required &&
-                                            (accessFormGroup('exerciseData', 'name', i).touched ||
-                                                accessFormGroup('exerciseData', 'name', i).dirty ||
-                                                (isSubmitted$ | async)) &&
-                                            !isLoading
-                                        "
-                                        slot="error"
-                                    >
-                                        {{ 'training.new_training.errors.exercise_name_required' | translate }}
-                                    </ion-note>
-                                </ion-item>
-                                <ion-note
-                                    *ngIf="
-                                        form.errors?.duplicateExerciseName &&
-                                        form.errors?.duplicateExerciseName ===
-                                            accessFormGroup('exerciseData', 'name', i)?.value &&
-                                        !isLoading
+<form
+    *ngFor="let group of form.controls; let i = index"
+    class="form"
+    [formGroup]="group">
+    <ion-card class="wrapper">
+        <ng-container formGroupName="exerciseData">
+            <ion-grid>
+                <ion-row class="ion-text-center exercise-row">
+                    <ion-col size="10">
+                        <ion-item fill="outline">
+                            <ion-label position="floating">{{
+                                'training.new_training.pick_exercise' | translate
+                            }}</ion-label>
+                            <ion-select
+                                *ngIf="isExercisePicker$ | async"
+                                #exercisePicker
+                                class="exercise-picker"
+                                interface="popover"
+                                formControlName="name"
+                                (ionChange)="onExerciseNameChange(i, exercisePicker)"
+                            >
+                                <ion-select-option
+                                    *ngFor="
+                                        let exercise of currentExercisesState$ | async | filterAvailableExercises: i
                                     "
-                                    class="error"
+                                    [value]="exercise.name"
                                 >
-                                    {{ 'training.new_training.errors.exercise_name_duplicate' | translate }}
-                                </ion-note>
-                            </ion-col>
-                            <ion-col size="2">
-                                <ion-icon
-                                    class="delete-exercise-icon"
-                                    name="trash-bin-outline"
-                                    color="primary"
-                                    (click)="deleteExercise(i, accessFormGroup('exerciseData', 'name', i).value)"
-                                ></ion-icon>
-                            </ion-col>
-                        </ion-row>
-                    </ion-grid>
-                </ng-container>
-                <bl-set
-                    formControlName="sets"
-                    [isExerciseFormSubmitted$]="isSubmitted$"
-                    [exerciseNameChanged$]="exerciseNameChanged$"
-                    [exerciseNameControl]="accessFormGroup('exerciseData', 'name', i)"
-                    [indexExercise]="i"
-                    [isLoading]="isLoading"
-                    [editMode]="editMode"
-                    [editTrainingData]="editTrainingData"
-                    (setAdded)="onChangeSets($event)"
-                    (setDeleted)="deleteSet($event)"
-                    (weightUnitChanged)="onWeightUnitChanged($event)"
-                ></bl-set>
-            </div>
+                                    {{ exercise.name | translate }}
+                                </ion-select-option>
+                            </ion-select>
+                            <ion-note
+                                *ngIf="
+                                    accessFormGroup('exerciseData', 'name', i).errors?.required &&
+                                    (accessFormGroup('exerciseData', 'name', i).touched ||
+                                        accessFormGroup('exerciseData', 'name', i).dirty ||
+                                        isSubmitted) &&
+                                    !isLoading
+                                "
+                                slot="error"
+                            >
+                                {{ 'training.new_training.errors.exercise_name_required' | translate }}
+                            </ion-note>
+                        </ion-item>
+                        <ion-note
+                            *ngIf="
+                                form.errors?.duplicateExerciseName &&
+                                form.errors?.duplicateExerciseName ===
+                                    accessFormGroup('exerciseData', 'name', i)?.value &&
+                                !isLoading
+                            "
+                            class="error"
+                        >
+                            {{ 'training.new_training.errors.exercise_name_duplicate' | translate }}
+                        </ion-note>
+                    </ion-col>
+                    <ion-col size="2">
+                        <ion-icon
+                            class="delete-exercise-icon"
+                            name="trash-bin-outline"
+                            color="primary"
+                            (click)="deleteExercise(i, accessFormGroup('exerciseData', 'name', i).value)"
+                        ></ion-icon>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
         </ng-container>
-    </ng-container>
-    <ng-container *ngIf="currentTrainingDataState$ | async as currentTrainingDataState">
-        <ion-grid>
-            <ion-row>
-                <ion-col>
-                    <ion-button
-                        type="button"
-                        color="primary"
-                        [disabled]="!(isAddingExercisesAllowed$ | async) || (isApiLoading$ | async)"
-                        (click)="addExercise(undefined, $event)"
-                    >
-                        {{ 'training.new_training.buttons.add_exercise' | translate }}
-                    </ion-button>
-                </ion-col>
-                <ion-col>
-                    <ion-button
-                        type="submit"
-                        [disabled]="currentTrainingDataState?.length === 0 || (isApiLoading$ | async)"
-                    >
-                        <ion-icon name="checkmark-sharp"></ion-icon>
-                    </ion-button>
-                </ion-col>
-            </ion-row>
-            <ion-row>
-                <ion-col class="at-least-one-exercise-txt">
-                    <ion-note
-                        *ngIf="
-                            form.errors?.emptyTraining &&
-                            (isSubmitted$ | async) &&
-                            currentTrainingDataState?.length === 0
-                        "
-                        class="empty-training-msg"
-                    >
-                        {{ 'training.new_training.errors.at_least_one_exercise' | translate }}
-                    </ion-note>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
-    </ng-container>
+        <bl-set
+            formControlName="sets"
+            [isExerciseChanged$]="isExerciseChanged$"
+            [exerciseNameControl]="accessFormGroup('exerciseData', 'name', i)"
+            [indexExercise]="i"
+            [isSubmitted]="isSubmitted"
+            [isLoading]="isLoading"
+            [editMode]="editMode"
+            [editTrainingData]="editTrainingData"
+        ></bl-set>
+    </ion-card>
 </form>
+
+<ion-grid>
+    <ion-row>
+        <ion-col>
+            <ion-button
+                class="add-exercise-btn"
+                type="button"
+                color="primary"
+                [disabled]="!(isAddingExercisesAllowed$ | async) || isApiLoading"
+                (click)="addExercise(undefined, $event)"
+            >
+                {{ 'training.new_training.buttons.add_exercise' | translate }}
+            </ion-button>
+        </ion-col>
+        <ng-content></ng-content>
+    </ion-row>
+</ion-grid>

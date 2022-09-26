@@ -23,7 +23,7 @@ ion-item {
 
 .ios .bodyweight-input {
     &--unit {
-        top: 28px;
+        top: 30px;
     }
 }
 
@@ -41,6 +41,23 @@ ion-item {
     .datetime-icon {
         width: 24px;
         height: 24px;
+    }
+}
+
+.log-training-col {
+    margin-right: 20px;
+
+    .button-disabled {
+        --background: var(--ion-color-primary, #3880ff);
+    }
+}
+
+.at-least-one-exercise-txt {
+    text-align: start;
+
+    .empty-training-msg {
+        font-size: 12px;
+        color: var(--ion-color-danger-tint);
     }
 }
 

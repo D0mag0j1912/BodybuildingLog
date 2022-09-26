@@ -1,13 +1,11 @@
 import {
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
-    EventEmitter,
     Input,
-    OnChanges,
+    OnDestroy,
     OnInit,
-    Output,
     QueryList,
-    SimpleChanges,
     ViewChildren,
 } from '@angular/core';
 import {
@@ -19,11 +17,11 @@ import {
     Validators,
 } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
-import { Observable, of } from 'rxjs';
-import { delay, filter, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { delay, filter, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
-import { SetStateChanged } from '../../../../models/training/shared/set.model';
+import { SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
@@ -34,10 +32,16 @@ import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
+import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
+import {
+    SetConstituent,
+    SetConstituentExistsType,
+} from '../../../../models/training/shared/set.type';
+import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 
-export type SetFormType = FormType<Set>;
+export type SetFormType = Pick<FormType<Set>, SetConstituent>;
 
-type SetFormValue = ModelWithoutIdType<Set>;
+type SetFormValue = Pick<ModelWithoutIdType<Set>, SetConstituent>;
 
 @Component({
     selector: 'bl-set',
@@ -46,12 +50,36 @@ type SetFormValue = ModelWithoutIdType<Set>;
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
-export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
+export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
+    private readonly _isWeightLifted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+        true,
+    );
+    private readonly _isReps$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+
     readonly currentPreferences$: Observable<Preferences> =
         this._preferencesStoreService.preferencesChanged$;
+    readonly currentExerciseState$: Observable<SingleExercise[]> =
+        this._newTrainingStoreService.currentTrainingChanged$.pipe(
+            take(1),
+            map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
+        );
+    readonly isWeightLifted$: Observable<boolean> = this._isWeightLifted$
+        .asObservable()
+        .pipe(take(1));
+    readonly isReps$: Observable<boolean> = this._isReps$.asObservable().pipe(take(1));
+    readonly isSetConstituent$: Observable<SetConstituentExistsType> = combineLatest([
+        this.isWeightLifted$,
+        this.isReps$,
+    ]).pipe(
+        map(([weightLifted, reps]: [boolean, boolean]) => ({
+            weightLifted,
+            reps,
+        })),
+    );
 
     readonly form = new FormArray<FormGroup<SetFormType>>([]);
     private _currentWeightUnit: WeightUnit;
+    private _setConstituentsExists: SetConstituentExistsType;
 
     onTouched: () => void;
 
@@ -59,10 +87,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     editTrainingData: NewTraining;
 
     @Input()
-    isExerciseFormSubmitted$: Observable<boolean> = of(false);
-
-    @Input()
-    exerciseNameChanged$: Observable<void> = of(null);
+    isExerciseChanged$: Observable<SetConstituentExistsType>;
 
     @Input()
     exerciseNameControl: AbstractControl | null;
@@ -71,21 +96,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     indexExercise = 0;
 
     @Input()
+    isSubmitted = false;
+
+    @Input()
     editMode = false;
 
     @Input()
     isLoading = false;
-
-    @Output()
-    readonly setAdded: EventEmitter<SetStateChanged> = new EventEmitter<SetStateChanged>();
-
-    @Output()
-    readonly setDeleted: EventEmitter<Partial<SetStateChanged>> = new EventEmitter<
-        Partial<SetStateChanged>
-    >();
-
-    @Output()
-    readonly weightUnitChanged: EventEmitter<number> = new EventEmitter<number>();
 
     @ViewChildren('weightLiftedEl')
     readonly weightLiftedElements: QueryList<IonInput>;
@@ -96,30 +113,85 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
     constructor(
         private readonly _unsubscribeService: UnsubscribeService,
         private readonly _preferencesStoreService: PreferencesStoreService,
+        private readonly _newTrainingStoreService: NewTrainingStoreService,
+        private readonly _changeDetectorRef: ChangeDetectorRef,
     ) {}
 
     ngOnInit(): void {
         this._currentWeightUnit =
             this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
-        this.form.setValidators([SetValidators.allSetsFilled()]);
-        this.form.updateValueAndValidity();
+        //TODO: Update set validator to match new set category feature
+        /* this.form.setValidators([SetValidators.allSetsFilled()]);
+        this.form.updateValueAndValidity(); */
 
         this.exerciseNameControl.valueChanges
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe((value: string) => {
                 value
-                    ? this.accessFormField('weightLifted', 0).enable()
-                    : this.accessFormField('weightLifted', 0).disable();
+                    ? this.accessFormField('weightLifted', 0)?.enable()
+                    : this.accessFormField('weightLifted', 0)?.disable();
                 value
-                    ? this.accessFormField('reps', 0).enable()
-                    : this.accessFormField('reps', 0).disable();
+                    ? this.accessFormField('reps', 0)?.enable()
+                    : this.accessFormField('reps', 0)?.disable();
             });
 
-        this.exerciseNameChanged$
-            .pipe(delay(200), takeUntil(this._unsubscribeService))
-            .subscribe(async (_) => {
-                if (this.weightLiftedElements?.first) {
-                    await this.weightLiftedElements.first.setFocus();
+        this.isExerciseChanged$
+            .pipe(
+                filter(
+                    (value: SetConstituentExistsType) => value.indexExercise === this.indexExercise,
+                ),
+                tap((setConstituentsExists: SetConstituentExistsType) => {
+                    this._setConstituentsExists = setConstituentsExists;
+                    let setControls: SetFormType = Object.assign({});
+                    const weightLifted = setConstituentsExists.weightLifted;
+                    const reps = setConstituentsExists.reps;
+                    while (this.form.length !== 0) {
+                        this.form.removeAt(0);
+                    }
+                    if (weightLifted && reps) {
+                        setControls = this._constructSetForm(
+                            'weightLifted',
+                            { setNumber: 1, weightLifted: null },
+                            setControls,
+                        );
+                        setControls = this._constructSetForm(
+                            'reps',
+                            { setNumber: 1, reps: null },
+                            setControls,
+                        );
+                    }
+                    if (reps && !weightLifted) {
+                        setControls = this._constructSetForm(
+                            'reps',
+                            { setNumber: 1, reps: null },
+                            setControls,
+                        );
+                    }
+                    this._isWeightLifted$.next(weightLifted);
+                    this._isReps$.next(reps);
+                    this.form.push(new FormGroup(setControls));
+                    this._changeDetectorRef.markForCheck();
+                }),
+                switchMap((setConstituentsExists: SetConstituentExistsType) =>
+                    this._newTrainingStoreService.restartSets(
+                        this.indexExercise,
+                        setConstituentsExists,
+                    ),
+                ),
+                switchMap((_) => of(this._setConstituentsExists)),
+                delay(400),
+                takeUntil(this._unsubscribeService),
+            )
+            .subscribe(async (setConstituentsExists: SetConstituentExistsType) => {
+                if (setConstituentsExists.weightLifted) {
+                    if (this.weightLiftedElements?.first) {
+                        await this.weightLiftedElements.first.setFocus();
+                    }
+                }
+                if (setConstituentsExists.reps && !setConstituentsExists.weightLifted) {
+                    if (this.repsElements?.first) {
+                        await this.repsElements.first.setFocus();
+                    }
                 }
             });
 
@@ -137,15 +209,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
                         this.accessFormField('weightLifted', index).patchValue(
                             convertWeightUnit(preferences.weightUnit, currentWeightLiftedValue),
                         );
-                    } else {
-                        this.weightUnitChanged.emit(index);
                     }
                 });
             });
     }
 
-    ngOnChanges(_changes: SimpleChanges): void {
-        this.form.updateValueAndValidity({ emitEvent: true });
+    ngOnDestroy(): void {
+        this._isWeightLifted$.complete();
+        this._isReps$.complete();
     }
 
     writeValue(sets: Set[]): void {
@@ -157,11 +228,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
             this.addSet();
         }
     }
-    //Sending parent new form value when form value changes
+
     registerOnChange(fn: (value: SetFormValue[]) => void): void {
-        this.form.valueChanges
-            .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((formValue: SetFormValue[]) => fn(formValue));
+        this.form.valueChanges.pipe(takeUntil(this._unsubscribeService)).subscribe(fn);
     }
 
     registerOnTouched(fn: () => void): void {
@@ -185,95 +254,96 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         }
     }
 
-    getSets(): AbstractControl[] {
-        return (this.form as FormArray<FormGroup<FormType<Set>>>).controls;
+    getSets(): FormGroup<SetFormType>[] {
+        return this.form.controls;
     }
 
     addSet(set?: Set): void {
-        this.form.push(
-            new FormGroup<FormType<Set>>({
-                setNumber: new FormControl(set ? set.setNumber : this.getSets().length + 1, {
-                    nonNullable: true,
-                    validators: [Validators.required],
-                }),
-                weightLifted: new FormControl(
-                    {
-                        value: set ? this._setWeightLiftedValue(set.weightLifted) : null,
-                        disabled: this.exerciseNameControl.value ? false : true,
-                    },
-                    [
-                        Validators.required,
-                        Validators.min(1),
-                        Validators.max(1000),
-                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                    ],
-                ),
-                reps: new FormControl(
-                    {
-                        value: set ? set.reps : null,
-                        disabled: this.exerciseNameControl.value ? false : true,
-                    },
-                    [
-                        Validators.required,
-                        Validators.min(1),
-                        Validators.max(1000),
-                        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                    ],
-                ),
-            }),
-        );
+        let setControls: SetFormType = Object.assign({});
+        let weightLiftedInSet: boolean;
+        let repsInSet: boolean;
+        if (!set) {
+            weightLiftedInSet = !!this.accessFormField('weightLifted', this.getSets().length - 1);
+            repsInSet = !!this.accessFormField('reps', this.getSets().length - 1);
+        } else {
+            weightLiftedInSet = 'weightLifted' in set;
+            repsInSet = 'reps' in set;
+        }
+        if (weightLiftedInSet) {
+            setControls = this._constructSetForm('weightLifted', set, setControls);
+        }
+        if (repsInSet) {
+            setControls = this._constructSetForm('reps', set, setControls);
+        }
+        this._isWeightLifted$.next(weightLiftedInSet);
+        this._isReps$.next(repsInSet);
+        this.form.push(new FormGroup<SetFormType>(setControls));
         of(null)
             .pipe(delay(200), takeUntil(this._unsubscribeService))
             .subscribe(async (_) => {
-                if (this.weightLiftedElements) {
+                if (this.weightLiftedElements && weightLiftedInSet) {
                     await this.weightLiftedElements.last?.setFocus();
+                }
+                if (this.repsElements && repsInSet && !weightLiftedInSet) {
+                    await this.repsElements.last?.setFocus();
                 }
             });
     }
 
     deleteSet(indexSet: number): void {
-        this.form.removeAt(indexSet);
-        this.setDeleted.emit({
-            indexExercise: this.indexExercise as number,
-            indexSet: indexSet as number,
-            newTotal: this._calculateTotal(),
-        } as Partial<SetStateChanged>);
+        this.isSetConstituent$
+            .pipe(take(1))
+            .subscribe((setConstituentsExists: SetConstituentExistsType) => {
+                this.form.removeAt(indexSet);
+                this._newTrainingStoreService.deleteSet(
+                    this.indexExercise,
+                    indexSet,
+                    this._calculateTotal(
+                        setConstituentsExists.weightLifted,
+                        setConstituentsExists.reps,
+                    ),
+                );
+            });
     }
 
     onChangeSets(indexSet: number): void {
-        let isWeightLiftedValid = false;
-        let isRepsValid = false;
-        const weightLiftedCtrl = this.accessFormField('weightLifted', indexSet);
-        const repsCtrl = this.accessFormField('reps', indexSet);
-        const setNumberCtrl = this.accessFormField('setNumber', indexSet);
-        if (weightLiftedCtrl.valid && weightLiftedCtrl?.value) {
-            isWeightLiftedValid = true;
-        }
-        if (repsCtrl.valid && repsCtrl?.value) {
-            isRepsValid = true;
-        }
-        this.setAdded.emit({
-            indexExercise: this.indexExercise,
-            indexSet: indexSet,
-            isWeightLiftedValid: isWeightLiftedValid,
-            isRepsValid: isRepsValid,
-            newTotal: this._calculateTotal(),
-            newSet: {
-                setNumber: +setNumberCtrl.value,
-                weightLifted: +weightLiftedCtrl.value,
-                reps: +repsCtrl.value,
-            } as Set,
-        } as SetStateChanged);
+        this.isSetConstituent$
+            .pipe(
+                switchMap((setConstituentExists: SetConstituentExistsType) => {
+                    const weightLifted = setConstituentExists.weightLifted;
+                    const reps = setConstituentExists.reps;
+                    const trainingData: SetTrainingData = {
+                        exerciseName: this.exerciseNameControl.value,
+                        setNumber: indexSet + 1,
+                        weightLifted:
+                            weightLifted && this._isSetConstituentValid('weightLifted', indexSet)
+                                ? this.accessFormField('weightLifted', indexSet).value
+                                : undefined,
+                        reps:
+                            reps && this._isSetConstituentValid('reps', indexSet)
+                                ? this.accessFormField('reps', indexSet).value
+                                : undefined,
+                        total: this._calculateTotal(weightLifted, reps),
+                    };
+                    return this._newTrainingStoreService.setsChanged(trainingData);
+                }),
+            )
+            .subscribe();
     }
 
-    accessFormField(formField: keyof ModelWithoutIdType<Set>, indexSet: number): AbstractControl {
+    accessFormField(formField: keyof SetFormValue, indexSet: number): AbstractControl<number> {
         return this.form.at(indexSet)?.get(formField);
     }
 
-    private _calculateTotal(): number {
+    private _calculateTotal(weightLifted: boolean, reps: boolean): number {
         let total = 0;
         for (const group of this.getSets()) {
-            total += +group.get('weightLifted')?.value * +group.get('reps')?.value;
+            if (weightLifted && reps) {
+                total += group.get('weightLifted')?.value * group.get('reps')?.value;
+            }
+            if (reps && !weightLifted) {
+                total += group.get('reps')?.value;
+            }
         }
         return total;
     }
@@ -282,9 +352,46 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnChanges {
         if (this.editTrainingData) {
             const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
             if (editTrainingWeightUnit !== this._currentWeightUnit) {
-                return +convertWeightUnit(this._currentWeightUnit, weightLifted);
+                return convertWeightUnit(this._currentWeightUnit, weightLifted);
             }
         }
         return weightLifted;
+    }
+
+    private _constructSetForm(
+        setConstituent: SetConstituent,
+        set: Set,
+        setControls: SetFormType,
+    ): SetFormType {
+        setControls[setConstituent] = new FormControl(
+            {
+                value: this._setFormValue(setConstituent, set),
+                disabled: this.exerciseNameControl.value ? false : true,
+            },
+            [
+                Validators.required,
+                Validators.min(1),
+                Validators.max(1000),
+                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+            ],
+        );
+        return setControls;
+    }
+
+    private _setFormValue(setConstituent: SetConstituent, set: Set): number | null {
+        if (set) {
+            if (setConstituent in set) {
+                if (setConstituent === 'weightLifted') {
+                    return this._setWeightLiftedValue(set.weightLifted);
+                } else {
+                    return set.reps;
+                }
+            }
+        }
+        return null;
+    }
+
+    private _isSetConstituentValid(setConstituent: SetConstituent, indexSet: number): boolean {
+        return this.accessFormField(setConstituent, indexSet)?.valid;
     }
 }

@@ -4,8 +4,20 @@ import { SingleExercise } from '../../models/training/shared/single-exercise.mod
 import { DEFAULT_WEIGHT_UNIT } from '../shared/default-weight-format.const';
 import { Set } from '../../models/training/shared/set.model';
 
+export const TOTAL_INITIAL_WEIGHT = 0;
+
 export const createEmptyExercise = (exercises: Exercise[]): SingleExercise => ({
-    exerciseData: { name: null },
+    exerciseData: {
+        name: '',
+        imageUrl: '',
+        primaryMuscleGroup: '',
+        setCategories: [],
+        primarySetCategory: 'freeWeighted',
+        translations: {
+            hr: '',
+            en: '',
+        },
+    },
     sets: [
         {
             setNumber: 1,
@@ -13,7 +25,7 @@ export const createEmptyExercise = (exercises: Exercise[]): SingleExercise => ({
             reps: null,
         } as Set,
     ],
-    total: null,
+    total: TOTAL_INITIAL_WEIGHT,
     availableExercises: [...exercises],
 });
 
@@ -25,5 +37,3 @@ export const EMPTY_TRAINING: NewTraining = {
     userId: null,
     weightUnit: DEFAULT_WEIGHT_UNIT,
 };
-
-export const TOTAL_INITIAL_WEIGHT = 0;
