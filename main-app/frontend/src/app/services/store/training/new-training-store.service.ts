@@ -49,6 +49,14 @@ export class NewTrainingStoreService {
         return this.saveTrainingData(updatedTraining);
     }
 
+    updateTrainingDate(trainingDate: string): Observable<void> {
+        const updatedTraining = {
+            ...this._currentTrainingState$.getValue(),
+            trainingDate,
+        };
+        return this.saveTrainingData(updatedTraining);
+    }
+
     updateBodyweight(value: string): Observable<void> {
         const updatedTraining = {
             ...this._currentTrainingState$.getValue(),

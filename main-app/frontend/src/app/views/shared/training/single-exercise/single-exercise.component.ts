@@ -350,7 +350,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     ): AbstractControl<K[typeof formField]> {
         return this.form
             .at(indexExercise)
-            .get(formGroup as string)
+            ?.get(formGroup as string)
             ?.get(formField as string);
     }
 

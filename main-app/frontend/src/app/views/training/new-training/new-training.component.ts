@@ -311,6 +311,7 @@ export class NewTrainingComponent implements OnDestroy {
                 const { data, role } = response;
                 if (role === 'SELECT_DATE') {
                     this.newTrainingForm.controls.trainingDate.patchValue(data);
+                    this._newTrainingStoreService.updateTrainingDate(data);
                     this._setFormattedDate(data);
                 }
             });
