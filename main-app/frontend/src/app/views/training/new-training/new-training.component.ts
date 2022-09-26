@@ -43,7 +43,6 @@ import { PastTrainingsStoreService } from '../../../services/store/training/past
 import { GeneralResponseData } from '../../../models/common/general-response.model';
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
-import { Set } from '../../../models/training/shared/set.model';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 @Component({
@@ -294,7 +293,7 @@ export class NewTrainingComponent implements OnDestroy {
             component: DateTimePickerComponent,
             componentProps: {
                 dateValue: format(
-                    new Date(this.newTrainingForm.get('trainingDate').value),
+                    new Date(this.newTrainingForm.controls.trainingDate.value),
                     `yyyy-MM-dd'T'HH:mm:ss'Z'`,
                 ),
             },
@@ -311,7 +310,7 @@ export class NewTrainingComponent implements OnDestroy {
             .subscribe((response) => {
                 const { data, role } = response;
                 if (role === 'SELECT_DATE') {
-                    this.newTrainingForm.get('trainingDate').patchValue(data);
+                    this.newTrainingForm.controls.trainingDate.patchValue(data);
                     this._setFormattedDate(data);
                 }
             });
@@ -378,12 +377,14 @@ export class NewTrainingComponent implements OnDestroy {
     private _formInit(): void {
         const currentTrainingState = this._newTrainingStoreService.getCurrentTrainingState();
         const dayClickedDate = this._sharedStoreService.getDayClickedDate();
-        this.newTrainingForm
-            .get('bodyweight')
-            .patchValue(this._fillBodyweight(currentTrainingState));
-        this.newTrainingForm.get('trainingDate').patchValue(this._fillTrainingDate(dayClickedDate));
-        this.newTrainingForm.get('exercises').patchValue(currentTrainingState.exercises);
-        this._setFormattedDate(this.newTrainingForm.get('trainingDate').value);
+        this.newTrainingForm.controls.bodyweight.patchValue(
+            this._fillBodyweight(currentTrainingState),
+        );
+        this.newTrainingForm.controls.trainingDate.patchValue(
+            this._fillTrainingDate(dayClickedDate),
+        );
+        this.newTrainingForm.controls.exercises.patchValue(currentTrainingState.exercises);
+        this._setFormattedDate(this.newTrainingForm.controls.trainingDate.value);
     }
 
     private _setFormattedDate(dateValue: string): void {
