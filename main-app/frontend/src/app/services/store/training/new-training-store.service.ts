@@ -49,12 +49,12 @@ export class NewTrainingStoreService {
         return this.saveTrainingData(updatedTraining);
     }
 
-    updateBodyweight(value: string): void {
+    updateBodyweight(value: string): Observable<void> {
         const updatedTraining = {
             ...this._currentTrainingChanged$$.getValue(),
             bodyweight: +value,
         };
-        this.saveTrainingData(updatedTraining).subscribe();
+        return this.saveTrainingData(updatedTraining);
     }
 
     deleteSet(indexExercise: number, indexSet: number, newTotal: number): void {

@@ -327,9 +327,10 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     onBodyweightChange(bodyweight: string | number): void {
-        this._newTrainingStoreService.updateBodyweight(
-            typeof bodyweight === 'string' ? bodyweight : bodyweight.toString(),
-        );
+        this._newTrainingStoreService
+            .updateBodyweight(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString())
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe();
     }
 
     async onExerciseAdded(event: UIEvent): Promise<void> {
