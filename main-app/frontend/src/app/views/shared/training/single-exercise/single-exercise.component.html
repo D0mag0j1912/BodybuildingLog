@@ -81,6 +81,7 @@
     <ion-row>
         <ion-col>
             <ion-button
+                class="add-exercise-btn"
                 type="button"
                 color="primary"
                 [disabled]="!(isAddingExercisesAllowed$ | async) || isApiLoading"
