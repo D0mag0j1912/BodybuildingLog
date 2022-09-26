@@ -151,7 +151,7 @@ export class NewTrainingComponent implements OnDestroy {
                             this.editTrainingData = {
                                 ...response.Value,
                                 editMode: true,
-                                trainingDate: response?.Value?.trainingDate ?? new Date(),
+                                trainingDate: response?.Value?.trainingDate,
                             };
                             return this._newTrainingStoreService.updateTrainingState(
                                 this.editTrainingData,
@@ -221,8 +221,9 @@ export class NewTrainingComponent implements OnDestroy {
         }
         this._isApiLoading$.next(true);
 
-        this._gatherAllFormData()
+        this._newTrainingStoreService.currentTrainingChanged$
             .pipe(
+                take(1),
                 switchMap((apiNewTraining: NewTraining) => {
                     if (this.editMode) {
                         return this._newTrainingService.updateTraining(
@@ -359,7 +360,7 @@ export class NewTrainingComponent implements OnDestroy {
                         this.editTrainingData = {
                             ...response.Value,
                             editMode: true,
-                            trainingDate: response?.Value?.trainingDate ?? new Date(),
+                            trainingDate: response?.Value?.trainingDate,
                         };
                         return this._newTrainingStoreService.updateTrainingState(
                             this.editTrainingData,
@@ -371,69 +372,6 @@ export class NewTrainingComponent implements OnDestroy {
         } else {
             this.trainingStream$ = this._newTrainingService.getExercises().pipe(mapStreamData());
         }
-    }
-
-    private _gatherAllFormData(): Observable<NewTraining> {
-        return this._newTrainingStoreService.currentTrainingChanged$.pipe(
-            take(1),
-            map((currentTrainingState: NewTraining) => {
-                let exerciseFormData: SingleExercise[] = [];
-
-                currentTrainingState.exercises.forEach(
-                    (exercise: SingleExercise, indexExercise: number) => {
-                        const total = currentTrainingState.exercises[indexExercise].total;
-                        const exerciseData: Exercise = {
-                            name: exercise.exerciseData.name,
-                            imageUrl: exercise.exerciseData.imageUrl,
-                            primaryMuscleGroup: exercise.exerciseData.primaryMuscleGroup,
-                            translations: exercise.exerciseData.translations,
-                            setCategories: exercise.exerciseData.setCategories,
-                            primarySetCategory: exercise.exerciseData.primarySetCategory,
-                        };
-                        const initialExercise = {
-                            exerciseData,
-                            sets: [],
-                            total,
-                            availableExercises: exercise.availableExercises,
-                        } as SingleExercise;
-                        exerciseFormData = [...exerciseFormData, initialExercise];
-
-                        const formSetData: Set[] = [];
-                        exercise.sets.forEach((set: Set) => {
-                            const apiSet: Set = {
-                                setNumber: set.setNumber,
-                                weightLifted: set.weightLifted,
-                                reps: set.reps,
-                            };
-                            formSetData.push(apiSet);
-                        });
-                        exerciseFormData = [...exerciseFormData].map(
-                            (exercise: SingleExercise, index: number) => {
-                                if (index === indexExercise) {
-                                    return {
-                                        ...exercise,
-                                        sets: formSetData,
-                                    };
-                                }
-                                return exercise;
-                            },
-                        );
-                    },
-                );
-
-                return {
-                    exercises: exerciseFormData,
-                    bodyweight: this.newTrainingForm.get('bodyweight').value
-                        ? this.newTrainingForm.get('bodyweight').value
-                        : null,
-                    trainingDate:
-                        new Date(this.newTrainingForm.get('trainingDate').value) ?? new Date(),
-                    editMode: this.editMode,
-                    userId: currentTrainingState.userId,
-                    weightUnit: currentTrainingState.weightUnit,
-                } as NewTraining;
-            }),
-        );
     }
 
     private _formInit(): void {

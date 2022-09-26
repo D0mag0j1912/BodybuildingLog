@@ -31,9 +31,10 @@ export const createEmptyExercise = (exercises: Exercise[]): SingleExercise => ({
 
 export const EMPTY_TRAINING: NewTraining = {
     exercises: [createEmptyExercise([])],
+    editMode: false,
+    userId: '',
     _id: '',
     bodyweight: null,
-    editMode: false,
-    userId: null,
+    trainingDate: new Date().toISOString(),
     weightUnit: DEFAULT_WEIGHT_UNIT,
 };
