@@ -72,7 +72,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         this._isExerciseChanged$.asObservable();
     readonly isExercisePicker$: Observable<boolean> = this._isExercisePicker$.asObservable();
     readonly currentExercisesState$: Observable<SingleExercise[]> =
-        this._newTrainingStoreService.currentTrainingChanged$.pipe(
+        this._newTrainingStoreService.currentTrainingState$.pipe(
             map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         );
     readonly isAddingExercisesAllowed$: Observable<boolean> = combineLatest([
@@ -189,7 +189,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     onExerciseNameChange(indexExercise: number, element: IonSelect): void {
         if (element?.value) {
-            this._newTrainingStoreService.currentTrainingChanged$
+            this._newTrainingStoreService.currentTrainingState$
                 .pipe(
                     take(1),
                     switchMap((currentTrainingState: NewTraining) => {
@@ -291,7 +291,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 .pipe(
                     switchMap((response: OverlayEventDetail<boolean>) => {
                         if (response.role === DialogRoles.DELETE_EXERCISE) {
-                            return this._newTrainingStoreService.currentTrainingChanged$.pipe(
+                            return this._newTrainingStoreService.currentTrainingState$.pipe(
                                 take(1),
                                 switchMap((currentTrainingState: NewTraining) =>
                                     this._newTrainingStoreService.deleteExercise(
@@ -316,7 +316,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 )
                 .subscribe();
         } else {
-            this._newTrainingStoreService.currentTrainingChanged$
+            this._newTrainingStoreService.currentTrainingState$
                 .pipe(
                     take(1),
                     switchMap((currentTrainingState: NewTraining) =>

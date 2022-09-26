@@ -59,7 +59,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     readonly currentPreferences$: Observable<Preferences> =
         this._preferencesStoreService.preferencesChanged$;
     readonly currentExerciseState$: Observable<SingleExercise[]> =
-        this._newTrainingStoreService.currentTrainingChanged$.pipe(
+        this._newTrainingStoreService.currentTrainingState$.pipe(
             take(1),
             map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         );

@@ -84,7 +84,7 @@ export class NewTrainingComponent implements OnDestroy {
     readonly isAuthenticated$: Observable<boolean> = this._authStoreService.isAuth$;
     readonly isEditing$: Observable<boolean> = this._sharedStoreService.editingTraining$;
     readonly isReorder$: Observable<boolean> =
-        this._newTrainingStoreService.currentTrainingChanged$.pipe(
+        this._newTrainingStoreService.currentTrainingState$.pipe(
             map((training) => {
                 const exercises = training.exercises;
                 const areAtLeastTwoExercises =
@@ -96,7 +96,7 @@ export class NewTrainingComponent implements OnDestroy {
             }),
         );
     readonly currentExercisesState$: Observable<SingleExercise[]> =
-        this._newTrainingStoreService.currentTrainingChanged$.pipe(
+        this._newTrainingStoreService.currentTrainingState$.pipe(
             map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         );
     readonly isSubmitted$: Observable<boolean> = this._isSubmitted$.asObservable();
@@ -159,7 +159,7 @@ export class NewTrainingComponent implements OnDestroy {
                         }),
                     );
                 } else {
-                    return this._newTrainingStoreService.currentTrainingChanged$.pipe(
+                    return this._newTrainingStoreService.currentTrainingState$.pipe(
                         take(1),
                         switchMap((currentTrainingState) => {
                             let newTrainingState: NewTraining;
@@ -221,7 +221,7 @@ export class NewTrainingComponent implements OnDestroy {
         }
         this._isApiLoading$.next(true);
 
-        this._newTrainingStoreService.currentTrainingChanged$
+        this._newTrainingStoreService.currentTrainingState$
             .pipe(
                 take(1),
                 switchMap((apiNewTraining: NewTraining) => {
