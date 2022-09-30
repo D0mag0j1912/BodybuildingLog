@@ -62,20 +62,15 @@ import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
     providers: [getControlValueAccessor(SingleExerciseComponent), UnsubscribeService],
 })
 export class SingleExerciseComponent implements ControlValueAccessor, OnInit, OnDestroy {
-    private readonly _isExerciseChanged$: Subject<SetConstituentExistsType> =
-        new Subject<SetConstituentExistsType>();
-    private readonly _isExercisePicker$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-        true,
-    );
+    private readonly _isExerciseChanged$ = new Subject<SetConstituentExistsType>();
+    private readonly _isExercisePicker$ = new BehaviorSubject<boolean>(true);
 
-    readonly isExerciseChanged$: Observable<SetConstituentExistsType> =
-        this._isExerciseChanged$.asObservable();
-    readonly isExercisePicker$: Observable<boolean> = this._isExercisePicker$.asObservable();
-    readonly currentExercisesState$: Observable<SingleExercise[]> =
-        this._newTrainingStoreService.currentTrainingState$.pipe(
-            map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
-        );
-    readonly isAddingExercisesAllowed$: Observable<boolean> = combineLatest([
+    readonly isExerciseChanged$ = this._isExerciseChanged$.asObservable();
+    readonly isExercisePicker$ = this._isExercisePicker$.asObservable();
+    readonly currentExercisesState$ = this._newTrainingStoreService.currentTrainingState$.pipe(
+        map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
+    );
+    readonly isAddingExercisesAllowed$ = combineLatest([
         this.currentExercisesState$,
         this._newTrainingStoreService.allExercisesChanged$.pipe(
             map((value: StreamData<Exercise[]>) => value.Value),

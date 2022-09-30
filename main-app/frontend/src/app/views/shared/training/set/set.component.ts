@@ -20,7 +20,6 @@ import { IonInput } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { delay, filter, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { Preferences } from '../../../../models/common/preferences.model';
 import { SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
@@ -37,7 +36,6 @@ import {
     SetConstituent,
     SetConstituentExistsType,
 } from '../../../../models/training/shared/set.type';
-import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 
 export type SetFormType = Pick<FormType<Set>, SetConstituent>;
 
@@ -51,22 +49,16 @@ type SetFormValue = Pick<ModelWithoutIdType<Set>, SetConstituent>;
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
 export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
-    private readonly _isWeightLifted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-        true,
-    );
-    private readonly _isReps$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+    private readonly _isWeightLifted$ = new BehaviorSubject<boolean>(true);
+    private readonly _isReps$ = new BehaviorSubject<boolean>(true);
 
-    readonly currentPreferences$: Observable<Preferences> =
-        this._preferencesStoreService.preferencesChanged$;
-    readonly currentExerciseState$: Observable<SingleExercise[]> =
-        this._newTrainingStoreService.currentTrainingState$.pipe(
-            take(1),
-            map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
-        );
-    readonly isWeightLifted$: Observable<boolean> = this._isWeightLifted$
-        .asObservable()
-        .pipe(take(1));
-    readonly isReps$: Observable<boolean> = this._isReps$.asObservable().pipe(take(1));
+    readonly currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
+    readonly currentExerciseState$ = this._newTrainingStoreService.currentTrainingState$.pipe(
+        take(1),
+        map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
+    );
+    readonly isWeightLifted$ = this._isWeightLifted$.asObservable().pipe(take(1));
+    readonly isReps$ = this._isReps$.asObservable().pipe(take(1));
     readonly isSetConstituent$: Observable<SetConstituentExistsType> = combineLatest([
         this.isWeightLifted$,
         this.isReps$,

@@ -53,8 +53,8 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
     providers: [UnsubscribeService],
 })
 export class NewTrainingComponent implements OnDestroy {
-    private readonly _isSubmitted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private readonly _isApiLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private readonly _isSubmitted$ = new BehaviorSubject<boolean>(false);
+    private readonly _isApiLoading$ = new BehaviorSubject<boolean>(false);
 
     formattedTodayDate: string;
 
@@ -78,28 +78,25 @@ export class NewTrainingComponent implements OnDestroy {
     editMode = false;
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
-    readonly currentPreferences$: Observable<Preferences> =
-        this._preferencesStoreService.preferencesChanged$;
-    readonly isAuthenticated$: Observable<boolean> = this._authStoreService.isAuth$;
-    readonly isEditing$: Observable<boolean> = this._sharedStoreService.editingTraining$;
-    readonly isReorder$: Observable<boolean> =
-        this._newTrainingStoreService.currentTrainingState$.pipe(
-            map((training) => {
-                const exercises = training.exercises;
-                const areAtLeastTwoExercises =
-                    exercises.length >= 2 &&
-                    exercises.every(
-                        (exercise) => !!exercise.exerciseData.name && exercise.sets.length > 0,
-                    );
-                return areAtLeastTwoExercises;
-            }),
-        );
-    readonly currentExercisesState$: Observable<SingleExercise[]> =
-        this._newTrainingStoreService.currentTrainingState$.pipe(
-            map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
-        );
-    readonly isSubmitted$: Observable<boolean> = this._isSubmitted$.asObservable();
-    readonly isApiLoading$: Observable<boolean> = this._isApiLoading$.asObservable();
+    readonly currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
+    readonly isAuthenticated$ = this._authStoreService.isAuth$;
+    readonly isEditing$ = this._sharedStoreService.editingTraining$;
+    readonly isReorder$ = this._newTrainingStoreService.currentTrainingState$.pipe(
+        map((training) => {
+            const exercises = training.exercises;
+            const areAtLeastTwoExercises =
+                exercises.length >= 2 &&
+                exercises.every(
+                    (exercise) => !!exercise.exerciseData.name && exercise.sets.length > 0,
+                );
+            return areAtLeastTwoExercises;
+        }),
+    );
+    readonly currentExercisesState$ = this._newTrainingStoreService.currentTrainingState$.pipe(
+        map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
+    );
+    readonly isSubmitted$ = this._isSubmitted$.asObservable();
+    readonly isApiLoading$ = this._isApiLoading$.asObservable();
 
     @ViewChild(IonContent, { read: IonContent })
     ionContent: IonContent;
