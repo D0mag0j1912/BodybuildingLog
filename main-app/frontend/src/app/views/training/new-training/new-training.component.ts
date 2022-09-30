@@ -196,7 +196,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     ionViewDidEnter(): void {
         if (this.ionContent) {
-            setTimeout(async () => await this.ionContent.scrollToBottom(300), 300);
+            setTimeout(async () => await this.ionContent.scrollToBottom(500), 300);
         }
     }
 
@@ -277,7 +277,7 @@ export class NewTrainingComponent implements OnDestroy {
                         switchMap((_) => of(streamData)),
                         mapStreamData<Exercise[]>(),
                         tap((_) =>
-                            setTimeout(async () => await this.ionContent.scrollToBottom(300), 100),
+                            setTimeout(async () => await this.ionContent.scrollToBottom(500), 100),
                         ),
                     );
                     this._changeDetectorRef.markForCheck();
