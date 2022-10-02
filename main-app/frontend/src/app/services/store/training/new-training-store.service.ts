@@ -26,10 +26,9 @@ export class NewTrainingStoreService {
     readonly allExercisesChanged$: Observable<StreamData<Exercise[]>> =
         this._allExercisesChanged$$.asObservable();
 
-    private readonly _currentTrainingState$: BehaviorSubject<NewTraining> =
+    private readonly _trainingState$: BehaviorSubject<NewTraining> =
         new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
-    readonly currentTrainingState$: Observable<NewTraining> =
-        this._currentTrainingState$.asObservable();
+    readonly trainingState$: Observable<NewTraining> = this._trainingState$.asObservable();
 
     constructor(private readonly _preferencesStoreService: PreferencesStoreService) {}
 
@@ -38,12 +37,12 @@ export class NewTrainingStoreService {
     }
 
     getCurrentTrainingState(): NewTraining {
-        return { ...this._currentTrainingState$.getValue() };
+        return { ...this._trainingState$.getValue() };
     }
 
     updateWeightUnit(weightUnit: WeightUnit): Observable<void> {
         const updatedTraining = {
-            ...this._currentTrainingState$.getValue(),
+            ...this._trainingState$.getValue(),
             weightUnit,
         };
         return this.saveTrainingData(updatedTraining);
@@ -51,7 +50,7 @@ export class NewTrainingStoreService {
 
     updateTrainingDate(trainingDate: string): Observable<void> {
         const updatedTraining = {
-            ...this._currentTrainingState$.getValue(),
+            ...this._trainingState$.getValue(),
             trainingDate,
         };
         return this.saveTrainingData(updatedTraining);
@@ -59,14 +58,14 @@ export class NewTrainingStoreService {
 
     updateBodyweight(value: string): Observable<void> {
         const updatedTraining = {
-            ...this._currentTrainingState$.getValue(),
+            ...this._trainingState$.getValue(),
             bodyweight: +value,
         };
         return this.saveTrainingData(updatedTraining);
     }
 
     deleteSet(indexExercise: number, indexSet: number, newTotal: number): void {
-        let updatedTraining: NewTraining = this._currentTrainingState$.getValue();
+        let updatedTraining: NewTraining = this._trainingState$.getValue();
         updatedTraining = {
             ...updatedTraining,
             exercises: [...updatedTraining.exercises].map((exercise: SingleExercise, i: number) => {
@@ -155,7 +154,7 @@ export class NewTrainingStoreService {
     }
 
     setsChanged(trainingData: SetTrainingData): Observable<void> {
-        let updatedTraining: NewTraining = this._currentTrainingState$.getValue();
+        let updatedTraining: NewTraining = this._trainingState$.getValue();
         const indexOfChangedExercise = updatedTraining.exercises.findIndex(
             (singleExercise: SingleExercise) =>
                 singleExercise.exerciseData.name === trainingData.exerciseName,
@@ -235,7 +234,7 @@ export class NewTrainingStoreService {
         indexExercise: number,
         setConstituentsExists: SetConstituentExistsType,
     ): Observable<void> {
-        return this._currentTrainingState$.pipe(
+        return this._trainingState$.pipe(
             take(1),
             map((currentTrainingState: NewTraining) => {
                 let set: Set;
@@ -320,7 +319,7 @@ export class NewTrainingStoreService {
                     return false;
                 }
                 const trainingState: NewTraining = JSON.parse(storedData.value);
-                this._currentTrainingState$.next({ ...trainingState });
+                this._trainingState$.next({ ...trainingState });
                 return true;
             }),
         );
@@ -333,7 +332,7 @@ export class NewTrainingStoreService {
         userId?: string,
     ): Observable<void> {
         return combineLatest([
-            this.currentTrainingState$,
+            this.trainingState$,
             this._preferencesStoreService.preferencesChanged$,
         ]).pipe(
             take(1),
@@ -363,7 +362,7 @@ export class NewTrainingStoreService {
     }
 
     private saveTrainingData(updatedTraining: NewTraining): Observable<void> {
-        this._currentTrainingState$.next(updatedTraining);
+        this._trainingState$.next(updatedTraining);
         return from(
             Storage.set({
                 key: StorageItems.TRAINING_STATE,

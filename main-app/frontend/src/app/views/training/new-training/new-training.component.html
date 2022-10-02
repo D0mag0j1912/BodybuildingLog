@@ -89,7 +89,7 @@
                     <ion-note class="error">{{ 'training.new_training.errors.date_required' | translate }}</ion-note>
                 </ng-container>
 
-                <ng-container *ngIf="currentExercisesState$ | async as currentExercisesState">
+                <ng-container *ngIf="exercisesState$ | async as exercisesState">
                     <bl-single-exercise
                         formControlName="exercises"
                         [bodyweightControl]="bodyweight"
@@ -103,20 +103,25 @@
                         <ion-col class="ion-text-end log-training-col">
                             <ion-button
                                 (click)="onSubmit()"
-                                [disabled]="!currentExercisesState?.length || (isApiLoading$ | async)"
+                                [disabled]="!exercisesState?.length || (isApiLoading$ | async)"
                             >
                             {{ 'training.new_training.log_training' | translate }}
                             </ion-button>
                         </ion-col>
                     </bl-single-exercise>
-
+                    <ion-text *ngIf="
+                        bodyweight.errors?.required &&
+                        (isSubmitted$ | async)"
+                        class="error">
+                        {{ 'training.new_training.errors.bodyweight_required' | translate }}
+                    </ion-text>
                     <ion-grid>
                         <ion-row>
                             <ion-col class="ion-text-center at-least-one-exercise-txt">
                                 <ion-note
                                     *ngIf="
                                         (isSubmitted$ | async) &&
-                                        currentExercisesState?.length === 0
+                                        exercisesState?.length === 0
                                     "
                                     class="empty-training-msg"
                                 >

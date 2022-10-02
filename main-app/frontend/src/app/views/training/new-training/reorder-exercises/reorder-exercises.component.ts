@@ -15,7 +15,7 @@ export class ReorderExercisesComponent {
     private reorderedTrainingState: NewTraining;
 
     readonly currentExercises$: Observable<string[]> =
-        this.newTrainingStoreService.currentTrainingState$.pipe(
+        this.newTrainingStoreService.trainingState$.pipe(
             map((training: NewTraining) =>
                 training.exercises.map((exercise) => exercise.exerciseData.name),
             ),

@@ -36,7 +36,6 @@ import {
     SetConstituent,
     SetConstituentExistsType,
 } from '../../../../models/training/shared/set.type';
-import { BODYWEIGHT_SET_CATEGORIES } from '../../../../constants/training/bodyweight-set-categories.const';
 
 export type SetFormType = Pick<FormType<Set>, SetConstituent>;
 
@@ -54,9 +53,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     private readonly _isReps$ = new BehaviorSubject<boolean>(true);
 
     readonly currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
-    readonly exercisesState$ = this._newTrainingStoreService.currentTrainingState$.pipe(
-        map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
-    );
     readonly isWeightLifted$ = this._isWeightLifted$.asObservable().pipe(take(1));
     readonly isReps$ = this._isReps$.asObservable().pipe(take(1));
     readonly isSetConstituent$: Observable<SetConstituentExistsType> = combineLatest([
@@ -70,14 +66,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     );
 
     readonly form = new FormArray<FormGroup<SetFormType>>([]);
-    readonly bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
     private _currentWeightUnit: WeightUnit;
     private _setConstituentsExists: SetConstituentExistsType;
 
     onTouched: () => void;
-
-    @Input()
-    bodyweightControl: AbstractControl<number> | null;
 
     @Input()
     editTrainingData: NewTraining;

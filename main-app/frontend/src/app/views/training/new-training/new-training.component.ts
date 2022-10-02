@@ -81,7 +81,7 @@ export class NewTrainingComponent implements OnDestroy {
     readonly currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
     readonly isAuthenticated$ = this._authStoreService.isAuth$;
     readonly isEditing$ = this._sharedStoreService.editingTraining$;
-    readonly isReorder$ = this._newTrainingStoreService.currentTrainingState$.pipe(
+    readonly isReorder$ = this._newTrainingStoreService.trainingState$.pipe(
         map((training: NewTraining) => {
             const exercises = training.exercises;
             return (
@@ -93,7 +93,7 @@ export class NewTrainingComponent implements OnDestroy {
             );
         }),
     );
-    readonly currentExercisesState$ = this._newTrainingStoreService.currentTrainingState$.pipe(
+    readonly exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         tap((exercises: SingleExercise[]) => {
             const isDynamicBodyweight = exercises.some(
@@ -172,7 +172,7 @@ export class NewTrainingComponent implements OnDestroy {
                         }),
                     );
                 } else {
-                    return this._newTrainingStoreService.currentTrainingState$.pipe(
+                    return this._newTrainingStoreService.trainingState$.pipe(
                         take(1),
                         switchMap((currentTrainingState) => {
                             let newTrainingState: NewTraining;
@@ -234,7 +234,7 @@ export class NewTrainingComponent implements OnDestroy {
         }
         this._isApiLoading$.next(true);
 
-        this._newTrainingStoreService.currentTrainingState$
+        this._newTrainingStoreService.trainingState$
             .pipe(
                 take(1),
                 switchMap((trainingData: NewTraining) => {

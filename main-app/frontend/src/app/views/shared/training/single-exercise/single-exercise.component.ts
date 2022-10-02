@@ -67,11 +67,11 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     readonly isExerciseChanged$ = this._isExerciseChanged$.asObservable();
     readonly isExercisePicker$ = this._isExercisePicker$.asObservable();
-    readonly currentExercisesState$ = this._newTrainingStoreService.currentTrainingState$.pipe(
+    readonly exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
     );
     readonly isAddingExercisesAllowed$ = combineLatest([
-        this.currentExercisesState$,
+        this.exercisesState$,
         this._newTrainingStoreService.allExercisesChanged$.pipe(
             map((value: StreamData<Exercise[]>) => value.Value),
         ),
@@ -107,10 +107,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     editTrainingData: NewTraining;
 
     @Input()
-    bodyweightControl: AbstractControl | null;
+    bodyweightControl: AbstractControl<number> | null;
 
     @Input()
-    trainingDate: AbstractControl | null;
+    trainingDate: AbstractControl<string> | null;
 
     @Input()
     isSubmitted = false;
@@ -184,7 +184,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     onExerciseNameChange(indexExercise: number, element: IonSelect): void {
         if (element?.value) {
-            this._newTrainingStoreService.currentTrainingState$
+            this._newTrainingStoreService.trainingState$
                 .pipe(
                     take(1),
                     switchMap((currentTrainingState: NewTraining) => {
@@ -286,7 +286,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 .pipe(
                     switchMap((response: OverlayEventDetail<boolean>) => {
                         if (response.role === DialogRoles.DELETE_EXERCISE) {
-                            return this._newTrainingStoreService.currentTrainingState$.pipe(
+                            return this._newTrainingStoreService.trainingState$.pipe(
                                 take(1),
                                 switchMap((currentTrainingState: NewTraining) =>
                                     this._newTrainingStoreService.deleteExercise(
@@ -311,7 +311,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 )
                 .subscribe();
         } else {
-            this._newTrainingStoreService.currentTrainingState$
+            this._newTrainingStoreService.trainingState$
                 .pipe(
                     take(1),
                     switchMap((currentTrainingState: NewTraining) =>
