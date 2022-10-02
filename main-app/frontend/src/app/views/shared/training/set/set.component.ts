@@ -18,7 +18,16 @@ import {
 } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { delay, filter, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import {
+    delay,
+    distinctUntilChanged,
+    filter,
+    map,
+    switchMap,
+    take,
+    takeUntil,
+    tap,
+} from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
@@ -36,6 +45,8 @@ import {
     SetConstituent,
     SetConstituentExistsType,
 } from '../../../../models/training/shared/set.type';
+import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
+import { BODYWEIGHT_SET_CATEGORIES } from '../../../../constants/training/bodyweight-set-categories.const';
 
 export type SetFormType = Pick<FormType<Set>, SetConstituent>;
 
@@ -64,21 +75,29 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             reps,
         })),
     );
+    readonly exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
+        take(1),
+        map((trainingState: NewTraining) => trainingState.exercises),
+    );
 
     readonly form = new FormArray<FormGroup<SetFormType>>([]);
+    readonly bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
     private _currentWeightUnit: WeightUnit;
     private _setConstituentsExists: SetConstituentExistsType;
 
     onTouched: () => void;
 
     @Input()
-    editTrainingData: NewTraining;
-
-    @Input()
     isExerciseChanged$: Observable<SetConstituentExistsType>;
 
     @Input()
-    exerciseNameControl: AbstractControl<string> | null;
+    bodyweightControl: AbstractControl<number>;
+
+    @Input()
+    exerciseName = '';
+
+    @Input()
+    editTrainingData: NewTraining;
 
     @Input()
     indexExercise = 0;
@@ -112,15 +131,30 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         /* this.form.setValidators([SetValidators.allSetsFilled()]);
         this.form.updateValueAndValidity(); */
 
-        this.exerciseNameControl.valueChanges
-            .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((value: string) => {
-                value
-                    ? this.accessFormField('weightLifted', 0)?.enable()
-                    : this.accessFormField('weightLifted', 0)?.disable();
-                value
-                    ? this.accessFormField('reps', 0)?.enable()
-                    : this.accessFormField('reps', 0)?.disable();
+        this.bodyweightControl.valueChanges
+            .pipe(
+                distinctUntilChanged(),
+                switchMap((_) => this.exercisesState$),
+                filter((exercises: SingleExercise[]) =>
+                    this.bodyweightSetCategories.includes(
+                        exercises[this.indexExercise].exerciseData.primarySetCategory,
+                    ),
+                ),
+                takeUntil(this._unsubscribeService),
+            )
+            .subscribe((exercises: SingleExercise[]) => {
+                const primarySetCategory =
+                    exercises[this.indexExercise].exerciseData.primarySetCategory;
+                switch (primarySetCategory) {
+                    case 'dynamicBodyweight': {
+                        if (!this.bodyweightControl?.errors) {
+                            this.accessFormField('reps', 0).enable();
+                        } else {
+                            this.accessFormField('reps', 0).disable();
+                        }
+                        break;
+                    }
+                }
             });
 
         this.isExerciseChanged$
@@ -301,7 +335,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                     const weightLifted = setConstituentExists.weightLifted;
                     const reps = setConstituentExists.reps;
                     const trainingData: SetTrainingData = {
-                        exerciseName: this.exerciseNameControl.value,
+                        exerciseName: this.exerciseName,
                         setNumber: indexSet + 1,
                         weightLifted:
                             weightLifted && this._isSetConstituentValid('weightLifted', indexSet)
@@ -330,7 +364,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 total += group.get('weightLifted')?.value * group.get('reps')?.value;
             }
             if (reps && !weightLifted) {
-                total += group.get('reps')?.value;
+                total += this.bodyweightControl.value * group.get('reps')?.value;
             }
         }
         return total;
@@ -354,7 +388,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         setControls[setConstituent] = new FormControl(
             {
                 value: this._setFormValue(setConstituent, set),
-                disabled: this.exerciseNameControl.value ? false : true,
+                disabled: this.exerciseName ? false : true,
             },
             [
                 Validators.required,

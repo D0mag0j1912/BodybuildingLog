@@ -67,12 +67,13 @@
         <bl-set
             formControlName="sets"
             [isExerciseChanged$]="isExerciseChanged$"
-            [exerciseNameControl]="accessFormGroup('exerciseData', 'name', i)"
+            [bodyweightControl]="bodyweightControl"
+            [exerciseName]="accessFormGroup('exerciseData', 'name', i).value"
+            [editTrainingData]="editTrainingData"
             [indexExercise]="i"
             [isSubmitted]="isSubmitted"
             [isLoading]="isLoading"
             [editMode]="editMode"
-            [editTrainingData]="editTrainingData"
         ></bl-set>
     </ion-card>
 </form>

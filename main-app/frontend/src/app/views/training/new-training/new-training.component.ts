@@ -101,7 +101,6 @@ export class NewTrainingComponent implements OnDestroy {
     newTrainingForm = new FormGroup({
         bodyweight: new FormControl(0, {
             validators: this.initialBodyweightValidators,
-            updateOn: 'blur',
         }),
         trainingDate: new FormControl(new Date().toISOString(), {
             validators: [Validators.required],
