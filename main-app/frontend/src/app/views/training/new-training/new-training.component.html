@@ -61,19 +61,22 @@
                         <ion-text
                             class="bodyweight-input--unit"
                             slot="end"
-                            [class.invalid-bodyweight]="newTrainingForm.get('bodyweight').invalid"
+                            [class.invalid-bodyweight]="bodyweight.invalid"
                         >
                             {{ bodyweightRef?.value ? currentPreferences.weightUnit : '' }}
                         </ion-text>
                     </ng-container>
-                    <ion-note *ngIf="newTrainingForm.get('bodyweight').errors?.pattern" slot="error">
+                    <ion-note *ngIf="bodyweight.errors?.pattern" slot="error">
                         {{ 'training.new_training.errors.only_numbers' | translate }}
                     </ion-note>
-                    <ion-note *ngIf="newTrainingForm.get('bodyweight').errors?.min" slot="error">
+                    <ion-note *ngIf="bodyweight.errors?.min" slot="error">
                         {{ 'training.new_training.errors.bodyweight_min' | translate }}
                     </ion-note>
-                    <ion-note *ngIf="newTrainingForm.get('bodyweight').errors?.max" slot="error">
+                    <ion-note *ngIf="bodyweight.errors?.max" slot="error">
                         {{ 'training.new_training.errors.bodyweight_max' | translate }}
+                    </ion-note>
+                    <ion-note *ngIf="bodyweight.errors?.required" slot="error">
+                        {{ 'common.errors.required' | translate }}
                     </ion-note>
                 </ion-item>
 
@@ -89,7 +92,7 @@
                 <ng-container *ngIf="currentExercisesState$ | async as currentExercisesState">
                     <bl-single-exercise
                         formControlName="exercises"
-                        [bodyweight]="newTrainingForm.get('bodyweight')"
+                        [bodyweight]="bodyweight"
                         [trainingDate]="newTrainingForm.get('trainingDate')"
                         [editTrainingData]="editTrainingData"
                         [isSubmitted]="isSubmitted$ | async"

@@ -23,6 +23,7 @@
         "or": "OR",
         "date": "Date",
         "errors": {
+            "required": "Field is required",
             "something_went_wrong": "Something went wrong Please try again",
             "invalid_date": "Invalid date format",
             "unknown_error": "Unknown error occured",
