@@ -3,7 +3,6 @@ import { Type } from 'class-transformer';
 import {
     IsBoolean,
     IsDateString,
-    IsDefined,
     IsMongoId,
     IsNotEmpty,
     IsNumber,
@@ -44,10 +43,9 @@ export const NEW_TRAINING_SCHEMA = new Schema({
 
 export class NewTraining {
     @ApiProperty({ required: false })
-    @IsOptional()
     @IsString({ message: '@training.new_training.errors.error_save_training' })
-    @IsDefined({ message: '@training.new_training.errors.error_save_training' })
     @IsMongoId()
+    @IsOptional()
     _id: string;
 
     @ApiProperty()
