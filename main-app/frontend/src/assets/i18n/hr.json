@@ -116,6 +116,7 @@
             "reorder_exercises": "Promjena redoslijeda",
             "errors": {
                 "date_required": "Datum je obvezan",
+                "bodyweight_required": "Tjelesna težina je obvezna za unos",
                 "bodyweight_number": "Tjelesna težina mora biti numerička vrijednost",
                 "bodyweight_min": "Tjelesna težina mora biti veća od 30",
                 "bodyweight_max": "Tjelesna težina mora biti manja od 300",

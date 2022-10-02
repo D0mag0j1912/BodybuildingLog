@@ -144,6 +144,16 @@
                     </ion-button>
                 </ion-col>
             </ion-row>
+            <ng-container *ngIf="exercisesState$ | async as exercisesState">
+                <ion-text *ngIf="
+                    bodyweightControl.errors?.required &&
+                    isSubmitted &&
+                    i === getSets().length - 1 &&
+                    bodyweightSetCategories.includes(exercisesState[indexExercise].exerciseData.primarySetCategory)"
+                    class="error">
+                    {{ 'training.new_training.errors.bodyweight_required' | translate }}
+                </ion-text>
+            </ng-container>
         </ion-grid>
     </form>
 </ng-container>

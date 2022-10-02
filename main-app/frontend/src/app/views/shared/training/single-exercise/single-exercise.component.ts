@@ -107,7 +107,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     editTrainingData: NewTraining;
 
     @Input()
-    bodyweight: AbstractControl | null;
+    bodyweightControl: AbstractControl | null;
 
     @Input()
     trainingDate: AbstractControl | null;

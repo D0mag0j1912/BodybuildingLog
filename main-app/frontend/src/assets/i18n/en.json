@@ -115,6 +115,7 @@
             "reorder_exercises": "Reorder exercises",
             "errors": {
                 "date_required": "Date is required",
+                "bodyweight_required": "Bodyweight is required",
                 "bodyweight_number": "Bodyweight needs to be numerical value",
                 "bodyweight_min": "Bodyweight needs to be greater than 30",
                 "bodyweight_max": "Bodyweight needs to be less than 300",

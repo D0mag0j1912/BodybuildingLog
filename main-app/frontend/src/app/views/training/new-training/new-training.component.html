@@ -92,7 +92,7 @@
                 <ng-container *ngIf="currentExercisesState$ | async as currentExercisesState">
                     <bl-single-exercise
                         formControlName="exercises"
-                        [bodyweight]="bodyweight"
+                        [bodyweightControl]="bodyweight"
                         [trainingDate]="newTrainingForm.get('trainingDate')"
                         [editTrainingData]="editTrainingData"
                         [isSubmitted]="isSubmitted$ | async"
