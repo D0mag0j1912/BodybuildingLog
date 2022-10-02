@@ -7,12 +7,12 @@ import {
     ViewChild,
     ViewChildren,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { format, parseISO } from 'date-fns';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
 import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { TranslateService } from '@ngx-translate/core';
@@ -38,7 +38,6 @@ import {
 } from '../../../constants/training/new-training.const';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
-import { Preferences } from '../../../models/common/preferences.model';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { GeneralResponseData } from '../../../models/common/general-response.model';
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
@@ -82,14 +81,14 @@ export class NewTrainingComponent implements OnDestroy {
     readonly isAuthenticated$ = this._authStoreService.isAuth$;
     readonly isEditing$ = this._sharedStoreService.editingTraining$;
     readonly isReorder$ = this._newTrainingStoreService.currentTrainingState$.pipe(
-        map((training) => {
+        map((training: NewTraining) => {
             const exercises = training.exercises;
-            const areAtLeastTwoExercises =
+            return (
                 exercises.length >= 2 &&
                 exercises.every(
                     (exercise) => !!exercise.exerciseData.name && exercise.sets.length > 0,
-                );
-            return areAtLeastTwoExercises;
+                )
+            );
         }),
     );
     readonly currentExercisesState$ = this._newTrainingStoreService.currentTrainingState$.pipe(
@@ -102,7 +101,7 @@ export class NewTrainingComponent implements OnDestroy {
     ionContent: IonContent;
 
     @ViewChildren(SingleExerciseComponent)
-    singleExerciseCmps: QueryList<SingleExerciseComponent>;
+    singleExerciseComponents: QueryList<SingleExerciseComponent>;
 
     constructor(
         private readonly _newTrainingStoreService: NewTrainingStoreService,
@@ -120,6 +119,10 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly _modalController: ModalController,
         private readonly _changeDetectorRef: ChangeDetectorRef,
     ) {}
+
+    get bodyweight(): AbstractControl<number> {
+        return this.newTrainingForm.get('bodyweight');
+    }
 
     ionViewWillEnter(): void {
         let allExercisesChanged: StreamData<Exercise[]>;
@@ -220,14 +223,21 @@ export class NewTrainingComponent implements OnDestroy {
         this._newTrainingStoreService.currentTrainingState$
             .pipe(
                 take(1),
-                switchMap((apiNewTraining: NewTraining) => {
-                    if (this.editMode) {
-                        return this._newTrainingService.updateTraining(
-                            apiNewTraining,
-                            this.editTrainingData._id,
-                        );
+                map((currentTrainingState: NewTraining) =>
+                    this._makeBodyweightRequired(currentTrainingState),
+                ),
+                switchMap((trainingData: NewTraining) => {
+                    if (trainingData) {
+                        if (this.editMode) {
+                            return this._newTrainingService.updateTraining(
+                                trainingData,
+                                this.editTrainingData._id,
+                            );
+                        } else {
+                            return this._newTrainingService.addTraining(trainingData);
+                        }
                     } else {
-                        return this._newTrainingService.addTraining(apiNewTraining);
+                        return EMPTY;
                     }
                 }),
                 finalize(() => this._isApiLoading$.next(false)),
@@ -339,7 +349,7 @@ export class NewTrainingComponent implements OnDestroy {
                     delay(200),
                     tap(
                         async (_) =>
-                            await this.singleExerciseCmps.last?.exercisePickerEls?.last?.open(
+                            await this.singleExerciseComponents.last?.exercisePickerEls?.last?.open(
                                 event,
                             ),
                     ),
@@ -414,7 +424,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     private _isExerciseFormValid(): boolean {
         let isFormValid = true;
-        this.singleExerciseCmps.forEach((component: SingleExerciseComponent) => {
+        this.singleExerciseComponents.forEach((component: SingleExerciseComponent) => {
             const exerciseForm = component.form;
             if (exerciseForm.invalid) {
                 isFormValid = false;
@@ -424,5 +434,25 @@ export class NewTrainingComponent implements OnDestroy {
             }
         });
         return isFormValid;
+    }
+
+    private _makeBodyweightRequired(currentTrainingState: NewTraining): NewTraining {
+        const isDynamicBodyweight = currentTrainingState.exercises.some(
+            (exercise: SingleExercise) =>
+                exercise.exerciseData.primarySetCategory === 'dynamicBodyweight',
+        );
+        const isBodyweightValue = !!this.newTrainingForm.get('bodyweight').value;
+        if (isDynamicBodyweight && !isBodyweightValue) {
+            this.bodyweight.setValidators([
+                Validators.required,
+                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                Validators.min(30),
+                Validators.max(300),
+            ]);
+            this.bodyweight.updateValueAndValidity();
+            return null;
+        } else {
+            return currentTrainingState;
+        }
     }
 }
