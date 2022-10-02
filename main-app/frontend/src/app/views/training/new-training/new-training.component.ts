@@ -42,6 +42,7 @@ import { PastTrainingsStoreService } from '../../../services/store/training/past
 import { GeneralResponseData } from '../../../models/common/general-response.model';
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
+import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 @Component({
@@ -54,28 +55,6 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
 export class NewTrainingComponent implements OnDestroy {
     private readonly _isSubmitted$ = new BehaviorSubject<boolean>(false);
     private readonly _isApiLoading$ = new BehaviorSubject<boolean>(false);
-
-    formattedTodayDate: string;
-    editTrainingData: NewTraining;
-    readonly initialBodyweightValidators = [
-        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-        Validators.min(30),
-        Validators.max(300),
-    ];
-
-    newTrainingForm = new FormGroup({
-        bodyweight: new FormControl(0, {
-            validators: this.initialBodyweightValidators,
-            updateOn: 'blur',
-        }),
-        trainingDate: new FormControl(new Date().toISOString(), {
-            validators: [Validators.required],
-            nonNullable: true,
-        }),
-        exercises: new FormControl<SingleExercise[]>([], { nonNullable: true }),
-    });
-
-    editMode = false;
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
     readonly currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
@@ -96,9 +75,8 @@ export class NewTrainingComponent implements OnDestroy {
     readonly exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         tap((exercises: SingleExercise[]) => {
-            const isDynamicBodyweight = exercises.some(
-                (exercise: SingleExercise) =>
-                    exercise.exerciseData.primarySetCategory === 'dynamicBodyweight',
+            const isDynamicBodyweight = exercises.some((exercise: SingleExercise) =>
+                this.bodyweightSetCategories.includes(exercise.exerciseData.primarySetCategory),
             );
             this.bodyweight.setValidators(
                 isDynamicBodyweight
@@ -110,6 +88,29 @@ export class NewTrainingComponent implements OnDestroy {
     );
     readonly isSubmitted$ = this._isSubmitted$.asObservable();
     readonly isApiLoading$ = this._isApiLoading$.asObservable();
+
+    formattedTodayDate: string;
+    editTrainingData: NewTraining;
+    readonly initialBodyweightValidators = [
+        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+        Validators.min(30),
+        Validators.max(300),
+    ];
+    readonly bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
+
+    newTrainingForm = new FormGroup({
+        bodyweight: new FormControl(0, {
+            validators: this.initialBodyweightValidators,
+            updateOn: 'blur',
+        }),
+        trainingDate: new FormControl(new Date().toISOString(), {
+            validators: [Validators.required],
+            nonNullable: true,
+        }),
+        exercises: new FormControl<SingleExercise[]>([], { nonNullable: true }),
+    });
+
+    editMode = false;
 
     @ViewChild(IonContent, { read: IonContent })
     ionContent: IonContent;
