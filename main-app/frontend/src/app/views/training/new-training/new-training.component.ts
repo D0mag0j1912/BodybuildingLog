@@ -56,14 +56,16 @@ export class NewTrainingComponent implements OnDestroy {
     private readonly _isApiLoading$ = new BehaviorSubject<boolean>(false);
 
     formattedTodayDate: string;
+    editTrainingData: NewTraining;
+    readonly initialBodyweightValidators = [
+        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+        Validators.min(30),
+        Validators.max(300),
+    ];
 
     newTrainingForm = new FormGroup({
         bodyweight: new FormControl(0, {
-            validators: [
-                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                Validators.min(30),
-                Validators.max(300),
-            ],
+            validators: this.initialBodyweightValidators,
             updateOn: 'blur',
         }),
         trainingDate: new FormControl(new Date().toISOString(), {
@@ -73,7 +75,6 @@ export class NewTrainingComponent implements OnDestroy {
         exercises: new FormControl<SingleExercise[]>([], { nonNullable: true }),
     });
 
-    editTrainingData: NewTraining;
     editMode = false;
 
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
@@ -86,7 +87,8 @@ export class NewTrainingComponent implements OnDestroy {
             return (
                 exercises.length >= 2 &&
                 exercises.every(
-                    (exercise) => !!exercise.exerciseData.name && exercise.sets.length > 0,
+                    (exercise: SingleExercise) =>
+                        !!exercise.exerciseData.name && exercise.sets.length > 0,
                 )
             );
         }),
@@ -98,15 +100,10 @@ export class NewTrainingComponent implements OnDestroy {
                 (exercise: SingleExercise) =>
                     exercise.exerciseData.primarySetCategory === 'dynamicBodyweight',
             );
-            const initialBodyweightValidators = [
-                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                Validators.min(30),
-                Validators.max(300),
-            ];
             this.bodyweight.setValidators(
                 isDynamicBodyweight
-                    ? [...initialBodyweightValidators, Validators.required]
-                    : [...initialBodyweightValidators],
+                    ? [...this.initialBodyweightValidators, Validators.required]
+                    : [...this.initialBodyweightValidators],
             );
             this.bodyweight.updateValueAndValidity();
         }),
