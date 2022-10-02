@@ -75,7 +75,7 @@
                     <ion-note *ngIf="bodyweight.errors?.max" slot="error">
                         {{ 'training.new_training.errors.bodyweight_max' | translate }}
                     </ion-note>
-                    <ion-note *ngIf="bodyweight.errors?.required" slot="error">
+                    <ion-note *ngIf="bodyweight.errors?.required && (isSubmitted$ | async)" slot="error">
                         {{ 'common.errors.required' | translate }}
                     </ion-note>
                 </ion-item>

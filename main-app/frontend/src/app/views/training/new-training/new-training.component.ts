@@ -12,7 +12,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { format, parseISO } from 'date-fns';
-import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { TranslateService } from '@ngx-translate/core';
@@ -93,6 +93,23 @@ export class NewTrainingComponent implements OnDestroy {
     );
     readonly currentExercisesState$ = this._newTrainingStoreService.currentTrainingState$.pipe(
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
+        tap((exercises: SingleExercise[]) => {
+            const isDynamicBodyweight = exercises.some(
+                (exercise: SingleExercise) =>
+                    exercise.exerciseData.primarySetCategory === 'dynamicBodyweight',
+            );
+            const initialBodyweightValidators = [
+                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+                Validators.min(30),
+                Validators.max(300),
+            ];
+            this.bodyweight.setValidators(
+                isDynamicBodyweight
+                    ? [...initialBodyweightValidators, Validators.required]
+                    : [...initialBodyweightValidators],
+            );
+            this.bodyweight.updateValueAndValidity();
+        }),
     );
     readonly isSubmitted$ = this._isSubmitted$.asObservable();
     readonly isApiLoading$ = this._isApiLoading$.asObservable();
@@ -223,21 +240,14 @@ export class NewTrainingComponent implements OnDestroy {
         this._newTrainingStoreService.currentTrainingState$
             .pipe(
                 take(1),
-                map((currentTrainingState: NewTraining) =>
-                    this._makeBodyweightRequired(currentTrainingState),
-                ),
                 switchMap((trainingData: NewTraining) => {
-                    if (trainingData) {
-                        if (this.editMode) {
-                            return this._newTrainingService.updateTraining(
-                                trainingData,
-                                this.editTrainingData._id,
-                            );
-                        } else {
-                            return this._newTrainingService.addTraining(trainingData);
-                        }
+                    if (this.editMode) {
+                        return this._newTrainingService.updateTraining(
+                            trainingData,
+                            this.editTrainingData._id,
+                        );
                     } else {
-                        return EMPTY;
+                        return this._newTrainingService.addTraining(trainingData);
                     }
                 }),
                 finalize(() => this._isApiLoading$.next(false)),
@@ -434,25 +444,5 @@ export class NewTrainingComponent implements OnDestroy {
             }
         });
         return isFormValid;
-    }
-
-    private _makeBodyweightRequired(currentTrainingState: NewTraining): NewTraining {
-        const isDynamicBodyweight = currentTrainingState.exercises.some(
-            (exercise: SingleExercise) =>
-                exercise.exerciseData.primarySetCategory === 'dynamicBodyweight',
-        );
-        const isBodyweightValue = !!this.newTrainingForm.get('bodyweight').value;
-        if (isDynamicBodyweight && !isBodyweightValue) {
-            this.bodyweight.setValidators([
-                Validators.required,
-                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                Validators.min(30),
-                Validators.max(300),
-            ]);
-            this.bodyweight.updateValueAndValidity();
-            return null;
-        } else {
-            return currentTrainingState;
-        }
     }
 }
