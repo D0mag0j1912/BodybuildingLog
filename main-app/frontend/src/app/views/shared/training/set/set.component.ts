@@ -94,7 +94,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     bodyweightControl: AbstractControl<number>;
 
     @Input()
-    exerciseName = '';
+    exerciseControl: AbstractControl<string>;
 
     @Input()
     editTrainingData: NewTraining;
@@ -336,7 +336,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                     const weightLifted = setConstituentExists.weightLifted;
                     const reps = setConstituentExists.reps;
                     const trainingData: SetTrainingData = {
-                        exerciseName: this.exerciseName,
+                        exerciseName: this.exerciseControl.value,
                         setNumber: indexSet + 1,
                         weightLifted:
                             weightLifted && this._isSetConstituentValid('weightLifted', indexSet)
@@ -389,7 +389,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         setControls[setConstituent] = new FormControl(
             {
                 value: this._setFormValue(setConstituent, set),
-                disabled: this.exerciseName ? false : true,
+                disabled: this.exerciseControl.value ? false : true,
             },
             [
                 Validators.required,

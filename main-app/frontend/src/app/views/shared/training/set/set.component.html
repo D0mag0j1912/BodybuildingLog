@@ -1,4 +1,4 @@
-<ng-container *ngIf="exerciseName">
+<ng-container *ngIf="exerciseControl.value">
     <form *ngFor="let group of form.controls; let i = index" [formGroup]="group">
         <ion-grid class="set-grid">
             <ion-row
@@ -154,7 +154,7 @@
                 class="add-set-btn"
                 type="button"
                 color="primary"
-                [disabled]="!exerciseName || form?.errors?.setNotFilled"
+                [disabled]="!exerciseControl.value || form?.errors?.setNotFilled"
                 (click)="addSet()"
             >
                 {{ 'training.new_training.buttons.add_set' | translate }}
