@@ -133,6 +133,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
         this.bodyweightControl.valueChanges
             .pipe(
+                filter(Boolean),
                 distinctUntilChanged(),
                 switchMap((_) => this.exercisesState$),
                 filter((exercises: SingleExercise[]) =>
