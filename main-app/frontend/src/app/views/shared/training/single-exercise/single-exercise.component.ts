@@ -62,7 +62,7 @@ import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
     providers: [getControlValueAccessor(SingleExerciseComponent), UnsubscribeService],
 })
 export class SingleExerciseComponent implements ControlValueAccessor, OnInit, OnDestroy {
-    private readonly _isExerciseChanged$ = new Subject<SetConstituentExistsType>();
+    private readonly _isExerciseChanged$ = new Subject<number>();
     private readonly _isExercisePicker$ = new BehaviorSubject<boolean>(true);
 
     readonly isExerciseChanged$ = this._isExerciseChanged$.asObservable();
@@ -211,14 +211,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         );
                     }),
                 )
-                .subscribe((updatedTraining: NewTraining) => {
-                    this._isExerciseChanged$.next(
-                        this._prepareSet(
-                            updatedTraining.exercises[indexExercise].exerciseData
-                                .primarySetCategory,
-                            indexExercise,
-                        ),
-                    );
+                .subscribe((_) => {
+                    this._isExerciseChanged$.next(indexExercise);
                 });
         }
     }

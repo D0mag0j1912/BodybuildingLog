@@ -17,7 +17,8 @@ import { PreferencesStoreService } from '../shared/preferences-store.service';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-format.const';
 import { WeightUnit } from '../../../models/common/preferences.type';
 import { Preferences } from '../../../models/common/preferences.model';
-import { SetConstituentExistsType } from '../../../models/training/shared/set.type';
+import { SetCategoryType } from '../../../models/training/shared/set.type';
+import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingStoreService {
@@ -230,19 +231,35 @@ export class NewTrainingStoreService {
         return this.saveTrainingData(updatedTraining);
     }
 
-    restartSets(
-        indexExercise: number,
-        setConstituentsExists: SetConstituentExistsType,
-    ): Observable<void> {
+    restartSets(indexExercise: number, setCategory: SetCategoryType): Observable<SetCategoryType> {
         return this._trainingState$.pipe(
             take(1),
             map((currentTrainingState: NewTraining) => {
                 let set: Set;
-                if (setConstituentsExists.weightLifted && setConstituentsExists.reps) {
-                    set = { setNumber: 1, weightLifted: null, reps: null };
-                }
-                if (setConstituentsExists.reps && !setConstituentsExists.weightLifted) {
-                    set = { setNumber: 1, reps: null };
+                switch (setCategory) {
+                    case 'freeWeighted': {
+                        set = { setNumber: 1, weightLifted: null, reps: null };
+                        break;
+                    }
+                    case 'dynamicBodyweight': {
+                        set = { setNumber: 1, reps: null };
+                        break;
+                    }
+                    case 'dynamicWeighted': {
+                        //TODO: BL-121
+                        break;
+                    }
+                    case 'staticBodyweight': {
+                        //TODO: BL-128
+                        break;
+                    }
+                    case 'staticWeighted': {
+                        //TODO: BL-123
+                        break;
+                    }
+                    default: {
+                        isNeverCheck(setCategory);
+                    }
                 }
                 const updatedTraining = {
                     ...currentTrainingState,
@@ -262,6 +279,7 @@ export class NewTrainingStoreService {
                 return updatedTraining;
             }),
             concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+            concatMap((_) => of(setCategory)),
         );
     }
 
@@ -278,7 +296,7 @@ export class NewTrainingStoreService {
         selectedIndex: number,
         trainingToBeUpdated: NewTraining,
         selectedExerciseData: Exercise,
-    ): Observable<NewTraining> {
+    ): Observable<void> {
         const previousSelectedExercise = trainingToBeUpdated.exercises.find(
             (_exercise: SingleExercise, index: number) => index === selectedIndex,
         ).exerciseData;
@@ -309,7 +327,7 @@ export class NewTrainingStoreService {
                 }
             }),
         };
-        return this.saveTrainingData(updatedTraining).pipe(switchMap((_) => of(updatedTraining)));
+        return this.saveTrainingData(updatedTraining);
     }
 
     keepTrainingState(): Observable<boolean> {
