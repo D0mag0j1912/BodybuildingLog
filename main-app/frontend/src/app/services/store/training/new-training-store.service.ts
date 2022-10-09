@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, Observable, of } from 'rxjs';
-import { take, tap, map, switchMap, concatMap } from 'rxjs/operators';
+import { take, tap, map, switchMap, concatMap, filter } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { StreamData } from '../../../models/common/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
@@ -19,6 +19,7 @@ import { WeightUnit } from '../../../models/common/preferences.type';
 import { Preferences } from '../../../models/common/preferences.model';
 import { SetCategoryType } from '../../../models/training/shared/set.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
+import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingStoreService {
@@ -280,6 +281,26 @@ export class NewTrainingStoreService {
             }),
             concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
             concatMap((_) => of(setCategory)),
+        );
+    }
+
+    recalculateTotal(setCategory: SetCategoryType): Observable<void> {
+        return this.trainingState$.pipe(
+            take(1),
+            filter((_) => BODYWEIGHT_SET_CATEGORIES.includes(setCategory)),
+            map((trainingState: NewTraining) => {
+                //TODO: Map training state
+                const updatedTraining: NewTraining = {
+                    ...trainingState,
+                    exercises: [...trainingState.exercises].map((exercise: SingleExercise) => {
+                        switch (exercise.exerciseData.primarySetCategory) {
+                        }
+                        return exercise;
+                    }),
+                };
+                return updatedTraining;
+            }),
+            switchMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
         );
     }
 

@@ -143,11 +143,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             .pipe(
                 filter((bodyweight) => !!bodyweight && this.bodyweightControl.valid),
                 withLatestFrom(this._activeSetCategory$),
+                switchMap(([bodyweight, activeSetCategory]: [number, SetCategoryType]) =>
+                    this._newTrainingStoreService.recalculateTotal(activeSetCategory),
+                ),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe(([bodyweight, activeSetCategory]: [number, SetCategoryType]) => {
-                this._calculateTotal(activeSetCategory);
-            });
+            .subscribe();
 
         this.currentPreferences$
             .pipe(
