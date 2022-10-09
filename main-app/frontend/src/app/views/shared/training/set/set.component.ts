@@ -225,7 +225,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 map((exercises: SingleExercise[]) => {
                     const setCategory =
                         exercises[this.indexExercise].exerciseData.primarySetCategory;
-                    this._constructFormBasedOnSetCategory(setCategory);
+                    this._constructFormBasedOnSetCategory(setCategory, set);
                     return setCategory;
                 }),
                 delay(200),
@@ -252,8 +252,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             .pipe(
                 take(1),
                 switchMap((setCategory: SetCategoryType) => {
-                    const weightLifted = this.accessFormField('weightLifted', indexSet).value;
-                    const reps = this.accessFormField('reps', indexSet).value;
+                    const weightLifted = this.accessFormField('weightLifted', indexSet)?.value;
+                    const reps = this.accessFormField('reps', indexSet)?.value;
                     const trainingData: SetTrainingData = {
                         exerciseName: this.exerciseControl.value,
                         setNumber: indexSet + 1,
@@ -341,18 +341,18 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         return this.accessFormField(setConstituent, indexSet)?.valid;
     }
 
-    private _constructFormBasedOnSetCategory(setCategory: SetCategoryType): void {
+    private _constructFormBasedOnSetCategory(setCategory: SetCategoryType, set?: Set): void {
         let setControls: SetFormType = Object.assign({});
         switch (setCategory) {
             case 'freeWeighted': {
                 setControls = this._constructSetForm(
                     'weightLifted',
-                    { setNumber: 1, weightLifted: null },
+                    { setNumber: 1, weightLifted: set ? set.weightLifted : null },
                     setControls,
                 );
                 setControls = this._constructSetForm(
                     'reps',
-                    { setNumber: 1, reps: null },
+                    { setNumber: 1, reps: set ? set.reps : null },
                     setControls,
                 );
                 this.form.push(new FormGroup(setControls));
@@ -361,7 +361,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             case 'dynamicBodyweight': {
                 setControls = this._constructSetForm(
                     'reps',
-                    { setNumber: 1, reps: null },
+                    { setNumber: 1, reps: set ? set.reps : null },
                     setControls,
                 );
                 this.form.push(new FormGroup(setControls));
