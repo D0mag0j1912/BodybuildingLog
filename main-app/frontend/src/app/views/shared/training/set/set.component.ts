@@ -5,7 +5,6 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    Output,
     QueryList,
     ViewChildren,
 } from '@angular/core';
@@ -18,8 +17,16 @@ import {
     Validators,
 } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { delay, filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import {
+    delay,
+    distinctUntilChanged,
+    filter,
+    map,
+    switchMap,
+    take,
+    takeUntil,
+} from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
@@ -38,7 +45,10 @@ import {
     SetConstituent,
     SetConstituentExistsType,
 } from '../../../../models/training/shared/set.type';
-import { ExerciseChangedType } from '../../../../models/training/shared/single-exercise.model';
+import {
+    ExerciseChangedType,
+    SingleExercise,
+} from '../../../../models/training/shared/single-exercise.model';
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../../constants/training/bodyweight-set-categories.const';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
@@ -68,6 +78,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             weightLifted,
             reps,
         })),
+    );
+    readonly exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
+        take(1),
+        map((trainingState: NewTraining) => trainingState.exercises),
     );
     readonly form = new FormArray<FormGroup<SetFormType>>([]);
     readonly bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
@@ -188,40 +202,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
-                switch (setCategory) {
-                    case 'freeWeighted': {
-                        if (this.weightLiftedElements?.first) {
-                            await this.weightLiftedElements.first.setFocus();
-                        }
-                        break;
-                    }
-                    case 'dynamicBodyweight': {
-                        if (this.repsElements?.first) {
-                            await this.repsElements.first.setFocus();
-                        }
-                        break;
-                    }
-                    case 'dynamicWeighted': {
-                        //TODO: BL-121
-                        break;
-                    }
-                    case 'staticBodyweight': {
-                        //TODO: BL-128
-                        break;
-                    }
-                    case 'staticWeighted': {
-                        //TODO: BL-123
-                        break;
-                    }
-                    default: {
-                        isNeverCheck(setCategory);
-                    }
-                }
+                await this._autofocusSetConstituent(setCategory, 'first');
                 this._activeSetCategory$.next(setCategory);
             });
 
         this.bodyweightControl.valueChanges
-            .pipe(filter(Boolean), takeUntil(this._unsubscribeService))
+            .pipe(distinctUntilChanged(), filter(Boolean), takeUntil(this._unsubscribeService))
             .subscribe(async (_) => {
                 if (!this.bodyweightControl?.errors) {
                     this.accessFormField('reps', 0).enable();
@@ -295,34 +281,46 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     }
 
     addSet(set?: Set): void {
-        let setControls: SetFormType = Object.assign({});
-        let weightLiftedInSet: boolean;
-        let repsInSet: boolean;
-        if (!set) {
-            weightLiftedInSet = !!this.accessFormField('weightLifted', this.getSets().length - 1);
-            repsInSet = !!this.accessFormField('reps', this.getSets().length - 1);
-        } else {
-            weightLiftedInSet = 'weightLifted' in set;
-            repsInSet = 'reps' in set;
-        }
-        if (weightLiftedInSet) {
-            setControls = this._constructSetForm('weightLifted', set, setControls);
-        }
-        if (repsInSet) {
-            setControls = this._constructSetForm('reps', set, setControls);
-        }
-        this._isWeightLifted$.next(weightLiftedInSet);
-        this._isReps$.next(repsInSet);
-        this.form.push(new FormGroup<SetFormType>(setControls));
-        of(null)
-            .pipe(delay(200), takeUntil(this._unsubscribeService))
-            .subscribe(async (_) => {
-                if (this.weightLiftedElements && weightLiftedInSet) {
-                    await this.weightLiftedElements.last?.setFocus();
-                }
-                if (this.repsElements && repsInSet && !weightLiftedInSet) {
-                    await this.repsElements.last?.setFocus();
-                }
+        this.exercisesState$
+            .pipe(
+                map((exercises: SingleExercise[]) => {
+                    let setControls: SetFormType = Object.assign({});
+                    const setCategory =
+                        exercises[this.indexExercise].exerciseData.primarySetCategory;
+                    switch (setCategory) {
+                        case 'freeWeighted': {
+                            setControls = this._constructSetForm('weightLifted', set, setControls);
+                            setControls = this._constructSetForm('reps', set, setControls);
+                            break;
+                        }
+                        case 'dynamicBodyweight': {
+                            setControls = this._constructSetForm('reps', set, setControls);
+                            break;
+                        }
+                        case 'dynamicWeighted': {
+                            //TODO: BL-121
+                            break;
+                        }
+                        case 'staticBodyweight': {
+                            //TODO: BL-128
+                            break;
+                        }
+                        case 'staticWeighted': {
+                            //TODO: BL-123
+                            break;
+                        }
+                        default: {
+                            isNeverCheck(setCategory);
+                        }
+                    }
+                    this._activeSetCategory$.next(setCategory);
+                    this.form.push(new FormGroup<SetFormType>(setControls));
+                    return setCategory;
+                }),
+                delay(200),
+            )
+            .subscribe(async (setCategory: SetCategoryType) => {
+                await this._autofocusSetConstituent(setCategory, 'last');
             });
     }
 
@@ -429,5 +427,52 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
     private _isSetConstituentValid(setConstituent: SetConstituent, indexSet: number): boolean {
         return this.accessFormField(setConstituent, indexSet)?.valid;
+    }
+
+    private async _autofocusSetConstituent(
+        setCategory: SetCategoryType,
+        position: 'first' | 'last',
+    ): Promise<void> {
+        switch (setCategory) {
+            case 'freeWeighted': {
+                if (position === 'first') {
+                    if (this.weightLiftedElements) {
+                        await this.weightLiftedElements.first.setFocus();
+                    }
+                } else {
+                    if (this.weightLiftedElements) {
+                        await this.weightLiftedElements.last?.setFocus();
+                    }
+                }
+                break;
+            }
+            case 'dynamicBodyweight': {
+                if (position === 'first') {
+                    if (this.repsElements?.first) {
+                        await this.repsElements.first.setFocus();
+                    }
+                } else {
+                    if (this.repsElements) {
+                        await this.repsElements.last?.setFocus();
+                    }
+                }
+                break;
+            }
+            case 'dynamicWeighted': {
+                //TODO: BL-121
+                break;
+            }
+            case 'staticBodyweight': {
+                //TODO: BL-128
+                break;
+            }
+            case 'staticWeighted': {
+                //TODO: BL-123
+                break;
+            }
+            default: {
+                isNeverCheck(setCategory);
+            }
+        }
     }
 }
