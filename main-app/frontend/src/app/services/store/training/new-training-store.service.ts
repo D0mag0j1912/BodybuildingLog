@@ -23,10 +23,10 @@ import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweigh
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingStoreService {
-    private readonly _allExercisesChanged$$: BehaviorSubject<StreamData<Exercise[]>> =
+    private readonly _allExercisesState$: BehaviorSubject<StreamData<Exercise[]>> =
         new BehaviorSubject<StreamData<Exercise[]>>(null);
-    readonly allExercisesChanged$: Observable<StreamData<Exercise[]>> =
-        this._allExercisesChanged$$.asObservable();
+    readonly allExercisesState$: Observable<StreamData<Exercise[]>> =
+        this._allExercisesState$.asObservable();
 
     private readonly _trainingState$: BehaviorSubject<NewTraining> =
         new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
@@ -35,7 +35,7 @@ export class NewTrainingStoreService {
     constructor(private readonly _preferencesStoreService: PreferencesStoreService) {}
 
     emitAllExercises(exercises: StreamData<Exercise[]>): void {
-        this._allExercisesChanged$$.next(exercises);
+        this._allExercisesState$.next(exercises);
     }
 
     getCurrentTrainingState(): NewTraining {
@@ -127,7 +127,7 @@ export class NewTrainingStoreService {
     ): Observable<[NewTraining, Exercise[]]> {
         let updatedTraining: NewTraining;
         if (deletedExerciseName) {
-            return this.allExercisesChanged$.pipe(
+            return this.allExercisesState$.pipe(
                 take(1),
                 map((value) => value.Value),
                 tap((_) => {
@@ -305,11 +305,17 @@ export class NewTrainingStoreService {
     }
 
     addNewExercise(alreadyUsedExercises: string[]): Observable<void> {
-        const allExercises = [...this._allExercisesChanged$$.getValue().Value];
-        const availableExercises = allExercises.filter(
-            (exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1,
+        return this.allExercisesState$.pipe(
+            take(1),
+            map((streamData: StreamData<Exercise[]>) =>
+                streamData.Value.filter(
+                    (exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1,
+                ),
+            ),
+            concatMap((availableExercises: Exercise[]) =>
+                this.updateTrainingState(undefined, availableExercises),
+            ),
         );
-        return this.updateTrainingState(undefined, availableExercises);
     }
 
     updateExerciseChoices(

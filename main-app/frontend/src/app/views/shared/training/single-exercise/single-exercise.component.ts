@@ -75,7 +75,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     );
     readonly isAddingExercisesAllowed$ = combineLatest([
         this.exercisesState$,
-        this._newTrainingStoreService.allExercisesChanged$.pipe(
+        this._newTrainingStoreService.allExercisesState$.pipe(
             map((value: StreamData<Exercise[]>) => value.Value),
         ),
     ]).pipe(

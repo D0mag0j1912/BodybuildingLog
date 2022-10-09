@@ -143,7 +143,7 @@ export class NewTrainingComponent implements OnDestroy {
         this.trainingStream$ = this._route.params.pipe(
             take(1),
             switchMap((params: Params) =>
-                this._newTrainingStoreService.allExercisesChanged$.pipe(
+                this._newTrainingStoreService.allExercisesState$.pipe(
                     take(1),
                     switchMap((value) => {
                         if (value) {
@@ -275,7 +275,7 @@ export class NewTrainingComponent implements OnDestroy {
             .subscribe((response) => {
                 if (response?.data) {
                     let streamData: StreamData<Exercise[]>;
-                    this.trainingStream$ = this._newTrainingStoreService.allExercisesChanged$.pipe(
+                    this.trainingStream$ = this._newTrainingStoreService.allExercisesState$.pipe(
                         take(1),
                         map((value) => {
                             streamData = {
