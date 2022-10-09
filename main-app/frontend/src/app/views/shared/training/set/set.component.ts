@@ -143,7 +143,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
-                await this._autofocusSetConstituent(setCategory, 'first');
+                await this._focusSetConstituent(setCategory, 'first');
                 this._activeSetCategory$.next(setCategory);
             });
 
@@ -231,7 +231,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 delay(200),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
-                await this._autofocusSetConstituent(setCategory, 'last');
+                await this._focusSetConstituent(setCategory, 'last');
                 this._activeSetCategory$.next(setCategory);
             });
     }
@@ -390,7 +390,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         }
     }
 
-    private async _autofocusSetConstituent(
+    private async _focusSetConstituent(
         setCategory: SetCategoryType,
         position: 'first' | 'last',
     ): Promise<void> {
