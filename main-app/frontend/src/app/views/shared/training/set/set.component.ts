@@ -5,6 +5,7 @@ import {
     Input,
     OnDestroy,
     OnInit,
+    Output,
     QueryList,
     ViewChildren,
 } from '@angular/core';
@@ -18,7 +19,7 @@ import {
 } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { delay, filter, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { delay, filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
@@ -37,9 +38,10 @@ import {
     SetConstituent,
     SetConstituentExistsType,
 } from '../../../../models/training/shared/set.type';
-import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
+import { ExerciseChangedType } from '../../../../models/training/shared/single-exercise.model';
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../../constants/training/bodyweight-set-categories.const';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
+import { Preferences } from '../../../../models/common/preferences.model';
 
 export type SetFormType = Pick<FormType<Set>, SetConstituent>;
 
@@ -55,25 +57,18 @@ type SetFormValue = Pick<ModelWithoutIdType<Set>, SetConstituent>;
 export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     private readonly _isWeightLifted$ = new BehaviorSubject<boolean>(true);
     private readonly _isReps$ = new BehaviorSubject<boolean>(true);
+    private readonly _activeSetCategory$ = new BehaviorSubject<SetCategoryType>(null);
 
     readonly currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
+    readonly activeSetCategory$ = this._activeSetCategory$.asObservable().pipe(take(1));
     readonly isWeightLifted$ = this._isWeightLifted$.asObservable().pipe(take(1));
     readonly isReps$ = this._isReps$.asObservable().pipe(take(1));
-    readonly isSetConstituent$: Observable<SetConstituentExistsType> = combineLatest([
-        this.isWeightLifted$,
-        this.isReps$,
-    ]).pipe(
+    readonly isSetConstituent$ = combineLatest([this.isWeightLifted$, this.isReps$]).pipe(
         map(([weightLifted, reps]: [boolean, boolean]) => ({
             weightLifted,
             reps,
         })),
     );
-    readonly exercisesState$: Observable<SingleExercise[]> =
-        this._newTrainingStoreService.trainingState$.pipe(
-            take(1),
-            map((trainingState: NewTraining) => trainingState.exercises),
-        );
-
     readonly form = new FormArray<FormGroup<SetFormType>>([]);
     readonly bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
     private _currentWeightUnit: WeightUnit;
@@ -81,7 +76,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     onTouched: () => void;
 
     @Input()
-    isExerciseChanged$: Observable<number>;
+    isExerciseChanged$: Observable<ExerciseChangedType>;
 
     @Input()
     bodyweightControl: AbstractControl<number>;
@@ -126,14 +121,15 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
         this.isExerciseChanged$
             .pipe(
-                filter((index: number) => index === this.indexExercise),
-                withLatestFrom(this.exercisesState$),
-                map(([index, exercises]: [number, SingleExercise[]]) => {
+                filter((data: ExerciseChangedType) => data.indexExercise === this.indexExercise),
+                map((data: ExerciseChangedType) => {
+                    const exercises = data.trainingState.exercises;
                     let setControls: SetFormType = Object.assign({});
                     while (this.form.length !== 0) {
                         this.form.removeAt(0);
                     }
-                    const setCategory = exercises[index].exerciseData.primarySetCategory;
+                    const setCategory =
+                        exercises[data.indexExercise].exerciseData.primarySetCategory;
                     switch (setCategory) {
                         case 'freeWeighted': {
                             setControls = this._constructSetForm(
@@ -179,8 +175,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                             isNeverCheck(setCategory);
                         }
                     }
+                    this._changeDetectorRef.markForCheck();
                     return {
-                        index,
+                        index: data.indexExercise,
                         setCategory,
                     };
                 }),
@@ -220,7 +217,17 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                         isNeverCheck(setCategory);
                     }
                 }
-                this._changeDetectorRef.markForCheck();
+                this._activeSetCategory$.next(setCategory);
+            });
+
+        this.bodyweightControl.valueChanges
+            .pipe(filter(Boolean), takeUntil(this._unsubscribeService))
+            .subscribe(async (_) => {
+                if (!this.bodyweightControl?.errors) {
+                    this.accessFormField('reps', 0).enable();
+                } else {
+                    this.accessFormField('reps', 0).disable();
+                }
             });
 
         this.currentPreferences$
@@ -228,7 +235,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 filter((preferences) => this._currentWeightUnit !== preferences.weightUnit),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe((preferences) => {
+            .subscribe((preferences: Preferences) => {
                 this._currentWeightUnit = preferences.weightUnit;
                 this.getSets().forEach((_control, index) => {
                     const currentWeightLiftedValue = +this.accessFormField('weightLifted', index)
@@ -245,6 +252,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     ngOnDestroy(): void {
         this._isWeightLifted$.complete();
         this._isReps$.complete();
+        this._activeSetCategory$.complete();
     }
 
     writeValue(sets: Set[]): void {

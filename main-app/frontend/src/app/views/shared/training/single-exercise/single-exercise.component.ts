@@ -28,7 +28,10 @@ import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { Set } from '../../../../models/training/shared/set.model';
-import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
+import {
+    ExerciseChangedType,
+    SingleExercise,
+} from '../../../../models/training/shared/single-exercise.model';
 import {
     ExerciseValueType,
     ExerciseFormType,
@@ -62,7 +65,7 @@ import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
     providers: [getControlValueAccessor(SingleExerciseComponent), UnsubscribeService],
 })
 export class SingleExerciseComponent implements ControlValueAccessor, OnInit, OnDestroy {
-    private readonly _isExerciseChanged$ = new Subject<number>();
+    private readonly _isExerciseChanged$ = new Subject<ExerciseChangedType>();
     private readonly _isExercisePicker$ = new BehaviorSubject<boolean>(true);
 
     readonly isExerciseChanged$ = this._isExerciseChanged$.asObservable();
@@ -211,8 +214,14 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         );
                     }),
                 )
-                .subscribe((_) => {
-                    this._isExerciseChanged$.next(indexExercise);
+                .subscribe((updatedTraining: NewTraining) => {
+                    this._isExerciseChanged$.next({
+                        trainingState: updatedTraining,
+                        indexExercise,
+                    });
+                    if (this.bodyweightControl?.errors) {
+                        this.bodyweightControl.markAsTouched();
+                    }
                 });
         }
     }
