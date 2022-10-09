@@ -138,57 +138,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 filter((data: ExerciseChangedType) => data.indexExercise === this.indexExercise),
                 map((data: ExerciseChangedType) => {
                     const exercises = data.trainingState.exercises;
-                    let setControls: SetFormType = Object.assign({});
                     while (this.form.length !== 0) {
                         this.form.removeAt(0);
                     }
                     const setCategory =
                         exercises[data.indexExercise].exerciseData.primarySetCategory;
-                    switch (setCategory) {
-                        case 'freeWeighted': {
-                            setControls = this._constructSetForm(
-                                'weightLifted',
-                                { setNumber: 1, weightLifted: null },
-                                setControls,
-                            );
-                            setControls = this._constructSetForm(
-                                'reps',
-                                { setNumber: 1, reps: null },
-                                setControls,
-                            );
-                            this.form.push(new FormGroup(setControls));
-                            break;
-                        }
-                        case 'dynamicBodyweight': {
-                            setControls = this._constructSetForm(
-                                'reps',
-                                { setNumber: 1, reps: null },
-                                setControls,
-                            );
-                            this.form.push(new FormGroup(setControls));
-                            if (!this.bodyweightControl?.errors) {
-                                this.accessFormField('reps', 0).enable();
-                            } else {
-                                this.accessFormField('reps', 0).disable();
-                            }
-                            break;
-                        }
-                        case 'dynamicWeighted': {
-                            //TODO: BL-121
-                            break;
-                        }
-                        case 'staticBodyweight': {
-                            //TODO: BL-128
-                            break;
-                        }
-                        case 'staticWeighted': {
-                            //TODO: BL-123
-                            break;
-                        }
-                        default: {
-                            isNeverCheck(setCategory);
-                        }
-                    }
+                    this._constructFormBasedOnSetCategory(setCategory);
                     this._changeDetectorRef.markForCheck();
                     return {
                         index: data.indexExercise,
@@ -284,43 +239,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         this.exercisesState$
             .pipe(
                 map((exercises: SingleExercise[]) => {
-                    let setControls: SetFormType = Object.assign({});
                     const setCategory =
                         exercises[this.indexExercise].exerciseData.primarySetCategory;
-                    switch (setCategory) {
-                        case 'freeWeighted': {
-                            setControls = this._constructSetForm('weightLifted', set, setControls);
-                            setControls = this._constructSetForm('reps', set, setControls);
-                            break;
-                        }
-                        case 'dynamicBodyweight': {
-                            setControls = this._constructSetForm('reps', set, setControls);
-                            break;
-                        }
-                        case 'dynamicWeighted': {
-                            //TODO: BL-121
-                            break;
-                        }
-                        case 'staticBodyweight': {
-                            //TODO: BL-128
-                            break;
-                        }
-                        case 'staticWeighted': {
-                            //TODO: BL-123
-                            break;
-                        }
-                        default: {
-                            isNeverCheck(setCategory);
-                        }
-                    }
-                    this._activeSetCategory$.next(setCategory);
-                    this.form.push(new FormGroup<SetFormType>(setControls));
+                    this._constructFormBasedOnSetCategory(setCategory);
                     return setCategory;
                 }),
                 delay(200),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
                 await this._autofocusSetConstituent(setCategory, 'last');
+                this._activeSetCategory$.next(setCategory);
             });
     }
 
@@ -427,6 +355,55 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
     private _isSetConstituentValid(setConstituent: SetConstituent, indexSet: number): boolean {
         return this.accessFormField(setConstituent, indexSet)?.valid;
+    }
+
+    private _constructFormBasedOnSetCategory(setCategory: SetCategoryType): void {
+        let setControls: SetFormType = Object.assign({});
+        switch (setCategory) {
+            case 'freeWeighted': {
+                setControls = this._constructSetForm(
+                    'weightLifted',
+                    { setNumber: 1, weightLifted: null },
+                    setControls,
+                );
+                setControls = this._constructSetForm(
+                    'reps',
+                    { setNumber: 1, reps: null },
+                    setControls,
+                );
+                this.form.push(new FormGroup(setControls));
+                break;
+            }
+            case 'dynamicBodyweight': {
+                setControls = this._constructSetForm(
+                    'reps',
+                    { setNumber: 1, reps: null },
+                    setControls,
+                );
+                this.form.push(new FormGroup(setControls));
+                if (!this.bodyweightControl?.errors) {
+                    this.accessFormField('reps', 0).enable();
+                } else {
+                    this.accessFormField('reps', 0).disable();
+                }
+                break;
+            }
+            case 'dynamicWeighted': {
+                //TODO: BL-121
+                break;
+            }
+            case 'staticBodyweight': {
+                //TODO: BL-128
+                break;
+            }
+            case 'staticWeighted': {
+                //TODO: BL-123
+                break;
+            }
+            default: {
+                isNeverCheck(setCategory);
+            }
+        }
     }
 
     private async _autofocusSetConstituent(
