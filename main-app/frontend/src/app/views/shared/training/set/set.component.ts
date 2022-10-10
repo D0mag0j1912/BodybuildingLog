@@ -18,7 +18,7 @@ import {
 } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { delay, filter, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { delay, filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
@@ -138,17 +138,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 await this._focusSetConstituent(setCategory, 'first');
                 this._activeSetCategory$.next(setCategory);
             });
-
-        this.bodyweightControl.valueChanges
-            .pipe(
-                filter((bodyweight) => !!bodyweight && this.bodyweightControl.valid),
-                withLatestFrom(this._activeSetCategory$),
-                switchMap(([bodyweight, activeSetCategory]: [number, SetCategoryType]) =>
-                    this._newTrainingStoreService.recalculateTotal(activeSetCategory),
-                ),
-                takeUntil(this._unsubscribeService),
-            )
-            .subscribe();
 
         this.currentPreferences$
             .pipe(

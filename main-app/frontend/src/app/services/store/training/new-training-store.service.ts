@@ -284,10 +284,9 @@ export class NewTrainingStoreService {
         );
     }
 
-    recalculateTotal(setCategory: SetCategoryType): Observable<void> {
+    recalculateTotal(): Observable<void> {
         return this.trainingState$.pipe(
             take(1),
-            filter((_) => BODYWEIGHT_SET_CATEGORIES.includes(setCategory)),
             map((trainingState: NewTraining) => {
                 //TODO: Map training state
                 const updatedTraining: NewTraining = {
