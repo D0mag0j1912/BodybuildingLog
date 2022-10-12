@@ -244,6 +244,7 @@ export class NewTrainingComponent implements OnDestroy {
                             this.editTrainingData._id,
                         );
                     } else {
+                        delete trainingData._id;
                         return this._newTrainingService.addTraining(trainingData);
                     }
                 }),
