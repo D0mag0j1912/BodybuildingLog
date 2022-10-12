@@ -19,7 +19,7 @@ export class NewTrainingController {
 
     @Post()
     async addTraining(
-        @Body('trainingData', EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe)
+        @Body(EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe)
         trainingData: NewTraining,
     ): Promise<GeneralResponseData> {
         return this.newTrainingService.addTraining(trainingData);
@@ -30,7 +30,7 @@ export class NewTrainingController {
     async updateTraining(
         @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
-        @Body('updatedTrainingData', EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe)
+        @Body(EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe)
         updatedTrainingData: NewTraining,
     ): Promise<GeneralResponseData> {
         return this.newTrainingService.editTraining(

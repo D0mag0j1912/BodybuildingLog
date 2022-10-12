@@ -5,7 +5,7 @@ export interface NewTraining {
     readonly exercises: SingleExercise[];
     readonly editMode: boolean;
     readonly userId: string;
-    readonly _id?: string;
+    _id?: string;
     readonly bodyweight?: number;
     readonly trainingDate?: string;
     readonly weightUnit?: WeightUnit;
