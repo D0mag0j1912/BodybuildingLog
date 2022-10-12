@@ -17,48 +17,85 @@ import { PreferencesStoreService } from '../shared/preferences-store.service';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-format.const';
 import { WeightUnit } from '../../../models/common/preferences.type';
 import { Preferences } from '../../../models/common/preferences.model';
-import { SetConstituentExistsType } from '../../../models/training/shared/set.type';
+import { SetCategoryType } from '../../../models/training/shared/set.type';
+import { isNeverCheck } from '../../../helpers/is-never-check.helper';
+import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingStoreService {
-    private readonly _allExercisesChanged$$: BehaviorSubject<StreamData<Exercise[]>> =
+    private readonly _allExercisesState$: BehaviorSubject<StreamData<Exercise[]>> =
         new BehaviorSubject<StreamData<Exercise[]>>(null);
-    readonly allExercisesChanged$: Observable<StreamData<Exercise[]>> =
-        this._allExercisesChanged$$.asObservable();
+    readonly allExercisesState$: Observable<StreamData<Exercise[]>> =
+        this._allExercisesState$.asObservable();
 
-    private readonly _currentTrainingChanged$$: BehaviorSubject<NewTraining> =
+    private readonly _trainingState$: BehaviorSubject<NewTraining> =
         new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
-    readonly currentTrainingChanged$: Observable<NewTraining> =
-        this._currentTrainingChanged$$.asObservable();
+    readonly trainingState$: Observable<NewTraining> = this._trainingState$.asObservable();
 
-    constructor(private readonly preferencesStoreService: PreferencesStoreService) {}
+    constructor(private readonly _preferencesStoreService: PreferencesStoreService) {}
 
     emitAllExercises(exercises: StreamData<Exercise[]>): void {
-        this._allExercisesChanged$$.next(exercises);
+        this._allExercisesState$.next(exercises);
     }
 
     getCurrentTrainingState(): NewTraining {
-        return { ...this._currentTrainingChanged$$.getValue() };
+        return { ...this._trainingState$.getValue() };
     }
 
     updateWeightUnit(weightUnit: WeightUnit): Observable<void> {
         const updatedTraining = {
-            ...this._currentTrainingChanged$$.getValue(),
+            ...this._trainingState$.getValue(),
             weightUnit,
         };
         return this.saveTrainingData(updatedTraining);
     }
 
-    updateBodyweight(value: string): void {
+    updateTrainingDate(trainingDate: string): Observable<void> {
         const updatedTraining = {
-            ...this._currentTrainingChanged$$.getValue(),
-            bodyweight: +value,
+            ...this._trainingState$.getValue(),
+            trainingDate,
         };
-        this.saveTrainingData(updatedTraining).subscribe();
+        return this.saveTrainingData(updatedTraining);
+    }
+
+    updateBodyweight(value: string): Observable<void> {
+        return this._trainingState$.pipe(
+            take(1),
+            map((trainingState: NewTraining) => {
+                const updatedTraining: NewTraining = {
+                    ...trainingState,
+                    bodyweight: +value,
+                    exercises: [...trainingState.exercises].map((exercise: SingleExercise) => {
+                        if (
+                            BODYWEIGHT_SET_CATEGORIES.includes(
+                                exercise.exerciseData.primarySetCategory,
+                            )
+                        ) {
+                            let total = 0;
+                            for (const set of exercise.sets) {
+                                switch (exercise.exerciseData.primarySetCategory) {
+                                    case 'dynamicBodyweight': {
+                                        total = total + set.reps * +value;
+                                        break;
+                                    }
+                                }
+                            }
+                            return {
+                                ...exercise,
+                                total,
+                            };
+                        }
+                        return exercise;
+                    }),
+                };
+                return updatedTraining;
+            }),
+            switchMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+        );
     }
 
     deleteSet(indexExercise: number, indexSet: number, newTotal: number): void {
-        let updatedTraining: NewTraining = this._currentTrainingChanged$$.getValue();
+        let updatedTraining: NewTraining = this._trainingState$.getValue();
         updatedTraining = {
             ...updatedTraining,
             exercises: [...updatedTraining.exercises].map((exercise: SingleExercise, i: number) => {
@@ -118,7 +155,7 @@ export class NewTrainingStoreService {
     ): Observable<[NewTraining, Exercise[]]> {
         let updatedTraining: NewTraining;
         if (deletedExerciseName) {
-            return this.allExercisesChanged$.pipe(
+            return this.allExercisesState$.pipe(
                 take(1),
                 map((value) => value.Value),
                 tap((_) => {
@@ -147,7 +184,7 @@ export class NewTrainingStoreService {
     }
 
     setsChanged(trainingData: SetTrainingData): Observable<void> {
-        let updatedTraining: NewTraining = this._currentTrainingChanged$$.getValue();
+        let updatedTraining: NewTraining = this._trainingState$.getValue();
         const indexOfChangedExercise = updatedTraining.exercises.findIndex(
             (singleExercise: SingleExercise) =>
                 singleExercise.exerciseData.name === trainingData.exerciseName,
@@ -223,19 +260,35 @@ export class NewTrainingStoreService {
         return this.saveTrainingData(updatedTraining);
     }
 
-    restartSets(
-        indexExercise: number,
-        setConstituentsExists: SetConstituentExistsType,
-    ): Observable<void> {
-        return this._currentTrainingChanged$$.pipe(
+    restartSets(indexExercise: number, setCategory: SetCategoryType): Observable<SetCategoryType> {
+        return this._trainingState$.pipe(
             take(1),
             map((currentTrainingState: NewTraining) => {
                 let set: Set;
-                if (setConstituentsExists.weightLifted && setConstituentsExists.reps) {
-                    set = { setNumber: 1, weightLifted: null, reps: null };
-                }
-                if (setConstituentsExists.reps && !setConstituentsExists.weightLifted) {
-                    set = { setNumber: 1, reps: null };
+                switch (setCategory) {
+                    case 'freeWeighted': {
+                        set = { setNumber: 1, weightLifted: null, reps: null };
+                        break;
+                    }
+                    case 'dynamicBodyweight': {
+                        set = { setNumber: 1, reps: null };
+                        break;
+                    }
+                    case 'dynamicWeighted': {
+                        //TODO: BL-121
+                        break;
+                    }
+                    case 'staticBodyweight': {
+                        //TODO: BL-128
+                        break;
+                    }
+                    case 'staticWeighted': {
+                        //TODO: BL-123
+                        break;
+                    }
+                    default: {
+                        isNeverCheck(setCategory);
+                    }
                 }
                 const updatedTraining = {
                     ...currentTrainingState,
@@ -255,15 +308,22 @@ export class NewTrainingStoreService {
                 return updatedTraining;
             }),
             concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+            concatMap((_) => of(setCategory)),
         );
     }
 
     addNewExercise(alreadyUsedExercises: string[]): Observable<void> {
-        const allExercises = [...this._allExercisesChanged$$.getValue().Value];
-        const availableExercises = allExercises.filter(
-            (exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1,
+        return this.allExercisesState$.pipe(
+            take(1),
+            map((streamData: StreamData<Exercise[]>) =>
+                streamData.Value.filter(
+                    (exercise) => alreadyUsedExercises.indexOf(exercise.name) === -1,
+                ),
+            ),
+            concatMap((availableExercises: Exercise[]) =>
+                this.updateTrainingState(undefined, availableExercises),
+            ),
         );
-        return this.updateTrainingState(undefined, availableExercises);
     }
 
     updateExerciseChoices(
@@ -302,7 +362,7 @@ export class NewTrainingStoreService {
                 }
             }),
         };
-        return this.saveTrainingData(updatedTraining).pipe(switchMap((_) => of(updatedTraining)));
+        return this.saveTrainingData(updatedTraining).pipe(concatMap((_) => of(updatedTraining)));
     }
 
     keepTrainingState(): Observable<boolean> {
@@ -312,7 +372,7 @@ export class NewTrainingStoreService {
                     return false;
                 }
                 const trainingState: NewTraining = JSON.parse(storedData.value);
-                this._currentTrainingChanged$$.next({ ...trainingState });
+                this._trainingState$.next({ ...trainingState });
                 return true;
             }),
         );
@@ -325,8 +385,8 @@ export class NewTrainingStoreService {
         userId?: string,
     ): Observable<void> {
         return combineLatest([
-            this.currentTrainingChanged$,
-            this.preferencesStoreService.preferencesChanged$,
+            this.trainingState$,
+            this._preferencesStoreService.preferencesChanged$,
         ]).pipe(
             take(1),
             map(([currentTrainingState, currentPreferences]: [NewTraining, Preferences]) => {
@@ -355,7 +415,7 @@ export class NewTrainingStoreService {
     }
 
     private saveTrainingData(updatedTraining: NewTraining): Observable<void> {
-        this._currentTrainingChanged$$.next(updatedTraining);
+        this._trainingState$.next(updatedTraining);
         return from(
             Storage.set({
                 key: StorageItems.TRAINING_STATE,

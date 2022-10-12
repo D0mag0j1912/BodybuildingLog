@@ -28,7 +28,10 @@ import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { Set } from '../../../../models/training/shared/set.model';
-import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
+import {
+    ExerciseChangedType,
+    SingleExercise,
+} from '../../../../models/training/shared/single-exercise.model';
 import {
     ExerciseValueType,
     ExerciseFormType,
@@ -62,22 +65,17 @@ import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
     providers: [getControlValueAccessor(SingleExerciseComponent), UnsubscribeService],
 })
 export class SingleExerciseComponent implements ControlValueAccessor, OnInit, OnDestroy {
-    private readonly _isExerciseChanged$: Subject<SetConstituentExistsType> =
-        new Subject<SetConstituentExistsType>();
-    private readonly _isExercisePicker$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-        true,
-    );
+    private readonly _isExerciseChanged$ = new Subject<ExerciseChangedType>();
+    private readonly _isExercisePicker$ = new BehaviorSubject<boolean>(true);
 
-    readonly isExerciseChanged$: Observable<SetConstituentExistsType> =
-        this._isExerciseChanged$.asObservable();
-    readonly isExercisePicker$: Observable<boolean> = this._isExercisePicker$.asObservable();
-    readonly currentExercisesState$: Observable<SingleExercise[]> =
-        this._newTrainingStoreService.currentTrainingChanged$.pipe(
-            map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
-        );
-    readonly isAddingExercisesAllowed$: Observable<boolean> = combineLatest([
-        this.currentExercisesState$,
-        this._newTrainingStoreService.allExercisesChanged$.pipe(
+    readonly isExerciseChanged$ = this._isExerciseChanged$.asObservable();
+    readonly isExercisePicker$ = this._isExercisePicker$.asObservable();
+    readonly exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
+        map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
+    );
+    readonly isAddingExercisesAllowed$ = combineLatest([
+        this.exercisesState$,
+        this._newTrainingStoreService.allExercisesState$.pipe(
             map((value: StreamData<Exercise[]>) => value.Value),
         ),
     ]).pipe(
@@ -88,7 +86,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 if (this.setsCmpRef) {
                     return (
                         exerciseState.length <= allExercises.length &&
-                        this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
+                        this.accessFormGroup<'name'>(
                             'exerciseData',
                             'name',
                             exerciseState.length - 1,
@@ -112,10 +110,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     editTrainingData: NewTraining;
 
     @Input()
-    bodyweight: AbstractControl | null;
+    bodyweightControl: AbstractControl<number>;
 
     @Input()
-    trainingDate: AbstractControl | null;
+    trainingDate: AbstractControl<string> | null;
 
     @Input()
     isSubmitted = false;
@@ -189,7 +187,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     onExerciseNameChange(indexExercise: number, element: IonSelect): void {
         if (element?.value) {
-            this._newTrainingStoreService.currentTrainingChanged$
+            this._newTrainingStoreService.trainingState$
                 .pipe(
                     take(1),
                     switchMap((currentTrainingState: NewTraining) => {
@@ -198,12 +196,12 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         ].availableExercises.find(
                             (exercise: Exercise) => exercise.name === (element.value as string),
                         );
-                        this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
+                        this.accessFormGroup<'imageUrl'>(
                             'exerciseData',
                             'imageUrl',
                             indexExercise,
                         ).patchValue(selectedExerciseData.imageUrl);
-                        this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
+                        this.accessFormGroup<'primaryMuscleGroup'>(
                             'exerciseData',
                             'primaryMuscleGroup',
                             indexExercise,
@@ -217,13 +215,13 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     }),
                 )
                 .subscribe((updatedTraining: NewTraining) => {
-                    this._isExerciseChanged$.next(
-                        this._prepareSet(
-                            updatedTraining.exercises[indexExercise].exerciseData
-                                .primarySetCategory,
-                            indexExercise,
-                        ),
-                    );
+                    this._isExerciseChanged$.next({
+                        trainingState: updatedTraining,
+                        indexExercise,
+                    });
+                    if (this.bodyweightControl?.errors) {
+                        this.bodyweightControl.markAsTouched();
+                    }
                 });
         }
     }
@@ -291,7 +289,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 .pipe(
                     switchMap((response: OverlayEventDetail<boolean>) => {
                         if (response.role === DialogRoles.DELETE_EXERCISE) {
-                            return this._newTrainingStoreService.currentTrainingChanged$.pipe(
+                            return this._newTrainingStoreService.trainingState$.pipe(
                                 take(1),
                                 switchMap((currentTrainingState: NewTraining) =>
                                     this._newTrainingStoreService.deleteExercise(
@@ -316,7 +314,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 )
                 .subscribe();
         } else {
-            this._newTrainingStoreService.currentTrainingChanged$
+            this._newTrainingStoreService.trainingState$
                 .pipe(
                     take(1),
                     switchMap((currentTrainingState: NewTraining) =>
@@ -336,22 +334,12 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return this.form.controls;
     }
 
-    accessFormField<T>(
-        formField: keyof T,
+    accessFormGroup<K extends keyof ExerciseValueType>(
+        formGroup: keyof SingleExerciseFormType,
+        formField: K,
         indexExercise: number,
-    ): AbstractControl<T[typeof formField]> {
-        return this.form.at(indexExercise)?.get(formField as string);
-    }
-    //TODO: Strongly type return type
-    accessFormGroup<T, K>(
-        formGroup: keyof T,
-        formField: keyof K,
-        indexExercise: number,
-    ): AbstractControl<K[typeof formField]> {
-        return this.form
-            .at(indexExercise)
-            .get(formGroup as string)
-            ?.get(formField as string);
+    ): AbstractControl<ExerciseValueType[K]> {
+        return this.form.at(indexExercise)?.get(formGroup)?.get(formField);
     }
 
     areSetsValid(): boolean {

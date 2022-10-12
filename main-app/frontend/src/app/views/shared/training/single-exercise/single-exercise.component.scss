@@ -17,7 +17,7 @@ ion-grid:first-of-type {
     padding-bottom: 0;
 }
 
-.ios .delete-exercise-icon {
+.delete-exercise-icon {
     width: 30px;
     height: 30px;
 }
@@ -30,6 +30,12 @@ ion-grid:first-of-type {
     align-items: flex-end;
 }
 
-.add-exercise-btn {
-    margin-left: 20px;
+.ios .actions {
+    .add-exercise-btn {
+        margin-left: 20px;
+    }
+}
+
+.md .actions {
+    flex-wrap: nowrap;
 }

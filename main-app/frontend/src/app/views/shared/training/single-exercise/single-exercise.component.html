@@ -21,7 +21,7 @@
                             >
                                 <ion-select-option
                                     *ngFor="
-                                        let exercise of currentExercisesState$ | async | filterAvailableExercises: i
+                                        let exercise of exercisesState$ | async | filterAvailableExercises: i
                                     "
                                     [value]="exercise.name"
                                 >
@@ -67,18 +67,19 @@
         <bl-set
             formControlName="sets"
             [isExerciseChanged$]="isExerciseChanged$"
-            [exerciseNameControl]="accessFormGroup('exerciseData', 'name', i)"
+            [bodyweightControl]="bodyweightControl"
+            [exerciseControl]="accessFormGroup('exerciseData', 'name', i)"
+            [editTrainingData]="editTrainingData"
             [indexExercise]="i"
             [isSubmitted]="isSubmitted"
             [isLoading]="isLoading"
             [editMode]="editMode"
-            [editTrainingData]="editTrainingData"
         ></bl-set>
     </ion-card>
 </form>
 
 <ion-grid>
-    <ion-row>
+    <ion-row class="actions">
         <ion-col>
             <ion-button
                 class="add-exercise-btn"

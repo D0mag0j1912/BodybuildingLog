@@ -7,7 +7,7 @@ import {
     ViewChild,
     ViewChildren,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
@@ -38,12 +38,11 @@ import {
 } from '../../../constants/training/new-training.const';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
-import { Preferences } from '../../../models/common/preferences.model';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { GeneralResponseData } from '../../../models/common/general-response.model';
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
-import { Set } from '../../../models/training/shared/set.model';
+import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 @Component({
@@ -54,19 +53,54 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
     providers: [UnsubscribeService],
 })
 export class NewTrainingComponent implements OnDestroy {
-    private readonly _isSubmitted$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private readonly _isApiLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private readonly _isSubmitted$ = new BehaviorSubject<boolean>(false);
+    private readonly _isApiLoading$ = new BehaviorSubject<boolean>(false);
+
+    trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
+    readonly currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
+    readonly isAuthenticated$ = this._authStoreService.isAuth$;
+    readonly isEditing$ = this._sharedStoreService.editingTraining$;
+    readonly isReorder$ = this._newTrainingStoreService.trainingState$.pipe(
+        map((training: NewTraining) => {
+            const exercises = training.exercises;
+            return (
+                exercises.length >= 2 &&
+                exercises.every(
+                    (exercise: SingleExercise) =>
+                        !!exercise.exerciseData.name && exercise.sets.length > 0,
+                )
+            );
+        }),
+    );
+    readonly exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
+        map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
+        tap((exercises: SingleExercise[]) => {
+            const isDynamicBodyweight = exercises.some((exercise: SingleExercise) =>
+                this.bodyweightSetCategories.includes(exercise.exerciseData.primarySetCategory),
+            );
+            this.bodyweight.setValidators(
+                isDynamicBodyweight
+                    ? [...this.initialBodyweightValidators, Validators.required]
+                    : [...this.initialBodyweightValidators],
+            );
+            this.bodyweight.updateValueAndValidity();
+        }),
+    );
+    readonly isSubmitted$ = this._isSubmitted$.asObservable();
+    readonly isApiLoading$ = this._isApiLoading$.asObservable();
 
     formattedTodayDate: string;
+    editTrainingData: NewTraining;
+    readonly initialBodyweightValidators = [
+        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+        Validators.min(30),
+        Validators.max(300),
+    ];
+    readonly bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
 
     newTrainingForm = new FormGroup({
         bodyweight: new FormControl(0, {
-            validators: [
-                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-                Validators.min(30),
-                Validators.max(300),
-            ],
-            updateOn: 'blur',
+            validators: this.initialBodyweightValidators,
         }),
         trainingDate: new FormControl(new Date().toISOString(), {
             validators: [Validators.required],
@@ -75,38 +109,13 @@ export class NewTrainingComponent implements OnDestroy {
         exercises: new FormControl<SingleExercise[]>([], { nonNullable: true }),
     });
 
-    editTrainingData: NewTraining;
     editMode = false;
-
-    trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
-    readonly currentPreferences$: Observable<Preferences> =
-        this._preferencesStoreService.preferencesChanged$;
-    readonly isAuthenticated$: Observable<boolean> = this._authStoreService.isAuth$;
-    readonly isEditing$: Observable<boolean> = this._sharedStoreService.editingTraining$;
-    readonly isReorder$: Observable<boolean> =
-        this._newTrainingStoreService.currentTrainingChanged$.pipe(
-            map((training) => {
-                const exercises = training.exercises;
-                const areAtLeastTwoExercises =
-                    exercises.length >= 2 &&
-                    exercises.every(
-                        (exercise) => !!exercise.exerciseData.name && exercise.sets.length > 0,
-                    );
-                return areAtLeastTwoExercises;
-            }),
-        );
-    readonly currentExercisesState$: Observable<SingleExercise[]> =
-        this._newTrainingStoreService.currentTrainingChanged$.pipe(
-            map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
-        );
-    readonly isSubmitted$: Observable<boolean> = this._isSubmitted$.asObservable();
-    readonly isApiLoading$: Observable<boolean> = this._isApiLoading$.asObservable();
 
     @ViewChild(IonContent, { read: IonContent })
     ionContent: IonContent;
 
     @ViewChildren(SingleExerciseComponent)
-    singleExerciseCmps: QueryList<SingleExerciseComponent>;
+    singleExerciseComponents: QueryList<SingleExerciseComponent>;
 
     constructor(
         private readonly _newTrainingStoreService: NewTrainingStoreService,
@@ -125,12 +134,16 @@ export class NewTrainingComponent implements OnDestroy {
         private readonly _changeDetectorRef: ChangeDetectorRef,
     ) {}
 
+    get bodyweight(): AbstractControl<number> {
+        return this.newTrainingForm.get('bodyweight');
+    }
+
     ionViewWillEnter(): void {
         let allExercisesChanged: StreamData<Exercise[]>;
         this.trainingStream$ = this._route.params.pipe(
             take(1),
             switchMap((params: Params) =>
-                this._newTrainingStoreService.allExercisesChanged$.pipe(
+                this._newTrainingStoreService.allExercisesState$.pipe(
                     take(1),
                     switchMap((value) => {
                         if (value) {
@@ -151,7 +164,7 @@ export class NewTrainingComponent implements OnDestroy {
                             this.editTrainingData = {
                                 ...response.Value,
                                 editMode: true,
-                                trainingDate: response?.Value?.trainingDate ?? new Date(),
+                                trainingDate: response?.Value?.trainingDate,
                             };
                             return this._newTrainingStoreService.updateTrainingState(
                                 this.editTrainingData,
@@ -159,7 +172,7 @@ export class NewTrainingComponent implements OnDestroy {
                         }),
                     );
                 } else {
-                    return this._newTrainingStoreService.currentTrainingChanged$.pipe(
+                    return this._newTrainingStoreService.trainingState$.pipe(
                         take(1),
                         switchMap((currentTrainingState) => {
                             let newTrainingState: NewTraining;
@@ -200,7 +213,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     ionViewDidEnter(): void {
         if (this.ionContent) {
-            setTimeout(async () => await this.ionContent.scrollToBottom(300), 300);
+            setTimeout(async () => await this.ionContent.scrollToBottom(500), 300);
         }
     }
 
@@ -221,16 +234,17 @@ export class NewTrainingComponent implements OnDestroy {
         }
         this._isApiLoading$.next(true);
 
-        this._gatherAllFormData()
+        this._newTrainingStoreService.trainingState$
             .pipe(
-                switchMap((apiNewTraining: NewTraining) => {
+                take(1),
+                switchMap((trainingData: NewTraining) => {
                     if (this.editMode) {
                         return this._newTrainingService.updateTraining(
-                            apiNewTraining,
+                            trainingData,
                             this.editTrainingData._id,
                         );
                     } else {
-                        return this._newTrainingService.addTraining(apiNewTraining);
+                        return this._newTrainingService.addTraining(trainingData);
                     }
                 }),
                 finalize(() => this._isApiLoading$.next(false)),
@@ -261,7 +275,7 @@ export class NewTrainingComponent implements OnDestroy {
             .subscribe((response) => {
                 if (response?.data) {
                     let streamData: StreamData<Exercise[]>;
-                    this.trainingStream$ = this._newTrainingStoreService.allExercisesChanged$.pipe(
+                    this.trainingStream$ = this._newTrainingStoreService.allExercisesState$.pipe(
                         take(1),
                         map((value) => {
                             streamData = {
@@ -280,7 +294,7 @@ export class NewTrainingComponent implements OnDestroy {
                         switchMap((_) => of(streamData)),
                         mapStreamData<Exercise[]>(),
                         tap((_) =>
-                            setTimeout(async () => await this.ionContent.scrollToBottom(300), 100),
+                            setTimeout(async () => await this.ionContent.scrollToBottom(500), 100),
                         ),
                     );
                     this._changeDetectorRef.markForCheck();
@@ -293,7 +307,7 @@ export class NewTrainingComponent implements OnDestroy {
             component: DateTimePickerComponent,
             componentProps: {
                 dateValue: format(
-                    new Date(this.newTrainingForm.get('trainingDate').value),
+                    new Date(this.newTrainingForm.controls.trainingDate.value),
                     `yyyy-MM-dd'T'HH:mm:ss'Z'`,
                 ),
             },
@@ -310,7 +324,8 @@ export class NewTrainingComponent implements OnDestroy {
             .subscribe((response) => {
                 const { data, role } = response;
                 if (role === 'SELECT_DATE') {
-                    this.newTrainingForm.get('trainingDate').patchValue(data);
+                    this.newTrainingForm.controls.trainingDate.patchValue(data);
+                    this._newTrainingStoreService.updateTrainingDate(data);
                     this._setFormattedDate(data);
                 }
             });
@@ -326,9 +341,10 @@ export class NewTrainingComponent implements OnDestroy {
     }
 
     onBodyweightChange(bodyweight: string | number): void {
-        this._newTrainingStoreService.updateBodyweight(
-            typeof bodyweight === 'string' ? bodyweight : bodyweight.toString(),
-        );
+        this._newTrainingStoreService
+            .updateBodyweight(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString())
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe();
     }
 
     async onExerciseAdded(event: UIEvent): Promise<void> {
@@ -340,7 +356,7 @@ export class NewTrainingComponent implements OnDestroy {
                     delay(200),
                     tap(
                         async (_) =>
-                            await this.singleExerciseCmps.last?.exercisePickerEls?.last?.open(
+                            await this.singleExerciseComponents.last?.exercisePickerEls?.last?.open(
                                 event,
                             ),
                     ),
@@ -359,7 +375,7 @@ export class NewTrainingComponent implements OnDestroy {
                         this.editTrainingData = {
                             ...response.Value,
                             editMode: true,
-                            trainingDate: response?.Value?.trainingDate ?? new Date(),
+                            trainingDate: response?.Value?.trainingDate,
                         };
                         return this._newTrainingStoreService.updateTrainingState(
                             this.editTrainingData,
@@ -373,78 +389,21 @@ export class NewTrainingComponent implements OnDestroy {
         }
     }
 
-    private _gatherAllFormData(): Observable<NewTraining> {
-        return this._newTrainingStoreService.currentTrainingChanged$.pipe(
-            take(1),
-            map((currentTrainingState: NewTraining) => {
-                let exerciseFormData: SingleExercise[] = [];
-
-                currentTrainingState.exercises.forEach(
-                    (exercise: SingleExercise, indexExercise: number) => {
-                        const total = currentTrainingState.exercises[indexExercise].total;
-                        const exerciseData: Exercise = {
-                            name: exercise.exerciseData.name,
-                            imageUrl: exercise.exerciseData.imageUrl,
-                            primaryMuscleGroup: exercise.exerciseData.primaryMuscleGroup,
-                            translations: exercise.exerciseData.translations,
-                            setCategories: exercise.exerciseData.setCategories,
-                            primarySetCategory: exercise.exerciseData.primarySetCategory,
-                        };
-                        const initialExercise = {
-                            exerciseData,
-                            sets: [],
-                            total,
-                            availableExercises: exercise.availableExercises,
-                        } as SingleExercise;
-                        exerciseFormData = [...exerciseFormData, initialExercise];
-
-                        const formSetData: Set[] = [];
-                        exercise.sets.forEach((set: Set) => {
-                            const apiSet: Set = {
-                                setNumber: set.setNumber,
-                                weightLifted: set.weightLifted,
-                                reps: set.reps,
-                            };
-                            formSetData.push(apiSet);
-                        });
-                        exerciseFormData = [...exerciseFormData].map(
-                            (exercise: SingleExercise, index: number) => {
-                                if (index === indexExercise) {
-                                    return {
-                                        ...exercise,
-                                        sets: formSetData,
-                                    };
-                                }
-                                return exercise;
-                            },
-                        );
-                    },
-                );
-
-                return {
-                    exercises: exerciseFormData,
-                    bodyweight: this.newTrainingForm.get('bodyweight').value
-                        ? this.newTrainingForm.get('bodyweight').value
-                        : null,
-                    trainingDate:
-                        new Date(this.newTrainingForm.get('trainingDate').value) ?? new Date(),
-                    editMode: this.editMode,
-                    userId: currentTrainingState.userId,
-                    weightUnit: currentTrainingState.weightUnit,
-                } as NewTraining;
-            }),
-        );
+    async goToTop(): Promise<void> {
+        await this.ionContent.scrollToTop(400);
     }
 
     private _formInit(): void {
         const currentTrainingState = this._newTrainingStoreService.getCurrentTrainingState();
         const dayClickedDate = this._sharedStoreService.getDayClickedDate();
-        this.newTrainingForm
-            .get('bodyweight')
-            .patchValue(this._fillBodyweight(currentTrainingState));
-        this.newTrainingForm.get('trainingDate').patchValue(this._fillTrainingDate(dayClickedDate));
-        this.newTrainingForm.get('exercises').patchValue(currentTrainingState.exercises);
-        this._setFormattedDate(this.newTrainingForm.get('trainingDate').value);
+        this.newTrainingForm.controls.bodyweight.patchValue(
+            this._fillBodyweight(currentTrainingState),
+        );
+        this.newTrainingForm.controls.trainingDate.patchValue(
+            this._fillTrainingDate(dayClickedDate),
+        );
+        this.newTrainingForm.controls.exercises.patchValue(currentTrainingState.exercises);
+        this._setFormattedDate(this.newTrainingForm.controls.trainingDate.value);
     }
 
     private _setFormattedDate(dateValue: string): void {
@@ -472,7 +431,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     private _isExerciseFormValid(): boolean {
         let isFormValid = true;
-        this.singleExerciseCmps.forEach((component: SingleExerciseComponent) => {
+        this.singleExerciseComponents.forEach((component: SingleExerciseComponent) => {
             const exerciseForm = component.form;
             if (exerciseForm.invalid) {
                 isFormValid = false;

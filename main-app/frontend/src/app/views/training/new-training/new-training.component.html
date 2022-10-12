@@ -61,19 +61,22 @@
                         <ion-text
                             class="bodyweight-input--unit"
                             slot="end"
-                            [class.invalid-bodyweight]="newTrainingForm.get('bodyweight').invalid"
+                            [class.invalid-bodyweight]="bodyweight.invalid"
                         >
                             {{ bodyweightRef?.value ? currentPreferences.weightUnit : '' }}
                         </ion-text>
                     </ng-container>
-                    <ion-note *ngIf="newTrainingForm.get('bodyweight').errors?.pattern" slot="error">
+                    <ion-note *ngIf="bodyweight.errors?.pattern" slot="error">
                         {{ 'training.new_training.errors.only_numbers' | translate }}
                     </ion-note>
-                    <ion-note *ngIf="newTrainingForm.get('bodyweight').errors?.min" slot="error">
+                    <ion-note *ngIf="bodyweight.errors?.min" slot="error">
                         {{ 'training.new_training.errors.bodyweight_min' | translate }}
                     </ion-note>
-                    <ion-note *ngIf="newTrainingForm.get('bodyweight').errors?.max" slot="error">
+                    <ion-note *ngIf="bodyweight.errors?.max" slot="error">
                         {{ 'training.new_training.errors.bodyweight_max' | translate }}
+                    </ion-note>
+                    <ion-note *ngIf="bodyweight.errors?.required" slot="error">
+                        {{ 'common.errors.required' | translate }}
                     </ion-note>
                 </ion-item>
 
@@ -86,10 +89,10 @@
                     <ion-note class="error">{{ 'training.new_training.errors.date_required' | translate }}</ion-note>
                 </ng-container>
 
-                <ng-container *ngIf="currentExercisesState$ | async as currentExercisesState">
+                <ng-container *ngIf="exercisesState$ | async as exercisesState">
                     <bl-single-exercise
                         formControlName="exercises"
-                        [bodyweight]="newTrainingForm.get('bodyweight')"
+                        [bodyweightControl]="bodyweight"
                         [trainingDate]="newTrainingForm.get('trainingDate')"
                         [editTrainingData]="editTrainingData"
                         [isSubmitted]="isSubmitted$ | async"
@@ -100,20 +103,25 @@
                         <ion-col class="ion-text-end log-training-col">
                             <ion-button
                                 (click)="onSubmit()"
-                                [disabled]="!currentExercisesState?.length || (isApiLoading$ | async)"
+                                [disabled]="!exercisesState?.length || (isApiLoading$ | async)"
                             >
                             {{ 'training.new_training.log_training' | translate }}
                             </ion-button>
                         </ion-col>
                     </bl-single-exercise>
-
+                    <ion-text *ngIf="
+                        bodyweight.errors?.required &&
+                        (isSubmitted$ | async)"
+                        class="error">
+                        {{ 'training.new_training.errors.bodyweight_required' | translate }}
+                    </ion-text>
                     <ion-grid>
                         <ion-row>
                             <ion-col class="ion-text-center at-least-one-exercise-txt">
                                 <ion-note
                                     *ngIf="
                                         (isSubmitted$ | async) &&
-                                        currentExercisesState?.length === 0
+                                        exercisesState?.length === 0
                                     "
                                     class="empty-training-msg"
                                 >
@@ -126,4 +134,11 @@
             </form>
         </ng-template>
     </ng-container>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button>
+            <ion-icon
+                name="arrow-up-circle-sharp"
+                (click)="goToTop()"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
 </ion-content>
