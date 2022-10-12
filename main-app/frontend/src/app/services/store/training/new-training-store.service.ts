@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, Observable, of } from 'rxjs';
-import { take, tap, map, switchMap, concatMap, filter } from 'rxjs/operators';
+import { take, tap, map, switchMap, concatMap } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { StreamData } from '../../../models/common/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
@@ -59,11 +59,39 @@ export class NewTrainingStoreService {
     }
 
     updateBodyweight(value: string): Observable<void> {
-        const updatedTraining = {
-            ...this._trainingState$.getValue(),
-            bodyweight: +value,
-        };
-        return this.saveTrainingData(updatedTraining);
+        return this._trainingState$.pipe(
+            take(1),
+            map((trainingState: NewTraining) => {
+                const updatedTraining: NewTraining = {
+                    ...trainingState,
+                    bodyweight: +value,
+                    exercises: [...trainingState.exercises].map((exercise: SingleExercise) => {
+                        if (
+                            BODYWEIGHT_SET_CATEGORIES.includes(
+                                exercise.exerciseData.primarySetCategory,
+                            )
+                        ) {
+                            let total = 0;
+                            for (const set of exercise.sets) {
+                                switch (exercise.exerciseData.primarySetCategory) {
+                                    case 'dynamicBodyweight': {
+                                        total = total + set.reps * +value;
+                                        break;
+                                    }
+                                }
+                            }
+                            return {
+                                ...exercise,
+                                total,
+                            };
+                        }
+                        return exercise;
+                    }),
+                };
+                return updatedTraining;
+            }),
+            switchMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+        );
     }
 
     deleteSet(indexExercise: number, indexSet: number, newTotal: number): void {
@@ -281,25 +309,6 @@ export class NewTrainingStoreService {
             }),
             concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
             concatMap((_) => of(setCategory)),
-        );
-    }
-
-    recalculateTotal(): Observable<void> {
-        return this.trainingState$.pipe(
-            take(1),
-            map((trainingState: NewTraining) => {
-                //TODO: Map training state
-                const updatedTraining: NewTraining = {
-                    ...trainingState,
-                    exercises: [...trainingState.exercises].map((exercise: SingleExercise) => {
-                        switch (exercise.exerciseData.primarySetCategory) {
-                        }
-                        return exercise;
-                    }),
-                };
-                return updatedTraining;
-            }),
-            switchMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
         );
     }
 
