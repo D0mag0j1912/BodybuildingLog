@@ -86,7 +86,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 if (this.setsCmpRef) {
                     return (
                         exerciseState.length <= allExercises.length &&
-                        this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
+                        this.accessFormGroup<SingleExerciseFormType, ExerciseValueType, 'name'>(
                             'exerciseData',
                             'name',
                             exerciseState.length - 1,
@@ -196,16 +196,18 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         ].availableExercises.find(
                             (exercise: Exercise) => exercise.name === (element.value as string),
                         );
-                        this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
+                        this.accessFormGroup<SingleExerciseFormType, ExerciseValueType, 'imageUrl'>(
                             'exerciseData',
                             'imageUrl',
                             indexExercise,
                         ).patchValue(selectedExerciseData.imageUrl);
-                        this.accessFormGroup<SingleExerciseFormType, ExerciseValueType>(
-                            'exerciseData',
-                            'primaryMuscleGroup',
-                            indexExercise,
-                        ).patchValue(selectedExerciseData.primaryMuscleGroup);
+                        this.accessFormGroup<
+                            SingleExerciseFormType,
+                            ExerciseValueType,
+                            'primaryMuscleGroup'
+                        >('exerciseData', 'primaryMuscleGroup', indexExercise).patchValue(
+                            selectedExerciseData.primaryMuscleGroup,
+                        );
                         return this._newTrainingStoreService.updateExerciseChoices(
                             element.value as string,
                             indexExercise,
@@ -334,18 +336,11 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return this.form.controls;
     }
 
-    accessFormField<T>(
-        formField: keyof T,
-        indexExercise: number,
-    ): AbstractControl<T[typeof formField]> {
-        return this.form.at(indexExercise)?.get(formField as string);
-    }
-    //TODO: Strongly type return type
-    accessFormGroup<T, K>(
+    accessFormGroup<T, P, K extends keyof P>(
         formGroup: keyof T,
-        formField: keyof K,
+        formField: K,
         indexExercise: number,
-    ): AbstractControl<K[typeof formField]> {
+    ): AbstractControl<P[K]> {
         return this.form
             .at(indexExercise)
             ?.get(formGroup as string)
