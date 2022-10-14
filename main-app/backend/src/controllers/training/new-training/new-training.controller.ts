@@ -33,10 +33,6 @@ export class NewTrainingController {
         @Body(EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe)
         updatedTrainingData: NewTraining,
     ): Promise<GeneralResponseData> {
-        return this.newTrainingService.editTraining(
-            trainingId as string,
-            updatedTrainingData as NewTraining,
-            user._id as string,
-        );
+        return this.newTrainingService.editTraining(trainingId, updatedTrainingData, user._id);
     }
 }
