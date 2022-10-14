@@ -7,8 +7,6 @@ import { UserDto } from '../../../models/auth/login.model';
 import { GeneralResponseData } from '../../../models/common/response.model';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { DuplicateExercisePipe } from '../../../pipes/training/duplicate-exercise.pipe';
-import { EmptySetPipe } from '../../../pipes/training/empty-set.pipe';
-import { EmptyTrainingPipe } from '../../../pipes/training/empty-training.pipe';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
 @ApiTags('Training')
@@ -19,7 +17,7 @@ export class NewTrainingController {
 
     @Post()
     async addTraining(
-        @Body(EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe)
+        @Body(DuplicateExercisePipe)
         trainingData: NewTraining,
     ): Promise<GeneralResponseData> {
         return this.newTrainingService.addTraining(trainingData);
@@ -30,7 +28,7 @@ export class NewTrainingController {
     async updateTraining(
         @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
-        @Body(EmptyTrainingPipe, DuplicateExercisePipe, EmptySetPipe)
+        @Body(DuplicateExercisePipe)
         updatedTrainingData: NewTraining,
     ): Promise<GeneralResponseData> {
         return this.newTrainingService.editTraining(trainingId, updatedTrainingData, user._id);

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+    ArrayMinSize,
     IsBoolean,
     IsDateString,
     IsMongoId,
@@ -49,6 +50,7 @@ export class NewTraining {
     _id: string;
 
     @ApiProperty()
+    @ArrayMinSize(1, { message: 'training.new_training.errors.at_least_one_exercise' })
     @ValidateNested({ each: true })
     @Type(() => SingleExercise)
     exercises: SingleExercise[];
