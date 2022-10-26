@@ -14,10 +14,7 @@ export const SET_SCHEMA = new Schema({
         type: Number,
         required: true,
     },
-    weightLifted: {
-        type: Number,
-        required: true,
-    },
+    weightLifted: Number,
     reps: {
         type: Number,
         required: true,
@@ -39,6 +36,7 @@ export class Set {
     setNumber: number;
 
     @ApiProperty()
+    @IsOptional()
     @Min(1, {
         message: '@training.new_training.errors.weight_lifted_min',
     })
