@@ -45,6 +45,12 @@ export class ErrorInterceptor implements HttpInterceptor {
                                         (error.error as ErrorMessage).message[0].length,
                                     ),
                                 );
+                                if (/\d/.test(errorMessage)) {
+                                    errorMessage = errorMessage.substring(
+                                        errorMessage.search(/\d/) + 2,
+                                        errorMessage.length,
+                                    );
+                                }
                             } else {
                                 errorMessage = this.translateService.instant(
                                     (error.error as ErrorMessage).message,
