@@ -21,7 +21,7 @@ import {
 import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, combineLatest, EMPTY, from, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, EMPTY, from, Subject } from 'rxjs';
 import { delay, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
