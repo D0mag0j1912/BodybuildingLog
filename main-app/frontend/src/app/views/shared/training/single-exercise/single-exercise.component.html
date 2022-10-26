@@ -91,7 +91,7 @@
                 class="add-exercise-btn"
                 type="button"
                 color="primary"
-                [disabled]="!(isAddingExercisesAllowed$ | async) || isApiLoading"
+                [disabled]="!(isAddExerciseAllowed$ | async) || isApiLoading"
                 (click)="addExercise(undefined, $event)"
             >
                 {{ 'training.new_training.buttons.add_exercise' | translate }}
