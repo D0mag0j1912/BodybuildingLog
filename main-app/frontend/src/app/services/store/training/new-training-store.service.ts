@@ -94,6 +94,61 @@ export class NewTrainingStoreService {
         );
     }
 
+    addSet(
+        indexExercise: number,
+        setCategory: SetCategoryType,
+        setNumber: number,
+    ): Observable<SetCategoryType> {
+        return this._trainingState$.pipe(
+            map((trainingState: NewTraining) => {
+                const updatedTraining = {
+                    ...trainingState,
+                    exercises: [...trainingState.exercises].map(
+                        (exercise: SingleExercise, i: number) => {
+                            if (i === indexExercise) {
+                                let set: Set;
+                                switch (setCategory) {
+                                    case 'freeWeighted': {
+                                        set = { setNumber, weightLifted: null, reps: null };
+                                        break;
+                                    }
+                                    case 'dynamicBodyweight': {
+                                        set = { setNumber, reps: null };
+                                        break;
+                                    }
+                                    case 'dynamicWeighted': {
+                                        //TODO: BL-121
+                                        break;
+                                    }
+                                    case 'staticBodyweight': {
+                                        //TODO: BL-128
+                                        break;
+                                    }
+                                    case 'staticWeighted': {
+                                        //TODO: BL-123
+                                        break;
+                                    }
+                                    default: {
+                                        isNeverCheck(setCategory);
+                                    }
+                                }
+                                return {
+                                    ...exercise,
+                                    sets: [...exercise.sets, set],
+                                };
+                            }
+                            return exercise;
+                        },
+                    ),
+                };
+                return updatedTraining;
+            }),
+            concatMap((updatedTraining: NewTraining) =>
+                this.saveTrainingData(updatedTraining).pipe(map((_) => setCategory)),
+            ),
+        );
+    }
+
     deleteSet(indexExercise: number, indexSet: number, newTotal: number): void {
         let updatedTraining: NewTraining = this._trainingState$.getValue();
         updatedTraining = {

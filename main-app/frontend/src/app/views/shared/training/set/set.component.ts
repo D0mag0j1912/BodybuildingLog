@@ -220,12 +220,19 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 map((exercises: SingleExercise[]) => {
                     const setCategory =
                         exercises[this.indexExercise].exerciseData.primarySetCategory;
-                    this._constructFormBasedOnSetCategory(setCategory, set);
                     return setCategory;
                 }),
+                /* concatMap((setCategory: SetCategoryType) =>
+                    this._newTrainingStoreService.addSet(
+                        this.indexExercise,
+                        setCategory,
+                        this.getSets().length + 1,
+                    ),
+                ), */
                 delay(200),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
+                this._constructFormBasedOnSetCategory(setCategory, set);
                 await this._focusSetConstituent(setCategory, 'last');
                 this._activeSetCategory$.next(setCategory);
             });
