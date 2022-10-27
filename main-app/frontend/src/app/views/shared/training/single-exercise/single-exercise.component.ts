@@ -77,7 +77,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         delay(0),
         withLatestFrom(this._newTrainingStoreService.allExercisesState$),
         map(([exerciseState, allExercises]: [SingleExercise[], StreamData<Exercise[]>]) => {
-            //TODO: Fix
             if (exerciseState.length > 0) {
                 if (this.setsCmpRef) {
                     return (

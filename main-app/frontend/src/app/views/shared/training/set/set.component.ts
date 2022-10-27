@@ -17,8 +17,17 @@ import {
     Validators,
 } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { delay, filter, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import {
+    concatMap,
+    delay,
+    filter,
+    map,
+    switchMap,
+    take,
+    takeUntil,
+    withLatestFrom,
+} from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
@@ -220,33 +229,43 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 map((exercises: SingleExercise[]) => {
                     const setCategory =
                         exercises[this.indexExercise].exerciseData.primarySetCategory;
+                    this._constructFormBasedOnSetCategory(setCategory, set);
                     return setCategory;
                 }),
-                /* concatMap((setCategory: SetCategoryType) =>
-                    this._newTrainingStoreService.addSet(
-                        this.indexExercise,
-                        setCategory,
-                        this.getSets().length + 1,
-                    ),
-                ), */
+                concatMap((setCategory: SetCategoryType) => {
+                    if (!set) {
+                        return this._newTrainingStoreService.addSet(
+                            this.indexExercise,
+                            setCategory,
+                            this.getSets().length,
+                        );
+                    } else {
+                        return of(setCategory);
+                    }
+                }),
                 delay(200),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
-                this._constructFormBasedOnSetCategory(setCategory, set);
                 await this._focusSetConstituent(setCategory, 'last');
                 this._activeSetCategory$.next(setCategory);
             });
     }
 
     deleteSet(indexSet: number): void {
-        this.activeSetCategory$.pipe(take(1)).subscribe((setCategory: SetCategoryType) => {
-            this.form.removeAt(indexSet);
-            this._newTrainingStoreService.deleteSet(
-                this.indexExercise,
-                indexSet,
-                this._calculateTotal(setCategory),
-            );
-        });
+        this.activeSetCategory$
+            .pipe(
+                take(1),
+                concatMap((setCategory: SetCategoryType) =>
+                    this._newTrainingStoreService.deleteSet(
+                        this.indexExercise,
+                        indexSet,
+                        this._calculateTotal(setCategory),
+                    ),
+                ),
+            )
+            .subscribe((_) => {
+                this.form.removeAt(indexSet);
+            });
     }
 
     onChangeSets(indexSet: number): void {
