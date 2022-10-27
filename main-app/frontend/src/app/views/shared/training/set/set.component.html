@@ -154,7 +154,7 @@
                 class="add-set-btn"
                 type="button"
                 color="primary"
-                [disabled]="!exerciseControl.value || form?.errors?.setNotFilled"
+                [disabled]="!exerciseControl.value || !form.valid"
                 (click)="addSet()"
             >
                 {{ 'training.new_training.buttons.add_set' | translate }}

@@ -94,32 +94,95 @@ export class NewTrainingStoreService {
         );
     }
 
-    deleteSet(indexExercise: number, indexSet: number, newTotal: number): void {
-        let updatedTraining: NewTraining = this._trainingState$.getValue();
-        updatedTraining = {
-            ...updatedTraining,
-            exercises: [...updatedTraining.exercises].map((exercise: SingleExercise, i: number) => {
-                if (i === indexExercise) {
-                    return {
-                        ...exercise,
-                        sets: [...exercise.sets]
-                            .filter((_set: Set, i: number) => i !== indexSet)
-                            .map((set: Set) => {
-                                if (set.setNumber > indexSet + 1) {
-                                    return {
-                                        ...set,
-                                        setNumber: set.setNumber - 1,
-                                    };
+    addSet(
+        indexExercise: number,
+        setCategory: SetCategoryType,
+        setNumber: number,
+    ): Observable<SetCategoryType> {
+        return this._trainingState$.pipe(
+            take(1),
+            map((trainingState: NewTraining) => {
+                const updatedTraining = {
+                    ...trainingState,
+                    exercises: [...trainingState.exercises].map(
+                        (exercise: SingleExercise, i: number) => {
+                            if (i === indexExercise) {
+                                let set: Set;
+                                switch (setCategory) {
+                                    case 'freeWeighted': {
+                                        set = { setNumber, weightLifted: null, reps: null };
+                                        break;
+                                    }
+                                    case 'dynamicBodyweight': {
+                                        set = { setNumber, reps: null };
+                                        break;
+                                    }
+                                    case 'dynamicWeighted': {
+                                        //TODO: BL-121
+                                        break;
+                                    }
+                                    case 'staticBodyweight': {
+                                        //TODO: BL-128
+                                        break;
+                                    }
+                                    case 'staticWeighted': {
+                                        //TODO: BL-123
+                                        break;
+                                    }
+                                    default: {
+                                        isNeverCheck(setCategory);
+                                    }
                                 }
-                                return set;
-                            }),
-                        total: newTotal,
-                    };
-                }
-                return exercise;
+                                return {
+                                    ...exercise,
+                                    sets: [...exercise.sets, set],
+                                };
+                            }
+                            return exercise;
+                        },
+                    ),
+                };
+                return updatedTraining;
             }),
-        };
-        this.saveTrainingData(updatedTraining).subscribe();
+            concatMap((updatedTraining: NewTraining) =>
+                this.saveTrainingData(updatedTraining).pipe(map((_) => setCategory)),
+            ),
+        );
+    }
+
+    deleteSet(indexExercise: number, indexSet: number, newTotal: number): Observable<void> {
+        return this._trainingState$.pipe(
+            take(1),
+            map((trainingState: NewTraining) => {
+                const updatedTraining = {
+                    ...trainingState,
+                    exercises: [...trainingState.exercises].map(
+                        (exercise: SingleExercise, i: number) => {
+                            if (i === indexExercise) {
+                                return {
+                                    ...exercise,
+                                    sets: [...exercise.sets]
+                                        .filter((_set: Set, i: number) => i !== indexSet)
+                                        .map((set: Set) => {
+                                            if (set.setNumber > indexSet + 1) {
+                                                return {
+                                                    ...set,
+                                                    setNumber: set.setNumber - 1,
+                                                };
+                                            }
+                                            return set;
+                                        }),
+                                    total: newTotal,
+                                };
+                            }
+                            return exercise;
+                        },
+                    ),
+                };
+                return updatedTraining;
+            }),
+            concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+        );
     }
 
     pushToAvailableExercises(

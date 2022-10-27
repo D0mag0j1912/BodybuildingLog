@@ -21,8 +21,8 @@ import {
 import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, combineLatest, EMPTY, from, Observable, Subject } from 'rxjs';
-import { delay, finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, from, Subject } from 'rxjs';
+import { delay, finalize, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
 import { Exercise } from '../../../../models/training/exercise.model';
@@ -73,19 +73,14 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     readonly exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
     );
-    readonly isAddingExercisesAllowed$ = combineLatest([
-        this.exercisesState$,
-        this._newTrainingStoreService.allExercisesState$.pipe(
-            map((value: StreamData<Exercise[]>) => value.Value),
-        ),
-    ]).pipe(
+    readonly isAddExerciseAllowed$ = this.exercisesState$.pipe(
         delay(0),
-        map(([exerciseState, allExercises]: [SingleExercise[], Exercise[]]) => {
-            //TODO: Fix
+        withLatestFrom(this._newTrainingStoreService.allExercisesState$),
+        map(([exerciseState, allExercises]: [SingleExercise[], StreamData<Exercise[]>]) => {
             if (exerciseState.length > 0) {
                 if (this.setsCmpRef) {
                     return (
-                        exerciseState.length <= allExercises.length &&
+                        exerciseState.length <= allExercises.Value.length &&
                         this.accessFormGroup<'name'>(
                             'exerciseData',
                             'name',

@@ -5,7 +5,13 @@
     <ion-card class="wrapper">
         <ng-container formGroupName="exerciseData">
             <ion-grid>
-                <ion-row class="ion-text-center exercise-row">
+                <ion-row
+                    class="ion-text-center exercise-row"
+                    [class.exercise-name-required]="accessFormGroup('exerciseData', 'name', i).errors?.required &&
+                        (accessFormGroup('exerciseData', 'name', i).touched ||
+                            accessFormGroup('exerciseData', 'name', i).dirty ||
+                            isSubmitted) &&
+                        !isLoading">
                     <ion-col size="10">
                         <ion-item fill="outline">
                             <ion-label position="floating">{{
@@ -85,7 +91,7 @@
                 class="add-exercise-btn"
                 type="button"
                 color="primary"
-                [disabled]="!(isAddingExercisesAllowed$ | async) || isApiLoading"
+                [disabled]="!(isAddExerciseAllowed$ | async) || isApiLoading"
                 (click)="addExercise(undefined, $event)"
             >
                 {{ 'training.new_training.buttons.add_exercise' | translate }}
