@@ -210,7 +210,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             await previousRepsElement?.setFocus();
         }
     }
-
+    //TODO: Update logic for dynamic bodyweight
     async onRepsKeydown(index: number): Promise<void> {
         const repsInput = this.repsElements.find((_item, i) => i === index);
         if (!repsInput?.value) {
