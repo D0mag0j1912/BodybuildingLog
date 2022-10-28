@@ -210,13 +210,50 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             await previousRepsElement?.setFocus();
         }
     }
-    //TODO: Update logic for dynamic bodyweight
+
     async onRepsKeydown(index: number): Promise<void> {
-        const repsInput = this.repsElements.find((_item, i) => i === index);
-        if (!repsInput?.value) {
-            const weightLiftedInput = this.weightLiftedElements?.find((_item, i) => i === index);
-            await weightLiftedInput?.setFocus();
-        }
+        this._activeSetCategory$.pipe(take(1)).subscribe(async (setCategory: SetCategoryType) => {
+            const repsInput = this.repsElements.find((_item, i) => i === index);
+            switch (setCategory) {
+                case 'freeWeighted': {
+                    if (!repsInput?.value) {
+                        const weightLiftedInput = this.weightLiftedElements?.find(
+                            (_item: IonInput, i: number) => i === index,
+                        );
+                        if (weightLiftedInput) {
+                            await weightLiftedInput.setFocus();
+                        }
+                    }
+                    break;
+                }
+                case 'dynamicBodyweight': {
+                    if (!repsInput?.value) {
+                        const previousRepsInput = this.repsElements?.find(
+                            (_item: IonInput, i: number) => i === index - 1,
+                        );
+                        if (previousRepsInput) {
+                            await previousRepsInput.setFocus();
+                        }
+                    }
+                    break;
+                }
+                case 'dynamicWeighted': {
+                    //TODO: BL-121
+                    break;
+                }
+                case 'staticBodyweight': {
+                    //TODO: BL-128
+                    break;
+                }
+                case 'staticWeighted': {
+                    //TODO: BL-123
+                    break;
+                }
+                default: {
+                    isNeverCheck(setCategory);
+                }
+            }
+        });
     }
 
     getSets(): FormGroup<SetFormType>[] {
