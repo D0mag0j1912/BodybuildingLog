@@ -62,16 +62,17 @@ type SetFormValue = Pick<ModelWithoutIdType<Set>, SetConstituent>;
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
 export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
-    private readonly _activeSetCategory$ = new BehaviorSubject<SetCategoryType>(null);
+    private _activeSetCategory$ = new BehaviorSubject<SetCategoryType>(null);
 
-    readonly currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
-    readonly activeSetCategory$ = this._activeSetCategory$.asObservable();
-    readonly exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
+    currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
+    activeSetCategory$ = this._activeSetCategory$.asObservable();
+    exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         take(1),
         map((trainingState: NewTraining) => trainingState.exercises),
     );
-    readonly form = new FormArray<FormGroup<SetFormType>>([]);
-    readonly bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
+
+    form = new FormArray<FormGroup<SetFormType>>([]);
+    bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
     private _currentWeightUnit: WeightUnit;
 
     onTouched: () => void;
@@ -101,16 +102,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     isLoading = false;
 
     @ViewChildren('weightLiftedEl')
-    readonly weightLiftedElements: QueryList<IonInput>;
+    weightLiftedElements: QueryList<IonInput>;
 
     @ViewChildren('repsEl')
-    readonly repsElements: QueryList<IonInput>;
+    repsElements: QueryList<IonInput>;
 
     constructor(
-        private readonly _unsubscribeService: UnsubscribeService,
-        private readonly _preferencesStoreService: PreferencesStoreService,
-        private readonly _newTrainingStoreService: NewTrainingStoreService,
-        private readonly _changeDetectorRef: ChangeDetectorRef,
+        private _unsubscribeService: UnsubscribeService,
+        private _preferencesStoreService: PreferencesStoreService,
+        private _newTrainingStoreService: NewTrainingStoreService,
+        private _changeDetectorRef: ChangeDetectorRef,
     ) {}
 
     ngOnInit(): void {
