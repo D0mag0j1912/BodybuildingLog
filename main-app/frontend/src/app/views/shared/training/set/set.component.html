@@ -133,14 +133,19 @@
                         </ion-text>
                     </ion-item>
                 </ion-col>
-                <ion-col size="2" class="delete-set-col">
+                <ion-col size="2" class="set-ctas">
                     <ion-button
                         class="button-no-background delete-set-btn"
                         type="button"
                         [disabled]="i === 0 || isLoading"
                         (click)="deleteSet(i)"
                     >
-                        <ion-icon name="trash-sharp" color="primary" class="delete-set-icon"></ion-icon>
+                        <ion-icon name="trash-sharp" color="primary" class="set-cta-icon"></ion-icon>
+                    </ion-button>
+                    <ion-button
+                        class="button-no-background change-set-category"
+                        type="button">
+                        <ion-icon class="set-cta-icon" name="construct-sharp" color="primary"></ion-icon>
                     </ion-button>
                 </ion-col>
             </ion-row>

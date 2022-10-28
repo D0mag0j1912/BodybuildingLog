@@ -28,19 +28,20 @@
     }
 }
 
-.delete-set-col {
+.set-ctas {
     margin-top: 5px;
+    display: flex;
+    flex-direction: column;
 
-    .delete-set-icon {
-        position: absolute;
-        width: 30px;
-        height: 30px;
+    .delete-set-btn,
+    .change-set-category {
+        height: 25px;
     }
-}
 
-.ios .delete-set-col {
-    .delete-set-btn {
-        margin-top: 18px;
+    .set-cta-icon {
+        position: absolute;
+        width: 25px;
+        height: 25px;
     }
 }
 
