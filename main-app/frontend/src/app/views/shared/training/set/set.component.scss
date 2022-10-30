@@ -29,7 +29,6 @@
 }
 
 .set-ctas {
-    margin-top: 5px;
     display: flex;
     flex-direction: column;
 
@@ -43,6 +42,10 @@
         width: 25px;
         height: 25px;
     }
+}
+
+.md .set-ctas {
+    margin-top: -5px;
 }
 
 .weight-lifted-input {
