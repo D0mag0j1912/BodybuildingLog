@@ -20,6 +20,7 @@ import { SkeletonLoaderComponent } from '../views/shared/skeleton-loader/skeleto
 import { SkeletonLoaderModule } from '../directives/skeleton-loader/skeleton-loader.module';
 import { SanitizeHtmlModule } from '../pipes/shared/sanitize-html/sanitize-html.module';
 import { ChangeSetCategoryComponent } from '../views/shared/training/set/change-set-category/change-set-category.component';
+import { CamelToSnakeCaseModule } from '../pipes/shared/camel-to-snake-case/camel-to-snake-case.module';
 
 const DIRECTIVES = [PaginationDirective];
 
@@ -44,7 +45,13 @@ const EXTERNAL_IMPORTS = [
     IonicModule,
 ];
 
-const IMPORTS = [ShowAllExercisesModule, PipesModule, SkeletonLoaderModule, SanitizeHtmlModule];
+const IMPORTS = [
+    ShowAllExercisesModule,
+    PipesModule,
+    SkeletonLoaderModule,
+    SanitizeHtmlModule,
+    CamelToSnakeCaseModule,
+];
 
 @NgModule({
     declarations: [...COMPONENTS, ...DIRECTIVES, ...ACTION_COMPONENTS],
