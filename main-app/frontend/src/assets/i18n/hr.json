@@ -24,7 +24,6 @@
         "or": "ILI",
         "date": "Datum",
         "errors": {
-            "required": "Polje je obvezno za unos",
             "something_went_wrong": "Došlo je do greške Pokušajte ponovno",
             "invalid_date": "Pogrešan format datuma",
             "unknown_error": "Došlo je do greške",
