@@ -66,15 +66,17 @@ import { ExercisesStoreService } from '../../../../services/store/training/exerc
     providers: [getControlValueAccessor(SingleExerciseComponent), UnsubscribeService],
 })
 export class SingleExerciseComponent implements ControlValueAccessor, OnInit, OnDestroy {
-    private readonly _isExerciseChanged$ = new Subject<ExerciseChangedType>();
-    private readonly _isExercisePicker$ = new BehaviorSubject<boolean>(true);
+    private _isExerciseChanged$ = new Subject<ExerciseChangedType>();
+    private _isExercisePicker$ = new BehaviorSubject<boolean>(true);
+    private _isUpdateSetCategoryVisible$ = new BehaviorSubject<boolean>(false);
 
-    readonly isExerciseChanged$ = this._isExerciseChanged$.asObservable();
-    readonly isExercisePicker$ = this._isExercisePicker$.asObservable();
-    readonly exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
+    isExerciseChanged$ = this._isExerciseChanged$.asObservable();
+    isExercisePicker$ = this._isExercisePicker$.asObservable();
+    isUpdateSetCategoryVisible$ = this._isUpdateSetCategoryVisible$.asObservable();
+    exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
     );
-    readonly isAddExerciseAllowed$ = this.exercisesState$.pipe(
+    isAddExerciseAllowed$ = this.exercisesState$.pipe(
         delay(0),
         withLatestFrom(this._exercisesStoreService.allExercisesState$),
         map(([exerciseState, allExercises]: [SingleExercise[], StreamData<Exercise[]>]) => {
@@ -98,7 +100,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         }),
     );
 
-    readonly form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
+    form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
 
     onTouched: () => void;
 
@@ -124,7 +126,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     editMode = false;
 
     @Output()
-    readonly exerciseAdded: EventEmitter<UIEvent> = new EventEmitter();
+    exerciseAdded: EventEmitter<UIEvent> = new EventEmitter();
 
     @ViewChildren('exercisePicker')
     exercisePickerEls: QueryList<IonSelect>;
@@ -161,6 +163,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     ngOnDestroy(): void {
         this._isExercisePicker$.complete();
         this._isExerciseChanged$.complete();
+        this._isUpdateSetCategoryVisible$.complete();
     }
 
     writeValue(exercises: SingleExercise[]): void {

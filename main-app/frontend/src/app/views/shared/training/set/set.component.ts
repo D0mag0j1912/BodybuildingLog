@@ -63,10 +63,8 @@ type SetFormValue = Pick<ModelWithoutIdType<Set>, SetConstituent>;
 })
 export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     private _activeSetCategory$ = new BehaviorSubject<SetCategoryType>(null);
-    private _isUpdateSetCategoryVisible$ = new BehaviorSubject<boolean>(false);
 
     activeSetCategory$ = this._activeSetCategory$.asObservable();
-    isUpdateSetCategoryVisible$ = this._isUpdateSetCategoryVisible$.asObservable();
     currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
     exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         take(1),
