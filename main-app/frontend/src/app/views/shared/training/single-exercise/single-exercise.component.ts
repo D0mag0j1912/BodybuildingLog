@@ -101,6 +101,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     );
 
     form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
+    selectedSetCategories: SetCategoryType[] = [];
 
     onTouched: () => void;
 
@@ -196,8 +197,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         ].availableExercises.find(
                             (exercise: Exercise) => exercise.name === (element.value as string),
                         );
+                        this.selectedSetCategories = selectedExerciseData.setCategories;
                         this._isUpdateSetCategoryVisible$.next(
-                            selectedExerciseData.setCategories.length > 1,
+                            this.selectedSetCategories.length > 1,
                         );
                         this.accessFormGroup<'imageUrl'>(
                             'exerciseData',
@@ -247,10 +249,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     return set;
                 }),
             };
-            const setCategories = exercise.availableExercises.find(
+            this.selectedSetCategories = exercise.availableExercises.find(
                 (value: Exercise) => value.name === exercise.exerciseData.name,
             ).setCategories;
-            this._isUpdateSetCategoryVisible$.next(setCategories.length > 1);
+            this._isUpdateSetCategoryVisible$.next(this.selectedSetCategories.length > 1);
         }
         this.form.push(
             new FormGroup<SingleExerciseFormType>({

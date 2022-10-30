@@ -9,7 +9,12 @@
     </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding ion-text-center">
-    <ion-text></ion-text>
-    <ion-text></ion-text>
-    <ion-button></ion-button>
+    <ion-list>
+        <ion-radio-group *ngFor="let category of setCategories">
+            <ion-item>
+                <ion-label></ion-label>
+                <ion-radio slot="end"></ion-radio>
+            </ion-item>
+        </ion-radio-group>
+    </ion-list>
 </ion-content>

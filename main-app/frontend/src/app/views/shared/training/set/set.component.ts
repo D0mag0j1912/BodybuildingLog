@@ -79,6 +79,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     onTouched: () => void;
 
     @Input()
+    selectedSetCategories: SetCategoryType[] = [];
+
+    @Input()
     isUpdateSetCategoryVisible = false;
 
     @Input()
@@ -211,7 +214,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     async updateSetCategory(): Promise<void> {
         const modal = await this._modalController.create({
             component: ChangeSetCategoryComponent,
-            componentProps: {},
+            componentProps: {
+                setCategories: this.selectedSetCategories,
+            },
             keyboardClose: true,
             canDismiss: true,
         });
