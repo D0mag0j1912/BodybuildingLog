@@ -33,7 +33,8 @@
         "actions": {
             "delete": "Delete",
             "close": "Close",
-            "confirm": "Confirm"
+            "confirm": "Confirm",
+            "change": "Change"
         },
         "months": {
             "january": "January",

@@ -34,7 +34,8 @@
         "actions": {
             "delete": "Izbriši",
             "close": "Izađi",
-            "confirm": "Potvrdi"
+            "confirm": "Potvrdi",
+            "change": "Promijeni"
         },
         "months": {
             "january": "Siječanj",
