@@ -133,7 +133,7 @@
                         </ion-text>
                     </ion-item>
                 </ion-col>
-                <ion-col size="2" class="set-ctas">
+                <ion-col size="2" class="set-ctas" [class.single-set-category]="!isUpdateSetCategoryVisible">
                     <ion-button
                         class="button-no-background delete-set-btn"
                         type="button"
@@ -143,9 +143,10 @@
                         <ion-icon name="trash-sharp" color="primary" class="set-cta-icon"></ion-icon>
                     </ion-button>
                     <ion-button
+                        *ngIf="isUpdateSetCategoryVisible"
                         class="button-no-background change-set-category"
                         type="button">
-                        <ion-icon *ngIf="isUpdateSetCategoryVisible" class="set-cta-icon" name="construct-sharp" color="primary"></ion-icon>
+                        <ion-icon class="set-cta-icon" name="construct-sharp" color="primary"></ion-icon>
                     </ion-button>
                 </ion-col>
             </ion-row>
