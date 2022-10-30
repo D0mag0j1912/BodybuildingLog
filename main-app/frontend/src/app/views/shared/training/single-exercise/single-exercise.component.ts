@@ -196,6 +196,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         ].availableExercises.find(
                             (exercise: Exercise) => exercise.name === (element.value as string),
                         );
+                        this._isUpdateSetCategoryVisible$.next(
+                            selectedExerciseData.setCategories.length > 1,
+                        );
                         this.accessFormGroup<'imageUrl'>(
                             'exerciseData',
                             'imageUrl',
@@ -244,6 +247,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     return set;
                 }),
             };
+            const setCategories = exercise.availableExercises.find(
+                (value: Exercise) => value.name === exercise.exerciseData.name,
+            ).setCategories;
+            this._isUpdateSetCategoryVisible$.next(setCategories.length > 1);
         }
         this.form.push(
             new FormGroup<SingleExerciseFormType>({

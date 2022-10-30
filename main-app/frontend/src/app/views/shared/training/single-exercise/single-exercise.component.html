@@ -72,6 +72,7 @@
         </ng-container>
         <bl-set
             formControlName="sets"
+            [isUpdateSetCategoryVisible]="isUpdateSetCategoryVisible$ | async"
             [isExerciseChanged$]="isExerciseChanged$"
             [bodyweightControl]="bodyweightControl"
             [exerciseControl]="accessFormGroup('exerciseData', 'name', i)"

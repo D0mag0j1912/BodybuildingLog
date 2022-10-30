@@ -78,6 +78,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     onTouched: () => void;
 
     @Input()
+    isUpdateSetCategoryVisible = false;
+
+    @Input()
     isExerciseChanged$: Observable<ExerciseChangedType>;
 
     @Input()

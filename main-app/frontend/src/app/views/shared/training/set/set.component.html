@@ -145,7 +145,7 @@
                     <ion-button
                         class="button-no-background change-set-category"
                         type="button">
-                        <ion-icon class="set-cta-icon" name="construct-sharp" color="primary"></ion-icon>
+                        <ion-icon *ngIf="isUpdateSetCategoryVisible" class="set-cta-icon" name="construct-sharp" color="primary"></ion-icon>
                     </ion-button>
                 </ion-col>
             </ion-row>
