@@ -200,7 +200,8 @@
                 "past_trainings_error_title": "Prošli treninzi trenutno nedostupni",
                 "past_trainings_error_description": "Prošli treninzi trenutno nisu dostupni. Molimo Vas pokušajte ponovno"
             }
-        }
+        },
+        "update_set_category": "Promijeni kategoriju seta"
     },
     "languages": {
         "english": "Engleski",
