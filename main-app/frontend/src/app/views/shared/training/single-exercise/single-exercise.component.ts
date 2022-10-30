@@ -288,7 +288,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     } as DeleteExerciseDialogData,
                 } as DialogData,
                 keyboardClose: true,
-                swipeToClose: true,
+                canDismiss: true,
             });
             await modal.present();
 

@@ -213,7 +213,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             component: ChangeSetCategoryComponent,
             componentProps: {},
             keyboardClose: true,
-            swipeToClose: true,
+            canDismiss: true,
         });
         await modal.present();
     }
