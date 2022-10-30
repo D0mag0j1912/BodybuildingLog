@@ -20,23 +20,18 @@ import { Preferences } from '../../../models/common/preferences.model';
 import { SetCategoryType } from '../../../models/training/shared/set.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
+import { ExercisesStoreService } from './exercises-store.service';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingStoreService {
-    private readonly _allExercisesState$: BehaviorSubject<StreamData<Exercise[]>> =
-        new BehaviorSubject<StreamData<Exercise[]>>(null);
-    readonly allExercisesState$: Observable<StreamData<Exercise[]>> =
-        this._allExercisesState$.asObservable();
-
     private readonly _trainingState$: BehaviorSubject<NewTraining> =
         new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
     readonly trainingState$: Observable<NewTraining> = this._trainingState$.asObservable();
 
-    constructor(private readonly _preferencesStoreService: PreferencesStoreService) {}
-
-    emitAllExercises(exercises: StreamData<Exercise[]>): void {
-        this._allExercisesState$.next(exercises);
-    }
+    constructor(
+        private _preferencesStoreService: PreferencesStoreService,
+        private _exercisesStoreService: ExercisesStoreService,
+    ) {}
 
     getCurrentTrainingState(): NewTraining {
         return { ...this._trainingState$.getValue() };
@@ -218,7 +213,7 @@ export class NewTrainingStoreService {
     ): Observable<[NewTraining, Exercise[]]> {
         let updatedTraining: NewTraining;
         if (deletedExerciseName) {
-            return this.allExercisesState$.pipe(
+            return this._exercisesStoreService.allExercisesState$.pipe(
                 take(1),
                 map((value) => value.Value),
                 tap((_) => {
@@ -376,7 +371,7 @@ export class NewTrainingStoreService {
     }
 
     addNewExercise(alreadyUsedExercises: string[]): Observable<void> {
-        return this.allExercisesState$.pipe(
+        return this._exercisesStoreService.allExercisesState$.pipe(
             take(1),
             map((streamData: StreamData<Exercise[]>) =>
                 streamData.Value.filter(

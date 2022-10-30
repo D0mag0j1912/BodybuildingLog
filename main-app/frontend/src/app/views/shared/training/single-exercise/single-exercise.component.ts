@@ -56,6 +56,7 @@ import {
     SetConstituentExistsType,
 } from '../../../../models/training/shared/set.type';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
+import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -75,7 +76,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     );
     readonly isAddExerciseAllowed$ = this.exercisesState$.pipe(
         delay(0),
-        withLatestFrom(this._newTrainingStoreService.allExercisesState$),
+        withLatestFrom(this._exercisesStoreService.allExercisesState$),
         map(([exerciseState, allExercises]: [SingleExercise[], StreamData<Exercise[]>]) => {
             if (exerciseState.length > 0) {
                 if (this.setsCmpRef) {
@@ -132,12 +133,13 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     setsCmpRef: QueryList<SetsComponent>;
 
     constructor(
-        private readonly _newTrainingStoreService: NewTrainingStoreService,
-        private readonly _unsubscribeService: UnsubscribeService,
-        private readonly _preferencesStoreService: PreferencesStoreService,
-        private readonly _translateService: TranslateService,
-        private readonly _changeDetectorRef: ChangeDetectorRef,
-        private readonly _modalController: ModalController,
+        private _newTrainingStoreService: NewTrainingStoreService,
+        private _unsubscribeService: UnsubscribeService,
+        private _preferencesStoreService: PreferencesStoreService,
+        private _exercisesStoreService: ExercisesStoreService,
+        private _translateService: TranslateService,
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _modalController: ModalController,
     ) {}
 
     get currentWeightUnit(): WeightUnit {

@@ -43,6 +43,7 @@ import { GeneralResponseData } from '../../../models/common/general-response.mod
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
+import { ExercisesStoreService } from '../../../services/store/training/exercises-store.service';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 @Component({
@@ -118,20 +119,21 @@ export class NewTrainingComponent implements OnDestroy {
     singleExerciseComponents: QueryList<SingleExerciseComponent>;
 
     constructor(
-        private readonly _newTrainingStoreService: NewTrainingStoreService,
-        private readonly _newTrainingService: NewTrainingService,
-        private readonly _pastTrainingService: PastTrainingsService,
-        private readonly _sharedStoreService: SharedStoreService,
-        private readonly _authStoreService: AuthStoreService,
-        private readonly _unsubscribeService: UnsubscribeService,
-        private readonly _preferencesStoreService: PreferencesStoreService,
-        private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
-        private readonly _toastControllerService: ToastControllerService,
-        private readonly _translateService: TranslateService,
-        private readonly _route: ActivatedRoute,
-        private readonly _router: Router,
-        private readonly _modalController: ModalController,
-        private readonly _changeDetectorRef: ChangeDetectorRef,
+        private _newTrainingStoreService: NewTrainingStoreService,
+        private _newTrainingService: NewTrainingService,
+        private _pastTrainingService: PastTrainingsService,
+        private _sharedStoreService: SharedStoreService,
+        private _authStoreService: AuthStoreService,
+        private _unsubscribeService: UnsubscribeService,
+        private _preferencesStoreService: PreferencesStoreService,
+        private _pastTrainingsStoreService: PastTrainingsStoreService,
+        private _exercisesStoreService: ExercisesStoreService,
+        private _toastControllerService: ToastControllerService,
+        private _translateService: TranslateService,
+        private _route: ActivatedRoute,
+        private _router: Router,
+        private _modalController: ModalController,
+        private _changeDetectorRef: ChangeDetectorRef,
     ) {}
 
     get bodyweight(): AbstractControl<number> {
@@ -143,7 +145,7 @@ export class NewTrainingComponent implements OnDestroy {
         this.trainingStream$ = this._route.params.pipe(
             take(1),
             switchMap((params: Params) =>
-                this._newTrainingStoreService.allExercisesState$.pipe(
+                this._exercisesStoreService.allExercisesState$.pipe(
                     take(1),
                     switchMap((value) => {
                         if (value) {
@@ -276,7 +278,7 @@ export class NewTrainingComponent implements OnDestroy {
             .subscribe((response) => {
                 if (response?.data) {
                     let streamData: StreamData<Exercise[]>;
-                    this.trainingStream$ = this._newTrainingStoreService.allExercisesState$.pipe(
+                    this.trainingStream$ = this._exercisesStoreService.allExercisesState$.pipe(
                         take(1),
                         map((value) => {
                             streamData = {
