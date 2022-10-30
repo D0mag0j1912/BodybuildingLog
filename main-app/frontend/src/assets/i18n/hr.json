@@ -200,7 +200,14 @@
                 "past_trainings_error_description": "Prošli treninzi trenutno nisu dostupni. Molimo Vas pokušajte ponovno"
             }
         },
-        "update_set_category": "Promijeni kategoriju seta"
+        "update_set_category": "Promijeni kategoriju seta",
+        "set_categories": {
+            "dynamic_bodyweight": "S tjelesnom težinom",
+            "dynamic_weighted": "S dodatnim opterećenjem",
+            "static_bodyweight": "S tjelesnom težinom",
+            "static_weighted": "S dodatnim opterećenjem",
+            "free_weighted": "S utezima"
+        }
     },
     "languages": {
         "english": "Engleski",
