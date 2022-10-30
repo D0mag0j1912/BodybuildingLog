@@ -16,7 +16,7 @@ import {
     FormGroup,
     Validators,
 } from '@angular/forms';
-import { IonInput } from '@ionic/angular';
+import { IonInput, ModalController } from '@ionic/angular';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import {
     concatMap,
@@ -49,6 +49,7 @@ import {
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../../constants/training/bodyweight-set-categories.const';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
+import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
 
 export type SetFormType = Pick<FormType<Set>, SetConstituent>;
 
@@ -115,6 +116,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         private _preferencesStoreService: PreferencesStoreService,
         private _newTrainingStoreService: NewTrainingStoreService,
         private _changeDetectorRef: ChangeDetectorRef,
+        private _modalController: ModalController,
     ) {}
 
     ngOnInit(): void {
@@ -204,6 +206,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
     registerOnTouched(fn: () => void): void {
         this.onTouched = fn;
+    }
+
+    async updateSetCategory(): Promise<void> {
+        const modal = await this._modalController.create({
+            component: ChangeSetCategoryComponent,
+            componentProps: {},
+            keyboardClose: true,
+            swipeToClose: true,
+        });
+        await modal.present();
     }
 
     async onWeightLiftedKeydown(index: number): Promise<void> {
