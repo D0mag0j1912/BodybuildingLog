@@ -19,6 +19,7 @@ import { DateTimePickerComponent } from '../views/shared/datetime-picker/datetim
 import { SkeletonLoaderComponent } from '../views/shared/skeleton-loader/skeleton-loader.component';
 import { SkeletonLoaderModule } from '../directives/skeleton-loader/skeleton-loader.module';
 import { SanitizeHtmlModule } from '../pipes/shared/sanitize-html/sanitize-html.module';
+import { ChangeSetCategoryComponent } from '../views/shared/training/set/change-set-category/change-set-category.component';
 
 const DIRECTIVES = [PaginationDirective];
 
@@ -26,6 +27,7 @@ const COMPONENTS = [
     DeleteExerciseDialogComponent,
     SingleExerciseComponent,
     SetsComponent,
+    ChangeSetCategoryComponent,
     NotFoundComponent,
     PaginationComponent,
     DateTimePickerComponent,
