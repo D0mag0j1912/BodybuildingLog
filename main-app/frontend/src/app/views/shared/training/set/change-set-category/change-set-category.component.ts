@@ -15,6 +15,13 @@ export class ChangeSetCategoryComponent {
     constructor(private _modalController: ModalController) {}
 
     async onCancel(): Promise<void> {
-        await this._modalController.dismiss(false, DialogRoles.CANCEL);
+        await this._modalController.dismiss(null, DialogRoles.CANCEL);
+    }
+
+    async onChange(): Promise<void> {
+        await this._modalController.dismiss(
+            this.payload.primarySetCategory,
+            DialogRoles.CHANGE_SET_CATEGORY,
+        );
     }
 }

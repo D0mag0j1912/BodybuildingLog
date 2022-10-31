@@ -16,8 +16,9 @@ import {
     FormGroup,
     Validators,
 } from '@angular/forms';
+import { OverlayEventDetail } from '@ionic/core';
 import { IonInput, ModalController } from '@ionic/angular';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import {
     concatMap,
     delay,
@@ -50,6 +51,7 @@ import { BODYWEIGHT_SET_CATEGORIES } from '../../../../constants/training/bodywe
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
 import { ChangeSetCategoryPayloadType } from '../../../../models/training/shared/change-set-category.type';
+import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
 
 export type SetFormType = Pick<FormType<Set>, SetConstituent>;
@@ -222,6 +224,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             canDismiss: true,
         });
         await modal.present();
+
+        from(modal.onDidDismiss<SetCategoryType>())
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe();
     }
 
     async onWeightLiftedKeydown(index: number): Promise<void> {
