@@ -10,10 +10,10 @@
 </ion-header>
 <ion-content class="ion-padding ion-text-center">
     <ion-list>
-        <ion-radio-group *ngFor="let category of setCategories" [value]="category">
+        <ion-radio-group *ngFor="let category of payload.setCategories" [(ngModel)]="payload.primarySetCategory">
             <ion-item>
                 <ion-label>{{ 'training.set_categories.' + (category | camelToSnakeCase) | translate }}</ion-label>
-                <ion-radio slot="end"></ion-radio>
+                <ion-radio slot="end" color="primary" [value]="category"></ion-radio>
             </ion-item>
         </ion-radio-group>
     </ion-list>

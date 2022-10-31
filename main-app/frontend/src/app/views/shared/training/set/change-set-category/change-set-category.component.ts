@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { DialogRoles } from '../../../../../constants/enums/model-roles.enum';
-import { SetCategoryType } from '../../../../../models/training/shared/set.type';
-
+import { ChangeSetCategoryPayloadType } from '../../../../../models/training/shared/change-set-category.type';
 @Component({
     selector: 'bl-change-set-category',
     templateUrl: './change-set-category.component.html',
@@ -11,7 +10,7 @@ import { SetCategoryType } from '../../../../../models/training/shared/set.type'
 })
 export class ChangeSetCategoryComponent {
     @Input()
-    setCategories: SetCategoryType[] = [];
+    payload: ChangeSetCategoryPayloadType;
 
     constructor(private _modalController: ModalController) {}
 

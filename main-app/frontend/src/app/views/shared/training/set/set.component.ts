@@ -49,6 +49,7 @@ import {
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../../constants/training/bodyweight-set-categories.const';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
+import { ChangeSetCategoryPayloadType } from '../../../../models/training/shared/change-set-category.type';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
 
 export type SetFormType = Pick<FormType<Set>, SetConstituent>;
@@ -79,7 +80,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     onTouched: () => void;
 
     @Input()
-    selectedSetCategories: SetCategoryType[] = [];
+    changeSetCategoryPayload: ChangeSetCategoryPayloadType;
 
     @Input()
     isUpdateSetCategoryVisible = false;
@@ -215,7 +216,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         const modal = await this._modalController.create({
             component: ChangeSetCategoryComponent,
             componentProps: {
-                setCategories: this.selectedSetCategories,
+                payload: this.changeSetCategoryPayload,
             },
             keyboardClose: true,
             canDismiss: true,

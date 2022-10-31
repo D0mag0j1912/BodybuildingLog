@@ -2,11 +2,11 @@ import { Translations } from '../common/translations.model';
 import { SetCategoryType } from './shared/set.type';
 
 export interface Exercise {
-    readonly name: string;
-    readonly imageUrl: string;
-    readonly primaryMuscleGroup: string;
-    readonly setCategories: SetCategoryType[];
-    readonly primarySetCategory: SetCategoryType;
-    readonly translations: Translations;
-    readonly _id?: string;
+    name: string;
+    imageUrl: string;
+    primaryMuscleGroup: string;
+    setCategories: SetCategoryType[];
+    primarySetCategory: SetCategoryType;
+    translations: Translations;
+    _id?: string;
 }
