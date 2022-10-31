@@ -249,9 +249,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     return set;
                 }),
             };
-            this.selectedSetCategories = exercise.availableExercises.find(
-                (value: Exercise) => value.name === exercise.exerciseData.name,
-            ).setCategories;
+            this.selectedSetCategories =
+                exercise.availableExercises.find(
+                    (value: Exercise) => value.name === exercise.exerciseData.name,
+                )?.setCategories ?? [];
             this._isUpdateSetCategoryVisible$.next(this.selectedSetCategories.length > 1);
         }
         this.form.push(
