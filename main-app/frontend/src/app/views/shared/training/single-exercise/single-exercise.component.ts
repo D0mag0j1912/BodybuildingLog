@@ -57,7 +57,6 @@ import {
 } from '../../../../models/training/shared/set.type';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
-import { ChangeSetCategoryPayloadType } from '../../../../models/training/shared/change-set-category.type';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -69,11 +68,9 @@ import { ChangeSetCategoryPayloadType } from '../../../../models/training/shared
 export class SingleExerciseComponent implements ControlValueAccessor, OnInit, OnDestroy {
     private _isExerciseChanged$ = new Subject<ExerciseChangedType>();
     private _isExercisePicker$ = new BehaviorSubject<boolean>(true);
-    private _isUpdateSetCategoryVisible$ = new BehaviorSubject<boolean>(false);
 
     isExerciseChanged$ = this._isExerciseChanged$.asObservable();
     isExercisePicker$ = this._isExercisePicker$.asObservable();
-    isUpdateSetCategoryVisible$ = this._isUpdateSetCategoryVisible$.asObservable();
     exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
     );
@@ -102,7 +99,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     );
 
     form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
-    changeSetCategoryPayload: ChangeSetCategoryPayloadType;
 
     onTouched: () => void;
 
@@ -165,7 +161,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     ngOnDestroy(): void {
         this._isExercisePicker$.complete();
         this._isExerciseChanged$.complete();
-        this._isUpdateSetCategoryVisible$.complete();
     }
 
     writeValue(exercises: SingleExercise[]): void {
@@ -198,13 +193,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         ].availableExercises.find(
                             (exercise: Exercise) => exercise.name === (element.value as string),
                         );
-                        this.changeSetCategoryPayload = {
-                            primarySetCategory: selectedExerciseData.primarySetCategory,
-                            setCategories: selectedExerciseData.setCategories,
-                        };
-                        this._isUpdateSetCategoryVisible$.next(
-                            this.changeSetCategoryPayload.setCategories.length > 1,
-                        );
                         this.accessFormGroup<'imageUrl'>(
                             'exerciseData',
                             'imageUrl',
@@ -215,6 +203,16 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                             'primaryMuscleGroup',
                             indexExercise,
                         ).patchValue(selectedExerciseData.primaryMuscleGroup);
+                        this.accessFormGroup(
+                            'exerciseData',
+                            'setCategories',
+                            indexExercise,
+                        ).patchValue(selectedExerciseData.setCategories);
+                        this.accessFormGroup(
+                            'exerciseData',
+                            'primarySetCategory',
+                            indexExercise,
+                        ).patchValue(selectedExerciseData.primarySetCategory);
                         return this._newTrainingStoreService.updateExerciseChoices(
                             element.value as string,
                             indexExercise,
@@ -253,13 +251,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     return set;
                 }),
             };
-            this.changeSetCategoryPayload = {
-                primarySetCategory: exercise.exerciseData.primarySetCategory,
-                setCategories: exercise.exerciseData.setCategories,
-            };
-            this._isUpdateSetCategoryVisible$.next(
-                this.changeSetCategoryPayload.setCategories.length > 1,
-            );
         }
         this.form.push(
             new FormGroup<SingleExerciseFormType>({
@@ -270,6 +261,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     imageUrl: new FormControl(exercise?.exerciseData?.imageUrl ?? ''),
                     primaryMuscleGroup: new FormControl(
                         exercise?.exerciseData?.primaryMuscleGroup ?? '',
+                    ),
+                    setCategories: new FormControl(exercise?.exerciseData?.setCategories ?? []),
+                    primarySetCategory: new FormControl(
+                        exercise?.exerciseData?.primarySetCategory ?? 'freeWeighted',
                     ),
                 }),
                 sets: new FormControl(exercise?.sets ?? [], { nonNullable: true }),

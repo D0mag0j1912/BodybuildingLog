@@ -18,7 +18,12 @@ export type SingleExerciseValueType = {
     sets?: Set[];
 };
 
-export type ExerciseValueType = Partial<Pick<Exercise, 'name' | 'imageUrl' | 'primaryMuscleGroup'>>;
+export type ExerciseValueType = Partial<
+    Pick<
+        Exercise,
+        'name' | 'imageUrl' | 'primaryMuscleGroup' | 'setCategories' | 'primarySetCategory'
+    >
+>;
 
 export type ExerciseFormType = {
     [P in keyof ExerciseValueType]: FormControl<ExerciseValueType[P]>;

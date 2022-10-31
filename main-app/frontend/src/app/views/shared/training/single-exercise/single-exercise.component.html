@@ -72,8 +72,11 @@
         </ng-container>
         <bl-set
             formControlName="sets"
-            [changeSetCategoryPayload]="changeSetCategoryPayload"
-            [isUpdateSetCategoryVisible]="isUpdateSetCategoryVisible$ | async"
+            [changeSetCategoryPayload]="{
+                setCategories: accessFormGroup('exerciseData', 'setCategories', i).value,
+                primarySetCategory: accessFormGroup('exerciseData', 'primarySetCategory', i).value
+            }"
+            [isUpdateSetCategoryVisible]="accessFormGroup('exerciseData', 'setCategories', i).value.length > 1"
             [isExerciseChanged$]="isExerciseChanged$"
             [bodyweightControl]="bodyweightControl"
             [exerciseControl]="accessFormGroup('exerciseData', 'name', i)"
