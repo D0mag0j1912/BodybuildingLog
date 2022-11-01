@@ -245,7 +245,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 }),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe();
+            .subscribe((setCategory: SetCategoryType) => {
+                this._activeSetCategory$.next(setCategory);
+            });
     }
 
     async onWeightLiftedKeydown(index: number): Promise<void> {

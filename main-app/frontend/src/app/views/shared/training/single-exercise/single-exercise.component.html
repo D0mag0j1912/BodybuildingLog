@@ -7,9 +7,9 @@
             <ion-grid>
                 <ion-row
                     class="ion-text-center exercise-row"
-                    [class.exercise-name-required]="accessFormGroup('exerciseData', 'name', i).errors?.required &&
-                        (accessFormGroup('exerciseData', 'name', i).touched ||
-                            accessFormGroup('exerciseData', 'name', i).dirty ||
+                    [class.exercise-name-required]="accessFormControl('exerciseData', 'name', i).errors?.required &&
+                        (accessFormControl('exerciseData', 'name', i).touched ||
+                        accessFormControl('exerciseData', 'name', i).dirty ||
                             isSubmitted) &&
                         !isLoading">
                     <ion-col size="10">
@@ -36,9 +36,9 @@
                             </ion-select>
                             <ion-note
                                 *ngIf="
-                                    accessFormGroup('exerciseData', 'name', i).errors?.required &&
-                                    (accessFormGroup('exerciseData', 'name', i).touched ||
-                                        accessFormGroup('exerciseData', 'name', i).dirty ||
+                                accessFormControl('exerciseData', 'name', i).errors?.required &&
+                                    (accessFormControl('exerciseData', 'name', i).touched ||
+                                    accessFormControl('exerciseData', 'name', i).dirty ||
                                         isSubmitted) &&
                                     !isLoading
                                 "
@@ -51,7 +51,7 @@
                             *ngIf="
                                 form.errors?.duplicateExerciseName &&
                                 form.errors?.duplicateExerciseName ===
-                                    accessFormGroup('exerciseData', 'name', i)?.value &&
+                                accessFormControl('exerciseData', 'name', i)?.value &&
                                 !isLoading
                             "
                             class="error"
@@ -64,7 +64,7 @@
                             class="delete-exercise-icon"
                             name="trash-outline"
                             color="primary"
-                            (click)="deleteExercise(i, accessFormGroup('exerciseData', 'name', i).value)"
+                            (click)="deleteExercise(i, accessFormControl('exerciseData', 'name', i).value)"
                         ></ion-icon>
                     </ion-col>
                 </ion-row>
@@ -73,13 +73,13 @@
         <bl-set
             formControlName="sets"
             [changeSetCategoryPayload]="{
-                setCategories: accessFormGroup('exerciseData', 'setCategories', i).value,
-                primarySetCategory: accessFormGroup('exerciseData', 'primarySetCategory', i).value
+                setCategories: accessFormControl('exerciseData', 'setCategories', i).value,
+                primarySetCategory: accessFormControl('exerciseData', 'primarySetCategory', i).value
             }"
-            [isUpdateSetCategoryVisible]="accessFormGroup('exerciseData', 'setCategories', i).value.length > 1"
+            [isUpdateSetCategoryVisible]="accessFormControl('exerciseData', 'setCategories', i).value.length > 1"
             [isExerciseChanged$]="isExerciseChanged$"
             [bodyweightControl]="bodyweightControl"
-            [exerciseControl]="accessFormGroup('exerciseData', 'name', i)"
+            [exerciseControl]="accessFormControl('exerciseData', 'name', i)"
             [editTrainingData]="editTrainingData"
             [indexExercise]="i"
             [isSubmitted]="isSubmitted"

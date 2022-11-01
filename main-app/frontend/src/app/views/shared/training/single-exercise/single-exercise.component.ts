@@ -82,7 +82,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 if (this.setsCmpRef) {
                     return (
                         exerciseState.length <= allExercises.Value.length &&
-                        this.accessFormGroup<'name'>(
+                        this.accessFormControl<'name'>(
                             'exerciseData',
                             'name',
                             exerciseState.length - 1,
@@ -193,22 +193,22 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         ].availableExercises.find(
                             (exercise: Exercise) => exercise.name === (element.value as string),
                         );
-                        this.accessFormGroup<'imageUrl'>(
+                        this.accessFormControl<'imageUrl'>(
                             'exerciseData',
                             'imageUrl',
                             indexExercise,
                         ).patchValue(selectedExerciseData.imageUrl);
-                        this.accessFormGroup<'primaryMuscleGroup'>(
+                        this.accessFormControl<'primaryMuscleGroup'>(
                             'exerciseData',
                             'primaryMuscleGroup',
                             indexExercise,
                         ).patchValue(selectedExerciseData.primaryMuscleGroup);
-                        this.accessFormGroup(
+                        this.accessFormControl(
                             'exerciseData',
                             'setCategories',
                             indexExercise,
                         ).patchValue(selectedExerciseData.setCategories);
-                        this.accessFormGroup(
+                        this.accessFormControl(
                             'exerciseData',
                             'primarySetCategory',
                             indexExercise,
@@ -345,7 +345,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return this.form.controls;
     }
 
-    accessFormGroup<K extends keyof ExerciseValueType>(
+    accessFormControl<K extends keyof ExerciseValueType>(
         formGroup: keyof SingleExerciseFormType,
         formField: K,
         indexExercise: number,
