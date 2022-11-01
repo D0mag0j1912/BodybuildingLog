@@ -30,7 +30,6 @@ import { NewTraining } from '../../../../models/training/new-training/new-traini
 import { Set } from '../../../../models/training/shared/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import {
-    ExerciseValueType,
     ExerciseFormType,
     SingleExerciseFormType,
     SingleExerciseValueType,
@@ -77,11 +76,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 if (this.setsCmpRef) {
                     return (
                         exerciseState.length <= allExercises.Value.length &&
-                        this.accessFormControl<'name'>(
-                            'exerciseData',
-                            'name',
-                            exerciseState.length - 1,
-                        )?.value &&
+                        this.form.controls[exerciseState.length - 1].controls.exerciseData.controls
+                            .name?.value &&
                         exerciseState.length > 0 &&
                         this.areSetsValid()
                     );
@@ -101,7 +97,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     editTrainingData: NewTraining;
 
     @Input()
-    bodyweightControl: AbstractControl<number>;
+    bodyweightControl: FormControl<number>;
 
     @Input()
     trainingDate: AbstractControl<string> | null;
@@ -187,26 +183,26 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         ].availableExercises.find(
                             (exercise: Exercise) => exercise.name === (element.value as string),
                         );
-                        this.accessFormControl<'imageUrl'>(
-                            'exerciseData',
-                            'imageUrl',
-                            indexExercise,
-                        ).patchValue(selectedExerciseData.imageUrl);
-                        this.accessFormControl<'primaryMuscleGroup'>(
-                            'exerciseData',
-                            'primaryMuscleGroup',
-                            indexExercise,
-                        ).patchValue(selectedExerciseData.primaryMuscleGroup);
-                        this.accessFormControl(
-                            'exerciseData',
-                            'setCategories',
-                            indexExercise,
-                        ).patchValue(selectedExerciseData.setCategories);
-                        this.accessFormControl(
-                            'exerciseData',
-                            'primarySetCategory',
-                            indexExercise,
-                        ).patchValue(selectedExerciseData.primarySetCategory);
+                        this.form.controls[
+                            indexExercise
+                        ].controls.exerciseData.controls.imageUrl.patchValue(
+                            selectedExerciseData.imageUrl,
+                        );
+                        this.form.controls[
+                            indexExercise
+                        ].controls.exerciseData.controls.primaryMuscleGroup.patchValue(
+                            selectedExerciseData.primaryMuscleGroup,
+                        );
+                        this.form.controls[
+                            indexExercise
+                        ].controls.exerciseData.controls.setCategories.patchValue(
+                            selectedExerciseData.setCategories,
+                        );
+                        this.form.controls[
+                            indexExercise
+                        ].controls.exerciseData.controls.primarySetCategory.patchValue(
+                            selectedExerciseData.primarySetCategory,
+                        );
                         return this._newTrainingStoreService.updateExerciseChoices(
                             element.value as string,
                             indexExercise,
@@ -333,14 +329,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     getExercises(): FormGroup<SingleExerciseFormType>[] {
         return this.form.controls;
-    }
-
-    accessFormControl<K extends keyof ExerciseValueType>(
-        formGroup: keyof SingleExerciseFormType,
-        formField: K,
-        indexExercise: number,
-    ): AbstractControl<ExerciseValueType[K]> {
-        return this.form.at(indexExercise)?.get(formGroup)?.get(formField);
     }
 
     areSetsValid(): boolean {

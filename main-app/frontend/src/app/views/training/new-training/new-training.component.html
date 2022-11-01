@@ -61,21 +61,21 @@
                         <ion-text
                             class="bodyweight-input--unit"
                             slot="end"
-                            [class.invalid-bodyweight]="bodyweight.invalid"
+                            [class.invalid-bodyweight]="newTrainingForm.controls.bodyweight.invalid"
                         >
                             {{ bodyweightRef?.value ? currentPreferences.weightUnit : '' }}
                         </ion-text>
                     </ng-container>
-                    <ion-note *ngIf="bodyweight.errors?.pattern" slot="error">
+                    <ion-note *ngIf="newTrainingForm.controls.bodyweight.errors?.pattern" slot="error">
                         {{ 'training.new_training.errors.only_numbers' | translate }}
                     </ion-note>
-                    <ion-note *ngIf="bodyweight.errors?.min" slot="error">
+                    <ion-note *ngIf="newTrainingForm.controls.bodyweight.errors?.min" slot="error">
                         {{ 'training.new_training.errors.bodyweight_min' | translate }}
                     </ion-note>
-                    <ion-note *ngIf="bodyweight.errors?.max" slot="error">
+                    <ion-note *ngIf="newTrainingForm.controls.bodyweight.errors?.max" slot="error">
                         {{ 'training.new_training.errors.bodyweight_max' | translate }}
                     </ion-note>
-                    <ion-note *ngIf="bodyweight.errors?.required" slot="error">
+                    <ion-note *ngIf="newTrainingForm.controls.bodyweight.errors?.required" slot="error">
                         {{ 'training.new_training.errors.bodyweight_required' | translate }}
                     </ion-note>
                 </ion-item>
@@ -92,7 +92,7 @@
                 <ng-container *ngIf="exercisesState$ | async as exercisesState">
                     <bl-single-exercise
                         formControlName="exercises"
-                        [bodyweightControl]="bodyweight"
+                        [bodyweightControl]="newTrainingForm.controls.bodyweight"
                         [trainingDate]="newTrainingForm.get('trainingDate')"
                         [editTrainingData]="editTrainingData"
                         [isSubmitted]="isSubmitted$ | async"
@@ -110,7 +110,7 @@
                         </ion-col>
                     </bl-single-exercise>
                     <ion-text *ngIf="
-                        bodyweight.errors?.required &&
+                        newTrainingForm.controls.bodyweight.errors?.required &&
                         (isSubmitted$ | async)"
                         class="error">
                         {{ 'training.new_training.errors.bodyweight_required' | translate }}

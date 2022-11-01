@@ -7,9 +7,9 @@
             <ion-grid>
                 <ion-row
                     class="ion-text-center exercise-row"
-                    [class.exercise-name-required]="accessFormControl('exerciseData', 'name', i).errors?.required &&
-                        (accessFormControl('exerciseData', 'name', i).touched ||
-                        accessFormControl('exerciseData', 'name', i).dirty ||
+                    [class.exercise-name-required]="form.controls[i].controls.exerciseData.controls.name.errors?.required &&
+                        (form.controls[i].controls.exerciseData.controls.name.touched ||
+                        form.controls[i].controls.exerciseData.controls.name.dirty ||
                             isSubmitted) &&
                         !isLoading">
                     <ion-col size="10">
@@ -36,9 +36,9 @@
                             </ion-select>
                             <ion-note
                                 *ngIf="
-                                accessFormControl('exerciseData', 'name', i).errors?.required &&
-                                    (accessFormControl('exerciseData', 'name', i).touched ||
-                                    accessFormControl('exerciseData', 'name', i).dirty ||
+                                form.controls[i].controls.exerciseData.controls.name.errors?.required &&
+                                    (form.controls[i].controls.exerciseData.controls.name.touched ||
+                                    form.controls[i].controls.exerciseData.controls.name.dirty ||
                                         isSubmitted) &&
                                     !isLoading
                                 "
@@ -51,7 +51,7 @@
                             *ngIf="
                                 form.errors?.duplicateExerciseName &&
                                 form.errors?.duplicateExerciseName ===
-                                accessFormControl('exerciseData', 'name', i)?.value &&
+                                form.controls[i].controls.exerciseData.controls.name.value &&
                                 !isLoading
                             "
                             class="error"
@@ -64,7 +64,7 @@
                             class="delete-exercise-icon"
                             name="trash-outline"
                             color="primary"
-                            (click)="deleteExercise(i, accessFormControl('exerciseData', 'name', i).value)"
+                            (click)="deleteExercise(i, form.controls[i].controls.exerciseData.controls.name.value)"
                         ></ion-icon>
                     </ion-col>
                 </ion-row>
@@ -75,13 +75,13 @@
             [editTrainingData]="editTrainingData"
             [indexExercise]="i"
             [changeSetCategoryPayload]="{
-                setCategories: accessFormControl('exerciseData', 'setCategories', i).value,
-                primarySetCategory: accessFormControl('exerciseData', 'primarySetCategory', i).value
+                setCategories: form.controls[i].controls.exerciseData.controls.setCategories.value,
+                primarySetCategory: form.controls[i].controls.exerciseData.controls.primarySetCategory.value
             }"
             [bodyweightControl]="bodyweightControl"
-            [exerciseControl]="accessFormControl('exerciseData', 'name', i)"
-            [primarySetCategoryControl]="accessFormControl('exerciseData', 'primarySetCategory', i)"
-            [isUpdateSetCategoryVisible]="accessFormControl('exerciseData', 'setCategories', i).value.length > 1"
+            [exerciseControl]="form.controls[i].controls.exerciseData.controls.name"
+            [primarySetCategoryControl]="form.controls[i].controls.exerciseData.controls.primarySetCategory"
+            [isUpdateSetCategoryVisible]="form.controls[i].controls.exerciseData.controls.setCategories.value.length > 1"
             [isSubmitted]="isSubmitted"
             [editMode]="editMode"
             [isLoading]="isLoading"

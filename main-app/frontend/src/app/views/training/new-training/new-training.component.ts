@@ -7,7 +7,7 @@ import {
     ViewChild,
     ViewChildren,
 } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
@@ -54,14 +54,16 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
     providers: [UnsubscribeService],
 })
 export class NewTrainingComponent implements OnDestroy {
-    private readonly _isSubmitted$ = new BehaviorSubject<boolean>(false);
-    private readonly _isApiLoading$ = new BehaviorSubject<boolean>(false);
+    private _isSubmitted$ = new BehaviorSubject<boolean>(false);
+    private _isApiLoading$ = new BehaviorSubject<boolean>(false);
 
+    isSubmitted$ = this._isSubmitted$.asObservable();
+    isApiLoading$ = this._isApiLoading$.asObservable();
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
-    readonly currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
-    readonly isAuthenticated$ = this._authStoreService.isAuth$;
-    readonly isEditing$ = this._sharedStoreService.editingTraining$;
-    readonly isReorder$ = this._newTrainingStoreService.trainingState$.pipe(
+    currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
+    isAuthenticated$ = this._authStoreService.isAuth$;
+    isEditing$ = this._sharedStoreService.editingTraining$;
+    isReorder$ = this._newTrainingStoreService.trainingState$.pipe(
         map((training: NewTraining) => {
             const exercises = training.exercises;
             return (
@@ -73,31 +75,29 @@ export class NewTrainingComponent implements OnDestroy {
             );
         }),
     );
-    readonly exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
+    exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         tap((exercises: SingleExercise[]) => {
             const isDynamicBodyweight = exercises.some((exercise: SingleExercise) =>
                 this.bodyweightSetCategories.includes(exercise.exerciseData.primarySetCategory),
             );
-            this.bodyweight.setValidators(
+            this.newTrainingForm.controls.bodyweight.setValidators(
                 isDynamicBodyweight
                     ? [...this.initialBodyweightValidators, Validators.required]
                     : [...this.initialBodyweightValidators],
             );
-            this.bodyweight.updateValueAndValidity();
+            this.newTrainingForm.controls.bodyweight.updateValueAndValidity();
         }),
     );
-    readonly isSubmitted$ = this._isSubmitted$.asObservable();
-    readonly isApiLoading$ = this._isApiLoading$.asObservable();
 
     formattedTodayDate: string;
     editTrainingData: NewTraining;
-    readonly initialBodyweightValidators = [
+    initialBodyweightValidators = [
         Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
         Validators.min(30),
         Validators.max(300),
     ];
-    readonly bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
+    bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
 
     newTrainingForm = new FormGroup({
         bodyweight: new FormControl(0, {
@@ -135,10 +135,6 @@ export class NewTrainingComponent implements OnDestroy {
         private _modalController: ModalController,
         private _changeDetectorRef: ChangeDetectorRef,
     ) {}
-
-    get bodyweight(): AbstractControl<number> {
-        return this.newTrainingForm.get('bodyweight');
-    }
 
     ionViewWillEnter(): void {
         let allExercisesChanged: StreamData<Exercise[]>;

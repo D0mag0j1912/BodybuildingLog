@@ -3,9 +3,9 @@
         <ion-grid class="set-grid">
             <ion-row
                 class="ion-text-center set-row"
-                [class.ion-justify-content-center]="!accessFormField('weightLifted', i)">
+                [class.ion-justify-content-center]="!form.controls[i].controls.weightLifted">
                 <ion-col
-                    *ngIf="accessFormField('weightLifted', i)"
+                    *ngIf="form.controls[i].controls.weightLifted"
                     size="5">
                     <ion-item fill="outline">
                         <ion-label class="ion-label" position="floating">
@@ -25,15 +25,15 @@
                             <ion-text
                                 class="weight-lifted-input--unit"
                                 slot="end"
-                                [class.invalid-weight-lifted]="accessFormField('weightLifted', i)?.invalid"
+                                [class.invalid-weight-lifted]="form.controls[i].controls.weightLifted?.invalid"
                             >
                                 {{ weightLiftedEl?.value ? currentPreferences.weightUnit : '' }}
                             </ion-text>
                         </ng-container>
                         <ion-text
                             *ngIf="
-                                accessFormField('weightLifted', i)?.errors?.pattern &&
-                                !accessFormField('weightLifted', i)?.errors?.min &&
+                                form.controls[i].controls.weightLifted?.errors?.pattern &&
+                                !form.controls[i].controls.weightLifted?.errors?.min &&
                                 !isLoading
                             "
                             slot="error"
@@ -42,8 +42,8 @@
                         </ion-text>
                         <ion-text
                             *ngIf="
-                                accessFormField('weightLifted', i)?.errors?.min &&
-                                !accessFormField('weightLifted', i)?.errors?.pattern &&
+                                form.controls[i].controls.weightLifted?.errors?.min &&
+                                !form.controls[i].controls.weightLifted?.errors?.pattern &&
                                 !isLoading
                             "
                             slot="error"
@@ -52,8 +52,8 @@
                         </ion-text>
                         <ion-text
                             *ngIf="
-                                accessFormField('weightLifted', i)?.errors?.max &&
-                                !accessFormField('weightLifted', i)?.errors?.pattern &&
+                                form.controls[i].controls.weightLifted?.errors?.max &&
+                                !form.controls[i].controls.weightLifted?.errors?.pattern &&
                                 !isLoading
                             "
                             slot="error"
@@ -62,9 +62,9 @@
                         </ion-text>
                         <ion-text
                             *ngIf="
-                                accessFormField('weightLifted', i)?.errors?.required &&
+                                form.controls[i].controls.weightLifted?.errors?.required &&
                                 (isSubmitted ||
-                                    accessFormField('weightLifted', i).touched) &&
+                                    form.controls[i].controls.weightLifted.touched) &&
                                 !isLoading
                             "
                             slot="error"
@@ -74,7 +74,7 @@
                     </ion-item>
                 </ion-col>
                 <ion-col
-                    *ngIf="accessFormField('reps', i)"
+                    *ngIf="form.controls[i].controls.reps"
                     size="5">
                     <ion-item fill="outline">
                         <ion-label class="ion-label" position="floating">
@@ -91,8 +91,8 @@
                         ></ion-input>
                         <ion-text
                             *ngIf="
-                                accessFormField('reps', i)?.errors?.pattern &&
-                                !accessFormField('reps', i)?.errors?.pattern &&
+                                form.controls[i].controls.reps?.errors?.pattern &&
+                                !form.controls[i].controls.reps?.errors?.pattern &&
                                 !isLoading
                             "
                             slot="error"
@@ -101,9 +101,9 @@
                         </ion-text>
                         <ion-text
                             *ngIf="
-                                accessFormField('reps', i)?.errors?.min &&
-                                !accessFormField('reps', i)?.errors?.pattern &&
-                                !accessFormField('reps', i)?.errors?.pattern &&
+                                form.controls[i].controls.reps?.errors?.min &&
+                                !form.controls[i].controls.reps?.errors?.pattern &&
+                                !form.controls[i].controls.reps?.errors?.pattern &&
                                 !isLoading
                             "
                             slot="error"
@@ -112,9 +112,9 @@
                         </ion-text>
                         <ion-text
                             *ngIf="
-                                accessFormField('reps', i)?.errors?.max &&
-                                !accessFormField('reps', i)?.errors?.pattern &&
-                                !accessFormField('reps', i)?.errors?.pattern &&
+                                form.controls[i].controls.reps?.errors?.max &&
+                                !form.controls[i].controls.reps?.errors?.pattern &&
+                                !form.controls[i].controls.reps?.errors?.pattern &&
                                 !isLoading
                             "
                             slot="error"
@@ -123,8 +123,8 @@
                         </ion-text>
                         <ion-text
                             *ngIf="
-                                accessFormField('reps', i)?.errors?.required &&
-                                (isSubmitted || accessFormField('reps', i).touched) &&
+                                form.controls[i].controls.reps?.errors?.required &&
+                                (isSubmitted || form.controls[i].controls.reps.touched) &&
                                 !isLoading
                             "
                             slot="error"

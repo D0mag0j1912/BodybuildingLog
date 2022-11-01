@@ -9,7 +9,6 @@ import {
     ViewChildren,
 } from '@angular/core';
 import {
-    AbstractControl,
     ControlValueAccessor,
     FormArray,
     FormControl,
@@ -87,13 +86,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     changeSetCategoryPayload: ChangeSetCategoryPayloadType;
 
     @Input()
-    bodyweightControl: AbstractControl<number>;
+    bodyweightControl: FormControl<number>;
 
     @Input()
-    exerciseControl: AbstractControl<string>;
+    exerciseControl: FormControl<string>;
 
     @Input()
-    primarySetCategoryControl: AbstractControl<SetCategoryType>;
+    primarySetCategoryControl: FormControl<SetCategoryType>;
 
     @Input()
     isUpdateSetCategoryVisible = false;
@@ -155,7 +154,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 if (this.bodyweightControl.valid) {
                     switch (activeSetCategory) {
                         case 'dynamicBodyweight': {
-                            this.accessFormField('reps', 0).enable();
+                            this.form.controls[0].controls.reps.enable();
                             break;
                         }
                     }
@@ -170,10 +169,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             .subscribe((preferences: Preferences) => {
                 this._currentWeightUnit = preferences.weightUnit;
                 this.getSets().forEach((_control, index) => {
-                    const currentWeightLiftedValue = +this.accessFormField('weightLifted', index)
-                        .value;
+                    const currentWeightLiftedValue =
+                        +this.form.controls[index].controls.weightLifted.value;
                     if (currentWeightLiftedValue) {
-                        this.accessFormField('weightLifted', index).patchValue(
+                        this.form.controls[index].controls.weightLifted.patchValue(
                             convertWeightUnit(preferences.weightUnit, currentWeightLiftedValue),
                         );
                     }
@@ -351,18 +350,18 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             .pipe(
                 take(1),
                 switchMap((setCategory: SetCategoryType) => {
-                    const weightLifted = this.accessFormField('weightLifted', indexSet)?.value;
-                    const reps = this.accessFormField('reps', indexSet)?.value;
+                    const weightLifted = this.form.controls[indexSet].controls.weightLifted?.value;
+                    const reps = this.form.controls[indexSet].controls.reps?.value;
                     const trainingData: SetTrainingData = {
                         exerciseName: this.exerciseControl.value,
                         setNumber: indexSet + 1,
                         weightLifted:
                             weightLifted && this._isSetConstituentValid('weightLifted', indexSet)
-                                ? this.accessFormField('weightLifted', indexSet).value
+                                ? this.form.controls[indexSet].controls.weightLifted.value
                                 : undefined,
                         reps:
                             reps && this._isSetConstituentValid('reps', indexSet)
-                                ? this.accessFormField('reps', indexSet).value
+                                ? this.form.controls[indexSet].controls.reps.value
                                 : undefined,
                         total: this._calculateTotal(setCategory),
                     };
@@ -370,10 +369,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 }),
             )
             .subscribe();
-    }
-
-    accessFormField(formField: keyof SetFormValue, indexSet: number): AbstractControl<number> {
-        return this.form.at(indexSet)?.get(formField);
     }
 
     private _calculateTotal(setCategory: SetCategoryType): number {
@@ -437,7 +432,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     }
 
     private _isSetConstituentValid(setConstituent: SetConstituent, indexSet: number): boolean {
-        return this.accessFormField(setConstituent, indexSet)?.valid;
+        return this.form.controls[indexSet].controls[setConstituent].valid;
     }
 
     private _constructFormBasedOnSetCategory(setCategory: SetCategoryType, set?: Set): void {
@@ -465,9 +460,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                 );
                 this.form.push(new FormGroup(setControls));
                 if (!this.bodyweightControl?.errors) {
-                    this.accessFormField('reps', 0).enable();
+                    this.form.controls[0].controls.reps.enable();
                 } else {
-                    this.accessFormField('reps', 0).disable();
+                    this.form.controls[0].controls.reps.disable();
                 }
                 break;
             }
