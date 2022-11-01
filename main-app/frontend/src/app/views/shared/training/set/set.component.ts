@@ -311,6 +311,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                     }
                 }),
                 delay(200),
+                takeUntil(this._unsubscribeService),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
                 await this._focusSetConstituent(setCategory, 'last');
