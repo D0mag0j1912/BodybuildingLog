@@ -217,10 +217,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             .pipe(
                 switchMap((response: OverlayEventDetail<SetCategoryType>) => {
                     if (response.role === DialogRoles.CHANGE_SET_CATEGORY) {
-                        return this.exercisesState$.pipe(
-                            map((exercises: SingleExercise[]) => {
-                                const previousSetCategory =
-                                    exercises[this.indexExercise].exerciseData.primarySetCategory;
+                        return this._activeSetCategory$.pipe(
+                            take(1),
+                            map((previousSetCategory: SetCategoryType) => {
                                 if (previousSetCategory !== response.data) {
                                     while (this.form.length !== 0) {
                                         this.form.removeAt(0);
