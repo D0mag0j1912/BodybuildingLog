@@ -78,10 +78,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     onTouched: () => void;
 
     @Input()
-    changeSetCategoryPayload: ChangeSetCategoryPayloadType;
+    editTrainingData: NewTraining;
+    //TODO: Remove indexExercise and provide exercises data from parent template
+    @Input()
+    indexExercise = 0;
 
     @Input()
-    isUpdateSetCategoryVisible = false;
+    changeSetCategoryPayload: ChangeSetCategoryPayloadType;
 
     @Input()
     bodyweightControl: AbstractControl<number>;
@@ -90,10 +93,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     exerciseControl: AbstractControl<string>;
 
     @Input()
-    editTrainingData: NewTraining;
-    //TODO: Remove indexExercise and provide exercises data from parent template
+    primarySetCategoryControl: AbstractControl<SetCategoryType>;
+
     @Input()
-    indexExercise = 0;
+    isUpdateSetCategoryVisible = false;
 
     @Input()
     isSubmitted = false;
@@ -103,9 +106,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
     @Input()
     isLoading = false;
-
-    @Input()
-    primarySetCategoryControl: AbstractControl<SetCategoryType>;
 
     @ViewChildren('weightLiftedEl')
     weightLiftedElements: QueryList<IonInput>;

@@ -72,19 +72,19 @@
         </ng-container>
         <bl-set
             formControlName="sets"
-            [primarySetCategoryControl]="accessFormControl('exerciseData', 'primarySetCategory', i)"
+            [editTrainingData]="editTrainingData"
+            [indexExercise]="i"
             [changeSetCategoryPayload]="{
                 setCategories: accessFormControl('exerciseData', 'setCategories', i).value,
                 primarySetCategory: accessFormControl('exerciseData', 'primarySetCategory', i).value
             }"
-            [isUpdateSetCategoryVisible]="accessFormControl('exerciseData', 'setCategories', i).value.length > 1"
             [bodyweightControl]="bodyweightControl"
             [exerciseControl]="accessFormControl('exerciseData', 'name', i)"
-            [editTrainingData]="editTrainingData"
-            [indexExercise]="i"
+            [primarySetCategoryControl]="accessFormControl('exerciseData', 'primarySetCategory', i)"
+            [isUpdateSetCategoryVisible]="accessFormControl('exerciseData', 'setCategories', i).value.length > 1"
             [isSubmitted]="isSubmitted"
-            [isLoading]="isLoading"
             [editMode]="editMode"
+            [isLoading]="isLoading"
         ></bl-set>
     </ion-card>
 </form>
