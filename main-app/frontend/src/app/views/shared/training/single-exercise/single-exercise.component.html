@@ -72,12 +72,12 @@
         </ng-container>
         <bl-set
             formControlName="sets"
+            [primarySetCategoryControl]="accessFormControl('exerciseData', 'primarySetCategory', i)"
             [changeSetCategoryPayload]="{
                 setCategories: accessFormControl('exerciseData', 'setCategories', i).value,
                 primarySetCategory: accessFormControl('exerciseData', 'primarySetCategory', i).value
             }"
             [isUpdateSetCategoryVisible]="accessFormControl('exerciseData', 'setCategories', i).value.length > 1"
-            [isExerciseChanged$]="isExerciseChanged$"
             [bodyweightControl]="bodyweightControl"
             [exerciseControl]="accessFormControl('exerciseData', 'name', i)"
             [editTrainingData]="editTrainingData"

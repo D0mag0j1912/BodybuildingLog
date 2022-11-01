@@ -18,7 +18,7 @@ import {
 } from '@angular/forms';
 import { OverlayEventDetail } from '@ionic/core';
 import { IonInput, ModalController } from '@ionic/angular';
-import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, from, of } from 'rxjs';
 import {
     concatMap,
     delay,
@@ -42,10 +42,7 @@ import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
 import { SetCategoryType, SetConstituent } from '../../../../models/training/shared/set.type';
-import {
-    ExerciseChangedType,
-    SingleExercise,
-} from '../../../../models/training/shared/single-exercise.model';
+import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../../constants/training/bodyweight-set-categories.const';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
@@ -87,9 +84,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     isUpdateSetCategoryVisible = false;
 
     @Input()
-    isExerciseChanged$: Observable<ExerciseChangedType>;
-
-    @Input()
     bodyweightControl: AbstractControl<number>;
 
     @Input()
@@ -110,6 +104,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     @Input()
     isLoading = false;
 
+    @Input()
+    primarySetCategoryControl: AbstractControl<SetCategoryType>;
+
     @ViewChildren('weightLiftedEl')
     weightLiftedElements: QueryList<IonInput>;
 
@@ -128,20 +125,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         this._currentWeightUnit =
             this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
 
-        this.isExerciseChanged$
+        this.primarySetCategoryControl.valueChanges
             .pipe(
-                filter((data: ExerciseChangedType) => data.indexExercise === this.indexExercise),
-                map((data: ExerciseChangedType) => {
-                    const exercises = data.trainingState.exercises;
+                map((setCategory: SetCategoryType) => {
                     while (this.form.length !== 0) {
                         this.form.removeAt(0);
                     }
-                    const setCategory =
-                        exercises[data.indexExercise].exerciseData.primarySetCategory;
                     this._constructFormBasedOnSetCategory(setCategory);
                     this._changeDetectorRef.markForCheck();
                     return {
-                        index: data.indexExercise,
+                        index: this.indexExercise,
                         setCategory,
                     };
                 }),

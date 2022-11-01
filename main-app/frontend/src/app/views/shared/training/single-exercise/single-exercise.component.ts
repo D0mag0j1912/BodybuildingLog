@@ -21,17 +21,14 @@ import {
 import { IonSelect, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, EMPTY, from, Subject } from 'rxjs';
+import { BehaviorSubject, EMPTY, from } from 'rxjs';
 import { delay, finalize, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { Set } from '../../../../models/training/shared/set.model';
-import {
-    ExerciseChangedType,
-    SingleExercise,
-} from '../../../../models/training/shared/single-exercise.model';
+import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import {
     ExerciseValueType,
     ExerciseFormType,
@@ -66,10 +63,8 @@ import { ExercisesStoreService } from '../../../../services/store/training/exerc
     providers: [getControlValueAccessor(SingleExerciseComponent), UnsubscribeService],
 })
 export class SingleExerciseComponent implements ControlValueAccessor, OnInit, OnDestroy {
-    private _isExerciseChanged$ = new Subject<ExerciseChangedType>();
     private _isExercisePicker$ = new BehaviorSubject<boolean>(true);
 
-    isExerciseChanged$ = this._isExerciseChanged$.asObservable();
     isExercisePicker$ = this._isExercisePicker$.asObservable();
     exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
@@ -160,7 +155,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     ngOnDestroy(): void {
         this._isExercisePicker$.complete();
-        this._isExerciseChanged$.complete();
     }
 
     writeValue(exercises: SingleExercise[]): void {
@@ -221,11 +215,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         );
                     }),
                 )
-                .subscribe((updatedTraining: NewTraining) => {
-                    this._isExerciseChanged$.next({
-                        trainingState: updatedTraining,
-                        indexExercise,
-                    });
+                .subscribe((_) => {
                     if (this.bodyweightControl?.errors) {
                         this.bodyweightControl.markAsTouched();
                     }

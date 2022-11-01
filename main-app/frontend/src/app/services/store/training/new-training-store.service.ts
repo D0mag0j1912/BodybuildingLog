@@ -389,7 +389,7 @@ export class NewTrainingStoreService {
         selectedIndex: number,
         trainingToBeUpdated: NewTraining,
         selectedExerciseData: Exercise,
-    ): Observable<NewTraining> {
+    ): Observable<void> {
         const previousSelectedExercise = trainingToBeUpdated.exercises.find(
             (_exercise: SingleExercise, index: number) => index === selectedIndex,
         ).exerciseData;
@@ -420,7 +420,7 @@ export class NewTrainingStoreService {
                 }
             }),
         };
-        return this.saveTrainingData(updatedTraining).pipe(concatMap((_) => of(updatedTraining)));
+        return this.saveTrainingData(updatedTraining);
     }
 
     keepTrainingState(): Observable<boolean> {
