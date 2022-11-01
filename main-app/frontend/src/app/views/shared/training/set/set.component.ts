@@ -41,7 +41,6 @@ import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
 import { SetCategoryType, SetConstituent } from '../../../../models/training/shared/set.type';
-import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../../constants/training/bodyweight-set-categories.const';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
@@ -65,10 +64,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
     activeSetCategory$ = this._activeSetCategory$.asObservable();
     currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
-    exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
-        take(1),
-        map((trainingState: NewTraining) => trainingState.exercises),
-    );
 
     form = new FormArray<FormGroup<SetFormType>>([]);
     bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
@@ -300,14 +295,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     }
 
     addSet(set?: Set): void {
-        this.exercisesState$
+        const setCategory = this.primarySetCategoryControl.value;
+        this._constructFormBasedOnSetCategory(setCategory, set);
+        of(setCategory)
             .pipe(
-                map((exercises: SingleExercise[]) => {
-                    const setCategory =
-                        exercises[this.indexExercise].exerciseData.primarySetCategory;
-                    this._constructFormBasedOnSetCategory(setCategory, set);
-                    return setCategory;
-                }),
                 concatMap((setCategory: SetCategoryType) => {
                     if (!set) {
                         return this._newTrainingStoreService.addSet(
