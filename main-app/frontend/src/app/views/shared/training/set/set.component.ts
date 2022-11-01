@@ -18,7 +18,7 @@ import {
 } from '@angular/forms';
 import { OverlayEventDetail } from '@ionic/core';
 import { IonInput, ModalController } from '@ionic/angular';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
 import {
     concatMap,
     delay,
@@ -34,7 +34,6 @@ import { SetTrainingData } from '../../../../models/training/shared/set.model';
 import { Set } from '../../../../models/training/shared/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
-import * as SetValidators from '../../../../validators/training/set.validators';
 import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
 import { WeightUnit } from '../../../../models/common/preferences.type';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
@@ -98,7 +97,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
     @Input()
     editTrainingData: NewTraining;
-
+    //TODO: Remove indexExercise and provide exercises data from parent template
     @Input()
     indexExercise = 0;
 
@@ -128,9 +127,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     ngOnInit(): void {
         this._currentWeightUnit =
             this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
-        //TODO: Update set validator to match new set category feature
-        /* this.form.setValidators([SetValidators.allSetsFilled()]);
-        this.form.updateValueAndValidity(); */
 
         this.isExerciseChanged$
             .pipe(
@@ -226,7 +222,29 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         await modal.present();
 
         from(modal.onDidDismiss<SetCategoryType>())
-            .pipe(takeUntil(this._unsubscribeService))
+            .pipe(
+                switchMap((response: OverlayEventDetail<SetCategoryType>) => {
+                    if (response.role === DialogRoles.CHANGE_SET_CATEGORY) {
+                        return this.exercisesState$.pipe(
+                            map((exercises: SingleExercise[]) => {
+                                const previousSetCategory =
+                                    exercises[this.indexExercise].exerciseData.primarySetCategory;
+                                if (previousSetCategory !== response.data) {
+                                    while (this.form.length !== 0) {
+                                        this.form.removeAt(0);
+                                    }
+                                    this._constructFormBasedOnSetCategory(response.data);
+                                    this._changeDetectorRef.markForCheck();
+                                }
+                                return response.data;
+                                //TODO: Update training state with newly chosen set category
+                            }),
+                        );
+                    }
+                    return EMPTY;
+                }),
+                takeUntil(this._unsubscribeService),
+            )
             .subscribe();
     }
 
