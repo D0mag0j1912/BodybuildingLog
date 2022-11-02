@@ -310,7 +310,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                         return of(setCategory);
                     }
                 }),
-                delay(200),
+                delay(400),
                 takeUntil(this._unsubscribeService),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
