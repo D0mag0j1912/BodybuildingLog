@@ -183,35 +183,37 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         ].availableExercises.find(
                             (exercise: Exercise) => exercise.name === (element.value as string),
                         );
-                        this.form.controls[
-                            indexExercise
-                        ].controls.exerciseData.controls.imageUrl.patchValue(
-                            selectedExerciseData.imageUrl,
-                        );
-                        this.form.controls[
-                            indexExercise
-                        ].controls.exerciseData.controls.primaryMuscleGroup.patchValue(
-                            selectedExerciseData.primaryMuscleGroup,
-                        );
-                        this.form.controls[
-                            indexExercise
-                        ].controls.exerciseData.controls.setCategories.patchValue(
-                            selectedExerciseData.setCategories,
-                        );
-                        this.form.controls[
-                            indexExercise
-                        ].controls.exerciseData.controls.primarySetCategory.patchValue(
-                            selectedExerciseData.primarySetCategory,
-                        );
-                        return this._newTrainingStoreService.updateExerciseChoices(
-                            element.value as string,
-                            indexExercise,
-                            currentTrainingState,
-                            selectedExerciseData,
-                        );
+                        return this._newTrainingStoreService
+                            .updateExerciseChoices(
+                                element.value as string,
+                                indexExercise,
+                                currentTrainingState,
+                                selectedExerciseData,
+                            )
+                            .pipe(map((_) => selectedExerciseData));
                     }),
                 )
-                .subscribe((_) => {
+                .subscribe((selectedExerciseData: Exercise) => {
+                    this.form.controls[
+                        indexExercise
+                    ].controls.exerciseData.controls.imageUrl.patchValue(
+                        selectedExerciseData.imageUrl,
+                    );
+                    this.form.controls[
+                        indexExercise
+                    ].controls.exerciseData.controls.primaryMuscleGroup.patchValue(
+                        selectedExerciseData.primaryMuscleGroup,
+                    );
+                    this.form.controls[
+                        indexExercise
+                    ].controls.exerciseData.controls.setCategories.patchValue(
+                        selectedExerciseData.setCategories,
+                    );
+                    this.form.controls[
+                        indexExercise
+                    ].controls.exerciseData.controls.primarySetCategory.patchValue(
+                        selectedExerciseData.primarySetCategory,
+                    );
                     if (this.bodyweightControl?.errors) {
                         this.bodyweightControl.markAsTouched();
                     }
