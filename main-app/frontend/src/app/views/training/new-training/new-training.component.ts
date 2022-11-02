@@ -13,7 +13,17 @@ import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { format, parseISO } from 'date-fns';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
-import { delay, filter, finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import {
+    concatMap,
+    delay,
+    filter,
+    finalize,
+    map,
+    switchMap,
+    take,
+    takeUntil,
+    tap,
+} from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
@@ -317,14 +327,21 @@ export class NewTrainingComponent implements OnDestroy {
 
         from(modal.onDidDismiss<string | undefined>())
             .pipe(
+                concatMap((response) => {
+                    if (response.role === DialogRoles.SELECT_DATE) {
+                        return this._newTrainingStoreService
+                            .updateTrainingDate(response.data)
+                            .pipe(map((_) => response));
+                    }
+                    return of(response);
+                }),
                 finalize(() => this._changeDetectorRef.markForCheck()),
                 takeUntil(this._unsubscribeService),
             )
             .subscribe((response) => {
                 const { data, role } = response;
-                if (role === 'SELECT_DATE') {
+                if (role === DialogRoles.SELECT_DATE) {
                     this.newTrainingForm.controls.trainingDate.patchValue(data);
-                    this._newTrainingStoreService.updateTrainingDate(data);
                     this._setFormattedDate(data);
                 }
             });

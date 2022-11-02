@@ -38,19 +38,29 @@ export class NewTrainingStoreService {
     }
 
     updateWeightUnit(weightUnit: WeightUnit): Observable<void> {
-        const updatedTraining = {
-            ...this._trainingState$.getValue(),
-            weightUnit,
-        };
-        return this.saveTrainingData(updatedTraining);
+        return this._trainingState$.pipe(
+            take(1),
+            switchMap((trainingState: NewTraining) => {
+                const updatedTraining = {
+                    ...trainingState,
+                    weightUnit,
+                };
+                return this.saveTrainingData(updatedTraining);
+            }),
+        );
     }
 
     updateTrainingDate(trainingDate: string): Observable<void> {
-        const updatedTraining = {
-            ...this._trainingState$.getValue(),
-            trainingDate,
-        };
-        return this.saveTrainingData(updatedTraining);
+        return this._trainingState$.pipe(
+            take(1),
+            switchMap((trainingState: NewTraining) => {
+                const updatedTraining = {
+                    ...trainingState,
+                    trainingDate,
+                };
+                return this.saveTrainingData(updatedTraining);
+            }),
+        );
     }
 
     updateBodyweight(value: string): Observable<void> {
