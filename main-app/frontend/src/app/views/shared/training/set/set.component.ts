@@ -197,7 +197,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         this.onTouched = fn;
     }
 
-    async updateSetCategory(): Promise<void> {
+    async updateSetCategory(indexSet: number): Promise<void> {
         const modal = await this._modalController.create({
             component: ChangeSetCategoryComponent,
             componentProps: {
@@ -210,20 +210,35 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
         from(modal.onDidDismiss<SetCategoryType>())
             .pipe(
-                switchMap((response: OverlayEventDetail<SetCategoryType>) => {
+                concatMap((response: OverlayEventDetail<SetCategoryType>) => {
                     if (response.role === DialogRoles.CHANGE_SET_CATEGORY) {
                         return this._activeSetCategory$.pipe(
                             take(1),
-                            map((previousSetCategory: SetCategoryType) => {
+                            concatMap((previousSetCategory: SetCategoryType) => {
                                 if (previousSetCategory !== response.data) {
-                                    while (this.form.length !== 0) {
-                                        this.form.removeAt(0);
-                                    }
-                                    this._constructFormBasedOnSetCategory(response.data);
-                                    this._changeDetectorRef.markForCheck();
+                                    return this._newTrainingStoreService
+                                        .updatePrimarySetCategory(
+                                            this.indexExercise,
+                                            indexSet,
+                                            response.data,
+                                            this.exerciseControl.value,
+                                        )
+                                        .pipe(
+                                            map(
+                                                (_) =>
+                                                    //TODO: Update only set on particular index
+                                                    /* while (this.form.length !== 0) {
+                                                    this.form.removeAt(0);
+                                                }
+                                                this._constructFormBasedOnSetCategory(
+                                                    response.data,
+                                                );
+                                                this._changeDetectorRef.markForCheck(); */
+                                                    response.data,
+                                            ),
+                                        );
                                 }
-                                return response.data;
-                                //TODO: Update training state with newly chosen set category
+                                return EMPTY;
                             }),
                         );
                     }

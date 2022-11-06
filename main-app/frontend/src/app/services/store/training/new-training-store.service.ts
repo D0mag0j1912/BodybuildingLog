@@ -99,6 +99,75 @@ export class NewTrainingStoreService {
         );
     }
 
+    updatePrimarySetCategory(
+        indexExercise: number,
+        indexSet: number,
+        setCategory: SetCategoryType,
+        exerciseName: string,
+    ): Observable<void> {
+        return this._trainingState$.pipe(
+            take(1),
+            map((trainingState: NewTraining) => {
+                let set: Set;
+                switch (setCategory) {
+                    case 'freeWeighted': {
+                        set = { setNumber: 1, weightLifted: null, reps: null };
+                        break;
+                    }
+                    case 'dynamicBodyweight': {
+                        set = { setNumber: 1, reps: null };
+                        break;
+                    }
+                    case 'dynamicWeighted': {
+                        //TODO: BL-121
+                        break;
+                    }
+                    case 'staticBodyweight': {
+                        //TODO: BL-128
+                        break;
+                    }
+                    case 'staticWeighted': {
+                        //TODO: BL-123
+                        break;
+                    }
+                    default: {
+                        isNeverCheck(setCategory);
+                    }
+                }
+                const updatedTraining: NewTraining = {
+                    ...trainingState,
+                    exercises: [...trainingState.exercises].map(
+                        (exercise: SingleExercise, i: number) => {
+                            if (i === indexExercise) {
+                                return {
+                                    ...exercise,
+                                    availableExercises: [...exercise.availableExercises].map(
+                                        (exercise: Exercise) => {
+                                            if (exercise.name === exerciseName) {
+                                                return {
+                                                    ...exercise,
+                                                    primarySetCategory: setCategory,
+                                                };
+                                            }
+                                            return exercise;
+                                        },
+                                    ),
+                                    exerciseData: {
+                                        ...exercise.exerciseData,
+                                        primarySetCategory: setCategory,
+                                    },
+                                };
+                            }
+                            return exercise;
+                        },
+                    ),
+                };
+                return updatedTraining;
+            }),
+            concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+        );
+    }
+
     addSet(
         indexExercise: number,
         setCategory: SetCategoryType,

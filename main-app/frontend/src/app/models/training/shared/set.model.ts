@@ -1,14 +1,14 @@
 export interface Set {
-    readonly setNumber: number;
+    setNumber: number;
     weightLifted?: number;
     reps?: number;
-    readonly _id?: string;
+    _id?: string;
 }
 
 export interface SetTrainingData {
-    readonly exerciseName: string;
-    readonly setNumber: number;
-    readonly weightLifted: number;
-    readonly reps: number;
-    readonly total: number;
+    exerciseName: string;
+    setNumber: number;
+    weightLifted: number;
+    reps: number;
+    total: number;
 }
