@@ -1,18 +1,24 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { DialogRoles } from '../../../../../constants/enums/model-roles.enum';
-import { ChangeSetCategoryPayloadType } from '../../../../../models/training/shared/change-set-category.type';
+import { SetCategoryType } from '../../../../../models/training/shared/set.type';
 @Component({
     selector: 'bl-change-set-category',
     templateUrl: './change-set-category.component.html',
     styleUrls: ['./change-set-category.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChangeSetCategoryComponent {
+export class ChangeSetCategoryComponent implements OnInit {
     @Input()
-    payload: ChangeSetCategoryPayloadType;
+    setCategories: SetCategoryType[];
+
+    primarySetCategory: SetCategoryType;
 
     constructor(private _modalController: ModalController) {}
+
+    ngOnInit(): void {
+        this.primarySetCategory = this.setCategories[0];
+    }
 
     async onCancel(): Promise<void> {
         await this._modalController.dismiss(null, DialogRoles.CANCEL);
@@ -20,7 +26,7 @@ export class ChangeSetCategoryComponent {
 
     async onChange(): Promise<void> {
         await this._modalController.dismiss(
-            this.payload.primarySetCategory,
+            this.primarySetCategory,
             DialogRoles.CHANGE_SET_CATEGORY,
         );
     }

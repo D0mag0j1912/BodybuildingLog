@@ -19,10 +19,7 @@ export type SingleExerciseValueType = {
 };
 
 export type ExerciseValueType = Partial<
-    Pick<
-        Exercise,
-        'name' | 'imageUrl' | 'primaryMuscleGroup' | 'setCategories' | 'primarySetCategory'
-    >
+    Pick<Exercise, 'name' | 'imageUrl' | 'primaryMuscleGroup' | 'setCategories'>
 >;
 
 export type ExerciseFormType = {

@@ -6,7 +6,6 @@ export interface Exercise {
     imageUrl: string;
     primaryMuscleGroup: string;
     setCategories: SetCategoryType[];
-    primarySetCategory: SetCategoryType;
     translations: Translations;
     _id?: string;
 }

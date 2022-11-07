@@ -44,7 +44,6 @@ import { SetCategoryType, SetConstituent } from '../../../../models/training/sha
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../../constants/training/bodyweight-set-categories.const';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
-import { ChangeSetCategoryPayloadType } from '../../../../models/training/shared/change-set-category.type';
 import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
 
@@ -68,17 +67,15 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     form = new FormArray<FormGroup<SetFormType>>([]);
     bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
     private _currentWeightUnit: WeightUnit;
+    private _setCategories: SetCategoryType[];
 
     onTouched: () => void;
 
     @Input()
     editTrainingData: NewTraining;
-    //TODO: Remove indexExercise and provide exercises data from parent template
-    @Input()
-    indexExercise = 0;
 
     @Input()
-    changeSetCategoryPayload: ChangeSetCategoryPayloadType;
+    indexExercise = 0;
 
     @Input()
     bodyweightControl: FormControl<number>;
@@ -87,7 +84,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     exerciseControl: FormControl<string>;
 
     @Input()
-    primarySetCategoryControl: FormControl<SetCategoryType>;
+    setCategoriesControl: FormControl<SetCategoryType[]>;
 
     @Input()
     isUpdateSetCategoryVisible = false;
@@ -116,20 +113,22 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
+        this._setCategories = this.setCategoriesControl.value;
         this._currentWeightUnit =
             this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
 
-        this.primarySetCategoryControl.valueChanges
+        this.setCategoriesControl.valueChanges
             .pipe(
-                map((setCategory: SetCategoryType) => {
+                map((setCategories: SetCategoryType[]) => {
+                    this._setCategories = setCategories;
                     while (this.form.length !== 0) {
                         this.form.removeAt(0);
                     }
-                    this._constructFormBasedOnSetCategory(setCategory);
+                    this._constructFormBasedOnSetCategory(this._setCategories[0]);
                     this._changeDetectorRef.markForCheck();
                     return {
                         index: this.indexExercise,
-                        setCategory,
+                        setCategory: this._setCategories[0],
                     };
                 }),
                 switchMap((value) =>
@@ -201,7 +200,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         const modal = await this._modalController.create({
             component: ChangeSetCategoryComponent,
             componentProps: {
-                payload: this.changeSetCategoryPayload,
+                setCategories: this._setCategories,
             },
             keyboardClose: true,
             canDismiss: true,
@@ -312,7 +311,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     }
 
     addSet(set?: Set): void {
-        const setCategory = this.primarySetCategoryControl.value;
+        const setCategory: SetCategoryType =
+            this.setCategoriesControl.value.length > 0
+                ? this.setCategoriesControl.value[0]
+                : 'freeWeighted';
         this._constructFormBasedOnSetCategory(setCategory, set);
         of(setCategory)
             .pipe(

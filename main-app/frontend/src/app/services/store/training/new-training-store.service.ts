@@ -73,12 +73,12 @@ export class NewTrainingStoreService {
                     exercises: [...trainingState.exercises].map((exercise: SingleExercise) => {
                         if (
                             BODYWEIGHT_SET_CATEGORIES.includes(
-                                exercise.exerciseData.primarySetCategory,
+                                exercise.exerciseData.setCategories[0],
                             )
                         ) {
                             let total = 0;
                             for (const set of exercise.sets) {
-                                switch (exercise.exerciseData.primarySetCategory) {
+                                switch (exercise.exerciseData.setCategories[0]) {
                                     case 'dynamicBodyweight': {
                                         total = total + set.reps * +value;
                                         break;

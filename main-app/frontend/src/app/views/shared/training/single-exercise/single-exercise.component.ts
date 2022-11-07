@@ -209,11 +209,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     ].controls.exerciseData.controls.setCategories.patchValue(
                         selectedExerciseData.setCategories,
                     );
-                    this.form.controls[
-                        indexExercise
-                    ].controls.exerciseData.controls.primarySetCategory.patchValue(
-                        selectedExerciseData.primarySetCategory,
-                    );
                     if (this.bodyweightControl?.errors) {
                         this.bodyweightControl.markAsTouched();
                     }
@@ -224,7 +219,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     addExercise(exercise?: SingleExercise, event?: UIEvent): void {
         if (exercise) {
             const { weightLifted, reps } = this._prepareSet(
-                exercise.exerciseData.primarySetCategory,
+                exercise.exerciseData.setCategories[0] ?? 'freeWeighted',
                 this.getExercises().length - 1,
             );
             exercise = {
@@ -251,9 +246,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         exercise?.exerciseData?.primaryMuscleGroup ?? '',
                     ),
                     setCategories: new FormControl(exercise?.exerciseData?.setCategories ?? []),
-                    primarySetCategory: new FormControl(
-                        exercise?.exerciseData?.primarySetCategory ?? 'freeWeighted',
-                    ),
                 }),
                 sets: new FormControl(exercise?.sets ?? [], { nonNullable: true }),
             }),
