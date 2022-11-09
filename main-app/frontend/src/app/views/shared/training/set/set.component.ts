@@ -84,7 +84,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     exerciseControl: FormControl<string>;
 
     @Input()
-    setCategoriesControl: FormControl<SetCategoryType[]>;
+    selectedSetCategoriesControl: FormControl<SetCategoryType[]>;
 
     @Input()
     isUpdateSetCategoryVisible = false;
@@ -113,11 +113,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        this._setCategories = this.setCategoriesControl.value;
+        this._setCategories = this.selectedSetCategoriesControl.value;
         this._currentWeightUnit =
             this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
 
-        this.setCategoriesControl.valueChanges
+        this.selectedSetCategoriesControl.valueChanges
             .pipe(
                 map((setCategories: SetCategoryType[]) => {
                     this._setCategories = setCategories;
@@ -312,8 +312,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
     addSet(set?: Set): void {
         const setCategory: SetCategoryType =
-            this.setCategoriesControl.value.length > 0
-                ? this.setCategoriesControl.value[0]
+            this.selectedSetCategoriesControl.value.length > 0
+                ? this.selectedSetCategoriesControl.value[0]
                 : 'freeWeighted';
         this._constructFormBasedOnSetCategory(setCategory, set);
         of(setCategory)

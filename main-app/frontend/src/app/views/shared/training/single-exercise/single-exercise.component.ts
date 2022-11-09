@@ -209,6 +209,11 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     ].controls.exerciseData.controls.availableSetCategories.patchValue(
                         selectedExerciseData.availableSetCategories,
                     );
+                    this.form.controls[
+                        indexExercise
+                    ].controls.exerciseData.controls.selectedSetCategories.patchValue(
+                        selectedExerciseData.selectedSetCategories,
+                    );
                     if (this.bodyweightControl?.errors) {
                         this.bodyweightControl.markAsTouched();
                     }
@@ -247,6 +252,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     ),
                     availableSetCategories: new FormControl(
                         exercise?.exerciseData?.availableSetCategories ?? [],
+                    ),
+                    selectedSetCategories: new FormControl(
+                        exercise?.exerciseData?.selectedSetCategories ?? [],
                     ),
                 }),
                 sets: new FormControl(exercise?.sets ?? [], { nonNullable: true }),
