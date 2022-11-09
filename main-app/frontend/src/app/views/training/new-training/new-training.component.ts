@@ -89,7 +89,9 @@ export class NewTrainingComponent implements OnDestroy {
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         tap((exercises: SingleExercise[]) => {
             const isDynamicBodyweight = exercises.some((exercise: SingleExercise) =>
-                this.bodyweightSetCategories.includes(exercise.exerciseData.setCategories[0]),
+                this.bodyweightSetCategories.includes(
+                    exercise.exerciseData.availableSetCategories[0],
+                ),
             );
             this.newTrainingForm.controls.bodyweight.setValidators(
                 isDynamicBodyweight

@@ -73,12 +73,12 @@ export class NewTrainingStoreService {
                     exercises: [...trainingState.exercises].map((exercise: SingleExercise) => {
                         if (
                             BODYWEIGHT_SET_CATEGORIES.includes(
-                                exercise.exerciseData.setCategories[0],
+                                exercise.exerciseData.availableSetCategories[0],
                             )
                         ) {
                             let total = 0;
                             for (const set of exercise.sets) {
-                                switch (exercise.exerciseData.setCategories[0]) {
+                                switch (exercise.exerciseData.availableSetCategories[0]) {
                                     case 'dynamicBodyweight': {
                                         total = total + set.reps * +value;
                                         break;
@@ -136,7 +136,7 @@ export class NewTrainingStoreService {
                 }
                 const updatedTraining: NewTraining = {
                     ...trainingState,
-                    exercises: [...trainingState.exercises].map(
+                    /* exercises: [...trainingState.exercises].map(
                         (exercise: SingleExercise, i: number) => {
                             if (i === indexExercise) {
                                 return {
@@ -146,7 +146,9 @@ export class NewTrainingStoreService {
                                             if (exercise.name === exerciseName) {
                                                 return {
                                                     ...exercise,
-                                                    primarySetCategory: setCategory,
+                                                    availableSetCategories: [
+                                                        ...exercise.availableSetCategories,
+                                                    ].map((category: SetCategoryType) => {}),
                                                 };
                                             }
                                             return exercise;
@@ -160,7 +162,7 @@ export class NewTrainingStoreService {
                             }
                             return exercise;
                         },
-                    ),
+                    ), */
                 };
                 return updatedTraining;
             }),
