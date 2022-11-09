@@ -223,13 +223,12 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     addExercise(exercise?: SingleExercise, event?: UIEvent): void {
         if (exercise) {
-            const { weightLifted, reps } = this._prepareSet(
-                exercise.exerciseData.availableSetCategories[0] ?? 'freeWeighted',
-                this.getExercises().length - 1,
-            );
             exercise = {
                 ...exercise,
-                sets: [...exercise.sets].map((set: Set) => {
+                sets: [...exercise.sets].map((set: Set, index: number) => {
+                    const { weightLifted, reps } = this._prepareSet(
+                        exercise.exerciseData.selectedSetCategories[index],
+                    );
                     if (!weightLifted) {
                         delete set.weightLifted;
                     }
@@ -369,10 +368,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return alreadyUsedExercises;
     }
 
-    private _prepareSet(
-        primarySetCategory: SetCategoryType,
-        indexExercise: number,
-    ): SetConstituentExistsType {
+    private _prepareSet(primarySetCategory: SetCategoryType): SetConstituentExistsType {
         let weightLifted: boolean;
         let reps: boolean;
         switch (primarySetCategory) {
@@ -406,7 +402,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return {
             weightLifted,
             reps,
-            indexExercise,
         };
     }
 }
