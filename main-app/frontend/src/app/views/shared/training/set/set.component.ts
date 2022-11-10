@@ -67,7 +67,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     form = new FormArray<FormGroup<SetFormType>>([]);
     bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
     private _currentWeightUnit: WeightUnit;
-    private _setCategories: SetCategoryType[];
+    private _selectedSetCategories: SetCategoryType[];
 
     onTouched: () => void;
 
@@ -113,22 +113,22 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        this._setCategories = this.selectedSetCategoriesControl.value;
+        this._selectedSetCategories = this.selectedSetCategoriesControl.value;
         this._currentWeightUnit =
             this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
 
         this.selectedSetCategoriesControl.valueChanges
             .pipe(
                 map((setCategories: SetCategoryType[]) => {
-                    this._setCategories = setCategories;
+                    this._selectedSetCategories = setCategories;
                     while (this.form.length !== 0) {
                         this.form.removeAt(0);
                     }
-                    this._constructFormBasedOnSetCategory(this._setCategories[0]);
+                    this._constructFormBasedOnSetCategory(this._selectedSetCategories[0]);
                     this._changeDetectorRef.markForCheck();
                     return {
                         index: this.indexExercise,
-                        setCategory: this._setCategories[0],
+                        setCategory: this._selectedSetCategories[0],
                     };
                 }),
                 switchMap((value) =>
@@ -200,7 +200,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         const modal = await this._modalController.create({
             component: ChangeSetCategoryComponent,
             componentProps: {
-                setCategories: this._setCategories,
+                setCategories: this._selectedSetCategories,
             },
             keyboardClose: true,
             canDismiss: true,
