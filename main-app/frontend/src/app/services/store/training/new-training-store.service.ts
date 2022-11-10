@@ -471,35 +471,38 @@ export class NewTrainingStoreService {
         trainingToBeUpdated: NewTraining,
         selectedExerciseData: Exercise,
     ): Observable<void> {
-        const previousSelectedExercise = trainingToBeUpdated.exercises.find(
-            (_exercise: SingleExercise, index: number) => index === selectedIndex,
-        ).exerciseData;
+        const previousSelectedExercise: Exercise =
+            trainingToBeUpdated.exercises[selectedIndex].exerciseData;
         const updatedTraining: NewTraining = {
             ...trainingToBeUpdated,
-            exercises: trainingToBeUpdated.exercises.map((exercise: SingleExercise, i: number) => {
-                if (i === selectedIndex) {
-                    return {
-                        ...exercise,
-                        exerciseData: selectedExerciseData,
-                    };
-                } else {
-                    let availableExercises: Exercise[];
-                    if (previousSelectedExercise.name) {
-                        availableExercises = [
-                            ...exercise.availableExercises,
-                            previousSelectedExercise,
-                        ].sort(this.compare);
+            exercises: [...trainingToBeUpdated.exercises].map(
+                (exercise: SingleExercise, i: number) => {
+                    if (i === selectedIndex) {
+                        return {
+                            ...exercise,
+                            exerciseData: selectedExerciseData,
+                        };
                     } else {
-                        availableExercises = [...exercise.availableExercises].sort(this.compare);
+                        let availableExercises: Exercise[];
+                        if (previousSelectedExercise.name) {
+                            availableExercises = [
+                                ...exercise.availableExercises,
+                                previousSelectedExercise,
+                            ].sort(this.compare);
+                        } else {
+                            availableExercises = [...exercise.availableExercises].sort(
+                                this.compare,
+                            );
+                        }
+                        return {
+                            ...exercise,
+                            availableExercises: availableExercises.filter(
+                                (exercise: Exercise) => exercise.name !== selectedExercise,
+                            ),
+                        };
                     }
-                    return {
-                        ...exercise,
-                        availableExercises: availableExercises.filter(
-                            (exercise: Exercise) => exercise.name !== selectedExercise,
-                        ),
-                    };
-                }
-            }),
+                },
+            ),
         };
         return this.saveTrainingData(updatedTraining);
     }

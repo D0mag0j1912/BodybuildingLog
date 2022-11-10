@@ -7,6 +7,6 @@ export interface Exercise {
     primaryMuscleGroup: string;
     translations: Translations;
     availableSetCategories: SetCategoryType[];
-    selectedSetCategories?: SetCategoryType[];
+    selectedSetCategories: SetCategoryType[];
     _id?: string;
 }
