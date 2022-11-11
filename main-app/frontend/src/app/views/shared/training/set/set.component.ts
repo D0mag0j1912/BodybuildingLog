@@ -65,7 +65,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
     form = new FormArray<FormGroup<SetFormType>>([]);
     private _currentWeightUnit: WeightUnit;
-    private _selectedSetCategories: SetCategoryType[];
 
     onTouched: () => void;
 
@@ -111,22 +110,21 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        this._selectedSetCategories = this.selectedSetCategoriesControl.value;
         this._currentWeightUnit =
             this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
 
         this.selectedSetCategoriesControl.valueChanges
             .pipe(
                 map((setCategories: SetCategoryType[]) => {
-                    this._selectedSetCategories = setCategories;
+                    const selectedSetCategories = setCategories;
                     while (this.form.length !== 0) {
                         this.form.removeAt(0);
                     }
-                    this._constructFormBasedOnSetCategory(this._selectedSetCategories[0]);
+                    this._constructFormBasedOnSetCategory(selectedSetCategories[0]);
                     this._changeDetectorRef.markForCheck();
                     return {
                         index: this.indexExercise,
-                        setCategory: this._selectedSetCategories[0],
+                        setCategory: selectedSetCategories[0],
                     };
                 }),
                 switchMap((value) =>
