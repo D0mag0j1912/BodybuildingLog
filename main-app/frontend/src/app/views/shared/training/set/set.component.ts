@@ -82,10 +82,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     exerciseControl: FormControl<string>;
 
     @Input()
-    selectedSetCategoriesControl: FormControl<SetCategoryType[]>;
+    availableSetCategoriesControl: FormControl<SetCategoryType[]>;
 
     @Input()
-    isUpdateSetCategoryVisible = false;
+    selectedSetCategoriesControl: FormControl<SetCategoryType[]>;
 
     @Input()
     isSubmitted = false;
@@ -198,7 +198,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         const modal = await this._modalController.create({
             component: ChangeSetCategoryComponent,
             componentProps: {
-                setCategories: this._selectedSetCategories,
+                setCategories: this.availableSetCategoriesControl.value,
             },
             keyboardClose: true,
             canDismiss: true,
