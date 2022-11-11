@@ -41,7 +41,6 @@ import { FormType } from '../../../../models/common/form.type';
 import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
 import { SetCategoryType, SetConstituent } from '../../../../models/training/shared/set.type';
-import { BODYWEIGHT_SET_CATEGORIES } from '../../../../constants/training/bodyweight-set-categories.const';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { Preferences } from '../../../../models/common/preferences.model';
 import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
@@ -65,7 +64,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
 
     form = new FormArray<FormGroup<SetFormType>>([]);
-    bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
     private _currentWeightUnit: WeightUnit;
     private _selectedSetCategories: SetCategoryType[];
 

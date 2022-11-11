@@ -19,7 +19,6 @@ import { WeightUnit } from '../../../models/common/preferences.type';
 import { Preferences } from '../../../models/common/preferences.model';
 import { SetCategoryType } from '../../../models/training/shared/set.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
-import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
 import { ExercisesStoreService } from './exercises-store.service';
 
 @Injectable({ providedIn: 'root' })
@@ -71,27 +70,23 @@ export class NewTrainingStoreService {
                     ...trainingState,
                     bodyweight,
                     exercises: [...trainingState.exercises].map((exercise: SingleExercise) => {
-                        //TODO: Refactor condition
-                        if (
-                            BODYWEIGHT_SET_CATEGORIES.includes(
-                                exercise.exerciseData.availableSetCategories[0],
-                            )
-                        ) {
-                            let total = 0;
-                            for (const set of exercise.sets) {
-                                switch (exercise.exerciseData.availableSetCategories[0]) {
-                                    case 'dynamicBodyweight': {
-                                        total = total + set.reps * bodyweight;
-                                        break;
-                                    }
+                        let total = 0;
+                        exercise.sets.forEach((set: Set, index: number) => {
+                            switch (exercise.exerciseData.selectedSetCategories[index]) {
+                                case 'freeWeighted': {
+                                    total = total + set.weightLifted * set.reps;
+                                    break;
+                                }
+                                case 'dynamicBodyweight': {
+                                    total = total + set.reps * bodyweight;
+                                    break;
                                 }
                             }
-                            return {
-                                ...exercise,
-                                total,
-                            };
-                        }
-                        return exercise;
+                        });
+                        return {
+                            ...exercise,
+                            total,
+                        };
                     }),
                 };
                 return updatedTraining;
