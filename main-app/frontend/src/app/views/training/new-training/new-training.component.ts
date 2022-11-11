@@ -16,6 +16,7 @@ import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import {
     concatMap,
     delay,
+    distinctUntilChanged,
     filter,
     finalize,
     map,
@@ -358,10 +359,10 @@ export class NewTrainingComponent implements OnDestroy {
             });
     }
 
-    onBodyweightChange(bodyweight: string | number): void {
+    onBodyweightChange(): void {
         this._newTrainingStoreService
-            .updateBodyweight(typeof bodyweight === 'string' ? bodyweight : bodyweight.toString())
-            .pipe(takeUntil(this._unsubscribeService))
+            .updateBodyweight(this.newTrainingForm.controls.bodyweight.value)
+            .pipe(filter(Boolean), distinctUntilChanged(), takeUntil(this._unsubscribeService))
             .subscribe();
     }
 

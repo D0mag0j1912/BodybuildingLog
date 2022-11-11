@@ -63,14 +63,15 @@ export class NewTrainingStoreService {
         );
     }
 
-    updateBodyweight(value: string): Observable<void> {
+    updateBodyweight(bodyweight: number): Observable<void> {
         return this._trainingState$.pipe(
             take(1),
             map((trainingState: NewTraining) => {
                 const updatedTraining: NewTraining = {
                     ...trainingState,
-                    bodyweight: +value,
+                    bodyweight,
                     exercises: [...trainingState.exercises].map((exercise: SingleExercise) => {
+                        //TODO: Refactor condition
                         if (
                             BODYWEIGHT_SET_CATEGORIES.includes(
                                 exercise.exerciseData.availableSetCategories[0],
@@ -80,7 +81,7 @@ export class NewTrainingStoreService {
                             for (const set of exercise.sets) {
                                 switch (exercise.exerciseData.availableSetCategories[0]) {
                                     case 'dynamicBodyweight': {
-                                        total = total + set.reps * +value;
+                                        total = total + set.reps * bodyweight;
                                         break;
                                     }
                                 }
