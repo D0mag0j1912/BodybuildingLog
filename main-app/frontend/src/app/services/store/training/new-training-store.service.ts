@@ -208,6 +208,13 @@ export class NewTrainingStoreService {
                                 return {
                                     ...exercise,
                                     sets: [...exercise.sets, set],
+                                    exerciseData: {
+                                        ...exercise.exerciseData,
+                                        selectedSetCategories: [
+                                            ...exercise.exerciseData.selectedSetCategories,
+                                            setCategory,
+                                        ],
+                                    },
                                 };
                             }
                             return exercise;
