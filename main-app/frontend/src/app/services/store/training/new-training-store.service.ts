@@ -252,6 +252,14 @@ export class NewTrainingStoreService {
                                             return set;
                                         }),
                                     total: newTotal,
+                                    exerciseData: {
+                                        ...exercise.exerciseData,
+                                        selectedSetCategories:
+                                            exercise.exerciseData.selectedSetCategories.filter(
+                                                (_category: SetCategoryType, i: number) =>
+                                                    i === indexSet,
+                                            ),
+                                    },
                                 };
                             }
                             return exercise;
