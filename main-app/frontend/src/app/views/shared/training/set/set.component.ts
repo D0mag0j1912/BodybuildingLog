@@ -3,7 +3,6 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
-    OnDestroy,
     OnInit,
     QueryList,
     ViewChildren,
@@ -17,40 +16,25 @@ import {
 } from '@angular/forms';
 import { OverlayEventDetail } from '@ionic/core';
 import { IonInput, ModalController } from '@ionic/angular';
-import { BehaviorSubject, EMPTY, from, of } from 'rxjs';
-import {
-    concatMap,
-    delay,
-    filter,
-    map,
-    switchMap,
-    take,
-    takeUntil,
-    withLatestFrom,
-} from 'rxjs/operators';
+import { EMPTY, from, of } from 'rxjs';
+import { concatMap, delay, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { SetTrainingData } from '../../../../models/training/shared/set.model';
-import { Set } from '../../../../models/training/shared/set.model';
+import { SetTrainingData } from '../../../../models/training/shared/set/set.model';
+import { Set } from '../../../../models/training/shared/set/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
-import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
-import { WeightUnit } from '../../../../models/common/preferences.type';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
-import { FormType } from '../../../../models/common/form.type';
-import { ModelWithoutIdType } from '../../../../models/common/raw.model';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
-import { SetCategoryType, SetConstituent } from '../../../../models/training/shared/set.type';
+import { SetCategoryType, SetConstituent } from '../../../../models/training/shared/set/set.type';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
-import { Preferences } from '../../../../models/common/preferences.model';
 import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
+import {
+    FormConstructionType,
+    SetFormType,
+    SetFormValue,
+} from '../../../../models/training/shared/set/set-form.type';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
-
-export type SetFormType = Pick<FormType<Set>, SetConstituent>;
-
-type SetFormValue = Pick<ModelWithoutIdType<Set>, SetConstituent>;
-
-type FormConstructionType = 'newExercise' | 'sameExercise';
 
 @Component({
     selector: 'bl-set',
@@ -59,14 +43,8 @@ type FormConstructionType = 'newExercise' | 'sameExercise';
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
-export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
-    private _activeSetCategory$ = new BehaviorSubject<SetCategoryType>(null);
-
-    activeSetCategory$ = this._activeSetCategory$.asObservable();
-    currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
-
+export class SetsComponent implements ControlValueAccessor, OnInit {
     form = new FormArray<FormGroup<SetFormType>>([]);
-    private _currentWeightUnit: WeightUnit;
 
     onTouched: () => void;
 
@@ -105,16 +83,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
     constructor(
         private _unsubscribeService: UnsubscribeService,
-        private _preferencesStoreService: PreferencesStoreService,
         private _newTrainingStoreService: NewTrainingStoreService,
         private _changeDetectorRef: ChangeDetectorRef,
         private _modalController: ModalController,
     ) {}
 
     ngOnInit(): void {
-        this._currentWeightUnit =
-            this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
-
         this.selectedSetCategoriesControl.valueChanges
             .pipe(
                 map((setCategories: SetCategoryType[]) => {
@@ -152,28 +126,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                     }
                 }
             });
-
-        this.currentPreferences$
-            .pipe(
-                filter((preferences) => this._currentWeightUnit !== preferences.weightUnit),
-                takeUntil(this._unsubscribeService),
-            )
-            .subscribe((preferences: Preferences) => {
-                this._currentWeightUnit = preferences.weightUnit;
-                this.getSets().forEach((_control, index) => {
-                    const currentWeightLiftedValue =
-                        +this.form.controls[index].controls.weightLifted.value;
-                    if (currentWeightLiftedValue) {
-                        this.form.controls[index].controls.weightLifted.patchValue(
-                            convertWeightUnit(preferences.weightUnit, currentWeightLiftedValue),
-                        );
-                    }
-                });
-            });
-    }
-
-    ngOnDestroy(): void {
-        this._activeSetCategory$.complete();
     }
 
     writeValue(sets: Set[]): void {

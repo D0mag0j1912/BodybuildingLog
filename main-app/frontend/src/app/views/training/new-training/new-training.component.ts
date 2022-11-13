@@ -35,7 +35,7 @@ import { StreamData } from '../../../models/common/common.model';
 import { DialogRoles } from '../../../constants/enums/model-roles.enum';
 import { Exercise } from '../../../models/training/exercise.model';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
-import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
+import { SingleExercise } from '../../../models/training/shared/single-exercise/single-exercise.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
 import { SingleExerciseComponent } from '../../shared/training/single-exercise/single-exercise.component';

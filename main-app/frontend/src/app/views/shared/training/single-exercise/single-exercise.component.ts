@@ -27,13 +27,13 @@ import { getControlValueAccessor } from '../../../../helpers/control-value-acces
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
-import { Set } from '../../../../models/training/shared/set.model';
-import { SingleExercise } from '../../../../models/training/shared/single-exercise.model';
+import { Set } from '../../../../models/training/shared/set/set.model';
+import { SingleExercise } from '../../../../models/training/shared/single-exercise/single-exercise.model';
 import {
     ExerciseFormType,
     SingleExerciseFormType,
     SingleExerciseValueType,
-} from '../../../../models/training/shared/single-exercise-form.type';
+} from '../../../../models/training/shared/single-exercise/single-exercise-form.type';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import {
@@ -50,7 +50,7 @@ import { StreamData } from '../../../../models/common/common.model';
 import {
     SetCategoryType,
     SetConstituentExistsType,
-} from '../../../../models/training/shared/set.type';
+} from '../../../../models/training/shared/set/set.type';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
 

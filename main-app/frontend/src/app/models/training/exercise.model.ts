@@ -1,5 +1,5 @@
 import { Translations } from '../common/translations.model';
-import { SetCategoryType } from './shared/set.type';
+import { SetCategoryType } from './shared/set/set.type';
 
 export interface Exercise {
     name: string;

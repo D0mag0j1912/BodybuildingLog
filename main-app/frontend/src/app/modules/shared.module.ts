@@ -21,6 +21,7 @@ import { SkeletonLoaderModule } from '../directives/skeleton-loader/skeleton-loa
 import { SanitizeHtmlModule } from '../pipes/shared/sanitize-html/sanitize-html.module';
 import { ChangeSetCategoryComponent } from '../views/shared/training/set/change-set-category/change-set-category.component';
 import { CamelToSnakeCaseModule } from '../pipes/shared/camel-to-snake-case/camel-to-snake-case.module';
+import { SetConstituentComponent } from '../views/shared/training/set/set-constituent/set-constituent.component';
 
 const DIRECTIVES = [PaginationDirective];
 
@@ -29,6 +30,7 @@ const COMPONENTS = [
     SingleExerciseComponent,
     SetsComponent,
     ChangeSetCategoryComponent,
+    SetConstituentComponent,
     NotFoundComponent,
     PaginationComponent,
     DateTimePickerComponent,
