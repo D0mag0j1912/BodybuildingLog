@@ -50,6 +50,8 @@ export type SetFormType = Pick<FormType<Set>, SetConstituent>;
 
 type SetFormValue = Pick<ModelWithoutIdType<Set>, SetConstituent>;
 
+type FormConstructionType = 'newExercise' | 'sameExercise';
+
 @Component({
     selector: 'bl-set',
     templateUrl: './set.component.html',
@@ -120,7 +122,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                     while (this.form.length !== 0) {
                         this.form.removeAt(0);
                     }
-                    this._constructFormBasedOnSetCategory(selectedSetCategories[0]);
+                    this._constructFormBasedOnSetCategory(selectedSetCategories[0], 'newExercise');
                     this._changeDetectorRef.markForCheck();
                     return {
                         index: this.indexExercise,
@@ -219,18 +221,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                                             this.exerciseControl.value,
                                         )
                                         .pipe(
-                                            map(
-                                                (_) =>
-                                                    //TODO: Update only set on particular index
-                                                    /* while (this.form.length !== 0) {
-                                                    this.form.removeAt(0);
-                                                }
+                                            map((_) => {
                                                 this._constructFormBasedOnSetCategory(
                                                     response.data,
+                                                    'sameExercise',
+                                                    undefined,
+                                                    indexSet,
                                                 );
-                                                this._changeDetectorRef.markForCheck(); */
-                                                    response.data,
-                                            ),
+                                                this._changeDetectorRef.markForCheck();
+                                                return response.data;
+                                            }),
                                         );
                                 }
                                 return EMPTY;
@@ -311,7 +311,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
             this.selectedSetCategoriesControl.value.length > 0
                 ? this.selectedSetCategoriesControl.value[0]
                 : 'freeWeighted';
-        this._constructFormBasedOnSetCategory(setCategory, set);
+        this._constructFormBasedOnSetCategory(setCategory, 'newExercise', set);
         of(setCategory)
             .pipe(
                 concatMap((setCategory: SetCategoryType) => {
@@ -441,7 +441,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
         return this.form.controls[indexSet].controls[setConstituent].valid;
     }
 
-    private _constructFormBasedOnSetCategory(setCategory: SetCategoryType, set?: Set): void {
+    private _constructFormBasedOnSetCategory(
+        setCategory: SetCategoryType,
+        constructionType: FormConstructionType,
+        set?: Set,
+        indexSet?: number,
+    ): void {
         let setControls: SetFormType = Object.assign({});
         switch (setCategory) {
             case 'freeWeighted': {
@@ -455,7 +460,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                     { setNumber: 1, reps: set ? set.reps : null },
                     setControls,
                 );
-                this.form.push(new FormGroup(setControls));
+                if (constructionType === 'newExercise') {
+                    this.form.push(new FormGroup(setControls));
+                } else {
+                    this.form.insert(indexSet, new FormGroup(setControls));
+                }
                 break;
             }
             case 'dynamicBodyweight': {
@@ -464,7 +473,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                     { setNumber: 1, reps: set ? set.reps : null },
                     setControls,
                 );
-                this.form.push(new FormGroup(setControls));
+                if (constructionType === 'newExercise') {
+                    this.form.push(new FormGroup(setControls));
+                } else {
+                    this.form.removeAt(indexSet);
+                    this.form.insert(indexSet, new FormGroup(setControls));
+                }
                 if (!this.bodyweightControl?.errors) {
                     this.form.controls[0].controls.reps.enable();
                 } else {
