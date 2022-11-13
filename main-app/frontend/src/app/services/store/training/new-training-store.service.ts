@@ -99,19 +99,18 @@ export class NewTrainingStoreService {
         indexExercise: number,
         indexSet: number,
         setCategory: SetCategoryType,
-        exerciseName: string,
     ): Observable<void> {
         return this._trainingState$.pipe(
             take(1),
             map((trainingState: NewTraining) => {
-                let set: Set;
+                let updatedSet: Set;
                 switch (setCategory) {
                     case 'freeWeighted': {
-                        set = { setNumber: 1, weightLifted: null, reps: null };
+                        updatedSet = { setNumber: indexSet + 1, weightLifted: null, reps: null };
                         break;
                     }
                     case 'dynamicBodyweight': {
-                        set = { setNumber: 1, reps: null };
+                        updatedSet = { setNumber: indexSet + 1, reps: null };
                         break;
                     }
                     case 'dynamicWeighted': {
@@ -132,33 +131,33 @@ export class NewTrainingStoreService {
                 }
                 const updatedTraining: NewTraining = {
                     ...trainingState,
-                    /* exercises: [...trainingState.exercises].map(
+                    exercises: [...trainingState.exercises].map(
                         (exercise: SingleExercise, i: number) => {
-                            if (i === indexExercise) {
+                            if (indexExercise === i) {
                                 return {
                                     ...exercise,
-                                    availableExercises: [...exercise.availableExercises].map(
-                                        (exercise: Exercise) => {
-                                            if (exercise.name === exerciseName) {
-                                                return {
-                                                    ...exercise,
-                                                    availableSetCategories: [
-                                                        ...exercise.availableSetCategories,
-                                                    ].map((category: SetCategoryType) => {}),
-                                                };
-                                            }
-                                            return exercise;
-                                        },
-                                    ),
                                     exerciseData: {
                                         ...exercise.exerciseData,
-                                        primarySetCategory: setCategory,
+                                        selectedSetCategories: [
+                                            ...exercise.exerciseData.selectedSetCategories,
+                                        ].map((category: SetCategoryType, j: number) => {
+                                            if (indexSet === j) {
+                                                return setCategory;
+                                            }
+                                            return category;
+                                        }),
                                     },
+                                    sets: [...exercise.sets].map((set: Set, k: number) => {
+                                        if (indexSet === k) {
+                                            return updatedSet;
+                                        }
+                                        return set;
+                                    }),
                                 };
                             }
                             return exercise;
                         },
-                    ), */
+                    ),
                 };
                 return updatedTraining;
             }),

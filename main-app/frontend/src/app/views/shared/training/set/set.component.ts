@@ -218,7 +218,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
                                             this.indexExercise,
                                             indexSet,
                                             response.data,
-                                            this.exerciseControl.value,
                                         )
                                         .pipe(
                                             map((_) => {
@@ -307,10 +306,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit, OnDestroy {
     }
 
     addSet(set?: Set): void {
-        const setCategory: SetCategoryType =
-            this.selectedSetCategoriesControl.value.length > 0
-                ? this.selectedSetCategoriesControl.value[0]
-                : 'freeWeighted';
+        let setCategory: SetCategoryType;
+        if (set) {
+            setCategory = this.selectedSetCategoriesControl.value[this.getSets().length];
+        } else {
+            setCategory = this.availableSetCategoriesControl.value[0] ?? 'freeWeighted';
+        }
         this._constructFormBasedOnSetCategory(setCategory, 'newExercise', set);
         of(setCategory)
             .pipe(
