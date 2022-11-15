@@ -2,8 +2,10 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    EventEmitter,
     Input,
     OnInit,
+    Output,
     QueryList,
     ViewChildren,
 } from '@angular/core';
@@ -17,7 +19,7 @@ import {
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
-import { concatMap, delay, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { concatMap, delay, map, switchMap, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Set, SetTrainingData } from '../../../../models/training/shared/set/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
@@ -74,6 +76,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
 
     @Input()
     isLoading = false;
+
+    @Output()
+    selectedCategoriesChanged = new EventEmitter<SetCategoryType>();
 
     @ViewChildren('set', { read: SetConstituentComponent })
     setCmps: QueryList<SetConstituentComponent>;
@@ -226,6 +231,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
+                this.selectedCategoriesChanged.emit(setCategory);
                 await this._focusSetConstituent(setCategory, setIndex);
             });
     }
@@ -237,9 +243,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     addSet(set?: Set): void {
         let setCategory: SetCategoryType;
         if (set) {
-            setCategory = this.selectedSetCategoriesControl.value[this.getSets().length - 1];
+            setCategory = this.selectedSetCategoriesControl.value[this.getSets().length];
         } else {
             setCategory = this.availableSetCategoriesControl.value[0] ?? 'freeWeighted';
+            this.selectedCategoriesChanged.emit(setCategory);
         }
         this._constructFormBasedOnSetCategory(setCategory, 'newExercise', set);
         of(setCategory)
@@ -307,7 +314,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     private _setWeightLiftedValue(weightLifted: number): number {
         if (this.editTrainingData) {
             const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
-            //TODO
             /* if (editTrainingWeightUnit !== this._currentWeightUnit) {
                 return convertWeightUnit(this._currentWeightUnit, weightLifted);
             } */

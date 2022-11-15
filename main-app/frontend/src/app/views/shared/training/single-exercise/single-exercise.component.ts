@@ -172,6 +172,19 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         this.onTouched = fn;
     }
 
+    onSelectedCategoriesChanged(setCategory: SetCategoryType, exerciseIndex: number): void {
+        this.form.controls[
+            exerciseIndex
+        ].controls.exerciseData.controls.selectedSetCategories.patchValue(
+            [
+                ...this.form.controls[exerciseIndex].controls.exerciseData.controls
+                    .selectedSetCategories.value,
+                setCategory,
+            ],
+            { emitEvent: false },
+        );
+    }
+
     onExerciseNameChange(indexExercise: number, element: IonSelect): void {
         if (element?.value) {
             this._newTrainingStoreService.trainingState$

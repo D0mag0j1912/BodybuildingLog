@@ -81,6 +81,7 @@
             [isSubmitted]="isSubmitted"
             [editMode]="editMode"
             [isLoading]="isLoading"
+            (selectedCategoriesChanged)="onSelectedCategoriesChanged($event, i)"
         ></bl-set>
     </ion-card>
 </form>

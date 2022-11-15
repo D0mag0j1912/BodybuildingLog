@@ -15,7 +15,7 @@ export const createEmptyExercise = (exercises: Exercise[]): SingleExercise => ({
             en: '',
         },
         availableSetCategories: ['freeWeighted'],
-        selectedSetCategories: ['freeWeighted'],
+        selectedSetCategories: [],
     },
     sets: [],
     total: TOTAL_INITIAL_WEIGHT,

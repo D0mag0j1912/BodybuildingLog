@@ -46,9 +46,6 @@ export class SetConstituentComponent implements OnInit {
     availableSetCategoriesControl: FormControl<SetCategoryType[]>;
 
     @Input()
-    selectedSetCategoriesControl: FormControl<SetCategoryType[]>;
-
-    @Input()
     bodyweightControl: FormControl<number>;
 
     @Input()
