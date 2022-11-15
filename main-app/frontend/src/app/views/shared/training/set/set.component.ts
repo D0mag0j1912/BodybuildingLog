@@ -15,12 +15,11 @@ import {
     Validators,
 } from '@angular/forms';
 import { OverlayEventDetail } from '@ionic/core';
-import { IonInput, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
 import { concatMap, delay, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { SetTrainingData } from '../../../../models/training/shared/set/set.model';
-import { Set } from '../../../../models/training/shared/set/set.model';
+import { Set, SetTrainingData } from '../../../../models/training/shared/set/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
@@ -35,6 +34,7 @@ import {
     SetFormValue,
 } from '../../../../models/training/shared/set/set-form.type';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
+import { SetConstituentComponent } from './set-constituent/set-constituent.component';
 
 @Component({
     selector: 'bl-set',
@@ -75,11 +75,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     @Input()
     isLoading = false;
 
-    @ViewChildren('weightLiftedEl')
-    weightLiftedElements: QueryList<IonInput>;
-
-    @ViewChildren('repsEl')
-    repsElements: QueryList<IonInput>;
+    @ViewChildren('set', { read: SetConstituentComponent })
+    setCmps: QueryList<SetConstituentComponent>;
 
     constructor(
         private _unsubscribeService: UnsubscribeService,
@@ -110,21 +107,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
-                await this._focusSetConstituent(setCategory, 'first');
-                this._activeSetCategory$.next(setCategory);
-            });
-
-        this.bodyweightControl.valueChanges
-            .pipe(withLatestFrom(this._activeSetCategory$), takeUntil(this._unsubscribeService))
-            .subscribe(([bodyweight, activeSetCategory]: [number, SetCategoryType]) => {
-                if (this.bodyweightControl.valid) {
-                    switch (activeSetCategory) {
-                        case 'dynamicBodyweight': {
-                            this.form.controls[0].controls.reps.enable();
-                            break;
-                        }
-                    }
-                }
+                await this._focusSetConstituent(setCategory, 0);
             });
     }
 
@@ -146,7 +129,61 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         this.onTouched = fn;
     }
 
-    async updateSetCategory(indexSet: number): Promise<void> {
+    onSetChanged(
+        data: { setData: SetTrainingData; setCategory: SetCategoryType },
+        setIndex: number,
+    ): void {
+        const serviceData: SetTrainingData = {
+            ...data.setData,
+            setNumber: setIndex + 1,
+            total: this._calculateTotal(),
+        };
+        this._newTrainingStoreService
+            .setsChanged(serviceData)
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe();
+    }
+
+    async onSetConstituentKeydownEmit(
+        setConstituent: SetConstituent,
+        setIndex: number,
+    ): Promise<void> {
+        if (setIndex > 0) {
+            const currentSetCmpData = this.setCmps.toArray()[setIndex];
+            const previousSetCmpData = this.setCmps.toArray()[setIndex - 1];
+            switch (setConstituent) {
+                case 'weightLifted': {
+                    switch (previousSetCmpData.activeSetCategory) {
+                        case 'freeWeighted' || 'dynamicBodyweight': {
+                            if (!currentSetCmpData.weightLiftedElement?.value) {
+                                await previousSetCmpData.repsElement?.setFocus();
+                                this.onSetDeleted(setIndex);
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case 'reps': {
+                    switch (previousSetCmpData.activeSetCategory) {
+                        case 'freeWeighted' || 'dynamicBodyweight': {
+                            if (!currentSetCmpData.repsElement?.value) {
+                                await previousSetCmpData.repsElement?.setFocus();
+                                this.onSetDeleted(setIndex);
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    async onUpdateSetCategory(
+        currentSetCategory: SetCategoryType,
+        setIndex: number,
+    ): Promise<void> {
         const modal = await this._modalController.create({
             component: ChangeSetCategoryComponent,
             componentProps: {
@@ -161,32 +198,27 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             .pipe(
                 concatMap((response: OverlayEventDetail<SetCategoryType>) => {
                     if (response.role === DialogRoles.CHANGE_SET_CATEGORY) {
-                        return this._activeSetCategory$.pipe(
-                            take(1),
-                            concatMap((previousSetCategory: SetCategoryType) => {
-                                if (previousSetCategory !== response.data) {
-                                    return this._newTrainingStoreService
-                                        .updatePrimarySetCategory(
-                                            this.indexExercise,
-                                            indexSet,
+                        if (currentSetCategory !== response.data) {
+                            return this._newTrainingStoreService
+                                .updatePrimarySetCategory(
+                                    this.indexExercise,
+                                    setIndex,
+                                    response.data,
+                                )
+                                .pipe(
+                                    map((_) => {
+                                        this._constructFormBasedOnSetCategory(
                                             response.data,
-                                        )
-                                        .pipe(
-                                            map((_) => {
-                                                this._constructFormBasedOnSetCategory(
-                                                    response.data,
-                                                    'sameExercise',
-                                                    undefined,
-                                                    indexSet,
-                                                );
-                                                this._changeDetectorRef.markForCheck();
-                                                return response.data;
-                                            }),
+                                            'sameExercise',
+                                            undefined,
+                                            setIndex,
                                         );
-                                }
-                                return EMPTY;
-                            }),
-                        );
+                                        this._changeDetectorRef.markForCheck();
+                                        return response.data;
+                                    }),
+                                );
+                        }
+                        return EMPTY;
                     }
                     return EMPTY;
                 }),
@@ -194,63 +226,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
-                await this._focusSetConstituent(setCategory, 'first');
-                this._activeSetCategory$.next(setCategory);
+                await this._focusSetConstituent(setCategory, setIndex);
             });
-    }
-
-    async onWeightLiftedKeydown(index: number): Promise<void> {
-        const weightLiftedInput = this.weightLiftedElements.find((_item, i) => i === index);
-        if (index > 0 && !weightLiftedInput?.value) {
-            this.deleteSet(index);
-            const previousRepsElement = this.repsElements.find((_item, i) => i === index - 1);
-            await previousRepsElement?.setFocus();
-        }
-    }
-
-    async onRepsKeydown(index: number): Promise<void> {
-        this._activeSetCategory$.pipe(take(1)).subscribe(async (setCategory: SetCategoryType) => {
-            const repsInput = this.repsElements.find((_item, i) => i === index);
-            switch (setCategory) {
-                case 'freeWeighted': {
-                    if (!repsInput?.value) {
-                        const weightLiftedInput = this.weightLiftedElements?.find(
-                            (_item: IonInput, i: number) => i === index,
-                        );
-                        if (weightLiftedInput) {
-                            await weightLiftedInput.setFocus();
-                        }
-                    }
-                    break;
-                }
-                case 'dynamicBodyweight': {
-                    if (!repsInput?.value) {
-                        const previousRepsInput = this.repsElements?.find(
-                            (_item: IonInput, i: number) => i === index - 1,
-                        );
-                        if (previousRepsInput) {
-                            await previousRepsInput.setFocus();
-                        }
-                    }
-                    break;
-                }
-                case 'dynamicWeighted': {
-                    //TODO: BL-121
-                    break;
-                }
-                case 'staticBodyweight': {
-                    //TODO: BL-128
-                    break;
-                }
-                case 'staticWeighted': {
-                    //TODO: BL-123
-                    break;
-                }
-                default: {
-                    isNeverCheck(setCategory);
-                }
-            }
-        });
     }
 
     getSets(): FormGroup<SetFormType>[] {
@@ -260,7 +237,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     addSet(set?: Set): void {
         let setCategory: SetCategoryType;
         if (set) {
-            setCategory = this.selectedSetCategoriesControl.value[this.getSets().length];
+            setCategory = this.selectedSetCategoriesControl.value[this.getSets().length - 1];
         } else {
             setCategory = this.availableSetCategoriesControl.value[0] ?? 'freeWeighted';
         }
@@ -282,57 +259,22 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
-                await this._focusSetConstituent(setCategory, 'last');
-                this._activeSetCategory$.next(setCategory);
+                await this._focusSetConstituent(setCategory, this.getSets().length - 1);
             });
     }
 
-    deleteSet(indexSet: number): void {
-        this.activeSetCategory$
-            .pipe(
-                take(1),
-                concatMap((setCategory: SetCategoryType) =>
-                    this._newTrainingStoreService.deleteSet(
-                        this.indexExercise,
-                        indexSet,
-                        this._calculateTotal(setCategory),
-                    ),
-                ),
-            )
-            .subscribe((_) => {
-                this.form.removeAt(indexSet);
-            });
-    }
-
-    onChangeSets(indexSet: number): void {
-        this.activeSetCategory$
-            .pipe(
-                take(1),
-                switchMap((setCategory: SetCategoryType) => {
-                    const weightLifted = this.form.controls[indexSet].controls.weightLifted?.value;
-                    const reps = this.form.controls[indexSet].controls.reps?.value;
-                    const trainingData: SetTrainingData = {
-                        exerciseName: this.exerciseControl.value,
-                        setNumber: indexSet + 1,
-                        weightLifted:
-                            weightLifted && this._isSetConstituentValid('weightLifted', indexSet)
-                                ? this.form.controls[indexSet].controls.weightLifted.value
-                                : undefined,
-                        reps:
-                            reps && this._isSetConstituentValid('reps', indexSet)
-                                ? this.form.controls[indexSet].controls.reps.value
-                                : undefined,
-                        total: this._calculateTotal(setCategory),
-                    };
-                    return this._newTrainingStoreService.setsChanged(trainingData);
-                }),
-            )
+    onSetDeleted(setIndex: number): void {
+        this.form.removeAt(setIndex);
+        this._newTrainingStoreService
+            .deleteSet(this.indexExercise, setIndex, this._calculateTotal())
+            .pipe(takeUntil(this._unsubscribeService))
             .subscribe();
     }
 
-    private _calculateTotal(setCategory: SetCategoryType): number {
+    private _calculateTotal(): number {
         let total = 0;
-        for (const group of this.getSets()) {
+        this.getSets().forEach((group: FormGroup<SetFormType>, index: number) => {
+            const setCategory = this.selectedSetCategoriesControl.value[index];
             switch (setCategory) {
                 case 'freeWeighted': {
                     total += group.get('weightLifted')?.value * group.get('reps')?.value;
@@ -342,17 +284,33 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     total += this.bodyweightControl.value * group.get('reps')?.value;
                     break;
                 }
+                case 'dynamicWeighted': {
+                    //TODO: BL-121
+                    break;
+                }
+                case 'staticBodyweight': {
+                    //TODO: BL-128
+                    break;
+                }
+                case 'staticWeighted': {
+                    //TODO: BL-123
+                    break;
+                }
+                default: {
+                    isNeverCheck(setCategory);
+                }
             }
-        }
+        });
         return total;
     }
 
     private _setWeightLiftedValue(weightLifted: number): number {
         if (this.editTrainingData) {
             const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
-            if (editTrainingWeightUnit !== this._currentWeightUnit) {
+            //TODO
+            /* if (editTrainingWeightUnit !== this._currentWeightUnit) {
                 return convertWeightUnit(this._currentWeightUnit, weightLifted);
-            }
+            } */
         }
         return weightLifted;
     }
@@ -390,10 +348,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         return null;
     }
 
-    private _isSetConstituentValid(setConstituent: SetConstituent, indexSet: number): boolean {
-        return this.form.controls[indexSet].controls[setConstituent].valid;
-    }
-
     private _constructFormBasedOnSetCategory(
         setCategory: SetCategoryType,
         constructionType: FormConstructionType,
@@ -416,6 +370,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 if (constructionType === 'newExercise') {
                     this.form.push(new FormGroup(setControls));
                 } else {
+                    this.form.removeAt(indexSet);
                     this.form.insert(indexSet, new FormGroup(setControls));
                 }
                 break;
@@ -459,30 +414,21 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
 
     private async _focusSetConstituent(
         setCategory: SetCategoryType,
-        position: 'first' | 'last',
+        setIndex: number,
     ): Promise<void> {
         switch (setCategory) {
             case 'freeWeighted': {
-                if (position === 'first') {
-                    if (this.weightLiftedElements) {
-                        await this.weightLiftedElements.first.setFocus();
-                    }
-                } else {
-                    if (this.weightLiftedElements) {
-                        await this.weightLiftedElements.last?.setFocus();
-                    }
+                if (this.setCmps.first) {
+                    const weightLiftedElement =
+                        this.setCmps.toArray()[setIndex].weightLiftedElement;
+                    await weightLiftedElement.setFocus();
                 }
                 break;
             }
             case 'dynamicBodyweight': {
-                if (position === 'first') {
-                    if (this.repsElements?.first) {
-                        await this.repsElements.first.setFocus();
-                    }
-                } else {
-                    if (this.repsElements) {
-                        await this.repsElements.last?.setFocus();
-                    }
+                if (this.setCmps.first) {
+                    const repsElement = this.setCmps.toArray()[setIndex].repsElement;
+                    await repsElement.setFocus();
                 }
                 break;
             }

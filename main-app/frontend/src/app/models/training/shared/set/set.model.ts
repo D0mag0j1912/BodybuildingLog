@@ -7,8 +7,8 @@ export interface Set {
 
 export interface SetTrainingData {
     exerciseName: string;
-    setNumber: number;
     weightLifted: number;
     reps: number;
-    total: number;
+    setNumber?: number;
+    total?: number;
 }

@@ -1,6 +1,19 @@
 <ng-container *ngIf="exerciseControl.value">
     <form *ngFor="let group of form.controls; let i = index" [formGroup]="group">
-        <bl-set-constituent [form]="group"></bl-set-constituent>
+        <bl-set-constituent
+            #set
+            [form]="group"
+            [exerciseControl]="exerciseControl"
+            [availableSetCategoriesControl]="availableSetCategoriesControl"
+            [selectedSetCategoriesControl]="selectedSetCategoriesControl"
+            [bodyweightControl]="bodyweightControl"
+            [isLoading]="isLoading"
+            [isSubmitted]="isSubmitted"
+            [isFirstSet]="i === 0"
+            (setChanged)="onSetChanged($event, i)"
+            (setDeleted)="onSetDeleted(i)"
+            (setConstituentKeydownEmitted)="onSetConstituentKeydownEmit($event, i)"
+            (setCategoryModalOpened)="onUpdateSetCategory($event, i)"></bl-set-constituent>
     </form>
 </ng-container>
 <ion-grid>
