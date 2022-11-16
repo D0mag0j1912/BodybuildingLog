@@ -7,7 +7,6 @@ import { PipesModule } from '../pipes/pipes.module';
 import { ShowAllExercisesModule } from '../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NotFoundResolverService } from '../services/shared/not-found-resolver.service';
 import { DeleteTrainingActionService } from '../services/api/training/delete-training-action.service';
-import { DeleteExerciseDialogComponent } from '../views/shared/delete-exercise-dialog/delete-exercise-dialog.component';
 import { NotFoundComponent } from '../views/shared/not-found/not-found.component';
 import { SetsComponent } from '../views/shared/training/set/set.component';
 import { SingleExerciseComponent } from '../views/shared/training/single-exercise/single-exercise.component';
@@ -26,7 +25,6 @@ import { SetConstituentComponent } from '../views/shared/training/set/set-consti
 const DIRECTIVES = [PaginationDirective];
 
 const COMPONENTS = [
-    DeleteExerciseDialogComponent,
     SingleExerciseComponent,
     SetsComponent,
     ChangeSetCategoryComponent,

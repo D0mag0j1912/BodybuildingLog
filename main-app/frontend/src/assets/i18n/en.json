@@ -106,7 +106,6 @@
             "weight_lifted": "Weight lifted",
             "reps_performed": "Reps",
             "total": "Total",
-            "delete_exercise_prompt": "Are you sure you want to delete?",
             "training_updated": "Training updated",
             "set_saved": "Set saved",
             "first_add_previous_set": "You need to enter set number {{ setNumber }}",

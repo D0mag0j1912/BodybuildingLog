@@ -107,7 +107,6 @@
             "weight_lifted": "Težina",
             "reps_performed": "Ponavljanja",
             "total": "Ukupno",
-            "delete_exercise_prompt": "Jeste li sigurni da želite izbrisati vježbu?",
             "training_updated": "Trening ažuriran",
             "set_saved": "Set spremljen",
             "first_add_previous_set": "Prvo morate unijeti set broj {{ setNumber }}",

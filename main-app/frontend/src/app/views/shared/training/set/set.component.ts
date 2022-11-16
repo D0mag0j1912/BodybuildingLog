@@ -266,6 +266,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
+                //TODO: Execute only on last set
                 await this._focusSetConstituent(setCategory, this.getSets().length - 1);
             });
     }

@@ -1,6 +1,5 @@
 import {
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
     EventEmitter,
     Input,
@@ -18,11 +17,10 @@ import {
     FormGroup,
     Validators,
 } from '@angular/forms';
-import { IonSelect, ModalController } from '@ionic/angular';
-import { OverlayEventDetail } from '@ionic/core';
+import { IonSelect } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, EMPTY, from } from 'rxjs';
-import { delay, finalize, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { delay, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
 import { Exercise } from '../../../../models/training/exercise.model';
@@ -36,12 +34,6 @@ import {
 } from '../../../../models/training/shared/single-exercise/single-exercise-form.type';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
-import {
-    DeleteExerciseDialogData,
-    DeleteExerciseDialogComponent,
-    DialogData,
-} from '../../delete-exercise-dialog/delete-exercise-dialog.component';
-import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
 import { SetsComponent } from '../set/set.component';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
@@ -129,8 +121,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         private _preferencesStoreService: PreferencesStoreService,
         private _exercisesStoreService: ExercisesStoreService,
         private _translateService: TranslateService,
-        private _changeDetectorRef: ChangeDetectorRef,
-        private _modalController: ModalController,
     ) {}
 
     get currentWeightUnit(): WeightUnit {
@@ -282,48 +272,22 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     async deleteExercise(indexExercise: number, exerciseName: string): Promise<void> {
         if (exerciseName) {
-            const modal = await this._modalController.create({
-                component: DeleteExerciseDialogComponent,
-                componentProps: {
-                    isError: false,
-                    deleteExercise: {
-                        message$: this._translateService.stream(
-                            'training.new_training.delete_exercise_prompt',
-                        ),
-                        exerciseName: exerciseName,
-                    } as DeleteExerciseDialogData,
-                } as DialogData,
-                keyboardClose: true,
-                canDismiss: true,
-            });
-            await modal.present();
-
-            from(modal.onDidDismiss<boolean>())
+            this._newTrainingStoreService.trainingState$
                 .pipe(
-                    switchMap((response: OverlayEventDetail<boolean>) => {
-                        if (response.role === DialogRoles.DELETE_EXERCISE) {
-                            return this._newTrainingStoreService.trainingState$.pipe(
-                                take(1),
-                                switchMap((currentTrainingState: NewTraining) =>
-                                    this._newTrainingStoreService.deleteExercise(
-                                        currentTrainingState,
-                                        exerciseName,
-                                    ),
-                                ),
-                                switchMap((data: [NewTraining, Exercise[]]) => {
-                                    this.form.removeAt(indexExercise);
-                                    return this._newTrainingStoreService.pushToAvailableExercises(
-                                        data[0],
-                                        data[1],
-                                    );
-                                }),
-                            );
-                        } else {
-                            return EMPTY;
-                        }
+                    take(1),
+                    switchMap((currentTrainingState: NewTraining) =>
+                        this._newTrainingStoreService.deleteExercise(
+                            currentTrainingState,
+                            exerciseName,
+                        ),
+                    ),
+                    switchMap((data: [NewTraining, Exercise[]]) => {
+                        this.form.removeAt(indexExercise);
+                        return this._newTrainingStoreService.pushToAvailableExercises(
+                            data[0],
+                            data[1],
+                        );
                     }),
-                    finalize(() => this._changeDetectorRef.markForCheck()),
-                    takeUntil(this._unsubscribeService),
                 )
                 .subscribe();
         } else {
