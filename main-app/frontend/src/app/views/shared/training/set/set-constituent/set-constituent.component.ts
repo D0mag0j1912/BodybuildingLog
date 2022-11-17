@@ -6,14 +6,14 @@ import {
     EventEmitter,
     ViewChild,
     ChangeDetectionStrategy,
+    OnChanges,
+    SimpleChanges,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
-import { filter, takeUntil } from 'rxjs/operators';
-import { DEFAULT_WEIGHT_UNIT } from '../../../../../constants/shared/default-weight-format.const';
+import { takeUntil } from 'rxjs/operators';
 import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
 import { convertWeightUnit } from '../../../../../helpers/training/convert-weight-units.helper';
-import { Preferences } from '../../../../../models/common/preferences.model';
 import { WeightUnit } from '../../../../../models/common/preferences.type';
 import { SetFormType } from '../../../../../models/training/shared/set/set-form.type';
 import { SetTrainingData } from '../../../../../models/training/shared/set/set.model';
@@ -22,7 +22,6 @@ import {
     SetConstituent,
 } from '../../../../../models/training/shared/set/set.type';
 import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
-import { PreferencesStoreService } from '../../../../../services/store/shared/preferences-store.service';
 
 @Component({
     selector: 'bl-set-constituent',
@@ -31,14 +30,20 @@ import { PreferencesStoreService } from '../../../../../services/store/shared/pr
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class SetConstituentComponent implements OnInit {
-    currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
-
-    private _currentWeightUnit: WeightUnit;
+export class SetConstituentComponent implements OnInit, OnChanges {
     activeSetCategory: SetCategoryType = 'freeWeighted';
 
     @Input()
     form: FormGroup<SetFormType>;
+
+    @Input()
+    set weightUnit(newWeightUnit: WeightUnit) {
+        this._weightUnit = newWeightUnit;
+    }
+    get weightUnit(): WeightUnit {
+        return this._weightUnit;
+    }
+    private _weightUnit: WeightUnit;
 
     @Input()
     exerciseControl: FormControl<string>;
@@ -76,30 +81,9 @@ export class SetConstituentComponent implements OnInit {
     @ViewChild('repsEl')
     repsElement: IonInput;
 
-    constructor(
-        private _preferencesStoreService: PreferencesStoreService,
-        private _unsubscribeService: UnsubscribeService,
-    ) {}
+    constructor(private _unsubscribeService: UnsubscribeService) {}
 
     ngOnInit(): void {
-        this._currentWeightUnit =
-            this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
-
-        this.currentPreferences$
-            .pipe(
-                filter((preferences) => this._currentWeightUnit !== preferences.weightUnit),
-                takeUntil(this._unsubscribeService),
-            )
-            .subscribe((preferences: Preferences) => {
-                this._currentWeightUnit = preferences.weightUnit;
-                const currentWeightLiftedValue = +this.form.controls.weightLifted.value;
-                if (currentWeightLiftedValue) {
-                    this.form.controls.weightLifted.patchValue(
-                        convertWeightUnit(preferences.weightUnit, currentWeightLiftedValue),
-                    );
-                }
-            });
-
         this.bodyweightControl.valueChanges
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe((_) => {
@@ -112,6 +96,26 @@ export class SetConstituentComponent implements OnInit {
                     }
                 }
             });
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (!changes.weightUnit?.firstChange) {
+            switch (this.activeSetCategory) {
+                case 'freeWeighted': {
+                    //TODO: Remove ? when activeSetCategory is set
+                    const currentWeightLiftedValue = +this.form.controls.weightLifted?.value;
+                    if (currentWeightLiftedValue) {
+                        this.form.controls.weightLifted.patchValue(
+                            convertWeightUnit(
+                                changes.weightUnit.currentValue as WeightUnit,
+                                currentWeightLiftedValue,
+                            ),
+                        );
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     updateSetCategory(): void {

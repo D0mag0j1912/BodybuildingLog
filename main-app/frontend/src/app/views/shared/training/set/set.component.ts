@@ -17,7 +17,7 @@ import {
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
-import { concatMap, map, switchMap, takeUntil } from 'rxjs/operators';
+import { concatMap, filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Set, SetTrainingData } from '../../../../models/training/shared/set/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
@@ -33,6 +33,9 @@ import {
     SetFormType,
     SetFormValue,
 } from '../../../../models/training/shared/set/set-form.type';
+import { WeightUnit } from '../../../../models/common/preferences.type';
+import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
+import { Preferences } from '../../../../models/common/preferences.model';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
 import { SetConstituentComponent } from './set-constituent/set-constituent.component';
 
@@ -43,6 +46,10 @@ import { SetConstituentComponent } from './set-constituent/set-constituent.compo
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
 export class SetsComponent implements ControlValueAccessor, OnInit {
+    currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
+
+    currentWeightUnit: WeightUnit;
+
     form = new FormArray<FormGroup<SetFormType>>([]);
 
     onTouched: () => void;
@@ -83,10 +90,25 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     constructor(
         private _unsubscribeService: UnsubscribeService,
         private _newTrainingStoreService: NewTrainingStoreService,
+        private _preferencesStoreService: PreferencesStoreService,
         private _modalController: ModalController,
     ) {}
 
     ngOnInit(): void {
+        this.currentWeightUnit =
+            this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
+
+        this.currentPreferences$
+            .pipe(
+                filter(
+                    (preferences: Preferences) => this.currentWeightUnit !== preferences.weightUnit,
+                ),
+                takeUntil(this._unsubscribeService),
+            )
+            .subscribe((preferences: Preferences) => {
+                this.currentWeightUnit = preferences.weightUnit;
+            });
+
         this.selectedSetCategoriesControl.valueChanges
             .pipe(
                 map((setCategories: SetCategoryType[]) => {
@@ -305,9 +327,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     private _setWeightLiftedValue(weightLifted: number): number {
         if (this.editTrainingData) {
             const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
-            /* if (editTrainingWeightUnit !== this._currentWeightUnit) {
-                return convertWeightUnit(this._currentWeightUnit, weightLifted);
-            } */
+            if (editTrainingWeightUnit !== this.currentWeightUnit) {
+                return convertWeightUnit(this.currentWeightUnit, weightLifted);
+            }
         }
         return weightLifted;
     }

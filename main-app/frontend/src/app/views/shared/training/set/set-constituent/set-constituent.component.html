@@ -10,24 +10,22 @@
                     <ion-label class="ion-label" position="floating">
                         {{ 'training.new_training.weight_lifted' | translate }}
                     </ion-label>
-                    <ng-container *ngIf="currentPreferences$ | async as currentPreferences">
-                        <ion-input
-                            #weightLiftedEl
-                            type="number"
-                            class="weight-lifted-input"
-                            formControlName="weightLifted"
-                            (ionChange)="onChangeSets()"
-                            (keydown.backspace)="onSetConstituentKeydown('weightLifted')"
-                        >
-                        </ion-input>
-                        <ion-text
-                            class="weight-lifted-input--unit"
-                            slot="end"
-                            [class.invalid-weight-lifted]="form.controls.weightLifted?.invalid"
-                        >
-                            {{ weightLiftedEl?.value ? currentPreferences.weightUnit : '' }}
-                        </ion-text>
-                    </ng-container>
+                    <ion-input
+                        #weightLiftedEl
+                        type="number"
+                        class="weight-lifted-input"
+                        formControlName="weightLifted"
+                        (ionChange)="onChangeSets()"
+                        (keydown.backspace)="onSetConstituentKeydown('weightLifted')"
+                    >
+                    </ion-input>
+                    <ion-text
+                        class="weight-lifted-input--unit"
+                        slot="end"
+                        [class.invalid-weight-lifted]="form.controls.weightLifted?.invalid"
+                    >
+                        {{ weightLiftedEl?.value ? weightUnit : '' }}
+                    </ion-text>
                     <ion-text
                         *ngIf="
                             form.controls.weightLifted?.errors?.pattern &&
