@@ -1,6 +1,4 @@
 import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
     EventEmitter,
     Input,
@@ -42,7 +40,6 @@ import { SetConstituentComponent } from './set-constituent/set-constituent.compo
     selector: 'bl-set',
     templateUrl: './set.component.html',
     styleUrls: ['./set.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
 export class SetsComponent implements ControlValueAccessor, OnInit {
@@ -86,7 +83,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     constructor(
         private _unsubscribeService: UnsubscribeService,
         private _newTrainingStoreService: NewTrainingStoreService,
-        private _changeDetectorRef: ChangeDetectorRef,
         private _modalController: ModalController,
     ) {}
 
@@ -99,7 +95,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                         this.form.removeAt(0);
                     }
                     this._constructFormBasedOnSetCategory(selectedSetCategories[0], 'newExercise');
-                    this._changeDetectorRef.markForCheck();
                     return {
                         index: this.indexExercise,
                         setCategory: selectedSetCategories[0],
@@ -217,7 +212,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                                             undefined,
                                             setIndex,
                                         );
-                                        this._changeDetectorRef.markForCheck();
                                         return response.data;
                                     }),
                                 );
