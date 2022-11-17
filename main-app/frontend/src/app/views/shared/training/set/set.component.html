@@ -1,5 +1,5 @@
 <ng-container *ngIf="exerciseControl.value">
-    <form *ngFor="let group of form.controls; let i = index" [formGroup]="group">
+    <form *ngFor="let group of form.controls; let i = index;" [formGroup]="group">
         <bl-set-constituent
             #set
             [form]="group"

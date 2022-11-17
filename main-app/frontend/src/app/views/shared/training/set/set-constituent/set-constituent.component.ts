@@ -1,16 +1,17 @@
 import {
     Component,
-    ChangeDetectionStrategy,
     Input,
     OnInit,
     Output,
     EventEmitter,
     ViewChild,
+    ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { filter, takeUntil } from 'rxjs/operators';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../../constants/shared/default-weight-format.const';
+import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
 import { convertWeightUnit } from '../../../../../helpers/training/convert-weight-units.helper';
 import { Preferences } from '../../../../../models/common/preferences.model';
 import { WeightUnit } from '../../../../../models/common/preferences.type';
@@ -147,5 +148,37 @@ export class SetConstituentComponent implements OnInit {
 
     private _isSetConstituentValid(setConstituent: SetConstituent): boolean {
         return this.form.controls[setConstituent].valid;
+    }
+
+    private async _focusSetConstituent(setCategory: SetCategoryType): Promise<void> {
+        switch (setCategory) {
+            case 'freeWeighted': {
+                if (this.weightLiftedElement) {
+                    await this.weightLiftedElement.setFocus();
+                }
+                break;
+            }
+            case 'dynamicBodyweight': {
+                if (this.repsElement) {
+                    await this.repsElement.setFocus();
+                }
+                break;
+            }
+            case 'dynamicWeighted': {
+                //TODO: BL-121
+                break;
+            }
+            case 'staticBodyweight': {
+                //TODO: BL-128
+                break;
+            }
+            case 'staticWeighted': {
+                //TODO: BL-123
+                break;
+            }
+            default: {
+                isNeverCheck(setCategory);
+            }
+        }
     }
 }

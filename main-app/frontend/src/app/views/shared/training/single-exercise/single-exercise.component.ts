@@ -345,10 +345,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return alreadyUsedExercises;
     }
 
-    private _prepareSet(primarySetCategory: SetCategoryType): SetConstituentExistsType {
+    private _prepareSet(setCategory: SetCategoryType): SetConstituentExistsType {
         let weightLifted: boolean;
         let reps: boolean;
-        switch (primarySetCategory) {
+        switch (setCategory) {
             case 'dynamicBodyweight': {
                 weightLifted = false;
                 reps = true;
@@ -373,7 +373,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 break;
             }
             default: {
-                isNeverCheck(primarySetCategory);
+                isNeverCheck(setCategory);
             }
         }
         return {

@@ -19,7 +19,7 @@ import {
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
-import { concatMap, delay, map, switchMap, takeUntil } from 'rxjs/operators';
+import { concatMap, map, switchMap, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Set, SetTrainingData } from '../../../../models/training/shared/set/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
@@ -108,11 +108,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 switchMap((value) =>
                     this._newTrainingStoreService.restartSets(value.index, value.setCategory),
                 ),
-                delay(400),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe(async (setCategory: SetCategoryType) => {
-                await this._focusSetConstituent(setCategory, 0);
+            .subscribe((setCategory: SetCategoryType) => {
+                //TODO: Emit set category to it's child for focus purposes
             });
     }
 
@@ -227,12 +226,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     }
                     return EMPTY;
                 }),
-                delay(400),
                 takeUntil(this._unsubscribeService),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
                 this.selectedCategoriesChanged.emit(setCategory);
-                await this._focusSetConstituent(setCategory, setIndex);
+                //TODO: Emit set category to it's child for focus purposes
             });
     }
 
@@ -262,12 +260,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                         return of(setCategory);
                     }
                 }),
-                delay(400),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe(async (setCategory: SetCategoryType) => {
-                //TODO: Execute only on last set
-                await this._focusSetConstituent(setCategory, this.getSets().length - 1);
+            .subscribe((setCategory: SetCategoryType) => {
+                //TODO: Emit set category to it's child for focus purposes
             });
     }
 
@@ -398,44 +394,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     this.form.controls[0].controls.reps.enable();
                 } else {
                     this.form.controls[0].controls.reps.disable();
-                }
-                break;
-            }
-            case 'dynamicWeighted': {
-                //TODO: BL-121
-                break;
-            }
-            case 'staticBodyweight': {
-                //TODO: BL-128
-                break;
-            }
-            case 'staticWeighted': {
-                //TODO: BL-123
-                break;
-            }
-            default: {
-                isNeverCheck(setCategory);
-            }
-        }
-    }
-
-    private async _focusSetConstituent(
-        setCategory: SetCategoryType,
-        setIndex: number,
-    ): Promise<void> {
-        switch (setCategory) {
-            case 'freeWeighted': {
-                if (this.setCmps.first) {
-                    const weightLiftedElement =
-                        this.setCmps.toArray()[setIndex].weightLiftedElement;
-                    await weightLiftedElement.setFocus();
-                }
-                break;
-            }
-            case 'dynamicBodyweight': {
-                if (this.setCmps.first) {
-                    const repsElement = this.setCmps.toArray()[setIndex].repsElement;
-                    await repsElement.setFocus();
                 }
                 break;
             }
