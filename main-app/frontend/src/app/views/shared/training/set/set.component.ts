@@ -49,7 +49,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
 
     currentWeightUnit: WeightUnit;
-
+    currentBodyweight: number;
     form = new FormArray<FormGroup<SetFormType>>([]);
 
     onTouched: () => void;
@@ -129,6 +129,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             )
             .subscribe((setCategory: SetCategoryType) => {
                 //TODO: Emit set category to it's child for focus purposes
+            });
+
+        this.bodyweightControl.valueChanges
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe((_) => {
+                if (this.bodyweightControl.valid) {
+                    this.currentBodyweight = this.bodyweightControl.value;
+                }
             });
     }
 
@@ -406,6 +414,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     this.form.removeAt(indexSet);
                     this.form.insert(indexSet, new FormGroup(setControls));
                 }
+                //TODO: Move to child cmp
                 if (!this.bodyweightControl?.errors) {
                     this.form.controls[0].controls.reps.enable();
                 } else {

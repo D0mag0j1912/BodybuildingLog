@@ -1,7 +1,6 @@
 import {
     Component,
     Input,
-    OnInit,
     Output,
     EventEmitter,
     ViewChild,
@@ -11,7 +10,6 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
-import { takeUntil } from 'rxjs/operators';
 import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
 import { convertWeightUnit } from '../../../../../helpers/training/convert-weight-units.helper';
 import { WeightUnit } from '../../../../../models/common/preferences.type';
@@ -30,7 +28,7 @@ import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.s
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class SetConstituentComponent implements OnInit, OnChanges {
+export class SetConstituentComponent implements OnChanges {
     activeSetCategory: SetCategoryType = 'freeWeighted';
 
     @Input()
@@ -52,7 +50,16 @@ export class SetConstituentComponent implements OnInit, OnChanges {
     availableSetCategoriesControl: FormControl<SetCategoryType[]>;
 
     @Input()
-    bodyweightControl: FormControl<number>;
+    set currentBodyweight(currentBodyweight: number) {
+        if (currentBodyweight) {
+            switch (this.activeSetCategory) {
+                case 'dynamicBodyweight': {
+                    this.form.controls.reps.enable();
+                    break;
+                }
+            }
+        }
+    }
 
     @Input()
     isLoading = false;
@@ -81,25 +88,8 @@ export class SetConstituentComponent implements OnInit, OnChanges {
     @ViewChild('repsEl')
     repsElement: IonInput;
 
-    constructor(private _unsubscribeService: UnsubscribeService) {}
-
-    ngOnInit(): void {
-        this.bodyweightControl.valueChanges
-            .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((_) => {
-                if (this.bodyweightControl.valid) {
-                    switch (this.activeSetCategory) {
-                        case 'dynamicBodyweight': {
-                            this.form.controls.reps.enable();
-                            break;
-                        }
-                    }
-                }
-            });
-    }
-
     ngOnChanges(changes: SimpleChanges): void {
-        if (!changes.weightUnit?.firstChange) {
+        if (!changes.weightUnit?.firstChange && changes.weightUnit?.currentValue) {
             switch (this.activeSetCategory) {
                 case 'freeWeighted': {
                     //TODO: Remove ? when activeSetCategory is set
