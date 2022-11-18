@@ -109,8 +109,7 @@ export class SetConstituentComponent implements OnChanges {
         if (!changes.weightUnit?.firstChange && changes.weightUnit?.currentValue) {
             switch (this.activeSetCategory) {
                 case 'freeWeighted': {
-                    //TODO: Remove ? when activeSetCategory is set
-                    const currentWeightLiftedValue = +this.form.controls.weightLifted?.value;
+                    const currentWeightLiftedValue = +this.form.controls.weightLifted.value;
                     if (currentWeightLiftedValue) {
                         this.form.controls.weightLifted.patchValue(
                             convertWeightUnit(
