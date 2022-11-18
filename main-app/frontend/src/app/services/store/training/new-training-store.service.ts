@@ -256,7 +256,7 @@ export class NewTrainingStoreService {
                                         selectedSetCategories:
                                             exercise.exerciseData.selectedSetCategories.filter(
                                                 (_category: SetCategoryType, i: number) =>
-                                                    i === indexSet,
+                                                    i !== indexSet,
                                             ),
                                     },
                                 };

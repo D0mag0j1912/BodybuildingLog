@@ -163,16 +163,15 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     }
 
     onSelectedCategoriesChanged(data: SelectedCategoriesChanged, exerciseIndex: number): void {
+        const selectedSetCategoriesValue =
+            this.form.controls[exerciseIndex].controls.exerciseData.controls.selectedSetCategories
+                .value;
         switch (data.setChangedType) {
             case 'addSet': {
                 this.form.controls[
                     exerciseIndex
                 ].controls.exerciseData.controls.selectedSetCategories.patchValue(
-                    [
-                        ...this.form.controls[exerciseIndex].controls.exerciseData.controls
-                            .selectedSetCategories.value,
-                        data.setCategory,
-                    ],
+                    [...selectedSetCategoriesValue, data.setCategory],
                     { emitEvent: false },
                 );
                 break;
@@ -181,16 +180,24 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 this.form.controls[
                     exerciseIndex
                 ].controls.exerciseData.controls.selectedSetCategories.patchValue(
-                    [
-                        ...this.form.controls[exerciseIndex].controls.exerciseData.controls
-                            .selectedSetCategories.value,
-                    ].map((category: SetCategoryType, i: number) => {
+                    [...selectedSetCategoriesValue].map((category: SetCategoryType, i: number) => {
                         if (i === data.setIndex) {
                             category = data.setCategory;
                             return category;
                         }
                         return category;
                     }),
+                    { emitEvent: false },
+                );
+                break;
+            }
+            case 'deleteSet': {
+                this.form.controls[
+                    exerciseIndex
+                ].controls.exerciseData.controls.selectedSetCategories.patchValue(
+                    selectedSetCategoriesValue.filter(
+                        (_category: SetCategoryType, i: number) => i !== data.setIndex,
+                    ),
                     { emitEvent: false },
                 );
                 break;

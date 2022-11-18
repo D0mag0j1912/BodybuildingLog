@@ -296,9 +296,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         this._newTrainingStoreService
             .deleteSet(this.indexExercise, setIndex, this._calculateTotal())
             .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((_) => {
-                //TODO: Emit set changed event
-            });
+            .subscribe((_) =>
+                this.selectedCategoriesChanged.emit({
+                    setChangedType: 'deleteSet',
+                    setCategory: undefined,
+                    setIndex,
+                }),
+            );
     }
 
     private _calculateTotal(): number {
