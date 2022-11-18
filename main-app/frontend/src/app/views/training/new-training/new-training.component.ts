@@ -90,13 +90,13 @@ export class NewTrainingComponent implements OnDestroy {
     exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         tap((exercises: SingleExercise[]) => {
-            const isDynamicBodyweight = exercises.some((exercise: SingleExercise) =>
+            const isBodyweightCategory = exercises.some((exercise: SingleExercise) =>
                 this.bodyweightSetCategories.some((category: SetCategoryType) =>
-                    exercise.exerciseData.selectedSetCategories.indexOf(category),
+                    exercise.exerciseData.selectedSetCategories.includes(category),
                 ),
             );
             this.newTrainingForm.controls.bodyweight.setValidators(
-                isDynamicBodyweight
+                isBodyweightCategory
                     ? [...this.initialBodyweightValidators, Validators.required]
                     : [...this.initialBodyweightValidators],
             );
