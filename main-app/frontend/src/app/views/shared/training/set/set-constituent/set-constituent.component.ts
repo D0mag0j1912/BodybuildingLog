@@ -29,8 +29,6 @@ import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.s
     providers: [UnsubscribeService],
 })
 export class SetConstituentComponent implements OnChanges {
-    activeSetCategory: SetCategoryType = 'freeWeighted';
-
     @Input()
     form: FormGroup<SetFormType>;
 
@@ -44,22 +42,41 @@ export class SetConstituentComponent implements OnChanges {
     private _weightUnit: WeightUnit;
 
     @Input()
-    exerciseControl: FormControl<string>;
-
-    @Input()
-    availableSetCategoriesControl: FormControl<SetCategoryType[]>;
-
-    @Input()
     set currentBodyweight(currentBodyweight: number) {
         if (currentBodyweight) {
             switch (this.activeSetCategory) {
                 case 'dynamicBodyweight': {
                     this.form.controls.reps.enable();
+                    setTimeout(
+                        async () => await this._focusSetConstituent(this._activeSetCategory),
+                        400,
+                    );
                     break;
                 }
             }
         }
     }
+
+    @Input()
+    set activeSetCategory(category: SetCategoryType) {
+        if (category) {
+            this._activeSetCategory = category;
+            setTimeout(async () => await this._focusSetConstituent(this._activeSetCategory), 400);
+        }
+    }
+    get activeSetCategory(): SetCategoryType {
+        return this._activeSetCategory;
+    }
+    private _activeSetCategory: SetCategoryType = 'freeWeighted';
+
+    @Input()
+    exerciseControl: FormControl<string>;
+
+    @Input()
+    bodyweightControl: FormControl<number>;
+
+    @Input()
+    availableSetCategoriesControl: FormControl<SetCategoryType[]>;
 
     @Input()
     isLoading = false;
@@ -104,6 +121,13 @@ export class SetConstituentComponent implements OnChanges {
                     }
                     break;
                 }
+            }
+        }
+        if (changes.bodyweightControl?.currentValue) {
+            if (!this.bodyweightControl?.errors) {
+                this.form.controls.reps.enable();
+            } else {
+                this.form.controls.reps.disable();
             }
         }
     }

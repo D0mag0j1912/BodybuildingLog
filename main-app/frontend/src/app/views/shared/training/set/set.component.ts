@@ -50,6 +50,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
 
     currentWeightUnit: WeightUnit;
     currentBodyweight: number;
+    setCategory: SetCategoryType;
     form = new FormArray<FormGroup<SetFormType>>([]);
 
     onTouched: () => void;
@@ -127,9 +128,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 ),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe((setCategory: SetCategoryType) => {
-                //TODO: Emit set category to it's child for focus purposes
-            });
+            .subscribe((setCategory: SetCategoryType) => (this.setCategory = setCategory));
 
         this.bodyweightControl.valueChanges
             .pipe(takeUntil(this._unsubscribeService))
@@ -254,7 +253,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             )
             .subscribe(async (setCategory: SetCategoryType) => {
                 this.selectedCategoriesChanged.emit(setCategory);
-                //TODO: Emit set category to it's child for focus purposes
+                this.setCategory = setCategory;
             });
     }
 
@@ -287,7 +286,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe((setCategory: SetCategoryType) => {
-                //TODO: Emit set category to it's child for focus purposes
+                this.setCategory = setCategory;
             });
     }
 
@@ -413,12 +412,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 } else {
                     this.form.removeAt(indexSet);
                     this.form.insert(indexSet, new FormGroup(setControls));
-                }
-                //TODO: Move to child cmp
-                if (!this.bodyweightControl?.errors) {
-                    this.form.controls[0].controls.reps.enable();
-                } else {
-                    this.form.controls[0].controls.reps.disable();
                 }
                 break;
             }

@@ -55,6 +55,7 @@ import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.con
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
 import { ExercisesStoreService } from '../../../services/store/training/exercises-store.service';
+import { SetCategoryType } from '../../../models/training/shared/set/set.type';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 @Component({
@@ -90,8 +91,8 @@ export class NewTrainingComponent implements OnDestroy {
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
         tap((exercises: SingleExercise[]) => {
             const isDynamicBodyweight = exercises.some((exercise: SingleExercise) =>
-                this.bodyweightSetCategories.includes(
-                    exercise.exerciseData.availableSetCategories[0],
+                this.bodyweightSetCategories.some((category: SetCategoryType) =>
+                    exercise.exerciseData.selectedSetCategories.indexOf(category),
                 ),
             );
             this.newTrainingForm.controls.bodyweight.setValidators(
