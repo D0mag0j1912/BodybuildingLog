@@ -216,6 +216,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             component: ChangeSetCategoryComponent,
             componentProps: {
                 setCategories: this.availableSetCategoriesControl.value,
+                setCategory: currentSetCategory,
             },
             keyboardClose: true,
             canDismiss: true,
