@@ -50,7 +50,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
 
     currentWeightUnit: WeightUnit;
     currentBodyweight: number;
-    setCategory: SetCategoryType;
     form = new FormArray<FormGroup<SetFormType>>([]);
 
     onTouched: () => void;
@@ -128,7 +127,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 ),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe((setCategory: SetCategoryType) => (this.setCategory = setCategory));
+            .subscribe();
 
         this.bodyweightControl.valueChanges
             .pipe(takeUntil(this._unsubscribeService))
@@ -254,7 +253,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             )
             .subscribe(async (setCategory: SetCategoryType) => {
                 this.selectedCategoriesChanged.emit(setCategory);
-                this.setCategory = setCategory;
             });
     }
 
@@ -286,9 +284,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 }),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe((setCategory: SetCategoryType) => {
-                this.setCategory = setCategory;
-            });
+            .subscribe();
     }
 
     onSetDeleted(setIndex: number): void {
