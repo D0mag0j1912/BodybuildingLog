@@ -1,0 +1,150 @@
+<form [formGroup]="form">
+    <ion-grid class="set-grid">
+        <ion-row
+            class="ion-text-center set-row"
+            [class.ion-justify-content-center]="!form.controls.weightLifted">
+            <ion-col
+                *ngIf="form.controls.weightLifted"
+                size="5">
+                <ion-item fill="outline">
+                    <ion-label class="ion-label" position="floating">
+                        {{ 'training.new_training.weight_lifted' | translate }}
+                    </ion-label>
+                    <ion-input
+                        #weightLiftedEl
+                        type="number"
+                        class="weight-lifted-input"
+                        formControlName="weightLifted"
+                        (ionChange)="onChangeSets()"
+                        (keydown.backspace)="onSetConstituentKeydown('weightLifted')"
+                    >
+                    </ion-input>
+                    <ion-text
+                        class="weight-lifted-input--unit"
+                        slot="end"
+                        [class.invalid-weight-lifted]="form.controls.weightLifted?.invalid"
+                    >
+                        {{ weightLiftedEl?.value ? weightUnit : '' }}
+                    </ion-text>
+                    <ion-text
+                        *ngIf="
+                            form.controls.weightLifted?.errors?.pattern &&
+                            !form.controls.weightLifted?.errors?.min &&
+                            !isLoading
+                        "
+                        slot="error"
+                    >
+                        {{ 'training.new_training.errors.only_numbers' | translate }}
+                    </ion-text>
+                    <ion-text
+                        *ngIf="
+                            form.controls.weightLifted?.errors?.min &&
+                            !form.controls.weightLifted?.errors?.pattern &&
+                            !isLoading
+                        "
+                        slot="error"
+                    >
+                        {{ 'training.new_training.errors.weight_lifted_min' | translate }}
+                    </ion-text>
+                    <ion-text
+                        *ngIf="
+                            form.controls.weightLifted?.errors?.max &&
+                            !form.controls.weightLifted?.errors?.pattern &&
+                            !isLoading
+                        "
+                        slot="error"
+                    >
+                        {{ 'training.new_training.errors.weight_lifted_max' | translate }}
+                    </ion-text>
+                    <ion-text
+                        *ngIf="
+                            form.controls.weightLifted?.errors?.required &&
+                            (isSubmitted ||
+                                form.controls.weightLifted.touched) &&
+                            !isLoading
+                        "
+                        slot="error"
+                    >
+                        {{ 'training.new_training.errors.weight_lifted_required' | translate }}
+                    </ion-text>
+                </ion-item>
+            </ion-col>
+            <ion-col
+                *ngIf="form.controls.reps"
+                size="5">
+                <ion-item fill="outline">
+                    <ion-label class="ion-label" position="floating">
+                        {{ 'training.new_training.reps_performed' | translate }}
+                    </ion-label>
+                    <ion-input
+                        #repsEl
+                        type="number"
+                        class="reps-input"
+                        formControlName="reps"
+                        (ionChange)="onChangeSets()"
+                        (keydown.backspace)="onSetConstituentKeydown('reps')"
+                    ></ion-input>
+                    <ion-text
+                        *ngIf="
+                            form.controls.reps?.errors?.pattern &&
+                            !form.controls.reps?.errors?.pattern &&
+                            !isLoading
+                        "
+                        slot="error"
+                    >
+                        {{ 'training.new_training.errors.only_numbers' | translate }}
+                    </ion-text>
+                    <ion-text
+                        *ngIf="
+                            form.controls.reps?.errors?.min &&
+                            !form.controls.reps?.errors?.pattern &&
+                            !form.controls.reps?.errors?.pattern &&
+                            !isLoading
+                        "
+                        slot="error"
+                    >
+                        {{ 'training.new_training.errors.reps_min' | translate }}
+                    </ion-text>
+                    <ion-text
+                        *ngIf="
+                            form.controls.reps?.errors?.max &&
+                            !form.controls.reps?.errors?.pattern &&
+                            !form.controls.reps?.errors?.pattern &&
+                            !isLoading
+                        "
+                        slot="error"
+                    >
+                        {{ 'training.new_training.errors.reps_max' | translate }}
+                    </ion-text>
+                    <ion-text
+                        *ngIf="
+                            form.controls.reps?.errors?.required &&
+                            (isSubmitted || form.controls.reps.touched) &&
+                            !isLoading
+                        "
+                        slot="error"
+                    >
+                        {{ 'training.new_training.errors.reps_required' | translate }}
+                    </ion-text>
+                </ion-item>
+            </ion-col>
+            <ion-col size="2" class="set-ctas" [class.single-set-category]="availableSetCategoriesControl.value.length === 1">
+                <ion-button
+                    class="button-no-background delete-set-btn"
+                    type="button"
+                    [disabled]="isFirstSet || isLoading"
+                    (click)="deleteSet()"
+                >
+                    <ion-icon name="trash-sharp" color="primary" class="set-cta-icon"></ion-icon>
+                </ion-button>
+                <ion-button
+                    *ngIf="availableSetCategoriesControl.value.length > 1"
+                    class="button-no-background change-set-category"
+                    type="button"
+                    (click)="updateSetCategory()">
+                    <ion-icon class="set-cta-icon" name="construct-sharp" color="primary"></ion-icon>
+                </ion-button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</form>

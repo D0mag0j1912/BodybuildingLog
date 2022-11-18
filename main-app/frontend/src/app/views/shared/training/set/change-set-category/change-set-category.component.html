@@ -1,0 +1,27 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="end">
+            <ion-button (click)="onCancel()">
+                <ion-icon name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>{{ 'training.update_set_category' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding ion-text-center">
+    <ion-list>
+        <ion-radio-group *ngFor="let category of setCategories" [(ngModel)]="setCategory">
+            <ion-item>
+                <ion-label>{{ 'training.set_categories.' + (category | camelToSnakeCase) | translate }}</ion-label>
+                <ion-radio slot="end" color="primary" [value]="category"></ion-radio>
+            </ion-item>
+        </ion-radio-group>
+    </ion-list>
+    <ion-row class="cta-row">
+        <ion-col>
+            <ion-button type="button" color="primary" (click)="onChange()">
+                {{ 'common.actions.change' | translate }}
+            </ion-button>
+        </ion-col>
+    </ion-row>
+</ion-content>

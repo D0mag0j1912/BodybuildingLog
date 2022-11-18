@@ -1,6 +1,6 @@
 import { Exercise } from '../../models/training/exercise.model';
 import { NewTraining } from '../../models/training/new-training/new-training.model';
-import { SingleExercise } from '../../models/training/shared/single-exercise.model';
+import { SingleExercise } from '../../models/training/shared/single-exercise/single-exercise.model';
 import { DEFAULT_WEIGHT_UNIT } from '../shared/default-weight-format.const';
 
 export const TOTAL_INITIAL_WEIGHT = 0;
@@ -10,12 +10,12 @@ export const createEmptyExercise = (exercises: Exercise[]): SingleExercise => ({
         name: '',
         imageUrl: '',
         primaryMuscleGroup: '',
-        setCategories: [],
-        primarySetCategory: 'freeWeighted',
         translations: {
             hr: '',
             en: '',
         },
+        availableSetCategories: ['freeWeighted'],
+        selectedSetCategories: [],
     },
     sets: [],
     total: TOTAL_INITIAL_WEIGHT,

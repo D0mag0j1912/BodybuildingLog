@@ -24,7 +24,6 @@
         "or": "ILI",
         "date": "Datum",
         "errors": {
-            "required": "Polje je obvezno za unos",
             "something_went_wrong": "Došlo je do greške Pokušajte ponovno",
             "invalid_date": "Pogrešan format datuma",
             "unknown_error": "Došlo je do greške",
@@ -35,7 +34,8 @@
         "actions": {
             "delete": "Izbriši",
             "close": "Izađi",
-            "confirm": "Potvrdi"
+            "confirm": "Potvrdi",
+            "change": "Promijeni"
         },
         "months": {
             "january": "Siječanj",
@@ -107,7 +107,6 @@
             "weight_lifted": "Težina",
             "reps_performed": "Ponavljanja",
             "total": "Ukupno",
-            "delete_exercise_prompt": "Jeste li sigurni da želite izbrisati vježbu?",
             "training_updated": "Trening ažuriran",
             "set_saved": "Set spremljen",
             "first_add_previous_set": "Prvo morate unijeti set broj {{ setNumber }}",
@@ -200,6 +199,14 @@
                 "past_trainings_error_title": "Prošli treninzi trenutno nedostupni",
                 "past_trainings_error_description": "Prošli treninzi trenutno nisu dostupni. Molimo Vas pokušajte ponovno"
             }
+        },
+        "update_set_category": "Promijeni kategoriju seta",
+        "set_categories": {
+            "dynamic_bodyweight": "S tjelesnom težinom",
+            "dynamic_weighted": "S dodatnim opterećenjem",
+            "static_bodyweight": "S tjelesnom težinom",
+            "static_weighted": "S dodatnim opterećenjem",
+            "free_weighted": "S utezima"
         }
     },
     "languages": {

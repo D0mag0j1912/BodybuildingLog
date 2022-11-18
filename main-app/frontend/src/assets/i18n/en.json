@@ -23,7 +23,6 @@
         "or": "OR",
         "date": "Date",
         "errors": {
-            "required": "Field is required",
             "something_went_wrong": "Something went wrong Please try again",
             "invalid_date": "Invalid date format",
             "unknown_error": "Unknown error occured",
@@ -34,7 +33,8 @@
         "actions": {
             "delete": "Delete",
             "close": "Close",
-            "confirm": "Confirm"
+            "confirm": "Confirm",
+            "change": "Change"
         },
         "months": {
             "january": "January",
@@ -106,7 +106,6 @@
             "weight_lifted": "Weight lifted",
             "reps_performed": "Reps",
             "total": "Total",
-            "delete_exercise_prompt": "Are you sure you want to delete?",
             "training_updated": "Training updated",
             "set_saved": "Set saved",
             "first_add_previous_set": "You need to enter set number {{ setNumber }}",
@@ -199,6 +198,14 @@
                 "past_trainings_error_title": "Past trainings currently not available",
                 "past_trainings_error_description": "Past trainings are not currently available. Please try again"
             }
+        },
+        "update_set_category": "Change set category",
+        "set_categories": {
+            "dynamic_bodyweight": "With bodyweight",
+            "dynamic_weighted": "With additional weight",
+            "static_bodyweight": "With bodyweight",
+            "static_weighted": "With additional weight",
+            "free_weighted": "With weights"
         }
     },
     "languages": {

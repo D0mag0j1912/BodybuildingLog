@@ -1,6 +1,5 @@
 import {
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
     EventEmitter,
     Input,
@@ -18,34 +17,23 @@ import {
     FormGroup,
     Validators,
 } from '@angular/forms';
-import { IonSelect, ModalController } from '@ionic/angular';
-import { OverlayEventDetail } from '@ionic/core';
+import { IonSelect } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, EMPTY, from, Subject } from 'rxjs';
-import { delay, finalize, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { delay, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
-import { Set } from '../../../../models/training/shared/set.model';
+import { SelectedCategoriesChanged, Set } from '../../../../models/training/shared/set/set.model';
+import { SingleExercise } from '../../../../models/training/shared/single-exercise/single-exercise.model';
 import {
-    ExerciseChangedType,
-    SingleExercise,
-} from '../../../../models/training/shared/single-exercise.model';
-import {
-    ExerciseValueType,
     ExerciseFormType,
     SingleExerciseFormType,
     SingleExerciseValueType,
-} from '../../../../models/training/shared/single-exercise-form.type';
+} from '../../../../models/training/shared/single-exercise/single-exercise-form.type';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
-import {
-    DeleteExerciseDialogData,
-    DeleteExerciseDialogComponent,
-    DialogData,
-} from '../../delete-exercise-dialog/delete-exercise-dialog.component';
-import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
 import { SetsComponent } from '../set/set.component';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
@@ -54,8 +42,9 @@ import { StreamData } from '../../../../models/common/common.model';
 import {
     SetCategoryType,
     SetConstituentExistsType,
-} from '../../../../models/training/shared/set.type';
+} from '../../../../models/training/shared/set/set.type';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
+import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -65,27 +54,22 @@ import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
     providers: [getControlValueAccessor(SingleExerciseComponent), UnsubscribeService],
 })
 export class SingleExerciseComponent implements ControlValueAccessor, OnInit, OnDestroy {
-    private readonly _isExerciseChanged$ = new Subject<ExerciseChangedType>();
-    private readonly _isExercisePicker$ = new BehaviorSubject<boolean>(true);
+    private _isExercisePicker$ = new BehaviorSubject<boolean>(true);
 
-    readonly isExerciseChanged$ = this._isExerciseChanged$.asObservable();
-    readonly isExercisePicker$ = this._isExercisePicker$.asObservable();
-    readonly exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
+    isExercisePicker$ = this._isExercisePicker$.asObservable();
+    exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
     );
-    readonly isAddExerciseAllowed$ = this.exercisesState$.pipe(
+    isAddExerciseAllowed$ = this.exercisesState$.pipe(
         delay(0),
-        withLatestFrom(this._newTrainingStoreService.allExercisesState$),
+        withLatestFrom(this._exercisesStoreService.allExercisesState$),
         map(([exerciseState, allExercises]: [SingleExercise[], StreamData<Exercise[]>]) => {
             if (exerciseState.length > 0) {
                 if (this.setsCmpRef) {
                     return (
                         exerciseState.length <= allExercises.Value.length &&
-                        this.accessFormGroup<'name'>(
-                            'exerciseData',
-                            'name',
-                            exerciseState.length - 1,
-                        )?.value &&
+                        this.form.controls[exerciseState.length - 1].controls.exerciseData?.controls
+                            .name?.value &&
                         exerciseState.length > 0 &&
                         this.areSetsValid()
                     );
@@ -97,7 +81,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         }),
     );
 
-    readonly form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
+    form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
 
     onTouched: () => void;
 
@@ -105,7 +89,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     editTrainingData: NewTraining;
 
     @Input()
-    bodyweightControl: AbstractControl<number>;
+    bodyweightControl: FormControl<number>;
 
     @Input()
     trainingDate: AbstractControl<string> | null;
@@ -123,7 +107,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     editMode = false;
 
     @Output()
-    readonly exerciseAdded: EventEmitter<UIEvent> = new EventEmitter();
+    exerciseAdded: EventEmitter<UIEvent> = new EventEmitter();
 
     @ViewChildren('exercisePicker')
     exercisePickerEls: QueryList<IonSelect>;
@@ -132,12 +116,11 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     setsCmpRef: QueryList<SetsComponent>;
 
     constructor(
-        private readonly _newTrainingStoreService: NewTrainingStoreService,
-        private readonly _unsubscribeService: UnsubscribeService,
-        private readonly _preferencesStoreService: PreferencesStoreService,
-        private readonly _translateService: TranslateService,
-        private readonly _changeDetectorRef: ChangeDetectorRef,
-        private readonly _modalController: ModalController,
+        private _newTrainingStoreService: NewTrainingStoreService,
+        private _unsubscribeService: UnsubscribeService,
+        private _preferencesStoreService: PreferencesStoreService,
+        private _exercisesStoreService: ExercisesStoreService,
+        private _translateService: TranslateService,
     ) {}
 
     get currentWeightUnit(): WeightUnit {
@@ -158,7 +141,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     ngOnDestroy(): void {
         this._isExercisePicker$.complete();
-        this._isExerciseChanged$.complete();
     }
 
     writeValue(exercises: SingleExercise[]): void {
@@ -180,6 +162,49 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         this.onTouched = fn;
     }
 
+    onSelectedCategoriesChanged(data: SelectedCategoriesChanged, exerciseIndex: number): void {
+        const selectedSetCategoriesValue =
+            this.form.controls[exerciseIndex].controls.exerciseData.controls.selectedSetCategories
+                .value;
+        switch (data.setChangedType) {
+            case 'addSet': {
+                this.form.controls[
+                    exerciseIndex
+                ].controls.exerciseData.controls.selectedSetCategories.patchValue(
+                    [...selectedSetCategoriesValue, data.setCategory],
+                    { emitEvent: false },
+                );
+                break;
+            }
+            case 'updateSet': {
+                this.form.controls[
+                    exerciseIndex
+                ].controls.exerciseData.controls.selectedSetCategories.patchValue(
+                    [...selectedSetCategoriesValue].map((category: SetCategoryType, i: number) => {
+                        if (i === data.setIndex) {
+                            category = data.setCategory;
+                            return category;
+                        }
+                        return category;
+                    }),
+                    { emitEvent: false },
+                );
+                break;
+            }
+            case 'deleteSet': {
+                this.form.controls[
+                    exerciseIndex
+                ].controls.exerciseData.controls.selectedSetCategories.patchValue(
+                    selectedSetCategoriesValue.filter(
+                        (_category: SetCategoryType, i: number) => i !== data.setIndex,
+                    ),
+                    { emitEvent: false },
+                );
+                break;
+            }
+        }
+    }
+
     onExerciseNameChange(indexExercise: number, element: IonSelect): void {
         if (element?.value) {
             this._newTrainingStoreService.trainingState$
@@ -191,29 +216,37 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                         ].availableExercises.find(
                             (exercise: Exercise) => exercise.name === (element.value as string),
                         );
-                        this.accessFormGroup<'imageUrl'>(
-                            'exerciseData',
-                            'imageUrl',
-                            indexExercise,
-                        ).patchValue(selectedExerciseData.imageUrl);
-                        this.accessFormGroup<'primaryMuscleGroup'>(
-                            'exerciseData',
-                            'primaryMuscleGroup',
-                            indexExercise,
-                        ).patchValue(selectedExerciseData.primaryMuscleGroup);
-                        return this._newTrainingStoreService.updateExerciseChoices(
-                            element.value as string,
-                            indexExercise,
-                            currentTrainingState,
-                            selectedExerciseData,
-                        );
+                        return this._newTrainingStoreService
+                            .updateExerciseChoices(
+                                element.value as string,
+                                indexExercise,
+                                currentTrainingState,
+                                selectedExerciseData,
+                            )
+                            .pipe(map((_) => selectedExerciseData));
                     }),
                 )
-                .subscribe((updatedTraining: NewTraining) => {
-                    this._isExerciseChanged$.next({
-                        trainingState: updatedTraining,
-                        indexExercise,
-                    });
+                .subscribe((selectedExerciseData: Exercise) => {
+                    this.form.controls[
+                        indexExercise
+                    ].controls.exerciseData.controls.imageUrl.patchValue(
+                        selectedExerciseData.imageUrl,
+                    );
+                    this.form.controls[
+                        indexExercise
+                    ].controls.exerciseData.controls.primaryMuscleGroup.patchValue(
+                        selectedExerciseData.primaryMuscleGroup,
+                    );
+                    this.form.controls[
+                        indexExercise
+                    ].controls.exerciseData.controls.availableSetCategories.patchValue(
+                        selectedExerciseData.availableSetCategories,
+                    );
+                    this.form.controls[
+                        indexExercise
+                    ].controls.exerciseData.controls.selectedSetCategories.patchValue(
+                        selectedExerciseData.selectedSetCategories,
+                    );
                     if (this.bodyweightControl?.errors) {
                         this.bodyweightControl.markAsTouched();
                     }
@@ -223,13 +256,12 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     addExercise(exercise?: SingleExercise, event?: UIEvent): void {
         if (exercise) {
-            const { weightLifted, reps } = this._prepareSet(
-                exercise.exerciseData.primarySetCategory,
-                this.getExercises().length - 1,
-            );
             exercise = {
                 ...exercise,
-                sets: [...exercise.sets].map((set: Set) => {
+                sets: [...exercise.sets].map((set: Set, index: number) => {
+                    const { weightLifted, reps } = this._prepareSet(
+                        exercise.exerciseData.selectedSetCategories[index],
+                    );
                     if (!weightLifted) {
                         delete set.weightLifted;
                     }
@@ -250,6 +282,12 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     primaryMuscleGroup: new FormControl(
                         exercise?.exerciseData?.primaryMuscleGroup ?? '',
                     ),
+                    availableSetCategories: new FormControl(
+                        exercise?.exerciseData?.availableSetCategories ?? [],
+                    ),
+                    selectedSetCategories: new FormControl(
+                        exercise?.exerciseData?.selectedSetCategories ?? [],
+                    ),
                 }),
                 sets: new FormControl(exercise?.sets ?? [], { nonNullable: true }),
             }),
@@ -264,48 +302,22 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     async deleteExercise(indexExercise: number, exerciseName: string): Promise<void> {
         if (exerciseName) {
-            const modal = await this._modalController.create({
-                component: DeleteExerciseDialogComponent,
-                componentProps: {
-                    isError: false,
-                    deleteExercise: {
-                        message$: this._translateService.stream(
-                            'training.new_training.delete_exercise_prompt',
-                        ),
-                        exerciseName: exerciseName,
-                    } as DeleteExerciseDialogData,
-                } as DialogData,
-                keyboardClose: true,
-                swipeToClose: true,
-            });
-            await modal.present();
-
-            from(modal.onDidDismiss<boolean>())
+            this._newTrainingStoreService.trainingState$
                 .pipe(
-                    switchMap((response: OverlayEventDetail<boolean>) => {
-                        if (response.role === DialogRoles.DELETE_EXERCISE) {
-                            return this._newTrainingStoreService.trainingState$.pipe(
-                                take(1),
-                                switchMap((currentTrainingState: NewTraining) =>
-                                    this._newTrainingStoreService.deleteExercise(
-                                        currentTrainingState,
-                                        exerciseName,
-                                    ),
-                                ),
-                                switchMap((data: [NewTraining, Exercise[]]) => {
-                                    this.form.removeAt(indexExercise);
-                                    return this._newTrainingStoreService.pushToAvailableExercises(
-                                        data[0],
-                                        data[1],
-                                    );
-                                }),
-                            );
-                        } else {
-                            return EMPTY;
-                        }
+                    take(1),
+                    switchMap((currentTrainingState: NewTraining) =>
+                        this._newTrainingStoreService.deleteExercise(
+                            currentTrainingState,
+                            exerciseName,
+                        ),
+                    ),
+                    switchMap((data: [NewTraining, Exercise[]]) => {
+                        this.form.removeAt(indexExercise);
+                        return this._newTrainingStoreService.pushToAvailableExercises(
+                            data[0],
+                            data[1],
+                        );
                     }),
-                    finalize(() => this._changeDetectorRef.markForCheck()),
-                    takeUntil(this._unsubscribeService),
                 )
                 .subscribe();
         } else {
@@ -327,14 +339,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     getExercises(): FormGroup<SingleExerciseFormType>[] {
         return this.form.controls;
-    }
-
-    accessFormGroup<K extends keyof ExerciseValueType>(
-        formGroup: keyof SingleExerciseFormType,
-        formField: K,
-        indexExercise: number,
-    ): AbstractControl<ExerciseValueType[K]> {
-        return this.form.at(indexExercise)?.get(formGroup)?.get(formField);
     }
 
     areSetsValid(): boolean {
@@ -371,13 +375,10 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return alreadyUsedExercises;
     }
 
-    private _prepareSet(
-        primarySetCategory: SetCategoryType,
-        indexExercise: number,
-    ): SetConstituentExistsType {
+    private _prepareSet(setCategory: SetCategoryType): SetConstituentExistsType {
         let weightLifted: boolean;
         let reps: boolean;
-        switch (primarySetCategory) {
+        switch (setCategory) {
             case 'dynamicBodyweight': {
                 weightLifted = false;
                 reps = true;
@@ -402,13 +403,12 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 break;
             }
             default: {
-                isNeverCheck(primarySetCategory);
+                isNeverCheck(setCategory);
             }
         }
         return {
             weightLifted,
             reps,
-            indexExercise,
         };
     }
 }

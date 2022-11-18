@@ -13,18 +13,18 @@ export class SharedStoreService {
         StreamData<Paginator<PastTrainings>>
     >();
 
-    readonly dayClicked$$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+    readonly _dayClicked$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
     completeDayClicked(): void {
-        this.dayClicked$$.complete();
+        this._dayClicked$.complete();
     }
 
     emitDayClicked(dayClicked: string): void {
-        this.dayClicked$$.next(dayClicked);
+        this._dayClicked$.next(dayClicked);
     }
 
     getDayClickedDate(): string | undefined {
-        return this.dayClicked$$.getValue();
+        return this._dayClicked$.getValue();
     }
 
     emitEditingTraining(editMode: boolean): void {

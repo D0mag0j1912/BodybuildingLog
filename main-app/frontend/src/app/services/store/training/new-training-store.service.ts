@@ -10,87 +10,158 @@ import {
     TOTAL_INITIAL_WEIGHT,
 } from '../../../constants/training/new-training.const';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
-import { SetTrainingData, Set } from '../../../models/training/shared/set.model';
-import { SingleExercise } from '../../../models/training/shared/single-exercise.model';
+import { SetTrainingData, Set } from '../../../models/training/shared/set/set.model';
+import { SingleExercise } from '../../../models/training/shared/single-exercise/single-exercise.model';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { PreferencesStoreService } from '../shared/preferences-store.service';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-format.const';
 import { WeightUnit } from '../../../models/common/preferences.type';
 import { Preferences } from '../../../models/common/preferences.model';
-import { SetCategoryType } from '../../../models/training/shared/set.type';
+import { SetCategoryType } from '../../../models/training/shared/set/set.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
-import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
+import { ExercisesStoreService } from './exercises-store.service';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingStoreService {
-    private readonly _allExercisesState$: BehaviorSubject<StreamData<Exercise[]>> =
-        new BehaviorSubject<StreamData<Exercise[]>>(null);
-    readonly allExercisesState$: Observable<StreamData<Exercise[]>> =
-        this._allExercisesState$.asObservable();
-
     private readonly _trainingState$: BehaviorSubject<NewTraining> =
         new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
     readonly trainingState$: Observable<NewTraining> = this._trainingState$.asObservable();
 
-    constructor(private readonly _preferencesStoreService: PreferencesStoreService) {}
-
-    emitAllExercises(exercises: StreamData<Exercise[]>): void {
-        this._allExercisesState$.next(exercises);
-    }
+    constructor(
+        private _preferencesStoreService: PreferencesStoreService,
+        private _exercisesStoreService: ExercisesStoreService,
+    ) {}
 
     getCurrentTrainingState(): NewTraining {
         return { ...this._trainingState$.getValue() };
     }
 
     updateWeightUnit(weightUnit: WeightUnit): Observable<void> {
-        const updatedTraining = {
-            ...this._trainingState$.getValue(),
-            weightUnit,
-        };
-        return this.saveTrainingData(updatedTraining);
+        return this._trainingState$.pipe(
+            take(1),
+            switchMap((trainingState: NewTraining) => {
+                const updatedTraining = {
+                    ...trainingState,
+                    weightUnit,
+                };
+                return this.saveTrainingData(updatedTraining);
+            }),
+        );
     }
 
     updateTrainingDate(trainingDate: string): Observable<void> {
-        const updatedTraining = {
-            ...this._trainingState$.getValue(),
-            trainingDate,
-        };
-        return this.saveTrainingData(updatedTraining);
+        return this._trainingState$.pipe(
+            take(1),
+            switchMap((trainingState: NewTraining) => {
+                const updatedTraining = {
+                    ...trainingState,
+                    trainingDate,
+                };
+                return this.saveTrainingData(updatedTraining);
+            }),
+        );
     }
 
-    updateBodyweight(value: string): Observable<void> {
+    updateBodyweight(bodyweight: number): Observable<void> {
         return this._trainingState$.pipe(
             take(1),
             map((trainingState: NewTraining) => {
                 const updatedTraining: NewTraining = {
                     ...trainingState,
-                    bodyweight: +value,
+                    bodyweight,
                     exercises: [...trainingState.exercises].map((exercise: SingleExercise) => {
-                        if (
-                            BODYWEIGHT_SET_CATEGORIES.includes(
-                                exercise.exerciseData.primarySetCategory,
-                            )
-                        ) {
-                            let total = 0;
-                            for (const set of exercise.sets) {
-                                switch (exercise.exerciseData.primarySetCategory) {
-                                    case 'dynamicBodyweight': {
-                                        total = total + set.reps * +value;
-                                        break;
-                                    }
+                        let total = 0;
+                        exercise.sets.forEach((set: Set, index: number) => {
+                            switch (exercise.exerciseData.selectedSetCategories[index]) {
+                                case 'freeWeighted': {
+                                    total = total + set.weightLifted * set.reps;
+                                    break;
+                                }
+                                case 'dynamicBodyweight': {
+                                    total = total + set.reps * bodyweight;
+                                    break;
                                 }
                             }
-                            return {
-                                ...exercise,
-                                total,
-                            };
-                        }
-                        return exercise;
+                        });
+                        return {
+                            ...exercise,
+                            total,
+                        };
                     }),
                 };
                 return updatedTraining;
             }),
             switchMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+        );
+    }
+
+    updatePrimarySetCategory(
+        indexExercise: number,
+        indexSet: number,
+        setCategory: SetCategoryType,
+    ): Observable<void> {
+        return this._trainingState$.pipe(
+            take(1),
+            map((trainingState: NewTraining) => {
+                let updatedSet: Set;
+                switch (setCategory) {
+                    case 'freeWeighted': {
+                        updatedSet = { setNumber: indexSet + 1, weightLifted: null, reps: null };
+                        break;
+                    }
+                    case 'dynamicBodyweight': {
+                        updatedSet = { setNumber: indexSet + 1, reps: null };
+                        break;
+                    }
+                    case 'dynamicWeighted': {
+                        //TODO: BL-121
+                        break;
+                    }
+                    case 'staticBodyweight': {
+                        //TODO: BL-128
+                        break;
+                    }
+                    case 'staticWeighted': {
+                        //TODO: BL-123
+                        break;
+                    }
+                    default: {
+                        isNeverCheck(setCategory);
+                    }
+                }
+                const updatedTraining: NewTraining = {
+                    ...trainingState,
+                    exercises: [...trainingState.exercises].map(
+                        (exercise: SingleExercise, i: number) => {
+                            if (indexExercise === i) {
+                                return {
+                                    ...exercise,
+                                    exerciseData: {
+                                        ...exercise.exerciseData,
+                                        selectedSetCategories: [
+                                            ...exercise.exerciseData.selectedSetCategories,
+                                        ].map((category: SetCategoryType, j: number) => {
+                                            if (indexSet === j) {
+                                                return setCategory;
+                                            }
+                                            return category;
+                                        }),
+                                    },
+                                    sets: [...exercise.sets].map((set: Set, k: number) => {
+                                        if (indexSet === k) {
+                                            return updatedSet;
+                                        }
+                                        return set;
+                                    }),
+                                };
+                            }
+                            return exercise;
+                        },
+                    ),
+                };
+                return updatedTraining;
+            }),
+            concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
         );
     }
 
@@ -136,6 +207,13 @@ export class NewTrainingStoreService {
                                 return {
                                     ...exercise,
                                     sets: [...exercise.sets, set],
+                                    exerciseData: {
+                                        ...exercise.exerciseData,
+                                        selectedSetCategories: [
+                                            ...exercise.exerciseData.selectedSetCategories,
+                                            setCategory,
+                                        ],
+                                    },
                                 };
                             }
                             return exercise;
@@ -173,6 +251,14 @@ export class NewTrainingStoreService {
                                             return set;
                                         }),
                                     total: newTotal,
+                                    exerciseData: {
+                                        ...exercise.exerciseData,
+                                        selectedSetCategories:
+                                            exercise.exerciseData.selectedSetCategories.filter(
+                                                (_category: SetCategoryType, i: number) =>
+                                                    i !== indexSet,
+                                            ),
+                                    },
                                 };
                             }
                             return exercise;
@@ -218,7 +304,7 @@ export class NewTrainingStoreService {
     ): Observable<[NewTraining, Exercise[]]> {
         let updatedTraining: NewTraining;
         if (deletedExerciseName) {
-            return this.allExercisesState$.pipe(
+            return this._exercisesStoreService.allExercisesState$.pipe(
                 take(1),
                 map((value) => value.Value),
                 tap((_) => {
@@ -376,7 +462,7 @@ export class NewTrainingStoreService {
     }
 
     addNewExercise(alreadyUsedExercises: string[]): Observable<void> {
-        return this.allExercisesState$.pipe(
+        return this._exercisesStoreService.allExercisesState$.pipe(
             take(1),
             map((streamData: StreamData<Exercise[]>) =>
                 streamData.Value.filter(
@@ -394,38 +480,41 @@ export class NewTrainingStoreService {
         selectedIndex: number,
         trainingToBeUpdated: NewTraining,
         selectedExerciseData: Exercise,
-    ): Observable<NewTraining> {
-        const previousSelectedExercise = trainingToBeUpdated.exercises.find(
-            (_exercise: SingleExercise, index: number) => index === selectedIndex,
-        ).exerciseData;
+    ): Observable<void> {
+        const previousSelectedExercise: Exercise =
+            trainingToBeUpdated.exercises[selectedIndex].exerciseData;
         const updatedTraining: NewTraining = {
             ...trainingToBeUpdated,
-            exercises: trainingToBeUpdated.exercises.map((exercise: SingleExercise, i: number) => {
-                if (i === selectedIndex) {
-                    return {
-                        ...exercise,
-                        exerciseData: selectedExerciseData,
-                    };
-                } else {
-                    let availableExercises: Exercise[];
-                    if (previousSelectedExercise.name) {
-                        availableExercises = [
-                            ...exercise.availableExercises,
-                            previousSelectedExercise,
-                        ].sort(this.compare);
+            exercises: [...trainingToBeUpdated.exercises].map(
+                (exercise: SingleExercise, i: number) => {
+                    if (i === selectedIndex) {
+                        return {
+                            ...exercise,
+                            exerciseData: selectedExerciseData,
+                        };
                     } else {
-                        availableExercises = [...exercise.availableExercises].sort(this.compare);
+                        let availableExercises: Exercise[];
+                        if (previousSelectedExercise.name) {
+                            availableExercises = [
+                                ...exercise.availableExercises,
+                                previousSelectedExercise,
+                            ].sort(this.compare);
+                        } else {
+                            availableExercises = [...exercise.availableExercises].sort(
+                                this.compare,
+                            );
+                        }
+                        return {
+                            ...exercise,
+                            availableExercises: availableExercises.filter(
+                                (exercise: Exercise) => exercise.name !== selectedExercise,
+                            ),
+                        };
                     }
-                    return {
-                        ...exercise,
-                        availableExercises: availableExercises.filter(
-                            (exercise: Exercise) => exercise.name !== selectedExercise,
-                        ),
-                    };
-                }
-            }),
+                },
+            ),
         };
-        return this.saveTrainingData(updatedTraining).pipe(concatMap((_) => of(updatedTraining)));
+        return this.saveTrainingData(updatedTraining);
     }
 
     keepTrainingState(): Observable<boolean> {
