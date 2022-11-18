@@ -1,3 +1,5 @@
+import { SetCategoryType, SetChangedType } from './set.type';
+
 export interface Set {
     setNumber: number;
     weightLifted?: number;
@@ -11,4 +13,10 @@ export interface SetTrainingData {
     reps: number;
     setNumber?: number;
     total?: number;
+}
+
+export interface SelectedCategoriesChanged {
+    setChangedType: SetChangedType;
+    setCategory?: SetCategoryType;
+    setIndex?: number;
 }

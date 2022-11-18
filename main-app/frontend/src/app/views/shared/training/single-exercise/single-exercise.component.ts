@@ -25,7 +25,7 @@ import { getControlValueAccessor } from '../../../../helpers/control-value-acces
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
-import { Set } from '../../../../models/training/shared/set/set.model';
+import { SelectedCategoriesChanged, Set } from '../../../../models/training/shared/set/set.model';
 import { SingleExercise } from '../../../../models/training/shared/single-exercise/single-exercise.model';
 import {
     ExerciseFormType,
@@ -162,17 +162,40 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         this.onTouched = fn;
     }
 
-    onSelectedCategoriesChanged(setCategory: SetCategoryType, exerciseIndex: number): void {
-        this.form.controls[
-            exerciseIndex
-        ].controls.exerciseData.controls.selectedSetCategories.patchValue(
-            [
-                ...this.form.controls[exerciseIndex].controls.exerciseData.controls
-                    .selectedSetCategories.value,
-                setCategory,
-            ],
-            { emitEvent: false },
-        );
+    onSelectedCategoriesChanged(data: SelectedCategoriesChanged, exerciseIndex: number): void {
+        switch (data.setChangedType) {
+            case 'addSet': {
+                this.form.controls[
+                    exerciseIndex
+                ].controls.exerciseData.controls.selectedSetCategories.patchValue(
+                    [
+                        ...this.form.controls[exerciseIndex].controls.exerciseData.controls
+                            .selectedSetCategories.value,
+                        data.setCategory,
+                    ],
+                    { emitEvent: false },
+                );
+                break;
+            }
+            case 'updateSet': {
+                this.form.controls[
+                    exerciseIndex
+                ].controls.exerciseData.controls.selectedSetCategories.patchValue(
+                    [
+                        ...this.form.controls[exerciseIndex].controls.exerciseData.controls
+                            .selectedSetCategories.value,
+                    ].map((category: SetCategoryType, i: number) => {
+                        if (i === data.setIndex) {
+                            category = data.setCategory;
+                            return category;
+                        }
+                        return category;
+                    }),
+                    { emitEvent: false },
+                );
+                break;
+            }
+        }
     }
 
     onExerciseNameChange(indexExercise: number, element: IonSelect): void {

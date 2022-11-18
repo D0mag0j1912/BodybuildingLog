@@ -8,3 +8,5 @@ export type SetCategoryType =
     | 'staticBodyweight'
     | 'staticWeighted'
     | 'freeWeighted';
+
+export type SetChangedType = 'addSet' | 'updateSet' | 'deleteSet';

@@ -19,7 +19,11 @@ import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
 import { concatMap, filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { Set, SetTrainingData } from '../../../../models/training/shared/set/set.model';
+import {
+    Set,
+    SelectedCategoriesChanged,
+    SetTrainingData,
+} from '../../../../models/training/shared/set/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
@@ -82,7 +86,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     isLoading = false;
 
     @Output()
-    selectedCategoriesChanged = new EventEmitter<SetCategoryType>();
+    selectedCategoriesChanged = new EventEmitter<SelectedCategoriesChanged>();
 
     @ViewChildren('set', { read: SetConstituentComponent })
     setCmps: QueryList<SetConstituentComponent>;
@@ -252,7 +256,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
-                this.selectedCategoriesChanged.emit(setCategory);
+                this.selectedCategoriesChanged.emit({
+                    setChangedType: 'updateSet',
+                    setCategory,
+                    setIndex,
+                });
             });
     }
 
@@ -262,7 +270,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             setCategory = this.selectedSetCategoriesControl.value[this.form.controls.length];
         } else {
             setCategory = this.availableSetCategoriesControl.value[0] ?? 'freeWeighted';
-            this.selectedCategoriesChanged.emit(setCategory);
+            this.selectedCategoriesChanged.emit({ setChangedType: 'addSet', setCategory });
         }
         this._constructFormBasedOnSetCategory(setCategory, 'newExercise', set);
         of(setCategory)
@@ -288,7 +296,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         this._newTrainingStoreService
             .deleteSet(this.indexExercise, setIndex, this._calculateTotal())
             .pipe(takeUntil(this._unsubscribeService))
-            .subscribe();
+            .subscribe((_) => {
+                //TODO: Emit set changed event
+            });
     }
 
     private _calculateTotal(): number {
