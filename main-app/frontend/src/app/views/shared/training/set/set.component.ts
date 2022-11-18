@@ -256,14 +256,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             });
     }
 
-    getSets(): FormGroup<SetFormType>[] {
-        return this.form.controls;
-    }
-
     addSet(set?: Set): void {
         let setCategory: SetCategoryType;
         if (set) {
-            setCategory = this.selectedSetCategoriesControl.value[this.getSets().length];
+            setCategory = this.selectedSetCategoriesControl.value[this.form.controls.length];
         } else {
             setCategory = this.availableSetCategoriesControl.value[0] ?? 'freeWeighted';
             this.selectedCategoriesChanged.emit(setCategory);
@@ -276,7 +272,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                         return this._newTrainingStoreService.addSet(
                             this.indexExercise,
                             setCategory,
-                            this.getSets().length,
+                            this.form.controls.length,
                         );
                     } else {
                         return of(setCategory);
@@ -297,7 +293,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
 
     private _calculateTotal(): number {
         let total = 0;
-        this.getSets().forEach((group: FormGroup<SetFormType>, index: number) => {
+        this.form.controls.forEach((group: FormGroup<SetFormType>, index: number) => {
             const setCategory = this.selectedSetCategoriesControl.value[index];
             switch (setCategory) {
                 case 'freeWeighted': {
