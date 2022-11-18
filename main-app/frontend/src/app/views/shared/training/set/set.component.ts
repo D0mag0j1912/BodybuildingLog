@@ -269,7 +269,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         if (set) {
             setCategory = this.selectedSetCategoriesControl.value[this.form.controls.length];
         } else {
-            setCategory = this.availableSetCategoriesControl.value[0] ?? 'freeWeighted';
+            if (this.selectedSetCategoriesControl.value.length > 1) {
+                setCategory =
+                    this.selectedSetCategoriesControl.value[this.form.controls.length - 1];
+            } else {
+                setCategory = this.selectedSetCategoriesControl.value[0] ?? 'freeWeighted';
+            }
             this.selectedCategoriesChanged.emit({ setChangedType: 'addSet', setCategory });
         }
         this._constructFormBasedOnSetCategory(setCategory, 'newExercise', set);
