@@ -40,7 +40,7 @@ export class PreferencesService {
                     return { Message: '' } as GeneralResponseData;
                 }
                 case 'weightUnit': {
-                    return { Message: 'preferences.weight_format_changed' } as GeneralResponseData;
+                    return { Message: 'preferences.weight_unit_changed' } as GeneralResponseData;
                 }
             }
         } catch (error: unknown) {
@@ -52,9 +52,7 @@ export class PreferencesService {
                     throw new InternalServerErrorException('preferences.errors.period_change');
                 }
                 case 'weightUnit': {
-                    throw new InternalServerErrorException(
-                        'preferences.errors.weight_format_change',
-                    );
+                    throw new InternalServerErrorException('preferences.errors.weight_unit_change');
                 }
             }
         }

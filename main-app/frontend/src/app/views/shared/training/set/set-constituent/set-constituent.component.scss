@@ -16,7 +16,7 @@
 .set-row {
     align-items: flex-start;
 
-    ::ng-deep .weight-lifted-input input {
+    ::ng-deep .weight-input input {
         height: 30px;
     }
 
@@ -58,7 +58,7 @@
     margin-top: 20px;
 }
 
-.weight-lifted-input {
+.weight-input {
     max-width: 65px;
 
     &--unit {
@@ -70,12 +70,12 @@
     }
 }
 
-.ios .weight-lifted-input {
+.ios .weight-input {
     &--unit {
         top: 30px;
     }
 }
 
-.invalid-weight-lifted {
+.invalid-weight {
     color: var(--ion-color-danger);
 }

@@ -29,7 +29,7 @@ export class PreferencesDto {
 
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
-    @IsNotEmpty({ message: '@preferences.errors.weight_format_required' })
+    @IsNotEmpty({ message: '@preferences.errors.weight_unit_required' })
     weightUnit: WeightUnit;
 
     @ApiProperty({ required: false })

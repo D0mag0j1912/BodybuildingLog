@@ -2,14 +2,14 @@ import { SetCategoryType, SetChangedType } from './set.type';
 
 export interface Set {
     setNumber: number;
-    weightLifted?: number;
+    weight?: number;
     reps?: number;
     _id?: string;
 }
 
 export interface SetTrainingData {
     exerciseName: string;
-    weightLifted: number;
+    weight: number;
     reps: number;
     setNumber?: number;
     total?: number;

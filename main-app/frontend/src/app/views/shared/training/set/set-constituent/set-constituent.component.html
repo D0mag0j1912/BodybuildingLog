@@ -2,34 +2,34 @@
     <ion-grid class="set-grid">
         <ion-row
             class="ion-text-center set-row"
-            [class.ion-justify-content-center]="!form.controls.weightLifted">
+            [class.ion-justify-content-center]="!form.controls.weight">
             <ion-col
-                *ngIf="form.controls.weightLifted"
+                *ngIf="form.controls.weight"
                 size="5">
                 <ion-item fill="outline">
                     <ion-label class="ion-label" position="floating">
-                        {{ 'training.new_training.weight_lifted' | translate }}
+                        {{ 'training.new_training.weight' | translate }}
                     </ion-label>
                     <ion-input
-                        #weightLiftedEl
+                        #weightEl
                         type="number"
-                        class="weight-lifted-input"
-                        formControlName="weightLifted"
+                        class="weight-input"
+                        formControlName="weight"
                         (ionChange)="onChangeSets()"
-                        (keydown.backspace)="onSetConstituentKeydown('weightLifted')"
+                        (keydown.backspace)="onSetConstituentKeydown('weight')"
                     >
                     </ion-input>
                     <ion-text
-                        class="weight-lifted-input--unit"
+                        class="weight-input--unit"
                         slot="end"
-                        [class.invalid-weight-lifted]="form.controls.weightLifted?.invalid"
+                        [class.invalid-weight]="form.controls.weight?.invalid"
                     >
-                        {{ weightLiftedEl?.value ? weightUnit : '' }}
+                        {{ weightEl?.value ? weightUnit : '' }}
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.weightLifted?.errors?.pattern &&
-                            !form.controls.weightLifted?.errors?.min &&
+                            form.controls.weight?.errors?.pattern &&
+                            !form.controls.weight?.errors?.min &&
                             !isLoading
                         "
                         slot="error"
@@ -38,34 +38,34 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.weightLifted?.errors?.min &&
-                            !form.controls.weightLifted?.errors?.pattern &&
+                            form.controls.weight?.errors?.min &&
+                            !form.controls.weight?.errors?.pattern &&
                             !isLoading
                         "
                         slot="error"
                     >
-                        {{ 'training.new_training.errors.weight_lifted_min' | translate }}
+                        {{ 'training.new_training.errors.weight_min' | translate }}
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.weightLifted?.errors?.max &&
-                            !form.controls.weightLifted?.errors?.pattern &&
+                            form.controls.weight?.errors?.max &&
+                            !form.controls.weight?.errors?.pattern &&
                             !isLoading
                         "
                         slot="error"
                     >
-                        {{ 'training.new_training.errors.weight_lifted_max' | translate }}
+                        {{ 'training.new_training.errors.weight_max' | translate }}
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.weightLifted?.errors?.required &&
+                            form.controls.weight?.errors?.required &&
                             (isSubmitted ||
-                                form.controls.weightLifted.touched) &&
+                                form.controls.weight.touched) &&
                             !isLoading
                         "
                         slot="error"
                     >
-                        {{ 'training.new_training.errors.weight_lifted_required' | translate }}
+                        {{ 'training.new_training.errors.weight_required' | translate }}
                     </ion-text>
                 </ion-item>
             </ion-col>
@@ -74,7 +74,7 @@
                 size="5">
                 <ion-item fill="outline">
                     <ion-label class="ion-label" position="floating">
-                        {{ 'training.new_training.reps_performed' | translate }}
+                        {{ 'training.new_training.reps' | translate }}
                     </ion-label>
                     <ion-input
                         #repsEl

@@ -15,15 +15,15 @@ import { ToastControllerService } from './toast-controller.service';
 @Injectable({ providedIn: 'root' })
 export class PreferencesService {
     constructor(
-        private readonly http: HttpClient,
-        private readonly translateService: TranslateService,
-        private readonly toastControllerService: ToastControllerService,
-        private readonly preferencesStoreService: PreferencesStoreService,
-        private readonly newTrainingStoreService: NewTrainingStoreService,
+        private _http: HttpClient,
+        private _translateService: TranslateService,
+        private _toastControllerService: ToastControllerService,
+        private _preferencesStoreService: PreferencesStoreService,
+        private _newTrainingStoreService: NewTrainingStoreService,
     ) {}
 
     getPreferences(userId: string): Observable<Preferences> {
-        return this.http.get<Preferences>(environment.BACKEND + `/preferences/${userId}`);
+        return this._http.get<Preferences>(environment.BACKEND + `/preferences/${userId}`);
     }
 
     setPreferences(
@@ -36,7 +36,7 @@ export class PreferencesService {
             showByPeriod: preferences.showByPeriod,
         };
         let apiResponse: GeneralResponseData;
-        return this.http
+        return this._http
             .put<GeneralResponseData>(environment.BACKEND + `/preferences/${preferences.userId}`, {
                 preferences: apiPreferences,
                 preferenceChanged: preferenceChanged,
@@ -44,12 +44,12 @@ export class PreferencesService {
             .pipe(
                 switchMap((response: GeneralResponseData) => {
                     apiResponse = response;
-                    return this.translateService.use(preferences.languageCode).pipe(
+                    return this._translateService.use(preferences.languageCode).pipe(
                         tap(async (_) => {
-                            this.preferencesStoreService.emitPreferences(preferences);
+                            this._preferencesStoreService.emitPreferences(preferences);
                             if (response.Message) {
-                                await this.toastControllerService.displayToast({
-                                    message: this.translateService.instant(response.Message),
+                                await this._toastControllerService.displayToast({
+                                    message: this._translateService.instant(response.Message),
                                     duration: MESSAGE_DURATION.GENERAL,
                                     color: 'primary',
                                 });
@@ -57,7 +57,7 @@ export class PreferencesService {
                         }),
                         switchMap((_) => {
                             if (preferenceChanged === 'weightUnit') {
-                                return this.newTrainingStoreService
+                                return this._newTrainingStoreService
                                     .updateWeightUnit(apiPreferences.weightUnit)
                                     .pipe(switchMap((_) => of(apiResponse)));
                             }

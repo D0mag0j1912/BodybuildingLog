@@ -26,7 +26,7 @@ import {
 } from '../../../../models/training/shared/set/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
-import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
+import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-unit.const';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
 import { SetCategoryType, SetConstituent } from '../../../../models/training/shared/set/set.type';
@@ -182,11 +182,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         const currentSetCmpData = this.setCmps.toArray()[setIndex];
         const previousSetCmpData = this.setCmps.toArray()[setIndex - 1];
         switch (setConstituent) {
-            case 'weightLifted': {
+            case 'weight': {
                 switch (currentSetCmpData.activeSetCategory) {
                     case 'freeWeighted': {
                         if (setIndex > 0) {
-                            if (!currentSetCmpData.weightLiftedElement.value) {
+                            if (!currentSetCmpData.weightElement.value) {
                                 this.onSetDeleted(setIndex);
                                 await previousSetCmpData.repsElement.setFocus();
                             }
@@ -200,7 +200,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 switch (currentSetCmpData.activeSetCategory) {
                     case 'freeWeighted': {
                         if (!currentSetCmpData.repsElement.value) {
-                            await currentSetCmpData.weightLiftedElement.setFocus();
+                            await currentSetCmpData.weightElement.setFocus();
                         }
                         break;
                     }
@@ -324,7 +324,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             const setCategory = this.selectedSetCategoriesControl.value[index];
             switch (setCategory) {
                 case 'freeWeighted': {
-                    total += group.controls.weightLifted.value * group.controls.reps.value;
+                    total += group.controls.weight.value * group.controls.reps.value;
                     break;
                 }
                 case 'dynamicBodyweight': {
@@ -351,14 +351,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         return total;
     }
 
-    private _setWeightLiftedValue(weightLifted: number): number {
+    private _setWeightValue(weight: number): number {
         if (this.editTrainingData) {
             const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
             if (editTrainingWeightUnit !== this.currentWeightUnit) {
-                return convertWeightUnit(this.currentWeightUnit, weightLifted);
+                return convertWeightUnit(this.currentWeightUnit, weight);
             }
         }
-        return weightLifted;
+        return weight;
     }
 
     private _constructSetForm(
@@ -384,8 +384,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     private _setFormValue(setConstituent: SetConstituent, set: Set): number | null {
         if (set) {
             if (setConstituent in set) {
-                if (setConstituent === 'weightLifted') {
-                    return this._setWeightLiftedValue(set.weightLifted);
+                if (setConstituent === 'weight') {
+                    return this._setWeightValue(set.weight);
                 } else {
                     return set.reps;
                 }
@@ -404,8 +404,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         switch (setCategory) {
             case 'freeWeighted': {
                 setControls = this._constructSetForm(
-                    'weightLifted',
-                    { setNumber: 1, weightLifted: set ? set.weightLifted : null },
+                    'weight',
+                    { setNumber: 1, weight: set ? set.weight : null },
                     setControls,
                 );
                 setControls = this._constructSetForm(
