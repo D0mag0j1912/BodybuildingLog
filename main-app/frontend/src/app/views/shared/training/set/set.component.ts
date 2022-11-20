@@ -185,7 +185,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             switch (setConstituent) {
                 case 'weightLifted': {
                     switch (previousSetCmpData.activeSetCategory) {
-                        case 'freeWeighted' || 'dynamicBodyweight': {
+                        case 'freeWeighted':
+                        case 'dynamicBodyweight': {
                             if (!currentSetCmpData.weightLiftedElement?.value) {
                                 await previousSetCmpData.repsElement?.setFocus();
                                 this.onSetDeleted(setIndex);
@@ -197,7 +198,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 }
                 case 'reps': {
                     switch (previousSetCmpData.activeSetCategory) {
-                        case 'freeWeighted' || 'dynamicBodyweight': {
+                        case 'freeWeighted':
+                        case 'dynamicBodyweight': {
                             if (!currentSetCmpData.repsElement?.value) {
                                 await previousSetCmpData.repsElement?.setFocus();
                                 this.onSetDeleted(setIndex);
@@ -316,11 +318,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             const setCategory = this.selectedSetCategoriesControl.value[index];
             switch (setCategory) {
                 case 'freeWeighted': {
-                    total += group.get('weightLifted')?.value * group.get('reps')?.value;
+                    total += group.controls.weightLifted.value * group.controls.reps.value;
                     break;
                 }
                 case 'dynamicBodyweight': {
-                    total += this.bodyweightControl.value * group.get('reps')?.value;
+                    total += this.bodyweightControl.value * group.controls.reps.value;
                     break;
                 }
                 case 'dynamicWeighted': {
