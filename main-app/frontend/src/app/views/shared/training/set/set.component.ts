@@ -179,36 +179,42 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         setConstituent: SetConstituent,
         setIndex: number,
     ): Promise<void> {
-        if (setIndex > 0) {
-            const currentSetCmpData = this.setCmps.toArray()[setIndex];
-            const previousSetCmpData = this.setCmps.toArray()[setIndex - 1];
-            switch (setConstituent) {
-                case 'weightLifted': {
-                    switch (previousSetCmpData.activeSetCategory) {
-                        case 'freeWeighted':
-                        case 'dynamicBodyweight': {
-                            if (!currentSetCmpData.weightLiftedElement?.value) {
-                                await previousSetCmpData.repsElement?.setFocus();
+        const currentSetCmpData = this.setCmps.toArray()[setIndex];
+        const previousSetCmpData = this.setCmps.toArray()[setIndex - 1];
+        switch (setConstituent) {
+            case 'weightLifted': {
+                switch (currentSetCmpData.activeSetCategory) {
+                    case 'freeWeighted': {
+                        if (setIndex > 0) {
+                            if (!currentSetCmpData.weightLiftedElement.value) {
                                 this.onSetDeleted(setIndex);
+                                await previousSetCmpData.repsElement.setFocus();
                             }
-                            break;
                         }
+                        break;
                     }
-                    break;
                 }
-                case 'reps': {
-                    switch (previousSetCmpData.activeSetCategory) {
-                        case 'freeWeighted':
-                        case 'dynamicBodyweight': {
-                            if (!currentSetCmpData.repsElement?.value) {
-                                await previousSetCmpData.repsElement?.setFocus();
+                break;
+            }
+            case 'reps': {
+                switch (currentSetCmpData.activeSetCategory) {
+                    case 'freeWeighted': {
+                        if (!currentSetCmpData.repsElement.value) {
+                            await currentSetCmpData.weightLiftedElement.setFocus();
+                        }
+                        break;
+                    }
+                    case 'dynamicBodyweight': {
+                        if (setIndex > 0) {
+                            if (!currentSetCmpData.repsElement.value) {
                                 this.onSetDeleted(setIndex);
+                                await previousSetCmpData.repsElement.setFocus();
                             }
-                            break;
                         }
+                        break;
                     }
-                    break;
                 }
+                break;
             }
         }
     }
