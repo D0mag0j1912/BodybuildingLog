@@ -18,38 +18,38 @@ import { OverlayEventDetail } from '@ionic/core';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
 import { concatMap, filter, map, switchMap, takeUntil } from 'rxjs/operators';
-import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
+import { getControlValueAccessor } from '../../../../../helpers/control-value-accessor.helper';
 import {
     Set,
     SelectedCategoriesChanged,
     SetTrainingData,
-} from '../../../../models/training/new-training/single-exercise/set/set.model';
-import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
-import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
-import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-unit.const';
-import { NewTraining } from '../../../../models/training/new-training/new-training.model';
-import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
+} from '../../../../../models/training/new-training/single-exercise/set/set.model';
+import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
+import { convertWeightUnit } from '../../../../../helpers/training/convert-weight-units.helper';
+import { DEFAULT_WEIGHT_UNIT } from '../../../../../constants/shared/default-weight-unit.const';
+import { NewTraining } from '../../../../../models/training/new-training/new-training.model';
+import { NewTrainingStoreService } from '../../../../../services/store/training/new-training-store.service';
 import {
     SetCategoryType,
     SetConstituent,
-} from '../../../../models/training/new-training/single-exercise/set/set.type';
-import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
-import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
+} from '../../../../../models/training/new-training/single-exercise/set/set.type';
+import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
+import { DialogRoles } from '../../../../../constants/enums/model-roles.enum';
 import {
     FormConstructionType,
     SetFormType,
     SetFormValue,
-} from '../../../../models/training/new-training/single-exercise/set/set-form.type';
-import { WeightUnit } from '../../../../models/common/preferences.type';
-import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
-import { Preferences } from '../../../../models/common/preferences.model';
+} from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
+import { WeightUnit } from '../../../../../models/common/preferences.type';
+import { PreferencesStoreService } from '../../../../../services/store/shared/preferences-store.service';
+import { Preferences } from '../../../../../models/common/preferences.model';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
-import { SetConstituentComponent } from './set-constituent/set-constituent.component';
+import { SetComponent } from './set/set.component';
 
 @Component({
-    selector: 'bl-set',
-    templateUrl: './set.component.html',
-    styleUrls: ['./set.component.scss'],
+    selector: 'bl-sets',
+    templateUrl: './sets.component.html',
+    styleUrls: ['./sets.component.scss'],
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
 export class SetsComponent implements ControlValueAccessor, OnInit {
@@ -91,8 +91,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     @Output()
     selectedCategoriesChanged = new EventEmitter<SelectedCategoriesChanged>();
 
-    @ViewChildren('set', { read: SetConstituentComponent })
-    setCmps: QueryList<SetConstituentComponent>;
+    @ViewChildren('set', { read: SetComponent })
+    setCmps: QueryList<SetComponent>;
 
     constructor(
         private _unsubscribeService: UnsubscribeService,

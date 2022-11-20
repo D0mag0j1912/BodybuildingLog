@@ -10,25 +10,25 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
-import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
-import { convertWeightUnit } from '../../../../../helpers/training/convert-weight-units.helper';
-import { WeightUnit } from '../../../../../models/common/preferences.type';
-import { SetFormType } from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
-import { SetTrainingData } from '../../../../../models/training/new-training/single-exercise/set/set.model';
+import { isNeverCheck } from '../../../../../../helpers/is-never-check.helper';
+import { convertWeightUnit } from '../../../../../../helpers/training/convert-weight-units.helper';
+import { WeightUnit } from '../../../../../../models/common/preferences.type';
+import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
+import { SetTrainingData } from '../../../../../../models/training/new-training/single-exercise/set/set.model';
 import {
     SetCategoryType,
     SetConstituent,
-} from '../../../../../models/training/new-training/single-exercise/set/set.type';
-import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
+} from '../../../../../../models/training/new-training/single-exercise/set/set.type';
+import { UnsubscribeService } from '../../../../../../services/shared/unsubscribe.service';
 
 @Component({
-    selector: 'bl-set-constituent',
-    templateUrl: './set-constituent.component.html',
-    styleUrls: ['./set-constituent.component.scss'],
+    selector: 'bl-set',
+    templateUrl: './set.component.html',
+    styleUrls: ['./set.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class SetConstituentComponent implements OnChanges {
+export class SetComponent implements OnChanges {
     @Input()
     form: FormGroup<SetFormType>;
 

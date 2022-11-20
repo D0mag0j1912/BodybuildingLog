@@ -8,7 +8,6 @@ import { ShowAllExercisesModule } from '../pipes/training/past-trainings/show-al
 import { NotFoundResolverService } from '../services/shared/not-found-resolver.service';
 import { DeleteTrainingActionService } from '../services/api/training/delete-training-action.service';
 import { NotFoundComponent } from '../views/shared/not-found/not-found.component';
-import { SetsComponent } from '../views/shared/training/set/set.component';
 import { DeleteTrainingActionComponent } from '../views/shared/training/training-actions/delete-training-action/delete-training-action.component';
 import { MoreTrainingActionComponent } from '../views/shared/training/training-actions/more-training-action/more-training-action.component';
 import { PaginationComponent } from '../views/shared/pagination/pagination.component';
@@ -17,16 +16,10 @@ import { DateTimePickerComponent } from '../views/shared/datetime-picker/datetim
 import { SkeletonLoaderComponent } from '../views/shared/skeleton-loader/skeleton-loader.component';
 import { SkeletonLoaderModule } from '../directives/skeleton-loader/skeleton-loader.module';
 import { SanitizeHtmlModule } from '../pipes/shared/sanitize-html/sanitize-html.module';
-import { ChangeSetCategoryComponent } from '../views/shared/training/set/change-set-category/change-set-category.component';
-import { CamelToSnakeCaseModule } from '../pipes/shared/camel-to-snake-case/camel-to-snake-case.module';
-import { SetConstituentComponent } from '../views/shared/training/set/set-constituent/set-constituent.component';
 
 const DIRECTIVES = [PaginationDirective];
 
 const COMPONENTS = [
-    SetsComponent,
-    ChangeSetCategoryComponent,
-    SetConstituentComponent,
     NotFoundComponent,
     PaginationComponent,
     DateTimePickerComponent,
@@ -43,13 +36,7 @@ const EXTERNAL_IMPORTS = [
     IonicModule,
 ];
 
-const IMPORTS = [
-    ShowAllExercisesModule,
-    PipesModule,
-    SkeletonLoaderModule,
-    SanitizeHtmlModule,
-    CamelToSnakeCaseModule,
-];
+const IMPORTS = [ShowAllExercisesModule, PipesModule, SkeletonLoaderModule, SanitizeHtmlModule];
 
 @NgModule({
     declarations: [...COMPONENTS, ...DIRECTIVES, ...ACTION_COMPONENTS],
