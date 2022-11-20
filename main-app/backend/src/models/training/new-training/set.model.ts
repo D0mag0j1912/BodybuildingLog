@@ -14,7 +14,7 @@ export const SET_SCHEMA = new Schema({
         type: Number,
         required: true,
     },
-    weightLifted: Number,
+    weight: Number,
     reps: {
         type: Number,
         required: true,
@@ -38,12 +38,12 @@ export class Set {
     @ApiProperty()
     @IsOptional()
     @Min(1, {
-        message: '@training.new_training.errors.weight_lifted_min',
+        message: '@training.new_training.errors.weight_min',
     })
-    @Max(1000, { message: '@training.new_training.errors.weight_lifted_max' })
-    @IsNumber({}, { message: '@training.new_training.errors.weight_lifted_number' })
-    @NotEquals(0, { message: '@training.new_training.errors.weight_lifted_required' })
-    weightLifted: number;
+    @Max(1000, { message: '@training.new_training.errors.weight_max' })
+    @IsNumber({}, { message: '@training.new_training.errors.weight_number' })
+    @NotEquals(0, { message: '@training.new_training.errors.weight_required' })
+    weight: number;
 
     @ApiProperty()
     @Min(1, {

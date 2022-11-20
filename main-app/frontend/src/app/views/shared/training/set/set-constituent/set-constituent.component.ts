@@ -99,8 +99,8 @@ export class SetConstituentComponent implements OnChanges {
     @Output()
     setCategoryModalOpened = new EventEmitter<SetCategoryType>();
 
-    @ViewChild('weightLiftedEl')
-    weightLiftedElement: IonInput;
+    @ViewChild('weightEl')
+    weightElement: IonInput;
 
     @ViewChild('repsEl')
     repsElement: IonInput;
@@ -109,12 +109,12 @@ export class SetConstituentComponent implements OnChanges {
         if (!changes.weightUnit?.firstChange && changes.weightUnit?.currentValue) {
             switch (this.activeSetCategory) {
                 case 'freeWeighted': {
-                    const currentWeightLiftedValue = +this.form.controls.weightLifted.value;
-                    if (currentWeightLiftedValue) {
-                        this.form.controls.weightLifted.patchValue(
+                    const currentWeightValue = +this.form.controls.weight.value;
+                    if (currentWeightValue) {
+                        this.form.controls.weight.patchValue(
                             convertWeightUnit(
                                 changes.weightUnit.currentValue as WeightUnit,
-                                currentWeightLiftedValue,
+                                currentWeightValue,
                             ),
                         );
                     }
@@ -136,13 +136,13 @@ export class SetConstituentComponent implements OnChanges {
     }
 
     onChangeSets(): void {
-        const weightLifted = this.form.controls.weightLifted?.value;
+        const weight = this.form.controls.weight?.value;
         const reps = this.form.controls.reps?.value;
         const setData: SetTrainingData = {
             exerciseName: this.exerciseControl.value,
-            weightLifted:
-                weightLifted && this._isSetConstituentValid('weightLifted')
-                    ? this.form.controls.weightLifted.value
+            weight:
+                weight && this._isSetConstituentValid('weight')
+                    ? this.form.controls.weight.value
                     : undefined,
             reps:
                 reps && this._isSetConstituentValid('reps')
@@ -170,8 +170,8 @@ export class SetConstituentComponent implements OnChanges {
     private async _focusSetConstituent(setCategory: SetCategoryType): Promise<void> {
         switch (setCategory) {
             case 'freeWeighted': {
-                if (this.weightLiftedElement) {
-                    await this.weightLiftedElement.setFocus();
+                if (this.weightElement) {
+                    await this.weightElement.setFocus();
                 }
                 break;
             }

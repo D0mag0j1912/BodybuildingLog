@@ -12,7 +12,7 @@ import { LoadingControllerService } from '../../../services/shared/loading-contr
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
 import * as AuthCustomValidators from '../../../validators/auth/auth.validators';
 import { IonFocusDurations } from '../../../constants/shared/ion-focus-durations.const';
-import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-format.const';
+import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
 import { DEFAULT_LANGUAGE } from '../../../constants/shared/default-language.const';
 
 @Component({
@@ -22,8 +22,8 @@ import { DEFAULT_LANGUAGE } from '../../../constants/shared/default-language.con
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignupComponent implements OnDestroy {
-    private readonly _isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    readonly isLoading$: Observable<boolean> = this._isLoading$.asObservable();
+    private _isLoading$ = new BehaviorSubject<boolean>(false);
+    isLoading$ = this._isLoading$.asObservable();
 
     form = new FormGroup(
         {
@@ -53,13 +53,13 @@ export class SignupComponent implements OnDestroy {
     );
 
     constructor(
-        private readonly _authService: AuthService,
-        private readonly _signupService: SignupService,
-        private readonly _translateService: TranslateService,
-        private readonly _loadingControllerService: LoadingControllerService,
-        private readonly _toastControllerService: ToastControllerService,
-        private readonly _changeDetectorRef: ChangeDetectorRef,
-        private readonly _router: Router,
+        private _authService: AuthService,
+        private _signupService: SignupService,
+        private _translateService: TranslateService,
+        private _loadingControllerService: LoadingControllerService,
+        private _toastControllerService: ToastControllerService,
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _router: Router,
     ) {}
 
     get focusDuration(): number {
@@ -79,11 +79,11 @@ export class SignupComponent implements OnDestroy {
 
         this._authService
             .signup(
-                this.form.get('language').value,
-                this.form.get('weightUnit').value,
-                this.form.get('email').value,
-                this.form.get('password').value,
-                this.form.get('confirmPassword').value,
+                this.form.controls.language.value,
+                this.form.controls.weightUnit.value,
+                this.form.controls.email.value,
+                this.form.controls.password.value,
+                this.form.controls.confirmPassword.value,
             )
             .pipe(
                 catchError((_) => EMPTY),

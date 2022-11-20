@@ -1,4 +1,4 @@
-export type SetConstituent = 'weightLifted' | 'reps';
+export type SetConstituent = 'weight' | 'reps';
 
 export type SetConstituentExistsType = Readonly<Record<SetConstituent, boolean>>;
 

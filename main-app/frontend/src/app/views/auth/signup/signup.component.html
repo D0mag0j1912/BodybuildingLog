@@ -47,7 +47,7 @@
                                 <ion-row>
                                     <ion-col>
                                         <ion-note class="description">
-                                            {{ 'auth.pick_weight_format' | translate }}
+                                            {{ 'auth.pick_weight_unit' | translate }}
                                         </ion-note>
                                     </ion-col>
                                 </ion-row>
@@ -69,7 +69,7 @@
                                         </ion-col>
                                     </ion-row>
                                     <ion-note *ngIf="form.get('weightUnit').errors?.required" class="error">
-                                        {{ 'preferences.errors.weight_format_required' | translate }}
+                                        {{ 'preferences.errors.weight_unit_required' | translate }}
                                     </ion-note>
                                 </ion-radio-group>
                                 <ion-row>

@@ -22,7 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-format.const';
+import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-unit.const';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { SelectedCategoriesChanged, Set } from '../../../../models/training/shared/set/set.model';
@@ -45,6 +45,7 @@ import {
 } from '../../../../models/training/shared/set/set.type';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
+import { SetFormType } from '../../../../models/training/shared/set/set-form.type';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -259,11 +260,11 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
             exercise = {
                 ...exercise,
                 sets: [...exercise.sets].map((set: Set, index: number) => {
-                    const { weightLifted, reps } = this._prepareSet(
+                    const { weight, reps } = this._prepareSet(
                         exercise.exerciseData.selectedSetCategories[index],
                     );
-                    if (!weightLifted) {
-                        delete set.weightLifted;
+                    if (!weight) {
+                        delete set.weight;
                     }
                     if (!reps) {
                         delete set.reps;
@@ -348,13 +349,13 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
             if (form?.errors) {
                 isFormValid = false;
             }
-            form.controls.forEach((group: AbstractControl) => {
+            form.controls.forEach((group: FormGroup<SetFormType>) => {
                 if (group?.errors) {
                     isFormValid = false;
                 }
-                const weightLiftedErrors = group.get('weightLifted')?.errors;
-                const repsErrors = group.get('reps')?.errors;
-                if (weightLiftedErrors) {
+                const weightErrors = group.controls.weight?.errors;
+                const repsErrors = group.controls.reps?.errors;
+                if (weightErrors) {
                     isFormValid = false;
                 }
                 if (repsErrors) {
@@ -376,21 +377,21 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     }
 
     private _prepareSet(setCategory: SetCategoryType): SetConstituentExistsType {
-        let weightLifted: boolean;
+        let weight: boolean;
         let reps: boolean;
         switch (setCategory) {
             case 'dynamicBodyweight': {
-                weightLifted = false;
+                weight = false;
                 reps = true;
                 break;
             }
             case 'dynamicWeighted': {
-                weightLifted = true;
+                weight = true;
                 reps = true;
                 break;
             }
             case 'freeWeighted': {
-                weightLifted = true;
+                weight = true;
                 reps = true;
                 break;
             }
@@ -407,7 +408,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
             }
         }
         return {
-            weightLifted,
+            weight,
             reps,
         };
     }

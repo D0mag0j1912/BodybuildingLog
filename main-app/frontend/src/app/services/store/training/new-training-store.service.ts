@@ -14,7 +14,7 @@ import { SetTrainingData, Set } from '../../../models/training/shared/set/set.mo
 import { SingleExercise } from '../../../models/training/shared/single-exercise/single-exercise.model';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { PreferencesStoreService } from '../shared/preferences-store.service';
-import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-format.const';
+import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
 import { WeightUnit } from '../../../models/common/preferences.type';
 import { Preferences } from '../../../models/common/preferences.model';
 import { SetCategoryType } from '../../../models/training/shared/set/set.type';
@@ -74,7 +74,7 @@ export class NewTrainingStoreService {
                         exercise.sets.forEach((set: Set, index: number) => {
                             switch (exercise.exerciseData.selectedSetCategories[index]) {
                                 case 'freeWeighted': {
-                                    total = total + set.weightLifted * set.reps;
+                                    total = total + set.weight * set.reps;
                                     break;
                                 }
                                 case 'dynamicBodyweight': {
@@ -106,7 +106,7 @@ export class NewTrainingStoreService {
                 let updatedSet: Set;
                 switch (setCategory) {
                     case 'freeWeighted': {
-                        updatedSet = { setNumber: indexSet + 1, weightLifted: null, reps: null };
+                        updatedSet = { setNumber: indexSet + 1, weight: null, reps: null };
                         break;
                     }
                     case 'dynamicBodyweight': {
@@ -181,7 +181,7 @@ export class NewTrainingStoreService {
                                 let set: Set;
                                 switch (setCategory) {
                                     case 'freeWeighted': {
-                                        set = { setNumber, weightLifted: null, reps: null };
+                                        set = { setNumber, weight: null, reps: null };
                                         break;
                                     }
                                     case 'dynamicBodyweight': {
@@ -353,10 +353,10 @@ export class NewTrainingStoreService {
                                 sets: [...exercise.sets].map((set: Set, j: number) => {
                                     if (j === indexFoundSet) {
                                         let updatedSet: Set;
-                                        if (trainingData?.weightLifted) {
+                                        if (trainingData?.weight) {
                                             updatedSet = {
                                                 ...set,
-                                                weightLifted: trainingData.weightLifted,
+                                                weight: trainingData.weight,
                                                 reps: trainingData.reps,
                                             };
                                         } else {
@@ -378,10 +378,10 @@ export class NewTrainingStoreService {
             };
         } else {
             let newSet: Set;
-            if (trainingData.weightLifted) {
+            if (trainingData.weight) {
                 newSet = {
                     setNumber: trainingData.setNumber,
-                    weightLifted: trainingData.weightLifted,
+                    weight: trainingData.weight,
                     reps: trainingData.reps,
                 } as Set;
             } else {
@@ -416,7 +416,7 @@ export class NewTrainingStoreService {
                 let set: Set;
                 switch (setCategory) {
                     case 'freeWeighted': {
-                        set = { setNumber: 1, weightLifted: null, reps: null };
+                        set = { setNumber: 1, weight: null, reps: null };
                         break;
                     }
                     case 'dynamicBodyweight': {
