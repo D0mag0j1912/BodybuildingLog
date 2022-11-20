@@ -25,27 +25,30 @@ import { getControlValueAccessor } from '../../../../helpers/control-value-acces
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-unit.const';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
-import { SelectedCategoriesChanged, Set } from '../../../../models/training/shared/set/set.model';
-import { SingleExercise } from '../../../../models/training/shared/single-exercise/single-exercise.model';
+import {
+    SelectedCategoriesChanged,
+    Set,
+} from '../../../../models/training/new-training/single-exercise/set/set.model';
+import { SingleExercise } from '../../../../models/training/new-training/single-exercise/single-exercise.model';
 import {
     ExerciseFormType,
     SingleExerciseFormType,
     SingleExerciseValueType,
-} from '../../../../models/training/shared/single-exercise/single-exercise-form.type';
+} from '../../../../models/training/new-training/single-exercise/single-exercise-form.type';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
-import { SetsComponent } from '../set/set.component';
+import { SetsComponent } from '../../../shared/training/set/set.component';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import { WeightUnit } from '../../../../models/common/preferences.type';
 import { StreamData } from '../../../../models/common/common.model';
 import {
     SetCategoryType,
     SetConstituentExistsType,
-} from '../../../../models/training/shared/set/set.type';
+} from '../../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
-import { SetFormType } from '../../../../models/training/shared/set/set-form.type';
+import { SetFormType } from '../../../../models/training/new-training/single-exercise/set/set-form.type';
 
 @Component({
     selector: 'bl-single-exercise',

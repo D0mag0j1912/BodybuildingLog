@@ -13,12 +13,12 @@ import { IonInput } from '@ionic/angular';
 import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
 import { convertWeightUnit } from '../../../../../helpers/training/convert-weight-units.helper';
 import { WeightUnit } from '../../../../../models/common/preferences.type';
-import { SetFormType } from '../../../../../models/training/shared/set/set-form.type';
-import { SetTrainingData } from '../../../../../models/training/shared/set/set.model';
+import { SetFormType } from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
+import { SetTrainingData } from '../../../../../models/training/new-training/single-exercise/set/set.model';
 import {
     SetCategoryType,
     SetConstituent,
-} from '../../../../../models/training/shared/set/set.type';
+} from '../../../../../models/training/new-training/single-exercise/set/set.type';
 import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
 
 @Component({

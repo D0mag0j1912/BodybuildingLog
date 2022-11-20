@@ -23,20 +23,23 @@ import {
     Set,
     SelectedCategoriesChanged,
     SetTrainingData,
-} from '../../../../models/training/shared/set/set.model';
+} from '../../../../models/training/new-training/single-exercise/set/set.model';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { convertWeightUnit } from '../../../../helpers/training/convert-weight-units.helper';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-unit.const';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
-import { SetCategoryType, SetConstituent } from '../../../../models/training/shared/set/set.type';
+import {
+    SetCategoryType,
+    SetConstituent,
+} from '../../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { DialogRoles } from '../../../../constants/enums/model-roles.enum';
 import {
     FormConstructionType,
     SetFormType,
     SetFormValue,
-} from '../../../../models/training/shared/set/set-form.type';
+} from '../../../../models/training/new-training/single-exercise/set/set-form.type';
 import { WeightUnit } from '../../../../models/common/preferences.type';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import { Preferences } from '../../../../models/common/preferences.model';

@@ -1,5 +1,5 @@
 import { Exercise } from '../../exercise.model';
-import { Set } from '../set/set.model';
+import { Set } from './set/set.model';
 
 export interface SingleExercise {
     exerciseData: Exercise;

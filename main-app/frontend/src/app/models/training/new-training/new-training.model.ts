@@ -1,5 +1,5 @@
 import { WeightUnit } from '../../common/preferences.type';
-import { SingleExercise } from '../shared/single-exercise/single-exercise.model';
+import { SingleExercise } from './single-exercise/single-exercise.model';
 
 export interface NewTraining {
     exercises: SingleExercise[];

@@ -10,14 +10,17 @@ import {
     TOTAL_INITIAL_WEIGHT,
 } from '../../../constants/training/new-training.const';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
-import { SetTrainingData, Set } from '../../../models/training/shared/set/set.model';
-import { SingleExercise } from '../../../models/training/shared/single-exercise/single-exercise.model';
+import {
+    SetTrainingData,
+    Set,
+} from '../../../models/training/new-training/single-exercise/set/set.model';
+import { SingleExercise } from '../../../models/training/new-training/single-exercise/single-exercise.model';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { PreferencesStoreService } from '../shared/preferences-store.service';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
 import { WeightUnit } from '../../../models/common/preferences.type';
 import { Preferences } from '../../../models/common/preferences.model';
-import { SetCategoryType } from '../../../models/training/shared/set/set.type';
+import { SetCategoryType } from '../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { ExercisesStoreService } from './exercises-store.service';
 

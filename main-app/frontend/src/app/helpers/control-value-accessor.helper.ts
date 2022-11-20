@@ -1,7 +1,7 @@
 import { forwardRef, InjectionToken, Type } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SetsComponent } from '../views/shared/training/set/set.component';
-import { SingleExerciseComponent } from '../views/shared/training/single-exercise/single-exercise.component';
+import { SingleExerciseComponent } from '../views/training/new-training/single-exercise/single-exercise.component';
 
 export type Components = SingleExerciseComponent | SetsComponent;
 

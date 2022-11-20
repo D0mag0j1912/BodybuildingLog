@@ -9,7 +9,6 @@ import { NotFoundResolverService } from '../services/shared/not-found-resolver.s
 import { DeleteTrainingActionService } from '../services/api/training/delete-training-action.service';
 import { NotFoundComponent } from '../views/shared/not-found/not-found.component';
 import { SetsComponent } from '../views/shared/training/set/set.component';
-import { SingleExerciseComponent } from '../views/shared/training/single-exercise/single-exercise.component';
 import { DeleteTrainingActionComponent } from '../views/shared/training/training-actions/delete-training-action/delete-training-action.component';
 import { MoreTrainingActionComponent } from '../views/shared/training/training-actions/more-training-action/more-training-action.component';
 import { PaginationComponent } from '../views/shared/pagination/pagination.component';
@@ -25,7 +24,6 @@ import { SetConstituentComponent } from '../views/shared/training/set/set-consti
 const DIRECTIVES = [PaginationDirective];
 
 const COMPONENTS = [
-    SingleExerciseComponent,
     SetsComponent,
     ChangeSetCategoryComponent,
     SetConstituentComponent,

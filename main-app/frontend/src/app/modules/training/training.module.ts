@@ -11,6 +11,7 @@ import { SanitizeHtmlModule } from '../../pipes/shared/sanitize-html/sanitize-ht
 import { ShowAllExercisesModule } from '../../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NewTrainingComponent } from '../../views/training/new-training/new-training.component';
 import { ReorderExercisesComponent } from '../../views/training/new-training/reorder-exercises/reorder-exercises.component';
+import { SingleExerciseComponent } from '../../views/training/new-training/single-exercise/single-exercise.component';
 import { PastTrainingsFiltersComponent } from '../../views/training/past-trainings/past-trainings-filters/past-trainings-filters.component';
 import { PastTrainingsComponent } from '../../views/training/past-trainings/past-trainings.component';
 import { ShowByDayComponent } from '../../views/training/past-trainings/show-by-day/show-by-day.component';
@@ -29,6 +30,7 @@ const COMPONENTS = [
     PastTrainingsFiltersComponent,
     ShowByDayComponent,
     ReorderExercisesComponent,
+    SingleExerciseComponent,
 ];
 
 const EXTERNAL_IMPORTS = [
