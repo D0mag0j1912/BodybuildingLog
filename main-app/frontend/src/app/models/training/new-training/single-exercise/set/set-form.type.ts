@@ -1,7 +1,7 @@
-import { FormType } from '../../../common/form.type';
-import { ModelWithoutIdType } from '../../../common/raw.model';
-import { Set } from './set.model';
+import { FormType } from '../../../../common/form.type';
+import { ModelWithoutIdType } from '../../../../common/raw.model';
 import { SetConstituent } from './set.type';
+import { Set } from './set.model';
 
 export type SetFormType = Pick<FormType<Set>, SetConstituent>;
 

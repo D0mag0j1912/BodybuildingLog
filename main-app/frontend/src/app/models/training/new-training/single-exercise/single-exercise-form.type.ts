@@ -1,7 +1,7 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormType } from '../../../common/form.type';
 import { Exercise } from '../../exercise.model';
-import { Set } from '../set/set.model';
+import { Set } from './set/set.model';
 import { SingleExercise } from './single-exercise.model';
 
 export type SingleExerciseFormType = {

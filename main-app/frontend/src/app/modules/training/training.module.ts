@@ -7,10 +7,15 @@ import { AutofocusModule } from '../../directives/autofocus/autofocus.module';
 import { SkeletonLoaderModule } from '../../directives/skeleton-loader/skeleton-loader.module';
 import { TrainingItemDirective } from '../../directives/training-item/training-item.directive';
 import { PipesModule } from '../../pipes/pipes.module';
+import { CamelToSnakeCaseModule } from '../../pipes/shared/camel-to-snake-case/camel-to-snake-case.module';
 import { SanitizeHtmlModule } from '../../pipes/shared/sanitize-html/sanitize-html.module';
 import { ShowAllExercisesModule } from '../../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NewTrainingComponent } from '../../views/training/new-training/new-training.component';
 import { ReorderExercisesComponent } from '../../views/training/new-training/reorder-exercises/reorder-exercises.component';
+import { ChangeSetCategoryComponent } from '../../views/training/new-training/single-exercise/sets/change-set-category/change-set-category.component';
+import { SetComponent } from '../../views/training/new-training/single-exercise/sets/set/set.component';
+import { SetsComponent } from '../../views/training/new-training/single-exercise/sets/sets.component';
+import { SingleExerciseComponent } from '../../views/training/new-training/single-exercise/single-exercise.component';
 import { PastTrainingsFiltersComponent } from '../../views/training/past-trainings/past-trainings-filters/past-trainings-filters.component';
 import { PastTrainingsComponent } from '../../views/training/past-trainings/past-trainings.component';
 import { ShowByDayComponent } from '../../views/training/past-trainings/show-by-day/show-by-day.component';
@@ -29,6 +34,10 @@ const COMPONENTS = [
     PastTrainingsFiltersComponent,
     ShowByDayComponent,
     ReorderExercisesComponent,
+    SingleExerciseComponent,
+    SetsComponent,
+    ChangeSetCategoryComponent,
+    SetComponent,
 ];
 
 const EXTERNAL_IMPORTS = [
@@ -45,6 +54,7 @@ const IMPORTS = [
     PipesModule,
     AutofocusModule,
     SkeletonLoaderModule,
+    CamelToSnakeCaseModule,
 ];
 
 const PIPES_MODULES = [ShowAllExercisesModule, SanitizeHtmlModule];

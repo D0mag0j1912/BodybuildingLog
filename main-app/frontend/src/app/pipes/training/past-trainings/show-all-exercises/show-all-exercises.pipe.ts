@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
-import { SingleExercise } from '../../../../models/training/shared/single-exercise/single-exercise.model';
+import { SingleExercise } from '../../../../models/training/new-training/single-exercise/single-exercise.model';
 
 @Pipe({ name: 'showAllExercises' })
 export class ShowAllExercisesPipe implements PipeTransform {

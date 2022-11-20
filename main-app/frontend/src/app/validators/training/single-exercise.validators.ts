@@ -5,7 +5,7 @@ import {
     ValidationErrors,
     ValidatorFn,
 } from '@angular/forms';
-import { SingleExerciseFormType } from '../../models/training/shared/single-exercise/single-exercise-form.type';
+import { SingleExerciseFormType } from '../../models/training/new-training/single-exercise/single-exercise-form.type';
 
 export function checkDuplicateExerciseName(): ValidatorFn {
     return (array: AbstractControl): ValidationErrors | null => {
