@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
+import { EMPTY } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
@@ -19,12 +19,11 @@ import { DEFAULT_LANGUAGE } from '../../../constants/shared/default-language.con
     selector: 'bl-signup',
     templateUrl: './signup.component.html',
     styleUrls: ['./signup.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SignupComponent implements OnDestroy {
-    private _isLoading$ = new BehaviorSubject<boolean>(false);
-    isLoading$ = this._isLoading$.asObservable();
+export class SignupComponent {
+    isLoading = false;
 
+    focusDuration = IonFocusDurations.SIGNUP;
     form = new FormGroup(
         {
             language: new FormControl<LanguageCode>(DEFAULT_LANGUAGE, [Validators.required]),
@@ -62,19 +61,11 @@ export class SignupComponent implements OnDestroy {
         private _router: Router,
     ) {}
 
-    get focusDuration(): number {
-        return IonFocusDurations.SIGNUP;
-    }
-
-    ngOnDestroy(): void {
-        this._isLoading$.complete();
-    }
-
     async onSubmit(): Promise<void> {
         if (!this.form.valid) {
             return;
         }
-        this._isLoading$.next(true);
+        this.isLoading = true;
         await this._loadingControllerService.displayLoader({ message: 'auth.signing_in' });
 
         this._authService
@@ -88,7 +79,7 @@ export class SignupComponent implements OnDestroy {
             .pipe(
                 catchError((_) => EMPTY),
                 finalize(async () => {
-                    this._isLoading$.next(false);
+                    this.isLoading = false;
                     await this._loadingControllerService.dismissLoader();
                 }),
             )
