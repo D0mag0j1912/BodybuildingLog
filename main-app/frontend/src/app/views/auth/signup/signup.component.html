@@ -172,7 +172,7 @@
                                             class="submit"
                                             type="submit"
                                             color="primary"
-                                            [disabled]="isLoading"
+                                            [disabled]="!form.valid || isLoading"
                                         >
                                             {{ 'auth.signup' | translate }}
                                         </ion-button>
