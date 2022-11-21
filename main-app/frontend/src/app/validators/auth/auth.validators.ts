@@ -26,7 +26,7 @@ export function passwordFitsEmail(
                             return null;
                         }),
                         catchError((_) => of(null)),
-                        finalize(() => changeDetectorRef.markForCheck()),
+                        finalize(() => changeDetectorRef.detectChanges()),
                     );
                 } else {
                     return of(null);

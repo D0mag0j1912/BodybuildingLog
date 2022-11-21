@@ -28,8 +28,8 @@
                                             ></ion-input>
                                             <ion-note
                                                 *ngIf="
-                                                    form.get('email').errors?.required &&
-                                                    (form.get('email').dirty || form.get('email').touched)
+                                                    form.controls.email.errors?.required &&
+                                                    (form.controls.email.dirty || form.controls.email.touched)
                                                 "
                                                 slot="error"
                                             >
@@ -37,8 +37,8 @@
                                             </ion-note>
                                             <ion-note
                                                 *ngIf="
-                                                    form.get('email').errors?.email &&
-                                                    !form.get('email').errors?.required
+                                                    form.controls.email.errors?.email &&
+                                                    !form.controls.email.errors?.required
                                                 "
                                                 slot="error"
                                             >
@@ -56,8 +56,8 @@
                                             <ion-input type="password" formControlName="password"></ion-input>
                                             <ion-note
                                                 *ngIf="
-                                                    form.get('password').errors?.required &&
-                                                    (form.get('password').dirty || form.get('password').touched)
+                                                    form.controls.password.errors?.required &&
+                                                    (form.controls.password.dirty || form.controls.password.touched)
                                                 "
                                                 slot="error"
                                             >
@@ -65,8 +65,8 @@
                                             </ion-note>
                                             <ion-note
                                                 *ngIf="
-                                                    form.get('password').errors?.minlength ||
-                                                    form.get('password').errors?.maxlength
+                                                    form.controls.password.errors?.minlength ||
+                                                    form.controls.password.errors?.maxlength
                                                 "
                                                 slot="error"
                                             >
@@ -76,9 +76,9 @@
                                         <ion-note
                                             *ngIf="
                                                 form.errors?.passwordFitsEmail &&
-                                                !form.get('password').errors?.required &&
-                                                !form.get('password').errors?.minlength &&
-                                                !form.get('password').errors?.maxlength
+                                                !form.controls.password.errors?.required &&
+                                                !form.controls.password.errors?.minlength &&
+                                                !form.controls.password.errors?.maxlength
                                             "
                                             class="error"
                                         >
@@ -92,7 +92,7 @@
                                             class="submit"
                                             type="submit"
                                             color="primary"
-                                            [disabled]="!form.valid || (isLoading$ | async)"
+                                            [disabled]="!form.valid || isLoading"
                                         >
                                             {{ 'auth.login' | translate }}
                                         </ion-button>
