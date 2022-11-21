@@ -44,11 +44,10 @@ export class SetComponent implements OnChanges {
         if (currentBodyweight) {
             switch (this.activeSetCategory) {
                 case 'dynamicBodyweight': {
-                    this.form.controls.reps.enable();
-                    setTimeout(
-                        async () => await this._focusSetConstituent(this._activeSetCategory),
-                        400,
-                    );
+                    setTimeout(async () => {
+                        this.form.controls.reps.enable();
+                        await this._focusSetConstituent(this._activeSetCategory);
+                    }, 400);
                     break;
                 }
             }
