@@ -26,7 +26,7 @@ export function passwordFitsEmail(
                             return null;
                         }),
                         catchError((_) => of(null)),
-                        finalize(() => changeDetectorRef.markForCheck()),
+                        finalize(() => changeDetectorRef.detectChanges()),
                     );
                 } else {
                     return of(null);
@@ -37,13 +37,13 @@ export function passwordFitsEmail(
 
 export function isEmailAvailable(
     signupService: SignupService,
-    cd: ChangeDetectorRef,
+    changeDetectorRef: ChangeDetectorRef,
 ): AsyncValidatorFn {
-    return (control: AbstractControl) =>
+    return (control: AbstractControl<string>) =>
         timer(350).pipe(
             switchMap((_) => {
                 if (control) {
-                    const email: string = control?.value;
+                    const email = control?.value;
                     if (!email) {
                         return EMPTY;
                     }
@@ -55,7 +55,7 @@ export function isEmailAvailable(
                             return null;
                         }),
                         catchError((_) => EMPTY),
-                        finalize(() => cd.markForCheck()),
+                        finalize(() => changeDetectorRef.detectChanges()),
                     );
                 } else {
                     return EMPTY;
