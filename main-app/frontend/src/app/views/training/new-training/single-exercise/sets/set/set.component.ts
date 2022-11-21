@@ -19,14 +19,12 @@ import {
     SetCategoryType,
     SetConstituent,
 } from '../../../../../../models/training/new-training/single-exercise/set/set.type';
-import { UnsubscribeService } from '../../../../../../services/shared/unsubscribe.service';
 
 @Component({
     selector: 'bl-set',
     templateUrl: './set.component.html',
     styleUrls: ['./set.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [UnsubscribeService],
 })
 export class SetComponent implements OnChanges {
     @Input()
