@@ -166,7 +166,8 @@ export class SetComponent implements OnChanges {
 
     private async _focusSetConstituent(setCategory: SetCategoryType): Promise<void> {
         switch (setCategory) {
-            case 'freeWeighted': {
+            case 'freeWeighted':
+            case 'dynamicWeighted': {
                 if (this.weightElement) {
                     await this.weightElement.setFocus();
                 }
@@ -176,10 +177,6 @@ export class SetComponent implements OnChanges {
                 if (this.repsElement) {
                     await this.repsElement.setFocus();
                 }
-                break;
-            }
-            case 'dynamicWeighted': {
-                //TODO: BL-121
                 break;
             }
             case 'staticBodyweight': {

@@ -108,16 +108,13 @@ export class NewTrainingStoreService {
             map((trainingState: NewTraining) => {
                 let updatedSet: Set;
                 switch (setCategory) {
-                    case 'freeWeighted': {
+                    case 'freeWeighted':
+                    case 'dynamicWeighted': {
                         updatedSet = { setNumber: indexSet + 1, weight: null, reps: null };
                         break;
                     }
                     case 'dynamicBodyweight': {
                         updatedSet = { setNumber: indexSet + 1, reps: null };
-                        break;
-                    }
-                    case 'dynamicWeighted': {
-                        //TODO: BL-121
                         break;
                     }
                     case 'staticBodyweight': {
@@ -183,16 +180,13 @@ export class NewTrainingStoreService {
                             if (i === indexExercise) {
                                 let set: Set;
                                 switch (setCategory) {
-                                    case 'freeWeighted': {
+                                    case 'freeWeighted':
+                                    case 'dynamicWeighted': {
                                         set = { setNumber, weight: null, reps: null };
                                         break;
                                     }
                                     case 'dynamicBodyweight': {
                                         set = { setNumber, reps: null };
-                                        break;
-                                    }
-                                    case 'dynamicWeighted': {
-                                        //TODO: BL-121
                                         break;
                                     }
                                     case 'staticBodyweight': {
@@ -418,16 +412,13 @@ export class NewTrainingStoreService {
             map((currentTrainingState: NewTraining) => {
                 let set: Set;
                 switch (setCategory) {
-                    case 'freeWeighted': {
+                    case 'freeWeighted':
+                    case 'dynamicWeighted': {
                         set = { setNumber: 1, weight: null, reps: null };
                         break;
                     }
                     case 'dynamicBodyweight': {
                         set = { setNumber: 1, reps: null };
-                        break;
-                    }
-                    case 'dynamicWeighted': {
-                        //TODO: BL-121
                         break;
                     }
                     case 'staticBodyweight': {
