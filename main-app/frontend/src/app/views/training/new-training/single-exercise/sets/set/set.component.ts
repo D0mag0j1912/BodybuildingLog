@@ -40,26 +40,12 @@ export class SetComponent implements OnChanges {
     private _weightUnit: WeightUnit;
 
     @Input()
-    set currentBodyweight(currentBodyweight: number) {
-        if (currentBodyweight) {
-            switch (this.activeSetCategory) {
-                case 'dynamicBodyweight': {
-                    this.form.controls.reps.enable();
-                    setTimeout(
-                        async () => await this._focusSetConstituent(this._activeSetCategory),
-                        400,
-                    );
-                    break;
-                }
-            }
-        }
-    }
-
-    @Input()
     set activeSetCategory(category: SetCategoryType) {
         if (category) {
             this._activeSetCategory = category;
-            setTimeout(async () => await this._focusSetConstituent(this._activeSetCategory), 400);
+            setTimeout(async () => {
+                await this._focusSetConstituent(this._activeSetCategory);
+            }, 400);
         }
     }
     get activeSetCategory(): SetCategoryType {
@@ -69,9 +55,6 @@ export class SetComponent implements OnChanges {
 
     @Input()
     exerciseControl: FormControl<string>;
-
-    @Input()
-    bodyweightControl: FormControl<number>;
 
     @Input()
     availableSetCategoriesControl: FormControl<SetCategoryType[]>;
@@ -120,13 +103,6 @@ export class SetComponent implements OnChanges {
                 }
             }
         }
-        if (changes.bodyweightControl?.currentValue) {
-            if (!this.bodyweightControl?.errors) {
-                this.form.controls.reps.enable();
-            } else {
-                this.form.controls.reps.disable();
-            }
-        }
     }
 
     updateSetCategory(): void {
@@ -167,7 +143,8 @@ export class SetComponent implements OnChanges {
 
     private async _focusSetConstituent(setCategory: SetCategoryType): Promise<void> {
         switch (setCategory) {
-            case 'freeWeighted': {
+            case 'freeWeighted':
+            case 'dynamicWeighted': {
                 if (this.weightElement) {
                     await this.weightElement.setFocus();
                 }
@@ -177,10 +154,6 @@ export class SetComponent implements OnChanges {
                 if (this.repsElement) {
                     await this.repsElement.setFocus();
                 }
-                break;
-            }
-            case 'dynamicWeighted': {
-                //TODO: BL-121
                 break;
             }
             case 'staticBodyweight': {

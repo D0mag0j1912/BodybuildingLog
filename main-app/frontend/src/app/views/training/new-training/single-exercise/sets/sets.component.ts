@@ -56,7 +56,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
 
     currentWeightUnit: WeightUnit;
-    currentBodyweight: number;
     form = new FormArray<FormGroup<SetFormType>>([]);
 
     onTouched: () => void;
@@ -135,14 +134,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe();
-
-        this.bodyweightControl.valueChanges
-            .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((_) => {
-                if (this.bodyweightControl.valid) {
-                    this.currentBodyweight = this.bodyweightControl.value;
-                }
-            });
     }
 
     writeValue(sets: Set[]): void {
@@ -187,7 +178,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         switch (setConstituent) {
             case 'weight': {
                 switch (currentSetCmpData.activeSetCategory) {
-                    case 'freeWeighted': {
+                    case 'freeWeighted':
+                    case 'dynamicWeighted': {
                         if (setIndex > 0) {
                             if (!currentSetCmpData.weightElement.value) {
                                 this.onSetDeleted(setIndex);
@@ -201,7 +193,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             }
             case 'reps': {
                 switch (currentSetCmpData.activeSetCategory) {
-                    case 'freeWeighted': {
+                    case 'freeWeighted':
+                    case 'dynamicWeighted': {
                         if (!currentSetCmpData.repsElement.value) {
                             await currentSetCmpData.weightElement.setFocus();
                         }
@@ -335,7 +328,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     break;
                 }
                 case 'dynamicWeighted': {
-                    //TODO: BL-121
+                    total +=
+                        (this.bodyweightControl.value + group.controls.weight.value) *
+                        group.controls.reps.value;
                     break;
                 }
                 case 'staticBodyweight': {
@@ -405,7 +400,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     ): void {
         let setControls: SetFormType = Object.assign({});
         switch (setCategory) {
-            case 'freeWeighted': {
+            case 'freeWeighted':
+            case 'dynamicWeighted': {
                 setControls = this._constructSetForm(
                     'weight',
                     { setNumber: 1, weight: set ? set.weight : null },
@@ -436,10 +432,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     this.form.removeAt(indexSet);
                     this.form.insert(indexSet, new FormGroup(setControls));
                 }
-                break;
-            }
-            case 'dynamicWeighted': {
-                //TODO: BL-121
                 break;
             }
             case 'staticBodyweight': {

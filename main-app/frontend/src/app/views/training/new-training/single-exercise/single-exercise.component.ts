@@ -38,7 +38,6 @@ import {
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
-import { SetsComponent } from './sets/sets.component';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
 import { WeightUnit } from '../../../../models/common/preferences.type';
 import { StreamData } from '../../../../models/common/common.model';
@@ -49,6 +48,7 @@ import {
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
 import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
 import { SetFormType } from '../../../../models/training/new-training/single-exercise/set/set-form.type';
+import { SetsComponent } from './sets/sets.component';
 
 @Component({
     selector: 'bl-single-exercise',
@@ -383,18 +383,14 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         let weight: boolean;
         let reps: boolean;
         switch (setCategory) {
-            case 'dynamicBodyweight': {
-                weight = false;
-                reps = true;
-                break;
-            }
+            case 'freeWeighted':
             case 'dynamicWeighted': {
                 weight = true;
                 reps = true;
                 break;
             }
-            case 'freeWeighted': {
-                weight = true;
+            case 'dynamicBodyweight': {
+                weight = false;
                 reps = true;
                 break;
             }
