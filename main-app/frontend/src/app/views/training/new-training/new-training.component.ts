@@ -38,7 +38,6 @@ import { NewTraining } from '../../../models/training/new-training/new-training.
 import { SingleExercise } from '../../../models/training/new-training/single-exercise/single-exercise.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
-import { SingleExerciseComponent } from './single-exercise/single-exercise.component';
 import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
 import { NewTrainingService } from '../../../services/api/training/new-training.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
@@ -56,6 +55,7 @@ import { ToastControllerService } from '../../../services/shared/toast-controlle
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
 import { ExercisesStoreService } from '../../../services/store/training/exercises-store.service';
 import { SetCategoryType } from '../../../models/training/new-training/single-exercise/set/set.type';
+import { SingleExerciseComponent } from './single-exercise/single-exercise.component';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
 @Component({
