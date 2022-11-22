@@ -56,7 +56,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
 
     currentWeightUnit: WeightUnit;
-    currentBodyweight: number;
     form = new FormArray<FormGroup<SetFormType>>([]);
 
     onTouched: () => void;
@@ -135,14 +134,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe();
-
-        this.bodyweightControl.valueChanges
-            .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((_) => {
-                if (this.bodyweightControl.valid) {
-                    this.currentBodyweight = this.bodyweightControl.value;
-                }
-            });
     }
 
     writeValue(sets: Set[]): void {

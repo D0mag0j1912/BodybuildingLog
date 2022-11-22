@@ -40,23 +40,6 @@ export class SetComponent implements OnChanges {
     private _weightUnit: WeightUnit;
 
     @Input()
-    set currentBodyweight(currentBodyweight: number) {
-        if (currentBodyweight) {
-            switch (this.activeSetCategory) {
-                case 'dynamicBodyweight':
-                case 'dynamicWeighted': {
-                    this.form.controls.reps.enable();
-                    if (this._activeSetCategory === 'dynamicWeighted') {
-                        this.form.controls.weight.enable();
-                    }
-                    this._delaySetFocus();
-                    break;
-                }
-            }
-        }
-    }
-
-    @Input()
     set activeSetCategory(category: SetCategoryType) {
         if (category) {
             this._activeSetCategory = category;
@@ -70,9 +53,6 @@ export class SetComponent implements OnChanges {
 
     @Input()
     exerciseControl: FormControl<string>;
-
-    @Input()
-    bodyweightControl: FormControl<number>;
 
     @Input()
     availableSetCategoriesControl: FormControl<SetCategoryType[]>;
@@ -116,26 +96,6 @@ export class SetComponent implements OnChanges {
                                 currentWeightValue,
                             ),
                         );
-                    }
-                    break;
-                }
-            }
-        }
-        if (changes.bodyweightControl?.currentValue) {
-            switch (this.activeSetCategory) {
-                case 'dynamicBodyweight': {
-                    !this.bodyweightControl?.errors
-                        ? this.form.controls.reps.enable()
-                        : this.form.controls.reps.disable();
-                    break;
-                }
-                case 'dynamicWeighted': {
-                    if (!this.bodyweightControl?.errors) {
-                        this.form.controls.weight.enable();
-                        this.form.controls.reps.enable();
-                    } else {
-                        this.form.controls.weight.disable();
-                        this.form.controls.reps.disable();
                     }
                     break;
                 }
