@@ -43,11 +43,13 @@ export class SetComponent implements OnChanges {
     set currentBodyweight(currentBodyweight: number) {
         if (currentBodyweight) {
             switch (this.activeSetCategory) {
-                case 'dynamicBodyweight': {
-                    setTimeout(async () => {
-                        this.form.controls.reps.enable();
-                        await this._focusSetConstituent(this._activeSetCategory);
-                    }, 400);
+                case 'dynamicBodyweight':
+                case 'dynamicWeighted': {
+                    this.form.controls.reps.enable();
+                    if (this._activeSetCategory === 'dynamicWeighted') {
+                        this.form.controls.weight.enable();
+                    }
+                    this._delaySetFocus();
                     break;
                 }
             }
@@ -58,7 +60,7 @@ export class SetComponent implements OnChanges {
     set activeSetCategory(category: SetCategoryType) {
         if (category) {
             this._activeSetCategory = category;
-            setTimeout(async () => await this._focusSetConstituent(this._activeSetCategory), 400);
+            this._delaySetFocus();
         }
     }
     get activeSetCategory(): SetCategoryType {
@@ -204,5 +206,11 @@ export class SetComponent implements OnChanges {
                 isNeverCheck(setCategory);
             }
         }
+    }
+
+    private _delaySetFocus(): void {
+        setTimeout(async () => {
+            await this._focusSetConstituent(this._activeSetCategory);
+        }, 400);
     }
 }
