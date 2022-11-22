@@ -187,7 +187,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         switch (setConstituent) {
             case 'weight': {
                 switch (currentSetCmpData.activeSetCategory) {
-                    case 'freeWeighted': {
+                    case 'freeWeighted':
+                    case 'dynamicWeighted': {
                         if (setIndex > 0) {
                             if (!currentSetCmpData.weightElement.value) {
                                 this.onSetDeleted(setIndex);
@@ -201,7 +202,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             }
             case 'reps': {
                 switch (currentSetCmpData.activeSetCategory) {
-                    case 'freeWeighted': {
+                    case 'freeWeighted':
+                    case 'dynamicWeighted': {
                         if (!currentSetCmpData.repsElement.value) {
                             await currentSetCmpData.weightElement.setFocus();
                         }

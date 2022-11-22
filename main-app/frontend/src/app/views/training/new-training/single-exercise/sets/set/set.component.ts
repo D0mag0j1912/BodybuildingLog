@@ -120,10 +120,23 @@ export class SetComponent implements OnChanges {
             }
         }
         if (changes.bodyweightControl?.currentValue) {
-            if (!this.bodyweightControl?.errors) {
-                this.form.controls.reps.enable();
-            } else {
-                this.form.controls.reps.disable();
+            switch (this.activeSetCategory) {
+                case 'dynamicBodyweight': {
+                    !this.bodyweightControl?.errors
+                        ? this.form.controls.reps.enable()
+                        : this.form.controls.reps.disable();
+                    break;
+                }
+                case 'dynamicWeighted': {
+                    if (!this.bodyweightControl?.errors) {
+                        this.form.controls.weight.enable();
+                        this.form.controls.reps.enable();
+                    } else {
+                        this.form.controls.weight.disable();
+                        this.form.controls.reps.disable();
+                    }
+                    break;
+                }
             }
         }
     }

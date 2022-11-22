@@ -84,6 +84,10 @@ export class NewTrainingStoreService {
                                     total = total + set.reps * bodyweight;
                                     break;
                                 }
+                                case 'dynamicWeighted': {
+                                    total = total + (bodyweight + set.weight) * set.reps;
+                                    break;
+                                }
                             }
                         });
                         return {
