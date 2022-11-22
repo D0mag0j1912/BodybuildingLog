@@ -43,7 +43,9 @@ export class SetComponent implements OnChanges {
     set activeSetCategory(category: SetCategoryType) {
         if (category) {
             this._activeSetCategory = category;
-            this._delaySetFocus();
+            setTimeout(async () => {
+                await this._focusSetConstituent(this._activeSetCategory);
+            }, 400);
         }
     }
     get activeSetCategory(): SetCategoryType {
@@ -166,11 +168,5 @@ export class SetComponent implements OnChanges {
                 isNeverCheck(setCategory);
             }
         }
-    }
-
-    private _delaySetFocus(): void {
-        setTimeout(async () => {
-            await this._focusSetConstituent(this._activeSetCategory);
-        }, 400);
     }
 }
