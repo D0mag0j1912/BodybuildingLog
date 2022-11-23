@@ -76,6 +76,12 @@
     }
 }
 
+.md .weight-input {
+    &--unit {
+        top: 18px;
+    }
+}
+
 .invalid-weight {
     color: var(--ion-color-danger);
 }

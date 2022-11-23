@@ -26,6 +26,10 @@ ion-grid:first-of-type {
     height: 30px;
 }
 
+.md .delete-exercise-col {
+    align-self: flex-end;
+}
+
 .md .exercise-row {
     align-items: center;
 }

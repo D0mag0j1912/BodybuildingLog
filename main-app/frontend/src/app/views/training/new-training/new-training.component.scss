@@ -27,6 +27,12 @@ ion-item {
     }
 }
 
+.md .bodyweight-input {
+    &--unit {
+        top: 18px;
+    }
+}
+
 .invalid-bodyweight {
     color: var(--ion-color-danger);
 }
@@ -41,6 +47,7 @@ ion-item {
     .datetime-icon {
         width: 24px;
         height: 24px;
+        margin-right: 10px;
     }
 }
 

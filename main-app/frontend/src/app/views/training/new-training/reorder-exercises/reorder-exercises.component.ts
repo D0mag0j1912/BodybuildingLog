@@ -15,19 +15,19 @@ export class ReorderExercisesComponent {
     private reorderedTrainingState: NewTraining;
 
     readonly currentExercises$: Observable<string[]> =
-        this.newTrainingStoreService.trainingState$.pipe(
+        this._newTrainingStoreService.trainingState$.pipe(
             map((training: NewTraining) =>
                 training.exercises.map((exercise) => exercise.exerciseData.name),
             ),
         );
 
     constructor(
-        private readonly newTrainingStoreService: NewTrainingStoreService,
-        private readonly modalController: ModalController,
+        private _newTrainingStoreService: NewTrainingStoreService,
+        private _modalController: ModalController,
     ) {}
 
     doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
-        const currentTrainingState = this.newTrainingStoreService.getCurrentTrainingState();
+        const currentTrainingState = this._newTrainingStoreService.getCurrentTrainingState();
         const exerciseFrom = (
             this.reorderedTrainingState ? this.reorderedTrainingState : currentTrainingState
         ).exercises.find((_exercise, index) => index === ev.detail.from);
@@ -47,13 +47,13 @@ export class ReorderExercisesComponent {
     }
 
     async reorderExercises(): Promise<void> {
-        await this.modalController.dismiss(
+        await this._modalController.dismiss(
             this.reorderedTrainingState,
             DialogRoles.REORDER_EXERCISES,
         );
     }
 
     async onCancel(): Promise<void> {
-        await this.modalController.dismiss(undefined, DialogRoles.CANCEL);
+        await this._modalController.dismiss(undefined, DialogRoles.CANCEL);
     }
 }
