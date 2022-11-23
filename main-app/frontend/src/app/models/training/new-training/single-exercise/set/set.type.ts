@@ -1,6 +1,6 @@
-export type SetConstituent = 'weight' | 'reps';
+export type SetConstituent = 'weight' | 'reps' | 'duration';
 
-export type SetConstituentExistsType = Readonly<Record<SetConstituent, boolean>>;
+export type SetConstituentExistsType = Partial<Readonly<Record<SetConstituent, boolean>>>;
 
 export type SetCategoryType =
     | 'dynamicBodyweight'

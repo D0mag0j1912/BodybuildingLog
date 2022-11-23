@@ -4,6 +4,7 @@ export interface Set {
     setNumber: number;
     weight?: number;
     reps?: number;
+    duration?: number;
     _id?: string;
 }
 
