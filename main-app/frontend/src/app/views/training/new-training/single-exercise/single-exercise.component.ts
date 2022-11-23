@@ -72,8 +72,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 if (this.setsCmpRef) {
                     return (
                         exerciseState.length <= allExercises.Value.length &&
-                        this.form.controls[exerciseState.length - 1].controls.exerciseData?.controls
-                            .name?.value &&
+                        this.form.controls[exerciseState.length - 1]?.controls.exerciseData
+                            ?.controls.name?.value &&
                         exerciseState.length > 0 &&
                         this.areSetsValid()
                     );

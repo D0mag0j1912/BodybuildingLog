@@ -409,10 +409,6 @@ export class NewTrainingComponent implements OnDestroy {
         }
     }
 
-    async goToTop(): Promise<void> {
-        await this.ionContent.scrollToTop(400);
-    }
-
     private _formInit(): void {
         const currentTrainingState = this._newTrainingStoreService.getCurrentTrainingState();
         const dayClickedDate = this._sharedStoreService.getDayClickedDate();
