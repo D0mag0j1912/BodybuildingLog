@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
     appId: 'io.ionic.starter',
-    appName: 'trainingApk',
+    appName: 'bodybuildingLog',
     webDir: 'www',
     bundledWebRuntime: false,
 };

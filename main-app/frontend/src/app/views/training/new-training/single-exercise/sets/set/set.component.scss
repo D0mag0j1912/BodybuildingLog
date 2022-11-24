@@ -13,6 +13,10 @@
     }
 }
 
+::ng-deep .md .set-grid {
+    padding-left: 10px;
+}
+
 .set-row {
     align-items: flex-start;
 

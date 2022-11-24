@@ -4,7 +4,7 @@
     [formGroup]="group">
     <ion-card class="wrapper">
         <ng-container formGroupName="exerciseData">
-            <ion-grid>
+            <ion-grid class="exercise-grid">
                 <ion-row
                     class="ion-text-center exercise-row"
                     [class.exercise-name-required]="form.controls[i].controls.exerciseData.controls.name.errors?.required &&

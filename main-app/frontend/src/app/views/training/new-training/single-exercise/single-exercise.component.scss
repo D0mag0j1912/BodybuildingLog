@@ -1,3 +1,4 @@
+
 .form {
     padding: 0 0 0 10px;
 
@@ -8,6 +9,10 @@
             align-items: center;
         }
     }
+}
+
+.md .exercise-grid {
+    padding-left: 10px;
 }
 
 ion-grid:first-of-type {

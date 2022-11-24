@@ -1,7 +1,7 @@
 {
-    "name": "trainingApk",
+    "name": "bodybuildingLog",
     "integrations": {
-      "capacitor": {}
+        "capacitor": {}
     },
     "type": "angular"
-  }
+}
