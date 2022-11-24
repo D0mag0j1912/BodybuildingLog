@@ -14,7 +14,7 @@ import { isNeverCheck } from '../../../../../../helpers/is-never-check.helper';
 import { convertWeightUnit } from '../../../../../../helpers/training/convert-weight-units.helper';
 import { WeightUnit } from '../../../../../../models/common/preferences.type';
 import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
-import { SetTrainingData } from '../../../../../../models/training/new-training/single-exercise/set/set.model';
+import { SetTrainingData } from '../../../../../../models/training/new-training/single-exercise/set/set.type';
 import {
     SetCategoryType,
     SetConstituent,
@@ -112,6 +112,7 @@ export class SetComponent implements OnChanges {
     onChangeSets(): void {
         const weight = this.form.controls.weight?.value;
         const reps = this.form.controls.reps?.value;
+        const duration = this.form.controls.duration?.value;
         const setData: SetTrainingData = {
             exerciseName: this.exerciseControl.value,
             weight:
@@ -122,6 +123,11 @@ export class SetComponent implements OnChanges {
                 reps && this._isSetConstituentValid('reps')
                     ? this.form.controls.reps.value
                     : undefined,
+            duration:
+                duration && this._isSetConstituentValid('duration')
+                    ? this.form.controls.duration.value
+                    : undefined,
+            setNumber: undefined,
         };
         this.setChanged.emit({
             setData,

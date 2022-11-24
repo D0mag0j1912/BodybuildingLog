@@ -1,10 +1,10 @@
 export interface ErrorMessage {
-    readonly message: string;
-    readonly statusCode?: number;
+    message: string;
+    statusCode?: number;
 }
 
 export interface StreamData<T> {
-    readonly IsLoading: boolean;
-    readonly IsError: boolean;
-    readonly Value?: T;
+    IsLoading: boolean;
+    IsError: boolean;
+    Value?: T;
 }

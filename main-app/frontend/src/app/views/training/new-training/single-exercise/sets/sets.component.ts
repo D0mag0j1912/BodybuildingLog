@@ -22,7 +22,6 @@ import { getControlValueAccessor } from '../../../../../helpers/control-value-ac
 import {
     Set,
     SelectedCategoriesChanged,
-    SetTrainingData,
 } from '../../../../../models/training/new-training/single-exercise/set/set.model';
 import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
 import { convertWeightUnit } from '../../../../../helpers/training/convert-weight-units.helper';
@@ -32,6 +31,7 @@ import { NewTrainingStoreService } from '../../../../../services/store/training/
 import {
     SetCategoryType,
     SetConstituent,
+    SetTrainingData,
 } from '../../../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
 import { DialogRoles } from '../../../../../constants/enums/model-roles.enum';
