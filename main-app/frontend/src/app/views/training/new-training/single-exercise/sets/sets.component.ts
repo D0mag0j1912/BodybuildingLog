@@ -164,7 +164,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             total: this._calculateTotal(),
         };
         this._newTrainingStoreService
-            .setsChanged(serviceData)
+            .setsChanged(serviceData, data.setCategory)
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe();
     }

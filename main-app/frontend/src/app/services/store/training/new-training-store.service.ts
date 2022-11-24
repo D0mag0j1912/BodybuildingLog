@@ -333,81 +333,114 @@ export class NewTrainingStoreService {
         }
     }
 
-    setsChanged(trainingData: SetTrainingData): Observable<void> {
-        let updatedTraining: NewTraining = this._trainingState$.getValue();
-        const indexOfChangedExercise = updatedTraining.exercises.findIndex(
-            (singleExercise: SingleExercise) =>
-                singleExercise.exerciseData.name === trainingData.exerciseName,
-        );
-        const indexFoundSet = updatedTraining.exercises[indexOfChangedExercise].sets.findIndex(
-            (set: Set) => set.setNumber === trainingData.setNumber,
-        );
-
-        if (indexFoundSet > -1) {
-            updatedTraining = {
-                ...updatedTraining,
-                exercises: [...updatedTraining.exercises].map(
-                    (exercise: SingleExercise, i: number) => {
-                        if (i === indexOfChangedExercise) {
-                            return {
-                                ...exercise,
-                                sets: [...exercise.sets].map((set: Set, j: number) => {
-                                    if (j === indexFoundSet) {
-                                        let updatedSet: Set;
-                                        if (trainingData?.weight) {
-                                            updatedSet = {
-                                                ...set,
-                                                weight: trainingData.weight,
-                                                reps: trainingData.reps,
-                                            };
-                                        } else {
-                                            updatedSet = {
-                                                ...set,
-                                                reps: trainingData.reps,
-                                            };
-                                        }
-                                        return updatedSet;
-                                    }
-                                    return set;
-                                }),
-                                total: trainingData.total,
+    setsChanged(
+        trainingData: SetTrainingData,
+        activeSetCategory: SetCategoryType,
+    ): Observable<void> {
+        return this._trainingState$.pipe(
+            take(1),
+            switchMap((trainingState: NewTraining) => {
+                let updatedTraining: NewTraining;
+                const indexOfChangedExercise = trainingState.exercises.findIndex(
+                    (singleExercise: SingleExercise) =>
+                        singleExercise.exerciseData.name === trainingData.exerciseName,
+                );
+                const indexFoundSet = trainingState.exercises[
+                    indexOfChangedExercise
+                ].sets.findIndex((set: Set) => set.setNumber === trainingData.setNumber);
+                if (indexFoundSet > -1) {
+                    updatedTraining = {
+                        ...trainingState,
+                        exercises: [...trainingState.exercises].map(
+                            (exercise: SingleExercise, i: number) => {
+                                if (i === indexOfChangedExercise) {
+                                    return {
+                                        ...exercise,
+                                        sets: [...exercise.sets].map((set: Set, j: number) => {
+                                            if (j === indexFoundSet) {
+                                                let updatedSet: Set;
+                                                switch (activeSetCategory) {
+                                                    case 'freeWeighted':
+                                                    case 'dynamicWeighted': {
+                                                        updatedSet = {
+                                                            ...set,
+                                                            weight: trainingData.weight,
+                                                            reps: trainingData.reps,
+                                                        };
+                                                        break;
+                                                    }
+                                                    case 'dynamicBodyweight': {
+                                                        updatedSet = {
+                                                            ...set,
+                                                            reps: trainingData.reps,
+                                                        };
+                                                        break;
+                                                    }
+                                                    case 'staticBodyweight': {
+                                                        updatedSet = {
+                                                            ...set,
+                                                            duration: trainingData.duration,
+                                                        };
+                                                        break;
+                                                    }
+                                                }
+                                                return updatedSet;
+                                            }
+                                            return set;
+                                        }),
+                                        total: trainingData.total,
+                                    };
+                                }
+                                return exercise;
+                            },
+                        ),
+                    };
+                } else {
+                    let newSet: Set;
+                    switch (activeSetCategory) {
+                        case 'freeWeighted':
+                        case 'dynamicWeighted': {
+                            newSet = {
+                                setNumber: trainingData.setNumber,
+                                weight: trainingData.weight,
+                                reps: trainingData.reps,
                             };
+                            break;
                         }
-                        return exercise;
-                    },
-                ),
-            };
-        } else {
-            let newSet: Set;
-            if (trainingData.weight) {
-                newSet = {
-                    setNumber: trainingData.setNumber,
-                    weight: trainingData.weight,
-                    reps: trainingData.reps,
-                } as Set;
-            } else {
-                newSet = {
-                    setNumber: trainingData.setNumber,
-                    reps: trainingData.reps,
-                } as Set;
-            }
-            updatedTraining = {
-                ...updatedTraining,
-                exercises: [...updatedTraining.exercises].map(
-                    (exercise: SingleExercise, i: number) => {
-                        if (i === indexOfChangedExercise) {
-                            return {
-                                ...exercise,
-                                sets: [...exercise.sets, newSet],
-                                total: trainingData.total,
+                        case 'dynamicBodyweight': {
+                            newSet = {
+                                setNumber: trainingData.setNumber,
+                                reps: trainingData.reps,
                             };
+                            break;
                         }
-                        return exercise;
-                    },
-                ),
-            };
-        }
-        return this.saveTrainingData(updatedTraining);
+                        case 'staticBodyweight': {
+                            newSet = {
+                                setNumber: trainingData.setNumber,
+                                duration: trainingData.duration,
+                            };
+                            break;
+                        }
+                    }
+                    updatedTraining = {
+                        ...trainingState,
+                        exercises: [...trainingState.exercises].map(
+                            (exercise: SingleExercise, i: number) => {
+                                if (i === indexOfChangedExercise) {
+                                    return {
+                                        ...exercise,
+                                        sets: [...exercise.sets, newSet],
+                                        total: trainingData.total,
+                                    };
+                                }
+                                return exercise;
+                            },
+                        ),
+                    };
+                }
+                return this.saveTrainingData(updatedTraining);
+            }),
+        );
     }
 
     restartSets(indexExercise: number, setCategory: SetCategoryType): Observable<SetCategoryType> {
