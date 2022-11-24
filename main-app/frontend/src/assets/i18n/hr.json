@@ -106,6 +106,7 @@
             "pick_exercise": "Unesite vježbu",
             "weight": "Težina",
             "reps": "Ponavljanja",
+            "duration": "Trajanje",
             "total": "Ukupno",
             "training_updated": "Trening ažuriran",
             "set_saved": "Set spremljen",

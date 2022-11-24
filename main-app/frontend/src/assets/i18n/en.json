@@ -105,6 +105,7 @@
             "pick_exercise": "Pick an exercise",
             "weight": "Weight",
             "reps": "Reps",
+            "duration": "Duration",
             "total": "Total",
             "training_updated": "Training updated",
             "set_saved": "Set saved",

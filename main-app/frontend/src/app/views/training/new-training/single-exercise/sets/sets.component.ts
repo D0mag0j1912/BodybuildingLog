@@ -364,17 +364,25 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         set: Set,
         setControls: SetFormType,
     ): SetFormType {
+        let initialValidators = [
+            Validators.required,
+            Validators.min(1),
+            Validators.max(1000),
+            Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+        ];
+        if (setConstituent === 'duration') {
+            initialValidators = [
+                Validators.required,
+                Validators.min(1),
+                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
+            ];
+        }
         setControls[setConstituent] = new FormControl(
             {
                 value: this._setFormValue(setConstituent, set),
                 disabled: this.exerciseControl.value ? false : true,
             },
-            [
-                Validators.required,
-                Validators.min(1),
-                Validators.max(1000),
-                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-            ],
+            initialValidators,
         );
         return setControls;
     }
@@ -404,12 +412,18 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             case 'dynamicWeighted': {
                 setControls = this._constructSetForm(
                     'weight',
-                    { setNumber: 1, weight: set ? set.weight : null },
+                    {
+                        setNumber: constructionType === 'newExercise' ? 1 : indexSet + 1,
+                        weight: set ? set.weight : null,
+                    },
                     setControls,
                 );
                 setControls = this._constructSetForm(
                     'reps',
-                    { setNumber: 1, reps: set ? set.reps : null },
+                    {
+                        setNumber: constructionType === 'newExercise' ? 1 : indexSet + 1,
+                        reps: set ? set.reps : null,
+                    },
                     setControls,
                 );
                 if (constructionType === 'newExercise') {
@@ -423,7 +437,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             case 'dynamicBodyweight': {
                 setControls = this._constructSetForm(
                     'reps',
-                    { setNumber: 1, reps: set ? set.reps : null },
+                    {
+                        setNumber: constructionType === 'newExercise' ? 1 : indexSet + 1,
+                        reps: set ? set.reps : null,
+                    },
                     setControls,
                 );
                 if (constructionType === 'newExercise') {
@@ -435,7 +452,20 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 break;
             }
             case 'staticBodyweight': {
-                //TODO: BL-128
+                setControls = this._constructSetForm(
+                    'duration',
+                    {
+                        setNumber: constructionType === 'newExercise' ? 1 : indexSet + 1,
+                        duration: set ? set.duration : null,
+                    },
+                    setControls,
+                );
+                if (constructionType === 'newExercise') {
+                    this.form.push(new FormGroup(setControls));
+                } else {
+                    this.form.removeAt(indexSet);
+                    this.form.insert(indexSet, new FormGroup(setControls));
+                }
                 break;
             }
             case 'staticWeighted': {

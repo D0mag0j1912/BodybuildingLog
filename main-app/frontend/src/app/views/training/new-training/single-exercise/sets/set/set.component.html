@@ -13,23 +13,22 @@
                     <ion-input
                         #weightEl
                         type="number"
-                        class="weight-input"
+                        class="set-constituent-input"
                         formControlName="weight"
                         (ionChange)="onChangeSets()"
                         (keydown.backspace)="onSetConstituentKeydown('weight')"
                     >
                     </ion-input>
                     <ion-text
-                        class="weight-input--unit"
+                        class="set-constituent-input--unit"
                         slot="end"
-                        [class.invalid-weight]="form.controls.weight?.invalid"
+                        [class.invalid-weight]="form.controls.weight.invalid"
                     >
                         {{ weightEl?.value ? weightUnit : '' }}
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.weight?.errors?.pattern &&
-                            !form.controls.weight?.errors?.min &&
+                            form.controls.weight.errors?.pattern &&
                             !isLoading
                         "
                         slot="error"
@@ -38,8 +37,7 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.weight?.errors?.min &&
-                            !form.controls.weight?.errors?.pattern &&
+                            form.controls.weight.errors?.min &&
                             !isLoading
                         "
                         slot="error"
@@ -48,8 +46,7 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.weight?.errors?.max &&
-                            !form.controls.weight?.errors?.pattern &&
+                            form.controls.weight.errors?.max &&
                             !isLoading
                         "
                         slot="error"
@@ -58,7 +55,7 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.weight?.errors?.required &&
+                            form.controls.weight.errors?.required &&
                             (isSubmitted ||
                                 form.controls.weight.touched) &&
                             !isLoading
@@ -79,15 +76,14 @@
                     <ion-input
                         #repsEl
                         type="number"
-                        class="reps-input"
+                        class="set-constituent-input"
                         formControlName="reps"
                         (ionChange)="onChangeSets()"
                         (keydown.backspace)="onSetConstituentKeydown('reps')"
                     ></ion-input>
                     <ion-text
                         *ngIf="
-                            form.controls.reps?.errors?.pattern &&
-                            !form.controls.reps?.errors?.pattern &&
+                            form.controls.reps.errors?.pattern &&
                             !isLoading
                         "
                         slot="error"
@@ -96,9 +92,7 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.reps?.errors?.min &&
-                            !form.controls.reps?.errors?.pattern &&
-                            !form.controls.reps?.errors?.pattern &&
+                            form.controls.reps.errors?.min &&
                             !isLoading
                         "
                         slot="error"
@@ -107,9 +101,7 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.reps?.errors?.max &&
-                            !form.controls.reps?.errors?.pattern &&
-                            !form.controls.reps?.errors?.pattern &&
+                            form.controls.reps.errors?.max &&
                             !isLoading
                         "
                         slot="error"
@@ -118,13 +110,56 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.reps?.errors?.required &&
+                            form.controls.reps.errors?.required &&
                             (isSubmitted || form.controls.reps.touched) &&
                             !isLoading
                         "
                         slot="error"
                     >
                         {{ 'training.new_training.errors.reps_required' | translate }}
+                    </ion-text>
+                </ion-item>
+            </ion-col>
+            <ion-col *ngIf="form.controls.duration" size="5">
+                <ion-item>
+                    <ion-label class="ion-label" position="floating">
+                        {{ 'training.new_training.duration' | translate }}
+                    </ion-label>
+                    <ion-input
+                        #durationEl
+                        type="number"
+                        class="set-constituent-input"
+                        formControlName="duration"
+                        (ionChange)="onChangeSets()"
+                        (keydown.backspace)="onSetConstituentKeydown('duration')"
+                    ></ion-input>
+                    <ion-text
+                        *ngIf="
+                            form.controls.duration.errors?.pattern &&
+                            !isLoading
+                        "
+                        slot="error"
+                    >
+                        {{ 'training.new_training.errors.only_numbers' | translate }}
+                    </ion-text>
+                    <ion-text
+                        *ngIf="
+                            form.controls.duration.errors?.min &&
+                            !isLoading
+                        "
+                        slot="error"
+                    >
+                        {{ 'training.new_training.errors.duration_min' | translate }}
+                    </ion-text>
+                    <ion-text
+                        *ngIf="
+                            form.controls.duration.errors?.required &&
+                            (isSubmitted || form.controls.duration.touched) &&
+                            !isLoading
+                        "
+                        slot="error"
+                    >
+                        {{ 'training.new_training.errors.duration_required' | translate }}
                     </ion-text>
                 </ion-item>
             </ion-col>
