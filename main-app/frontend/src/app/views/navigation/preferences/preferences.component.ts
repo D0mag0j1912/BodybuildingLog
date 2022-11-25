@@ -85,6 +85,7 @@ export class PreferencesComponent {
                                 ? (preference as WeightUnit)
                                 : currentPreferences.weightUnit,
                         showByPeriod: currentPreferences.showByPeriod,
+                        setDurationUnit: currentPreferences.setDurationUnit,
                     };
                     return this.preferencesService.setPreferences(preferences, this.preferenceType);
                 }),

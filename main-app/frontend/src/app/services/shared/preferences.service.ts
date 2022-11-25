@@ -34,6 +34,7 @@ export class PreferencesService {
             languageCode: preferences.languageCode,
             weightUnit: preferences.weightUnit,
             showByPeriod: preferences.showByPeriod,
+            setDurationUnit: preferences.setDurationUnit,
         };
         let apiResponse: GeneralResponseData;
         return this._http
