@@ -22,15 +22,12 @@ export class PreferencesService {
         preferenceChanged: PreferenceChangedType,
     ): Promise<GeneralResponseData> {
         try {
-            const {
-                languageCode: language,
-                weightUnit: weightUnit,
-                showByPeriod: showByPeriod,
-            } = preferencesDto;
+            const { languageCode, weightUnit, showByPeriod, setDurationUnit } = preferencesDto;
             const preferences = await this.preferencesModel.findOne({ userId: userId }).exec();
-            preferences.languageCode = language;
+            preferences.languageCode = languageCode;
             preferences.weightUnit = weightUnit;
             preferences.showByPeriod = showByPeriod;
+            preferences.setDurationUnit = setDurationUnit;
             await preferences.save();
             switch (preferenceChanged) {
                 case 'language': {

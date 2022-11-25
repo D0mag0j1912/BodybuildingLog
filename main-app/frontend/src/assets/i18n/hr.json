@@ -24,7 +24,7 @@
         "or": "ILI",
         "date": "Datum",
         "errors": {
-            "something_went_wrong": "Došlo je do greške Pokušajte ponovno",
+            "something_went_wrong": "Došlo je do greške. Pokušajte ponovno.",
             "invalid_date": "Pogrešan format datuma",
             "unknown_error": "Došlo je do greške",
             "not_authenticated": "Morate biti prijavljeni da biste izvršili ovu aktivnost",
@@ -229,7 +229,8 @@
             "language_change": "Došlo je do greške pri promjeni jezika",
             "weight_unit_required": "Jedinica težine je obvezna",
             "weight_unit_change": "Došlo je do greške pri promjeni jedinice težine",
-            "period_change": "Došlo je do greške pri promjeni perioda"
+            "period_change": "Došlo je do greške pri promjeni perioda",
+            "show_by_period_required": "Jedinica perioda treninga je obvezna"
         }
     },
     "weekdays": {

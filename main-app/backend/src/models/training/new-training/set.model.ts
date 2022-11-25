@@ -2,13 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsMongoId, IsNumber, IsOptional, IsString, Max, Min, NotEquals } from 'class-validator';
 import { Schema } from 'mongoose';
 
-export type SetCategoryType =
-    | 'dynamicBodyweight'
-    | 'dynamicWeighted'
-    | 'staticBodyweight'
-    | 'staticWeighted'
-    | 'freeWeighted';
-
 export const SET_SCHEMA = new Schema({
     setNumber: {
         type: Number,

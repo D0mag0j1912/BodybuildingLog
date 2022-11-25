@@ -23,7 +23,7 @@
         "or": "OR",
         "date": "Date",
         "errors": {
-            "something_went_wrong": "Something went wrong Please try again",
+            "something_went_wrong": "Something went wrong. Please try again.",
             "invalid_date": "Invalid date format",
             "unknown_error": "Unknown error occured",
             "not_authenticated": "You need to be authenticated to finish this activity",
@@ -228,7 +228,8 @@
             "language_change": "Error while trying to change language",
             "weight_unit_required": "Weight unit is required",
             "weight_unit_change": "Error while trying to change weight unit",
-            "period_change": "Error while trying to change period"
+            "period_change": "Error while trying to change period",
+            "show_by_period_required": "Past trainings period unit is required"
         }
     },
     "weekdays": {

@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
+import { SetDurationType } from '../training/new-training/set.type';
 import { LanguageCode, WeightUnit } from './preferences.type';
 
 export const PREFERENCES_SCHEMA = new Schema({
@@ -18,10 +19,23 @@ export const PREFERENCES_SCHEMA = new Schema({
         type: String,
         required: true,
     },
-    showByPeriod: String,
+    showByPeriod: {
+        type: String,
+        required: true,
+    },
+    setDurationUnit: {
+        type: String,
+        required: true,
+    },
 });
 
 export class PreferencesDto {
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsDefined({ message: '@common.errors.something_went_wrong' })
+    @IsString({ message: '@common.errors.something_went_wrong' })
+    userId: string;
+
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.language_required' })
@@ -32,14 +46,13 @@ export class PreferencesDto {
     @IsNotEmpty({ message: '@preferences.errors.weight_unit_required' })
     weightUnit: WeightUnit;
 
-    @ApiProperty({ required: false })
-    @IsOptional()
+    @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
+    @IsNotEmpty({ message: '@preferences.errors.show_by_period_required' })
     showByPeriod: PeriodFilterType;
 
-    @ApiProperty({ required: false })
-    @IsOptional()
-    @IsDefined({ message: '@common.errors.something_went_wrong' })
+    @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
-    userId: string;
+    @IsNotEmpty({ message: '@preferences.errors.show_by_period_required' })
+    setDurationUnit: SetDurationType;
 }
