@@ -80,11 +80,14 @@ export class SetComponent implements OnChanges {
     @Output()
     setCategoryModalOpened = new EventEmitter<SetCategoryType>();
 
-    @ViewChild('weightEl')
+    @ViewChild('weightEl', { read: IonInput })
     weightElement: IonInput;
 
-    @ViewChild('repsEl')
+    @ViewChild('repsEl', { read: IonInput })
     repsElement: IonInput;
+
+    @ViewChild('durationEl', { read: IonInput })
+    durationElement: IonInput;
 
     ngOnChanges(changes: SimpleChanges): void {
         if (!changes.weightUnit?.firstChange && changes.weightUnit?.currentValue) {
@@ -163,7 +166,9 @@ export class SetComponent implements OnChanges {
                 break;
             }
             case 'staticBodyweight': {
-                //TODO: BL-128
+                if (this.durationElement) {
+                    await this.durationElement.setFocus();
+                }
                 break;
             }
             case 'staticWeighted': {
