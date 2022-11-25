@@ -390,10 +390,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     private _setFormValue(setConstituent: SetConstituent, set: Set): number | null {
         if (set) {
             if (setConstituent in set) {
-                if (setConstituent === 'weight') {
-                    return this._setWeightValue(set.weight);
-                } else {
-                    return set.reps;
+                switch (setConstituent) {
+                    case 'weight': {
+                        return this._setWeightValue(set.weight);
+                    }
+                    case 'reps': {
+                        return set.reps;
+                    }
+                    case 'duration': {
+                        return set.duration;
+                    }
                 }
             }
         }

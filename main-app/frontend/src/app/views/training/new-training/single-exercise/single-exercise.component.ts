@@ -263,7 +263,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
             exercise = {
                 ...exercise,
                 sets: [...exercise.sets].map((set: Set, index: number) => {
-                    const { weight, reps } = this._prepareSet(
+                    const { weight, reps, duration } = this._prepareSet(
                         exercise.exerciseData.selectedSetCategories[index],
                     );
                     if (!weight) {
@@ -271,6 +271,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                     }
                     if (!reps) {
                         delete set.reps;
+                    }
+                    if (!duration) {
+                        delete set.duration;
                     }
                     return set;
                 }),
@@ -372,8 +375,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     private _getAlreadyUsedExercises(): string[] {
         const alreadyUsedExercises: string[] = [];
         for (const exercise of this.getExercises()) {
-            if (exercise.get('exerciseData.name').value) {
-                alreadyUsedExercises.push(exercise.get('exerciseData.name').value);
+            if (exercise.controls.exerciseData.controls.name.value) {
+                alreadyUsedExercises.push(exercise.controls.exerciseData.controls.name.value);
             }
         }
         return alreadyUsedExercises;
@@ -382,20 +385,25 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     private _prepareSet(setCategory: SetCategoryType): SetConstituentExistsType {
         let weight: boolean;
         let reps: boolean;
+        let duration: boolean;
         switch (setCategory) {
             case 'freeWeighted':
             case 'dynamicWeighted': {
                 weight = true;
                 reps = true;
+                duration = false;
                 break;
             }
             case 'dynamicBodyweight': {
                 weight = false;
                 reps = true;
+                duration = false;
                 break;
             }
             case 'staticBodyweight': {
-                //TODO: BL-128
+                weight = false;
+                reps = false;
+                duration = true;
                 break;
             }
             case 'staticWeighted': {
@@ -409,6 +417,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         return {
             weight,
             reps,
+            duration,
         };
     }
 }
