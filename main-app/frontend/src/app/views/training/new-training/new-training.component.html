@@ -109,12 +109,6 @@
                             </ion-button>
                         </ion-col>
                     </bl-single-exercise>
-                    <ion-text *ngIf="
-                        newTrainingForm.controls.bodyweight.errors?.required &&
-                        (isSubmitted$ | async)"
-                        class="error">
-                        {{ 'training.new_training.errors.bodyweight_required' | translate }}
-                    </ion-text>
                     <ion-grid>
                         <ion-row>
                             <ion-col class="ion-text-center at-least-one-exercise-txt">
