@@ -122,7 +122,7 @@ export class NewTrainingStoreService {
                         break;
                     }
                     case 'staticBodyweight': {
-                        //TODO: BL-128
+                        updatedSet = { setNumber: indexSet + 1, duration: null };
                         break;
                     }
                     case 'staticWeighted': {
@@ -194,7 +194,7 @@ export class NewTrainingStoreService {
                                         break;
                                     }
                                     case 'staticBodyweight': {
-                                        //TODO: BL-128
+                                        set = { setNumber, duration: null };
                                         break;
                                     }
                                     case 'staticWeighted': {
