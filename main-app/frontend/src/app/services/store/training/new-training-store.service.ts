@@ -459,7 +459,7 @@ export class NewTrainingStoreService {
                         break;
                     }
                     case 'staticBodyweight': {
-                        //TODO: BL-128
+                        set = { setNumber: 1, duration: null };
                         break;
                     }
                     case 'staticWeighted': {
