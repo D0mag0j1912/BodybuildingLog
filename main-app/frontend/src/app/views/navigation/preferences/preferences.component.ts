@@ -13,14 +13,14 @@ import { AuthStoreService } from '../../../services/store/auth/auth-store.servic
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 
 interface LanguageData {
-    LanguageCode: LanguageCode;
-    ImageUrl: string;
-    LanguageName: string;
+    languageCode: LanguageCode;
+    imageUrl: string;
+    languageName: string;
 }
 
 interface UnitData {
-    UnitName: string;
-    WeightUnit: WeightUnit;
+    unitName: string;
+    weightUnit: WeightUnit;
 }
 
 @Component({
@@ -38,25 +38,25 @@ export class PreferencesComponent {
 
     readonly languageData: Readonly<LanguageData[]> = [
         {
-            LanguageCode: 'en',
-            ImageUrl: '../../../../assets/images/flags/united-kingdom.png',
-            LanguageName: 'languages.english',
+            languageCode: 'en',
+            imageUrl: '../../../../assets/images/flags/united-kingdom.png',
+            languageName: 'languages.english',
         },
         {
-            LanguageCode: 'hr',
-            ImageUrl: '../../../../assets/images/flags/croatia.png',
-            LanguageName: 'languages.croatian',
+            languageCode: 'hr',
+            imageUrl: '../../../../assets/images/flags/croatia.png',
+            languageName: 'languages.croatian',
         },
     ];
 
     readonly unitData: UnitData[] = [
         {
-            UnitName: 'units.kilograms',
-            WeightUnit: 'kg',
+            unitName: 'units.kilograms',
+            weightUnit: 'kg',
         },
         {
-            UnitName: 'units.pounds',
-            WeightUnit: 'lbs',
+            unitName: 'units.pounds',
+            weightUnit: 'lbs',
         },
     ];
 

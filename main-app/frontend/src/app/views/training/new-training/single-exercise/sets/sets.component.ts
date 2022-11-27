@@ -53,8 +53,6 @@ import { SetComponent } from './set/set.component';
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
 export class SetsComponent implements ControlValueAccessor, OnInit {
-    currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
-
     currentWeightUnit: WeightUnit;
     form = new FormArray<FormGroup<SetFormType>>([]);
 
@@ -104,7 +102,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         this.currentWeightUnit =
             this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
 
-        this.currentPreferences$
+        this._preferencesStoreService.preferencesChanged$
             .pipe(
                 filter(
                     (preferences: Preferences) => this.currentWeightUnit !== preferences.weightUnit,
