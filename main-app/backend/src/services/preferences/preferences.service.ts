@@ -7,12 +7,10 @@ import { PreferenceChangedType } from '../../models/preferences/preferences.type
 
 @Injectable()
 export class PreferencesService {
-    constructor(
-        @InjectModel('Preferences') private readonly preferencesModel: Model<PreferencesDto>,
-    ) {}
+    constructor(@InjectModel('Preferences') private _preferencesModel: Model<PreferencesDto>) {}
 
     async getPreferences(userId: string): Promise<PreferencesDto> {
-        const preferences = await this.preferencesModel.findOne({ userId: userId }).exec();
+        const preferences = await this._preferencesModel.findOne({ userId: userId }).exec();
         return preferences;
     }
 
@@ -23,7 +21,7 @@ export class PreferencesService {
     ): Promise<GeneralResponseData> {
         try {
             const { languageCode, weightUnit, showByPeriod, setDurationUnit } = preferencesDto;
-            const preferences = await this.preferencesModel.findOne({ userId: userId }).exec();
+            const preferences = await this._preferencesModel.findOne({ userId: userId }).exec();
             preferences.languageCode = languageCode;
             preferences.weightUnit = weightUnit;
             preferences.showByPeriod = showByPeriod;

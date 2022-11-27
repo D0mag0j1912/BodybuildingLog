@@ -17,7 +17,7 @@ export class AuthStoreService {
     private tokenTimer: NodeJS.Timeout;
     private token: string;
 
-    constructor(private readonly router: Router) {}
+    constructor(private _router: Router) {}
 
     getToken(): string {
         return this.token;
@@ -78,7 +78,7 @@ export class AuthStoreService {
         this.emitIsAuth(false);
         clearTimeout(this.tokenTimer);
         await this.clearData();
-        await this.router.navigate(['/auth/login']);
+        await this._router.navigate(['/auth/login']);
     }
 
     setAuthTimer(duration: number): void {
