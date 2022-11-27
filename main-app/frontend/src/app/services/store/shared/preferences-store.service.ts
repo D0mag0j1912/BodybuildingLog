@@ -4,7 +4,7 @@ import { Preferences } from '../../../models/common/preferences.model';
 
 @Injectable({ providedIn: 'root' })
 export class PreferencesStoreService {
-    private _preferencesChanged$ = new BehaviorSubject(null);
+    private _preferencesChanged$ = new BehaviorSubject<Preferences>(null);
     preferencesChanged$ = this._preferencesChanged$.asObservable();
 
     emitPreferences(preferences: Preferences): void {

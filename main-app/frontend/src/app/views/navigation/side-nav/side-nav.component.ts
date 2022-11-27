@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
-import { from, Observable } from 'rxjs';
+import { from } from 'rxjs';
 import { share, switchMap, take } from 'rxjs/operators';
 import { startOfWeek, startOfDay, endOfWeek, endOfDay, format } from 'date-fns';
-import { Preferences } from '../../../models/common/preferences.model';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
@@ -12,6 +11,7 @@ import { QUERY_PARAMS_DATE_FORMAT } from '../../../constants/training/past-train
 import { PreferencesComponent } from '../preferences/preferences.component';
 import { PreferenceChangedType } from '../../../models/common/preferences.type';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
+import { Preferences } from '../../../models/common/preferences.model';
 
 @Component({
     selector: 'bl-side-nav',
@@ -20,16 +20,14 @@ import { PastTrainingsStoreService } from '../../../services/store/training/past
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SideNavComponent {
-    readonly isAuthenticated$: Observable<boolean> = this._authStoreService.isAuth$.pipe(share());
-    private readonly preferences$: Observable<Preferences> =
-        this._preferencesStoreService.preferencesChanged$.pipe(take(1));
+    isAuthenticated$ = this._authStoreService.isAuth$.pipe(share());
 
     constructor(
-        private readonly _authStoreService: AuthStoreService,
-        private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
-        private readonly _preferencesStoreService: PreferencesStoreService,
-        private readonly _popoverController: PopoverController,
-        private readonly _router: Router,
+        private _authStoreService: AuthStoreService,
+        private _pastTrainingsStoreService: PastTrainingsStoreService,
+        private _preferencesStoreService: PreferencesStoreService,
+        private _popoverController: PopoverController,
+        private _router: Router,
     ) {}
 
     async onLogout(): Promise<void> {
@@ -63,9 +61,10 @@ export class SideNavComponent {
 
     openPreferencePopover($event: Event, preferenceType: PreferenceChangedType): void {
         $event.stopPropagation();
-        this.preferences$
+        this._preferencesStoreService.preferencesChanged$
             .pipe(
-                switchMap((preferences) =>
+                take(1),
+                switchMap((preferences: Preferences) =>
                     from(
                         this._popoverController.create({
                             component: PreferencesComponent,

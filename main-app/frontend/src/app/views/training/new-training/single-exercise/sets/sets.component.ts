@@ -351,7 +351,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
 
     private _setWeightValue(weight: number): number {
         if (this.editTrainingData) {
-            const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
+            const editTrainingWeightUnit = this.currentWeightUnit ?? DEFAULT_WEIGHT_UNIT;
             if (editTrainingWeightUnit !== this.currentWeightUnit) {
                 return convertWeightUnit(this.currentWeightUnit, weight);
             }

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { PopoverController, MenuController } from '@ionic/angular';
-import { take, switchMap } from 'rxjs/operators';
+import { take, switchMap, withLatestFrom } from 'rxjs/operators';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { Preferences } from '../../../models/common/preferences.model';
 import {
@@ -61,19 +61,19 @@ export class PreferencesComponent {
     ];
 
     constructor(
-        private readonly preferencesStoreService: PreferencesStoreService,
-        private readonly authStoreService: AuthStoreService,
-        private readonly preferencesService: PreferencesService,
-        private readonly popoverController: PopoverController,
-        private readonly menuController: MenuController,
+        private _preferencesStoreService: PreferencesStoreService,
+        private _authStoreService: AuthStoreService,
+        private _preferencesService: PreferencesService,
+        private _popoverController: PopoverController,
+        private _menuController: MenuController,
     ) {}
 
     changePreference(preference: LanguageCode | WeightUnit): void {
-        const currentPreferences = this.preferencesStoreService.getPreferences();
-        this.authStoreService.loggedUser$
+        this._authStoreService.loggedUser$
             .pipe(
                 take(1),
-                switchMap((userData: AuthResponseData) => {
+                withLatestFrom(this._preferencesStoreService.preferencesChanged$),
+                switchMap(([userData, currentPreferences]: [AuthResponseData, Preferences]) => {
                     const preferences: Preferences = {
                         userId: userData._id,
                         languageCode:
@@ -87,12 +87,15 @@ export class PreferencesComponent {
                         showByPeriod: currentPreferences.showByPeriod,
                         setDurationUnit: currentPreferences.setDurationUnit,
                     };
-                    return this.preferencesService.setPreferences(preferences, this.preferenceType);
+                    return this._preferencesService.setPreferences(
+                        preferences,
+                        this.preferenceType,
+                    );
                 }),
             )
             .subscribe(async (_) => {
-                await this.popoverController.dismiss();
-                await this.menuController.close();
+                await this._popoverController.dismiss();
+                await this._menuController.close();
             });
     }
 }

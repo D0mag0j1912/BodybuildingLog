@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { MESSAGE_DURATION } from '../../constants/shared/message-duration.const';
@@ -9,7 +9,6 @@ import { GeneralResponseData } from '../../models/common/general-response.model'
 import { Preferences } from '../../models/common/preferences.model';
 import { PreferenceChangedType } from '../../models/common/preferences.type';
 import { PreferencesStoreService } from '../store/shared/preferences-store.service';
-import { NewTrainingStoreService } from '../store/training/new-training-store.service';
 import { ToastControllerService } from './toast-controller.service';
 
 @Injectable({ providedIn: 'root' })
@@ -19,7 +18,6 @@ export class PreferencesService {
         private _translateService: TranslateService,
         private _toastControllerService: ToastControllerService,
         private _preferencesStoreService: PreferencesStoreService,
-        private _newTrainingStoreService: NewTrainingStoreService,
     ) {}
 
     getPreferences(userId: string): Observable<Preferences> {
@@ -36,16 +34,14 @@ export class PreferencesService {
             showByPeriod: preferences.showByPeriod,
             setDurationUnit: preferences.setDurationUnit,
         };
-        let apiResponse: GeneralResponseData;
         return this._http
             .put<GeneralResponseData>(environment.BACKEND + `/preferences/${preferences.userId}`, {
                 preferences: apiPreferences,
                 preferenceChanged: preferenceChanged,
             })
             .pipe(
-                switchMap((response: GeneralResponseData) => {
-                    apiResponse = response;
-                    return this._translateService.use(preferences.languageCode).pipe(
+                switchMap((response: GeneralResponseData) =>
+                    this._translateService.use(preferences.languageCode).pipe(
                         tap(async (_) => {
                             this._preferencesStoreService.emitPreferences(preferences);
                             if (response.Message) {
@@ -56,16 +52,8 @@ export class PreferencesService {
                                 });
                             }
                         }),
-                        switchMap((_) => {
-                            if (preferenceChanged === 'weightUnit') {
-                                return this._newTrainingStoreService
-                                    .updateWeightUnit(apiPreferences.weightUnit)
-                                    .pipe(switchMap((_) => of(apiResponse)));
-                            }
-                            return of(apiResponse);
-                        }),
-                    );
-                }),
+                    ),
+                ),
             );
     }
 }
