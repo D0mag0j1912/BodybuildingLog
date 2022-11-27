@@ -34,7 +34,7 @@ import {
     SetTrainingData,
 } from '../../../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
-import { DialogRoles } from '../../../../../constants/enums/model-roles.enum';
+import { DialogRoles } from '../../../../../constants/enums/dialog-roles.enum';
 import {
     FormConstructionType,
     SetFormType,

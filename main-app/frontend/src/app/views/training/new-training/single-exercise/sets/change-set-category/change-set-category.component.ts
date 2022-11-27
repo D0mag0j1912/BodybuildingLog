@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { DialogRoles } from '../../../../../../constants/enums/model-roles.enum';
+import { DialogRoles } from '../../../../../../constants/enums/dialog-roles.enum';
 import { SetCategoryType } from '../../../../../../models/training/new-training/single-exercise/set/set.type';
 @Component({
     selector: 'bl-change-set-category',
