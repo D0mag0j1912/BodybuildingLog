@@ -32,7 +32,7 @@ export class PreferencesComponent {
     @Input()
     preferenceType: PreferenceChangedType = 'language';
 
-    readonly languageData: Readonly<LanguageData[]> = [
+    readonly languageData: LanguageData[] = [
         {
             languageCode: 'en',
             imageUrl: '../../../../assets/images/flags/united-kingdom.png',
