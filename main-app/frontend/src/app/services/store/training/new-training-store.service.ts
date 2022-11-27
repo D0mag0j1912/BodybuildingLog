@@ -26,9 +26,8 @@ import { ExercisesStoreService } from './exercises-store.service';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingStoreService {
-    private readonly _trainingState$: BehaviorSubject<NewTraining> =
-        new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
-    readonly trainingState$: Observable<NewTraining> = this._trainingState$.asObservable();
+    private _trainingState$ = new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
+    trainingState$ = this._trainingState$.asObservable();
 
     constructor(
         private _preferencesStoreService: PreferencesStoreService,
