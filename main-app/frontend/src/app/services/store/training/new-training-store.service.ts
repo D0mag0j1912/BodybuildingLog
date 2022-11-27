@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, Observable, of } from 'rxjs';
-import { take, tap, map, switchMap, concatMap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { take, tap, map, switchMap, concatMap, withLatestFrom } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { StreamData } from '../../../models/common/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
@@ -567,11 +567,9 @@ export class NewTrainingStoreService {
         restartAll?: boolean,
         userId?: string,
     ): Observable<void> {
-        return combineLatest([
-            this.trainingState$,
-            this._preferencesStoreService.preferencesChanged$,
-        ]).pipe(
+        return this._trainingState$.pipe(
             take(1),
+            withLatestFrom(this._preferencesStoreService.preferencesChanged$),
             map(([currentTrainingState, currentPreferences]: [NewTraining, Preferences]) => {
                 let updatedTraining: NewTraining;
                 if (exercises) {
