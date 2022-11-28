@@ -66,9 +66,6 @@
                             {{ bodyweightRef?.value ? currentPreferences.weightUnit : '' }}
                         </ion-text>
                     </ng-container>
-                    <ion-note *ngIf="newTrainingForm.controls.bodyweight.errors?.pattern" slot="error">
-                        {{ 'training.new_training.errors.only_numbers' | translate }}
-                    </ion-note>
                     <ion-note *ngIf="newTrainingForm.controls.bodyweight.errors?.min" slot="error">
                         {{ 'training.new_training.errors.bodyweight_min' | translate }}
                     </ion-note>

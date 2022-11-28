@@ -12,6 +12,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { isNeverCheck } from '../../../../../../helpers/is-never-check.helper';
 import { convertWeightUnit } from '../../../../../../helpers/training/convert-weight-units.helper';
+import { Preferences } from '../../../../../../models/common/preferences.model';
 import { WeightUnit } from '../../../../../../models/common/preferences.type';
 import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import { SetTrainingData } from '../../../../../../models/training/new-training/single-exercise/set/set.type';
@@ -31,13 +32,7 @@ export class SetComponent implements OnChanges {
     form: FormGroup<SetFormType>;
 
     @Input()
-    set weightUnit(newWeightUnit: WeightUnit) {
-        this._weightUnit = newWeightUnit;
-    }
-    get weightUnit(): WeightUnit {
-        return this._weightUnit;
-    }
-    private _weightUnit: WeightUnit;
+    preferences: Preferences;
 
     @Input()
     set activeSetCategory(category: SetCategoryType) {
@@ -90,14 +85,14 @@ export class SetComponent implements OnChanges {
     durationElement: IonInput;
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (!changes.weightUnit?.firstChange && changes.weightUnit?.currentValue) {
+        if (!changes.preferences?.firstChange && changes.preferences?.currentValue) {
             switch (this.activeSetCategory) {
                 case 'freeWeighted': {
                     const currentWeightValue = +this.form.controls.weight.value;
                     if (currentWeightValue) {
                         this.form.controls.weight.patchValue(
                             convertWeightUnit(
-                                changes.weightUnit.currentValue as WeightUnit,
+                                changes.preferences.currentValue.weightUnit as WeightUnit,
                                 currentWeightValue,
                             ),
                         );

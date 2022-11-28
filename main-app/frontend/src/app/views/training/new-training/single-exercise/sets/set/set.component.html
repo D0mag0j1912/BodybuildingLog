@@ -24,16 +24,7 @@
                         slot="end"
                         [class.invalid-weight]="form.controls.weight.invalid"
                     >
-                        {{ weightEl?.value ? weightUnit : '' }}
-                    </ion-text>
-                    <ion-text
-                        *ngIf="
-                            form.controls.weight.errors?.pattern &&
-                            !isLoading
-                        "
-                        slot="error"
-                    >
-                        {{ 'training.new_training.errors.only_numbers' | translate }}
+                        {{ weightEl?.value ? preferences.weightUnit : '' }}
                     </ion-text>
                     <ion-text
                         *ngIf="
@@ -83,15 +74,6 @@
                     ></ion-input>
                     <ion-text
                         *ngIf="
-                            form.controls.reps.errors?.pattern &&
-                            !isLoading
-                        "
-                        slot="error"
-                    >
-                        {{ 'training.new_training.errors.only_numbers' | translate }}
-                    </ion-text>
-                    <ion-text
-                        *ngIf="
                             form.controls.reps.errors?.min &&
                             !isLoading
                         "
@@ -133,15 +115,6 @@
                         (ionChange)="onChangeSets()"
                         (keydown.backspace)="onSetConstituentKeydown('duration')"
                     ></ion-input>
-                    <ion-text
-                        *ngIf="
-                            form.controls.duration.errors?.pattern &&
-                            !isLoading
-                        "
-                        slot="error"
-                    >
-                        {{ 'training.new_training.errors.only_numbers' | translate }}
-                    </ion-text>
                     <ion-text
                         *ngIf="
                             form.controls.duration.errors?.min &&

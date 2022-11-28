@@ -135,7 +135,6 @@
                 "duration_min": "Minimum duration is 1",
                 "duration_number": "Duration must be a number",
                 "duration_required": "Duration is required",
-                "only_numbers": "Only numbers are allowed",
                 "set_number_max": "Maximum set number is 50",
                 "total_numerical": "Total must be numerical value",
                 "new_training_error_title": "Training is not available",

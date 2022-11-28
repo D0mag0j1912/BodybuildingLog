@@ -17,7 +17,7 @@ import {
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
-import { concatMap, filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { concatMap, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../../helpers/control-value-accessor.helper';
 import {
     Set,
@@ -25,7 +25,6 @@ import {
 } from '../../../../../models/training/new-training/single-exercise/set/set.model';
 import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
 import { convertWeightUnit } from '../../../../../helpers/training/convert-weight-units.helper';
-import { DEFAULT_WEIGHT_UNIT } from '../../../../../constants/shared/default-weight-unit.const';
 import { NewTraining } from '../../../../../models/training/new-training/new-training.model';
 import { NewTrainingStoreService } from '../../../../../services/store/training/new-training-store.service';
 import {
@@ -40,9 +39,7 @@ import {
     SetFormType,
     SetFormValue,
 } from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
-import { WeightUnit } from '../../../../../models/common/preferences.type';
 import { PreferencesStoreService } from '../../../../../services/store/shared/preferences-store.service';
-import { Preferences } from '../../../../../models/common/preferences.model';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
 import { SetComponent } from './set/set.component';
 
@@ -53,7 +50,10 @@ import { SetComponent } from './set/set.component';
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
 export class SetsComponent implements ControlValueAccessor, OnInit {
-    currentWeightUnit: WeightUnit;
+    preferences$ = this._preferencesStoreService.preferencesChanged$.pipe(
+        startWith(this._preferencesStoreService.getPreferences()),
+    );
+
     form = new FormArray<FormGroup<SetFormType>>([]);
 
     onTouched: () => void;
@@ -99,20 +99,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.currentWeightUnit =
-            this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
-
-        this._preferencesStoreService.preferencesChanged$
-            .pipe(
-                filter(
-                    (preferences: Preferences) => this.currentWeightUnit !== preferences.weightUnit,
-                ),
-                takeUntil(this._unsubscribeService),
-            )
-            .subscribe((preferences: Preferences) => {
-                this.currentWeightUnit = preferences.weightUnit;
-            });
-
         this.selectedSetCategoriesControl.valueChanges
             .pipe(
                 map((setCategories: SetCategoryType[]) => {
@@ -347,33 +333,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         return total;
     }
 
-    private _setWeightValue(weight: number): number {
-        if (this.editTrainingData) {
-            const editTrainingWeightUnit = this.currentWeightUnit ?? DEFAULT_WEIGHT_UNIT;
-            if (editTrainingWeightUnit !== this.currentWeightUnit) {
-                return convertWeightUnit(this.currentWeightUnit, weight);
-            }
-        }
-        return weight;
-    }
-
     private _constructSetForm(
         setConstituent: SetConstituent,
         set: Set,
         setControls: SetFormType,
     ): SetFormType {
-        let initialValidators = [
-            Validators.required,
-            Validators.min(1),
-            Validators.max(1000),
-            Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-        ];
+        let initialValidators = [Validators.required, Validators.min(1), Validators.max(1000)];
         if (setConstituent === 'duration') {
-            initialValidators = [
-                Validators.required,
-                Validators.min(1),
-                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-            ];
+            initialValidators = [Validators.required, Validators.min(1)];
         }
         setControls[setConstituent] = new FormControl(
             {
@@ -402,6 +369,16 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             }
         }
         return null;
+    }
+
+    private _setWeightValue(weight: number): number {
+        if (weight) {
+            return convertWeightUnit(
+                this._preferencesStoreService.getPreferences().weightUnit,
+                weight,
+            );
+        }
+        return weight;
     }
 
     private _constructFormBasedOnSetCategory(

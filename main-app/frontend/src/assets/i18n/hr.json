@@ -136,7 +136,6 @@
                 "duration_min": "Minimalna vrijednost trajanja je 1",
                 "duration_number": "Trajanje mora biti broj",
                 "duration_required": "Trajanje je obvezno",
-                "only_numbers": "Samo brojevi su dozvoljeni",
                 "set_number_max": "Maksimalni broj seta je 50",
                 "total_numerical": "Ukupna kilaža mora biti numerička vrijednost",
                 "new_training_error_title": "Trening nije trenutno dostupan",

@@ -3,7 +3,7 @@
         <bl-set
             #set
             [form]="group"
-            [weightUnit]="currentWeightUnit"
+            [preferences]="preferences$ | async"
             [activeSetCategory]="selectedSetCategoriesControl.value[i]"
             [exerciseControl]="exerciseControl"
             [availableSetCategoriesControl]="availableSetCategoriesControl"

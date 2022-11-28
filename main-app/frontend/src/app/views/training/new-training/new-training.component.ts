@@ -106,11 +106,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     formattedTodayDate: string;
     editTrainingData: NewTraining;
-    initialBodyweightValidators = [
-        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-        Validators.min(30),
-        Validators.max(300),
-    ];
+    initialBodyweightValidators = [Validators.min(30), Validators.max(300)];
     bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
 
     newTrainingForm = new FormGroup({
