@@ -40,6 +40,7 @@ import {
     SetFormValue,
 } from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import { PreferencesStoreService } from '../../../../../services/store/shared/preferences-store.service';
+import { DEFAULT_WEIGHT_UNIT } from '../../../../../constants/shared/default-weight-unit.const';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
 import { SetComponent } from './set/set.component';
 
@@ -372,11 +373,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     }
 
     private _setWeightValue(weight: number): number {
-        if (weight) {
-            return convertWeightUnit(
-                this._preferencesStoreService.getPreferences().weightUnit,
-                weight,
-            );
+        if (this.editTrainingData) {
+            const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
+            const currentWeightUnit = this._preferencesStoreService.getPreferences().weightUnit;
+            if (editTrainingWeightUnit !== currentWeightUnit) {
+                return convertWeightUnit(currentWeightUnit, weight);
+            }
         }
         return weight;
     }

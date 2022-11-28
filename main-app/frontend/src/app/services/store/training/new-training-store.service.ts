@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
-import { take, tap, map, switchMap, concatMap } from 'rxjs/operators';
+import { take, tap, map, switchMap, concatMap, withLatestFrom } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { StreamData } from '../../../models/common/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
@@ -18,6 +18,10 @@ import {
     SetTrainingData,
 } from '../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
+import { WeightUnit } from '../../../models/common/preferences.type';
+import { PreferencesStoreService } from '../shared/preferences-store.service';
+import { Preferences } from '../../../models/common/preferences.model';
+import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
 import { ExercisesStoreService } from './exercises-store.service';
 
 @Injectable({ providedIn: 'root' })
@@ -25,10 +29,26 @@ export class NewTrainingStoreService {
     private _trainingState$ = new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
     trainingState$ = this._trainingState$.asObservable();
 
-    constructor(private _exercisesStoreService: ExercisesStoreService) {}
+    constructor(
+        private _exercisesStoreService: ExercisesStoreService,
+        private _preferencesStoreService: PreferencesStoreService,
+    ) {}
 
     getCurrentTrainingState(): NewTraining {
         return { ...this._trainingState$.getValue() };
+    }
+
+    updateWeightUnit(weightUnit: WeightUnit): Observable<void> {
+        return this._trainingState$.pipe(
+            take(1),
+            switchMap((trainingState: NewTraining) => {
+                const updatedTraining = {
+                    ...trainingState,
+                    weightUnit,
+                };
+                return this.saveTrainingData(updatedTraining);
+            }),
+        );
     }
 
     updateTrainingDate(trainingDate: string): Observable<void> {
@@ -548,14 +568,17 @@ export class NewTrainingStoreService {
     ): Observable<void> {
         return this._trainingState$.pipe(
             take(1),
-            map((currentTrainingState: NewTraining) => {
+            withLatestFrom(this._preferencesStoreService.preferencesChanged$),
+            map(([currentTrainingState, currentPreferences]: [NewTraining, Preferences]) => {
                 let updatedTraining: NewTraining;
                 if (exercises) {
                     updatedTraining = currentTrainingState;
                     if (restartAll) {
+                        const weightUnit = currentPreferences?.weightUnit ?? DEFAULT_WEIGHT_UNIT;
                         updatedTraining = {
                             ...EMPTY_TRAINING,
                             userId,
+                            weightUnit,
                         };
                     }
                     updatedTraining = {

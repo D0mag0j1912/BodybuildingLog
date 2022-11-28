@@ -1,6 +1,7 @@
 import { Exercise } from '../../models/training/exercise.model';
 import { NewTraining } from '../../models/training/new-training/new-training.model';
 import { SingleExercise } from '../../models/training/new-training/single-exercise/single-exercise.model';
+import { DEFAULT_WEIGHT_UNIT } from '../shared/default-weight-unit.const';
 
 export const TOTAL_INITIAL_WEIGHT = 0;
 
@@ -28,4 +29,5 @@ export const EMPTY_TRAINING: NewTraining = {
     _id: '',
     bodyweight: null,
     trainingDate: new Date().toISOString(),
+    weightUnit: DEFAULT_WEIGHT_UNIT,
 };

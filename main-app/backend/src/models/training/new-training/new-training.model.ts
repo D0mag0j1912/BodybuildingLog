@@ -14,6 +14,7 @@ import {
     ValidateNested,
 } from 'class-validator';
 import { Schema } from 'mongoose';
+import { WeightUnit } from '../../preferences/preferences.type';
 import { SingleExercise, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model';
 
 export const NEW_TRAINING_SCHEMA = new Schema({
@@ -33,6 +34,10 @@ export const NEW_TRAINING_SCHEMA = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
+        required: true,
+    },
+    weightUnit: {
+        type: String,
         required: true,
     },
 });
@@ -83,4 +88,8 @@ export class NewTraining {
     @ApiProperty()
     @IsNotEmpty({ message: '@common.errors.not_authenticated' })
     userId: string;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    weightUnit: WeightUnit;
 }
