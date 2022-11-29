@@ -1,3 +1,4 @@
+import { RawType } from '../../../../common/raw.type';
 import { Set } from './set.model';
 
 export type SetConstituent = 'weight' | 'reps' | 'duration';
@@ -18,4 +19,4 @@ export type SetDurationUnit = 'seconds' | 'minutes';
 export type SetTrainingData = {
     exerciseName: string;
     total?: number;
-} & Required<Set>;
+} & Required<RawType<Set>>;
