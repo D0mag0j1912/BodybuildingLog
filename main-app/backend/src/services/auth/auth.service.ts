@@ -101,7 +101,6 @@ export class AuthService {
                 languageCode: language,
                 weightUnit: weightUnit,
                 showByPeriod: 'week',
-                setDurationUnit: 'seconds',
             };
             await this.preferencesModel.create(preferences);
             return {
