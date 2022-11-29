@@ -5,7 +5,6 @@ export interface Set {
     weight?: number;
     reps?: number;
     duration?: number;
-    _id?: string;
 }
 
 export interface SelectedCategoriesChanged {

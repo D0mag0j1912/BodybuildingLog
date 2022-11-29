@@ -15,8 +15,8 @@ import { PeriodFilterType } from '../../models/training/past-trainings/period-fi
 @Injectable()
 export class PastTrainingsService {
     constructor(
-        @InjectModel('Training') private readonly trainingModel: Model<NewTraining>,
-        private readonly preferencesService: PreferencesService,
+        @InjectModel('Training') private _trainingModel: Model<NewTraining>,
+        private _preferencesService: PreferencesService,
     ) {}
 
     async searchTrainings(
@@ -52,7 +52,7 @@ export class PastTrainingsService {
                     ],
                 };
                 const results: Paginator<PastTrainings> = await paginate(
-                    this.trainingModel,
+                    this._trainingModel,
                     condition,
                     query,
                 );
@@ -67,7 +67,7 @@ export class PastTrainingsService {
                     IsError: false,
                 } as StreamData<Paginator<PastTrainings>>;
             } else {
-                const userPreferences = await this.preferencesService.getPreferences(loggedUserId);
+                const userPreferences = await this._preferencesService.getPreferences(loggedUserId);
                 return this.getPastTrainings(
                     new Date(),
                     userPreferences.showByPeriod,
@@ -83,7 +83,7 @@ export class PastTrainingsService {
 
     async getPastTraining(trainingId: string): Promise<StreamData<NewTraining>> {
         try {
-            const training = await this.trainingModel.findById(trainingId).exec();
+            const training = await this._trainingModel.findById(trainingId).exec();
             return {
                 IsLoading: true,
                 IsError: false,
@@ -117,7 +117,10 @@ export class PastTrainingsService {
                             : endOfDay(new Date(currentDate)),
                 },
             };
-            const results: Paginator<PastTrainings> = await paginate(this.trainingModel, condition);
+            const results: Paginator<PastTrainings> = await paginate(
+                this._trainingModel,
+                condition,
+            );
             results.Results.Dates =
                 periodFilterType === 'week'
                     ? dates
@@ -168,7 +171,7 @@ export class PastTrainingsService {
     }
 
     private async getEarliestDate(loggedUserId: string): Promise<string> {
-        const minDate = await this.trainingModel
+        const minDate = await this._trainingModel
             .findOne(
                 {
                     userId: loggedUserId,
@@ -182,7 +185,7 @@ export class PastTrainingsService {
     }
 
     private async getLatestDate(loggedUserId: string): Promise<string> {
-        const maxDate = await this.trainingModel
+        const maxDate = await this._trainingModel
             .findOne(
                 {
                     userId: loggedUserId,

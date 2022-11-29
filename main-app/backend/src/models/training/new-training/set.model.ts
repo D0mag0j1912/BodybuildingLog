@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsMongoId, IsNumber, IsOptional, IsString, Max, Min, NotEquals } from 'class-validator';
+import { IsNumber, IsOptional, Max, Min, NotEquals } from 'class-validator';
 import { Schema } from 'mongoose';
 
 export const SET_SCHEMA = new Schema({
@@ -16,12 +16,6 @@ export const SET_SCHEMA = new Schema({
 });
 
 export class Set {
-    @ApiProperty({ required: false })
-    @IsOptional()
-    @IsString()
-    @IsMongoId()
-    _id: string;
-
     @ApiProperty()
     @Min(1, { message: '@training.new_training.errors.error_save_training' })
     @Max(50, { message: '@training.new_training.errors.set_number_max' })

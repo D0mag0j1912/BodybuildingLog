@@ -1,4 +1,3 @@
-import { ModelWithoutIdType } from '../../../../common/raw.model';
 import { Set } from './set.model';
 
 export type SetConstituent = 'weight' | 'reps' | 'duration';
@@ -19,4 +18,4 @@ export type SetDurationUnit = 'seconds' | 'minutes';
 export type SetTrainingData = {
     exerciseName: string;
     total?: number;
-} & Required<ModelWithoutIdType<Set>>;
+} & Required<Set>;
