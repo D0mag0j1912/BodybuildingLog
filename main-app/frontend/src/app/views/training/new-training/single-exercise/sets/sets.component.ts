@@ -319,7 +319,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     break;
                 }
                 case 'staticBodyweight': {
-                    //TODO: BL-128
+                    total += this.bodyweightControl.value + group.controls.duration.value;
                     break;
                 }
                 case 'staticWeighted': {
