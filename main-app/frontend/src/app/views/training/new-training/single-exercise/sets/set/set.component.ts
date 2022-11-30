@@ -15,7 +15,10 @@ import { convertWeightUnit } from '../../../../../../helpers/training/convert-we
 import { Preferences } from '../../../../../../models/common/preferences.model';
 import { WeightUnit } from '../../../../../../models/common/preferences.type';
 import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
-import { SetTrainingData } from '../../../../../../models/training/new-training/single-exercise/set/set.type';
+import {
+    SetDurationUnit,
+    SetTrainingData,
+} from '../../../../../../models/training/new-training/single-exercise/set/set.type';
 import {
     SetCategoryType,
     SetConstituent,
@@ -28,6 +31,8 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SetComponent implements OnChanges {
+    setDurationUnit: SetDurationUnit = 'seconds';
+
     @Input()
     form: FormGroup<SetFormType>;
 
