@@ -80,6 +80,9 @@ export class SetComponent implements OnChanges {
     @Output()
     setCategoryModalOpened = new EventEmitter<SetCategoryType>();
 
+    @Output()
+    setDurationUnitChanged = new EventEmitter<SetDurationUnit>();
+
     @ViewChild('weightEl', { read: IonInput })
     weightElement: IonInput;
 
@@ -108,6 +111,10 @@ export class SetComponent implements OnChanges {
         }
     }
 
+    onSetDurationChange(): void {
+        this.setDurationUnitChanged.emit(this.setDurationUnit);
+    }
+
     updateSetCategory(): void {
         this.setCategoryModalOpened.emit(this.activeSetCategory);
     }
@@ -131,6 +138,7 @@ export class SetComponent implements OnChanges {
                     ? this.form.controls.duration.value
                     : undefined,
             setNumber: undefined,
+            setPreferences: { setDurationUnit: this.setDurationUnit },
         };
         this.setChanged.emit({
             setData,

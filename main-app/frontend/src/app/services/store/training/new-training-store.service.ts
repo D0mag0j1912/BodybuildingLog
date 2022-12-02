@@ -15,6 +15,7 @@ import { SingleExercise } from '../../../models/training/new-training/single-exe
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import {
     SetCategoryType,
+    SetDurationUnit,
     SetTrainingData,
 } from '../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
@@ -121,7 +122,12 @@ export class NewTrainingStoreService {
                         break;
                     }
                     case 'staticBodyweight': {
-                        updatedSet = { setNumber: indexSet + 1, duration: null };
+                        //TODO: Fetch set duration unit from user preferences
+                        updatedSet = {
+                            setNumber: indexSet + 1,
+                            duration: null,
+                            setPreferences: { setDurationUnit: 'seconds' },
+                        };
                         break;
                     }
                     case 'staticWeighted': {
@@ -193,7 +199,12 @@ export class NewTrainingStoreService {
                                         break;
                                     }
                                     case 'staticBodyweight': {
-                                        set = { setNumber, duration: null };
+                                        //TODO: Fetch set duration unit from user preferences
+                                        set = {
+                                            setNumber,
+                                            duration: null,
+                                            setPreferences: { setDurationUnit: 'seconds' },
+                                        };
                                         break;
                                     }
                                     case 'staticWeighted': {
@@ -332,6 +343,43 @@ export class NewTrainingStoreService {
         }
     }
 
+    setDurationUnitChanged(
+        exerciseIndex: number,
+        setDurationUnit: SetDurationUnit,
+        setIndex: number,
+    ): Observable<void> {
+        return this._trainingState$.pipe(
+            take(1),
+            concatMap((trainingState: NewTraining) => {
+                const updatedTraining: NewTraining = {
+                    ...trainingState,
+                    exercises: [...trainingState.exercises].map(
+                        (exercise: SingleExercise, i: number) => {
+                            if (i === exerciseIndex) {
+                                return {
+                                    ...exercise,
+                                    sets: [...exercise.sets].map((set: Set, j: number) => {
+                                        if (j === setIndex) {
+                                            return {
+                                                ...set,
+                                                setPreferences: {
+                                                    setDurationUnit,
+                                                },
+                                            };
+                                        }
+                                        return set;
+                                    }),
+                                };
+                            }
+                            return exercise;
+                        },
+                    ),
+                };
+                return this.saveTrainingData(updatedTraining);
+            }),
+        );
+    }
+
     setsChanged(
         trainingData: SetTrainingData,
         activeSetCategory: SetCategoryType,
@@ -379,6 +427,11 @@ export class NewTrainingStoreService {
                                                         updatedSet = {
                                                             ...set,
                                                             duration: trainingData.duration,
+                                                            setPreferences: {
+                                                                setDurationUnit:
+                                                                    trainingData.setPreferences
+                                                                        .setDurationUnit,
+                                                            },
                                                         };
                                                         break;
                                                     }
@@ -417,6 +470,9 @@ export class NewTrainingStoreService {
                             newSet = {
                                 setNumber: trainingData.setNumber,
                                 duration: trainingData.duration,
+                                setPreferences: {
+                                    setDurationUnit: trainingData.setPreferences.setDurationUnit,
+                                },
                             };
                             break;
                         }
@@ -458,7 +514,12 @@ export class NewTrainingStoreService {
                         break;
                     }
                     case 'staticBodyweight': {
-                        set = { setNumber: 1, duration: null };
+                        //TODO: Fetch set duration unit from user preferences
+                        set = {
+                            setNumber: 1,
+                            duration: null,
+                            setPreferences: { setDurationUnit: 'seconds' },
+                        };
                         break;
                     }
                     case 'staticWeighted': {

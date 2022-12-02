@@ -1,4 +1,4 @@
-import { SetCategoryType, SetChangedType } from './set.type';
+import { SetCategoryType, SetChangedType, SetDurationUnit } from './set.type';
 
 export interface Set {
     setNumber: number;
@@ -6,6 +6,11 @@ export interface Set {
     reps?: number;
     duration?: number;
     _id?: string;
+    setPreferences?: SetPreferences;
+}
+
+export interface SetPreferences {
+    setDurationUnit: SetDurationUnit;
 }
 
 export interface SelectedCategoriesChanged {

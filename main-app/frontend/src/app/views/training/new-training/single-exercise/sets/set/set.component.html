@@ -145,7 +145,8 @@
                         class="duration-picker"
                         interface="popover"
                         [(ngModel)]="setDurationUnit"
-                        [ngModelOptions]="{ standalone: true }">
+                        [ngModelOptions]="{ standalone: true }"
+                        (ionChange)="onSetDurationChange()">
                         <ion-select-option [value]="'seconds'">
                             {{ 'common.seconds' | translate }}
                         </ion-select-option>

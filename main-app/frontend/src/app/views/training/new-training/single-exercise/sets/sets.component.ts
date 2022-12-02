@@ -30,6 +30,7 @@ import { NewTrainingStoreService } from '../../../../../services/store/training/
 import {
     SetCategoryType,
     SetConstituent,
+    SetDurationUnit,
     SetTrainingData,
 } from '../../../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
@@ -63,7 +64,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     editTrainingData: NewTraining;
 
     @Input()
-    indexExercise = 0;
+    exerciseIndex = 0;
 
     @Input()
     bodyweightControl: FormControl<number>;
@@ -109,7 +110,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     }
                     this._constructFormBasedOnSetCategory(selectedSetCategories[0], 'newExercise');
                     return {
-                        index: this.indexExercise,
+                        index: this.exerciseIndex,
                         setCategory: selectedSetCategories[0],
                     };
                 }),
@@ -222,7 +223,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                         if (currentSetCategory !== response.data) {
                             return this._newTrainingStoreService
                                 .updatePrimarySetCategory(
-                                    this.indexExercise,
+                                    this.exerciseIndex,
                                     setIndex,
                                     response.data,
                                 )
@@ -253,6 +254,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             });
     }
 
+    onSetDurationUnitChange(setDurationUnit: SetDurationUnit, setIndex: number): void {
+        this._newTrainingStoreService
+            .setDurationUnitChanged(this.exerciseIndex, setDurationUnit, setIndex)
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe();
+    }
+
     addSet(set?: Set): void {
         let setCategory: SetCategoryType;
         if (set) {
@@ -272,7 +280,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 concatMap((setCategory: SetCategoryType) => {
                     if (!set) {
                         return this._newTrainingStoreService.addSet(
-                            this.indexExercise,
+                            this.exerciseIndex,
                             setCategory,
                             this.form.controls.length,
                         );
@@ -288,7 +296,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     onSetDeleted(setIndex: number): void {
         this.form.removeAt(setIndex);
         this._newTrainingStoreService
-            .deleteSet(this.indexExercise, setIndex, this._calculateTotal())
+            .deleteSet(this.exerciseIndex, setIndex, this._calculateTotal())
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe((_) =>
                 this.selectedCategoriesChanged.emit({
