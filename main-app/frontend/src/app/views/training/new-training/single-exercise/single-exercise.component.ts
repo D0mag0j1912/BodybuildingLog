@@ -206,6 +206,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 );
                 break;
             }
+            default: {
+                isNeverCheck(data.setChangedType);
+            }
         }
     }
 

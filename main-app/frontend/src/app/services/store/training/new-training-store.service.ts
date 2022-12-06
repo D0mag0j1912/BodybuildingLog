@@ -426,6 +426,13 @@ export class NewTrainingStoreService {
                                                         };
                                                         break;
                                                     }
+                                                    case 'staticWeighted': {
+                                                        //TODO: BL-123
+                                                        break;
+                                                    }
+                                                    default: {
+                                                        isNeverCheck(activeSetCategory);
+                                                    }
                                                 }
                                                 return updatedSet;
                                             }
@@ -463,6 +470,13 @@ export class NewTrainingStoreService {
                                 duration: trainingData.duration,
                             };
                             break;
+                        }
+                        case 'staticWeighted': {
+                            //TODO: BL-123
+                            break;
+                        }
+                        default: {
+                            isNeverCheck(activeSetCategory);
                         }
                     }
                     updatedTraining = {

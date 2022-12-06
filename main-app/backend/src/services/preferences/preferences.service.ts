@@ -39,6 +39,9 @@ export class PreferencesService {
                 case 'weightUnit': {
                     return { Message: 'preferences.weight_unit_changed' } as GeneralResponseData;
                 }
+                default: {
+                    isNeverCheck(preferenceChanged);
+                }
             }
         } catch (error: unknown) {
             switch (preferenceChanged) {

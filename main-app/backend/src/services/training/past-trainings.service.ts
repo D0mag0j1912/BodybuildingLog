@@ -11,6 +11,7 @@ import { PastTrainings } from '../../models/training/past-trainings/past-trainin
 import { DateInterval } from '../../models/common/dates.model';
 import { PreferencesService } from '../preferences/preferences.service';
 import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
+import { isNeverCheck } from '../../helpers/is-never-check';
 
 @Injectable()
 export class PastTrainingsService {
@@ -167,6 +168,9 @@ export class PastTrainingsService {
                 return 'weekdays.friday';
             case 6:
                 return 'weekdays.saturday';
+            default: {
+                isNeverCheck(dayIndex);
+            }
         }
     }
 

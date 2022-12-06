@@ -374,6 +374,9 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     case 'duration': {
                         return set.duration;
                     }
+                    default: {
+                        isNeverCheck(setConstituent);
+                    }
                 }
             }
         }
