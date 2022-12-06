@@ -122,11 +122,9 @@ export class NewTrainingStoreService {
                         break;
                     }
                     case 'staticBodyweight': {
-                        //TODO: Fetch set duration unit from user preferences
                         updatedSet = {
                             setNumber: indexSet + 1,
                             duration: null,
-                            setPreferences: { setDurationUnit: 'seconds' },
                         };
                         break;
                     }
@@ -199,11 +197,9 @@ export class NewTrainingStoreService {
                                         break;
                                     }
                                     case 'staticBodyweight': {
-                                        //TODO: Fetch set duration unit from user preferences
                                         set = {
                                             setNumber,
                                             duration: null,
-                                            setPreferences: { setDurationUnit: 'seconds' },
                                         };
                                         break;
                                     }
@@ -427,11 +423,6 @@ export class NewTrainingStoreService {
                                                         updatedSet = {
                                                             ...set,
                                                             duration: trainingData.duration,
-                                                            setPreferences: {
-                                                                setDurationUnit:
-                                                                    trainingData.setPreferences
-                                                                        .setDurationUnit,
-                                                            },
                                                         };
                                                         break;
                                                     }
@@ -470,9 +461,6 @@ export class NewTrainingStoreService {
                             newSet = {
                                 setNumber: trainingData.setNumber,
                                 duration: trainingData.duration,
-                                setPreferences: {
-                                    setDurationUnit: trainingData.setPreferences.setDurationUnit,
-                                },
                             };
                             break;
                         }
@@ -514,11 +502,9 @@ export class NewTrainingStoreService {
                         break;
                     }
                     case 'staticBodyweight': {
-                        //TODO: Fetch set duration unit from user preferences
                         set = {
                             setNumber: 1,
                             duration: null,
-                            setPreferences: { setDurationUnit: 'seconds' },
                         };
                         break;
                     }

@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
+import { SetDurationUnitType } from '../training/new-training/set.type';
 import { LanguageCode, WeightUnit } from './preferences.type';
 
 export const PREFERENCES_SCHEMA = new Schema({
@@ -19,6 +20,10 @@ export const PREFERENCES_SCHEMA = new Schema({
         required: true,
     },
     showByPeriod: {
+        type: String,
+        required: true,
+    },
+    setDurationUnit: {
         type: String,
         required: true,
     },
@@ -45,4 +50,9 @@ export class PreferencesDto {
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.show_by_period_required' })
     showByPeriod: PeriodFilterType;
+
+    @ApiProperty()
+    @IsString({ message: '@common.errors.something_went_wrong' })
+    @IsNotEmpty({ message: '@preferences.errors.set_duration_unit_required' })
+    setDurationUnit: SetDurationUnitType;
 }

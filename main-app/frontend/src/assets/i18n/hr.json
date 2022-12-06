@@ -228,8 +228,10 @@
             "language_change": "Došlo je do greške pri promjeni jezika",
             "weight_unit_required": "Jedinica težine je obvezna",
             "weight_unit_change": "Došlo je do greške pri promjeni jedinice težine",
+            "show_by_period_required": "Jedinica perioda treninga je obvezna",
             "period_change": "Došlo je do greške pri promjeni perioda",
-            "show_by_period_required": "Jedinica perioda treninga je obvezna"
+            "set_duration_unit_required": "Jedinica trajanja seta je obvezna",
+            "set_duration_unit_change": "Došlo je do greške pri promjeni jedinica trajanja seta"
         }
     },
     "weekdays": {

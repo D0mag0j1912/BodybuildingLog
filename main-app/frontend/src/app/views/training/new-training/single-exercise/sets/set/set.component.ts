@@ -138,7 +138,6 @@ export class SetComponent implements OnChanges {
                     ? this.form.controls.duration.value
                     : undefined,
             setNumber: undefined,
-            setPreferences: { setDurationUnit: this.setDurationUnit },
         };
         this.setChanged.emit({
             setData,

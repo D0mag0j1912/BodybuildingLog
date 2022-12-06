@@ -1,4 +1,4 @@
-export type SetDurationType = 'seconds' | 'minutes';
+export type SetDurationUnitType = 'seconds' | 'minutes';
 
 export type SetCategoryType =
     | 'dynamicBodyweight'

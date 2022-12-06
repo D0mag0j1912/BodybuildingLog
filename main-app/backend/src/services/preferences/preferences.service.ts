@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { isNeverCheck } from '../../helpers/is-never-check';
 import { GeneralResponseData } from '../../models/common/response.model';
 import { PreferencesDto } from '../../models/preferences/preferences.model';
 import { PreferenceChangedType } from '../../models/preferences/preferences.type';
@@ -20,17 +21,19 @@ export class PreferencesService {
         preferenceChanged: PreferenceChangedType,
     ): Promise<GeneralResponseData> {
         try {
-            const { languageCode, weightUnit, showByPeriod } = preferencesDto;
+            const { languageCode, weightUnit, showByPeriod, setDurationUnit } = preferencesDto;
             const preferences = await this._preferencesModel.findOne({ userId: userId }).exec();
             preferences.languageCode = languageCode;
             preferences.weightUnit = weightUnit;
             preferences.showByPeriod = showByPeriod;
+            preferences.setDurationUnit = setDurationUnit;
             await preferences.save();
             switch (preferenceChanged) {
                 case 'language': {
                     return { Message: 'preferences.language_changed' } as GeneralResponseData;
                 }
-                case 'showByPeriod': {
+                case 'showByPeriod':
+                case 'setDurationUnit': {
                     return { Message: '' } as GeneralResponseData;
                 }
                 case 'weightUnit': {
@@ -47,6 +50,14 @@ export class PreferencesService {
                 }
                 case 'weightUnit': {
                     throw new InternalServerErrorException('preferences.errors.weight_unit_change');
+                }
+                case 'setDurationUnit': {
+                    throw new InternalServerErrorException(
+                        'preferences.errors.set_duration_unit_change',
+                    );
+                }
+                default: {
+                    isNeverCheck(preferenceChanged);
                 }
             }
         }
