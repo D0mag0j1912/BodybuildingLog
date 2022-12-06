@@ -38,7 +38,6 @@ import { DialogRoles } from '../../../../../constants/enums/dialog-roles.enum';
 import {
     FormConstructionType,
     SetFormType,
-    SetFormValue,
 } from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import { PreferencesStoreService } from '../../../../../services/store/shared/preferences-store.service';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../../constants/shared/default-weight-unit.const';
@@ -131,8 +130,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             this.addSet();
         }
     }
-
-    registerOnChange(fn: (value: SetFormValue[]) => void): void {
+    //TODO: Remove
+    registerOnChange(fn: (value: any) => void): void {
         this.form.valueChanges.pipe(takeUntil(this._unsubscribeService)).subscribe(fn);
     }
 
@@ -350,11 +349,17 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         let initialValidators = [Validators.required, Validators.min(1), Validators.max(1000)];
         if (setConstituent === 'duration') {
             initialValidators = [Validators.required, Validators.min(1)];
+            setControls['setPreferences'] = new FormGroup({
+                setDurationUnit: new FormControl(
+                    set ? set.setPreferences?.setDurationUnit : 'seconds',
+                    [Validators.required],
+                ),
+            });
         }
         setControls[setConstituent] = new FormControl(
             {
                 value: this._setFormValue(setConstituent, set),
-                disabled: this.exerciseControl.value ? false : true,
+                disabled: !this.exerciseControl.value,
             },
             initialValidators,
         );
@@ -448,6 +453,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     {
                         setNumber: constructionType === 'newExercise' ? 1 : indexSet + 1,
                         duration: set ? set.duration : null,
+                        setPreferences: set ? set.setPreferences : null,
                     },
                     setControls,
                 );

@@ -137,24 +137,25 @@
                 </ion-item>
             </ion-col>
             <ion-col *ngIf="form.controls.duration" size="5">
-                <ion-item>
-                    <ion-label class="ion-label" position="floating">
-                        {{ 'training.new_training.pick_duration_unit' | translate }}
-                    </ion-label>
-                    <ion-select
-                        class="duration-picker"
-                        interface="popover"
-                        [(ngModel)]="setDurationUnit"
-                        [ngModelOptions]="{ standalone: true }"
-                        (ionChange)="onSetDurationChange()">
-                        <ion-select-option [value]="'seconds'">
-                            {{ 'common.seconds' | translate }}
-                        </ion-select-option>
-                        <ion-select-option [value]="'minutes'">
-                            {{ 'common.minutes' | translate }}
-                        </ion-select-option>
-                    </ion-select>
-                </ion-item>
+                <ng-container [formGroup]="form.controls.setPreferences">
+                    <ion-item>
+                        <ion-label class="ion-label" position="floating">
+                            {{ 'training.new_training.pick_duration_unit' | translate }}
+                        </ion-label>
+                        <ion-select
+                            formControlName="setDurationUnit"
+                            class="duration-picker"
+                            interface="popover"
+                            (ionChange)="onSetDurationChange()">
+                            <ion-select-option [value]="'seconds'">
+                                {{ 'common.seconds' | translate }}
+                            </ion-select-option>
+                            <ion-select-option [value]="'minutes'">
+                                {{ 'common.minutes' | translate }}
+                            </ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ng-container>
             </ion-col>
             <ion-col size="2" class="set-ctas" [class.single-set-category]="availableSetCategoriesControl.value.length === 1">
                 <ion-button
