@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
-import { SetCategoryType } from './new-training/set.model';
+import { SetCategoryType } from './new-training/set.type';
 
 export const EXERCISE_SCHEMA = new Schema({
     name: {

@@ -8,17 +8,16 @@ import { StorageItems } from '../../../constants/enums/storage-items.enum';
 
 @Injectable({ providedIn: 'root' })
 export class AuthStoreService {
-    private readonly _loggedUser$$: BehaviorSubject<AuthResponseData> =
-        new BehaviorSubject<AuthResponseData>(null);
-    readonly loggedUser$: Observable<AuthResponseData> = this._loggedUser$$.asObservable();
+    private _loggedUser$ = new BehaviorSubject<AuthResponseData>(null);
+    loggedUser$ = this._loggedUser$.asObservable();
 
-    private readonly _isAuth$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    readonly isAuth$: Observable<boolean> = this._isAuth$$.asObservable();
+    private _isAuth$ = new BehaviorSubject<boolean>(false);
+    isAuth$ = this._isAuth$.asObservable();
 
     private tokenTimer: NodeJS.Timeout;
     private token: string;
 
-    constructor(private readonly router: Router) {}
+    constructor(private _router: Router) {}
 
     getToken(): string {
         return this.token;
@@ -29,19 +28,19 @@ export class AuthStoreService {
     }
 
     getLoggedUser(): AuthResponseData {
-        return { ...this._loggedUser$$.getValue() };
+        return { ...this._loggedUser$.getValue() };
     }
 
     emitLoggedUser(loggedUser: AuthResponseData): void {
-        this._loggedUser$$.next(loggedUser);
+        this._loggedUser$.next(loggedUser);
     }
 
     getIsAuth(): boolean {
-        return this._isAuth$$.getValue();
+        return this._isAuth$.getValue();
     }
 
     emitIsAuth(isAuth: boolean): void {
-        this._isAuth$$.next(isAuth);
+        this._isAuth$.next(isAuth);
     }
 
     autoLogin(): Observable<boolean> {
@@ -79,7 +78,7 @@ export class AuthStoreService {
         this.emitIsAuth(false);
         clearTimeout(this.tokenTimer);
         await this.clearData();
-        await this.router.navigate(['/auth/login']);
+        await this._router.navigate(['/auth/login']);
     }
 
     setAuthTimer(duration: number): void {

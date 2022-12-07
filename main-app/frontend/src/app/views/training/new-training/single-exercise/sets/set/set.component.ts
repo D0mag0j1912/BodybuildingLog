@@ -12,9 +12,13 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { isNeverCheck } from '../../../../../../helpers/is-never-check.helper';
 import { convertWeightUnit } from '../../../../../../helpers/training/convert-weight-units.helper';
-import { WeightUnit } from '../../../../../../models/common/preferences.type';
+import { Preferences } from '../../../../../../models/common/preferences.model';
+import { WeightUnitType } from '../../../../../../models/common/preferences.type';
 import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
-import { SetTrainingData } from '../../../../../../models/training/new-training/single-exercise/set/set.model';
+import {
+    SetDurationUnitType,
+    SetTrainingData,
+} from '../../../../../../models/training/new-training/single-exercise/set/set.type';
 import {
     SetCategoryType,
     SetConstituent,
@@ -31,13 +35,7 @@ export class SetComponent implements OnChanges {
     form: FormGroup<SetFormType>;
 
     @Input()
-    set weightUnit(newWeightUnit: WeightUnit) {
-        this._weightUnit = newWeightUnit;
-    }
-    get weightUnit(): WeightUnit {
-        return this._weightUnit;
-    }
-    private _weightUnit: WeightUnit;
+    preferences: Preferences;
 
     @Input()
     set activeSetCategory(category: SetCategoryType) {
@@ -80,21 +78,27 @@ export class SetComponent implements OnChanges {
     @Output()
     setCategoryModalOpened = new EventEmitter<SetCategoryType>();
 
-    @ViewChild('weightEl')
+    @Output()
+    setDurationUnitChanged = new EventEmitter<SetDurationUnitType>();
+
+    @ViewChild('weightEl', { read: IonInput })
     weightElement: IonInput;
 
-    @ViewChild('repsEl')
+    @ViewChild('repsEl', { read: IonInput })
     repsElement: IonInput;
 
+    @ViewChild('durationEl', { read: IonInput })
+    durationElement: IonInput;
+
     ngOnChanges(changes: SimpleChanges): void {
-        if (!changes.weightUnit?.firstChange && changes.weightUnit?.currentValue) {
+        if (!changes.preferences?.firstChange && changes.preferences?.currentValue) {
             switch (this.activeSetCategory) {
                 case 'freeWeighted': {
                     const currentWeightValue = +this.form.controls.weight.value;
                     if (currentWeightValue) {
                         this.form.controls.weight.patchValue(
                             convertWeightUnit(
-                                changes.weightUnit.currentValue as WeightUnit,
+                                changes.preferences.currentValue.weightUnit as WeightUnitType,
                                 currentWeightValue,
                             ),
                         );
@@ -105,6 +109,10 @@ export class SetComponent implements OnChanges {
         }
     }
 
+    onSetDurationChange(): void {
+        this.setDurationUnitChanged.emit(this.preferences.setDurationUnit);
+    }
+
     updateSetCategory(): void {
         this.setCategoryModalOpened.emit(this.activeSetCategory);
     }
@@ -112,6 +120,7 @@ export class SetComponent implements OnChanges {
     onChangeSets(): void {
         const weight = this.form.controls.weight?.value;
         const reps = this.form.controls.reps?.value;
+        const duration = this.form.controls.duration?.value;
         const setData: SetTrainingData = {
             exerciseName: this.exerciseControl.value,
             weight:
@@ -122,6 +131,11 @@ export class SetComponent implements OnChanges {
                 reps && this._isSetConstituentValid('reps')
                     ? this.form.controls.reps.value
                     : undefined,
+            duration:
+                duration && this._isSetConstituentValid('duration')
+                    ? this.form.controls.duration.value
+                    : undefined,
+            setNumber: undefined,
         };
         this.setChanged.emit({
             setData,
@@ -157,7 +171,9 @@ export class SetComponent implements OnChanges {
                 break;
             }
             case 'staticBodyweight': {
-                //TODO: BL-128
+                if (this.durationElement) {
+                    await this.durationElement.setFocus();
+                }
                 break;
             }
             case 'staticWeighted': {

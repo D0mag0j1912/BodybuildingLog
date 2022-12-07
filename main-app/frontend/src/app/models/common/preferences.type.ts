@@ -1,5 +1,5 @@
-export type PreferenceChangedType = 'language' | 'showByPeriod' | 'weightUnit';
+export type PreferenceChangedType = 'language' | 'showByPeriod' | 'weightUnit' | 'setDurationUnit';
 
-export type LanguageCode = 'en' | 'hr';
+export type LanguageCodeType = 'en' | 'hr';
 
-export type WeightUnit = 'lbs' | 'kg';
+export type WeightUnitType = 'lbs' | 'kg';

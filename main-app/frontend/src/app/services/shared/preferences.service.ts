@@ -34,6 +34,7 @@ export class PreferencesService {
             languageCode: preferences.languageCode,
             weightUnit: preferences.weightUnit,
             showByPeriod: preferences.showByPeriod,
+            setDurationUnit: preferences.setDurationUnit,
         };
         let apiResponse: GeneralResponseData;
         return this._http
@@ -61,6 +62,7 @@ export class PreferencesService {
                                     .updateWeightUnit(apiPreferences.weightUnit)
                                     .pipe(switchMap((_) => of(apiResponse)));
                             }
+                            //TODO: Create logic for set duration unit
                             return of(apiResponse);
                         }),
                     );

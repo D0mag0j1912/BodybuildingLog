@@ -4,15 +4,8 @@ export interface Set {
     setNumber: number;
     weight?: number;
     reps?: number;
+    duration?: number;
     _id?: string;
-}
-
-export interface SetTrainingData {
-    exerciseName: string;
-    weight: number;
-    reps: number;
-    setNumber?: number;
-    total?: number;
 }
 
 export interface SelectedCategoriesChanged {

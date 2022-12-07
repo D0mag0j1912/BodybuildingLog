@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, Observable, of } from 'rxjs';
-import { take, tap, map, switchMap, concatMap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { take, tap, map, switchMap, concatMap, withLatestFrom } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { StreamData } from '../../../models/common/common.model';
 import { Exercise } from '../../../models/training/exercise.model';
@@ -10,36 +10,36 @@ import {
     TOTAL_INITIAL_WEIGHT,
 } from '../../../constants/training/new-training.const';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
-import {
-    SetTrainingData,
-    Set,
-} from '../../../models/training/new-training/single-exercise/set/set.model';
+import { Set } from '../../../models/training/new-training/single-exercise/set/set.model';
 import { SingleExercise } from '../../../models/training/new-training/single-exercise/single-exercise.model';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
-import { PreferencesStoreService } from '../shared/preferences-store.service';
-import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
-import { WeightUnit } from '../../../models/common/preferences.type';
-import { Preferences } from '../../../models/common/preferences.model';
-import { SetCategoryType } from '../../../models/training/new-training/single-exercise/set/set.type';
+import {
+    SetCategoryType,
+    SetDurationUnitType,
+    SetTrainingData,
+} from '../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
+import { WeightUnitType } from '../../../models/common/preferences.type';
+import { PreferencesStoreService } from '../shared/preferences-store.service';
+import { Preferences } from '../../../models/common/preferences.model';
+import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
 import { ExercisesStoreService } from './exercises-store.service';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingStoreService {
-    private readonly _trainingState$: BehaviorSubject<NewTraining> =
-        new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
-    readonly trainingState$: Observable<NewTraining> = this._trainingState$.asObservable();
+    private _trainingState$ = new BehaviorSubject<NewTraining>(EMPTY_TRAINING);
+    trainingState$ = this._trainingState$.asObservable();
 
     constructor(
-        private _preferencesStoreService: PreferencesStoreService,
         private _exercisesStoreService: ExercisesStoreService,
+        private _preferencesStoreService: PreferencesStoreService,
     ) {}
 
     getCurrentTrainingState(): NewTraining {
         return { ...this._trainingState$.getValue() };
     }
 
-    updateWeightUnit(weightUnit: WeightUnit): Observable<void> {
+    updateWeightUnit(weightUnit: WeightUnitType): Observable<void> {
         return this._trainingState$.pipe(
             take(1),
             switchMap((trainingState: NewTraining) => {
@@ -122,7 +122,10 @@ export class NewTrainingStoreService {
                         break;
                     }
                     case 'staticBodyweight': {
-                        //TODO: BL-128
+                        updatedSet = {
+                            setNumber: indexSet + 1,
+                            duration: null,
+                        };
                         break;
                     }
                     case 'staticWeighted': {
@@ -194,7 +197,10 @@ export class NewTrainingStoreService {
                                         break;
                                     }
                                     case 'staticBodyweight': {
-                                        //TODO: BL-128
+                                        set = {
+                                            setNumber,
+                                            duration: null,
+                                        };
                                         break;
                                     }
                                     case 'staticWeighted': {
@@ -333,81 +339,128 @@ export class NewTrainingStoreService {
         }
     }
 
-    setsChanged(trainingData: SetTrainingData): Observable<void> {
-        let updatedTraining: NewTraining = this._trainingState$.getValue();
-        const indexOfChangedExercise = updatedTraining.exercises.findIndex(
-            (singleExercise: SingleExercise) =>
-                singleExercise.exerciseData.name === trainingData.exerciseName,
-        );
-        const indexFoundSet = updatedTraining.exercises[indexOfChangedExercise].sets.findIndex(
-            (set: Set) => set.setNumber === trainingData.setNumber,
-        );
-
-        if (indexFoundSet > -1) {
-            updatedTraining = {
-                ...updatedTraining,
-                exercises: [...updatedTraining.exercises].map(
-                    (exercise: SingleExercise, i: number) => {
-                        if (i === indexOfChangedExercise) {
-                            return {
-                                ...exercise,
-                                sets: [...exercise.sets].map((set: Set, j: number) => {
-                                    if (j === indexFoundSet) {
-                                        let updatedSet: Set;
-                                        if (trainingData?.weight) {
-                                            updatedSet = {
-                                                ...set,
-                                                weight: trainingData.weight,
-                                                reps: trainingData.reps,
-                                            };
-                                        } else {
-                                            updatedSet = {
-                                                ...set,
-                                                reps: trainingData.reps,
-                                            };
-                                        }
-                                        return updatedSet;
-                                    }
-                                    return set;
-                                }),
-                                total: trainingData.total,
+    setsChanged(
+        trainingData: SetTrainingData,
+        activeSetCategory: SetCategoryType,
+    ): Observable<void> {
+        return this._trainingState$.pipe(
+            take(1),
+            switchMap((trainingState: NewTraining) => {
+                let updatedTraining: NewTraining;
+                const indexOfChangedExercise = trainingState.exercises.findIndex(
+                    (singleExercise: SingleExercise) =>
+                        singleExercise.exerciseData.name === trainingData.exerciseName,
+                );
+                const indexFoundSet = trainingState.exercises[
+                    indexOfChangedExercise
+                ].sets.findIndex((set: Set) => set.setNumber === trainingData.setNumber);
+                if (indexFoundSet > -1) {
+                    updatedTraining = {
+                        ...trainingState,
+                        exercises: [...trainingState.exercises].map(
+                            (exercise: SingleExercise, i: number) => {
+                                if (i === indexOfChangedExercise) {
+                                    return {
+                                        ...exercise,
+                                        sets: [...exercise.sets].map((set: Set, j: number) => {
+                                            if (j === indexFoundSet) {
+                                                let updatedSet: Set;
+                                                switch (activeSetCategory) {
+                                                    case 'freeWeighted':
+                                                    case 'dynamicWeighted': {
+                                                        updatedSet = {
+                                                            ...set,
+                                                            weight: trainingData.weight,
+                                                            reps: trainingData.reps,
+                                                        };
+                                                        break;
+                                                    }
+                                                    case 'dynamicBodyweight': {
+                                                        updatedSet = {
+                                                            ...set,
+                                                            reps: trainingData.reps,
+                                                        };
+                                                        break;
+                                                    }
+                                                    case 'staticBodyweight': {
+                                                        updatedSet = {
+                                                            ...set,
+                                                            duration: trainingData.duration,
+                                                        };
+                                                        break;
+                                                    }
+                                                    case 'staticWeighted': {
+                                                        //TODO: BL-123
+                                                        break;
+                                                    }
+                                                    default: {
+                                                        isNeverCheck(activeSetCategory);
+                                                    }
+                                                }
+                                                return updatedSet;
+                                            }
+                                            return set;
+                                        }),
+                                        total: trainingData.total,
+                                    };
+                                }
+                                return exercise;
+                            },
+                        ),
+                    };
+                } else {
+                    let newSet: Set;
+                    switch (activeSetCategory) {
+                        case 'freeWeighted':
+                        case 'dynamicWeighted': {
+                            newSet = {
+                                setNumber: trainingData.setNumber,
+                                weight: trainingData.weight,
+                                reps: trainingData.reps,
                             };
+                            break;
                         }
-                        return exercise;
-                    },
-                ),
-            };
-        } else {
-            let newSet: Set;
-            if (trainingData.weight) {
-                newSet = {
-                    setNumber: trainingData.setNumber,
-                    weight: trainingData.weight,
-                    reps: trainingData.reps,
-                } as Set;
-            } else {
-                newSet = {
-                    setNumber: trainingData.setNumber,
-                    reps: trainingData.reps,
-                } as Set;
-            }
-            updatedTraining = {
-                ...updatedTraining,
-                exercises: [...updatedTraining.exercises].map(
-                    (exercise: SingleExercise, i: number) => {
-                        if (i === indexOfChangedExercise) {
-                            return {
-                                ...exercise,
-                                sets: [...exercise.sets, newSet],
-                                total: trainingData.total,
+                        case 'dynamicBodyweight': {
+                            newSet = {
+                                setNumber: trainingData.setNumber,
+                                reps: trainingData.reps,
                             };
+                            break;
                         }
-                        return exercise;
-                    },
-                ),
-            };
-        }
-        return this.saveTrainingData(updatedTraining);
+                        case 'staticBodyweight': {
+                            newSet = {
+                                setNumber: trainingData.setNumber,
+                                duration: trainingData.duration,
+                            };
+                            break;
+                        }
+                        case 'staticWeighted': {
+                            //TODO: BL-123
+                            break;
+                        }
+                        default: {
+                            isNeverCheck(activeSetCategory);
+                        }
+                    }
+                    updatedTraining = {
+                        ...trainingState,
+                        exercises: [...trainingState.exercises].map(
+                            (exercise: SingleExercise, i: number) => {
+                                if (i === indexOfChangedExercise) {
+                                    return {
+                                        ...exercise,
+                                        sets: [...exercise.sets, newSet],
+                                        total: trainingData.total,
+                                    };
+                                }
+                                return exercise;
+                            },
+                        ),
+                    };
+                }
+                return this.saveTrainingData(updatedTraining);
+            }),
+        );
     }
 
     restartSets(indexExercise: number, setCategory: SetCategoryType): Observable<SetCategoryType> {
@@ -426,7 +479,10 @@ export class NewTrainingStoreService {
                         break;
                     }
                     case 'staticBodyweight': {
-                        //TODO: BL-128
+                        set = {
+                            setNumber: 1,
+                            duration: null,
+                        };
                         break;
                     }
                     case 'staticWeighted': {
@@ -534,11 +590,9 @@ export class NewTrainingStoreService {
         restartAll?: boolean,
         userId?: string,
     ): Observable<void> {
-        return combineLatest([
-            this.trainingState$,
-            this._preferencesStoreService.preferencesChanged$,
-        ]).pipe(
+        return this._trainingState$.pipe(
             take(1),
+            withLatestFrom(this._preferencesStoreService.preferencesChanged$),
             map(([currentTrainingState, currentPreferences]: [NewTraining, Preferences]) => {
                 let updatedTraining: NewTraining;
                 if (exercises) {
@@ -548,7 +602,9 @@ export class NewTrainingStoreService {
                         updatedTraining = {
                             ...EMPTY_TRAINING,
                             userId,
-                            weightUnit,
+                            preferences: {
+                                weightUnit,
+                            },
                         };
                     }
                     updatedTraining = {

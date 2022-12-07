@@ -17,31 +17,32 @@ import {
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
-import { concatMap, filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { concatMap, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../../helpers/control-value-accessor.helper';
 import {
     Set,
     SelectedCategoriesChanged,
-    SetTrainingData,
 } from '../../../../../models/training/new-training/single-exercise/set/set.model';
 import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
 import { convertWeightUnit } from '../../../../../helpers/training/convert-weight-units.helper';
-import { DEFAULT_WEIGHT_UNIT } from '../../../../../constants/shared/default-weight-unit.const';
 import { NewTraining } from '../../../../../models/training/new-training/new-training.model';
 import { NewTrainingStoreService } from '../../../../../services/store/training/new-training-store.service';
 import {
     SetCategoryType,
     SetConstituent,
+    SetDurationUnitType,
+    SetTrainingData,
 } from '../../../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
-import { DialogRoles } from '../../../../../constants/enums/model-roles.enum';
+import { DialogRoles } from '../../../../../constants/enums/dialog-roles.enum';
 import {
     FormConstructionType,
     SetFormType,
-    SetFormValue,
+    SetFormValueType,
 } from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
-import { WeightUnit } from '../../../../../models/common/preferences.type';
 import { PreferencesStoreService } from '../../../../../services/store/shared/preferences-store.service';
+import { DEFAULT_WEIGHT_UNIT } from '../../../../../constants/shared/default-weight-unit.const';
+import { PreferencesService } from '../../../../../services/shared/preferences.service';
 import { Preferences } from '../../../../../models/common/preferences.model';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
 import { SetComponent } from './set/set.component';
@@ -53,9 +54,10 @@ import { SetComponent } from './set/set.component';
     providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
 })
 export class SetsComponent implements ControlValueAccessor, OnInit {
-    currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
+    preferences$ = this._preferencesStoreService.preferencesChanged$.pipe(
+        startWith(this._preferencesStoreService.getPreferences()),
+    );
 
-    currentWeightUnit: WeightUnit;
     form = new FormArray<FormGroup<SetFormType>>([]);
 
     onTouched: () => void;
@@ -64,7 +66,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     editTrainingData: NewTraining;
 
     @Input()
-    indexExercise = 0;
+    exerciseIndex = 0;
 
     @Input()
     bodyweightControl: FormControl<number>;
@@ -97,24 +99,11 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         private _unsubscribeService: UnsubscribeService,
         private _newTrainingStoreService: NewTrainingStoreService,
         private _preferencesStoreService: PreferencesStoreService,
+        private _preferencesService: PreferencesService,
         private _modalController: ModalController,
     ) {}
 
     ngOnInit(): void {
-        this.currentWeightUnit =
-            this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
-
-        this.currentPreferences$
-            .pipe(
-                filter(
-                    (preferences: Preferences) => this.currentWeightUnit !== preferences.weightUnit,
-                ),
-                takeUntil(this._unsubscribeService),
-            )
-            .subscribe((preferences: Preferences) => {
-                this.currentWeightUnit = preferences.weightUnit;
-            });
-
         this.selectedSetCategoriesControl.valueChanges
             .pipe(
                 map((setCategories: SetCategoryType[]) => {
@@ -124,7 +113,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     }
                     this._constructFormBasedOnSetCategory(selectedSetCategories[0], 'newExercise');
                     return {
-                        index: this.indexExercise,
+                        index: this.exerciseIndex,
                         setCategory: selectedSetCategories[0],
                     };
                 }),
@@ -146,7 +135,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         }
     }
 
-    registerOnChange(fn: (value: SetFormValue[]) => void): void {
+    registerOnChange(fn: (value: SetFormValueType[]) => void): void {
         this.form.valueChanges.pipe(takeUntil(this._unsubscribeService)).subscribe(fn);
     }
 
@@ -164,7 +153,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             total: this._calculateTotal(),
         };
         this._newTrainingStoreService
-            .setsChanged(serviceData)
+            .setsChanged(serviceData, data.setCategory)
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe();
     }
@@ -237,7 +226,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                         if (currentSetCategory !== response.data) {
                             return this._newTrainingStoreService
                                 .updatePrimarySetCategory(
-                                    this.indexExercise,
+                                    this.exerciseIndex,
                                     setIndex,
                                     response.data,
                                 )
@@ -268,6 +257,24 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             });
     }
 
+    onSetDurationUnitChange(setDurationUnit: SetDurationUnitType): void {
+        this.preferences$
+            .pipe(
+                take(1),
+                concatMap((currentPreferences: Preferences) => {
+                    const updatedPreferences = {
+                        ...currentPreferences,
+                        setDurationUnit,
+                    };
+                    return this._preferencesService.setPreferences(
+                        updatedPreferences,
+                        'setDurationUnit',
+                    );
+                }),
+            )
+            .subscribe();
+    }
+
     addSet(set?: Set): void {
         let setCategory: SetCategoryType;
         if (set) {
@@ -287,7 +294,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 concatMap((setCategory: SetCategoryType) => {
                     if (!set) {
                         return this._newTrainingStoreService.addSet(
-                            this.indexExercise,
+                            this.exerciseIndex,
                             setCategory,
                             this.form.controls.length,
                         );
@@ -303,7 +310,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     onSetDeleted(setIndex: number): void {
         this.form.removeAt(setIndex);
         this._newTrainingStoreService
-            .deleteSet(this.indexExercise, setIndex, this._calculateTotal())
+            .deleteSet(this.exerciseIndex, setIndex, this._calculateTotal())
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe((_) =>
                 this.selectedCategoriesChanged.emit({
@@ -334,7 +341,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     break;
                 }
                 case 'staticBodyweight': {
-                    //TODO: BL-128
+                    total += this.bodyweightControl.value + group.controls.duration.value;
                     break;
                 }
                 case 'staticWeighted': {
@@ -349,32 +356,21 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         return total;
     }
 
-    private _setWeightValue(weight: number): number {
-        if (this.editTrainingData) {
-            const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
-            if (editTrainingWeightUnit !== this.currentWeightUnit) {
-                return convertWeightUnit(this.currentWeightUnit, weight);
-            }
-        }
-        return weight;
-    }
-
     private _constructSetForm(
         setConstituent: SetConstituent,
         set: Set,
         setControls: SetFormType,
     ): SetFormType {
+        let initialValidators = [Validators.required, Validators.min(1), Validators.max(1000)];
+        if (setConstituent === 'duration') {
+            initialValidators = [Validators.required, Validators.min(1)];
+        }
         setControls[setConstituent] = new FormControl(
             {
                 value: this._setFormValue(setConstituent, set),
-                disabled: this.exerciseControl.value ? false : true,
+                disabled: !this.exerciseControl.value,
             },
-            [
-                Validators.required,
-                Validators.min(1),
-                Validators.max(1000),
-                Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-            ],
+            initialValidators,
         );
         return setControls;
     }
@@ -382,14 +378,35 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     private _setFormValue(setConstituent: SetConstituent, set: Set): number | null {
         if (set) {
             if (setConstituent in set) {
-                if (setConstituent === 'weight') {
-                    return this._setWeightValue(set.weight);
-                } else {
-                    return set.reps;
+                switch (setConstituent) {
+                    case 'weight': {
+                        return this._setWeightValue(set.weight);
+                    }
+                    case 'reps': {
+                        return set.reps;
+                    }
+                    case 'duration': {
+                        return set.duration;
+                    }
+                    default: {
+                        isNeverCheck(setConstituent);
+                    }
                 }
             }
         }
         return null;
+    }
+
+    private _setWeightValue(weight: number): number {
+        if (this.editTrainingData) {
+            const editTrainingWeightUnit =
+                this.editTrainingData.preferences.weightUnit ?? DEFAULT_WEIGHT_UNIT;
+            const currentWeightUnit = this._preferencesStoreService.getPreferences().weightUnit;
+            if (editTrainingWeightUnit !== currentWeightUnit) {
+                return convertWeightUnit(currentWeightUnit, weight);
+            }
+        }
+        return weight;
     }
 
     private _constructFormBasedOnSetCategory(
@@ -404,12 +421,18 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             case 'dynamicWeighted': {
                 setControls = this._constructSetForm(
                     'weight',
-                    { setNumber: 1, weight: set ? set.weight : null },
+                    {
+                        setNumber: constructionType === 'newExercise' ? 1 : indexSet + 1,
+                        weight: set ? set.weight : null,
+                    },
                     setControls,
                 );
                 setControls = this._constructSetForm(
                     'reps',
-                    { setNumber: 1, reps: set ? set.reps : null },
+                    {
+                        setNumber: constructionType === 'newExercise' ? 1 : indexSet + 1,
+                        reps: set ? set.reps : null,
+                    },
                     setControls,
                 );
                 if (constructionType === 'newExercise') {
@@ -423,7 +446,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             case 'dynamicBodyweight': {
                 setControls = this._constructSetForm(
                     'reps',
-                    { setNumber: 1, reps: set ? set.reps : null },
+                    {
+                        setNumber: constructionType === 'newExercise' ? 1 : indexSet + 1,
+                        reps: set ? set.reps : null,
+                    },
                     setControls,
                 );
                 if (constructionType === 'newExercise') {
@@ -435,7 +461,20 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 break;
             }
             case 'staticBodyweight': {
-                //TODO: BL-128
+                setControls = this._constructSetForm(
+                    'duration',
+                    {
+                        setNumber: constructionType === 'newExercise' ? 1 : indexSet + 1,
+                        duration: set ? set.duration : null,
+                    },
+                    setControls,
+                );
+                if (constructionType === 'newExercise') {
+                    this.form.push(new FormGroup(setControls));
+                } else {
+                    this.form.removeAt(indexSet);
+                    this.form.insert(indexSet, new FormGroup(setControls));
+                }
                 break;
             }
             case 'staticWeighted': {

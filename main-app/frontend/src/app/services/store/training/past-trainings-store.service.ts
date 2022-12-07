@@ -7,18 +7,14 @@ import { PastTrainingsQueryParams } from '../../../models/training/past-training
 
 @Injectable({ providedIn: 'root' })
 export class PastTrainingsStoreService {
-    private readonly _pastTrainingsQueryParams$$: BehaviorSubject<PastTrainingsQueryParams> =
-        new BehaviorSubject<PastTrainingsQueryParams>(null);
-    readonly pastTrainingsQueryParams$: Observable<PastTrainingsQueryParams> =
-        this._pastTrainingsQueryParams$$.asObservable();
+    private _pastTrainingsQueryParams$ = new BehaviorSubject<PastTrainingsQueryParams>(null);
+    pastTrainingsQueryParams$ = this._pastTrainingsQueryParams$.asObservable();
 
-    private readonly _pastTrainingsWrapperScroll$$: BehaviorSubject<number> =
-        new BehaviorSubject<number>(0);
-    readonly pastTrainingsWrapperScroll$: Observable<number> =
-        this._pastTrainingsWrapperScroll$$.asObservable();
+    private _pastTrainingsWrapperScroll$ = new BehaviorSubject<number>(0);
+    pastTrainingsWrapperScroll$ = this._pastTrainingsWrapperScroll$.asObservable();
 
     async emitPastTrainingsQueryParams(params: PastTrainingsQueryParams): Promise<void> {
-        this._pastTrainingsQueryParams$$.next(params);
+        this._pastTrainingsQueryParams$.next(params);
         await Storage.set({
             key: StorageItems.QUERY_PARAMS,
             value: JSON.stringify(params),
@@ -26,7 +22,7 @@ export class PastTrainingsStoreService {
     }
 
     async emitWrapperScroll(scrollTop: number): Promise<void> {
-        this._pastTrainingsWrapperScroll$$.next(scrollTop);
+        this._pastTrainingsWrapperScroll$.next(scrollTop);
         await Storage.set({
             key: StorageItems.PAST_TRAININGS_SCROLL_WRAPPER,
             value: JSON.stringify(scrollTop),
@@ -39,7 +35,7 @@ export class PastTrainingsStoreService {
             storageStreams.push(from(Storage.get({ key })));
         }
         return combineLatest(storageStreams).pipe(
-            map((storedData) => {
+            map((storedData: GetResult[]) => {
                 const isStoredData = storedData.every((item) => !!item?.value);
                 if (!storedData || !storedData.length || !isStoredData) {
                     return false;
@@ -50,11 +46,11 @@ export class PastTrainingsStoreService {
                         const selectedStorageItem = storageItems.find((_item, i) => i === index);
                         switch (selectedStorageItem) {
                             case 'pastTrainingsScrollWrapper': {
-                                this._pastTrainingsWrapperScroll$$.next(parsedData);
+                                this._pastTrainingsWrapperScroll$.next(parsedData);
                                 break;
                             }
                             case 'queryParams': {
-                                this._pastTrainingsQueryParams$$.next(parsedData);
+                                this._pastTrainingsQueryParams$.next(parsedData);
                                 break;
                             }
                         }

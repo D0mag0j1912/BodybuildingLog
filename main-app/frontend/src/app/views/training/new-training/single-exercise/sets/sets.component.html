@@ -3,7 +3,7 @@
         <bl-set
             #set
             [form]="group"
-            [weightUnit]="currentWeightUnit"
+            [preferences]="preferences$ | async"
             [activeSetCategory]="selectedSetCategoriesControl.value[i]"
             [exerciseControl]="exerciseControl"
             [availableSetCategoriesControl]="availableSetCategoriesControl"
@@ -13,7 +13,8 @@
             (setChanged)="onSetChanged($event, i)"
             (setDeleted)="onSetDeleted(i)"
             (setConstituentKeydownEmitted)="onSetConstituentKeydownEmit($event, i)"
-            (setCategoryModalOpened)="onUpdateSetCategory($event, i)"></bl-set>
+            (setCategoryModalOpened)="onUpdateSetCategory($event, i)"
+            (setDurationUnitChanged)="onSetDurationUnitChange($event)"></bl-set>
     </form>
 </ng-container>
 <ion-grid>

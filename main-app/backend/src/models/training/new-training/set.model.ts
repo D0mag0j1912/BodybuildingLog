@@ -2,13 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsMongoId, IsNumber, IsOptional, IsString, Max, Min, NotEquals } from 'class-validator';
 import { Schema } from 'mongoose';
 
-export type SetCategoryType =
-    | 'dynamicBodyweight'
-    | 'dynamicWeighted'
-    | 'staticBodyweight'
-    | 'staticWeighted'
-    | 'freeWeighted';
-
 export const SET_SCHEMA = new Schema({
     setNumber: {
         type: Number,
@@ -19,6 +12,7 @@ export const SET_SCHEMA = new Schema({
         type: Number,
         required: true,
     },
+    duration: Number,
 });
 
 export class Set {
@@ -62,4 +56,19 @@ export class Set {
         message: '@training.new_training.errors.reps_required',
     })
     reps: number;
+
+    @ApiProperty()
+    @Min(1, {
+        message: '@training.new_training.errors.duration_min',
+    })
+    @IsNumber(
+        {},
+        {
+            message: '@training.new_training.errors.duration_number',
+        },
+    )
+    @NotEquals(0, {
+        message: '@training.new_training.errors.duration_required',
+    })
+    duration: number;
 }

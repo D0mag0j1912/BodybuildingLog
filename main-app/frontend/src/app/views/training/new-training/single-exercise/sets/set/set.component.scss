@@ -13,14 +13,14 @@
     }
 }
 
+::ng-deep .md .set-grid {
+    padding-left: 10px;
+}
+
 .set-row {
     align-items: flex-start;
 
-    ::ng-deep .weight-input input {
-        height: 30px;
-    }
-
-    ::ng-deep .reps-input input {
+    ::ng-deep .set-constituent-input input {
         height: 30px;
     }
 
@@ -58,7 +58,7 @@
     margin-top: 20px;
 }
 
-.weight-input {
+.set-constituent-input {
     max-width: 65px;
 
     &--unit {
@@ -70,18 +70,28 @@
     }
 }
 
-.ios .weight-input {
+.ios .set-constituent-input {
     &--unit {
         top: 30px;
     }
 }
 
-.md .weight-input {
+.md .set-constituent-input {
     &--unit {
-        top: 18px;
+        top: 20px;
     }
 }
 
 .invalid-weight {
     color: var(--ion-color-danger);
+}
+
+.duration-picker {
+    color: var(--ion-color-primary);
+    padding-bottom: 0;
+    font-size: 15px;
+}
+
+.md .duration-picker::part(icon) {
+    top: 7px;
 }

@@ -4,15 +4,15 @@
             <ion-item
                 *ngFor="let language of languageData"
                 lines="none"
-                [disabled]="preferences.languageCode === language.LanguageCode"
-                (click)="changePreference(language.LanguageCode)"
+                [disabled]="preferences.languageCode === language.languageCode"
+                (click)="changePreference(language.languageCode)"
             >
-                <ion-img [src]="language.ImageUrl"></ion-img>
+                <ion-img [src]="language.imageUrl"></ion-img>
                 <ion-text class="txt">
-                    {{ language.LanguageName | translate }}
+                    {{ language.languageName | translate }}
                 </ion-text>
                 <ion-icon
-                    *ngIf="preferences.languageCode === language.LanguageCode"
+                    *ngIf="preferences.languageCode === language.languageCode"
                     name="checkmark-outline"
                     class="checkmark"
                     slot="end"
@@ -23,14 +23,14 @@
             <ion-item
                 *ngFor="let unit of unitData"
                 lines="none"
-                [disabled]="preferences.weightUnit === unit.WeightUnit"
-                (click)="changePreference(unit.WeightUnit)"
+                [disabled]="preferences.weightUnit === unit.weightUnit"
+                (click)="changePreference(unit.weightUnit)"
             >
                 <ion-text class="txt">
-                    {{ unit.UnitName | translate }}
+                    {{ unit.unitName | translate }}
                 </ion-text>
                 <ion-icon
-                    *ngIf="preferences.weightUnit === unit.WeightUnit"
+                    *ngIf="preferences.weightUnit === unit.weightUnit"
                     name="checkmark-outline"
                     class="checkmark"
                     slot="end"

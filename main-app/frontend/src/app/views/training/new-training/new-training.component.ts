@@ -32,7 +32,7 @@ import { PastTrainingsService } from '../../../services/api/training/past-traini
 import * as NewTrainingHandler from '../../../helpers/training/new-training/bodyweight.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/common.model';
-import { DialogRoles } from '../../../constants/enums/model-roles.enum';
+import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 import { Exercise } from '../../../models/training/exercise.model';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { SingleExercise } from '../../../models/training/new-training/single-exercise/single-exercise.model';
@@ -106,11 +106,7 @@ export class NewTrainingComponent implements OnDestroy {
 
     formattedTodayDate: string;
     editTrainingData: NewTraining;
-    initialBodyweightValidators = [
-        Validators.pattern(/^[1-9]\d*(\.\d+)?$/),
-        Validators.min(30),
-        Validators.max(300),
-    ];
+    initialBodyweightValidators = [Validators.min(30), Validators.max(300)];
     bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
 
     newTrainingForm = new FormGroup({

@@ -5,7 +5,7 @@ import { EMPTY } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
-import { LanguageCode, WeightUnit } from '../../../models/common/preferences.type';
+import { LanguageCodeType, WeightUnitType } from '../../../models/common/preferences.type';
 import { AuthService } from '../../../services/api/auth/auth.service';
 import { SignupService } from '../../../services/api/auth/signup.service';
 import { LoadingControllerService } from '../../../services/shared/loading-controller.service';
@@ -26,8 +26,8 @@ export class SignupComponent {
     focusDuration = IonFocusDurations.SIGNUP;
     form = new FormGroup(
         {
-            language: new FormControl<LanguageCode>(DEFAULT_LANGUAGE, [Validators.required]),
-            weightUnit: new FormControl<WeightUnit>(DEFAULT_WEIGHT_UNIT, [Validators.required]),
+            language: new FormControl<LanguageCodeType>(DEFAULT_LANGUAGE, [Validators.required]),
+            weightUnit: new FormControl<WeightUnitType>(DEFAULT_WEIGHT_UNIT, [Validators.required]),
             email: new FormControl('', {
                 validators: [Validators.required, Validators.email],
                 asyncValidators: [
