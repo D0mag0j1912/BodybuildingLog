@@ -62,6 +62,7 @@ export class PreferencesService {
                                     .updateWeightUnit(apiPreferences.weightUnit)
                                     .pipe(switchMap((_) => of(apiResponse)));
                             }
+                            //TODO: Create logic for set duration unit
                             return of(apiResponse);
                         }),
                     );

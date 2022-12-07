@@ -96,27 +96,22 @@ export class SideNavComponent {
                 switchMap(
                     (popoverResponse: OverlayEventDetail<LanguageCodeType | WeightUnitType>) => {
                         if (popoverResponse.role === DialogRoles.CHANGE_PREFERENCE) {
-                            return this._authStoreService.loggedUser$.pipe(
-                                take(1),
-                                switchMap((userData: AuthResponseData) => {
-                                    const updatedPreferences: Preferences = {
-                                        userId: userData._id,
-                                        languageCode:
-                                            preferenceType === 'language'
-                                                ? (popoverResponse.data as LanguageCodeType)
-                                                : currentPreferences.languageCode,
-                                        weightUnit:
-                                            preferenceType === 'weightUnit'
-                                                ? (popoverResponse.data as WeightUnitType)
-                                                : currentPreferences.weightUnit,
-                                        showByPeriod: currentPreferences.showByPeriod,
-                                        setDurationUnit: currentPreferences.setDurationUnit,
-                                    };
-                                    return this._preferencesService.setPreferences(
-                                        updatedPreferences,
-                                        preferenceType,
-                                    );
-                                }),
+                            const updatedPreferences: Preferences = {
+                                ...currentPreferences,
+                                languageCode:
+                                    preferenceType === 'language'
+                                        ? (popoverResponse.data as LanguageCodeType)
+                                        : currentPreferences.languageCode,
+                                weightUnit:
+                                    preferenceType === 'weightUnit'
+                                        ? (popoverResponse.data as WeightUnitType)
+                                        : currentPreferences.weightUnit,
+                                showByPeriod: currentPreferences.showByPeriod,
+                                setDurationUnit: currentPreferences.setDurationUnit,
+                            };
+                            return this._preferencesService.setPreferences(
+                                updatedPreferences,
+                                preferenceType,
                             );
                         }
                         return EMPTY;

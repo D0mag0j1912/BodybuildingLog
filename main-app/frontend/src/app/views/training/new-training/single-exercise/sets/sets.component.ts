@@ -17,7 +17,7 @@ import {
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
-import { concatMap, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { concatMap, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../../helpers/control-value-accessor.helper';
 import {
     Set,
@@ -42,6 +42,8 @@ import {
 } from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import { PreferencesStoreService } from '../../../../../services/store/shared/preferences-store.service';
 import { DEFAULT_WEIGHT_UNIT } from '../../../../../constants/shared/default-weight-unit.const';
+import { PreferencesService } from '../../../../../services/shared/preferences.service';
+import { Preferences } from '../../../../../models/common/preferences.model';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
 import { SetComponent } from './set/set.component';
 
@@ -97,6 +99,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         private _unsubscribeService: UnsubscribeService,
         private _newTrainingStoreService: NewTrainingStoreService,
         private _preferencesStoreService: PreferencesStoreService,
+        private _preferencesService: PreferencesService,
         private _modalController: ModalController,
     ) {}
 
@@ -255,7 +258,21 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     }
 
     onSetDurationUnitChange(setDurationUnit: SetDurationUnitType): void {
-        //TODO: React to set duration unit change
+        this.preferences$
+            .pipe(
+                take(1),
+                concatMap((currentPreferences: Preferences) => {
+                    const updatedPreferences = {
+                        ...currentPreferences,
+                        setDurationUnit,
+                    };
+                    return this._preferencesService.setPreferences(
+                        updatedPreferences,
+                        'setDurationUnit',
+                    );
+                }),
+            )
+            .subscribe();
     }
 
     addSet(set?: Set): void {

@@ -14,7 +14,7 @@ import {
     ValidateNested,
 } from 'class-validator';
 import { Schema } from 'mongoose';
-import { PreferencesDto } from '../../preferences/preferences.model';
+import { TrainingPreferences } from './new-training.type';
 import { SingleExercise, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model';
 
 export const NEW_TRAINING_SCHEMA = new Schema({
@@ -93,5 +93,5 @@ export class NewTraining {
 
     @ApiProperty()
     @IsNotEmpty()
-    preferences: Partial<PreferencesDto>;
+    preferences: TrainingPreferences;
 }
