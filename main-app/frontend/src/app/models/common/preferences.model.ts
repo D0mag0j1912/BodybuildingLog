@@ -1,3 +1,4 @@
+import { SetDurationUnitType } from '../training/new-training/single-exercise/set/set.type';
 import { PeriodFilterType } from '../training/past-trainings/past-trainings.model';
 import { LanguageCode, WeightUnit } from './preferences.type';
 
@@ -6,4 +7,5 @@ export interface Preferences {
     languageCode: LanguageCode;
     weightUnit: WeightUnit;
     showByPeriod: PeriodFilterType;
+    setDurationUnit: SetDurationUnitType;
 }

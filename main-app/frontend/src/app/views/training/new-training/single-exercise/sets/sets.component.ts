@@ -30,7 +30,7 @@ import { NewTrainingStoreService } from '../../../../../services/store/training/
 import {
     SetCategoryType,
     SetConstituent,
-    SetDurationUnit,
+    SetDurationUnitType,
     SetTrainingData,
 } from '../../../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
@@ -254,7 +254,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             });
     }
 
-    onSetDurationUnitChange(setDurationUnit: SetDurationUnit, setIndex: number): void {
+    onSetDurationUnitChange(setDurationUnit: SetDurationUnitType, setIndex: number): void {
         this._newTrainingStoreService
             .setDurationUnitChanged(this.exerciseIndex, setDurationUnit, setIndex)
             .pipe(takeUntil(this._unsubscribeService))

@@ -15,7 +15,7 @@ import { SingleExercise } from '../../../models/training/new-training/single-exe
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import {
     SetCategoryType,
-    SetDurationUnit,
+    SetDurationUnitType,
     SetTrainingData,
 } from '../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
@@ -341,7 +341,7 @@ export class NewTrainingStoreService {
 
     setDurationUnitChanged(
         exerciseIndex: number,
-        setDurationUnit: SetDurationUnit,
+        setDurationUnit: SetDurationUnitType,
         setIndex: number,
     ): Observable<void> {
         return this._trainingState$.pipe(

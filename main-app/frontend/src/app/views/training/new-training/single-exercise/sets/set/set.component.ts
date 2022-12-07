@@ -16,7 +16,7 @@ import { Preferences } from '../../../../../../models/common/preferences.model';
 import { WeightUnit } from '../../../../../../models/common/preferences.type';
 import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import {
-    SetDurationUnit,
+    SetDurationUnitType,
     SetTrainingData,
 } from '../../../../../../models/training/new-training/single-exercise/set/set.type';
 import {
@@ -31,7 +31,7 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SetComponent implements OnChanges {
-    setDurationUnit: SetDurationUnit = 'seconds';
+    setDurationUnit: SetDurationUnitType = 'seconds';
 
     @Input()
     form: FormGroup<SetFormType>;
@@ -81,7 +81,7 @@ export class SetComponent implements OnChanges {
     setCategoryModalOpened = new EventEmitter<SetCategoryType>();
 
     @Output()
-    setDurationUnitChanged = new EventEmitter<SetDurationUnit>();
+    setDurationUnitChanged = new EventEmitter<SetDurationUnitType>();
 
     @ViewChild('weightEl', { read: IonInput })
     weightElement: IonInput;

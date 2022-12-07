@@ -14,7 +14,7 @@ export type SetCategoryType =
 
 export type SetChangedType = 'addSet' | 'updateSet' | 'deleteSet';
 
-export type SetDurationUnit = 'seconds' | 'minutes';
+export type SetDurationUnitType = 'seconds' | 'minutes';
 
 export type SetTrainingData = {
     exerciseName: string;

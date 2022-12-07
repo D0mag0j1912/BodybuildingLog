@@ -109,6 +109,7 @@ export class SideNavComponent {
                                             ? (popoverResponse.data as WeightUnit)
                                             : currentPreferences.weightUnit,
                                     showByPeriod: currentPreferences.showByPeriod,
+                                    setDurationUnit: currentPreferences.setDurationUnit,
                                 };
                                 return this._preferencesService.setPreferences(
                                     updatedPreferences,
