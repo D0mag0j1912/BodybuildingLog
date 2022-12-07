@@ -18,7 +18,6 @@ import {
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { Preferences } from '../../../models/common/preferences.model';
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
-import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { PreferencesService } from '../../../services/shared/preferences.service';
 
 @Component({

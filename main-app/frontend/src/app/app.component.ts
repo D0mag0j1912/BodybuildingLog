@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { StorageItems } from './constants/enums/storage-items.enum';
@@ -10,15 +10,14 @@ import { PastTrainingsStoreService } from './services/store/training/past-traini
     selector: 'bl-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
 export class AppComponent implements OnInit {
     constructor(
-        private readonly _newTrainingStoreService: NewTrainingStoreService,
-        private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
-        private readonly _translateService: TranslateService,
-        private readonly _unsubscribeService: UnsubscribeService,
+        private _newTrainingStoreService: NewTrainingStoreService,
+        private _pastTrainingsStoreService: PastTrainingsStoreService,
+        private _translateService: TranslateService,
+        private _unsubscribeService: UnsubscribeService,
     ) {}
 
     ngOnInit(): void {
