@@ -14,7 +14,7 @@ import {
     ValidateNested,
 } from 'class-validator';
 import { Schema } from 'mongoose';
-import { WeightUnitType } from '../../preferences/preferences.type';
+import { PreferencesDto } from '../../preferences/preferences.model';
 import { SingleExercise, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model';
 
 export const NEW_TRAINING_SCHEMA = new Schema({
@@ -36,9 +36,11 @@ export const NEW_TRAINING_SCHEMA = new Schema({
         ref: 'User',
         required: true,
     },
-    weightUnit: {
-        type: String,
-        required: true,
+    preferences: {
+        weightUnit: {
+            type: String,
+            required: true,
+        },
     },
 });
 
@@ -91,5 +93,5 @@ export class NewTraining {
 
     @ApiProperty()
     @IsNotEmpty()
-    weightUnit: WeightUnitType;
+    preferences: Partial<PreferencesDto>;
 }
