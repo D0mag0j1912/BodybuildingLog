@@ -7,7 +7,7 @@ import { Preferences } from '../../../models/common/preferences.model';
 import { environment } from '../../../../environments/environment';
 import { AuthModel } from '../../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
-import { LanguageCode, WeightUnit } from '../../../models/common/preferences.type';
+import { LanguageCodeType, WeightUnitType } from '../../../models/common/preferences.type';
 import { AuthStoreService } from '../../store/auth/auth-store.service';
 
 @Injectable({ providedIn: 'root' })
@@ -19,8 +19,8 @@ export class AuthService {
     ) {}
 
     signup(
-        language: LanguageCode,
-        weightUnit: WeightUnit,
+        language: LanguageCodeType,
+        weightUnit: WeightUnitType,
         email: string,
         password: string,
         confirmPassword: string,

@@ -1,4 +1,4 @@
-import { WeightUnit } from '../../common/preferences.type';
+import { Preferences } from '../../common/preferences.model';
 import { SingleExercise } from './single-exercise/single-exercise.model';
 
 export interface NewTraining {
@@ -6,7 +6,7 @@ export interface NewTraining {
     editMode: boolean;
     userId: string;
     trainingDate: string;
-    weightUnit: WeightUnit;
+    preferences: Partial<Preferences>;
     _id?: string;
     bodyweight?: number;
 }

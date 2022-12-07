@@ -13,7 +13,7 @@ import { IonInput } from '@ionic/angular';
 import { isNeverCheck } from '../../../../../../helpers/is-never-check.helper';
 import { convertWeightUnit } from '../../../../../../helpers/training/convert-weight-units.helper';
 import { Preferences } from '../../../../../../models/common/preferences.model';
-import { WeightUnit } from '../../../../../../models/common/preferences.type';
+import { WeightUnitType } from '../../../../../../models/common/preferences.type';
 import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import {
     SetDurationUnitType,
@@ -31,8 +31,6 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SetComponent implements OnChanges {
-    setDurationUnit: SetDurationUnitType = 'seconds';
-
     @Input()
     form: FormGroup<SetFormType>;
 
@@ -100,7 +98,7 @@ export class SetComponent implements OnChanges {
                     if (currentWeightValue) {
                         this.form.controls.weight.patchValue(
                             convertWeightUnit(
-                                changes.preferences.currentValue.weightUnit as WeightUnit,
+                                changes.preferences.currentValue.weightUnit as WeightUnitType,
                                 currentWeightValue,
                             ),
                         );
@@ -112,7 +110,7 @@ export class SetComponent implements OnChanges {
     }
 
     onSetDurationChange(): void {
-        this.setDurationUnitChanged.emit(this.setDurationUnit);
+        this.setDurationUnitChanged.emit(this.preferences.setDurationUnit);
     }
 
     updateSetCategory(): void {

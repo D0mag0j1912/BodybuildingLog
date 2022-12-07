@@ -29,5 +29,7 @@ export const EMPTY_TRAINING: NewTraining = {
     _id: '',
     bodyweight: null,
     trainingDate: new Date().toISOString(),
-    weightUnit: DEFAULT_WEIGHT_UNIT,
+    preferences: {
+        weightUnit: DEFAULT_WEIGHT_UNIT,
+    },
 };

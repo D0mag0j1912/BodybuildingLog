@@ -39,7 +39,7 @@ import { UnsubscribeService } from '../../../../services/shared/unsubscribe.serv
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
 import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
-import { WeightUnit } from '../../../../models/common/preferences.type';
+import { WeightUnitType } from '../../../../models/common/preferences.type';
 import { StreamData } from '../../../../models/common/common.model';
 import {
     SetCategoryType,
@@ -127,7 +127,7 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
         private _translateService: TranslateService,
     ) {}
 
-    get currentWeightUnit(): WeightUnit {
+    get currentWeightUnit(): WeightUnitType {
         return this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
     }
 

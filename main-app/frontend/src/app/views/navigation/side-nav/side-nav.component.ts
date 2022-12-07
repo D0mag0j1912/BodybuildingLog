@@ -11,9 +11,9 @@ import { PastTrainingsQueryParams } from '../../../models/training/past-training
 import { QUERY_PARAMS_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
 import { PreferencesComponent } from '../preferences/preferences.component';
 import {
-    LanguageCode,
+    LanguageCodeType,
     PreferenceChangedType,
-    WeightUnit,
+    WeightUnitType,
 } from '../../../models/common/preferences.type';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { Preferences } from '../../../models/common/preferences.model';
@@ -93,33 +93,35 @@ export class SideNavComponent {
                     from(popoverElement.present()).pipe(map((_) => popoverElement)),
                 ),
                 switchMap((popoverElement) => from(popoverElement.onDidDismiss())),
-                switchMap((popoverResponse: OverlayEventDetail<LanguageCode | WeightUnit>) => {
-                    if (popoverResponse.role === DialogRoles.CHANGE_PREFERENCE) {
-                        return this._authStoreService.loggedUser$.pipe(
-                            take(1),
-                            switchMap((userData: AuthResponseData) => {
-                                const updatedPreferences: Preferences = {
-                                    userId: userData._id,
-                                    languageCode:
-                                        preferenceType === 'language'
-                                            ? (popoverResponse.data as LanguageCode)
-                                            : currentPreferences.languageCode,
-                                    weightUnit:
-                                        preferenceType === 'weightUnit'
-                                            ? (popoverResponse.data as WeightUnit)
-                                            : currentPreferences.weightUnit,
-                                    showByPeriod: currentPreferences.showByPeriod,
-                                    setDurationUnit: currentPreferences.setDurationUnit,
-                                };
-                                return this._preferencesService.setPreferences(
-                                    updatedPreferences,
-                                    preferenceType,
-                                );
-                            }),
-                        );
-                    }
-                    return EMPTY;
-                }),
+                switchMap(
+                    (popoverResponse: OverlayEventDetail<LanguageCodeType | WeightUnitType>) => {
+                        if (popoverResponse.role === DialogRoles.CHANGE_PREFERENCE) {
+                            return this._authStoreService.loggedUser$.pipe(
+                                take(1),
+                                switchMap((userData: AuthResponseData) => {
+                                    const updatedPreferences: Preferences = {
+                                        userId: userData._id,
+                                        languageCode:
+                                            preferenceType === 'language'
+                                                ? (popoverResponse.data as LanguageCodeType)
+                                                : currentPreferences.languageCode,
+                                        weightUnit:
+                                            preferenceType === 'weightUnit'
+                                                ? (popoverResponse.data as WeightUnitType)
+                                                : currentPreferences.weightUnit,
+                                        showByPeriod: currentPreferences.showByPeriod,
+                                        setDurationUnit: currentPreferences.setDurationUnit,
+                                    };
+                                    return this._preferencesService.setPreferences(
+                                        updatedPreferences,
+                                        preferenceType,
+                                    );
+                                }),
+                            );
+                        }
+                        return EMPTY;
+                    },
+                ),
             )
             .subscribe(async (_) => {
                 await this._menuController.close();

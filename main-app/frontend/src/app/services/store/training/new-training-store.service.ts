@@ -19,7 +19,7 @@ import {
     SetTrainingData,
 } from '../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
-import { WeightUnit } from '../../../models/common/preferences.type';
+import { WeightUnitType } from '../../../models/common/preferences.type';
 import { PreferencesStoreService } from '../shared/preferences-store.service';
 import { Preferences } from '../../../models/common/preferences.model';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
@@ -39,7 +39,7 @@ export class NewTrainingStoreService {
         return { ...this._trainingState$.getValue() };
     }
 
-    updateWeightUnit(weightUnit: WeightUnit): Observable<void> {
+    updateWeightUnit(weightUnit: WeightUnitType): Observable<void> {
         return this._trainingState$.pipe(
             take(1),
             switchMap((trainingState: NewTraining) => {
@@ -339,43 +339,6 @@ export class NewTrainingStoreService {
         }
     }
 
-    setDurationUnitChanged(
-        exerciseIndex: number,
-        setDurationUnit: SetDurationUnitType,
-        setIndex: number,
-    ): Observable<void> {
-        return this._trainingState$.pipe(
-            take(1),
-            concatMap((trainingState: NewTraining) => {
-                const updatedTraining: NewTraining = {
-                    ...trainingState,
-                    exercises: [...trainingState.exercises].map(
-                        (exercise: SingleExercise, i: number) => {
-                            if (i === exerciseIndex) {
-                                return {
-                                    ...exercise,
-                                    sets: [...exercise.sets].map((set: Set, j: number) => {
-                                        if (j === setIndex) {
-                                            return {
-                                                ...set,
-                                                setPreferences: {
-                                                    setDurationUnit,
-                                                },
-                                            };
-                                        }
-                                        return set;
-                                    }),
-                                };
-                            }
-                            return exercise;
-                        },
-                    ),
-                };
-                return this.saveTrainingData(updatedTraining);
-            }),
-        );
-    }
-
     setsChanged(
         trainingData: SetTrainingData,
         activeSetCategory: SetCategoryType,
@@ -639,7 +602,9 @@ export class NewTrainingStoreService {
                         updatedTraining = {
                             ...EMPTY_TRAINING,
                             userId,
-                            weightUnit,
+                            preferences: {
+                                weightUnit,
+                            },
                         };
                     }
                     updatedTraining = {

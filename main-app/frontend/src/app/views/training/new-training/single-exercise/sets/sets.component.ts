@@ -254,11 +254,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             });
     }
 
-    onSetDurationUnitChange(setDurationUnit: SetDurationUnitType, setIndex: number): void {
-        this._newTrainingStoreService
-            .setDurationUnitChanged(this.exerciseIndex, setDurationUnit, setIndex)
-            .pipe(takeUntil(this._unsubscribeService))
-            .subscribe();
+    onSetDurationUnitChange(setDurationUnit: SetDurationUnitType): void {
+        //TODO: React to set duration unit change
     }
 
     addSet(set?: Set): void {
@@ -385,7 +382,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
 
     private _setWeightValue(weight: number): number {
         if (this.editTrainingData) {
-            const editTrainingWeightUnit = this.editTrainingData.weightUnit ?? DEFAULT_WEIGHT_UNIT;
+            const editTrainingWeightUnit =
+                this.editTrainingData.preferences.weightUnit ?? DEFAULT_WEIGHT_UNIT;
             const currentWeightUnit = this._preferencesStoreService.getPreferences().weightUnit;
             if (editTrainingWeightUnit !== currentWeightUnit) {
                 return convertWeightUnit(currentWeightUnit, weight);

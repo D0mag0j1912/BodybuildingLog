@@ -144,7 +144,7 @@
                     <ion-select
                         class="duration-picker"
                         interface="popover"
-                        [(ngModel)]="setDurationUnit"
+                        [(ngModel)]="preferences.setDurationUnit"
                         [ngModelOptions]="{ standalone: true }"
                         (ionChange)="onSetDurationChange()">
                         <ion-select-option [value]="'seconds'">

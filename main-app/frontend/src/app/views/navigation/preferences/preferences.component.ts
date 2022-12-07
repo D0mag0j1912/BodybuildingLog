@@ -3,20 +3,20 @@ import { PopoverController } from '@ionic/angular';
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 import { Preferences } from '../../../models/common/preferences.model';
 import {
-    LanguageCode,
+    LanguageCodeType,
     PreferenceChangedType,
-    WeightUnit,
+    WeightUnitType,
 } from '../../../models/common/preferences.type';
 
 interface LanguageData {
-    languageCode: LanguageCode;
+    languageCode: LanguageCodeType;
     imageUrl: string;
     languageName: string;
 }
 
 interface UnitData {
     unitName: string;
-    weightUnit: WeightUnit;
+    weightUnit: WeightUnitType;
 }
 
 @Component({
@@ -58,7 +58,7 @@ export class PreferencesComponent {
 
     constructor(private _popoverController: PopoverController) {}
 
-    async changePreference(preference: LanguageCode | WeightUnit): Promise<void> {
+    async changePreference(preference: LanguageCodeType | WeightUnitType): Promise<void> {
         await this._popoverController.dismiss(preference, DialogRoles.CHANGE_PREFERENCE);
     }
 }

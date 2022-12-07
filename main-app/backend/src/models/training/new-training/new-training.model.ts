@@ -14,7 +14,7 @@ import {
     ValidateNested,
 } from 'class-validator';
 import { Schema } from 'mongoose';
-import { WeightUnit } from '../../preferences/preferences.type';
+import { WeightUnitType } from '../../preferences/preferences.type';
 import { SingleExercise, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model';
 
 export const NEW_TRAINING_SCHEMA = new Schema({
@@ -91,5 +91,5 @@ export class NewTraining {
 
     @ApiProperty()
     @IsNotEmpty()
-    weightUnit: WeightUnit;
+    weightUnit: WeightUnitType;
 }

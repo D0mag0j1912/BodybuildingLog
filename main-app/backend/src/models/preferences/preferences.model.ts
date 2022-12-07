@@ -3,7 +3,7 @@ import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
 import { SetDurationUnitType } from '../training/new-training/set.type';
-import { LanguageCode, WeightUnit } from './preferences.type';
+import { LanguageCodeType, WeightUnitType } from './preferences.type';
 
 export const PREFERENCES_SCHEMA = new Schema({
     userId: {
@@ -39,12 +39,12 @@ export class PreferencesDto {
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.language_required' })
-    languageCode: LanguageCode;
+    languageCode: LanguageCodeType;
 
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.weight_unit_required' })
-    weightUnit: WeightUnit;
+    weightUnit: WeightUnitType;
 
     @ApiProperty()
     @IsString({ message: '@common.errors.something_went_wrong' })
