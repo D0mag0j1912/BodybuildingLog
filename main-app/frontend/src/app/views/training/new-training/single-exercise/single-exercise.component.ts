@@ -22,7 +22,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
-import { DEFAULT_WEIGHT_UNIT } from '../../../../constants/shared/default-weight-unit.const';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import {
@@ -38,8 +37,6 @@ import {
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
-import { PreferencesStoreService } from '../../../../services/store/shared/preferences-store.service';
-import { WeightUnitType } from '../../../../models/common/preferences.type';
 import { StreamData } from '../../../../models/common/common.model';
 import {
     SetCategoryType,
@@ -122,14 +119,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     constructor(
         private _newTrainingStoreService: NewTrainingStoreService,
         private _unsubscribeService: UnsubscribeService,
-        private _preferencesStoreService: PreferencesStoreService,
         private _exercisesStoreService: ExercisesStoreService,
         private _translateService: TranslateService,
     ) {}
-
-    get currentWeightUnit(): WeightUnitType {
-        return this._preferencesStoreService.getPreferences().weightUnit ?? DEFAULT_WEIGHT_UNIT;
-    }
 
     ngOnInit(): void {
         this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName()]);
