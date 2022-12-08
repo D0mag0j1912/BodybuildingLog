@@ -55,6 +55,9 @@ import { ToastControllerService } from '../../../services/shared/toast-controlle
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
 import { ExercisesStoreService } from '../../../services/store/training/exercises-store.service';
 import { SetCategoryType } from '../../../models/training/new-training/single-exercise/set/set.type';
+import { Preferences } from '../../../models/common/preferences.model';
+import { convertWeightUnit } from '../../../helpers/training/convert-weight-units.helper';
+import { WeightUnitType } from '../../../models/common/preferences.type';
 import { SingleExerciseComponent } from './single-exercise/single-exercise.component';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
@@ -72,7 +75,16 @@ export class NewTrainingComponent implements OnDestroy {
     isSubmitted$ = this._isSubmitted$.asObservable();
     isApiLoading$ = this._isApiLoading$.asObservable();
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
-    currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
+    currentPreferences$ = this._preferencesStoreService.preferencesChanged$.pipe(
+        tap((preferences: Preferences) => {
+            const currentBodyweightValue = this.newTrainingForm.controls.bodyweight.value;
+            if (currentBodyweightValue && this.currentWeightUnit !== preferences.weightUnit) {
+                this.newTrainingForm.controls.bodyweight.patchValue(
+                    convertWeightUnit(preferences.weightUnit, currentBodyweightValue),
+                );
+            }
+        }),
+    );
     isAuthenticated$ = this._authStoreService.isAuth$;
     isEditing$ = this._sharedStoreService.editingTraining$;
     isReorder$ = this._newTrainingStoreService.trainingState$.pipe(
@@ -104,6 +116,7 @@ export class NewTrainingComponent implements OnDestroy {
         }),
     );
 
+    currentWeightUnit: WeightUnitType;
     formattedTodayDate: string;
     editTrainingData: NewTraining;
     initialBodyweightValidators = [Validators.min(30), Validators.max(300)];
@@ -147,6 +160,7 @@ export class NewTrainingComponent implements OnDestroy {
     ) {}
 
     ionViewWillEnter(): void {
+        this.currentWeightUnit = this._preferencesStoreService.getPreferences().weightUnit;
         let allExercisesChanged: StreamData<Exercise[]>;
         this.trainingStream$ = this._route.params.pipe(
             take(1),
