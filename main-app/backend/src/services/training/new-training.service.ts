@@ -9,8 +9,8 @@ import { NewTraining } from '../../models/training/new-training/new-training.mod
 @Injectable()
 export class NewTrainingService {
     constructor(
-        @InjectModel('Exercise') private readonly exerciseModel: Model<Exercise>,
-        @InjectModel('Training') private readonly trainingModel: Model<NewTraining>,
+        @InjectModel('Exercise') private _exerciseModel: Model<Exercise>,
+        @InjectModel('Training') private _trainingModel: Model<NewTraining>,
     ) {}
 
     async editTraining(
@@ -19,13 +19,13 @@ export class NewTrainingService {
         loggedUserId: string,
     ): Promise<GeneralResponseData> {
         try {
-            const trainingToBeUpdated: NewTraining = await this.trainingModel
+            const trainingToBeUpdated: NewTraining = await this._trainingModel
                 .findById(trainingId)
                 .exec();
             if (trainingToBeUpdated.userId.toString() !== loggedUserId.toString()) {
                 throw new UnauthorizedException('common.errors.not_authorized');
             }
-            await this.trainingModel
+            await this._trainingModel
                 .updateOne({ _id: trainingId }, { $set: updatedTrainingData })
                 .exec();
             return { Message: 'training.new_training.training_updated' } as GeneralResponseData;
@@ -47,7 +47,7 @@ export class NewTrainingService {
 
     async addTraining(trainingData: NewTraining): Promise<GeneralResponseData> {
         try {
-            await this.trainingModel.create(trainingData);
+            await this._trainingModel.create(trainingData);
             return { Message: 'training.new_training.training_saved' } as GeneralResponseData;
         } catch (error: unknown) {
             throw new InternalServerErrorException(
@@ -58,7 +58,7 @@ export class NewTrainingService {
 
     async getExercises(): Promise<StreamData<Exercise[]>> {
         try {
-            const exercises: Exercise[] = await this.exerciseModel.find().exec();
+            const exercises: Exercise[] = await this._exerciseModel.find().exec();
             if (exercises.length === 0) {
                 throw new InternalServerErrorException(
                     'training.new_training.errors.exercises_not_available',
@@ -78,7 +78,7 @@ export class NewTrainingService {
     //TODO: check later
     async getExerciseByName(exerciseName: string): Promise<Exercise> {
         try {
-            return await this.exerciseModel.findOne({ name: exerciseName }).exec();
+            return await this._exerciseModel.findOne({ name: exerciseName }).exec();
         } catch (error: unknown) {
             throw new InternalServerErrorException();
         }
