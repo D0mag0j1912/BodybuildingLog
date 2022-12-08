@@ -15,14 +15,14 @@ import { SingleExercise } from '../../../models/training/new-training/single-exe
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import {
     SetCategoryType,
-    SetDurationUnitType,
     SetTrainingData,
 } from '../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
-import { WeightUnitType } from '../../../models/common/preferences.type';
+import { PreferenceChangedType, WeightUnitType } from '../../../models/common/preferences.type';
 import { PreferencesStoreService } from '../shared/preferences-store.service';
 import { Preferences } from '../../../models/common/preferences.model';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
+import { NewTrainingPreferencesType } from '../../../models/training/new-training/new-training.type';
 import { ExercisesStoreService } from './exercises-store.service';
 
 @Injectable({ providedIn: 'root' })
@@ -47,6 +47,36 @@ export class NewTrainingStoreService {
                     ...trainingState,
                     weightUnit,
                 };
+                return this.saveTrainingData(updatedTraining);
+            }),
+        );
+    }
+
+    updateNewTrainingPreferences(
+        preferenceChangedType: PreferenceChangedType,
+        partialNewTrainingPreferences: Partial<NewTrainingPreferencesType>,
+    ): Observable<void> {
+        return this._trainingState$.pipe(
+            take(1),
+            switchMap((trainingState: NewTraining) => {
+                let updatedTraining: NewTraining;
+                if (preferenceChangedType === 'weightUnit') {
+                    updatedTraining = {
+                        ...trainingState,
+                        preferences: {
+                            weightUnit: partialNewTrainingPreferences.weightUnit,
+                            setDurationUnit: trainingState.preferences.setDurationUnit,
+                        },
+                    };
+                } else if (preferenceChangedType === 'setDurationUnit') {
+                    updatedTraining = {
+                        ...trainingState,
+                        preferences: {
+                            weightUnit: trainingState.preferences.weightUnit,
+                            setDurationUnit: partialNewTrainingPreferences.setDurationUnit,
+                        },
+                    };
+                }
                 return this.saveTrainingData(updatedTraining);
             }),
         );
@@ -604,6 +634,7 @@ export class NewTrainingStoreService {
                             userId,
                             preferences: {
                                 weightUnit,
+                                setDurationUnit: currentPreferences.setDurationUnit,
                             },
                         };
                     }

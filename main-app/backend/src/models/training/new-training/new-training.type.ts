@@ -1,3 +1,3 @@
 import { PreferencesDto } from '../../preferences/preferences.model';
 
-export type NewTrainingPreferencesType = Pick<PreferencesDto, 'weightUnit'>;
+export type NewTrainingPreferencesType = Pick<PreferencesDto, 'weightUnit' | 'setDurationUnit'>;
