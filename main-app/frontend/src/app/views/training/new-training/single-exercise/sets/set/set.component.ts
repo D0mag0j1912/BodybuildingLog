@@ -91,10 +91,15 @@ export class SetComponent implements OnChanges {
     durationElement: IonInput;
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (!changes.preferences?.firstChange && changes.preferences?.currentValue) {
+        if (
+            !changes.preferences?.firstChange &&
+            changes.preferences?.currentValue &&
+            (changes.preferences?.currentValue as Preferences).weightUnit !==
+                (changes.preferences?.previousValue as Preferences).weightUnit
+        ) {
             switch (this.activeSetCategory) {
                 case 'freeWeighted': {
-                    const currentWeightValue = +this.form.controls.weight.value;
+                    const currentWeightValue = this.form.controls.weight.value;
                     if (currentWeightValue) {
                         this.form.controls.weight.patchValue(
                             convertWeightUnit(
