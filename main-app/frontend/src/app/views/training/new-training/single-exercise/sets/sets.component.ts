@@ -362,7 +362,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     ): SetFormType {
         let initialValidators = [Validators.required, Validators.min(1), Validators.max(1000)];
         if (setConstituent === 'duration') {
-            initialValidators = [Validators.required, Validators.min(1)];
+            initialValidators = [Validators.required, Validators.min(0)];
         }
         setControls[setConstituent] = new FormControl(
             {

@@ -57,7 +57,7 @@ export class Set {
 
     @ApiProperty()
     @IsOptional()
-    @Min(1, {
+    @Min(0, {
         message: '@training.new_training.errors.duration_min',
     })
     @IsNumber(
