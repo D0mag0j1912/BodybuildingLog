@@ -91,7 +91,8 @@
         "edit_training": "Edit training",
         "past_trainings": "Past trainings",
         "language": "Language",
-        "unit": "Unit",
+        "weight_unit": "Weight unit",
+        "set_duration_unit": "Set duration unit",
         "logout": "Logout",
         "buttons": {
             "edit_go_back": "Go back"

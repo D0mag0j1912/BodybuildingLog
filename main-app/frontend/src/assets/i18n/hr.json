@@ -92,7 +92,8 @@
         "edit_training": "Uredi trening",
         "past_trainings": "Prošli treninzi",
         "language": "Jezik",
-        "unit": "Jedinica",
+        "weight_unit": "Jedinica težine",
+        "set_duration_unit": "Jedinica trajanja seta",
         "logout": "Odjava",
         "buttons": {
             "edit_go_back": "Idi nazad"

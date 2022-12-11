@@ -63,7 +63,17 @@
                     (click)="openPreferencePopover($event, 'weightUnit')"
                 >
                     <ion-icon slot="start" name="calculator-sharp" color="primary"></ion-icon>
-                    <ion-label>{{ 'navigation.unit' | translate }}</ion-label>
+                    <ion-label>{{ 'navigation.weight_unit' | translate }}</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle [autoHide]="false">
+                <ion-item
+                    *ngIf="isAuthenticated$ | async"
+                    lines="none"
+                    (click)="openPreferencePopover($event, 'setDurationUnit')"
+                >
+                    <ion-icon slot="start" name="stopwatch-sharp" color="primary"></ion-icon>
+                    <ion-label>{{ 'navigation.set_duration_unit' | translate }}</ion-label>
                 </ion-item>
             </ion-menu-toggle>
             <ion-menu-toggle [autoHide]="false">
