@@ -22,7 +22,7 @@
                     <ion-text
                         class="set-constituent-input--unit"
                         slot="end"
-                        [class.invalid-weight]="form.controls.weight.invalid"
+                        [class.invalid-set-constituent]="form.controls.weight.invalid"
                     >
                         {{ weightEl?.value ? preferences.weightUnit : '' }}
                     </ion-text>
@@ -114,6 +114,13 @@
                         (ionChange)="onChangeSets()"
                         (keydown.backspace)="onSetConstituentKeydown('duration')"
                     ></ion-input>
+                    <ion-text
+                        class="set-constituent-input--unit"
+                        slot="end"
+                        [class.invalid-set-constituent]="form.controls.duration.invalid"
+                    >
+                        {{ durationEl?.value ? preferences.setDurationUnit : '' }}
+                    </ion-text>
                     <ion-text
                         *ngIf="
                             form.controls.duration.errors?.min &&
