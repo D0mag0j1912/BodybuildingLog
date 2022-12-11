@@ -136,7 +136,7 @@ export class SetComponent implements OnChanges {
     }
 
     onSetDurationChange(): void {
-        this.setDurationUnitChanged.emit(this.preferences.setDurationUnit);
+        this.setDurationUnitChanged.emit(this.setDurationUnit);
     }
 
     updateSetCategory(): void {
