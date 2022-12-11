@@ -18,7 +18,7 @@ import {
     SetTrainingData,
 } from '../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
-import { PreferenceChangedType, WeightUnitType } from '../../../models/common/preferences.type';
+import { PreferenceChangedType } from '../../../models/common/preferences.type';
 import { PreferencesStoreService } from '../shared/preferences-store.service';
 import { Preferences } from '../../../models/common/preferences.model';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
@@ -39,22 +39,9 @@ export class NewTrainingStoreService {
         return { ...this._trainingState$.getValue() };
     }
 
-    updateWeightUnit(weightUnit: WeightUnitType): Observable<void> {
-        return this._trainingState$.pipe(
-            take(1),
-            switchMap((trainingState: NewTraining) => {
-                const updatedTraining = {
-                    ...trainingState,
-                    weightUnit,
-                };
-                return this.saveTrainingData(updatedTraining);
-            }),
-        );
-    }
-
     updateNewTrainingPreferences(
         preferenceChangedType: PreferenceChangedType,
-        partialNewTrainingPreferences: Partial<NewTrainingPreferencesType>,
+        newTrainingPreferences: NewTrainingPreferencesType,
     ): Observable<void> {
         return this._trainingState$.pipe(
             take(1),
@@ -64,7 +51,7 @@ export class NewTrainingStoreService {
                     updatedTraining = {
                         ...trainingState,
                         preferences: {
-                            weightUnit: partialNewTrainingPreferences.weightUnit,
+                            weightUnit: newTrainingPreferences.weightUnit,
                             setDurationUnit: trainingState.preferences.setDurationUnit,
                         },
                     };
@@ -73,7 +60,7 @@ export class NewTrainingStoreService {
                         ...trainingState,
                         preferences: {
                             weightUnit: trainingState.preferences.weightUnit,
-                            setDurationUnit: partialNewTrainingPreferences.setDurationUnit,
+                            setDurationUnit: newTrainingPreferences.setDurationUnit,
                         },
                     };
                 }

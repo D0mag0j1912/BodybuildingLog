@@ -11,10 +11,7 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { isNeverCheck } from '../../../../../../helpers/is-never-check.helper';
-import {
-    convertSetDurationUnit,
-    convertWeightUnit,
-} from '../../../../../../helpers/training/convert-units.helper';
+import { convertWeightUnit } from '../../../../../../helpers/training/convert-units.helper';
 import { Preferences } from '../../../../../../models/common/preferences.model';
 import { WeightUnitType } from '../../../../../../models/common/preferences.type';
 import { NewTraining } from '../../../../../../models/training/new-training/new-training.model';
@@ -35,11 +32,22 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SetComponent implements OnChanges {
+    setDurationUnit: SetDurationUnitType = 'seconds';
+
     @Input()
     form: FormGroup<SetFormType>;
 
     @Input()
-    preferences: Preferences;
+    set preferences(preferences: Preferences) {
+        if (preferences) {
+            this._preferences = preferences;
+            this.setDurationUnit = this._preferences.setDurationUnit;
+        }
+    }
+    get preferences(): Preferences {
+        return this._preferences;
+    }
+    private _preferences: Preferences;
 
     @Input()
     set activeSetCategory(category: SetCategoryType) {
@@ -65,20 +73,7 @@ export class SetComponent implements OnChanges {
     set editTrainingData(trainingData: NewTraining) {
         if (trainingData) {
             this._editTrainingData = trainingData;
-            const editTrainingSetDurationUnit = this._editTrainingData.preferences.setDurationUnit;
-            const currentSetDurationUnit = this.preferences.setDurationUnit;
-            if (
-                editTrainingSetDurationUnit !== currentSetDurationUnit &&
-                (this.activeSetCategory === 'staticBodyweight' ||
-                    this.activeSetCategory === 'staticWeighted')
-            ) {
-                this.form.controls.duration.patchValue(
-                    convertSetDurationUnit(
-                        editTrainingSetDurationUnit,
-                        this.form.controls.duration.value,
-                    ),
-                );
-            }
+            this.setDurationUnit = this._editTrainingData.preferences.setDurationUnit;
         }
     }
     get editTrainingData(): NewTraining {
