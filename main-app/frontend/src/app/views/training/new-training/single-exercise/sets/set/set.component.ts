@@ -115,8 +115,8 @@ export class SetComponent implements OnChanges {
         if (
             !changes.preferences?.firstChange &&
             changes.preferences?.currentValue &&
-            (changes.preferences?.currentValue as Preferences).weightUnit !==
-                (changes.preferences?.previousValue as Preferences).weightUnit
+            (changes.preferences?.currentValue as Preferences)?.weightUnit !==
+                (changes.preferences?.previousValue as Preferences)?.weightUnit
         ) {
             switch (this.activeSetCategory) {
                 case 'freeWeighted': {

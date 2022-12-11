@@ -55,6 +55,17 @@ import { SetComponent } from './set/set.component';
 export class SetsComponent implements ControlValueAccessor, OnInit {
     preferences$ = this._preferencesStoreService.preferencesChanged$.pipe(
         startWith(this._preferencesStoreService.getPreferences()),
+        switchMap((preferences: Preferences) => {
+            if (!this.editTrainingData) {
+                return this._newTrainingStoreService
+                    .updateNewTrainingPreferences('setDurationUnit', {
+                        weightUnit: preferences.weightUnit,
+                        setDurationUnit: preferences.setDurationUnit,
+                    })
+                    .pipe(map((_) => preferences));
+            }
+            return of(preferences);
+        }),
     );
 
     form = new FormArray<FormGroup<SetFormType>>([]);
@@ -257,7 +268,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     }
 
     onSetDurationUnitChange(setDurationUnit: SetDurationUnitType): void {
-        this.preferences$
+        this._preferencesStoreService.preferencesChanged$
             .pipe(
                 take(1),
                 concatMap((currentPreferences: Preferences) => {
