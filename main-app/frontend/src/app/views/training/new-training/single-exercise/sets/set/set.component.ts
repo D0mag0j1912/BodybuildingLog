@@ -14,12 +14,8 @@ import { isNeverCheck } from '../../../../../../helpers/is-never-check.helper';
 import { convertWeightUnit } from '../../../../../../helpers/training/convert-units.helper';
 import { Preferences } from '../../../../../../models/common/preferences.model';
 import { WeightUnitType } from '../../../../../../models/common/preferences.type';
-import { NewTraining } from '../../../../../../models/training/new-training/new-training.model';
 import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
-import {
-    SetDurationUnitType,
-    SetTrainingData,
-} from '../../../../../../models/training/new-training/single-exercise/set/set.type';
+import { SetTrainingData } from '../../../../../../models/training/new-training/single-exercise/set/set.type';
 import {
     SetCategoryType,
     SetConstituent,
@@ -32,22 +28,11 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SetComponent implements OnChanges {
-    setDurationUnit: SetDurationUnitType = 'seconds';
-
     @Input()
     form: FormGroup<SetFormType>;
 
     @Input()
-    set preferences(preferences: Preferences) {
-        if (preferences) {
-            this._preferences = preferences;
-            this.setDurationUnit = this._preferences.setDurationUnit;
-        }
-    }
-    get preferences(): Preferences {
-        return this._preferences;
-    }
-    private _preferences: Preferences;
+    preferences: Preferences;
 
     @Input()
     set activeSetCategory(category: SetCategoryType) {
@@ -70,18 +55,6 @@ export class SetComponent implements OnChanges {
     availableSetCategoriesControl: FormControl<SetCategoryType[]>;
 
     @Input()
-    set editTrainingData(trainingData: NewTraining) {
-        if (trainingData) {
-            this._editTrainingData = trainingData;
-            this.setDurationUnit = this._editTrainingData.preferences.setDurationUnit;
-        }
-    }
-    get editTrainingData(): NewTraining {
-        return this._editTrainingData;
-    }
-    private _editTrainingData: NewTraining;
-
-    @Input()
     isLoading = false;
 
     @Input()
@@ -98,9 +71,6 @@ export class SetComponent implements OnChanges {
 
     @Output()
     setCategoryModalOpened = new EventEmitter<SetCategoryType>();
-
-    @Output()
-    setDurationUnitChanged = new EventEmitter<SetDurationUnitType>();
 
     @ViewChild('weightEl', { read: IonInput })
     weightElement: IonInput;
@@ -133,10 +103,6 @@ export class SetComponent implements OnChanges {
                 }
             }
         }
-    }
-
-    onSetDurationChange(): void {
-        this.setDurationUnitChanged.emit(this.setDurationUnit);
     }
 
     updateSetCategory(): void {

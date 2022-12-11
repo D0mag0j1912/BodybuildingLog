@@ -17,7 +17,7 @@ import {
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
-import { concatMap, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+import { concatMap, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../../helpers/control-value-accessor.helper';
 import {
     Set,
@@ -30,7 +30,6 @@ import { NewTrainingStoreService } from '../../../../../services/store/training/
 import {
     SetCategoryType,
     SetConstituent,
-    SetDurationUnitType,
     SetTrainingData,
 } from '../../../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
@@ -265,24 +264,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     setIndex,
                 });
             });
-    }
-
-    onSetDurationUnitChange(setDurationUnit: SetDurationUnitType): void {
-        this._preferencesStoreService.preferencesChanged$
-            .pipe(
-                take(1),
-                concatMap((currentPreferences: Preferences) => {
-                    const updatedPreferences = {
-                        ...currentPreferences,
-                        setDurationUnit,
-                    };
-                    return this._preferencesService.setPreferences(
-                        updatedPreferences,
-                        'setDurationUnit',
-                    );
-                }),
-            )
-            .subscribe();
     }
 
     addSet(set?: Set): void {
