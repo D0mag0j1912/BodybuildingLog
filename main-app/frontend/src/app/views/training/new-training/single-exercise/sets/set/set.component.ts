@@ -11,9 +11,13 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { isNeverCheck } from '../../../../../../helpers/is-never-check.helper';
-import { convertWeightUnit } from '../../../../../../helpers/training/convert-weight-units.helper';
+import {
+    convertSetDurationUnit,
+    convertWeightUnit,
+} from '../../../../../../helpers/training/convert-units.helper';
 import { Preferences } from '../../../../../../models/common/preferences.model';
 import { WeightUnitType } from '../../../../../../models/common/preferences.type';
+import { NewTraining } from '../../../../../../models/training/new-training/new-training.model';
 import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import {
     SetDurationUnitType,
@@ -58,10 +62,32 @@ export class SetComponent implements OnChanges {
     availableSetCategoriesControl: FormControl<SetCategoryType[]>;
 
     @Input()
-    isLoading = false;
+    set editTrainingData(trainingData: NewTraining) {
+        if (trainingData) {
+            this._editTrainingData = trainingData;
+            const editTrainingSetDurationUnit = this._editTrainingData.preferences.setDurationUnit;
+            const currentSetDurationUnit = this.preferences.setDurationUnit;
+            if (
+                editTrainingSetDurationUnit !== currentSetDurationUnit &&
+                (this.activeSetCategory === 'staticBodyweight' ||
+                    this.activeSetCategory === 'staticWeighted')
+            ) {
+                this.form.controls.duration.patchValue(
+                    convertSetDurationUnit(
+                        editTrainingSetDurationUnit,
+                        this.form.controls.duration.value,
+                    ),
+                );
+            }
+        }
+    }
+    get editTrainingData(): NewTraining {
+        return this._editTrainingData;
+    }
+    private _editTrainingData: NewTraining;
 
     @Input()
-    editMode = false;
+    isLoading = false;
 
     @Input()
     isFirstSet = true;

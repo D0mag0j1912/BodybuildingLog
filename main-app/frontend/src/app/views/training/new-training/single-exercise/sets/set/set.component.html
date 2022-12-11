@@ -145,7 +145,7 @@
                         interface="popover"
                         [(ngModel)]="preferences.setDurationUnit"
                         [ngModelOptions]="{ standalone: true }"
-                        [disabled]="editMode"
+                        [disabled]="!!editTrainingData"
                         (ionChange)="onSetDurationChange()">
                         <ion-select-option [value]="'seconds'">
                             {{ 'common.seconds' | translate }}

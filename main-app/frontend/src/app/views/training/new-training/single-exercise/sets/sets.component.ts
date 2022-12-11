@@ -24,7 +24,7 @@ import {
     SelectedCategoriesChanged,
 } from '../../../../../models/training/new-training/single-exercise/set/set.model';
 import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
-import { convertWeightUnit } from '../../../../../helpers/training/convert-weight-units.helper';
+import { convertWeightUnit } from '../../../../../helpers/training/convert-units.helper';
 import { NewTraining } from '../../../../../models/training/new-training/new-training.model';
 import { NewTrainingStoreService } from '../../../../../services/store/training/new-training-store.service';
 import {
@@ -41,7 +41,6 @@ import {
     SetFormValueType,
 } from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import { PreferencesStoreService } from '../../../../../services/store/shared/preferences-store.service';
-import { DEFAULT_WEIGHT_UNIT } from '../../../../../constants/shared/default-weight-unit.const';
 import { PreferencesService } from '../../../../../services/shared/preferences.service';
 import { Preferences } from '../../../../../models/common/preferences.model';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
@@ -399,8 +398,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
 
     private _setWeightValue(weight: number): number {
         if (this.editTrainingData) {
-            const editTrainingWeightUnit =
-                this.editTrainingData.preferences.weightUnit ?? DEFAULT_WEIGHT_UNIT;
+            const editTrainingWeightUnit = this.editTrainingData.preferences.weightUnit;
             const currentWeightUnit = this._preferencesStoreService.getPreferences().weightUnit;
             if (editTrainingWeightUnit !== currentWeightUnit) {
                 return convertWeightUnit(currentWeightUnit, weight);
