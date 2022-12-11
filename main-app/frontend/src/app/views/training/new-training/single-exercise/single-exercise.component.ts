@@ -356,10 +356,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 }
                 const weightErrors = group.controls.weight?.errors;
                 const repsErrors = group.controls.reps?.errors;
-                if (weightErrors) {
-                    isFormValid = false;
-                }
-                if (repsErrors) {
+                const durationErrors = group.controls.duration?.errors;
+                if (weightErrors || repsErrors || durationErrors) {
                     isFormValid = false;
                 }
             });

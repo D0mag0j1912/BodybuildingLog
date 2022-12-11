@@ -56,7 +56,7 @@ import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweigh
 import { ExercisesStoreService } from '../../../services/store/training/exercises-store.service';
 import { SetCategoryType } from '../../../models/training/new-training/single-exercise/set/set.type';
 import { Preferences } from '../../../models/common/preferences.model';
-import { convertWeightUnit } from '../../../helpers/training/convert-weight-units.helper';
+import { convertWeightUnit } from '../../../helpers/training/convert-units.helper';
 import { WeightUnitType } from '../../../models/common/preferences.type';
 import { SingleExerciseComponent } from './single-exercise/single-exercise.component';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';

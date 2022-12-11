@@ -21,7 +21,7 @@
         "here": "ovdje",
         "or": "ILI",
         "date": "Datum",
-        "seconds": "sek",
+        "seconds": "sec",
         "minutes": "min",
         "errors": {
             "something_went_wrong": "Došlo je do greške. Pokušajte ponovno.",

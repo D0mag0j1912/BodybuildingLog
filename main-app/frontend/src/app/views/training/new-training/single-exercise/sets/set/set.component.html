@@ -47,8 +47,7 @@
                     <ion-text
                         *ngIf="
                             form.controls.weight.errors?.required &&
-                            (isSubmitted ||
-                                form.controls.weight.touched) &&
+                            form.controls.weight.touched &&
                             !isLoading
                         "
                         slot="error"
@@ -93,7 +92,7 @@
                     <ion-text
                         *ngIf="
                             form.controls.reps.errors?.required &&
-                            (isSubmitted || form.controls.reps.touched) &&
+                            form.controls.reps.touched &&
                             !isLoading
                         "
                         slot="error"
@@ -127,7 +126,7 @@
                     <ion-text
                         *ngIf="
                             form.controls.duration.errors?.required &&
-                            (isSubmitted || form.controls.duration.touched) &&
+                            form.controls.duration.touched &&
                             !isLoading
                         "
                         slot="error"
@@ -144,8 +143,9 @@
                     <ion-select
                         class="duration-picker"
                         interface="popover"
-                        [(ngModel)]="preferences.setDurationUnit"
+                        [(ngModel)]="setDurationUnit"
                         [ngModelOptions]="{ standalone: true }"
+                        [disabled]="!!editTrainingData"
                         (ionChange)="onSetDurationChange()">
                         <ion-select-option [value]="'seconds'">
                             {{ 'common.seconds' | translate }}

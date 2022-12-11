@@ -4,7 +4,7 @@
 //if using mobile device emulator: http://192.168.0.114:3000
 export const environment = {
     production: false,
-    BACKEND: 'http://192.168.1.2:3000',
+    BACKEND: 'http://192.168.1.5:3000',
 };
 
 /*

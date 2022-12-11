@@ -24,7 +24,7 @@ import {
     SelectedCategoriesChanged,
 } from '../../../../../models/training/new-training/single-exercise/set/set.model';
 import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
-import { convertWeightUnit } from '../../../../../helpers/training/convert-weight-units.helper';
+import { convertWeightUnit } from '../../../../../helpers/training/convert-units.helper';
 import { NewTraining } from '../../../../../models/training/new-training/new-training.model';
 import { NewTrainingStoreService } from '../../../../../services/store/training/new-training-store.service';
 import {
@@ -41,7 +41,6 @@ import {
     SetFormValueType,
 } from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import { PreferencesStoreService } from '../../../../../services/store/shared/preferences-store.service';
-import { DEFAULT_WEIGHT_UNIT } from '../../../../../constants/shared/default-weight-unit.const';
 import { PreferencesService } from '../../../../../services/shared/preferences.service';
 import { Preferences } from '../../../../../models/common/preferences.model';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
@@ -56,6 +55,17 @@ import { SetComponent } from './set/set.component';
 export class SetsComponent implements ControlValueAccessor, OnInit {
     preferences$ = this._preferencesStoreService.preferencesChanged$.pipe(
         startWith(this._preferencesStoreService.getPreferences()),
+        switchMap((preferences: Preferences) => {
+            if (!this.editTrainingData) {
+                return this._newTrainingStoreService
+                    .updateNewTrainingPreferences('setDurationUnit', {
+                        weightUnit: preferences.weightUnit,
+                        setDurationUnit: preferences.setDurationUnit,
+                    })
+                    .pipe(map((_) => preferences));
+            }
+            return of(preferences);
+        }),
     );
 
     form = new FormArray<FormGroup<SetFormType>>([]);
@@ -258,7 +268,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     }
 
     onSetDurationUnitChange(setDurationUnit: SetDurationUnitType): void {
-        this.preferences$
+        this._preferencesStoreService.preferencesChanged$
             .pipe(
                 take(1),
                 concatMap((currentPreferences: Preferences) => {
@@ -363,7 +373,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     ): SetFormType {
         let initialValidators = [Validators.required, Validators.min(1), Validators.max(1000)];
         if (setConstituent === 'duration') {
-            initialValidators = [Validators.required, Validators.min(1)];
+            initialValidators = [Validators.required, Validators.min(0)];
         }
         setControls[setConstituent] = new FormControl(
             {
@@ -399,8 +409,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
 
     private _setWeightValue(weight: number): number {
         if (this.editTrainingData) {
-            const editTrainingWeightUnit =
-                this.editTrainingData.preferences.weightUnit ?? DEFAULT_WEIGHT_UNIT;
+            const editTrainingWeightUnit = this.editTrainingData.preferences.weightUnit;
             const currentWeightUnit = this._preferencesStoreService.getPreferences().weightUnit;
             if (editTrainingWeightUnit !== currentWeightUnit) {
                 return convertWeightUnit(currentWeightUnit, weight);

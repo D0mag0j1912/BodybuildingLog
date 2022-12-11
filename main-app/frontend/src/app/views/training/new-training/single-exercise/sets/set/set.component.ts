@@ -11,9 +11,10 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { isNeverCheck } from '../../../../../../helpers/is-never-check.helper';
-import { convertWeightUnit } from '../../../../../../helpers/training/convert-weight-units.helper';
+import { convertWeightUnit } from '../../../../../../helpers/training/convert-units.helper';
 import { Preferences } from '../../../../../../models/common/preferences.model';
 import { WeightUnitType } from '../../../../../../models/common/preferences.type';
+import { NewTraining } from '../../../../../../models/training/new-training/new-training.model';
 import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import {
     SetDurationUnitType,
@@ -31,11 +32,22 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SetComponent implements OnChanges {
+    setDurationUnit: SetDurationUnitType = 'seconds';
+
     @Input()
     form: FormGroup<SetFormType>;
 
     @Input()
-    preferences: Preferences;
+    set preferences(preferences: Preferences) {
+        if (preferences) {
+            this._preferences = preferences;
+            this.setDurationUnit = this._preferences.setDurationUnit;
+        }
+    }
+    get preferences(): Preferences {
+        return this._preferences;
+    }
+    private _preferences: Preferences;
 
     @Input()
     set activeSetCategory(category: SetCategoryType) {
@@ -58,10 +70,19 @@ export class SetComponent implements OnChanges {
     availableSetCategoriesControl: FormControl<SetCategoryType[]>;
 
     @Input()
-    isLoading = false;
+    set editTrainingData(trainingData: NewTraining) {
+        if (trainingData) {
+            this._editTrainingData = trainingData;
+            this.setDurationUnit = this._editTrainingData.preferences.setDurationUnit;
+        }
+    }
+    get editTrainingData(): NewTraining {
+        return this._editTrainingData;
+    }
+    private _editTrainingData: NewTraining;
 
     @Input()
-    isSubmitted = false;
+    isLoading = false;
 
     @Input()
     isFirstSet = true;
@@ -94,8 +115,8 @@ export class SetComponent implements OnChanges {
         if (
             !changes.preferences?.firstChange &&
             changes.preferences?.currentValue &&
-            (changes.preferences?.currentValue as Preferences).weightUnit !==
-                (changes.preferences?.previousValue as Preferences).weightUnit
+            (changes.preferences?.currentValue as Preferences)?.weightUnit !==
+                (changes.preferences?.previousValue as Preferences)?.weightUnit
         ) {
             switch (this.activeSetCategory) {
                 case 'freeWeighted': {
@@ -115,7 +136,7 @@ export class SetComponent implements OnChanges {
     }
 
     onSetDurationChange(): void {
-        this.setDurationUnitChanged.emit(this.preferences.setDurationUnit);
+        this.setDurationUnitChanged.emit(this.setDurationUnit);
     }
 
     updateSetCategory(): void {

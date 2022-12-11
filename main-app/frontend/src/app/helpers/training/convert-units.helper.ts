@@ -1,9 +1,10 @@
 import { KG_TO_LBS } from '../../constants/shared/kg-to-lbs.const';
 import { WeightUnitType } from '../../models/common/preferences.type';
-import { roundToDecimalPlaces } from '../round-to-decimal-places.helper';
 
 export function convertWeightUnit(weightUnit: WeightUnitType, value: number): number {
-    return weightUnit === 'lbs'
-        ? roundToDecimalPlaces(1, value * KG_TO_LBS)
-        : roundToDecimalPlaces(1, value / KG_TO_LBS);
+    return (
+        Math.round(
+            ((weightUnit === 'lbs' ? value * KG_TO_LBS : value / KG_TO_LBS) + Number.EPSILON) * 10,
+        ) / 10
+    );
 }

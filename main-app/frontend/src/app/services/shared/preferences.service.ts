@@ -57,12 +57,17 @@ export class PreferencesService {
                             }
                         }),
                         switchMap((_) => {
-                            if (preferenceChanged === 'weightUnit') {
+                            if (
+                                preferenceChanged === 'weightUnit' ||
+                                preferenceChanged === 'setDurationUnit'
+                            ) {
                                 return this._newTrainingStoreService
-                                    .updateWeightUnit(apiPreferences.weightUnit)
+                                    .updateNewTrainingPreferences(preferenceChanged, {
+                                        weightUnit: apiPreferences.weightUnit,
+                                        setDurationUnit: apiPreferences.setDurationUnit,
+                                    })
                                     .pipe(switchMap((_) => of(apiResponse)));
                             }
-                            //TODO: Create logic for set duration unit
                             return of(apiResponse);
                         }),
                     );

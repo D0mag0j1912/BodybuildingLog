@@ -41,6 +41,10 @@ export const NEW_TRAINING_SCHEMA = new Schema({
             type: String,
             required: true,
         },
+        setDurationUnit: {
+            type: String,
+            required: true,
+        },
     },
 });
 
