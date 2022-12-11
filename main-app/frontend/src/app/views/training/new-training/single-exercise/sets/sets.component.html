@@ -8,6 +8,7 @@
             [exerciseControl]="exerciseControl"
             [availableSetCategoriesControl]="availableSetCategoriesControl"
             [isLoading]="isLoading"
+            [editMode]="editMode"
             [isFirstSet]="i === 0"
             (setChanged)="onSetChanged($event, i)"
             (setDeleted)="onSetDeleted(i)"

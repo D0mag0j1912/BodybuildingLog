@@ -61,6 +61,9 @@ export class SetComponent implements OnChanges {
     isLoading = false;
 
     @Input()
+    editMode = false;
+
+    @Input()
     isFirstSet = true;
 
     @Output()
