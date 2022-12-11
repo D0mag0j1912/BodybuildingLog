@@ -218,7 +218,9 @@
     },
     "units": {
         "kilograms": "Kilograms",
-        "pounds": "Pounds"
+        "pounds": "Pounds",
+        "seconds": "Seconds",
+        "minutes": "Minutes"
     },
     "preferences": {
         "language_changed": "Language successfully changed",

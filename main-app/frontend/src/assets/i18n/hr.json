@@ -219,7 +219,9 @@
     },
     "units": {
         "kilograms": "Kilogrami",
-        "pounds": "Funte"
+        "pounds": "Funte",
+        "seconds": "Sekunde",
+        "minutes": "Minute"
     },
     "preferences": {
         "language_changed": "Jezik je uspješno promijenjen",
