@@ -119,7 +119,7 @@
                         slot="end"
                         [class.invalid-set-constituent]="form.controls.duration.invalid"
                     >
-                        {{ durationEl?.value ? preferences.setDurationUnit : '' }}
+                        {{ durationEl?.value ? ('common.' + preferences.setDurationUnit | translate) : '' }}
                     </ion-text>
                     <ion-text
                         *ngIf="

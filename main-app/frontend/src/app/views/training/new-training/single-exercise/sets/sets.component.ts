@@ -53,7 +53,6 @@ import { SetComponent } from './set/set.component';
 })
 export class SetsComponent implements ControlValueAccessor, OnInit {
     preferences$ = this._preferencesStoreService.preferencesChanged$.pipe(
-        startWith(this._preferencesStoreService.getPreferences()),
         switchMap((preferences: Preferences) => {
             if (!this.editTrainingData) {
                 return this._newTrainingStoreService
@@ -65,6 +64,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             }
             return of(preferences);
         }),
+        startWith(this._preferencesStoreService.getPreferences()),
     );
 
     form = new FormArray<FormGroup<SetFormType>>([]);
