@@ -92,7 +92,8 @@ export class NewTrainingStoreService {
                     exercises: [...trainingState.exercises].map((exercise: SingleExercise) => {
                         let total = 0;
                         exercise.sets.forEach((set: Set, index: number) => {
-                            switch (exercise.exerciseData.selectedSetCategories[index]) {
+                            const setCategory = exercise.exerciseData.selectedSetCategories[index];
+                            switch (setCategory) {
                                 case 'freeWeighted': {
                                     total = total + set.weight * set.reps;
                                     break;
@@ -104,6 +105,17 @@ export class NewTrainingStoreService {
                                 case 'dynamicWeighted': {
                                     total = total + (bodyweight + set.weight) * set.reps;
                                     break;
+                                }
+                                case 'staticBodyweight': {
+                                    total += bodyweight + set.duration;
+                                    break;
+                                }
+                                case 'staticWeighted': {
+                                    //TODO: BL-123
+                                    break;
+                                }
+                                default: {
+                                    isNeverCheck(setCategory);
                                 }
                             }
                         });
