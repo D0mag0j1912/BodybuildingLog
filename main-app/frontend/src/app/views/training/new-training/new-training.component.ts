@@ -424,7 +424,7 @@ export class NewTrainingComponent implements OnDestroy {
         const currentTrainingState = this._newTrainingStoreService.getCurrentTrainingState();
         const dayClickedDate = this._sharedStoreService.getDayClickedDate();
         this.newTrainingForm.controls.bodyweight.patchValue(
-            this._fillBodyweight(currentTrainingState),
+            this._fillBodyweight(currentTrainingState.bodyweight),
         );
         this.newTrainingForm.controls.trainingDate.patchValue(
             this._fillTrainingDate(dayClickedDate),
@@ -449,9 +449,9 @@ export class NewTrainingComponent implements OnDestroy {
         }
     }
 
-    private _fillBodyweight(currentTrainingState: NewTraining): number {
+    private _fillBodyweight(bodyweight: number): number {
         return NewTrainingHandler.fillBodyweight(
-            currentTrainingState.bodyweight,
+            bodyweight,
             this.editTrainingData ? this.editTrainingData.bodyweight : null,
         );
     }
