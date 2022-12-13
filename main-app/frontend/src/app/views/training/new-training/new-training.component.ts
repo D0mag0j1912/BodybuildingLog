@@ -79,6 +79,7 @@ export class NewTrainingComponent implements OnDestroy {
         tap((preferences: Preferences) => {
             const currentBodyweightValue = this.newTrainingForm.controls.bodyweight.value;
             if (currentBodyweightValue && this.currentWeightUnit !== preferences.weightUnit) {
+                this.currentWeightUnit = preferences.weightUnit;
                 this.newTrainingForm.controls.bodyweight.patchValue(
                     convertWeightUnit(preferences.weightUnit, currentBodyweightValue),
                 );

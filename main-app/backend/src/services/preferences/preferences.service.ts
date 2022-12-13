@@ -32,12 +32,16 @@ export class PreferencesService {
                 case 'language': {
                     return { Message: 'preferences.language_changed' } as GeneralResponseData;
                 }
-                case 'showByPeriod':
-                case 'setDurationUnit': {
+                case 'showByPeriod': {
                     return { Message: '' } as GeneralResponseData;
                 }
                 case 'weightUnit': {
                     return { Message: 'preferences.weight_unit_changed' } as GeneralResponseData;
+                }
+                case 'setDurationUnit': {
+                    return {
+                        Message: 'preferences.set_duration_unit_changed',
+                    } as GeneralResponseData;
                 }
                 default: {
                     isNeverCheck(preferenceChanged);

@@ -225,6 +225,7 @@
     "preferences": {
         "language_changed": "Jezik je uspješno promijenjen",
         "weight_unit_changed": "Jedinica težine je uspješno promijenjena",
+        "set_duration_unit_changed": "Jedinica trajanja seta je uspješno promijenjena",
         "errors": {
             "language_required": "Jezik je obvezan",
             "language_change": "Došlo je do greške pri promjeni jezika",

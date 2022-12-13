@@ -11,9 +11,11 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { isNeverCheck } from '../../../../../../helpers/is-never-check.helper';
-import { convertWeightUnit } from '../../../../../../helpers/training/convert-units.helper';
+import {
+    convertSetDurationUnit,
+    convertWeightUnit,
+} from '../../../../../../helpers/training/convert-units.helper';
 import { Preferences } from '../../../../../../models/common/preferences.model';
-import { WeightUnitType } from '../../../../../../models/common/preferences.type';
 import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import { SetTrainingData } from '../../../../../../models/training/new-training/single-exercise/set/set.type';
 import {
@@ -82,22 +84,40 @@ export class SetComponent implements OnChanges {
     durationElement: IonInput;
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (
-            !changes.preferences?.firstChange &&
-            changes.preferences?.currentValue &&
-            (changes.preferences?.currentValue as Preferences)?.weightUnit !==
-                (changes.preferences?.previousValue as Preferences)?.weightUnit
-        ) {
+        if (!changes.preferences?.firstChange && changes.preferences?.currentValue) {
+            const currentPreferencesValue = changes.preferences?.currentValue as Preferences;
+            const previousPreferencesValue = changes.preferences?.previousValue as Preferences;
             switch (this.activeSetCategory) {
                 case 'freeWeighted': {
-                    const currentWeightValue = this.form.controls.weight.value;
-                    if (currentWeightValue) {
-                        this.form.controls.weight.patchValue(
-                            convertWeightUnit(
-                                changes.preferences.currentValue.weightUnit as WeightUnitType,
-                                currentWeightValue,
-                            ),
-                        );
+                    if (
+                        currentPreferencesValue?.weightUnit !== previousPreferencesValue?.weightUnit
+                    ) {
+                        const currentWeightValue = this.form.controls.weight.value;
+                        if (currentWeightValue) {
+                            this.form.controls.weight.patchValue(
+                                convertWeightUnit(
+                                    currentPreferencesValue.weightUnit,
+                                    currentWeightValue,
+                                ),
+                            );
+                        }
+                    }
+                    break;
+                }
+                case 'staticBodyweight': {
+                    if (
+                        currentPreferencesValue?.setDurationUnit !==
+                        previousPreferencesValue?.setDurationUnit
+                    ) {
+                        const currentDurationValue = this.form.controls.duration.value;
+                        if (currentDurationValue) {
+                            this.form.controls.duration.patchValue(
+                                convertSetDurationUnit(
+                                    currentPreferencesValue.setDurationUnit,
+                                    currentDurationValue,
+                                ),
+                            );
+                        }
                     }
                     break;
                 }
