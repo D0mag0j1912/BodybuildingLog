@@ -187,7 +187,7 @@ export class NewTrainingComponent implements OnDestroy {
                             this.editTrainingData = {
                                 ...response.Value,
                                 editMode: true,
-                                trainingDate: response?.Value?.trainingDate,
+                                trainingDate: response.Value.trainingDate,
                             };
                             return this._newTrainingStoreService.updateTrainingState(
                                 this.editTrainingData,
