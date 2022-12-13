@@ -113,7 +113,7 @@ export class SetComponent implements OnChanges {
                         if (currentDurationValue) {
                             this.form.controls.duration.patchValue(
                                 convertSetDurationUnit(
-                                    currentPreferencesValue.setDurationUnit,
+                                    previousPreferencesValue.setDurationUnit,
                                     currentDurationValue,
                                 ),
                             );
