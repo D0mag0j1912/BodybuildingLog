@@ -82,16 +82,6 @@
     }
 }
 
-.invalid-weight {
+.invalid-set-constituent {
     color: var(--ion-color-danger);
-}
-
-.duration-picker {
-    color: var(--ion-color-primary);
-    padding-bottom: 0;
-    font-size: 15px;
-}
-
-.md .duration-picker::part(icon) {
-    top: 7px;
 }

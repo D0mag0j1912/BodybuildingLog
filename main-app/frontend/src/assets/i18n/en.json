@@ -91,7 +91,8 @@
         "edit_training": "Edit training",
         "past_trainings": "Past trainings",
         "language": "Language",
-        "unit": "Unit",
+        "weight_unit": "Weight unit",
+        "set_duration_unit": "Set duration unit",
         "logout": "Logout",
         "buttons": {
             "edit_go_back": "Go back"
@@ -103,7 +104,6 @@
             "pick_date": "Choose a date",
             "pick_bodyweight": "Enter your weight",
             "pick_exercise": "Choose exercise",
-            "pick_duration_unit": "Unit",
             "weight": "Weight",
             "reps": "Reps",
             "duration": "Duration",
@@ -217,11 +217,14 @@
     },
     "units": {
         "kilograms": "Kilograms",
-        "pounds": "Pounds"
+        "pounds": "Pounds",
+        "seconds": "Seconds",
+        "minutes": "Minutes"
     },
     "preferences": {
         "language_changed": "Language successfully changed",
         "weight_unit_changed": "Weight unit successfully changed",
+        "set_duration_unit_changed": "Set duration unit successfully changed",
         "errors": {
             "language_required": "Language field is required",
             "language_change": "Error while trying to change language",

@@ -17,20 +17,22 @@ import {
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
-import { concatMap, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+import { concatMap, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { getControlValueAccessor } from '../../../../../helpers/control-value-accessor.helper';
 import {
     Set,
     SelectedCategoriesChanged,
 } from '../../../../../models/training/new-training/single-exercise/set/set.model';
 import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
-import { convertWeightUnit } from '../../../../../helpers/training/convert-units.helper';
+import {
+    convertSetDurationUnit,
+    convertWeightUnit,
+} from '../../../../../helpers/training/convert-units.helper';
 import { NewTraining } from '../../../../../models/training/new-training/new-training.model';
 import { NewTrainingStoreService } from '../../../../../services/store/training/new-training-store.service';
 import {
     SetCategoryType,
     SetConstituent,
-    SetDurationUnitType,
     SetTrainingData,
 } from '../../../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
@@ -41,7 +43,6 @@ import {
     SetFormValueType,
 } from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import { PreferencesStoreService } from '../../../../../services/store/shared/preferences-store.service';
-import { PreferencesService } from '../../../../../services/shared/preferences.service';
 import { Preferences } from '../../../../../models/common/preferences.model';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
 import { SetComponent } from './set/set.component';
@@ -54,7 +55,6 @@ import { SetComponent } from './set/set.component';
 })
 export class SetsComponent implements ControlValueAccessor, OnInit {
     preferences$ = this._preferencesStoreService.preferencesChanged$.pipe(
-        startWith(this._preferencesStoreService.getPreferences()),
         switchMap((preferences: Preferences) => {
             if (!this.editTrainingData) {
                 return this._newTrainingStoreService
@@ -66,6 +66,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             }
             return of(preferences);
         }),
+        startWith(this._preferencesStoreService.getPreferences()),
     );
 
     form = new FormArray<FormGroup<SetFormType>>([]);
@@ -109,7 +110,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         private _unsubscribeService: UnsubscribeService,
         private _newTrainingStoreService: NewTrainingStoreService,
         private _preferencesStoreService: PreferencesStoreService,
-        private _preferencesService: PreferencesService,
         private _modalController: ModalController,
     ) {}
 
@@ -267,24 +267,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             });
     }
 
-    onSetDurationUnitChange(setDurationUnit: SetDurationUnitType): void {
-        this._preferencesStoreService.preferencesChanged$
-            .pipe(
-                take(1),
-                concatMap((currentPreferences: Preferences) => {
-                    const updatedPreferences = {
-                        ...currentPreferences,
-                        setDurationUnit,
-                    };
-                    return this._preferencesService.setPreferences(
-                        updatedPreferences,
-                        'setDurationUnit',
-                    );
-                }),
-            )
-            .subscribe();
-    }
-
     addSet(set?: Set): void {
         let setCategory: SetCategoryType;
         if (set) {
@@ -390,13 +372,13 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             if (setConstituent in set) {
                 switch (setConstituent) {
                     case 'weight': {
-                        return this._setWeightValue(set.weight);
+                        return this._patchSetConstituentValue('weight', set);
                     }
                     case 'reps': {
-                        return set.reps;
+                        return this._patchSetConstituentValue('reps', set);
                     }
                     case 'duration': {
-                        return set.duration;
+                        return this._patchSetConstituentValue('duration', set);
                     }
                     default: {
                         isNeverCheck(setConstituent);
@@ -407,15 +389,38 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         return null;
     }
 
-    private _setWeightValue(weight: number): number {
-        if (this.editTrainingData) {
-            const editTrainingWeightUnit = this.editTrainingData.preferences.weightUnit;
-            const currentWeightUnit = this._preferencesStoreService.getPreferences().weightUnit;
-            if (editTrainingWeightUnit !== currentWeightUnit) {
-                return convertWeightUnit(currentWeightUnit, weight);
+    private _patchSetConstituentValue(setConstituent: SetConstituent, set: Set): number {
+        switch (setConstituent) {
+            case 'weight': {
+                if (this.editTrainingData) {
+                    const editTrainingWeightUnit = this.editTrainingData.preferences.weightUnit;
+                    const currentWeightUnit =
+                        this._preferencesStoreService.getPreferences().weightUnit;
+                    if (editTrainingWeightUnit !== currentWeightUnit) {
+                        return convertWeightUnit(currentWeightUnit, set.weight);
+                    }
+                }
+                return set.weight;
+            }
+            case 'reps': {
+                return set.reps;
+            }
+            case 'duration': {
+                if (this.editTrainingData) {
+                    const editTrainingSetDurationUnit =
+                        this.editTrainingData.preferences.setDurationUnit;
+                    const currentSetDurationUnit =
+                        this._preferencesStoreService.getPreferences().setDurationUnit;
+                    if (editTrainingSetDurationUnit !== currentSetDurationUnit) {
+                        return convertSetDurationUnit(editTrainingSetDurationUnit, set.duration);
+                    }
+                }
+                return set.duration;
+            }
+            default: {
+                isNeverCheck(setConstituent);
             }
         }
-        return weight;
     }
 
     private _constructFormBasedOnSetCategory(

@@ -11,15 +11,13 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { isNeverCheck } from '../../../../../../helpers/is-never-check.helper';
-import { convertWeightUnit } from '../../../../../../helpers/training/convert-units.helper';
-import { Preferences } from '../../../../../../models/common/preferences.model';
-import { WeightUnitType } from '../../../../../../models/common/preferences.type';
-import { NewTraining } from '../../../../../../models/training/new-training/new-training.model';
-import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import {
-    SetDurationUnitType,
-    SetTrainingData,
-} from '../../../../../../models/training/new-training/single-exercise/set/set.type';
+    convertSetDurationUnit,
+    convertWeightUnit,
+} from '../../../../../../helpers/training/convert-units.helper';
+import { Preferences } from '../../../../../../models/common/preferences.model';
+import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
+import { SetTrainingData } from '../../../../../../models/training/new-training/single-exercise/set/set.type';
 import {
     SetCategoryType,
     SetConstituent,
@@ -32,22 +30,11 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SetComponent implements OnChanges {
-    setDurationUnit: SetDurationUnitType = 'seconds';
-
     @Input()
     form: FormGroup<SetFormType>;
 
     @Input()
-    set preferences(preferences: Preferences) {
-        if (preferences) {
-            this._preferences = preferences;
-            this.setDurationUnit = this._preferences.setDurationUnit;
-        }
-    }
-    get preferences(): Preferences {
-        return this._preferences;
-    }
-    private _preferences: Preferences;
+    preferences: Preferences;
 
     @Input()
     set activeSetCategory(category: SetCategoryType) {
@@ -70,18 +57,6 @@ export class SetComponent implements OnChanges {
     availableSetCategoriesControl: FormControl<SetCategoryType[]>;
 
     @Input()
-    set editTrainingData(trainingData: NewTraining) {
-        if (trainingData) {
-            this._editTrainingData = trainingData;
-            this.setDurationUnit = this._editTrainingData.preferences.setDurationUnit;
-        }
-    }
-    get editTrainingData(): NewTraining {
-        return this._editTrainingData;
-    }
-    private _editTrainingData: NewTraining;
-
-    @Input()
     isLoading = false;
 
     @Input()
@@ -99,9 +74,6 @@ export class SetComponent implements OnChanges {
     @Output()
     setCategoryModalOpened = new EventEmitter<SetCategoryType>();
 
-    @Output()
-    setDurationUnitChanged = new EventEmitter<SetDurationUnitType>();
-
     @ViewChild('weightEl', { read: IonInput })
     weightElement: IonInput;
 
@@ -112,31 +84,45 @@ export class SetComponent implements OnChanges {
     durationElement: IonInput;
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (
-            !changes.preferences?.firstChange &&
-            changes.preferences?.currentValue &&
-            (changes.preferences?.currentValue as Preferences)?.weightUnit !==
-                (changes.preferences?.previousValue as Preferences)?.weightUnit
-        ) {
+        if (!changes.preferences?.firstChange && changes.preferences?.currentValue) {
+            const currentPreferencesValue = changes.preferences?.currentValue as Preferences;
+            const previousPreferencesValue = changes.preferences?.previousValue as Preferences;
             switch (this.activeSetCategory) {
                 case 'freeWeighted': {
-                    const currentWeightValue = this.form.controls.weight.value;
-                    if (currentWeightValue) {
-                        this.form.controls.weight.patchValue(
-                            convertWeightUnit(
-                                changes.preferences.currentValue.weightUnit as WeightUnitType,
-                                currentWeightValue,
-                            ),
-                        );
+                    if (
+                        currentPreferencesValue?.weightUnit !== previousPreferencesValue?.weightUnit
+                    ) {
+                        const currentWeightValue = this.form.controls.weight.value;
+                        if (currentWeightValue) {
+                            this.form.controls.weight.patchValue(
+                                convertWeightUnit(
+                                    currentPreferencesValue.weightUnit,
+                                    currentWeightValue,
+                                ),
+                            );
+                        }
+                    }
+                    break;
+                }
+                case 'staticBodyweight': {
+                    if (
+                        currentPreferencesValue?.setDurationUnit !==
+                        previousPreferencesValue?.setDurationUnit
+                    ) {
+                        const currentDurationValue = this.form.controls.duration.value;
+                        if (currentDurationValue) {
+                            this.form.controls.duration.patchValue(
+                                convertSetDurationUnit(
+                                    previousPreferencesValue.setDurationUnit,
+                                    currentDurationValue,
+                                ),
+                            );
+                        }
                     }
                     break;
                 }
             }
         }
-    }
-
-    onSetDurationChange(): void {
-        this.setDurationUnitChanged.emit(this.setDurationUnit);
     }
 
     updateSetCategory(): void {

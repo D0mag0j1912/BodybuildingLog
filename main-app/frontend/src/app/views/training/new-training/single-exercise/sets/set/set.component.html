@@ -22,7 +22,7 @@
                     <ion-text
                         class="set-constituent-input--unit"
                         slot="end"
-                        [class.invalid-weight]="form.controls.weight.invalid"
+                        [class.invalid-set-constituent]="form.controls.weight.invalid"
                     >
                         {{ weightEl?.value ? preferences.weightUnit : '' }}
                     </ion-text>
@@ -115,6 +115,13 @@
                         (keydown.backspace)="onSetConstituentKeydown('duration')"
                     ></ion-input>
                     <ion-text
+                        class="set-constituent-input--unit"
+                        slot="end"
+                        [class.invalid-set-constituent]="form.controls.duration.invalid"
+                    >
+                        {{ durationEl?.value ? ('common.' + preferences.setDurationUnit | translate) : '' }}
+                    </ion-text>
+                    <ion-text
                         *ngIf="
                             form.controls.duration.errors?.min &&
                             !isLoading
@@ -133,27 +140,6 @@
                     >
                         {{ 'training.new_training.errors.duration_required' | translate }}
                     </ion-text>
-                </ion-item>
-            </ion-col>
-            <ion-col *ngIf="form.controls.duration" size="5">
-                <ion-item>
-                    <ion-label class="ion-label" position="floating">
-                        {{ 'training.new_training.pick_duration_unit' | translate }}
-                    </ion-label>
-                    <ion-select
-                        class="duration-picker"
-                        interface="popover"
-                        [(ngModel)]="setDurationUnit"
-                        [ngModelOptions]="{ standalone: true }"
-                        [disabled]="!!editTrainingData"
-                        (ionChange)="onSetDurationChange()">
-                        <ion-select-option [value]="'seconds'">
-                            {{ 'common.seconds' | translate }}
-                        </ion-select-option>
-                        <ion-select-option [value]="'minutes'">
-                            {{ 'common.minutes' | translate }}
-                        </ion-select-option>
-                    </ion-select>
                 </ion-item>
             </ion-col>
             <ion-col size="2" class="set-ctas" [class.single-set-category]="availableSetCategoriesControl.value.length === 1">

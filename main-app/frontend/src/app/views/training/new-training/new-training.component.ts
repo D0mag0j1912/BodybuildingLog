@@ -79,6 +79,7 @@ export class NewTrainingComponent implements OnDestroy {
         tap((preferences: Preferences) => {
             const currentBodyweightValue = this.newTrainingForm.controls.bodyweight.value;
             if (currentBodyweightValue && this.currentWeightUnit !== preferences.weightUnit) {
+                this.currentWeightUnit = preferences.weightUnit;
                 this.newTrainingForm.controls.bodyweight.patchValue(
                     convertWeightUnit(preferences.weightUnit, currentBodyweightValue),
                 );
@@ -186,7 +187,7 @@ export class NewTrainingComponent implements OnDestroy {
                             this.editTrainingData = {
                                 ...response.Value,
                                 editMode: true,
-                                trainingDate: response?.Value?.trainingDate,
+                                trainingDate: response.Value.trainingDate,
                             };
                             return this._newTrainingStoreService.updateTrainingState(
                                 this.editTrainingData,
@@ -225,7 +226,26 @@ export class NewTrainingComponent implements OnDestroy {
             tap((_) => this._sharedStoreService.emitEditingTraining(this.editMode)),
             switchMap((_) =>
                 of(allExercisesChanged).pipe(
-                    tap((_) => this._formInit()),
+                    tap((_) => {
+                        this._formInit();
+                        if (this.editTrainingData) {
+                            const editTrainingWeightUnit =
+                                this.editTrainingData.preferences.weightUnit;
+                            const isBodyweightEntered =
+                                !!this.newTrainingForm.controls.bodyweight.value;
+                            if (
+                                editTrainingWeightUnit !== this.currentWeightUnit &&
+                                isBodyweightEntered
+                            ) {
+                                this.newTrainingForm.controls.bodyweight.patchValue(
+                                    convertWeightUnit(
+                                        this.currentWeightUnit,
+                                        this.newTrainingForm.controls.bodyweight.value,
+                                    ),
+                                );
+                            }
+                        }
+                    }),
                     mapStreamData(),
                 ),
             ),
@@ -423,7 +443,7 @@ export class NewTrainingComponent implements OnDestroy {
         const currentTrainingState = this._newTrainingStoreService.getCurrentTrainingState();
         const dayClickedDate = this._sharedStoreService.getDayClickedDate();
         this.newTrainingForm.controls.bodyweight.patchValue(
-            this._fillBodyweight(currentTrainingState),
+            this._fillBodyweight(currentTrainingState.bodyweight),
         );
         this.newTrainingForm.controls.trainingDate.patchValue(
             this._fillTrainingDate(dayClickedDate),
@@ -448,9 +468,9 @@ export class NewTrainingComponent implements OnDestroy {
         }
     }
 
-    private _fillBodyweight(currentTrainingState: NewTraining): number {
+    private _fillBodyweight(bodyweight: number): number {
         return NewTrainingHandler.fillBodyweight(
-            currentTrainingState.bodyweight,
+            bodyweight,
             this.editTrainingData ? this.editTrainingData.bodyweight : null,
         );
     }

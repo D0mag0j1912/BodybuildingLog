@@ -21,7 +21,7 @@
         </ng-container>
         <ng-container *ngSwitchCase="'weightUnit'">
             <ion-item
-                *ngFor="let unit of unitData"
+                *ngFor="let unit of weightUnitData"
                 lines="none"
                 [disabled]="preferences.weightUnit === unit.weightUnit"
                 (click)="changePreference(unit.weightUnit)"
@@ -31,6 +31,24 @@
                 </ion-text>
                 <ion-icon
                     *ngIf="preferences.weightUnit === unit.weightUnit"
+                    name="checkmark-outline"
+                    class="checkmark"
+                    slot="end"
+                ></ion-icon>
+            </ion-item>
+        </ng-container>
+        <ng-container *ngSwitchCase="'setDurationUnit'">
+            <ion-item
+                *ngFor="let unit of setDurationUnitData"
+                lines="none"
+                [disabled]="preferences.setDurationUnit === unit.setDurationUnit"
+                (click)="changePreference(unit.setDurationUnit)"
+            >
+                <ion-text class="txt">
+                    {{ unit.unitName | translate }}
+                </ion-text>
+                <ion-icon
+                    *ngIf="preferences.setDurationUnit === unit.setDurationUnit"
                     name="checkmark-outline"
                     class="checkmark"
                     slot="end"

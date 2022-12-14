@@ -19,6 +19,7 @@ import { PastTrainingsStoreService } from '../../../services/store/training/past
 import { Preferences } from '../../../models/common/preferences.model';
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 import { PreferencesService } from '../../../services/shared/preferences.service';
+import { SetDurationUnitType } from '../../../models/training/new-training/single-exercise/set/set.type';
 
 @Component({
     selector: 'bl-side-nav',
@@ -106,7 +107,10 @@ export class SideNavComponent {
                                         ? (popoverResponse.data as WeightUnitType)
                                         : currentPreferences.weightUnit,
                                 showByPeriod: currentPreferences.showByPeriod,
-                                setDurationUnit: currentPreferences.setDurationUnit,
+                                setDurationUnit:
+                                    preferenceType === 'setDurationUnit'
+                                        ? (popoverResponse.data as SetDurationUnitType)
+                                        : currentPreferences.setDurationUnit,
                             };
                             return this._preferencesService.setPreferences(
                                 updatedPreferences,

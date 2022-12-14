@@ -7,17 +7,23 @@ import {
     PreferenceChangedType,
     WeightUnitType,
 } from '../../../models/common/preferences.type';
+import { SetDurationUnitType } from '../../../models/training/new-training/single-exercise/set/set.type';
 
-interface LanguageData {
+type LanguageDataType = {
     languageCode: LanguageCodeType;
     imageUrl: string;
     languageName: string;
-}
+};
 
-interface UnitData {
+type WeightUnitDataType = {
     unitName: string;
     weightUnit: WeightUnitType;
-}
+};
+
+type SetDurationUnitDataType = {
+    unitName: string;
+    setDurationUnit: SetDurationUnitType;
+};
 
 @Component({
     selector: 'bl-preferences',
@@ -26,13 +32,7 @@ interface UnitData {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreferencesComponent {
-    @Input()
-    preferences: Preferences;
-
-    @Input()
-    preferenceType: PreferenceChangedType = 'language';
-
-    readonly languageData: LanguageData[] = [
+    readonly languageData: LanguageDataType[] = [
         {
             languageCode: 'en',
             imageUrl: '../../../../assets/images/flags/united-kingdom.png',
@@ -45,7 +45,7 @@ export class PreferencesComponent {
         },
     ];
 
-    readonly unitData: UnitData[] = [
+    readonly weightUnitData: WeightUnitDataType[] = [
         {
             unitName: 'units.kilograms',
             weightUnit: 'kg',
@@ -56,9 +56,28 @@ export class PreferencesComponent {
         },
     ];
 
+    readonly setDurationUnitData: SetDurationUnitDataType[] = [
+        {
+            unitName: 'units.seconds',
+            setDurationUnit: 'seconds',
+        },
+        {
+            unitName: 'units.minutes',
+            setDurationUnit: 'minutes',
+        },
+    ];
+
+    @Input()
+    preferences: Preferences;
+
+    @Input()
+    preferenceType: PreferenceChangedType = 'language';
+
     constructor(private _popoverController: PopoverController) {}
 
-    async changePreference(preference: LanguageCodeType | WeightUnitType): Promise<void> {
+    async changePreference(
+        preference: LanguageCodeType | WeightUnitType | SetDurationUnitType,
+    ): Promise<void> {
         await this._popoverController.dismiss(preference, DialogRoles.CHANGE_PREFERENCE);
     }
 }
