@@ -43,7 +43,6 @@ import {
     SetFormValueType,
 } from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import { PreferencesStoreService } from '../../../../../services/store/shared/preferences-store.service';
-import { PreferencesService } from '../../../../../services/shared/preferences.service';
 import { Preferences } from '../../../../../models/common/preferences.model';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
 import { SetComponent } from './set/set.component';
@@ -111,7 +110,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
         private _unsubscribeService: UnsubscribeService,
         private _newTrainingStoreService: NewTrainingStoreService,
         private _preferencesStoreService: PreferencesStoreService,
-        private _preferencesService: PreferencesService,
         private _modalController: ModalController,
     ) {}
 

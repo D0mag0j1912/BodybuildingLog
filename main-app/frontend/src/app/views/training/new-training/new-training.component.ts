@@ -226,7 +226,26 @@ export class NewTrainingComponent implements OnDestroy {
             tap((_) => this._sharedStoreService.emitEditingTraining(this.editMode)),
             switchMap((_) =>
                 of(allExercisesChanged).pipe(
-                    tap((_) => this._formInit()),
+                    tap((_) => {
+                        this._formInit();
+                        if (this.editTrainingData) {
+                            const editTrainingWeightUnit =
+                                this.editTrainingData.preferences.weightUnit;
+                            const isBodyweightEntered =
+                                !!this.newTrainingForm.controls.bodyweight.value;
+                            if (
+                                editTrainingWeightUnit !== this.currentWeightUnit &&
+                                isBodyweightEntered
+                            ) {
+                                this.newTrainingForm.controls.bodyweight.patchValue(
+                                    convertWeightUnit(
+                                        this.currentWeightUnit,
+                                        this.newTrainingForm.controls.bodyweight.value,
+                                    ),
+                                );
+                            }
+                        }
+                    }),
                     mapStreamData(),
                 ),
             ),
