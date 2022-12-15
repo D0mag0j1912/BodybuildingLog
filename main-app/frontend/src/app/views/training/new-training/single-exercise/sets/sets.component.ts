@@ -187,6 +187,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                         }
                         break;
                     }
+                    case 'staticWeighted': {
+                        if (setIndex > 0) {
+                            if (!currentSetCmpData.weightElement.value) {
+                                this.onSetDeleted(setIndex);
+                                await previousSetCmpData.durationElement.setFocus();
+                            }
+                        }
+                    }
                 }
                 break;
             }
@@ -219,6 +227,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                                 this.onSetDeleted(setIndex);
                                 await previousSetCmpData.durationElement.setFocus();
                             }
+                        }
+                        break;
+                    }
+                    case 'staticWeighted': {
+                        if (!currentSetCmpData.durationElement.value) {
+                            await currentSetCmpData.weightElement.setFocus();
                         }
                         break;
                     }
