@@ -211,6 +211,23 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 }
                 break;
             }
+            case 'duration': {
+                switch (currentSetCmpData.activeSetCategory) {
+                    case 'staticBodyweight': {
+                        if (setIndex > 0) {
+                            if (!currentSetCmpData.durationElement.value) {
+                                this.onSetDeleted(setIndex);
+                                await previousSetCmpData.durationElement.setFocus();
+                            }
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+            default: {
+                isNeverCheck(setConstituent);
+            }
         }
     }
 
