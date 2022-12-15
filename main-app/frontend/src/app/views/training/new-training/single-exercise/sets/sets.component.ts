@@ -354,7 +354,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     break;
                 }
                 case 'staticWeighted': {
-                    //TODO: BL-123
+                    total +=
+                        this.bodyweightControl.value +
+                        group.controls.weight.value +
+                        group.controls.duration.value;
                     break;
                 }
                 default: {
@@ -509,7 +512,28 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 break;
             }
             case 'staticWeighted': {
-                //TODO: BL-123
+                setControls = this._constructSetForm(
+                    'weight',
+                    {
+                        setNumber: constructionType === 'newExercise' ? 1 : indexSet + 1,
+                        weight: set ? set.weight : null,
+                    },
+                    setControls,
+                );
+                setControls = this._constructSetForm(
+                    'duration',
+                    {
+                        setNumber: constructionType === 'newExercise' ? 1 : indexSet + 1,
+                        duration: set ? set.duration : null,
+                    },
+                    setControls,
+                );
+                if (constructionType === 'newExercise') {
+                    this.form.push(new FormGroup(setControls));
+                } else {
+                    this.form.removeAt(indexSet);
+                    this.form.insert(indexSet, new FormGroup(setControls));
+                }
                 break;
             }
             default: {

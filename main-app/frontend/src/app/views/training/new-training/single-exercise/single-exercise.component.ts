@@ -400,7 +400,9 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
                 break;
             }
             case 'staticWeighted': {
-                //TODO: BL-123
+                weight = true;
+                reps = false;
+                duration = true;
                 break;
             }
             default: {
