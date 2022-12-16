@@ -89,7 +89,8 @@ export class SetComponent implements OnChanges {
             const previousPreferencesValue = changes.preferences?.previousValue as Preferences;
             switch (this.activeSetCategory) {
                 case 'freeWeighted':
-                case 'dynamicWeighted': {
+                case 'dynamicWeighted':
+                case 'staticWeighted': {
                     if (
                         currentPreferencesValue?.weightUnit !== previousPreferencesValue?.weightUnit
                     ) {
