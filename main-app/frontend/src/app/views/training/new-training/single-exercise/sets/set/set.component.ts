@@ -189,7 +189,9 @@ export class SetComponent implements OnChanges {
                 break;
             }
             case 'staticWeighted': {
-                //TODO: BL-123
+                if (this.weightElement) {
+                    await this.weightElement.setFocus();
+                }
                 break;
             }
             default: {

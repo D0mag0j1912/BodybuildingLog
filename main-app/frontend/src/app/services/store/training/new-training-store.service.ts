@@ -111,7 +111,7 @@ export class NewTrainingStoreService {
                                     break;
                                 }
                                 case 'staticWeighted': {
-                                    //TODO: BL-123
+                                    total += bodyweight + set.weight + set.duration;
                                     break;
                                 }
                                 default: {
@@ -158,7 +158,11 @@ export class NewTrainingStoreService {
                         break;
                     }
                     case 'staticWeighted': {
-                        //TODO: BL-123
+                        updatedSet = {
+                            setNumber: indexSet + 1,
+                            weight: null,
+                            duration: null,
+                        };
                         break;
                     }
                     default: {
@@ -233,7 +237,11 @@ export class NewTrainingStoreService {
                                         break;
                                     }
                                     case 'staticWeighted': {
-                                        //TODO: BL-123
+                                        set = {
+                                            setNumber,
+                                            weight: null,
+                                            duration: null,
+                                        };
                                         break;
                                     }
                                     default: {
@@ -419,7 +427,11 @@ export class NewTrainingStoreService {
                                                         break;
                                                     }
                                                     case 'staticWeighted': {
-                                                        //TODO: BL-123
+                                                        updatedSet = {
+                                                            ...set,
+                                                            weight: trainingData.weight,
+                                                            duration: trainingData.duration,
+                                                        };
                                                         break;
                                                     }
                                                     default: {
@@ -464,7 +476,11 @@ export class NewTrainingStoreService {
                             break;
                         }
                         case 'staticWeighted': {
-                            //TODO: BL-123
+                            newSet = {
+                                setNumber: trainingData.setNumber,
+                                weight: trainingData.weight,
+                                duration: trainingData.duration,
+                            };
                             break;
                         }
                         default: {
@@ -515,7 +531,11 @@ export class NewTrainingStoreService {
                         break;
                     }
                     case 'staticWeighted': {
-                        //TODO: BL-123
+                        set = {
+                            setNumber: 1,
+                            weight: null,
+                            duration: null,
+                        };
                         break;
                     }
                     default: {

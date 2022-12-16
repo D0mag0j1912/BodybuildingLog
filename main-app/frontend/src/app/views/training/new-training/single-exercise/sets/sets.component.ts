@@ -187,6 +187,14 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                         }
                         break;
                     }
+                    case 'staticWeighted': {
+                        if (setIndex > 0) {
+                            if (!currentSetCmpData.weightElement.value) {
+                                this.onSetDeleted(setIndex);
+                                await previousSetCmpData.durationElement.setFocus();
+                            }
+                        }
+                    }
                 }
                 break;
             }
@@ -210,6 +218,29 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     }
                 }
                 break;
+            }
+            case 'duration': {
+                switch (currentSetCmpData.activeSetCategory) {
+                    case 'staticBodyweight': {
+                        if (setIndex > 0) {
+                            if (!currentSetCmpData.durationElement.value) {
+                                this.onSetDeleted(setIndex);
+                                await previousSetCmpData.durationElement.setFocus();
+                            }
+                        }
+                        break;
+                    }
+                    case 'staticWeighted': {
+                        if (!currentSetCmpData.durationElement.value) {
+                            await currentSetCmpData.weightElement.setFocus();
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+            default: {
+                isNeverCheck(setConstituent);
             }
         }
     }
@@ -337,7 +368,10 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                     break;
                 }
                 case 'staticWeighted': {
-                    //TODO: BL-123
+                    total +=
+                        this.bodyweightControl.value +
+                        group.controls.weight.value +
+                        group.controls.duration.value;
                     break;
                 }
                 default: {
@@ -492,7 +526,28 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 break;
             }
             case 'staticWeighted': {
-                //TODO: BL-123
+                setControls = this._constructSetForm(
+                    'weight',
+                    {
+                        setNumber: constructionType === 'newExercise' ? 1 : indexSet + 1,
+                        weight: set ? set.weight : null,
+                    },
+                    setControls,
+                );
+                setControls = this._constructSetForm(
+                    'duration',
+                    {
+                        setNumber: constructionType === 'newExercise' ? 1 : indexSet + 1,
+                        duration: set ? set.duration : null,
+                    },
+                    setControls,
+                );
+                if (constructionType === 'newExercise') {
+                    this.form.push(new FormGroup(setControls));
+                } else {
+                    this.form.removeAt(indexSet);
+                    this.form.insert(indexSet, new FormGroup(setControls));
+                }
                 break;
             }
             default: {
