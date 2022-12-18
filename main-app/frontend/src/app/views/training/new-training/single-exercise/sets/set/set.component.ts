@@ -87,43 +87,26 @@ export class SetComponent implements OnChanges {
         if (!changes.preferences?.firstChange && changes.preferences?.currentValue) {
             const currentPreferencesValue = changes.preferences?.currentValue as Preferences;
             const previousPreferencesValue = changes.preferences?.previousValue as Preferences;
-            switch (this.activeSetCategory) {
-                case 'freeWeighted':
-                case 'dynamicWeighted':
-                case 'staticWeighted': {
-                    if (
-                        currentPreferencesValue?.weightUnit !== previousPreferencesValue?.weightUnit
-                    ) {
-                        const currentWeightValue = this.form.controls.weight.value;
-                        if (currentWeightValue) {
-                            this.form.controls.weight.patchValue(
-                                convertWeightUnit(
-                                    currentPreferencesValue.weightUnit,
-                                    currentWeightValue,
-                                ),
-                            );
-                        }
-                    }
-                    break;
-                }
-                case 'staticBodyweight':
-                case 'staticWeighted': {
-                    if (
-                        currentPreferencesValue?.setDurationUnit !==
-                        previousPreferencesValue?.setDurationUnit
-                    ) {
-                        const currentDurationValue = this.form.controls.duration.value;
-                        if (currentDurationValue) {
-                            this.form.controls.duration.patchValue(
-                                convertSetDurationUnit(
-                                    previousPreferencesValue.setDurationUnit,
-                                    currentDurationValue,
-                                ),
-                            );
-                        }
-                    }
-                    break;
-                }
+            if (
+                this.activeSetCategory === 'freeWeighted' ||
+                this.activeSetCategory === 'dynamicWeighted' ||
+                this.activeSetCategory === 'staticWeighted'
+            ) {
+                this._convertSetConstituentUnit(
+                    'weight',
+                    currentPreferencesValue,
+                    previousPreferencesValue,
+                );
+            }
+            if (
+                this.activeSetCategory === 'staticBodyweight' ||
+                this.activeSetCategory === 'staticWeighted'
+            ) {
+                this._convertSetConstituentUnit(
+                    'duration',
+                    currentPreferencesValue,
+                    previousPreferencesValue,
+                );
             }
         }
     }
@@ -199,6 +182,46 @@ export class SetComponent implements OnChanges {
             }
             default: {
                 isNeverCheck(setCategory);
+            }
+        }
+    }
+
+    private _convertSetConstituentUnit(
+        setConstituent: SetConstituent,
+        currentPreferencesValue: Preferences,
+        previousPreferencesValue: Preferences,
+    ): void {
+        switch (setConstituent) {
+            case 'weight': {
+                if (currentPreferencesValue?.weightUnit !== previousPreferencesValue?.weightUnit) {
+                    const currentWeightValue = this.form.controls.weight.value;
+                    if (currentWeightValue) {
+                        this.form.controls.weight.patchValue(
+                            convertWeightUnit(
+                                currentPreferencesValue.weightUnit,
+                                currentWeightValue,
+                            ),
+                        );
+                    }
+                }
+                break;
+            }
+            case 'duration': {
+                if (
+                    currentPreferencesValue?.setDurationUnit !==
+                    previousPreferencesValue?.setDurationUnit
+                ) {
+                    const currentDurationValue = this.form.controls.duration.value;
+                    if (currentDurationValue) {
+                        this.form.controls.duration.patchValue(
+                            convertSetDurationUnit(
+                                previousPreferencesValue.setDurationUnit,
+                                currentDurationValue,
+                            ),
+                        );
+                    }
+                }
+                break;
             }
         }
     }
