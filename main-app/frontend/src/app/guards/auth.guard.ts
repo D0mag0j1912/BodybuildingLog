@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanLoad, Route, Router, UrlTree } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { from, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { PreferencesService } from '../services/shared/preferences.service';
 import { AuthStoreService } from '../services/store/auth/auth-store.service';
@@ -22,7 +22,7 @@ export class AuthGuard implements CanLoad {
             take(1),
             switchMap((isAuth) => {
                 if (!isAuth) {
-                    return from(this._authStoreService.autoLogin());
+                    return this._authStoreService.autoLogin();
                 } else {
                     return of(isAuth);
                 }

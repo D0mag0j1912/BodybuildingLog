@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Preferences } from '../../../models/common/preferences.model';
@@ -12,11 +11,7 @@ import { AuthStoreService } from '../../store/auth/auth-store.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    constructor(
-        private _http: HttpClient,
-        private _router: Router,
-        private _authStoreService: AuthStoreService,
-    ) {}
+    constructor(private _http: HttpClient, private _authStoreService: AuthStoreService) {}
 
     signup(
         language: LanguageCodeType,
@@ -62,7 +57,6 @@ export class AuthService {
                             expirationDate,
                             response._id,
                         );
-                        await this._router.navigate(['/training/new-training']);
                     }
                 }),
             );
