@@ -10,6 +10,7 @@ import { PastTrainingsStoreService } from '../../services/store/training/past-tr
 @Component({
     selector: 'bl-training',
     templateUrl: './training.component.html',
+    styleUrls: ['./training.component.scss'],
 })
 export class TrainingComponent {
     constructor(
