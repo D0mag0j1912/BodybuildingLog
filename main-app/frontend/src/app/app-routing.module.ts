@@ -2,13 +2,14 @@ import { NgModule, Type } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthModule } from './modules/auth/auth.module';
+import { TrainingModule } from './modules/training/training.module';
 import { NotFoundResolverService } from './services/shared/not-found-resolver.service';
 import { NotFoundComponent } from './views/shared/not-found/not-found.component';
 
 const routes: Routes = [
     {
         path: '',
-        redirectTo: '/auth/login',
+        redirectTo: '/training/new-training',
         pathMatch: 'full',
     },
     {
@@ -18,7 +19,7 @@ const routes: Routes = [
     },
     {
         path: 'training',
-        loadChildren: async (): Promise<Routes | Type<AuthModule>> =>
+        loadChildren: async (): Promise<Routes | Type<TrainingModule>> =>
             import('./modules/training/training.module').then((module) => module.TrainingModule),
         canLoad: [AuthGuard],
     },
