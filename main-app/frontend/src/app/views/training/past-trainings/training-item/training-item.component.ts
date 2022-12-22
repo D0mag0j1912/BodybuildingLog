@@ -65,7 +65,7 @@ export class TrainingItemComponent implements OnInit {
                 key: StorageItems.QUERY_PARAMS,
                 value: JSON.stringify(params as PastTrainingsQueryParams),
             });
-            await this._router.navigate(['/training/new-training', this.training._id]);
+            await this._router.navigate(['/training/tabs/new-training', this.training._id]);
         });
     }
 }

@@ -102,7 +102,7 @@
                                 (click)="onSubmit()"
                                 [disabled]="!exercisesState?.length || (isApiLoading$ | async)"
                             >
-                            {{ 'training.new_training.log_training' | translate }}
+                            {{ 'common.' + (editMode ? 'edit' : 'add') | translate }}
                             </ion-button>
                         </ion-col>
                     </bl-single-exercise>

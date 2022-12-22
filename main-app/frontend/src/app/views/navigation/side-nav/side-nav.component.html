@@ -32,24 +32,6 @@
                 <ion-item
                     *ngIf="isAuthenticated$ | async"
                     lines="none"
-                    routerLink="/training/new-training"
-                    routerDirection="forward"
-                    [detail]="false"
-                >
-                    <ion-icon slot="start" name="barbell-sharp" color="primary"></ion-icon>
-                    <ion-label>{{ 'navigation.new_training' | translate }}</ion-label>
-                </ion-item>
-            </ion-menu-toggle>
-            <ion-menu-toggle [autoHide]="false">
-                <ion-item *ngIf="isAuthenticated$ | async" lines="none" (click)="goToPastTrainings()">
-                    <ion-icon slot="start" name="analytics-sharp" color="primary"></ion-icon>
-                    <ion-label>{{ 'navigation.past_trainings' | translate }}</ion-label>
-                </ion-item>
-            </ion-menu-toggle>
-            <ion-menu-toggle [autoHide]="false">
-                <ion-item
-                    *ngIf="isAuthenticated$ | async"
-                    lines="none"
                     (click)="openPreferencePopover($event, 'language')"
                 >
                     <ion-icon slot="start" name="language-sharp" color="primary"></ion-icon>

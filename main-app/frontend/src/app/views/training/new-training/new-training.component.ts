@@ -385,7 +385,9 @@ export class NewTrainingComponent implements OnDestroy {
         this._pastTrainingsStoreService.pastTrainingsQueryParams$
             .pipe(take(1))
             .subscribe(async (params: PastTrainingsQueryParams) => {
-                await this._router.navigate(['/training/past-trainings'], { queryParams: params });
+                await this._router.navigate(['/training/tabs/past-trainings'], {
+                    queryParams: params,
+                });
                 await Storage.remove({ key: StorageItems.QUERY_PARAMS });
             });
     }

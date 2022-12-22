@@ -1,5 +1,7 @@
 {
     "common": {
+        "add": "Add",
+        "edit": "Edit",
         "please_wait": "Please wait...",
         "page": "Page",
         "of": "of",

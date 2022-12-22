@@ -66,6 +66,11 @@ import { TrainingItemWrapperHeights } from '../../../constants/enums/training-it
     providers: [UnsubscribeService],
 })
 export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
+    private _isSearch$ = new BehaviorSubject<boolean>(false);
+
+    readonly isSearch$ = this._isSearch$.asObservable();
+    pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
+
     readonly pageSizeOptions = [1, 3, 5, 10];
     size = DEFAULT_SIZE;
     page = INITIAL_PAGE;
@@ -78,17 +83,10 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         DayNumber: 0,
     };
     showByDayStartDate: Date;
+    dateFormat = TEMPLATE_DATE_FORMAT;
 
-    private readonly _isSearch$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private readonly _isNextPage$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private readonly _isPreviousPage$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-        false,
-    );
-
-    readonly isSearch$: Observable<boolean> = this._isSearch$$.asObservable();
-    readonly isNextPage$: Observable<boolean> = this._isNextPage$$.asObservable();
-    readonly isPreviousPage$: Observable<boolean> = this._isPreviousPage$$.asObservable();
-    pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
+    isNextPage = false;
+    isPreviousPage = false;
 
     @ViewChild('itemWrapper', { read: ElementRef })
     trainingItemWrapper: ElementRef | undefined;
@@ -98,7 +96,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         if (timePeriodElement) {
             const trainingElement = this.trainingItemWrapper?.nativeElement as HTMLDivElement;
             if (trainingElement) {
-                this._isSearch$$
+                this._isSearch$
                     .pipe(delay(0), takeUntil(this._unsubscribeService))
                     .subscribe(
                         (isSearch) =>
@@ -113,18 +111,18 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     constructor(
-        private readonly _pastTrainingsService: PastTrainingsService,
-        private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
-        private readonly _unsubscribeService: UnsubscribeService,
-        private readonly _translateService: TranslateService,
-        private readonly _sharedStoreService: SharedStoreService,
-        private readonly _preferencesService: PreferencesService,
-        private readonly _preferencesStoreService: PreferencesStoreService,
-        private readonly _changeDetectorRef: ChangeDetectorRef,
-        private readonly _route: ActivatedRoute,
-        private readonly _datePipe: DatePipe,
-        private readonly _router: Router,
-        private readonly _navController: NavController,
+        private _pastTrainingsService: PastTrainingsService,
+        private _pastTrainingsStoreService: PastTrainingsStoreService,
+        private _unsubscribeService: UnsubscribeService,
+        private _translateService: TranslateService,
+        private _sharedStoreService: SharedStoreService,
+        private _preferencesService: PreferencesService,
+        private _preferencesStoreService: PreferencesStoreService,
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _route: ActivatedRoute,
+        private _datePipe: DatePipe,
+        private _router: Router,
+        private _navController: NavController,
     ) {
         this._route.queryParams
             .pipe(takeUntil(this._unsubscribeService))
@@ -136,10 +134,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                 this.pastTrainings$ = of(response).pipe(mapStreamData());
                 this._changeDetectorRef.markForCheck();
             });
-    }
-
-    get dateFormat(): string {
-        return TEMPLATE_DATE_FORMAT;
     }
 
     getDayTranslation$(dayName: string): Observable<string> {
@@ -172,17 +166,15 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this._isSearch$$.complete();
-        this._isPreviousPage$$.complete();
-        this._isNextPage$$.complete();
+        this._isSearch$.complete();
     }
 
     onFiltersSearchEmitted(isSearch: boolean): void {
-        this._isSearch$$.next(isSearch);
+        this._isSearch$.next(isSearch);
     }
 
     searchEmitted(searchText: string): void {
-        this._isSearch$$.next(!!searchText);
+        this._isSearch$.next(!!searchText);
         this.page = INITIAL_PAGE;
         this.pastTrainings$ = of(searchText).pipe(
             switchMap((searchText: string) => {
@@ -249,7 +241,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     onDayActivated($event: DayActivatedType): void {
-        if (!this._isSearch$$.getValue()) {
+        if (!this._isSearch$.getValue()) {
             this.dayActivated = $event;
             this.pastTrainings$ = this._pastTrainingsService
                 .getPastTrainings($event.Date, 'day')
@@ -331,7 +323,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     async logNewTraining(): Promise<void> {
         const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
         this._sharedStoreService.emitDayClicked(dayClickedDate.toISOString());
-        await this._navController.navigateForward('/training/new-training');
+        await this._navController.navigateForward('/training/tabs/new-training');
     }
 
     //TODO: align with 'ShowByDay' feature
@@ -555,11 +547,11 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     private handlePaginationArrows(response: StreamData<Paginator<PastTrainings>>): void {
         if (response.Value.Results.EarliestTrainingDate) {
-            this._isPreviousPage$$.next(response.Value.Results.IsPreviousWeek ?? false);
-            this._isNextPage$$.next(response.Value.Results.IsNextWeek ?? false);
+            this.isPreviousPage = response.Value.Results.IsPreviousWeek ?? false;
+            this.isNextPage = response.Value.Results.IsNextWeek ?? false;
         } else {
-            this._isPreviousPage$$.next(!!response.Value.Previous);
-            this._isNextPage$$.next(!!response.Value.Next);
+            this.isPreviousPage = !!response.Value.Previous;
+            this.isNextPage = !!response.Value.Next;
         }
     }
 
