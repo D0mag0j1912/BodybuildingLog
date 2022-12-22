@@ -64,7 +64,7 @@ export class SideNavComponent {
                         showBy: showByPeriod,
                     };
                 }
-                await this._router.navigate(['/training/past-trainings'], { queryParams });
+                await this._router.navigate(['/training/tabs/past-trainings'], { queryParams });
             });
     }
 

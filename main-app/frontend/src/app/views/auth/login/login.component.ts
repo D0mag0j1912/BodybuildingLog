@@ -62,7 +62,7 @@ export class LoginComponent {
             )
             .subscribe(async (response: AuthResponseData) => {
                 if (response) {
-                    await this._router.navigate(['/training/new-training']);
+                    await this._router.navigate(['/training/tabs/new-training']);
                 }
             });
     }
