@@ -1,5 +1,7 @@
 {
     "common": {
+        "add": "Dodaj",
+        "edit": "Uredi",
         "please_wait": "Pričekajte...",
         "page": "Stranica",
         "of": "od",
