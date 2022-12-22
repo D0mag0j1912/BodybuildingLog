@@ -66,6 +66,11 @@ import { TrainingItemWrapperHeights } from '../../../constants/enums/training-it
     providers: [UnsubscribeService],
 })
 export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
+    private _isSearch$ = new BehaviorSubject<boolean>(false);
+
+    readonly isSearch$ = this._isSearch$.asObservable();
+    pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
+
     readonly pageSizeOptions = [1, 3, 5, 10];
     size = DEFAULT_SIZE;
     page = INITIAL_PAGE;
@@ -79,14 +84,8 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     };
     showByDayStartDate: Date;
 
-    private _isSearch$$ = new BehaviorSubject<boolean>(false);
-    private _isNextPage$$ = new BehaviorSubject<boolean>(false);
-    private _isPreviousPage$$ = new BehaviorSubject<boolean>(false);
-
-    readonly isSearch$ = this._isSearch$$.asObservable();
-    readonly isNextPage$ = this._isNextPage$$.asObservable();
-    readonly isPreviousPage$ = this._isPreviousPage$$.asObservable();
-    pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
+    isNextPage = false;
+    isPreviousPage = false;
 
     @ViewChild('itemWrapper', { read: ElementRef })
     trainingItemWrapper: ElementRef | undefined;
@@ -96,7 +95,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         if (timePeriodElement) {
             const trainingElement = this.trainingItemWrapper?.nativeElement as HTMLDivElement;
             if (trainingElement) {
-                this._isSearch$$
+                this._isSearch$
                     .pipe(delay(0), takeUntil(this._unsubscribeService))
                     .subscribe(
                         (isSearch) =>
@@ -170,17 +169,15 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this._isSearch$$.complete();
-        this._isPreviousPage$$.complete();
-        this._isNextPage$$.complete();
+        this._isSearch$.complete();
     }
 
     onFiltersSearchEmitted(isSearch: boolean): void {
-        this._isSearch$$.next(isSearch);
+        this._isSearch$.next(isSearch);
     }
 
     searchEmitted(searchText: string): void {
-        this._isSearch$$.next(!!searchText);
+        this._isSearch$.next(!!searchText);
         this.page = INITIAL_PAGE;
         this.pastTrainings$ = of(searchText).pipe(
             switchMap((searchText: string) => {
@@ -247,7 +244,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     onDayActivated($event: DayActivatedType): void {
-        if (!this._isSearch$$.getValue()) {
+        if (!this._isSearch$.getValue()) {
             this.dayActivated = $event;
             this.pastTrainings$ = this._pastTrainingsService
                 .getPastTrainings($event.Date, 'day')
@@ -553,11 +550,11 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     private handlePaginationArrows(response: StreamData<Paginator<PastTrainings>>): void {
         if (response.Value.Results.EarliestTrainingDate) {
-            this._isPreviousPage$$.next(response.Value.Results.IsPreviousWeek ?? false);
-            this._isNextPage$$.next(response.Value.Results.IsNextWeek ?? false);
+            this.isPreviousPage = response.Value.Results.IsPreviousWeek ?? false;
+            this.isNextPage = response.Value.Results.IsNextWeek ?? false;
         } else {
-            this._isPreviousPage$$.next(!!response.Value.Previous);
-            this._isNextPage$$.next(!!response.Value.Next);
+            this.isPreviousPage = !!response.Value.Previous;
+            this.isNextPage = !!response.Value.Next;
         }
     }
 
