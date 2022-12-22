@@ -79,15 +79,13 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     };
     showByDayStartDate: Date;
 
-    private readonly _isSearch$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private readonly _isNextPage$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    private readonly _isPreviousPage$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-        false,
-    );
+    private _isSearch$$ = new BehaviorSubject<boolean>(false);
+    private _isNextPage$$ = new BehaviorSubject<boolean>(false);
+    private _isPreviousPage$$ = new BehaviorSubject<boolean>(false);
 
-    readonly isSearch$: Observable<boolean> = this._isSearch$$.asObservable();
-    readonly isNextPage$: Observable<boolean> = this._isNextPage$$.asObservable();
-    readonly isPreviousPage$: Observable<boolean> = this._isPreviousPage$$.asObservable();
+    readonly isSearch$ = this._isSearch$$.asObservable();
+    readonly isNextPage$ = this._isNextPage$$.asObservable();
+    readonly isPreviousPage$ = this._isPreviousPage$$.asObservable();
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
 
     @ViewChild('itemWrapper', { read: ElementRef })
@@ -113,18 +111,18 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     constructor(
-        private readonly _pastTrainingsService: PastTrainingsService,
-        private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
-        private readonly _unsubscribeService: UnsubscribeService,
-        private readonly _translateService: TranslateService,
-        private readonly _sharedStoreService: SharedStoreService,
-        private readonly _preferencesService: PreferencesService,
-        private readonly _preferencesStoreService: PreferencesStoreService,
-        private readonly _changeDetectorRef: ChangeDetectorRef,
-        private readonly _route: ActivatedRoute,
-        private readonly _datePipe: DatePipe,
-        private readonly _router: Router,
-        private readonly _navController: NavController,
+        private _pastTrainingsService: PastTrainingsService,
+        private _pastTrainingsStoreService: PastTrainingsStoreService,
+        private _unsubscribeService: UnsubscribeService,
+        private _translateService: TranslateService,
+        private _sharedStoreService: SharedStoreService,
+        private _preferencesService: PreferencesService,
+        private _preferencesStoreService: PreferencesStoreService,
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _route: ActivatedRoute,
+        private _datePipe: DatePipe,
+        private _router: Router,
+        private _navController: NavController,
     ) {
         this._route.queryParams
             .pipe(takeUntil(this._unsubscribeService))
@@ -331,7 +329,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     async logNewTraining(): Promise<void> {
         const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
         this._sharedStoreService.emitDayClicked(dayClickedDate.toISOString());
-        await this._navController.navigateForward('/training/new-training');
+        await this._navController.navigateForward('/training/tabs/new-training');
     }
 
     //TODO: align with 'ShowByDay' feature
