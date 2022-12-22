@@ -5,7 +5,7 @@
             <ion-label>{{ 'navigation.new_training' | translate }}</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="past-trainings">
+        <ion-tab-button tab="past-trainings" (click)="goToPastTrainings()">
             <ion-icon name="analytics-sharp"></ion-icon>
             <ion-label>{{ 'navigation.past_trainings' | translate }}</ion-label>
         </ion-tab-button>
