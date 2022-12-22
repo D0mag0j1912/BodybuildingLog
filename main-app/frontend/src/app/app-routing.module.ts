@@ -1,5 +1,5 @@
 import { NgModule, Type } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthModule } from './modules/auth/auth.module';
 import { TrainingModule } from './modules/training/training.module';
@@ -7,11 +7,6 @@ import { NotFoundResolverService } from './services/shared/not-found-resolver.se
 import { NotFoundComponent } from './views/shared/not-found/not-found.component';
 
 const routes: Routes = [
-    {
-        path: '',
-        redirectTo: '/training/new-training',
-        pathMatch: 'full',
-    },
     {
         path: 'auth',
         loadChildren: async (): Promise<Routes | Type<AuthModule>> =>
@@ -35,7 +30,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
+    imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule],
 })
 export class AppRoutingModule {}
