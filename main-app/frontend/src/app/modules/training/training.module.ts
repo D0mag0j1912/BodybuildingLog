@@ -9,7 +9,6 @@ import { TrainingItemDirective } from '../../directives/training-item/training-i
 import { PipesModule } from '../../pipes/pipes.module';
 import { CamelToSnakeCaseModule } from '../../pipes/shared/camel-to-snake-case/camel-to-snake-case.module';
 import { SanitizeHtmlModule } from '../../pipes/shared/sanitize-html/sanitize-html.module';
-import { ShowAllExercisesModule } from '../../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NewTrainingComponent } from '../../views/training/new-training/new-training.component';
 import { ReorderExercisesComponent } from '../../views/training/new-training/reorder-exercises/reorder-exercises.component';
 import { ChangeSetCategoryComponent } from '../../views/training/new-training/single-exercise/sets/change-set-category/change-set-category.component';
@@ -57,7 +56,7 @@ const IMPORTS = [
     CamelToSnakeCaseModule,
 ];
 
-const PIPES_MODULES = [ShowAllExercisesModule, SanitizeHtmlModule];
+const PIPES_MODULES = [SanitizeHtmlModule];
 
 @NgModule({
     declarations: [...COMPONENTS, ...DIRECTIVES],

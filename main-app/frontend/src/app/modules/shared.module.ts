@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { IonicModule } from '@ionic/angular';
 import { PipesModule } from '../pipes/pipes.module';
-import { ShowAllExercisesModule } from '../pipes/training/past-trainings/show-all-exercises/show-all-exercises.module';
 import { NotFoundResolverService } from '../services/shared/not-found-resolver.service';
 import { DeleteTrainingActionService } from '../services/api/training/delete-training-action.service';
 import { NotFoundComponent } from '../views/shared/not-found/not-found.component';
@@ -36,7 +35,7 @@ const EXTERNAL_IMPORTS = [
     IonicModule,
 ];
 
-const IMPORTS = [ShowAllExercisesModule, PipesModule, SkeletonLoaderModule, SanitizeHtmlModule];
+const IMPORTS = [PipesModule, SkeletonLoaderModule, SanitizeHtmlModule];
 
 @NgModule({
     declarations: [...COMPONENTS, ...DIRECTIVES, ...ACTION_COMPONENTS],
