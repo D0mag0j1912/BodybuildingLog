@@ -83,6 +83,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         DayNumber: 0,
     };
     showByDayStartDate: Date;
+    dateFormat = TEMPLATE_DATE_FORMAT;
 
     isNextPage = false;
     isPreviousPage = false;
@@ -133,10 +134,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                 this.pastTrainings$ = of(response).pipe(mapStreamData());
                 this._changeDetectorRef.markForCheck();
             });
-    }
-
-    get dateFormat(): string {
-        return TEMPLATE_DATE_FORMAT;
     }
 
     getDayTranslation$(dayName: string): Observable<string> {
