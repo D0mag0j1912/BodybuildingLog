@@ -8,6 +8,11 @@ import { NotFoundComponent } from './views/shared/not-found/not-found.component'
 
 const routes: Routes = [
     {
+        path: '',
+        redirectTo: '/training/tabs/new-training',
+        pathMatch: 'full',
+    },
+    {
         path: 'auth',
         loadChildren: async (): Promise<Routes | Type<AuthModule>> =>
             import('./modules/auth/auth.module').then((module) => module.AuthModule),
