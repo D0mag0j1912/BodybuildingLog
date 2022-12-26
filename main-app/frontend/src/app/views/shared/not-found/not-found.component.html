@@ -2,7 +2,7 @@
     <h2 class="title">
         {{ 'common.page_not_found' | translate }}
     </h2>
-    <span *ngIf="!(isAuth$ | async)">
+    <span *ngIf="!(isAuth$ | async)" class="text">
         {{ 'common.errors.not_authenticated' | translate }}
     </span>
     <img src="../../../../assets/images/error-404.png" class="img" />

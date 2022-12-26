@@ -23,11 +23,6 @@ const routes: Routes = [
             },
         ],
     },
-    {
-        path: '',
-        redirectTo: '/training/tabs/new-training',
-        pathMatch: 'full',
-    },
 ];
 
 @NgModule({
