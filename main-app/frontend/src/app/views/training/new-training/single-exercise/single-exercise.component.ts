@@ -42,7 +42,6 @@ import { SetsComponent } from './sets/sets.component';
     selector: 'bl-single-exercise',
     templateUrl: './single-exercise.component.html',
     styleUrls: ['./single-exercise.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
 export class SingleExerciseComponent implements OnInit, OnDestroy {

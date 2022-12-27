@@ -1,18 +1,10 @@
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    OnDestroy,
-    QueryList,
-    ViewChild,
-    ViewChildren,
-} from '@angular/core';
+import { Component, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { format, parseISO } from 'date-fns';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import {
     concatMap,
     delay,
@@ -65,15 +57,9 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
     selector: 'bl-new-training',
     templateUrl: './new-training.component.html',
     styleUrls: ['./new-training.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
 export class NewTrainingComponent implements OnDestroy {
-    private _isSubmitted$ = new BehaviorSubject<boolean>(false);
-    private _isApiLoading$ = new BehaviorSubject<boolean>(false);
-
-    isSubmitted$ = this._isSubmitted$.asObservable();
-    isApiLoading$ = this._isApiLoading$.asObservable();
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
     currentPreferences$ = this._preferencesStoreService.preferencesChanged$.pipe(
         tap((preferences: Preferences) => {
@@ -134,6 +120,8 @@ export class NewTrainingComponent implements OnDestroy {
     });
 
     editMode = false;
+    isApiLoading = false;
+    isSubmitted = false;
 
     @ViewChild(IonContent, { read: IonContent })
     ionContent: IonContent;
@@ -156,7 +144,6 @@ export class NewTrainingComponent implements OnDestroy {
         private _route: ActivatedRoute,
         private _router: Router,
         private _modalController: ModalController,
-        private _changeDetectorRef: ChangeDetectorRef,
     ) {}
 
     ionViewWillEnter(): void {
@@ -249,7 +236,6 @@ export class NewTrainingComponent implements OnDestroy {
                 ),
             ),
         );
-        this._changeDetectorRef.markForCheck();
     }
 
     ionViewDidEnter(): void {
@@ -264,16 +250,14 @@ export class NewTrainingComponent implements OnDestroy {
 
     ngOnDestroy(): void {
         this._sharedStoreService.completeDayClicked();
-        this._isSubmitted$.complete();
-        this._isApiLoading$.complete();
     }
 
     onSubmit(): void {
-        this._isSubmitted$.next(true);
+        this.isSubmitted = true;
         if (!this.newTrainingForm.valid || !this._isExerciseFormValid()) {
             return;
         }
-        this._isApiLoading$.next(true);
+        this.isApiLoading = true;
 
         this._newTrainingStoreService.trainingState$
             .pipe(
@@ -289,7 +273,7 @@ export class NewTrainingComponent implements OnDestroy {
                         return this._newTrainingService.addTraining(trainingData);
                     }
                 }),
-                finalize(() => this._isApiLoading$.next(false)),
+                finalize(() => (this.isApiLoading = false)),
             )
             .subscribe(async (response: GeneralResponseData) => {
                 await this._toastControllerService.displayToast({
@@ -339,7 +323,6 @@ export class NewTrainingComponent implements OnDestroy {
                             setTimeout(async () => await this.ionContent.scrollToBottom(500), 100),
                         ),
                     );
-                    this._changeDetectorRef.markForCheck();
                 }
             });
     }
@@ -368,7 +351,6 @@ export class NewTrainingComponent implements OnDestroy {
                     }
                     return of(response);
                 }),
-                finalize(() => this._changeDetectorRef.markForCheck()),
                 takeUntil(this._unsubscribeService),
             )
             .subscribe((response) => {

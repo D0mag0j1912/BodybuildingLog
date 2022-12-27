@@ -92,15 +92,15 @@
                         [bodyweightControl]="newTrainingForm.controls.bodyweight"
                         [trainingDate]="newTrainingForm.controls.trainingDate"
                         [editTrainingData]="editTrainingData"
-                        [isSubmitted]="isSubmitted$ | async"
+                        [isSubmitted]="isSubmitted"
                         [isLoading]="trainingData.IsLoading"
-                        [isApiLoading]="isApiLoading$ | async"
+                        [isApiLoading]="isApiLoading"
                         [editMode]="editMode"
                         (exerciseAdded)="onExerciseAdded($event)">
                         <ion-col class="ion-text-end log-training-col">
                             <ion-button
                                 (click)="onSubmit()"
-                                [disabled]="!exercisesState?.length || (isApiLoading$ | async)"
+                                [disabled]="!exercisesState?.length || isApiLoading"
                             >
                             {{ 'common.' + (editMode ? 'edit' : 'add') | translate }}
                             </ion-button>
@@ -111,7 +111,7 @@
                             <ion-col class="ion-text-center at-least-one-exercise-txt">
                                 <ion-note
                                     *ngIf="
-                                        (isSubmitted$ | async) &&
+                                        isSubmitted &&
                                         exercisesState?.length === 0
                                     "
                                     class="empty-training-msg"
