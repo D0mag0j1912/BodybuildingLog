@@ -9,19 +9,11 @@ import {
     QueryList,
     ViewChildren,
 } from '@angular/core';
-import {
-    AbstractControl,
-    ControlValueAccessor,
-    FormArray,
-    FormControl,
-    FormGroup,
-    Validators,
-} from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonSelect } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { getControlValueAccessor } from '../../../../helpers/control-value-accessor.helper';
 import { Exercise } from '../../../../models/training/exercise.model';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import {
@@ -32,7 +24,6 @@ import { SingleExercise } from '../../../../models/training/new-training/single-
 import {
     ExerciseFormType,
     SingleExerciseFormType,
-    SingleExerciseValueType,
 } from '../../../../models/training/new-training/single-exercise/single-exercise-form.type';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as SingleExerciseValidators from '../../../../validators/training/single-exercise.validators';
@@ -52,9 +43,9 @@ import { SetsComponent } from './sets/sets.component';
     templateUrl: './single-exercise.component.html',
     styleUrls: ['./single-exercise.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [getControlValueAccessor(SingleExerciseComponent), UnsubscribeService],
+    providers: [UnsubscribeService],
 })
-export class SingleExerciseComponent implements ControlValueAccessor, OnInit, OnDestroy {
+export class SingleExerciseComponent implements OnInit, OnDestroy {
     private _isExercisePicker$ = new BehaviorSubject<boolean>(true);
 
     isExercisePicker$ = this._isExercisePicker$.asObservable();
@@ -84,7 +75,8 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
 
-    onTouched: () => void;
+    @Input()
+    exercises: SingleExercise[];
 
     @Input()
     editTrainingData: NewTraining;
@@ -124,6 +116,15 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
     ) {}
 
     ngOnInit(): void {
+        if (this.exercises.length > 0) {
+            while (this.form.length !== 0) {
+                this.form.removeAt(0);
+            }
+            for (const exercise of this.exercises) {
+                this.addExercise(exercise);
+            }
+        }
+
         this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName()]);
         this.form.updateValueAndValidity();
 
@@ -137,25 +138,6 @@ export class SingleExerciseComponent implements ControlValueAccessor, OnInit, On
 
     ngOnDestroy(): void {
         this._isExercisePicker$.complete();
-    }
-
-    writeValue(exercises: SingleExercise[]): void {
-        if (exercises && exercises?.length > 0) {
-            while (this.form.length !== 0) {
-                this.form.removeAt(0);
-            }
-            for (const exercise of exercises) {
-                this.addExercise(exercise);
-            }
-        }
-    }
-
-    registerOnChange(fn: (formValue: SingleExerciseValueType[]) => void): void {
-        this.form.valueChanges.pipe(takeUntil(this._unsubscribeService)).subscribe(fn);
-    }
-
-    registerOnTouched(fn: () => void): void {
-        this.onTouched = fn;
     }
 
     onSelectedCategoriesChanged(data: SelectedCategoriesChanged, exerciseIndex: number): void {

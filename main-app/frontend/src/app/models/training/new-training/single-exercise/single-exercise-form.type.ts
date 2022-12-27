@@ -13,11 +13,6 @@ export type SingleExerciseFormType = {
         : FormType<SingleExercise>[P];
 };
 
-export type SingleExerciseValueType = {
-    exerciseData?: ExerciseValueType;
-    sets?: Set[];
-};
-
 export type ExerciseValueType = Partial<
     Pick<
         Exercise,

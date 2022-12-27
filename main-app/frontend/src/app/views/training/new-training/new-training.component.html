@@ -82,15 +82,15 @@
                     <ion-label>{{ 'common.date' | translate }}</ion-label>
                     <ion-text color="primary">{{ formattedTodayDate }}</ion-text>
                 </ion-item>
-                <ng-container *ngIf="newTrainingForm.get('trainingDate').errors?.required">
+                <ng-container *ngIf="newTrainingForm.controls.trainingDate.errors?.required">
                     <ion-note class="error">{{ 'training.new_training.errors.date_required' | translate }}</ion-note>
                 </ng-container>
 
                 <ng-container *ngIf="exercisesState$ | async as exercisesState">
                     <bl-single-exercise
-                        formControlName="exercises"
+                        [exercises]="exercisesState"
                         [bodyweightControl]="newTrainingForm.controls.bodyweight"
-                        [trainingDate]="newTrainingForm.get('trainingDate')"
+                        [trainingDate]="newTrainingForm.controls.trainingDate"
                         [editTrainingData]="editTrainingData"
                         [isSubmitted]="isSubmitted$ | async"
                         [isLoading]="trainingData.IsLoading"

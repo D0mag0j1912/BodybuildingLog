@@ -131,7 +131,6 @@ export class NewTrainingComponent implements OnDestroy {
             validators: [Validators.required],
             nonNullable: true,
         }),
-        exercises: new FormControl<SingleExercise[]>([], { nonNullable: true }),
     });
 
     editMode = false;
@@ -450,7 +449,6 @@ export class NewTrainingComponent implements OnDestroy {
         this.newTrainingForm.controls.trainingDate.patchValue(
             this._fillTrainingDate(dayClickedDate),
         );
-        this.newTrainingForm.controls.exercises.patchValue(currentTrainingState.exercises);
         this._setFormattedDate(this.newTrainingForm.controls.trainingDate.value);
     }
 
