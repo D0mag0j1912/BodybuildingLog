@@ -21,7 +21,7 @@ import { concatMap, map, startWith, switchMap, takeUntil } from 'rxjs/operators'
 import { getControlValueAccessor } from '../../../../../helpers/control-value-accessor.helper';
 import {
     Set,
-    SelectedCategoriesChanged,
+    SelectedSetCategoriesChanged,
 } from '../../../../../models/training/new-training/single-exercise/set/set.model';
 import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
 import {
@@ -101,7 +101,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     isLoading = false;
 
     @Output()
-    selectedCategoriesChanged = new EventEmitter<SelectedCategoriesChanged>();
+    selectedSetCategoriesChanged = new EventEmitter<SelectedSetCategoriesChanged>();
 
     @ViewChildren('set', { read: SetComponent })
     setCmps: QueryList<SetComponent>;
@@ -290,7 +290,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
-                this.selectedCategoriesChanged.emit({
+                this.selectedSetCategoriesChanged.emit({
                     setChangedType: 'updateSet',
                     setCategory,
                     setIndex,
@@ -309,7 +309,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             } else {
                 setCategory = this.selectedSetCategoriesControl.value[0] ?? 'freeWeighted';
             }
-            this.selectedCategoriesChanged.emit({ setChangedType: 'addSet', setCategory });
+            this.selectedSetCategoriesChanged.emit({ setChangedType: 'addSet', setCategory });
         }
         this._constructFormBasedOnSetCategory(setCategory, 'newExercise', set);
         of(setCategory)
@@ -336,7 +336,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             .deleteSet(this.exerciseIndex, setIndex, this._calculateTotal())
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe((_) =>
-                this.selectedCategoriesChanged.emit({
+                this.selectedSetCategoriesChanged.emit({
                     setChangedType: 'deleteSet',
                     setCategory: undefined,
                     setIndex,

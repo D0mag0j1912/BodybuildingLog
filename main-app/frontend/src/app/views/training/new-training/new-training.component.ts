@@ -4,7 +4,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { format, parseISO } from 'date-fns';
-import { from, Observable, of } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import {
     concatMap,
     delay,
@@ -60,6 +60,9 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
     providers: [UnsubscribeService],
 })
 export class NewTrainingComponent implements OnDestroy {
+    private _trainingExercises$ = new BehaviorSubject<SingleExercise[]>([]);
+
+    trainingExercises$ = this._trainingExercises$.asObservable();
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
     currentPreferences$ = this._preferencesStoreService.preferencesChanged$.pipe(
         tap((preferences: Preferences) => {
@@ -96,8 +99,8 @@ export class NewTrainingComponent implements OnDestroy {
             );
             this.newTrainingForm.controls.bodyweight.setValidators(
                 isBodyweightCategory
-                    ? [...this.initialBodyweightValidators, Validators.required]
-                    : [...this.initialBodyweightValidators],
+                    ? [...this.bodyweightValidators, Validators.required]
+                    : [...this.bodyweightValidators],
             );
             this.newTrainingForm.controls.bodyweight.updateValueAndValidity();
         }),
@@ -106,12 +109,12 @@ export class NewTrainingComponent implements OnDestroy {
     currentWeightUnit: WeightUnitType;
     formattedTodayDate: string;
     editTrainingData: NewTraining;
-    initialBodyweightValidators = [Validators.min(30), Validators.max(300)];
+    bodyweightValidators = [Validators.min(30), Validators.max(300)];
     bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
 
     newTrainingForm = new FormGroup({
         bodyweight: new FormControl(0, {
-            validators: this.initialBodyweightValidators,
+            validators: this.bodyweightValidators,
         }),
         trainingDate: new FormControl(new Date().toISOString(), {
             validators: [Validators.required],
@@ -432,6 +435,7 @@ export class NewTrainingComponent implements OnDestroy {
             this._fillTrainingDate(dayClickedDate),
         );
         this._setFormattedDate(this.newTrainingForm.controls.trainingDate.value);
+        this._trainingExercises$.next(currentTrainingState.exercises);
     }
 
     private _setFormattedDate(dateValue: string): void {

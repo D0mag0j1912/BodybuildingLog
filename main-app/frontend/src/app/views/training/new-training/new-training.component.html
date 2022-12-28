@@ -88,7 +88,7 @@
 
                 <ng-container *ngIf="exercisesState$ | async as exercisesState">
                     <bl-single-exercise
-                        [exercises]="exercisesState"
+                        [exercises]="trainingExercises$ | async"
                         [bodyweightControl]="newTrainingForm.controls.bodyweight"
                         [trainingDate]="newTrainingForm.controls.trainingDate"
                         [editTrainingData]="editTrainingData"
