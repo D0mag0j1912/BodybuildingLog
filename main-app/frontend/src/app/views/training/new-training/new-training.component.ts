@@ -91,6 +91,7 @@ export class NewTrainingComponent implements OnDestroy {
     );
     exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
+        delay(0),
         tap((exercises: SingleExercise[]) => {
             const isBodyweightCategory = exercises.some((exercise: SingleExercise) =>
                 this.bodyweightSetCategories.some((category: SetCategoryType) =>
