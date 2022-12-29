@@ -1,4 +1,11 @@
-import { Component, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import {
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    QueryList,
+    ViewChild,
+    ViewChildren,
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
@@ -148,6 +155,7 @@ export class NewTrainingComponent implements OnDestroy {
         private _route: ActivatedRoute,
         private _router: Router,
         private _modalController: ModalController,
+        private _changeDetectorRef: ChangeDetectorRef,
     ) {}
 
     ionViewWillEnter(): void {
@@ -240,6 +248,7 @@ export class NewTrainingComponent implements OnDestroy {
                 ),
             ),
         );
+        this._changeDetectorRef.detectChanges();
     }
 
     ionViewDidEnter(): void {

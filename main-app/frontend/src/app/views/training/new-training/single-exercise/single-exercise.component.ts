@@ -277,7 +277,6 @@ export class SingleExerciseComponent implements OnChanges, OnDestroy {
                         exercise?.exerciseData?.selectedSetCategories ?? [],
                     ),
                 }),
-                sets: new FormControl(exercise?.sets ?? [], { nonNullable: true }),
             }),
         );
         if (event) {
