@@ -83,7 +83,6 @@ export class NewTrainingComponent implements OnDestroy {
         }),
     );
     isAuthenticated$ = this._authStoreService.isAuth$;
-    isEditing$ = this._sharedStoreService.editingTraining$;
     isReorder$ = this._newTrainingStoreService.trainingState$.pipe(
         map((training: NewTraining) => {
             const exercises = training.exercises;
@@ -221,7 +220,6 @@ export class NewTrainingComponent implements OnDestroy {
                     );
                 }
             }),
-            tap((_) => this._sharedStoreService.emitEditingTraining(this.editMode)),
             switchMap((_) =>
                 of(allExercisesChanged).pipe(
                     tap((_) => {
@@ -255,10 +253,6 @@ export class NewTrainingComponent implements OnDestroy {
         if (this.ionContent) {
             setTimeout(async () => await this.ionContent.scrollToBottom(500), 300);
         }
-    }
-
-    ionViewDidLeave(): void {
-        this._sharedStoreService.emitEditingTraining(false);
     }
 
     ngOnDestroy(): void {

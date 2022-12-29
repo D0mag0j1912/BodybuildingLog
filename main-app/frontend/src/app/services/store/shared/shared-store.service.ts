@@ -6,9 +6,6 @@ import { PastTrainings } from '../../../models/training/past-trainings/past-trai
 
 @Injectable({ providedIn: 'root' })
 export class SharedStoreService {
-    private _editingTraining$ = new Subject<boolean>();
-    editingTraining$ = this._editingTraining$.asObservable();
-
     deletedTraining$$ = new Subject<StreamData<Paginator<PastTrainings>>>();
 
     _dayClicked$ = new BehaviorSubject<string>(null);
@@ -23,9 +20,5 @@ export class SharedStoreService {
 
     getDayClickedDate(): string | undefined {
         return this._dayClicked$.getValue();
-    }
-
-    emitEditingTraining(editMode: boolean): void {
-        this._editingTraining$.next(editMode);
     }
 }
