@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { AfterViewChecked, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
     add,
@@ -49,6 +49,7 @@ import { DayActivatedType } from '../../../models/training/past-trainings/day-ac
 import { INITIAL_PAGE, DEFAULT_SIZE } from '../../../constants/shared/paginator.const';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { TrainingItemWrapperHeights } from '../../../constants/enums/training-item-wrapper-heights.enum';
+import { NewTraining } from '../../../models/training/new-training/new-training.model';
 
 @Component({
     selector: 'bl-past-trainings',
@@ -301,11 +302,22 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         }
     }
 
-    async onTrainingItemClicked(): Promise<void> {
-        if (this.trainingItemWrapper) {
-            const scrollTop = (this.trainingItemWrapper.nativeElement as HTMLDivElement).scrollTop;
-            await this._pastTrainingsStoreService.emitWrapperScroll(scrollTop);
-        }
+    async onTrainingItemClicked(clickedTraining: NewTraining): Promise<void> {
+        this._route.queryParams.pipe(take(1)).subscribe(async (params: Params) => {
+            await this._pastTrainingsStoreService.emitPastTrainingsQueryParams(
+                params as PastTrainingsQueryParams,
+            );
+            await Storage.set({
+                key: StorageItems.QUERY_PARAMS,
+                value: JSON.stringify(params as PastTrainingsQueryParams),
+            });
+            await this._router.navigate(['/training/tabs/new-training', clickedTraining._id]);
+            if (this.trainingItemWrapper) {
+                const scrollTop = (this.trainingItemWrapper.nativeElement as HTMLDivElement)
+                    .scrollTop;
+                await this._pastTrainingsStoreService.emitWrapperScroll(scrollTop);
+            }
+        });
     }
 
     async logNewTraining(): Promise<void> {

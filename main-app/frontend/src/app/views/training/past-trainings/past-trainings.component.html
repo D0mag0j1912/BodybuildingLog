@@ -55,7 +55,7 @@
                     <bl-training-item
                         *ngFor="let training of state.Value?.Results?.Trainings"
                         [training]="training"
-                        (trainingItemClicked)="onTrainingItemClicked()"
+                        (trainingItemClicked)="onTrainingItemClicked(training)"
                     ></bl-training-item>
                 </ng-container>
                 <ng-template #noTrainings>
