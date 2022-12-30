@@ -41,43 +41,43 @@ export class DeleteTrainingActionComponent {
     isLoading = false;
 
     constructor(
-        private readonly sharedStoreService: SharedStoreService,
-        private readonly deleteTrainingActionService: DeleteTrainingActionService,
-        private readonly modalController: ModalController,
-        private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly route: ActivatedRoute,
+        private _sharedStoreService: SharedStoreService,
+        private _deleteTrainingActionService: DeleteTrainingActionService,
+        private _modalController: ModalController,
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _route: ActivatedRoute,
     ) {}
 
     deleteTraining(trainingId: string): void {
         this.isLoading = true;
-        this.deleteTrainingActionService
+        this._deleteTrainingActionService
             .deleteTraining(trainingId, this.getDeleteTrainingMeta())
             .pipe(
                 catchError((_) => EMPTY),
                 finalize(() => {
                     this.isLoading = false;
-                    this.changeDetectorRef.markForCheck();
+                    this._changeDetectorRef.markForCheck();
                 }),
             )
             .subscribe(async (response: StreamData<Paginator<PastTrainings>>) => {
-                this.sharedStoreService.deletedTraining$$.next(response);
-                await this.modalController.dismiss(false, DialogRoles.DELETE_TRAINING);
+                this._sharedStoreService.deletedTraining$$.next(response);
+                await this._modalController.dismiss(false, DialogRoles.DELETE_TRAINING);
             });
     }
 
     async onCancel(): Promise<void> {
-        await this.modalController.dismiss(false, DialogRoles.CANCEL);
+        await this._modalController.dismiss(false, DialogRoles.CANCEL);
     }
 
     private getDeleteTrainingMeta(): {
         searchData: SearchDataDto | undefined;
         currentDate: Date | undefined;
     } {
-        const isSearch = !!this.route.snapshot.queryParams?.search;
+        const isSearch = !!this._route.snapshot.queryParams?.search;
         if (isSearch) {
-            const searchValue = (this.route.snapshot.queryParams?.search as string).trim();
-            const page = +this.route.snapshot.queryParams?.page ?? INITIAL_PAGE;
-            const size = +this.route.snapshot.queryParams?.size ?? DEFAULT_SIZE;
+            const searchValue = (this._route.snapshot.queryParams?.search as string).trim();
+            const page = +this._route.snapshot.queryParams?.page ?? INITIAL_PAGE;
+            const size = +this._route.snapshot.queryParams?.size ?? DEFAULT_SIZE;
             return {
                 searchData: {
                     page: page,
@@ -87,7 +87,7 @@ export class DeleteTrainingActionComponent {
                 currentDate: undefined,
             };
         } else {
-            const splittedDate = (this.route.snapshot.queryParams.startDate as string)?.split('-');
+            const splittedDate = (this._route.snapshot.queryParams.startDate as string)?.split('-');
             return {
                 searchData: undefined,
                 currentDate: new Date(`
