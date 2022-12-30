@@ -11,11 +11,16 @@ const routes: Routes = [
         children: [
             {
                 path: 'new-training',
-                component: NewTrainingComponent,
-            },
-            {
-                path: 'new-training/:id',
-                component: NewTrainingComponent,
+                children: [
+                    {
+                        path: '',
+                        component: NewTrainingComponent,
+                    },
+                    {
+                        path: ':id',
+                        component: NewTrainingComponent,
+                    },
+                ],
             },
             {
                 path: 'past-trainings',
