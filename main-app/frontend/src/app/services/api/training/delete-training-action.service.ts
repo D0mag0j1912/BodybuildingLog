@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { mapDateInterval } from '../../../helpers/training/past-trainings/map-past-trainings-dates.helper';
@@ -20,10 +20,10 @@ import {
 @Injectable()
 export class DeleteTrainingActionService implements TrainingActions {
     constructor(
-        private readonly http: HttpClient,
-        private readonly modalController: ModalController,
-        private readonly datePipe: DatePipe,
-        private readonly translateService: TranslateService,
+        private _http: HttpClient,
+        private _modalController: ModalController,
+        private _datePipe: DatePipe,
+        private _translateService: TranslateService,
     ) {}
 
     async perform(data: DeleteTrainingActionData): Promise<void> {
@@ -31,25 +31,25 @@ export class DeleteTrainingActionService implements TrainingActions {
     }
 
     async openDeleteTrainingDialog(data: DeleteTrainingActionData): Promise<void> {
-        const modal = await this.modalController.create({
+        const modal = await this._modalController.create({
             component: DeleteTrainingActionComponent,
             componentProps: {
-                title$: this.translateService.stream(
+                title$: this._translateService.stream(
                     'training.past_trainings.actions.delete_training',
                 ),
-                dateCreated$: this.translateService
+                dateCreated$: this._translateService
                     .stream(`weekdays.${data.weekDays[data.dayIndex]}`)
                     .pipe(
                         map(
                             (value: { [key: string]: string }) =>
-                                `${value} (${this.datePipe.transform(
+                                `${value} (${this._datePipe.transform(
                                     data.training.trainingDate,
                                     'dd.MM.yyyy',
                                 )})`,
                         ),
                     ),
-                timeCreated$: of(data.timeCreated),
-                training$: of(data.training),
+                timeCreated: data.timeCreated,
+                training: data.training,
             } as DeleteTrainingActionDialogData,
         });
         await modal.present();
@@ -63,7 +63,7 @@ export class DeleteTrainingActionService implements TrainingActions {
         },
     ): Observable<StreamData<Paginator<PastTrainings>>> {
         const params = new HttpParams().set('meta', JSON.stringify(deleteTrainingMeta));
-        return this.http
+        return this._http
             .delete<StreamData<Paginator<PastTrainings>>>(
                 environment.BACKEND + `/training/delete-training/${trainingId}`,
                 { params: params },

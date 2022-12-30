@@ -1,13 +1,5 @@
 import { DatePipe } from '@angular/common';
-import {
-    AfterViewChecked,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    ElementRef,
-    OnDestroy,
-    ViewChild,
-} from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -62,7 +54,6 @@ import { TrainingItemWrapperHeights } from '../../../constants/enums/training-it
     selector: 'bl-past-trainings',
     templateUrl: './past-trainings.component.html',
     styleUrls: ['./past-trainings.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
 export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
@@ -118,7 +109,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         private _sharedStoreService: SharedStoreService,
         private _preferencesService: PreferencesService,
         private _preferencesStoreService: PreferencesStoreService,
-        private _changeDetectorRef: ChangeDetectorRef,
         private _route: ActivatedRoute,
         private _datePipe: DatePipe,
         private _router: Router,
@@ -132,7 +122,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe((response: StreamData<Paginator<PastTrainings>>) => {
                 this.pastTrainings$ = of(response).pipe(mapStreamData());
-                this._changeDetectorRef.markForCheck();
             });
     }
 
@@ -235,7 +224,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                             }),
                             mapStreamData(),
                         );
-                    this._changeDetectorRef.markForCheck();
                 });
         }
     }
@@ -428,7 +416,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                     mapStreamData(),
                 );
         }
-        this._changeDetectorRef.markForCheck();
     }
 
     private onPaginatorChangedFilterHandler(
@@ -458,7 +445,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     private updatePageAndSize(response: StreamData<Paginator<PastTrainings>>): void {
         this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
         this.size = response?.Value?.Size ?? DEFAULT_SIZE;
-        this._changeDetectorRef.markForCheck();
     }
 
     private calculateDate(

@@ -14,10 +14,10 @@ import { SearchDataDto } from '../../../../../models/common/paginator.model';
 import { DEFAULT_SIZE, INITIAL_PAGE } from '../../../../../constants/shared/paginator.const';
 
 export interface DeleteTrainingActionDialogData {
-    readonly title$: Observable<string>;
-    readonly dateCreated$: Observable<string>;
-    readonly timeCreated$: Observable<string>;
-    readonly training$: Observable<NewTraining>;
+    title$: Observable<string>;
+    dateCreated$: Observable<string>;
+    timeCreated: string;
+    training: NewTraining;
 }
 
 @Component({
@@ -33,10 +33,10 @@ export class DeleteTrainingActionComponent {
     dateCreated$: Observable<string> = of('');
 
     @Input()
-    timeCreated$: Observable<string> = of('');
+    timeCreated = '';
 
     @Input()
-    training$: Observable<NewTraining>;
+    training: NewTraining;
 
     isLoading = false;
 
