@@ -2,11 +2,10 @@ import {
     Component,
     EventEmitter,
     Input,
-    OnChanges,
     OnDestroy,
+    OnInit,
     Output,
     QueryList,
-    SimpleChanges,
     ViewChildren,
 } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -44,7 +43,7 @@ import { SetsComponent } from './sets/sets.component';
     styleUrls: ['./single-exercise.component.scss'],
     providers: [UnsubscribeService],
 })
-export class SingleExerciseComponent implements OnChanges, OnDestroy {
+export class SingleExerciseComponent implements OnInit, OnDestroy {
     private _isExercisePicker$ = new BehaviorSubject<boolean>(true);
 
     isExercisePicker$ = this._isExercisePicker$.asObservable();
@@ -73,9 +72,6 @@ export class SingleExerciseComponent implements OnChanges, OnDestroy {
     );
 
     form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
-
-    @Input()
-    exercises: SingleExercise[];
 
     @Input()
     editTrainingData: NewTraining;
@@ -121,20 +117,20 @@ export class SingleExerciseComponent implements OnChanges, OnDestroy {
             });
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes.exercises?.currentValue) {
-            if (this.exercises.length > 0) {
+    ngOnInit(): void {
+        this.exercisesState$.pipe(take(1)).subscribe((exercises: SingleExercise[]) => {
+            if (exercises.length > 0) {
                 while (this.form.length !== 0) {
                     this.form.removeAt(0);
                 }
-                for (const exercise of this.exercises) {
+                for (const exercise of exercises) {
                     this.addExercise(exercise);
                 }
             }
 
             this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName()]);
             this.form.updateValueAndValidity();
-        }
+        });
     }
 
     ngOnDestroy(): void {
