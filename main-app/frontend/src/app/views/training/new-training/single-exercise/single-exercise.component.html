@@ -3,7 +3,9 @@
     class="form"
     [formGroup]="group">
     <ion-card class="wrapper">
-        <ng-container formGroupName="exerciseData">
+        <ng-container
+            *ngIf="exercisesState$ | async as exercisesState"
+            formGroupName="exerciseData">
             <ion-grid class="exercise-grid">
                 <ion-row
                     class="ion-text-center exercise-row"
@@ -27,7 +29,7 @@
                             >
                                 <ion-select-option
                                     *ngFor="
-                                        let exercise of exercisesState$ | async | filterAvailableExercises: i
+                                        let exercise of exercisesState | filterAvailableExercises: i
                                     "
                                     [value]="exercise.name"
                                 >
@@ -69,20 +71,20 @@
                     </ion-col>
                 </ion-row>
             </ion-grid>
+            <bl-sets
+                [sets]="exercisesState[i].sets"
+                [editTrainingData]="editTrainingData"
+                [exerciseIndex]="i"
+                [bodyweightControl]="bodyweightControl"
+                [exerciseControl]="form.controls[i].controls.exerciseData.controls.name"
+                [availableSetCategoriesControl]="form.controls[i].controls.exerciseData.controls.availableSetCategories"
+                [selectedSetCategoriesControl]="form.controls[i].controls.exerciseData.controls.selectedSetCategories"
+                [isSubmitted]="isSubmitted"
+                [editMode]="editMode"
+                [isLoading]="isLoading"
+                (selectedSetCategoriesChanged)="onSelectedSetCategoriesChanged($event, i)"
+            ></bl-sets>
         </ng-container>
-        <bl-sets
-            formControlName="sets"
-            [editTrainingData]="editTrainingData"
-            [exerciseIndex]="i"
-            [bodyweightControl]="bodyweightControl"
-            [exerciseControl]="form.controls[i].controls.exerciseData.controls.name"
-            [availableSetCategoriesControl]="form.controls[i].controls.exerciseData.controls.availableSetCategories"
-            [selectedSetCategoriesControl]="form.controls[i].controls.exerciseData.controls.selectedSetCategories"
-            [isSubmitted]="isSubmitted"
-            [editMode]="editMode"
-            [isLoading]="isLoading"
-            (selectedCategoriesChanged)="onSelectedCategoriesChanged($event, i)"
-        ></bl-sets>
     </ion-card>
 </form>
 

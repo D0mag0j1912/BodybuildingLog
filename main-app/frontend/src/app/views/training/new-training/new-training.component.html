@@ -8,7 +8,7 @@
         }}</ion-title>
         <ion-buttons slot="primary">
             <ion-button
-                *ngIf="(isAuthenticated$ | async) && (isEditing$ | async)"
+                *ngIf="(isAuthenticated$ | async) && editMode"
                 type="button"
                 (click)="goToPastTraining()"
             >
@@ -82,25 +82,24 @@
                     <ion-label>{{ 'common.date' | translate }}</ion-label>
                     <ion-text color="primary">{{ formattedTodayDate }}</ion-text>
                 </ion-item>
-                <ng-container *ngIf="newTrainingForm.get('trainingDate').errors?.required">
+                <ng-container *ngIf="newTrainingForm.controls.trainingDate.errors?.required">
                     <ion-note class="error">{{ 'training.new_training.errors.date_required' | translate }}</ion-note>
                 </ng-container>
 
                 <ng-container *ngIf="exercisesState$ | async as exercisesState">
                     <bl-single-exercise
-                        formControlName="exercises"
                         [bodyweightControl]="newTrainingForm.controls.bodyweight"
-                        [trainingDate]="newTrainingForm.get('trainingDate')"
+                        [trainingDate]="newTrainingForm.controls.trainingDate"
                         [editTrainingData]="editTrainingData"
-                        [isSubmitted]="isSubmitted$ | async"
+                        [isSubmitted]="isSubmitted"
                         [isLoading]="trainingData.IsLoading"
-                        [isApiLoading]="isApiLoading$ | async"
+                        [isApiLoading]="isApiLoading"
                         [editMode]="editMode"
                         (exerciseAdded)="onExerciseAdded($event)">
                         <ion-col class="ion-text-end log-training-col">
                             <ion-button
                                 (click)="onSubmit()"
-                                [disabled]="!exercisesState?.length || (isApiLoading$ | async)"
+                                [disabled]="!exercisesState?.length || isApiLoading"
                             >
                             {{ 'common.' + (editMode ? 'edit' : 'add') | translate }}
                             </ion-button>
@@ -111,7 +110,7 @@
                             <ion-col class="ion-text-center at-least-one-exercise-txt">
                                 <ion-note
                                     *ngIf="
-                                        (isSubmitted$ | async) &&
+                                        isSubmitted &&
                                         exercisesState?.length === 0
                                     "
                                     class="empty-training-msg"

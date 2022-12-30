@@ -7,21 +7,14 @@ import {
     QueryList,
     ViewChildren,
 } from '@angular/core';
-import {
-    ControlValueAccessor,
-    FormArray,
-    FormControl,
-    FormGroup,
-    Validators,
-} from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
 import { concatMap, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { getControlValueAccessor } from '../../../../../helpers/control-value-accessor.helper';
 import {
     Set,
-    SelectedCategoriesChanged,
+    SelectedSetCategoriesChanged,
 } from '../../../../../models/training/new-training/single-exercise/set/set.model';
 import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
 import {
@@ -40,7 +33,6 @@ import { DialogRoles } from '../../../../../constants/enums/dialog-roles.enum';
 import {
     FormConstructionType,
     SetFormType,
-    SetFormValueType,
 } from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import { PreferencesStoreService } from '../../../../../services/store/shared/preferences-store.service';
 import { Preferences } from '../../../../../models/common/preferences.model';
@@ -51,9 +43,9 @@ import { SetComponent } from './set/set.component';
     selector: 'bl-sets',
     templateUrl: './sets.component.html',
     styleUrls: ['./sets.component.scss'],
-    providers: [getControlValueAccessor(SetsComponent), UnsubscribeService],
+    providers: [UnsubscribeService],
 })
-export class SetsComponent implements ControlValueAccessor, OnInit {
+export class SetsComponent implements OnInit {
     preferences$ = this._preferencesStoreService.preferencesChanged$.pipe(
         switchMap((preferences: Preferences) => {
             if (!this.editTrainingData) {
@@ -71,7 +63,8 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
 
     form = new FormArray<FormGroup<SetFormType>>([]);
 
-    onTouched: () => void;
+    @Input()
+    sets: Set[] = [];
 
     @Input()
     editTrainingData: NewTraining;
@@ -101,7 +94,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     isLoading = false;
 
     @Output()
-    selectedCategoriesChanged = new EventEmitter<SelectedCategoriesChanged>();
+    selectedSetCategoriesChanged = new EventEmitter<SelectedSetCategoriesChanged>();
 
     @ViewChildren('set', { read: SetComponent })
     setCmps: QueryList<SetComponent>;
@@ -114,6 +107,12 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
     ) {}
 
     ngOnInit(): void {
+        if (this.sets?.length > 0) {
+            for (const set of this.sets) {
+                this.addSet(set);
+            }
+        }
+
         this.selectedSetCategoriesControl.valueChanges
             .pipe(
                 map((setCategories: SetCategoryType[]) => {
@@ -133,24 +132,6 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe();
-    }
-
-    writeValue(sets: Set[]): void {
-        if (sets.length > 0) {
-            for (const set of sets) {
-                this.addSet(set);
-            }
-        } else {
-            this.addSet();
-        }
-    }
-
-    registerOnChange(fn: (value: SetFormValueType[]) => void): void {
-        this.form.valueChanges.pipe(takeUntil(this._unsubscribeService)).subscribe(fn);
-    }
-
-    registerOnTouched(fn: () => void): void {
-        this.onTouched = fn;
     }
 
     onSetChanged(
@@ -290,7 +271,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe(async (setCategory: SetCategoryType) => {
-                this.selectedCategoriesChanged.emit({
+                this.selectedSetCategoriesChanged.emit({
                     setChangedType: 'updateSet',
                     setCategory,
                     setIndex,
@@ -309,7 +290,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             } else {
                 setCategory = this.selectedSetCategoriesControl.value[0] ?? 'freeWeighted';
             }
-            this.selectedCategoriesChanged.emit({ setChangedType: 'addSet', setCategory });
+            this.selectedSetCategoriesChanged.emit({ setChangedType: 'addSet', setCategory });
         }
         this._constructFormBasedOnSetCategory(setCategory, 'newExercise', set);
         of(setCategory)
@@ -336,7 +317,7 @@ export class SetsComponent implements ControlValueAccessor, OnInit {
             .deleteSet(this.exerciseIndex, setIndex, this._calculateTotal())
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe((_) =>
-                this.selectedCategoriesChanged.emit({
+                this.selectedSetCategoriesChanged.emit({
                     setChangedType: 'deleteSet',
                     setCategory: undefined,
                     setIndex,

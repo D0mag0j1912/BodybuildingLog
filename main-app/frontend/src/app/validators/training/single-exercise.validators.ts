@@ -12,10 +12,14 @@ export function checkDuplicateExerciseName(): ValidatorFn {
         if (array) {
             const exerciseNames: string[] = [];
             for (const group of (array as FormArray<FormGroup<SingleExerciseFormType>>).controls) {
-                if (exerciseNames.indexOf(group.get('exerciseData.name')?.value) !== -1) {
-                    return { duplicateExerciseName: group.get('exerciseData.name').value };
+                if (
+                    exerciseNames.indexOf(group.controls.exerciseData.controls.name?.value) !== -1
+                ) {
+                    return {
+                        duplicateExerciseName: group.controls.exerciseData.controls.name.value,
+                    };
                 } else {
-                    exerciseNames.push(group.get('exerciseData.name')?.value);
+                    exerciseNames.push(group.controls.exerciseData.controls.name?.value);
                 }
             }
             return null;

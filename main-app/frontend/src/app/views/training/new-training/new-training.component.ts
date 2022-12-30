@@ -1,5 +1,4 @@
 import {
-    ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
     OnDestroy,
@@ -12,7 +11,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { format, parseISO } from 'date-fns';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import {
     concatMap,
     delay,
@@ -65,15 +64,9 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
     selector: 'bl-new-training',
     templateUrl: './new-training.component.html',
     styleUrls: ['./new-training.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
 export class NewTrainingComponent implements OnDestroy {
-    private _isSubmitted$ = new BehaviorSubject<boolean>(false);
-    private _isApiLoading$ = new BehaviorSubject<boolean>(false);
-
-    isSubmitted$ = this._isSubmitted$.asObservable();
-    isApiLoading$ = this._isApiLoading$.asObservable();
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
     currentPreferences$ = this._preferencesStoreService.preferencesChanged$.pipe(
         tap((preferences: Preferences) => {
@@ -87,7 +80,6 @@ export class NewTrainingComponent implements OnDestroy {
         }),
     );
     isAuthenticated$ = this._authStoreService.isAuth$;
-    isEditing$ = this._sharedStoreService.editingTraining$;
     isReorder$ = this._newTrainingStoreService.trainingState$.pipe(
         map((training: NewTraining) => {
             const exercises = training.exercises;
@@ -102,6 +94,7 @@ export class NewTrainingComponent implements OnDestroy {
     );
     exercisesState$ = this._newTrainingStoreService.trainingState$.pipe(
         map((currentTrainingState: NewTraining) => currentTrainingState.exercises),
+        delay(0),
         tap((exercises: SingleExercise[]) => {
             const isBodyweightCategory = exercises.some((exercise: SingleExercise) =>
                 this.bodyweightSetCategories.some((category: SetCategoryType) =>
@@ -110,8 +103,8 @@ export class NewTrainingComponent implements OnDestroy {
             );
             this.newTrainingForm.controls.bodyweight.setValidators(
                 isBodyweightCategory
-                    ? [...this.initialBodyweightValidators, Validators.required]
-                    : [...this.initialBodyweightValidators],
+                    ? [...this.bodyweightValidators, Validators.required]
+                    : [...this.bodyweightValidators],
             );
             this.newTrainingForm.controls.bodyweight.updateValueAndValidity();
         }),
@@ -120,21 +113,22 @@ export class NewTrainingComponent implements OnDestroy {
     currentWeightUnit: WeightUnitType;
     formattedTodayDate: string;
     editTrainingData: NewTraining;
-    initialBodyweightValidators = [Validators.min(30), Validators.max(300)];
+    bodyweightValidators = [Validators.min(30), Validators.max(300)];
     bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
 
     newTrainingForm = new FormGroup({
         bodyweight: new FormControl(0, {
-            validators: this.initialBodyweightValidators,
+            validators: this.bodyweightValidators,
         }),
         trainingDate: new FormControl(new Date().toISOString(), {
             validators: [Validators.required],
             nonNullable: true,
         }),
-        exercises: new FormControl<SingleExercise[]>([], { nonNullable: true }),
     });
 
     editMode = false;
+    isApiLoading = false;
+    isSubmitted = false;
 
     @ViewChild(IonContent, { read: IonContent })
     ionContent: IonContent;
@@ -223,7 +217,6 @@ export class NewTrainingComponent implements OnDestroy {
                     );
                 }
             }),
-            tap((_) => this._sharedStoreService.emitEditingTraining(this.editMode)),
             switchMap((_) =>
                 of(allExercisesChanged).pipe(
                     tap((_) => {
@@ -250,7 +243,7 @@ export class NewTrainingComponent implements OnDestroy {
                 ),
             ),
         );
-        this._changeDetectorRef.markForCheck();
+        this._changeDetectorRef.detectChanges();
     }
 
     ionViewDidEnter(): void {
@@ -259,22 +252,16 @@ export class NewTrainingComponent implements OnDestroy {
         }
     }
 
-    ionViewDidLeave(): void {
-        this._sharedStoreService.emitEditingTraining(false);
-    }
-
     ngOnDestroy(): void {
         this._sharedStoreService.completeDayClicked();
-        this._isSubmitted$.complete();
-        this._isApiLoading$.complete();
     }
 
     onSubmit(): void {
-        this._isSubmitted$.next(true);
+        this.isSubmitted = true;
         if (!this.newTrainingForm.valid || !this._isExerciseFormValid()) {
             return;
         }
-        this._isApiLoading$.next(true);
+        this.isApiLoading = true;
 
         this._newTrainingStoreService.trainingState$
             .pipe(
@@ -290,7 +277,7 @@ export class NewTrainingComponent implements OnDestroy {
                         return this._newTrainingService.addTraining(trainingData);
                     }
                 }),
-                finalize(() => this._isApiLoading$.next(false)),
+                finalize(() => (this.isApiLoading = false)),
             )
             .subscribe(async (response: GeneralResponseData) => {
                 await this._toastControllerService.displayToast({
@@ -340,7 +327,6 @@ export class NewTrainingComponent implements OnDestroy {
                             setTimeout(async () => await this.ionContent.scrollToBottom(500), 100),
                         ),
                     );
-                    this._changeDetectorRef.markForCheck();
                 }
             });
     }
@@ -369,7 +355,6 @@ export class NewTrainingComponent implements OnDestroy {
                     }
                     return of(response);
                 }),
-                finalize(() => this._changeDetectorRef.markForCheck()),
                 takeUntil(this._unsubscribeService),
             )
             .subscribe((response) => {
@@ -450,7 +435,6 @@ export class NewTrainingComponent implements OnDestroy {
         this.newTrainingForm.controls.trainingDate.patchValue(
             this._fillTrainingDate(dayClickedDate),
         );
-        this.newTrainingForm.controls.exercises.patchValue(currentTrainingState.exercises);
         this._setFormattedDate(this.newTrainingForm.controls.trainingDate.value);
     }
 

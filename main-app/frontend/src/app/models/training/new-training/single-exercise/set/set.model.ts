@@ -8,7 +8,7 @@ export interface Set {
     _id?: string;
 }
 
-export interface SelectedCategoriesChanged {
+export interface SelectedSetCategoriesChanged {
     setChangedType: SetChangedType;
     setCategory?: SetCategoryType;
     setIndex?: number;
