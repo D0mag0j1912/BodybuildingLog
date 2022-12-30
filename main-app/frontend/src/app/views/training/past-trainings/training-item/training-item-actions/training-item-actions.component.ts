@@ -1,8 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { NewTraining } from '../../../../../models/training/new-training/new-training.model';
-import { DeleteTrainingActionService } from '../../../../../services/api/training/delete-training-action.service';
-import { TrainingItemActions } from '../../../../../models/training/past-trainings/training-actions/training-actions.model';
+import {
+    TrainingActionPerformed,
+    TrainingItemActions,
+} from '../../../../../models/training/past-trainings/training-actions/training-actions.model';
 import { DeleteTrainingActionData } from '../../../../../models/training/past-trainings/training-actions/training-actions.model';
+import { isNeverCheck } from '../../../../../helpers/is-never-check.helper';
 
 @Component({
     selector: 'bl-training-item-actions',
@@ -26,9 +29,10 @@ export class TrainingItemActionsComponent {
     @Input()
     timeCreated: string;
 
-    constructor(private readonly deleteTrainingActionService: DeleteTrainingActionService) {}
+    @Output()
+    actionPerformed = new EventEmitter<TrainingActionPerformed<DeleteTrainingActionData>>();
 
-    async performAction(action: TrainingItemActions): Promise<void> {
+    performAction(action: TrainingItemActions): void {
         const data: DeleteTrainingActionData = {
             weekDays: this.weekDays,
             timeCreated: this.timeCreated,
@@ -36,8 +40,19 @@ export class TrainingItemActionsComponent {
             training: this.training,
         };
         switch (action) {
-            case 'delete':
-                await this.deleteTrainingActionService.perform(data);
+            case 'delete': {
+                this.actionPerformed.emit({
+                    action: 'delete',
+                    data,
+                });
+                break;
+            }
+            case 'more': {
+                break;
+            }
+            default: {
+                isNeverCheck(action);
+            }
         }
     }
 }

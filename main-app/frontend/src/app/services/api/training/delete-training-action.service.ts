@@ -10,25 +10,20 @@ import { mapDateInterval } from '../../../helpers/training/past-trainings/map-pa
 import { StreamData } from '../../../models/common/common.model';
 import { Paginator, SearchDataDto } from '../../../models/common/paginator.model';
 import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
-import { TrainingActions } from '../../../models/training/past-trainings/training-actions/training-actions.model';
 import { DeleteTrainingActionData } from '../../../models/training/past-trainings/training-actions/training-actions.model';
 import {
     DeleteTrainingActionComponent,
     DeleteTrainingActionDialogData,
 } from '../../../views/shared/training/training-actions/delete-training-action/delete-training-action.component';
 
-@Injectable()
-export class DeleteTrainingActionService implements TrainingActions {
+@Injectable({ providedIn: 'root' })
+export class DeleteTrainingActionService {
     constructor(
         private _http: HttpClient,
         private _modalController: ModalController,
         private _datePipe: DatePipe,
         private _translateService: TranslateService,
     ) {}
-
-    async perform(data: DeleteTrainingActionData): Promise<void> {
-        await this.openDeleteTrainingDialog(data);
-    }
 
     async openDeleteTrainingDialog(data: DeleteTrainingActionData): Promise<void> {
         const modal = await this._modalController.create({
