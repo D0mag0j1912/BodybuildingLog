@@ -14,7 +14,7 @@
                             {{ 'common.bodyweight' | translate }}
                         </strong>
                         <span class="bodyweight--value">
-                            {{ training.bodyweight + ' kg' }}
+                            {{ training.bodyweight + ' ' + training.preferences.weightUnit }}
                         </span>
                     </div>
                 </ion-col>
@@ -44,6 +44,7 @@
                 [weekDays]="weekDays"
                 [dayIndex]="dayIndex"
                 [timeCreated]="timeCreated"
+                (actionPerformed)="onTrainingActionPerformed($event)"
             ></bl-training-item-actions>
         </div>
     </ion-card-content>

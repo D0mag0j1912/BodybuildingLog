@@ -1,14 +1,6 @@
 import { DatePipe } from '@angular/common';
-import {
-    AfterViewChecked,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    ElementRef,
-    OnDestroy,
-    ViewChild,
-} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { AfterViewChecked, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
     add,
@@ -22,15 +14,16 @@ import {
     startOfWeek,
     subDays,
 } from 'date-fns';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
-import { NavController } from '@ionic/angular';
+import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
+import { catchError, concatMap, delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { OverlayEventDetail } from '@ionic/core';
+import { ModalController, NavController } from '@ionic/angular';
 import { Storage } from '@capacitor/storage';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/common.model';
-import { Paginator, PaginatorChanged } from '../../../models/common/paginator.model';
+import { Paginator, PaginatorChanged, SearchDataDto } from '../../../models/common/paginator.model';
 import {
     DateInterval,
     PastTrainingsQueryParams,
@@ -57,12 +50,22 @@ import { DayActivatedType } from '../../../models/training/past-trainings/day-ac
 import { INITIAL_PAGE, DEFAULT_SIZE } from '../../../constants/shared/paginator.const';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { TrainingItemWrapperHeights } from '../../../constants/enums/training-item-wrapper-heights.enum';
+import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import {
+    DeleteTrainingActionData,
+    TrainingActionPerformed,
+} from '../../../models/training/past-trainings/training-actions/training-actions.model';
+import {
+    DeleteTrainingActionComponent,
+    DeleteTrainingActionDialogData,
+} from '../../shared/training/training-actions/delete-training-action/delete-training-action.component';
+import { TrainingActionsService } from '../../../services/api/training/delete-training-action.service';
+import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 
 @Component({
     selector: 'bl-past-trainings',
     templateUrl: './past-trainings.component.html',
     styleUrls: ['./past-trainings.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
 export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
@@ -118,11 +121,12 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         private _sharedStoreService: SharedStoreService,
         private _preferencesService: PreferencesService,
         private _preferencesStoreService: PreferencesStoreService,
-        private _changeDetectorRef: ChangeDetectorRef,
+        private _trainingActionsService: TrainingActionsService,
         private _route: ActivatedRoute,
         private _datePipe: DatePipe,
         private _router: Router,
         private _navController: NavController,
+        private _modalController: ModalController,
     ) {
         this._route.queryParams
             .pipe(takeUntil(this._unsubscribeService))
@@ -132,7 +136,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe((response: StreamData<Paginator<PastTrainings>>) => {
                 this.pastTrainings$ = of(response).pipe(mapStreamData());
-                this._changeDetectorRef.markForCheck();
             });
     }
 
@@ -235,7 +238,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                             }),
                             mapStreamData(),
                         );
-                    this._changeDetectorRef.markForCheck();
                 });
         }
     }
@@ -313,11 +315,68 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         }
     }
 
-    async onTrainingItemClicked(): Promise<void> {
-        if (this.trainingItemWrapper) {
-            const scrollTop = (this.trainingItemWrapper.nativeElement as HTMLDivElement).scrollTop;
-            await this._pastTrainingsStoreService.emitWrapperScroll(scrollTop);
-        }
+    async onTrainingItemClicked(clickedTraining: NewTraining): Promise<void> {
+        this._route.queryParams.pipe(take(1)).subscribe(async (params: Params) => {
+            await this._pastTrainingsStoreService.emitPastTrainingsQueryParams(
+                params as PastTrainingsQueryParams,
+            );
+            await Storage.set({
+                key: StorageItems.QUERY_PARAMS,
+                value: JSON.stringify(params as PastTrainingsQueryParams),
+            });
+            await this._router.navigate(['/training/tabs/new-training', clickedTraining._id]);
+            if (this.trainingItemWrapper) {
+                const scrollTop = (this.trainingItemWrapper.nativeElement as HTMLDivElement)
+                    .scrollTop;
+                await this._pastTrainingsStoreService.emitWrapperScroll(scrollTop);
+            }
+        });
+    }
+
+    async onTrainingActionPerformed(
+        rootData: TrainingActionPerformed<DeleteTrainingActionData>,
+    ): Promise<void> {
+        const modal = await this._modalController.create({
+            component: DeleteTrainingActionComponent,
+            componentProps: {
+                title$: this._translateService.stream(
+                    'training.past_trainings.actions.delete_training',
+                ),
+                dateCreated$: this._translateService
+                    .stream(`weekdays.${rootData.data.weekDays[rootData.data.dayIndex]}`)
+                    .pipe(
+                        map(
+                            (value: { [key: string]: string }) =>
+                                `${value} (${this._datePipe.transform(
+                                    rootData.data.training.trainingDate,
+                                    'dd.MM.yyyy',
+                                )})`,
+                        ),
+                    ),
+                timeCreated: rootData.data.timeCreated,
+                training: rootData.data.training,
+            } as DeleteTrainingActionDialogData,
+        });
+        await modal.present();
+
+        from(modal.onDidDismiss())
+            .pipe(
+                concatMap((response: OverlayEventDetail<string | boolean>) => {
+                    if (response.role === DialogRoles.DELETE_TRAINING) {
+                        if (typeof response.data === 'string') {
+                            return this._trainingActionsService
+                                .deleteTraining(response.data, this.getDeleteTrainingMeta())
+                                .pipe(catchError((_) => EMPTY));
+                        }
+                        return EMPTY;
+                    }
+                    return EMPTY;
+                }),
+                takeUntil(this._unsubscribeService),
+            )
+            .subscribe((response: StreamData<Paginator<PastTrainings>>) =>
+                this._sharedStoreService.deletedTraining$$.next(response),
+            );
     }
 
     async logNewTraining(): Promise<void> {
@@ -428,7 +487,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                     mapStreamData(),
                 );
         }
-        this._changeDetectorRef.markForCheck();
     }
 
     private onPaginatorChangedFilterHandler(
@@ -458,7 +516,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     private updatePageAndSize(response: StreamData<Paginator<PastTrainings>>): void {
         this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
         this.size = response?.Value?.Size ?? DEFAULT_SIZE;
-        this._changeDetectorRef.markForCheck();
     }
 
     private calculateDate(
@@ -578,6 +635,36 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                     startDate,
                     this.dateFormat,
                 )})</span`;
+        }
+    }
+
+    private getDeleteTrainingMeta(): {
+        searchData: SearchDataDto | undefined;
+        currentDate: Date | undefined;
+    } {
+        const isSearch = !!this._route.snapshot.queryParams?.search;
+        if (isSearch) {
+            const searchValue = (this._route.snapshot.queryParams?.search as string).trim();
+            const page = +this._route.snapshot.queryParams?.page ?? INITIAL_PAGE;
+            const size = +this._route.snapshot.queryParams?.size ?? DEFAULT_SIZE;
+            return {
+                searchData: {
+                    page: page,
+                    size: size,
+                    searchValue: searchValue,
+                } as SearchDataDto,
+                currentDate: undefined,
+            };
+        } else {
+            const splittedDate = (this._route.snapshot.queryParams.startDate as string)?.split('-');
+            return {
+                searchData: undefined,
+                currentDate: new Date(`
+                    ${splittedDate[2]}-
+                    ${splittedDate[1]}-
+                    ${splittedDate[0]}
+                `),
+            };
         }
     }
 }

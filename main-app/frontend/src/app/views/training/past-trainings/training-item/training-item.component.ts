@@ -1,20 +1,11 @@
-import {
-    ChangeDetectionStrategy,
-    Component,
-    EventEmitter,
-    Input,
-    OnInit,
-    Output,
-} from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { format } from 'date-fns';
-import { take } from 'rxjs/operators';
-import { Storage } from '@capacitor/storage';
-import { StorageItems } from '../../../../constants/enums/storage-items.enum';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
-import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
-import { TrainingItemActions } from '../../../../models/training/past-trainings/training-actions/training-actions.model';
-import { PastTrainingsStoreService } from '../../../../services/store/training/past-trainings-store.service';
+import {
+    DeleteTrainingActionData,
+    TrainingActionPerformed,
+    TrainingItemActions,
+} from '../../../../models/training/past-trainings/training-actions/training-actions.model';
 
 @Component({
     selector: 'bl-training-item',
@@ -22,7 +13,7 @@ import { PastTrainingsStoreService } from '../../../../services/store/training/p
     styleUrls: ['./training-item.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TrainingItemComponent implements OnInit {
+export class TrainingItemComponent {
     readonly weekDays: string[] = [
         'sunday',
         'monday',
@@ -39,33 +30,27 @@ export class TrainingItemComponent implements OnInit {
     dayIndex: number;
 
     @Input()
-    training: NewTraining;
+    set training(training: NewTraining) {
+        this._training = training;
+        this.timeCreated = format(new Date(training.trainingDate), 'HH:mm');
+        this.dayIndex = new Date(training.trainingDate).getDay();
+    }
+    get training(): NewTraining {
+        return this._training;
+    }
+    private _training: NewTraining;
 
     @Output()
-    readonly trainingItemClicked: EventEmitter<void> = new EventEmitter<void>();
+    trainingItemClicked = new EventEmitter<void>();
 
-    constructor(
-        private readonly _pastTrainingsStoreService: PastTrainingsStoreService,
-        private readonly _route: ActivatedRoute,
-        private readonly _router: Router,
-    ) {}
+    @Output()
+    trainingActionPerformed = new EventEmitter<TrainingActionPerformed<DeleteTrainingActionData>>();
 
-    ngOnInit(): void {
-        this.timeCreated = format(new Date(this.training.trainingDate), 'HH:mm');
-        this.dayIndex = new Date(this.training.trainingDate).getDay();
+    trainingClicked(): void {
+        this.trainingItemClicked.emit();
     }
 
-    async trainingClicked(): Promise<void> {
-        this._route.queryParams.pipe(take(1)).subscribe(async (params: Params) => {
-            this.trainingItemClicked.emit();
-            await this._pastTrainingsStoreService.emitPastTrainingsQueryParams(
-                params as PastTrainingsQueryParams,
-            );
-            await Storage.set({
-                key: StorageItems.QUERY_PARAMS,
-                value: JSON.stringify(params as PastTrainingsQueryParams),
-            });
-            await this._router.navigate(['/training/tabs/new-training', this.training._id]);
-        });
+    onTrainingActionPerformed(data: TrainingActionPerformed<DeleteTrainingActionData>): void {
+        this.trainingActionPerformed.emit(data);
     }
 }

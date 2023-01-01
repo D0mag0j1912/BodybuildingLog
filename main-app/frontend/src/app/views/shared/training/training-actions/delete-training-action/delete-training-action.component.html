@@ -9,22 +9,20 @@
     </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding ion-text-center">
-    <ng-container *ngIf="training$ | async as training">
-        <ion-text class="title">{{ title$ | async }}</ion-text>
-        <ion-text class="created-at-key">{{ 'training.past_trainings.created_at' | translate }}</ion-text>
-        <ion-text class="created-at-value">
-            {{ dateCreated$ | async }}
-            <span class="dot"></span>
-            <span class="time">{{ ' ' + (timeCreated$ | async) }}</span>
-        </ion-text>
-        <div class="exercises-wrapper">
-            <span class="exercises-key">{{ 'common.exercises' | translate }}</span>
-            <strong *ngFor="let exercise of training.exercises" class="exercises-value">
-                {{ exercise.exerciseData.name | translate }}
-            </strong>
-        </div>
-        <ion-button class="delete-btn" color="primary" [disabled]="isLoading" (click)="deleteTraining(training._id)">
-            {{ 'common.actions.delete' | translate }}
-        </ion-button>
-    </ng-container>
+    <ion-text class="title">{{ title$ | async }}</ion-text>
+    <ion-text class="created-at-key">{{ 'training.past_trainings.created_at' | translate }}</ion-text>
+    <ion-text class="created-at-value">
+        {{ dateCreated$ | async }}
+        <span class="dot"></span>
+        <span class="time">{{ ' ' + timeCreated }}</span>
+    </ion-text>
+    <div class="exercises-wrapper">
+        <span class="exercises-key">{{ 'common.exercises' | translate }}</span>
+        <strong *ngFor="let exercise of training.exercises" class="exercises-value">
+            {{ exercise.exerciseData.name | translate }}
+        </strong>
+    </div>
+    <ion-button class="delete-btn" color="primary" (click)="deleteTraining()">
+        {{ 'common.actions.delete' | translate }}
+    </ion-button>
 </ion-content>

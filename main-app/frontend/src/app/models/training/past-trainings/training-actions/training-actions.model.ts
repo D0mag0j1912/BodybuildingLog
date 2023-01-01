@@ -2,13 +2,14 @@ import { NewTraining } from '../../new-training/new-training.model';
 
 export type TrainingItemActions = 'delete' | 'more';
 
-export interface TrainingActions {
-    perform(data: DeleteTrainingActionData): void;
+export interface TrainingActionPerformed<T> {
+    action: TrainingItemActions;
+    data: T;
 }
 
 export interface DeleteTrainingActionData {
-    readonly weekDays: string[];
-    readonly timeCreated: string;
-    readonly dayIndex: number;
-    readonly training: NewTraining;
+    weekDays: string[];
+    timeCreated: string;
+    dayIndex: number;
+    training: NewTraining;
 }

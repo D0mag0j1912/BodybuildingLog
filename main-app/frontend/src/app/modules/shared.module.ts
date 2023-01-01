@@ -5,7 +5,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { IonicModule } from '@ionic/angular';
 import { PipesModule } from '../pipes/pipes.module';
 import { NotFoundResolverService } from '../services/shared/not-found-resolver.service';
-import { DeleteTrainingActionService } from '../services/api/training/delete-training-action.service';
 import { NotFoundComponent } from '../views/shared/not-found/not-found.component';
 import { DeleteTrainingActionComponent } from '../views/shared/training/training-actions/delete-training-action/delete-training-action.component';
 import { MoreTrainingActionComponent } from '../views/shared/training/training-actions/more-training-action/more-training-action.component';
@@ -41,6 +40,6 @@ const IMPORTS = [PipesModule, SkeletonLoaderModule, SanitizeHtmlModule];
     declarations: [...COMPONENTS, ...DIRECTIVES, ...ACTION_COMPONENTS],
     imports: [...EXTERNAL_IMPORTS, ...IMPORTS],
     exports: [...COMPONENTS],
-    providers: [NotFoundResolverService, DeleteTrainingActionService],
+    providers: [NotFoundResolverService],
 })
 export class SharedModule {}

@@ -46,6 +46,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     searchEl: IonInput;
 
     searchValue = '';
+    inputMaxLength = INPUT_MAX_LENGTH;
 
     sortOptions: [
         KeyValue<PeriodFilterType, Observable<string>>,
@@ -53,20 +54,20 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     ] = [
         {
             key: 'week',
-            value: this.translateService.stream('training.past_trainings.show_by_week'),
+            value: this._translateService.stream('training.past_trainings.show_by_week'),
         },
         {
             key: 'day',
-            value: this.translateService.stream('training.past_trainings.show_by_day'),
+            value: this._translateService.stream('training.past_trainings.show_by_day'),
         },
     ];
 
     constructor(
-        private readonly unsubscribeService: UnsubscribeService,
-        private readonly translateService: TranslateService,
-        private readonly route: ActivatedRoute,
+        private _unsubscribeService: UnsubscribeService,
+        private _translateService: TranslateService,
+        private _route: ActivatedRoute,
     ) {
-        const searchQueryParam = this.route.snapshot.queryParamMap?.get('search');
+        const searchQueryParam = this._route.snapshot.queryParamMap?.get('search');
         if (searchQueryParam) {
             this.searchValue = searchQueryParam;
         }
@@ -78,13 +79,9 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
                 filter((value: string) => value.length <= 50),
                 debounceTime(500),
                 distinctUntilChanged(),
-                takeUntil(this.unsubscribeService),
+                takeUntil(this._unsubscribeService),
             )
             .subscribe((value: string) => this.trainingEmitted.next(value));
-    }
-
-    get inputMaxLength(): number {
-        return INPUT_MAX_LENGTH;
     }
 
     ngAfterViewInit(): void {

@@ -13,16 +13,6 @@ export const EXERCISE_SCHEMA = new Schema({
         type: String,
         required: true,
     },
-    translations: {
-        hr: {
-            type: String,
-            required: true,
-        },
-        en: {
-            type: String,
-            required: true,
-        },
-    },
     availableSetCategories: {
         type: [String],
         required: true,
@@ -54,13 +44,6 @@ export class Exercise {
     @IsNotEmpty()
     @IsString()
     primaryMuscleGroup: string;
-
-    @ApiProperty()
-    @IsNotEmpty()
-    translations: {
-        hr: string;
-        en: string;
-    };
 
     @ApiProperty()
     @IsArray()
