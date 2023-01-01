@@ -50,6 +50,10 @@ import { INITIAL_PAGE, DEFAULT_SIZE } from '../../../constants/shared/paginator.
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { TrainingItemWrapperHeights } from '../../../constants/enums/training-item-wrapper-heights.enum';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import {
+    DeleteTrainingActionData,
+    TrainingActionPerformed,
+} from '../../../models/training/past-trainings/training-actions/training-actions.model';
 
 @Component({
     selector: 'bl-past-trainings',
@@ -318,6 +322,10 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                 await this._pastTrainingsStoreService.emitWrapperScroll(scrollTop);
             }
         });
+    }
+
+    onTrainingActionPerformed(data: TrainingActionPerformed<DeleteTrainingActionData>): void {
+        //TODO: Insert deletion logic
     }
 
     async logNewTraining(): Promise<void> {

@@ -50,7 +50,7 @@ export class TrainingItemComponent {
         this.trainingItemClicked.emit();
     }
 
-    onActionPerformed(data: TrainingActionPerformed<DeleteTrainingActionData>): void {
+    onTrainingActionPerformed(data: TrainingActionPerformed<DeleteTrainingActionData>): void {
         this.trainingActionPerformed.emit(data);
     }
 }
