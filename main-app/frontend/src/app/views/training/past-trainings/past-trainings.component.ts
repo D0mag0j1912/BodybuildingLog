@@ -16,7 +16,7 @@ import {
 } from 'date-fns';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
-import { NavController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { Storage } from '@capacitor/storage';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
@@ -54,6 +54,10 @@ import {
     DeleteTrainingActionData,
     TrainingActionPerformed,
 } from '../../../models/training/past-trainings/training-actions/training-actions.model';
+import {
+    DeleteTrainingActionComponent,
+    DeleteTrainingActionDialogData,
+} from '../../shared/training/training-actions/delete-training-action/delete-training-action.component';
 
 @Component({
     selector: 'bl-past-trainings',
@@ -118,6 +122,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         private _datePipe: DatePipe,
         private _router: Router,
         private _navController: NavController,
+        private _modalController: ModalController,
     ) {
         this._route.queryParams
             .pipe(takeUntil(this._unsubscribeService))
@@ -324,8 +329,31 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         });
     }
 
-    onTrainingActionPerformed(data: TrainingActionPerformed<DeleteTrainingActionData>): void {
-        //TODO: Insert deletion logic
+    async onTrainingActionPerformed(
+        rootData: TrainingActionPerformed<DeleteTrainingActionData>,
+    ): Promise<void> {
+        const modal = await this._modalController.create({
+            component: DeleteTrainingActionComponent,
+            componentProps: {
+                title$: this._translateService.stream(
+                    'training.past_trainings.actions.delete_training',
+                ),
+                dateCreated$: this._translateService
+                    .stream(`weekdays.${rootData.data.weekDays[rootData.data.dayIndex]}`)
+                    .pipe(
+                        map(
+                            (value: { [key: string]: string }) =>
+                                `${value} (${this._datePipe.transform(
+                                    rootData.data.training.trainingDate,
+                                    'dd.MM.yyyy',
+                                )})`,
+                        ),
+                    ),
+                timeCreated: rootData.data.timeCreated,
+                training: rootData.data.training,
+            } as DeleteTrainingActionDialogData,
+        });
+        await modal.present();
     }
 
     async logNewTraining(): Promise<void> {
