@@ -9,7 +9,7 @@ import { Paginator, SearchDataDto } from '../../../models/common/paginator.model
 import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
 
 @Injectable({ providedIn: 'root' })
-export class DeleteTrainingActionService {
+export class TrainingActionService {
     constructor(private _http: HttpClient) {}
 
     deleteTraining(

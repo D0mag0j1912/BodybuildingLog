@@ -9,7 +9,7 @@ import { Paginator } from '../../../../../models/common/paginator.model';
 import { DialogRoles } from '../../../../../constants/enums/dialog-roles.enum';
 import { PastTrainings } from '../../../../../models/training/past-trainings/past-trainings.model';
 import { SharedStoreService } from '../../../../../services/store/shared/shared-store.service';
-import { DeleteTrainingActionService } from '../../../../../services/api/training/delete-training-action.service';
+import { TrainingActionService } from '../../../../../services/api/training/delete-training-action.service';
 import { SearchDataDto } from '../../../../../models/common/paginator.model';
 import { DEFAULT_SIZE, INITIAL_PAGE } from '../../../../../constants/shared/paginator.const';
 
@@ -42,7 +42,7 @@ export class DeleteTrainingActionComponent {
 
     constructor(
         private _sharedStoreService: SharedStoreService,
-        private _deleteTrainingActionService: DeleteTrainingActionService,
+        private _deleteTrainingActionService: TrainingActionService,
         private _modalController: ModalController,
         private _changeDetectorRef: ChangeDetectorRef,
         private _route: ActivatedRoute,
