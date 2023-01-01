@@ -22,7 +22,7 @@
             {{ exercise.exerciseData.name | translate }}
         </strong>
     </div>
-    <ion-button class="delete-btn" color="primary" [disabled]="isLoading" (click)="deleteTraining(training._id)">
+    <ion-button class="delete-btn" color="primary" (click)="deleteTraining()">
         {{ 'common.actions.delete' | translate }}
     </ion-button>
 </ion-content>

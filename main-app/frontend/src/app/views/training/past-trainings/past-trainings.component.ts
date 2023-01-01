@@ -14,15 +14,16 @@ import {
     startOfWeek,
     subDays,
 } from 'date-fns';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
+import { catchError, concatMap, delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { OverlayEventDetail } from '@ionic/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { Storage } from '@capacitor/storage';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/common.model';
-import { Paginator, PaginatorChanged } from '../../../models/common/paginator.model';
+import { Paginator, PaginatorChanged, SearchDataDto } from '../../../models/common/paginator.model';
 import {
     DateInterval,
     PastTrainingsQueryParams,
@@ -58,6 +59,8 @@ import {
     DeleteTrainingActionComponent,
     DeleteTrainingActionDialogData,
 } from '../../shared/training/training-actions/delete-training-action/delete-training-action.component';
+import { TrainingActionsService } from '../../../services/api/training/delete-training-action.service';
+import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 
 @Component({
     selector: 'bl-past-trainings',
@@ -118,6 +121,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         private _sharedStoreService: SharedStoreService,
         private _preferencesService: PreferencesService,
         private _preferencesStoreService: PreferencesStoreService,
+        private _trainingActionsService: TrainingActionsService,
         private _route: ActivatedRoute,
         private _datePipe: DatePipe,
         private _router: Router,
@@ -354,6 +358,25 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             } as DeleteTrainingActionDialogData,
         });
         await modal.present();
+
+        from(modal.onDidDismiss())
+            .pipe(
+                concatMap((response: OverlayEventDetail<string | boolean>) => {
+                    if (response.role === DialogRoles.DELETE_TRAINING) {
+                        if (typeof response.data === 'string') {
+                            return this._trainingActionsService
+                                .deleteTraining(response.data, this.getDeleteTrainingMeta())
+                                .pipe(catchError((_) => EMPTY));
+                        }
+                        return EMPTY;
+                    }
+                    return EMPTY;
+                }),
+                takeUntil(this._unsubscribeService),
+            )
+            .subscribe((response: StreamData<Paginator<PastTrainings>>) =>
+                this._sharedStoreService.deletedTraining$$.next(response),
+            );
     }
 
     async logNewTraining(): Promise<void> {
@@ -612,6 +635,36 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                     startDate,
                     this.dateFormat,
                 )})</span`;
+        }
+    }
+
+    private getDeleteTrainingMeta(): {
+        searchData: SearchDataDto | undefined;
+        currentDate: Date | undefined;
+    } {
+        const isSearch = !!this._route.snapshot.queryParams?.search;
+        if (isSearch) {
+            const searchValue = (this._route.snapshot.queryParams?.search as string).trim();
+            const page = +this._route.snapshot.queryParams?.page ?? INITIAL_PAGE;
+            const size = +this._route.snapshot.queryParams?.size ?? DEFAULT_SIZE;
+            return {
+                searchData: {
+                    page: page,
+                    size: size,
+                    searchValue: searchValue,
+                } as SearchDataDto,
+                currentDate: undefined,
+            };
+        } else {
+            const splittedDate = (this._route.snapshot.queryParams.startDate as string)?.split('-');
+            return {
+                searchData: undefined,
+                currentDate: new Date(`
+                    ${splittedDate[2]}-
+                    ${splittedDate[1]}-
+                    ${splittedDate[0]}
+                `),
+            };
         }
     }
 }
