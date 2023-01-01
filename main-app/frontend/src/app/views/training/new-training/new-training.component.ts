@@ -11,7 +11,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { format, parseISO } from 'date-fns';
-import { from, Observable, of } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import {
     concatMap,
     delay,
@@ -67,6 +67,9 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
     providers: [UnsubscribeService],
 })
 export class NewTrainingComponent implements OnDestroy {
+    private _restartExercises$ = new BehaviorSubject<SingleExercise[]>([]);
+
+    restartExercises$ = this._restartExercises$.asObservable();
     trainingStream$: Observable<StreamData<Exercise[]>> | undefined = undefined;
     currentPreferences$ = this._preferencesStoreService.preferencesChanged$.pipe(
         tap((preferences: Preferences) => {
@@ -436,6 +439,7 @@ export class NewTrainingComponent implements OnDestroy {
             this._fillTrainingDate(dayClickedDate),
         );
         this._setFormattedDate(this.newTrainingForm.controls.trainingDate.value);
+        this._restartExercises$.next(currentTrainingState.exercises);
     }
 
     private _setFormattedDate(dateValue: string): void {
