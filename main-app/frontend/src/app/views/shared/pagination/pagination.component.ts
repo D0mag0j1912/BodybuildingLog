@@ -44,9 +44,10 @@ export class PaginationComponent {
     isLoading = false;
 
     @Output()
-    readonly paginatorChanged: EventEmitter<PaginatorChanged> = new EventEmitter<PaginatorChanged>();
+    readonly paginatorChanged: EventEmitter<PaginatorChanged> =
+        new EventEmitter<PaginatorChanged>();
 
-    constructor(private readonly translateService: TranslateService) {}
+    constructor(private _translateService: TranslateService) {}
 
     loadPage(
         page?: Page,
@@ -95,7 +96,7 @@ export class PaginationComponent {
     }
 
     setPageText$(totalPages: number): Observable<string> {
-        return this.translateService.stream('common').pipe(
+        return this._translateService.stream('common').pipe(
             map(
                 (value: { [key: string]: string }) =>
                     `
