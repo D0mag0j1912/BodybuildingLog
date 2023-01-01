@@ -3,7 +3,6 @@ import {
     EventEmitter,
     Input,
     OnDestroy,
-    OnInit,
     Output,
     QueryList,
     ViewChildren,
@@ -43,7 +42,7 @@ import { SetsComponent } from './sets/sets.component';
     styleUrls: ['./single-exercise.component.scss'],
     providers: [UnsubscribeService],
 })
-export class SingleExerciseComponent implements OnInit, OnDestroy {
+export class SingleExerciseComponent implements OnDestroy {
     private _isExercisePicker$ = new BehaviorSubject<boolean>(true);
 
     isExercisePicker$ = this._isExercisePicker$.asObservable();
@@ -72,6 +71,21 @@ export class SingleExerciseComponent implements OnInit, OnDestroy {
     );
 
     form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
+
+    @Input()
+    set restartExercises(exercises: SingleExercise[]) {
+        if (exercises.length > 0) {
+            while (this.form.length !== 0) {
+                this.form.removeAt(0);
+            }
+            for (const exercise of exercises) {
+                this.addExercise(exercise);
+            }
+        }
+
+        this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName()]);
+        this.form.updateValueAndValidity();
+    }
 
     @Input()
     editTrainingData: NewTraining;
@@ -115,22 +129,6 @@ export class SingleExerciseComponent implements OnInit, OnDestroy {
                 this._isExercisePicker$.next(false);
                 setTimeout(() => this._isExercisePicker$.next(true), 1);
             });
-    }
-
-    ngOnInit(): void {
-        this.exercisesState$.pipe(take(1)).subscribe((exercises: SingleExercise[]) => {
-            if (exercises.length > 0) {
-                while (this.form.length !== 0) {
-                    this.form.removeAt(0);
-                }
-                for (const exercise of exercises) {
-                    this.addExercise(exercise);
-                }
-            }
-
-            this.form.setValidators([SingleExerciseValidators.checkDuplicateExerciseName()]);
-            this.form.updateValueAndValidity();
-        });
     }
 
     ngOnDestroy(): void {
