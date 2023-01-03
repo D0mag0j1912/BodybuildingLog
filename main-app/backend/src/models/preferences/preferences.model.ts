@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
@@ -19,39 +19,33 @@ export const PREFERENCES_SCHEMA = new Schema({
         type: String,
         required: true,
     },
-    showByPeriod: {
-        type: String,
-        required: true,
-    },
-    setDurationUnit: {
-        type: String,
-        required: true,
-    },
+    showByPeriod: String,
+    setDurationUnit: String,
 });
 
 export class PreferencesDto {
-    @ApiProperty({ required: false })
+    @ApiPropertyOptional({ description: 'Id of authenticated user' })
     @IsOptional()
     @IsDefined({ message: '@common.errors.something_went_wrong' })
     @IsString({ message: '@common.errors.something_went_wrong' })
     userId: string;
 
-    @ApiProperty()
+    @ApiProperty({ description: "User's current language code preference" })
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.language_required' })
     languageCode: LanguageCodeType;
 
-    @ApiProperty()
+    @ApiProperty({ description: "User's current weight unit preference" })
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.weight_unit_required' })
     weightUnit: WeightUnitType;
 
-    @ApiProperty()
+    @ApiPropertyOptional({ description: "User's current past trainings period preference" })
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.show_by_period_required' })
     showByPeriod: PeriodFilterType;
 
-    @ApiProperty()
+    @ApiPropertyOptional({ description: "User's current set duration unit preference" })
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.set_duration_unit_required' })
     setDurationUnit: SetDurationUnitType;

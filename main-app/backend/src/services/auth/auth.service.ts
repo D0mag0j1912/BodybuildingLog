@@ -3,11 +3,14 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { compare, hash } from 'bcrypt';
 import { Model } from 'mongoose';
-import { UserDto } from '../../models/auth/login.model';
+import { UserDto } from '../../models/auth/login/login.model';
 import { PreferencesDto } from '../../models/preferences/preferences.model';
-import { AuthResponse } from '../../models/auth/auth-response.model';
+import { LoginResponseDto } from '../../models/auth/login/login-response.model';
 import { JwtPayload } from '../../models/auth/jwt-payload.model';
 import { SignupDto } from '../../models/auth/signup/signup.model';
+import { SignupResponseDto } from '../../models/auth/signup/signup-response.model';
+import { SignupRequestDto } from '../../models/auth/signup/signup-request.model';
+import { LoginRequestDto } from '../../models/auth/login/login-request.model';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +37,7 @@ export class AuthService {
         }
     }
 
-    async login(userDto: UserDto): Promise<AuthResponse> {
+    async login(userDto: LoginRequestDto): Promise<LoginResponseDto> {
         try {
             const { email: email, password: password } = userDto;
             const user: UserDto = await this.userModel.findOne({ email: email }).exec();
@@ -42,14 +45,14 @@ export class AuthService {
                 return {
                     Success: false,
                     Message: 'auth.errors.email_not_registered',
-                } as AuthResponse;
+                } as LoginResponseDto;
             }
             const comparison: boolean = await compare(password, user.password);
             if (!comparison) {
                 return {
                     Success: false,
                     Message: 'auth.errors.password_wrong_email',
-                } as AuthResponse;
+                } as LoginResponseDto;
             }
             const payload: JwtPayload = {
                 email: user.email,
@@ -61,7 +64,7 @@ export class AuthService {
                 ExpiresIn: 10800,
                 _id: user._id,
                 Message: 'auth.login_success',
-            } as AuthResponse;
+            } as LoginResponseDto;
         } catch (error: unknown) {
             throw new InternalServerErrorException('auth.errors.login_error');
         }
@@ -82,14 +85,23 @@ export class AuthService {
         }
     }
 
-    async signup(preferencesDto: PreferencesDto, signupDto: SignupDto): Promise<AuthResponse> {
+    async signup(data: SignupRequestDto): Promise<SignupResponseDto> {
+        const preferencesData = {
+            languageCode: data.languageCode,
+            weightUnit: data.weightUnit,
+        } as PreferencesDto;
+        const signupData = {
+            email: data.email,
+            password: data.password,
+            confirmPassword: data.confirmPassword,
+        } as SignupDto;
         try {
-            const { languageCode: language, weightUnit: weightUnit } = preferencesDto;
+            const { languageCode: language, weightUnit: weightUnit } = preferencesData;
             const {
                 email: email,
                 password: password,
                 confirmPassword: confirmPassword,
-            } = signupDto;
+            } = signupData;
             const encryptedPassword: string = await hash(password, 10);
             const user = new this.userModel({
                 email: email,
@@ -107,7 +119,7 @@ export class AuthService {
             return {
                 Success: true,
                 Message: 'auth.signup_success',
-            } as AuthResponse;
+            } as SignupResponseDto;
         } catch (error: unknown) {
             throw new InternalServerErrorException('auth.errors.signup_error');
         }

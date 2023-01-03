@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
-import { UserDto } from '../../../models/auth/login.model';
+import { UserDto } from '../../../models/auth/login/login.model';
 import { GeneralResponseData } from '../../../models/common/response.model';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { DuplicateExercisePipe } from '../../../pipes/training/duplicate-exercise.pipe';

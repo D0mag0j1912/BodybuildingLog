@@ -5,7 +5,7 @@ import { PastTrainings } from '../../../models/training/past-trainings/past-trai
 import { DeleteTrainingActionService } from '../../../services/training/training-actions/delete-training-action.service';
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
-import { UserDto } from '../../../models/auth/login.model';
+import { UserDto } from '../../../models/auth/login/login.model';
 import { StreamData } from '../../../models/common/response.model';
 import { DeleteTrainingMetaDto } from '../../../models/training/training-actions/delete-training-action.model';
 import { ParseDeleteTrainingRequest } from '../../../pipes/training/parse-delete-training-request.pipe';

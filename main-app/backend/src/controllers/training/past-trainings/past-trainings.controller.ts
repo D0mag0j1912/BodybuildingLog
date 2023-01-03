@@ -6,7 +6,7 @@ import { PastTrainings } from '../../../models/training/past-trainings/past-trai
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
-import { UserDto } from '../../../models/auth/login.model';
+import { UserDto } from '../../../models/auth/login/login.model';
 import { Paginator } from '../../../models/common/paginator.model';
 import { StreamData } from '../../../models/common/response.model';
 import { PeriodFilterType } from '../../../models/training/past-trainings/period-filter.type';

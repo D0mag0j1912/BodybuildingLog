@@ -2,7 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class SignupDto {
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Email entered by user during registration',
+        example: 'john.doe@gmail.com',
+    })
     @IsEmail(
         {},
         {
@@ -14,7 +17,10 @@ export class SignupDto {
     })
     email: string;
 
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Password entered by user during registration',
+        example: 'Password@123',
+    })
     @Length(6, 20, {
         message: 'auth.errors.password_length',
     })
@@ -26,7 +32,10 @@ export class SignupDto {
     })
     password: string;
 
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Password entered by user during registration',
+        example: 'Password@123',
+    })
     @Length(6, 20, {
         message: 'auth.errors.confirm_password_length',
     })
