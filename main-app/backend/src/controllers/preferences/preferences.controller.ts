@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiInternalServerErrorResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { GeneralResponseData } from '../../models/common/response.model';
 import { PreferencesDto } from '../../models/preferences/preferences.model';
 import { PreferencesService } from '../../services/preferences/preferences.service';
@@ -12,6 +12,15 @@ import { PreferenceChangedType } from '../../models/preferences/preferences.type
 export class PreferencesController {
     constructor(private _preferencesService: PreferencesService) {}
 
+    @ApiOkResponse({
+        description: 'Returns preferences object to the client',
+        status: 200,
+        type: PreferencesDto,
+    })
+    @ApiInternalServerErrorResponse({
+        status: 500,
+        description: 'Return internal server error message to the client',
+    })
     @Get(':userId')
     async getPreferences(@Param('userId') userId: string): Promise<PreferencesDto> {
         return this._preferencesService.getPreferences(userId);

@@ -11,8 +11,12 @@ export class PreferencesService {
     constructor(@InjectModel('Preferences') private _preferencesModel: Model<PreferencesDto>) {}
 
     async getPreferences(userId: string): Promise<PreferencesDto> {
-        const preferences = await this._preferencesModel.findOne({ userId: userId }).exec();
-        return preferences;
+        try {
+            const preferences = await this._preferencesModel.findOne({ userId: userId }).exec();
+            return preferences;
+        } catch {
+            throw new InternalServerErrorException('common.errors.something_went_wrong');
+        }
     }
 
     async setPreferences(
