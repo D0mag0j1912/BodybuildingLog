@@ -4,7 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login/login.model';
-import { GeneralResponseData } from '../../../models/common/response.model';
+import { GeneralResponseDto } from '../../../models/common/response.model';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { DuplicateExercisePipe } from '../../../pipes/training/duplicate-exercise.pipe';
 import { NewTrainingService } from '../../../services/training/new-training.service';
@@ -19,7 +19,7 @@ export class NewTrainingController {
     async addTraining(
         @Body(DuplicateExercisePipe)
         trainingData: NewTraining,
-    ): Promise<GeneralResponseData> {
+    ): Promise<GeneralResponseDto> {
         return this.newTrainingService.addTraining(trainingData);
     }
 
@@ -30,7 +30,7 @@ export class NewTrainingController {
         @Param('id') trainingId: string,
         @Body(DuplicateExercisePipe)
         updatedTrainingData: NewTraining,
-    ): Promise<GeneralResponseData> {
+    ): Promise<GeneralResponseDto> {
         return this.newTrainingService.editTraining(trainingId, updatedTrainingData, user._id);
     }
 }

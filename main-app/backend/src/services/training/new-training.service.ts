@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { GeneralResponseData, StreamData } from '../../models/common/response.model';
+import { GeneralResponseDto, StreamData } from '../../models/common/response.model';
 import { Error } from '../../models/errors/error';
 import { Exercise } from '../../models/training/exercise.model';
 import { NewTraining } from '../../models/training/new-training/new-training.model';
@@ -17,7 +17,7 @@ export class NewTrainingService {
         trainingId: string,
         updatedTrainingData: NewTraining,
         loggedUserId: string,
-    ): Promise<GeneralResponseData> {
+    ): Promise<GeneralResponseDto> {
         try {
             const trainingToBeUpdated: NewTraining = await this._trainingModel
                 .findById(trainingId)
@@ -28,7 +28,7 @@ export class NewTrainingService {
             await this._trainingModel
                 .updateOne({ _id: trainingId }, { $set: updatedTrainingData })
                 .exec();
-            return { Message: 'training.new_training.training_updated' } as GeneralResponseData;
+            return { Message: 'training.new_training.training_updated' } as GeneralResponseDto;
         } catch (error: unknown) {
             switch ((error as Error).status) {
                 case 500:
@@ -45,10 +45,10 @@ export class NewTrainingService {
         }
     }
 
-    async addTraining(trainingData: NewTraining): Promise<GeneralResponseData> {
+    async addTraining(trainingData: NewTraining): Promise<GeneralResponseDto> {
         try {
             await this._trainingModel.create(trainingData);
-            return { Message: 'training.new_training.training_saved' } as GeneralResponseData;
+            return { Message: 'training.new_training.training_saved' } as GeneralResponseDto;
         } catch (error: unknown) {
             throw new InternalServerErrorException(
                 'training.new_training.errors.error_save_training',
