@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 import { SetCategoryType } from './new-training/set.type';
@@ -23,12 +23,12 @@ export const EXERCISE_SCHEMA = new Schema({
     },
 });
 
-export class Exercise {
-    @ApiProperty({ required: false })
+export class ExerciseDto {
+    @ApiPropertyOptional()
     @IsOptional()
     @IsString()
     @IsMongoId()
-    _id: number;
+    _id: string;
 
     @ApiProperty()
     @IsNotEmpty()

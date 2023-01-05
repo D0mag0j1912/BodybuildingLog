@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { Schema } from 'mongoose';
 import { EXERCISE_SCHEMA } from '../exercise.model';
-import { Exercise } from '../exercise.model';
+import { ExerciseDto } from '../exercise.model';
 import { SET_SCHEMA } from './set.model';
 import { Set } from './set.model';
 
@@ -42,7 +42,7 @@ export class SingleExercise {
     _id: string;
 
     @ApiProperty()
-    exerciseData: Exercise;
+    exerciseData: ExerciseDto;
 
     @ApiProperty()
     @ArrayMinSize(1, { message: 'training.new_training.errors.at_least_one_set' })
@@ -57,6 +57,6 @@ export class SingleExercise {
 
     @ApiProperty()
     @ValidateNested({ each: true })
-    @Type(() => Exercise)
-    availableExercises: Exercise[];
+    @Type(() => ExerciseDto)
+    availableExercises: ExerciseDto[];
 }

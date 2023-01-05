@@ -3,13 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { GeneralResponseDto, StreamData } from '../../models/common/response.model';
 import { Error } from '../../models/errors/error';
-import { Exercise } from '../../models/training/exercise.model';
+import { ExerciseDto } from '../../models/training/exercise.model';
 import { NewTraining } from '../../models/training/new-training/new-training.model';
 
 @Injectable()
 export class NewTrainingService {
     constructor(
-        @InjectModel('Exercise') private _exerciseModel: Model<Exercise>,
+        @InjectModel('Exercise') private _exerciseModel: Model<ExerciseDto>,
         @InjectModel('Training') private _trainingModel: Model<NewTraining>,
     ) {}
 
@@ -56,9 +56,9 @@ export class NewTrainingService {
         }
     }
 
-    async getExercises(): Promise<StreamData<Exercise[]>> {
+    async getExercises(): Promise<StreamData<ExerciseDto[]>> {
         try {
-            const exercises: Exercise[] = await this._exerciseModel.find().exec();
+            const exercises: ExerciseDto[] = await this._exerciseModel.find().exec();
             if (exercises.length === 0) {
                 throw new InternalServerErrorException(
                     'training.new_training.errors.exercises_not_available',
@@ -68,19 +68,11 @@ export class NewTrainingService {
                 IsLoading: true,
                 IsError: false,
                 Value: exercises,
-            } as StreamData<Exercise[]>;
+            } as StreamData<ExerciseDto[]>;
         } catch (error: unknown) {
             throw new InternalServerErrorException(
                 'training.new_training.errors.exercises_not_available',
             );
-        }
-    }
-    //TODO: check later
-    async getExerciseByName(exerciseName: string): Promise<Exercise> {
-        try {
-            return await this._exerciseModel.findOne({ name: exerciseName }).exec();
-        } catch (error: unknown) {
-            throw new InternalServerErrorException();
         }
     }
 }
