@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ExerciseController } from '../../controllers/training/new-training/get-exercise.controller';
 import { NewTrainingController } from '../../controllers/training/new-training/new-training.controller';
 import { DeleteTrainingActionController } from '../../controllers/training/past-trainings/delete-training-action.controller';
 import { PastTrainingsController } from '../../controllers/training/past-trainings/past-trainings.controller';
@@ -17,7 +16,6 @@ import { PreferencesModule } from '../preferences/preferences.module';
 import { GetExercisesController } from '../../controllers/training/new-training/get-exercises.controller';
 
 const CONTROLLERS = [
-    ExerciseController,
     NewTrainingController,
     PastTrainingsController,
     DeleteTrainingActionController,

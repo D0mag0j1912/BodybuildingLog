@@ -9,11 +9,11 @@ import { StreamData } from '../../../models/common/response.model';
 @Controller('training/get-exercises')
 @UseGuards(AuthGuard())
 export class GetExercisesController {
-    constructor(private readonly newTrainingService: NewTrainingService) {}
+    constructor(private _newTrainingService: NewTrainingService) {}
 
     @ApiCreatedResponse({ type: Exercise })
     @Get()
     async getExercises(): Promise<StreamData<Exercise[]>> {
-        return this.newTrainingService.getExercises();
+        return this._newTrainingService.getExercises();
     }
 }

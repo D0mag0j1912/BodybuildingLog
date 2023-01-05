@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { from, Observable, of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
@@ -22,13 +22,6 @@ export class NewTrainingService {
         private _newTrainingStoreService: NewTrainingStoreService,
         private _exercisesStoreService: ExercisesStoreService,
     ) {}
-
-    getExerciseByName(exerciseName: string): Observable<Exercise> {
-        const params = new HttpParams().set('exerciseName', exerciseName);
-        return this._http.get<Exercise>(environment.BACKEND + '/training/get_exercise', {
-            params: params,
-        });
-    }
 
     getExercises(): Observable<StreamData<Exercise[]>> {
         return this._http
