@@ -28,7 +28,10 @@ export class PreferencesController {
         status: 500,
         description: 'Return internal server error message to the client',
     })
-    @ApiForbiddenResponse({ description: 'Forbidden' })
+    @ApiForbiddenResponse({
+        status: 403,
+        description: 'Forbidden',
+    })
     @Get(':userId')
     async getPreferences(@Param('userId') userId: string): Promise<PreferencesDto> {
         return this._preferencesService.getPreferences(userId);
@@ -43,7 +46,10 @@ export class PreferencesController {
         status: 500,
         description: 'Return internal server error message to the client',
     })
-    @ApiForbiddenResponse({ description: 'Forbidden' })
+    @ApiForbiddenResponse({
+        status: 403,
+        description: 'Forbidden',
+    })
     @Put(':userId')
     @ApiBody({ type: SetPreferencesDto })
     async setPreferences(

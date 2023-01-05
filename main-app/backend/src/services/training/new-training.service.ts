@@ -4,22 +4,22 @@ import { Model } from 'mongoose';
 import { GeneralResponseDto, StreamData } from '../../models/common/response.model';
 import { Error } from '../../models/errors/error';
 import { ExerciseDto } from '../../models/training/exercise.model';
-import { NewTraining } from '../../models/training/new-training/new-training.model';
+import { NewTrainingDto } from '../../models/training/new-training/new-training.model';
 
 @Injectable()
 export class NewTrainingService {
     constructor(
         @InjectModel('Exercise') private _exerciseModel: Model<ExerciseDto>,
-        @InjectModel('Training') private _trainingModel: Model<NewTraining>,
+        @InjectModel('Training') private _trainingModel: Model<NewTrainingDto>,
     ) {}
 
     async editTraining(
         trainingId: string,
-        updatedTrainingData: NewTraining,
+        updatedTrainingData: NewTrainingDto,
         loggedUserId: string,
     ): Promise<GeneralResponseDto> {
         try {
-            const trainingToBeUpdated: NewTraining = await this._trainingModel
+            const trainingToBeUpdated: NewTrainingDto = await this._trainingModel
                 .findById(trainingId)
                 .exec();
             if (trainingToBeUpdated.userId.toString() !== loggedUserId.toString()) {
@@ -45,7 +45,7 @@ export class NewTrainingService {
         }
     }
 
-    async addTraining(trainingData: NewTraining): Promise<GeneralResponseDto> {
+    async addTraining(trainingData: NewTrainingDto): Promise<GeneralResponseDto> {
         try {
             await this._trainingModel.create(trainingData);
             return { Message: 'training.new_training.training_saved' } as GeneralResponseDto;

@@ -7,18 +7,18 @@ import {
     endOfDay,
 } from 'date-fns';
 import { max, min } from 'date-fns';
-import { NewTraining } from '../models/training/new-training/new-training.model';
+import { NewTrainingDto } from '../models/training/new-training/new-training.model';
 import { DateInterval } from '../models/common/dates.model';
 
 export function setTrainingDate(
-    weekOrSearch: Date | NewTraining[],
+    weekOrSearch: Date | NewTrainingDto[],
     searchEmptyDates?: DateInterval,
 ): DateInterval {
     let minDate: Date;
     let maxDate: Date;
     if (Array.isArray(weekOrSearch)) {
         if (weekOrSearch.length > 0) {
-            const dates: Date[] = weekOrSearch.map((x: NewTraining) => x.trainingDate);
+            const dates: Date[] = weekOrSearch.map((x: NewTrainingDto) => x.trainingDate);
             minDate = startOfDay(min(dates));
             maxDate = startOfDay(max(dates));
         } else {

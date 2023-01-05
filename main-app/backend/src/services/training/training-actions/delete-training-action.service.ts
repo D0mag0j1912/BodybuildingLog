@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
 import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
 import { Paginator } from '../../../models/common/paginator.model';
 import { StreamData } from '../../../models/common/response.model';
@@ -13,7 +13,7 @@ import { PastTrainingsService } from '../past-trainings.service';
 @Injectable()
 export class DeleteTrainingActionService {
     constructor(
-        @InjectModel('Training') private readonly trainingModel: Model<NewTraining>,
+        @InjectModel('Training') private readonly trainingModel: Model<NewTrainingDto>,
         private readonly pastTrainingService: PastTrainingsService,
         private readonly preferencesService: PreferencesService,
     ) {}
@@ -24,7 +24,7 @@ export class DeleteTrainingActionService {
         meta: DeleteTrainingMetaDto,
     ): Promise<StreamData<PastTrainings>> {
         try {
-            const trainingToBeRemoved: NewTraining = await this.trainingModel
+            const trainingToBeRemoved: NewTrainingDto = await this.trainingModel
                 .findById(trainingId as string)
                 .exec();
             if (loggedUserId.toString() !== trainingToBeRemoved.userId.toString()) {

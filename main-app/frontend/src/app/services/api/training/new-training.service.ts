@@ -54,14 +54,14 @@ export class NewTrainingService {
 
     addTraining(trainingData: NewTraining): Observable<GeneralResponseData> {
         return this._http.post<GeneralResponseData>(
-            environment.BACKEND + '/training/handle-training',
+            environment.BACKEND + '/training/new-training',
             trainingData,
         );
     }
 
     updateTraining(trainingData: NewTraining, trainingId: string): Observable<GeneralResponseData> {
         return this._http.put<GeneralResponseData>(
-            environment.BACKEND + `/training/handle-training/${trainingId}`,
+            environment.BACKEND + `/training/new-training/${trainingId}`,
             trainingData,
         );
     }

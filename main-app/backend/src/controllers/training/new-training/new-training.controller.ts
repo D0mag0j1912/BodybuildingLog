@@ -1,26 +1,44 @@
 import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags } from '@nestjs/swagger';
+import {
+    ApiCreatedResponse,
+    ApiForbiddenResponse,
+    ApiInternalServerErrorResponse,
+    ApiTags,
+} from '@nestjs/swagger';
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login/login.model';
 import { GeneralResponseDto } from '../../../models/common/response.model';
-import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
 import { DuplicateExercisePipe } from '../../../pipes/training/duplicate-exercise.pipe';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
 @ApiTags('Training')
-@Controller('training/handle-training')
+@Controller('training/new-training')
 @UseGuards(AuthGuard())
 export class NewTrainingController {
-    constructor(private readonly newTrainingService: NewTrainingService) {}
+    constructor(private _newTrainingService: NewTrainingService) {}
 
+    @ApiCreatedResponse({
+        status: 201,
+        type: GeneralResponseDto,
+        description: 'Returns message after successful creation',
+    })
+    @ApiInternalServerErrorResponse({
+        status: 500,
+        description: 'Returns server error',
+    })
+    @ApiForbiddenResponse({
+        status: 403,
+        description: 'Forbidden',
+    })
     @Post()
     async addTraining(
         @Body(DuplicateExercisePipe)
-        trainingData: NewTraining,
+        trainingData: NewTrainingDto,
     ): Promise<GeneralResponseDto> {
-        return this.newTrainingService.addTraining(trainingData);
+        return this._newTrainingService.addTraining(trainingData);
     }
 
     @Put(':id')
@@ -29,8 +47,8 @@ export class NewTrainingController {
         @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
         @Body(DuplicateExercisePipe)
-        updatedTrainingData: NewTraining,
+        updatedTrainingData: NewTrainingDto,
     ): Promise<GeneralResponseDto> {
-        return this.newTrainingService.editTraining(trainingId, updatedTrainingData, user._id);
+        return this._newTrainingService.editTraining(trainingId, updatedTrainingData, user._id);
     }
 }

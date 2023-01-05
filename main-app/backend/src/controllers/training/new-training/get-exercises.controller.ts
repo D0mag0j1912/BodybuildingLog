@@ -48,7 +48,10 @@ export class GetExercisesController {
         status: 500,
         description: 'Server fails to return exercises',
     })
-    @ApiForbiddenResponse({ description: 'Forbidden' })
+    @ApiForbiddenResponse({
+        status: 403,
+        description: 'Forbidden',
+    })
     @Get()
     async getExercises(): Promise<StreamModelDto<ExerciseDto[]>> {
         return this._newTrainingService.getExercises();

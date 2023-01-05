@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
     ArrayMinSize,
@@ -48,8 +48,8 @@ export const NEW_TRAINING_SCHEMA = new Schema({
     },
 });
 
-export class NewTraining {
-    @ApiProperty({ required: false })
+export class NewTrainingDto {
+    @ApiPropertyOptional()
     @IsString({ message: '@training.new_training.errors.error_save_training' })
     @IsMongoId()
     @IsOptional()
@@ -66,7 +66,7 @@ export class NewTraining {
     @IsNotEmpty()
     editMode: boolean;
 
-    @ApiProperty({ required: false })
+    @ApiPropertyOptional()
     @IsOptional()
     @IsNumber(
         {},
