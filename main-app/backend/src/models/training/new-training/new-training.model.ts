@@ -15,7 +15,7 @@ import {
 } from 'class-validator';
 import { Schema } from 'mongoose';
 import { NewTrainingPreferencesType } from './new-training.type';
-import { SingleExercise, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model';
+import { SingleExerciseDto, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model';
 
 export const NEW_TRAINING_SCHEMA = new Schema({
     exercises: {
@@ -55,18 +55,7 @@ export class NewTrainingDto {
     @IsOptional()
     _id: string;
 
-    @ApiProperty()
-    @ArrayMinSize(1, { message: 'training.new_training.errors.at_least_one_exercise' })
-    @ValidateNested({ each: true })
-    @Type(() => SingleExercise)
-    exercises: SingleExercise[];
-
-    @ApiProperty()
-    @IsBoolean({ message: '@training.new_training.errors.error_save_training' })
-    @IsNotEmpty()
-    editMode: boolean;
-
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: "User's bodyweight" })
     @IsOptional()
     @IsNumber(
         {},
@@ -81,6 +70,17 @@ export class NewTrainingDto {
         message: '@training.new_training.errors.bodyweight_max',
     })
     bodyweight: number;
+
+    @ApiProperty()
+    @ArrayMinSize(1, { message: 'training.new_training.errors.at_least_one_exercise' })
+    @ValidateNested({ each: true })
+    @Type(() => SingleExerciseDto)
+    exercises: SingleExerciseDto[];
+
+    @ApiProperty()
+    @IsBoolean({ message: '@training.new_training.errors.error_save_training' })
+    @IsNotEmpty()
+    editMode: boolean;
 
     @ApiProperty()
     @IsDateString(

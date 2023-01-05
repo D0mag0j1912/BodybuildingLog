@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
     ArrayMinSize,
@@ -34,14 +34,14 @@ export const SINGLE_EXERCISE_SCHEMA = new Schema({
     },
 });
 
-export class SingleExercise {
-    @ApiProperty({ required: false })
+export class SingleExerciseDto {
+    @ApiPropertyOptional()
     @IsOptional()
     @IsString()
     @IsMongoId()
     _id: string;
 
-    @ApiProperty()
+    @ApiProperty({ type: ExerciseDto })
     exerciseData: ExerciseDto;
 
     @ApiProperty()
@@ -55,7 +55,7 @@ export class SingleExercise {
     @IsNotEmpty({ message: '@training.new_training.errors.error_save_training' })
     total: number;
 
-    @ApiProperty()
+    @ApiProperty({ type: ExerciseDto })
     @ValidateNested({ each: true })
     @Type(() => ExerciseDto)
     availableExercises: ExerciseDto[];

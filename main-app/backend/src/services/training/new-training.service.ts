@@ -5,6 +5,7 @@ import { GeneralResponseDto, StreamData } from '../../models/common/response.mod
 import { Error } from '../../models/errors/error';
 import { ExerciseDto } from '../../models/training/exercise.model';
 import { NewTrainingDto } from '../../models/training/new-training/new-training.model';
+import { RawNewTrainingDto } from '../../models/training/new-training/raw-new-training.model';
 
 @Injectable()
 export class NewTrainingService {
@@ -45,7 +46,7 @@ export class NewTrainingService {
         }
     }
 
-    async addTraining(trainingData: NewTrainingDto): Promise<GeneralResponseDto> {
+    async addTraining(trainingData: RawNewTrainingDto): Promise<GeneralResponseDto> {
         try {
             await this._trainingModel.create(trainingData);
             return { Message: 'training.new_training.training_saved' } as GeneralResponseDto;
