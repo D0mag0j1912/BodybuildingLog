@@ -1,10 +1,11 @@
 import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiInternalServerErrorResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiInternalServerErrorResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { GeneralResponseDto } from '../../models/common/response.model';
 import { PreferencesDto } from '../../models/preferences/preferences.model';
 import { PreferencesService } from '../../services/preferences/preferences.service';
 import { PreferenceChangedType } from '../../models/preferences/preferences.type';
+import { SetPreferencesDto } from '../../models/preferences/set-preferences.model';
 
 @ApiTags('Preferences')
 @Controller('preferences')
@@ -36,6 +37,7 @@ export class PreferencesController {
         description: 'Return internal server error message to the client',
     })
     @Put(':userId')
+    @ApiBody({ type: SetPreferencesDto })
     async setPreferences(
         @Body('preferences') preferencesDto: PreferencesDto,
         @Body('preferenceChanged') preferenceChanged: PreferenceChangedType,
