@@ -108,7 +108,7 @@ export class AuthService {
                 password: encryptedPassword,
             });
             const savedUser: UserDto = await user.save();
-            const preferences: PreferencesDto = {
+            const preferences: Partial<PreferencesDto> = {
                 userId: savedUser._id,
                 languageCode: language,
                 weightUnit: weightUnit,
