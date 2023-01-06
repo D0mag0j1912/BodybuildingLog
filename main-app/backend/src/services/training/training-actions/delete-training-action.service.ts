@@ -13,9 +13,9 @@ import { PastTrainingsService } from '../past-trainings.service';
 @Injectable()
 export class DeleteTrainingActionService {
     constructor(
-        @InjectModel('Training') private readonly trainingModel: Model<NewTrainingDto>,
-        private readonly pastTrainingService: PastTrainingsService,
-        private readonly preferencesService: PreferencesService,
+        @InjectModel('Training') private _trainingModel: Model<NewTrainingDto>,
+        private _pastTrainingService: PastTrainingsService,
+        private _preferencesService: PreferencesService,
     ) {}
 
     async deleteTraining(
@@ -24,26 +24,27 @@ export class DeleteTrainingActionService {
         meta: DeleteTrainingMetaDto,
     ): Promise<StreamData<PastTrainings>> {
         try {
-            const trainingToBeRemoved: NewTrainingDto = await this.trainingModel
+            const trainingToBeRemoved: NewTrainingDto = await this._trainingModel
                 .findById(trainingId as string)
                 .exec();
             if (loggedUserId.toString() !== trainingToBeRemoved.userId.toString()) {
                 throw new UnauthorizedException('common.errors.not_authorized');
             }
-            await this.trainingModel
+            await this._trainingModel
                 .findByIdAndRemove(trainingId, { useFindAndModify: false })
                 .exec();
-            const userPreferences = await this.preferencesService.getPreferences(loggedUserId);
+            const userPreferences = await this._preferencesService.getPreferences(loggedUserId);
             let pastTrainings: StreamData<Paginator<PastTrainings>>;
+            //TODO: Refactor frontend so this part is not needed. Delete should be returning void, not past trainings (Optimistic deletion on frontend. Remove first from store, then on refresh, fetch from API).
             if (meta?.currentDate) {
-                pastTrainings = await this.pastTrainingService.getPastTrainings(
+                pastTrainings = await this._pastTrainingService.getPastTrainings(
                     meta.currentDate,
                     userPreferences.showByPeriod,
                     loggedUserId,
                     true,
                 );
             } else {
-                pastTrainings = await this.pastTrainingService.searchTrainings(
+                pastTrainings = await this._pastTrainingService.searchTrainings(
                     loggedUserId,
                     meta.searchData.searchValue,
                     meta.searchData.size,

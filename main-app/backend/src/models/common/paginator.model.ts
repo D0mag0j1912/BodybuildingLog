@@ -1,3 +1,4 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsLowercase, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export interface Paginator<T> {
@@ -11,17 +12,20 @@ export interface Paginator<T> {
 }
 
 export interface PaginatorParams {
-    readonly Page: number;
-    readonly Size: number;
+    Page: number;
+    Size: number;
 }
 
 export class SearchDataDto {
+    @ApiProperty()
     @IsNotEmpty()
     page: number;
 
+    @ApiProperty()
     @IsNotEmpty()
     size: number;
 
+    @ApiPropertyOptional()
     @IsOptional()
     @IsString()
     @IsLowercase()
