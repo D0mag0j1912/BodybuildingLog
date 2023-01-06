@@ -14,7 +14,7 @@ import {
     ValidateNested,
 } from 'class-validator';
 import { Schema } from 'mongoose';
-import { NewTrainingPreferencesType } from './new-training.type';
+import { NewTrainingPreferencesDto } from './new-training-preferences.model';
 import { SingleExerciseDto, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model';
 
 export const NEW_TRAINING_SCHEMA = new Schema({
@@ -71,18 +71,21 @@ export class NewTrainingDto {
     })
     bodyweight: number;
 
-    @ApiProperty()
+    @ApiProperty({
+        type: [SingleExerciseDto],
+        description: 'Training exercises data',
+    })
     @ArrayMinSize(1, { message: 'training.new_training.errors.at_least_one_exercise' })
     @ValidateNested({ each: true })
     @Type(() => SingleExerciseDto)
     exercises: SingleExerciseDto[];
 
-    @ApiProperty()
+    @ApiProperty({ description: "Whether it's edit mode or not" })
     @IsBoolean({ message: '@training.new_training.errors.error_save_training' })
     @IsNotEmpty()
     editMode: boolean;
 
-    @ApiProperty()
+    @ApiProperty({ description: 'Training date' })
     @IsDateString(
         {},
         {
@@ -91,11 +94,14 @@ export class NewTrainingDto {
     )
     trainingDate: Date;
 
-    @ApiProperty()
+    @ApiProperty({ description: 'Id of authenticated user' })
     @IsNotEmpty({ message: '@common.errors.not_authenticated' })
     userId: string;
 
-    @ApiProperty()
+    @ApiProperty({
+        type: NewTrainingPreferencesDto,
+        description: 'Training preferences',
+    })
     @IsNotEmpty()
-    preferences: NewTrainingPreferencesType;
+    preferences: NewTrainingPreferencesDto;
 }

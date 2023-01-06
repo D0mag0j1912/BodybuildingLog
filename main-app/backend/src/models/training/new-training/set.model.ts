@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsMongoId, IsNumber, IsOptional, IsString, Max, Min, NotEquals } from 'class-validator';
 import { Schema } from 'mongoose';
 
@@ -12,21 +12,21 @@ export const SET_SCHEMA = new Schema({
     duration: Number,
 });
 
-export class Set {
-    @ApiProperty({ required: false })
+export class SetDto {
+    @ApiPropertyOptional()
     @IsOptional()
     @IsString()
     @IsMongoId()
     _id: string;
 
-    @ApiProperty()
+    @ApiProperty({ description: 'Set number' })
     @Min(1, { message: '@training.new_training.errors.error_save_training' })
     @Max(50, { message: '@training.new_training.errors.set_number_max' })
     @IsNumber({}, { message: '@training.new_training.errors.error_save_training' })
     @NotEquals(0, { message: '@training.new_training.errors.error_save_training' })
     setNumber: number;
 
-    @ApiProperty()
+    @ApiPropertyOptional({ description: 'Weight lifted' })
     @IsOptional()
     @Min(1, {
         message: '@training.new_training.errors.weight_min',
@@ -36,7 +36,7 @@ export class Set {
     @NotEquals(0, { message: '@training.new_training.errors.weight_required' })
     weight: number;
 
-    @ApiProperty()
+    @ApiPropertyOptional({ description: 'Reps performed' })
     @IsOptional()
     @Min(1, {
         message: '@training.new_training.errors.reps_min',
@@ -55,7 +55,7 @@ export class Set {
     })
     reps: number;
 
-    @ApiProperty()
+    @ApiPropertyOptional({ description: 'Set duration' })
     @IsOptional()
     @Min(0, {
         message: '@training.new_training.errors.duration_min',
