@@ -1,18 +1,19 @@
 import { Body, Controller, Delete, Param, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { PastTrainingsDto } from '../../../models/training/past-trainings/past-trainings.model';
 import { DeleteTrainingActionService } from '../../../services/training/training-actions/delete-training-action.service';
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login/login.model';
-import { StreamData } from '../../../models/common/response.model';
 import { DeleteTrainingActionRequestDto } from '../../../models/training/training-actions/delete-training-action-request.model';
 import { StreamModelResponse } from '../../../decorators/stream-model-response.decorator';
+import { StreamModelDto } from '../../../models/common/stream.model';
 
 @ApiTags('Training')
 @Controller('training/delete-training')
 @UseGuards(AuthGuard())
+@ApiExtraModels(StreamModelDto, PastTrainingsDto)
 export class DeleteTrainingActionController {
     constructor(private _deleteTrainingActionService: DeleteTrainingActionService) {}
 
@@ -23,7 +24,7 @@ export class DeleteTrainingActionController {
         @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
         @Body() meta: DeleteTrainingActionRequestDto,
-    ): Promise<StreamData<PastTrainingsDto>> {
+    ): Promise<StreamModelDto<PastTrainingsDto>> {
         return this._deleteTrainingActionService.deleteTraining(
             trainingId,
             user._id,

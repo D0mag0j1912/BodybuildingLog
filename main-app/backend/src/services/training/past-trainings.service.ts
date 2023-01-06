@@ -5,13 +5,13 @@ import { endOfDay, getDay, startOfDay } from 'date-fns';
 import { setTrainingDate, isNextWeek, isPreviousWeek } from '../../helpers/date.helper';
 import { paginate } from '../../helpers/pagination.helper';
 import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
-import { StreamData } from '../../models/common/response.model';
 import { NewTrainingDto } from '../../models/training/new-training/new-training.model';
 import { PastTrainingsDto } from '../../models/training/past-trainings/past-trainings.model';
 import { DateIntervalDto } from '../../models/common/dates.model';
 import { PreferencesService } from '../preferences/preferences.service';
 import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
 import { isNeverCheck } from '../../helpers/is-never-check';
+import { StreamModelDto } from '../../models/common/stream.model';
 
 @Injectable()
 export class PastTrainingsService {
@@ -25,7 +25,7 @@ export class PastTrainingsService {
         searchValue: string,
         size: number,
         page: number,
-    ): Promise<StreamData<Paginator<PastTrainingsDto>>> {
+    ): Promise<StreamModelDto<Paginator<PastTrainingsDto>>> {
         try {
             if (searchValue !== '') {
                 const query: PaginatorParams = {
@@ -66,7 +66,7 @@ export class PastTrainingsService {
                     IsLoading: true,
                     Value: results,
                     IsError: false,
-                } as StreamData<Paginator<PastTrainingsDto>>;
+                } as StreamModelDto<Paginator<PastTrainingsDto>>;
             } else {
                 const userPreferences = await this._preferencesService.getPreferences(loggedUserId);
                 return this.getPastTrainings(
@@ -82,14 +82,14 @@ export class PastTrainingsService {
         }
     }
 
-    async getPastTraining(trainingId: string): Promise<StreamData<NewTrainingDto>> {
+    async getPastTraining(trainingId: string): Promise<StreamModelDto<NewTrainingDto>> {
         try {
             const training = await this._trainingModel.findById(trainingId).exec();
             return {
                 IsLoading: true,
                 IsError: false,
                 Value: training,
-            } as StreamData<NewTrainingDto>;
+            } as StreamModelDto<NewTrainingDto>;
         } catch (error: unknown) {
             throw new InternalServerErrorException(
                 'training.past_trainings.errors.error_load_training',
@@ -102,7 +102,7 @@ export class PastTrainingsService {
         periodFilterType: PeriodFilterType,
         loggedUserId: string,
         isDeleteTraining?: boolean,
-    ): Promise<StreamData<Paginator<PastTrainingsDto>>> {
+    ): Promise<StreamModelDto<Paginator<PastTrainingsDto>>> {
         try {
             const dates: DateIntervalDto = setTrainingDate(new Date(currentDate));
             const condition: FilterQuery<NewTrainingDto> = {
@@ -143,7 +143,7 @@ export class PastTrainingsService {
                 IsLoading: true,
                 Value: results,
                 IsError: false,
-            } as StreamData<Paginator<PastTrainingsDto>>;
+            } as StreamModelDto<Paginator<PastTrainingsDto>>;
         } catch (error: unknown) {
             throw new InternalServerErrorException(
                 'training.past_trainings.errors.past_trainings_error_title',

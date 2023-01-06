@@ -4,11 +4,11 @@ import { Model } from 'mongoose';
 import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
 import { PastTrainingsDto } from '../../../models/training/past-trainings/past-trainings.model';
 import { Paginator } from '../../../models/common/paginator.model';
-import { StreamData } from '../../../models/common/response.model';
 import { Error } from '../../../models/errors/error';
 import { DeleteTrainingMetaDto } from '../../../models/training/training-actions/delete-training-action.model';
 import { PreferencesService } from '../../preferences/preferences.service';
 import { PastTrainingsService } from '../past-trainings.service';
+import { StreamModelDto } from '../../../models/common/stream.model';
 
 @Injectable()
 export class DeleteTrainingActionService {
@@ -22,7 +22,7 @@ export class DeleteTrainingActionService {
         trainingId: string,
         loggedUserId: string,
         meta: DeleteTrainingMetaDto,
-    ): Promise<StreamData<PastTrainingsDto>> {
+    ): Promise<StreamModelDto<PastTrainingsDto>> {
         try {
             const trainingToBeRemoved: NewTrainingDto = await this._trainingModel
                 .findById(trainingId as string)
@@ -34,7 +34,7 @@ export class DeleteTrainingActionService {
                 .findByIdAndRemove(trainingId, { useFindAndModify: false })
                 .exec();
             const userPreferences = await this._preferencesService.getPreferences(loggedUserId);
-            let pastTrainings: StreamData<Paginator<PastTrainingsDto>>;
+            let pastTrainings: StreamModelDto<Paginator<PastTrainingsDto>>;
             //TODO: Refactor frontend so this part is not needed. Delete should be returning void, not past trainings (Optimistic deletion on frontend. Remove first from store, then on refresh, fetch from API).
             if (meta?.currentDate) {
                 pastTrainings = await this._pastTrainingService.getPastTrainings(
@@ -55,7 +55,7 @@ export class DeleteTrainingActionService {
                 IsLoading: true,
                 Value: pastTrainings.Value,
                 IsError: false,
-            } as StreamData<PastTrainingsDto>;
+            } as StreamModelDto<PastTrainingsDto>;
         } catch (error: unknown) {
             switch ((error as Error).status) {
                 case 500:

@@ -9,9 +9,3 @@ export class GeneralResponseDto {
     @IsString()
     Message: string;
 }
-
-export interface StreamData<T> {
-    IsLoading: boolean;
-    IsError: boolean;
-    Value?: T;
-}

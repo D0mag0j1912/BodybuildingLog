@@ -1,7 +1,8 @@
 import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { GeneralResponseDto, StreamData } from '../../models/common/response.model';
+import { GeneralResponseDto } from '../../models/common/response.model';
+import { StreamModelDto } from '../../models/common/stream.model';
 import { Error } from '../../models/errors/error';
 import { ExerciseDto } from '../../models/training/exercise.model';
 import { NewTrainingDto } from '../../models/training/new-training/new-training.model';
@@ -55,7 +56,7 @@ export class NewTrainingService {
         }
     }
 
-    async getExercises(): Promise<StreamData<ExerciseDto[]>> {
+    async getExercises(): Promise<StreamModelDto<ExerciseDto[]>> {
         try {
             const exercises: ExerciseDto[] = await this._exerciseModel.find().exec();
             if (exercises.length === 0) {
@@ -67,7 +68,7 @@ export class NewTrainingService {
                 IsLoading: true,
                 IsError: false,
                 Value: exercises,
-            } as StreamData<ExerciseDto[]>;
+            } as StreamModelDto<ExerciseDto[]>;
         } catch (error: unknown) {
             throw new InternalServerErrorException(
                 'training.new_training.errors.exercises_not_available',

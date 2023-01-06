@@ -2,7 +2,7 @@ import { applyDecorators, Type } from '@nestjs/common';
 import { ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
 import { StreamModelDto } from '../models/common/stream.model';
 
-export const StreamModelResponse = <T extends Type<unknown>>(model: T) =>
+export const StreamModelResponse = <T extends Type<unknown>>(model: T, isArray = false) =>
     applyDecorators(
         ApiOkResponse({
             status: 200,
@@ -20,7 +20,7 @@ export const StreamModelResponse = <T extends Type<unknown>>(model: T) =>
                                 items: { $ref: getSchemaPath(model) },
                             },
                             Value: {
-                                type: 'array',
+                                type: isArray ? 'array' : 'object',
                                 items: { $ref: getSchemaPath(model) },
                             },
                         },
