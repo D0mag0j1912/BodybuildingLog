@@ -1,14 +1,6 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import {
-    ArrayMinSize,
-    IsMongoId,
-    IsNotEmpty,
-    IsNumber,
-    IsOptional,
-    IsString,
-    ValidateNested,
-} from 'class-validator';
+import { ArrayMinSize, IsNotEmpty, IsNumber, ValidateNested } from 'class-validator';
 import { Schema } from 'mongoose';
 import { EXERCISE_SCHEMA } from '../exercise.model';
 import { ExerciseDto } from '../exercise.model';
@@ -35,12 +27,6 @@ export const SINGLE_EXERCISE_SCHEMA = new Schema({
 });
 
 export class SingleExerciseDto {
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    @IsMongoId()
-    _id: string;
-
     @ApiProperty({ type: ExerciseDto })
     exerciseData: ExerciseDto;
 
