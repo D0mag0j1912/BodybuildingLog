@@ -2,7 +2,7 @@ import { BadRequestException, Controller, Get, Param, Query, UseGuards } from '@
 import { AuthGuard } from '@nestjs/passport';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
-import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
+import { PastTrainingsDto } from '../../../models/training/past-trainings/past-trainings.model';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
@@ -22,7 +22,7 @@ export class PastTrainingsController {
         @GET_USER() user: UserDto,
         @Query('currentDate') currentDate: Date,
         @Query('filterType') filterType: PeriodFilterType,
-    ): Promise<StreamData<Paginator<PastTrainings>>> {
+    ): Promise<StreamData<Paginator<PastTrainingsDto>>> {
         //TODO: Create custom Pipe
         if (!currentDate || !filterType) {
             throw new BadRequestException(

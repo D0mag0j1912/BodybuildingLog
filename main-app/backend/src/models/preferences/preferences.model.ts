@@ -24,21 +24,6 @@ export const PREFERENCES_SCHEMA = new Schema({
 });
 
 export class PreferencesDto {
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsDefined()
-    @IsMongoId()
-    _id: string;
-
-    @ApiPropertyOptional({
-        description: 'Id of authenticated user',
-        type: String,
-    })
-    @IsOptional()
-    @IsDefined({ message: '@common.errors.something_went_wrong' })
-    @IsString({ message: '@common.errors.something_went_wrong' })
-    userId: string;
-
     @ApiProperty({ description: "User's current language code preference" })
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.language_required' })
@@ -52,10 +37,25 @@ export class PreferencesDto {
     @ApiPropertyOptional({ description: "User's current past trainings period preference" })
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.show_by_period_required' })
-    showByPeriod: PeriodFilterType;
+    showByPeriod?: PeriodFilterType;
 
     @ApiPropertyOptional({ description: "User's current set duration unit preference" })
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.set_duration_unit_required' })
-    setDurationUnit: SetDurationUnitType;
+    setDurationUnit?: SetDurationUnitType;
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsDefined()
+    @IsMongoId()
+    _id?: string;
+
+    @ApiPropertyOptional({
+        description: 'Id of authenticated user',
+        type: String,
+    })
+    @IsOptional()
+    @IsDefined({ message: '@common.errors.something_went_wrong' })
+    @IsString({ message: '@common.errors.something_went_wrong' })
+    userId?: string;
 }

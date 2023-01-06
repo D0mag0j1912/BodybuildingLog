@@ -1,9 +1,16 @@
-import { DateInterval } from '../../common/dates.model';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
+import { DateIntervalDto } from '../../common/dates.model';
 import { NewTrainingDto } from '../new-training/new-training.model';
 
-export interface PastTrainings {
+export class PastTrainingsDto {
+    @ApiProperty({ type: NewTrainingDto })
+    @IsNotEmpty()
     Trainings: NewTrainingDto[];
-    Dates: DateInterval;
+
+    @ApiProperty({ type: DateIntervalDto })
+    Dates: DateIntervalDto;
+
     IsPreviousWeek?: boolean;
     IsNextWeek?: boolean;
     EarliestTrainingDate?: string;

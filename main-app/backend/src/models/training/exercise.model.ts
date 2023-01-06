@@ -24,12 +24,6 @@ export const EXERCISE_SCHEMA = new Schema({
 });
 
 export class ExerciseDto {
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    @IsMongoId()
-    _id: string;
-
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
@@ -54,4 +48,10 @@ export class ExerciseDto {
     @IsArray()
     @IsNotEmpty()
     selectedSetCategories: SetCategoryType[];
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsString()
+    @IsMongoId()
+    _id?: string;
 }

@@ -13,12 +13,6 @@ export const SET_SCHEMA = new Schema({
 });
 
 export class SetDto {
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    @IsMongoId()
-    _id: string;
-
     @ApiProperty({ description: 'Set number' })
     @Min(1, { message: '@training.new_training.errors.error_save_training' })
     @Max(50, { message: '@training.new_training.errors.set_number_max' })
@@ -34,7 +28,7 @@ export class SetDto {
     @Max(1000, { message: '@training.new_training.errors.weight_max' })
     @IsNumber({}, { message: '@training.new_training.errors.weight_number' })
     @NotEquals(0, { message: '@training.new_training.errors.weight_required' })
-    weight: number;
+    weight?: number;
 
     @ApiPropertyOptional({ description: 'Reps performed' })
     @IsOptional()
@@ -53,7 +47,7 @@ export class SetDto {
     @NotEquals(0, {
         message: '@training.new_training.errors.reps_required',
     })
-    reps: number;
+    reps?: number;
 
     @ApiPropertyOptional({ description: 'Set duration' })
     @IsOptional()
@@ -69,5 +63,11 @@ export class SetDto {
     @NotEquals(0, {
         message: '@training.new_training.errors.duration_required',
     })
-    duration: number;
+    duration?: number;
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsString()
+    @IsMongoId()
+    _id?: string;
 }

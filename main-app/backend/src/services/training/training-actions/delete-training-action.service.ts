@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException, UnauthorizedException } from 
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
-import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
+import { PastTrainingsDto } from '../../../models/training/past-trainings/past-trainings.model';
 import { Paginator } from '../../../models/common/paginator.model';
 import { StreamData } from '../../../models/common/response.model';
 import { Error } from '../../../models/errors/error';
@@ -22,7 +22,7 @@ export class DeleteTrainingActionService {
         trainingId: string,
         loggedUserId: string,
         meta: DeleteTrainingMetaDto,
-    ): Promise<StreamData<PastTrainings>> {
+    ): Promise<StreamData<PastTrainingsDto>> {
         try {
             const trainingToBeRemoved: NewTrainingDto = await this._trainingModel
                 .findById(trainingId as string)
@@ -34,7 +34,7 @@ export class DeleteTrainingActionService {
                 .findByIdAndRemove(trainingId, { useFindAndModify: false })
                 .exec();
             const userPreferences = await this._preferencesService.getPreferences(loggedUserId);
-            let pastTrainings: StreamData<Paginator<PastTrainings>>;
+            let pastTrainings: StreamData<Paginator<PastTrainingsDto>>;
             //TODO: Refactor frontend so this part is not needed. Delete should be returning void, not past trainings (Optimistic deletion on frontend. Remove first from store, then on refresh, fetch from API).
             if (meta?.currentDate) {
                 pastTrainings = await this._pastTrainingService.getPastTrainings(
@@ -55,7 +55,7 @@ export class DeleteTrainingActionService {
                 IsLoading: true,
                 Value: pastTrainings.Value,
                 IsError: false,
-            } as StreamData<PastTrainings>;
+            } as StreamData<PastTrainingsDto>;
         } catch (error: unknown) {
             switch ((error as Error).status) {
                 case 500:

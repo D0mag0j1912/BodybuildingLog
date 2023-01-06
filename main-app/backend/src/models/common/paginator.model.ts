@@ -29,5 +29,5 @@ export class SearchDataDto {
     @IsOptional()
     @IsString()
     @IsLowercase()
-    searchValue: string;
+    searchValue?: string;
 }

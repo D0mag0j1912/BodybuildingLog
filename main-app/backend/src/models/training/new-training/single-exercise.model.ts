@@ -35,12 +35,6 @@ export const SINGLE_EXERCISE_SCHEMA = new Schema({
 });
 
 export class SingleExerciseDto {
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    @IsMongoId()
-    _id: string;
-
     @ApiProperty({ type: ExerciseDto })
     exerciseData: ExerciseDto;
 
@@ -62,4 +56,10 @@ export class SingleExerciseDto {
     @ValidateNested({ each: true })
     @Type(() => ExerciseDto)
     availableExercises: ExerciseDto[];
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsString()
+    @IsMongoId()
+    _id?: string;
 }

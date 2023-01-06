@@ -5,10 +5,10 @@ import { SearchDataDto } from '../../common/paginator.model';
 export class DeleteTrainingMetaDto {
     @ApiPropertyOptional({ type: SearchDataDto })
     @IsOptional()
-    searchData: SearchDataDto;
+    searchData?: SearchDataDto;
 
     @ApiPropertyOptional()
     @IsOptional()
     @IsDate()
-    currentDate: Date;
+    currentDate?: Date;
 }

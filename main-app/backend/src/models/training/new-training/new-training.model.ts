@@ -49,28 +49,6 @@ export const NEW_TRAINING_SCHEMA = new Schema({
 });
 
 export class NewTrainingDto {
-    @ApiPropertyOptional()
-    @IsString({ message: '@training.new_training.errors.error_save_training' })
-    @IsMongoId()
-    @IsOptional()
-    _id: string;
-
-    @ApiPropertyOptional({ description: "User's bodyweight" })
-    @IsOptional()
-    @IsNumber(
-        {},
-        {
-            message: '@training.new_training.errors.bodyweight_number',
-        },
-    )
-    @Min(30, {
-        message: '@training.new_training.errors.bodyweight_min',
-    })
-    @Max(300, {
-        message: '@training.new_training.errors.bodyweight_max',
-    })
-    bodyweight: number;
-
     @ApiProperty({
         type: [SingleExerciseDto],
         description: 'Training exercises data',
@@ -104,4 +82,26 @@ export class NewTrainingDto {
     })
     @IsNotEmpty()
     preferences: NewTrainingPreferencesDto;
+
+    @ApiPropertyOptional()
+    @IsString({ message: '@training.new_training.errors.error_save_training' })
+    @IsMongoId()
+    @IsOptional()
+    _id?: string;
+
+    @ApiPropertyOptional({ description: "User's bodyweight" })
+    @IsOptional()
+    @IsNumber(
+        {},
+        {
+            message: '@training.new_training.errors.bodyweight_number',
+        },
+    )
+    @Min(30, {
+        message: '@training.new_training.errors.bodyweight_min',
+    })
+    @Max(300, {
+        message: '@training.new_training.errors.bodyweight_max',
+    })
+    bodyweight?: number;
 }

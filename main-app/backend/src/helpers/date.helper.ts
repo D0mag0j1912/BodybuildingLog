@@ -8,12 +8,12 @@ import {
 } from 'date-fns';
 import { max, min } from 'date-fns';
 import { NewTrainingDto } from '../models/training/new-training/new-training.model';
-import { DateInterval } from '../models/common/dates.model';
+import { DateIntervalDto } from '../models/common/dates.model';
 
 export function setTrainingDate(
     weekOrSearch: Date | NewTrainingDto[],
-    searchEmptyDates?: DateInterval,
-): DateInterval {
+    searchEmptyDates?: DateIntervalDto,
+): DateIntervalDto {
     let minDate: Date;
     let maxDate: Date;
     if (Array.isArray(weekOrSearch)) {
@@ -32,16 +32,16 @@ export function setTrainingDate(
     return {
         StartDate: minDate,
         EndDate: maxDate,
-    } as DateInterval;
+    } as DateIntervalDto;
 }
 
-export const isPreviousWeek = (minDate: Date, dateInterval: DateInterval): boolean =>
+export const isPreviousWeek = (minDate: Date, dateInterval: DateIntervalDto): boolean =>
     !(
         isSameWeek(startOfDay(minDate), startOfDay(dateInterval.StartDate), { weekStartsOn: 1 }) &&
         isSameWeek(startOfDay(minDate), startOfDay(dateInterval.EndDate), { weekStartsOn: 1 })
     );
 
-export const isNextWeek = (dateInterval: DateInterval): boolean => {
+export const isNextWeek = (dateInterval: DateIntervalDto): boolean => {
     const arrayOfDates: number[] = eachDayOfInterval({
         start: startOfDay(dateInterval.StartDate),
         end: startOfDay(dateInterval.EndDate),

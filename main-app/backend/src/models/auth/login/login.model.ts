@@ -26,12 +26,6 @@ export const USER_SCHEMA = new Schema({
 USER_SCHEMA.plugin(uniqueValidator);
 
 export class UserDto {
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsDefined()
-    @IsMongoId()
-    _id: string;
-
     @ApiProperty({
         description: 'The email address of the user',
         example: 'john.doe@gmail.com',
@@ -61,4 +55,10 @@ export class UserDto {
         message: 'auth.errors.password_required',
     })
     password: string;
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsDefined()
+    @IsMongoId()
+    _id?: string;
 }
