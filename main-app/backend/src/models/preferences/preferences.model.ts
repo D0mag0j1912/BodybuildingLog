@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsDefined, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
 import { SetDurationUnitType } from '../training/new-training/set.type';
@@ -24,6 +24,12 @@ export const PREFERENCES_SCHEMA = new Schema({
 });
 
 export class PreferencesDto {
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsDefined()
+    @IsMongoId()
+    _id: string;
+
     @ApiPropertyOptional({
         description: 'Id of authenticated user',
         type: String,

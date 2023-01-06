@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PreferenceChangedType } from './preferences.type';
-import { PreferencesDto } from './preferences.model';
+import { RawPreferencesDto } from './raw-preferences.model';
 
-export class SetPreferencesDto {
+export class UpdatePreferencesDto {
     @ApiProperty({
         description: 'Preferences data',
     })
-    preferences: PreferencesDto;
+    preferences: RawPreferencesDto;
 
     @ApiProperty({ type: String, description: 'Type of preferences that changed' })
     preferenceChanged: PreferenceChangedType;

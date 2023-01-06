@@ -11,7 +11,7 @@ import { GeneralResponseDto } from '../../models/common/response.model';
 import { PreferencesDto } from '../../models/preferences/preferences.model';
 import { PreferencesService } from '../../services/preferences/preferences.service';
 import { PreferenceChangedType } from '../../models/preferences/preferences.type';
-import { SetPreferencesDto } from '../../models/preferences/set-preferences.model';
+import { UpdatePreferencesDto } from '../../models/preferences/set-preferences.model';
 
 @ApiTags('Preferences')
 @Controller('preferences')
@@ -51,7 +51,7 @@ export class PreferencesController {
         description: 'Unauthorized',
     })
     @Put(':userId')
-    @ApiBody({ type: SetPreferencesDto })
+    @ApiBody({ type: UpdatePreferencesDto })
     async setPreferences(
         @Body('preferences') preferencesDto: PreferencesDto,
         @Body('preferenceChanged') preferenceChanged: PreferenceChangedType,
