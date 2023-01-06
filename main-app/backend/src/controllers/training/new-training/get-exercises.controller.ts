@@ -2,9 +2,9 @@ import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiExtraModels,
-    ApiForbiddenResponse,
     ApiInternalServerErrorResponse,
     ApiTags,
+    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { ExerciseDto } from '../../../models/training/exercise.model';
 import { NewTrainingService } from '../../../services/training/new-training.service';
@@ -23,9 +23,9 @@ export class GetExercisesController {
         status: 500,
         description: 'Server fails to return exercises',
     })
-    @ApiForbiddenResponse({
-        status: 403,
-        description: 'Forbidden',
+    @ApiUnauthorizedResponse({
+        status: 401,
+        description: 'Unauthorized',
     })
     @Get()
     async getExercises(): Promise<StreamModelDto<ExerciseDto[]>> {

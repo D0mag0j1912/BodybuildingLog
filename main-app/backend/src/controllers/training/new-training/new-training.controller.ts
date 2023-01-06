@@ -2,9 +2,10 @@ import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiCreatedResponse,
-    ApiForbiddenResponse,
     ApiInternalServerErrorResponse,
+    ApiOkResponse,
     ApiTags,
+    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
@@ -30,9 +31,9 @@ export class NewTrainingController {
         status: 500,
         description: 'Returns server error',
     })
-    @ApiForbiddenResponse({
-        status: 403,
-        description: 'Forbidden',
+    @ApiUnauthorizedResponse({
+        status: 401,
+        description: 'Unauthorized',
     })
     @Post()
     async addTraining(
@@ -42,6 +43,19 @@ export class NewTrainingController {
         return this._newTrainingService.addTraining(trainingData);
     }
 
+    @ApiOkResponse({
+        status: 200,
+        type: GeneralResponseDto,
+        description: 'Returns message after successful update',
+    })
+    @ApiInternalServerErrorResponse({
+        status: 500,
+        description: 'Returns server error',
+    })
+    @ApiUnauthorizedResponse({
+        status: 401,
+        description: 'Unauthorized',
+    })
     @Put(':id')
     @UseGuards(new TrainingGuard('training.new_training.errors.error_update_training'))
     async updateTraining(

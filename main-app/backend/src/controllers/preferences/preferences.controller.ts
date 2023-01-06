@@ -2,10 +2,10 @@ import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiBody,
-    ApiForbiddenResponse,
     ApiInternalServerErrorResponse,
     ApiOkResponse,
     ApiTags,
+    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { GeneralResponseDto } from '../../models/common/response.model';
 import { PreferencesDto } from '../../models/preferences/preferences.model';
@@ -28,9 +28,9 @@ export class PreferencesController {
         status: 500,
         description: 'Return internal server error message to the client',
     })
-    @ApiForbiddenResponse({
-        status: 403,
-        description: 'Forbidden',
+    @ApiUnauthorizedResponse({
+        status: 401,
+        description: 'Unauthorized',
     })
     @Get(':userId')
     async getPreferences(@Param('userId') userId: string): Promise<PreferencesDto> {
@@ -46,9 +46,9 @@ export class PreferencesController {
         status: 500,
         description: 'Return internal server error message to the client',
     })
-    @ApiForbiddenResponse({
-        status: 403,
-        description: 'Forbidden',
+    @ApiUnauthorizedResponse({
+        status: 401,
+        description: 'Unauthorized',
     })
     @Put(':userId')
     @ApiBody({ type: SetPreferencesDto })
