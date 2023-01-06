@@ -12,7 +12,6 @@ import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login/login.model';
 import { GeneralResponseDto } from '../../../models/common/response.model';
 import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
-import { RawNewTrainingDto } from '../../../models/training/new-training/raw-new-training.model';
 import { DuplicateExercisePipe } from '../../../pipes/training/duplicate-exercise.pipe';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
@@ -38,7 +37,7 @@ export class NewTrainingController {
     @Post()
     async addTraining(
         @Body(DuplicateExercisePipe)
-        trainingData: RawNewTrainingDto,
+        trainingData: NewTrainingDto,
     ): Promise<GeneralResponseDto> {
         return this._newTrainingService.addTraining(trainingData);
     }
