@@ -14,7 +14,7 @@ import { StreamModelResponse } from '../../../decorators/stream-model-response.d
 @ApiTags('Training')
 @Controller('training/get-exercises')
 @UseGuards(AuthGuard())
-@ApiExtraModels(ExerciseDto)
+@ApiExtraModels(StreamModelDto, ExerciseDto)
 export class GetExercisesController {
     constructor(private _newTrainingService: NewTrainingService) {}
 
