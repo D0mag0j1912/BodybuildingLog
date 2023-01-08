@@ -5,11 +5,11 @@ import { Observable, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { MESSAGE_DURATION } from '../../constants/shared/message-duration.const';
-import { GeneralResponseData } from '../../models/common/general-response.model';
 import { Preferences } from '../../models/common/preferences.model';
 import { PreferenceChangedType } from '../../models/common/preferences.type';
 import { PreferencesStoreService } from '../store/shared/preferences-store.service';
 import { NewTrainingStoreService } from '../store/training/new-training-store.service';
+import { GeneralResponseDto } from '../../../api/models';
 import { ToastControllerService } from './toast-controller.service';
 
 @Injectable({ providedIn: 'root' })
@@ -29,21 +29,21 @@ export class PreferencesService {
     setPreferences(
         preferences: Preferences,
         preferenceChanged: PreferenceChangedType,
-    ): Observable<GeneralResponseData> {
+    ): Observable<GeneralResponseDto> {
         const apiPreferences: Partial<Preferences> = {
             languageCode: preferences.languageCode,
             weightUnit: preferences.weightUnit,
             showByPeriod: preferences.showByPeriod,
             setDurationUnit: preferences.setDurationUnit,
         };
-        let apiResponse: GeneralResponseData;
+        let apiResponse: GeneralResponseDto;
         return this._http
-            .put<GeneralResponseData>(environment.apiUrl + `/preferences/${preferences.userId}`, {
+            .put<GeneralResponseDto>(environment.apiUrl + `/preferences/${preferences.userId}`, {
                 preferences: apiPreferences,
                 preferenceChanged: preferenceChanged,
             })
             .pipe(
-                switchMap((response: GeneralResponseData) => {
+                switchMap((response: GeneralResponseDto) => {
                     apiResponse = response;
                     return this._translateService.use(preferences.languageCode).pipe(
                         tap(async (_) => {

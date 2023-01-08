@@ -7,12 +7,12 @@ import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { environment } from '../../../../environments/environment';
 import { StreamData } from '../../../models/common/common.model';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
-import { GeneralResponseData } from '../../../models/common/general-response.model';
 import { Exercise } from '../../../models/training/exercise.model';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { AuthStoreService } from '../../store/auth/auth-store.service';
 import { NewTrainingStoreService } from '../../store/training/new-training-store.service';
 import { ExercisesStoreService } from '../../store/training/exercises-store.service';
+import { GeneralResponseDto } from '../../../../api/models';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingService {
@@ -52,15 +52,15 @@ export class NewTrainingService {
             );
     }
 
-    addTraining(trainingData: NewTraining): Observable<GeneralResponseData> {
-        return this._http.post<GeneralResponseData>(
+    addTraining(trainingData: NewTraining): Observable<GeneralResponseDto> {
+        return this._http.post<GeneralResponseDto>(
             environment.apiUrl + '/training/new-training',
             trainingData,
         );
     }
 
-    updateTraining(trainingData: NewTraining, trainingId: string): Observable<GeneralResponseData> {
-        return this._http.put<GeneralResponseData>(
+    updateTraining(trainingData: NewTraining, trainingId: string): Observable<GeneralResponseDto> {
+        return this._http.put<GeneralResponseDto>(
             environment.apiUrl + `/training/new-training/${trainingId}`,
             trainingData,
         );
