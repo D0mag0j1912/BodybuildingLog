@@ -20,7 +20,7 @@ import { StreamModelResponse } from '../../../decorators/stream-model-response.d
 @ApiTags('Past trainings')
 @Controller('training/past-trainings')
 @UseGuards(AuthGuard())
-@ApiExtraModels(PaginatorDto, PastTrainingsDto)
+@ApiExtraModels(StreamModelDto, PaginatorDto)
 export class PastTrainingsController {
     constructor(private _pastTrainingsService: PastTrainingsService) {}
 
@@ -32,7 +32,7 @@ export class PastTrainingsController {
         status: 401,
         description: 'Unauthorized',
     })
-    @StreamModelResponse(PastTrainingsDto)
+    @StreamModelResponse(PaginatorDto, false, true)
     @Get()
     async getPastTrainings(
         @GET_USER() user: UserDto,
