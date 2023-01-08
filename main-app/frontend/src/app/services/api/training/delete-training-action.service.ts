@@ -21,7 +21,7 @@ export class TrainingActionsService {
     ): Observable<StreamData<Paginator<PastTrainings>>> {
         return this._http
             .delete<StreamData<Paginator<PastTrainings>>>(
-                environment.BACKEND + `/training/delete-training/${trainingId}`,
+                environment.apiUrl + `/training/delete-training/${trainingId}`,
                 {
                     body: { deleteTrainingMeta },
                 },

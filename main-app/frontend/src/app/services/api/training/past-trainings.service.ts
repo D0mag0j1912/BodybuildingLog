@@ -26,7 +26,7 @@ export class PastTrainingsService {
         const params = `?searchValue=${searchValue}&size=${pageSize.toString()}&page=${currentPage.toString()}`;
         return this._http
             .get<StreamData<Paginator<PastTrainings>>>(
-                `${environment.BACKEND}${ROUTE_PREFIX}search-trainings${params}`,
+                `${environment.apiUrl}${ROUTE_PREFIX}search-trainings${params}`,
             )
             .pipe(
                 map((response: StreamData<Paginator<PastTrainings>>) => mapDateInterval(response)),
@@ -40,7 +40,7 @@ export class PastTrainingsService {
         const params = `?currentDate=${currentDate}&filterType=${filterType}`;
         return this._http
             .get<StreamData<Paginator<PastTrainings>>>(
-                `${environment.BACKEND}${ROUTE_PREFIX}past-trainings${params}`,
+                `${environment.apiUrl}${ROUTE_PREFIX}past-trainings${params}`,
             )
             .pipe(
                 map((response: StreamData<Paginator<PastTrainings>>) => mapDateInterval(response)),
@@ -49,7 +49,7 @@ export class PastTrainingsService {
 
     getPastTraining(id: string): Observable<StreamData<NewTraining>> {
         return this._http.get<StreamData<NewTraining>>(
-            `${environment.BACKEND}${ROUTE_PREFIX}past-trainings/${id}`,
+            `${environment.apiUrl}${ROUTE_PREFIX}past-trainings/${id}`,
         );
     }
 }

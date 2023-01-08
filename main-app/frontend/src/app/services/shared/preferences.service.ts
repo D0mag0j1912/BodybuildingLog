@@ -23,7 +23,7 @@ export class PreferencesService {
     ) {}
 
     getPreferences(userId: string): Observable<Preferences> {
-        return this._http.get<Preferences>(environment.BACKEND + `/preferences/${userId}`);
+        return this._http.get<Preferences>(environment.apiUrl + `/preferences/${userId}`);
     }
 
     setPreferences(
@@ -38,7 +38,7 @@ export class PreferencesService {
         };
         let apiResponse: GeneralResponseData;
         return this._http
-            .put<GeneralResponseData>(environment.BACKEND + `/preferences/${preferences.userId}`, {
+            .put<GeneralResponseData>(environment.apiUrl + `/preferences/${preferences.userId}`, {
                 preferences: apiPreferences,
                 preferenceChanged: preferenceChanged,
             })

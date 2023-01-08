@@ -25,7 +25,7 @@ export class NewTrainingService {
 
     getExercises(): Observable<StreamData<Exercise[]>> {
         return this._http
-            .get<StreamData<Exercise[]>>(environment.BACKEND + '/training/get-exercises')
+            .get<StreamData<Exercise[]>>(environment.apiUrl + '/training/get-exercises')
             .pipe(
                 switchMap((response: StreamData<Exercise[]>) => {
                     this._exercisesStoreService.emitAllExercises(response);
@@ -54,14 +54,14 @@ export class NewTrainingService {
 
     addTraining(trainingData: NewTraining): Observable<GeneralResponseData> {
         return this._http.post<GeneralResponseData>(
-            environment.BACKEND + '/training/new-training',
+            environment.apiUrl + '/training/new-training',
             trainingData,
         );
     }
 
     updateTraining(trainingData: NewTraining, trainingId: string): Observable<GeneralResponseData> {
         return this._http.put<GeneralResponseData>(
-            environment.BACKEND + `/training/new-training/${trainingId}`,
+            environment.apiUrl + `/training/new-training/${trainingId}`,
             trainingData,
         );
     }
