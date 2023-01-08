@@ -1,6 +1,11 @@
 import { Body, Controller, Delete, Param, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import {
+    ApiExtraModels,
+    ApiInternalServerErrorResponse,
+    ApiTags,
+    ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { PastTrainingsDto } from '../../../models/training/past-trainings/past-trainings.model';
 import { DeleteTrainingActionService } from '../../../services/training/training-actions/delete-training-action.service';
 import { GET_USER } from '../../../decorators/get-user.decorator';
@@ -18,6 +23,14 @@ export class DeleteTrainingActionController {
     constructor(private _deleteTrainingActionService: DeleteTrainingActionService) {}
 
     @StreamModelResponse(PastTrainingsDto)
+    @ApiInternalServerErrorResponse({
+        status: 500,
+        description: 'Server fails to delete training',
+    })
+    @ApiUnauthorizedResponse({
+        status: 401,
+        description: 'Unauthorized',
+    })
     @Delete(':id')
     @UseGuards(new TrainingGuard('training.past_trainings.actions.errors.error_delete_training'))
     async deleteTraining(

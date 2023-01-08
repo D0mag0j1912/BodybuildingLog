@@ -30,7 +30,6 @@ export class ExerciseDto {
     name: string;
 
     @ApiProperty()
-    @IsOptional()
     @IsString()
     imageUrl: string;
 
