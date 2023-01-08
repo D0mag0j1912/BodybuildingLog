@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
 import { PastTrainingsDto } from '../../../models/training/past-trainings/past-trainings.model';
-import { Paginator } from '../../../models/common/paginator.model';
+import { PaginatorDto } from '../../../models/common/paginator.model';
 import { Error } from '../../../models/errors/error';
 import { DeleteTrainingMetaDto } from '../../../models/training/training-actions/delete-training-action.model';
 import { PreferencesService } from '../../preferences/preferences.service';
@@ -34,7 +34,7 @@ export class DeleteTrainingActionService {
                 .findByIdAndRemove(trainingId, { useFindAndModify: false })
                 .exec();
             const userPreferences = await this._preferencesService.getPreferences(loggedUserId);
-            let pastTrainings: StreamModelDto<Paginator<PastTrainingsDto>>;
+            let pastTrainings: StreamModelDto<PaginatorDto<PastTrainingsDto>>;
             //TODO: Refactor frontend so this part is not needed. Delete should be returning void, not past trainings (Optimistic deletion on frontend. Remove first from store, then on refresh, fetch from API).
             if (meta?.currentDate) {
                 pastTrainings = await this._pastTrainingService.getPastTrainings(

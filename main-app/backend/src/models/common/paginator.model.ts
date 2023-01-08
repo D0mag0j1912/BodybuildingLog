@@ -1,33 +1,35 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsLowercase, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
+import { PaginatorParamsDto } from './paginator-params.model';
 
-export interface Paginator<T> {
-    Results?: T;
-    Next?: PaginatorParams;
-    Previous?: PaginatorParams;
-    CurrentPage?: number;
-    Size?: number;
-    TotalCount?: number;
-    TotalPages?: number;
-}
-
-export interface PaginatorParams {
-    Page: number;
-    Size: number;
-}
-
-export class SearchDataDto {
-    @ApiProperty()
-    @IsNotEmpty()
-    page: number;
-
-    @ApiProperty()
-    @IsNotEmpty()
-    size: number;
-
-    @ApiPropertyOptional()
+export class PaginatorDto<T> {
+    @ApiPropertyOptional({ type: PaginatorParamsDto })
     @IsOptional()
-    @IsString()
-    @IsLowercase()
-    searchValue?: string;
+    Next?: PaginatorParamsDto;
+
+    @ApiPropertyOptional({ type: PaginatorParamsDto })
+    @IsOptional()
+    Previous?: PaginatorParamsDto;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsNumber()
+    CurrentPage?: number;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsNumber()
+    Size?: number;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsNumber()
+    TotalCount?: number;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsNumber()
+    TotalPages?: number;
+
+    Results?: T;
 }

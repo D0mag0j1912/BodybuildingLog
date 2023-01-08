@@ -35,11 +35,13 @@ export class PreferencesDto {
     weightUnit: WeightUnitType;
 
     @ApiPropertyOptional({ description: "User's current past trainings period preference" })
+    @IsOptional()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.show_by_period_required' })
     showByPeriod?: PeriodFilterType;
 
     @ApiPropertyOptional({ description: "User's current set duration unit preference" })
+    @IsOptional()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.set_duration_unit_required' })
     setDurationUnit?: SetDurationUnitType;

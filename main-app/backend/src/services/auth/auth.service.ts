@@ -15,15 +15,15 @@ import { LoginRequestDto } from '../../models/auth/login/login-request.model';
 @Injectable()
 export class AuthService {
     constructor(
-        @InjectModel('User') private readonly userModel: Model<UserDto>,
-        @InjectModel('Preferences') private readonly preferencesModel: Model<PreferencesDto>,
-        private readonly jwtService: JwtService,
+        @InjectModel('User') private _userModel: Model<UserDto>,
+        @InjectModel('Preferences') private _preferencesModel: Model<PreferencesDto>,
+        private _jwtService: JwtService,
     ) {}
 
     async passwordFitsEmail(userDto: UserDto): Promise<boolean> {
         try {
             const { email: email, password: password } = userDto;
-            const user: UserDto = await this.userModel.findOne({ email: email }).exec();
+            const user: UserDto = await this._userModel.findOne({ email: email }).exec();
             if (!user) {
                 return false;
             }
@@ -40,7 +40,7 @@ export class AuthService {
     async login(userDto: LoginRequestDto): Promise<LoginResponseDto> {
         try {
             const { email: email, password: password } = userDto;
-            const user: UserDto = await this.userModel.findOne({ email: email }).exec();
+            const user: UserDto = await this._userModel.findOne({ email: email }).exec();
             if (!user) {
                 return {
                     Success: false,
@@ -58,7 +58,7 @@ export class AuthService {
                 email: user.email,
                 _id: user._id,
             };
-            const accessToken: string = await Promise.resolve(this.jwtService.sign(payload));
+            const accessToken: string = await Promise.resolve(this._jwtService.sign(payload));
             return {
                 Token: accessToken,
                 ExpiresIn: 10800,
@@ -72,10 +72,7 @@ export class AuthService {
 
     async getAllEmails(email: string): Promise<boolean> {
         try {
-            const result: {
-                _id: string;
-                password: string;
-            } = await this.userModel.findOne({ email: email }, 'password').exec();
+            const result = await this._userModel.findOne({ email: email }, 'password').exec();
             if (!result) {
                 return true;
             }
@@ -103,7 +100,7 @@ export class AuthService {
                 confirmPassword: confirmPassword,
             } = signupData;
             const encryptedPassword: string = await hash(password, 10);
-            const user = new this.userModel({
+            const user = new this._userModel({
                 email: email,
                 password: encryptedPassword,
             });
@@ -115,7 +112,7 @@ export class AuthService {
                 showByPeriod: 'week',
                 setDurationUnit: 'seconds',
             };
-            await this.preferencesModel.create(preferences);
+            await this._preferencesModel.create(preferences);
             return {
                 Success: true,
                 Message: 'auth.signup_success',

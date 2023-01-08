@@ -7,7 +7,7 @@ import { PastTrainingsService } from '../../../services/training/past-trainings.
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login/login.model';
-import { Paginator } from '../../../models/common/paginator.model';
+import { PaginatorDto } from '../../../models/common/paginator.model';
 import { PeriodFilterType } from '../../../models/training/past-trainings/period-filter.type';
 import { StreamModelDto } from '../../../models/common/stream.model';
 
@@ -22,7 +22,7 @@ export class PastTrainingsController {
         @GET_USER() user: UserDto,
         @Query('currentDate') currentDate: Date,
         @Query('filterType') filterType: PeriodFilterType,
-    ): Promise<StreamModelDto<Paginator<PastTrainingsDto>>> {
+    ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
         //TODO: Create custom Pipe
         if (!currentDate || !filterType) {
             throw new BadRequestException(
@@ -38,6 +38,6 @@ export class PastTrainingsController {
     async getPastTraining(
         @Param('id') trainingId: string,
     ): Promise<StreamModelDto<NewTrainingDto>> {
-        return this.pastTrainingsService.getPastTraining(trainingId as string);
+        return this.pastTrainingsService.getPastTraining(trainingId);
     }
 }

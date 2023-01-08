@@ -4,7 +4,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { endOfDay, getDay, startOfDay } from 'date-fns';
 import { setTrainingDate, isNextWeek, isPreviousWeek } from '../../helpers/date.helper';
 import { paginate } from '../../helpers/pagination.helper';
-import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
+import { PaginatorDto } from '../../models/common/paginator.model';
 import { NewTrainingDto } from '../../models/training/new-training/new-training.model';
 import { PastTrainingsDto } from '../../models/training/past-trainings/past-trainings.model';
 import { DateIntervalDto } from '../../models/common/dates.model';
@@ -12,6 +12,7 @@ import { PreferencesService } from '../preferences/preferences.service';
 import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
 import { isNeverCheck } from '../../helpers/is-never-check';
 import { StreamModelDto } from '../../models/common/stream.model';
+import { PaginatorParamsDto } from '../../models/common/paginator-params.model';
 
 @Injectable()
 export class PastTrainingsService {
@@ -25,10 +26,10 @@ export class PastTrainingsService {
         searchValue: string,
         size: number,
         page: number,
-    ): Promise<StreamModelDto<Paginator<PastTrainingsDto>>> {
+    ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
         try {
             if (searchValue !== '') {
-                const query: PaginatorParams = {
+                const query: PaginatorParamsDto = {
                     Page: page,
                     Size: size,
                 };
@@ -52,7 +53,7 @@ export class PastTrainingsService {
                         },
                     ],
                 };
-                const results: Paginator<PastTrainingsDto> = await paginate(
+                const results: PaginatorDto<PastTrainingsDto> = await paginate(
                     this._trainingModel,
                     condition,
                     query,
@@ -66,7 +67,7 @@ export class PastTrainingsService {
                     IsLoading: true,
                     Value: results,
                     IsError: false,
-                } as StreamModelDto<Paginator<PastTrainingsDto>>;
+                } as StreamModelDto<PaginatorDto<PastTrainingsDto>>;
             } else {
                 const userPreferences = await this._preferencesService.getPreferences(loggedUserId);
                 return this.getPastTrainings(
@@ -102,7 +103,7 @@ export class PastTrainingsService {
         periodFilterType: PeriodFilterType,
         loggedUserId: string,
         isDeleteTraining?: boolean,
-    ): Promise<StreamModelDto<Paginator<PastTrainingsDto>>> {
+    ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
         try {
             const dates: DateIntervalDto = setTrainingDate(new Date(currentDate));
             const condition: FilterQuery<NewTrainingDto> = {
@@ -118,7 +119,7 @@ export class PastTrainingsService {
                             : endOfDay(new Date(currentDate)),
                 },
             };
-            const results: Paginator<PastTrainingsDto> = await paginate(
+            const results: PaginatorDto<PastTrainingsDto> = await paginate(
                 this._trainingModel,
                 condition,
             );
@@ -143,7 +144,7 @@ export class PastTrainingsService {
                 IsLoading: true,
                 Value: results,
                 IsError: false,
-            } as StreamModelDto<Paginator<PastTrainingsDto>>;
+            } as StreamModelDto<PaginatorDto<PastTrainingsDto>>;
         } catch (error: unknown) {
             throw new InternalServerErrorException(
                 'training.past_trainings.errors.past_trainings_error_title',
