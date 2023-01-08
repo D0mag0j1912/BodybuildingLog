@@ -21,7 +21,7 @@ export class GetExercisesController {
     @StreamModelResponse(ExerciseDto, true)
     @ApiInternalServerErrorResponse({
         status: 500,
-        description: 'Server fails to return exercises',
+        description: 'Internal server error',
     })
     @ApiUnauthorizedResponse({
         status: 401,

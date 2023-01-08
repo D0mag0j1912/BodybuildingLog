@@ -26,7 +26,7 @@ export class PreferencesController {
     })
     @ApiInternalServerErrorResponse({
         status: 500,
-        description: 'Return internal server error message to the client',
+        description: 'Internal server error',
     })
     @ApiUnauthorizedResponse({
         status: 401,

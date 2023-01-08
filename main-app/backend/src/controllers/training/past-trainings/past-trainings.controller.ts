@@ -1,6 +1,11 @@
 import { BadRequestException, Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import {
+    ApiExtraModels,
+    ApiInternalServerErrorResponse,
+    ApiTags,
+    ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { NewTrainingDto } from '../../../models/training/new-training/new-training.model';
 import { PastTrainingsDto } from '../../../models/training/past-trainings/past-trainings.model';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
@@ -10,13 +15,24 @@ import { UserDto } from '../../../models/auth/login/login.model';
 import { PaginatorDto } from '../../../models/common/paginator.model';
 import { PeriodFilterType } from '../../../models/training/past-trainings/period-filter.type';
 import { StreamModelDto } from '../../../models/common/stream.model';
+import { StreamModelResponse } from '../../../decorators/stream-model-response.decorator';
 
 @ApiTags('Past trainings')
 @Controller('training/past-trainings')
 @UseGuards(AuthGuard())
+@ApiExtraModels(PaginatorDto, PastTrainingsDto)
 export class PastTrainingsController {
-    constructor(private readonly pastTrainingsService: PastTrainingsService) {}
+    constructor(private _pastTrainingsService: PastTrainingsService) {}
 
+    @ApiInternalServerErrorResponse({
+        status: 500,
+        description: 'Internal server error',
+    })
+    @ApiUnauthorizedResponse({
+        status: 401,
+        description: 'Unauthorized',
+    })
+    @StreamModelResponse(PastTrainingsDto)
     @Get()
     async getPastTrainings(
         @GET_USER() user: UserDto,
@@ -29,15 +45,23 @@ export class PastTrainingsController {
                 'training.past_trainings.errors.past_trainings_error_title',
             );
         }
-        return this.pastTrainingsService.getPastTrainings(currentDate, filterType, user._id);
+        return this._pastTrainingsService.getPastTrainings(currentDate, filterType, user._id);
     }
 
-    @ApiCreatedResponse({ type: NewTrainingDto })
+    @StreamModelResponse(NewTrainingDto)
+    @ApiInternalServerErrorResponse({
+        status: 500,
+        description: 'Internal server error',
+    })
+    @ApiUnauthorizedResponse({
+        status: 401,
+        description: 'Unauthorized',
+    })
     @Get(':id')
     @UseGuards(new TrainingGuard('training.past_trainings.errors.get_training_error'))
     async getPastTraining(
         @Param('id') trainingId: string,
     ): Promise<StreamModelDto<NewTrainingDto>> {
-        return this.pastTrainingsService.getPastTraining(trainingId);
+        return this._pastTrainingsService.getPastTraining(trainingId);
     }
 }

@@ -28,7 +28,7 @@ export class NewTrainingController {
     })
     @ApiInternalServerErrorResponse({
         status: 500,
-        description: 'Returns server error',
+        description: 'Internal server error',
     })
     @ApiUnauthorizedResponse({
         status: 401,
