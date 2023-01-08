@@ -45,9 +45,7 @@ export class DeleteTrainingActionService {
             } else {
                 pastTrainings = await this._pastTrainingService.searchTrainings(
                     loggedUserId,
-                    meta.searchData.searchValue,
-                    meta.searchData.size,
-                    meta.searchData.page,
+                    meta.searchData,
                 );
             }
             return {

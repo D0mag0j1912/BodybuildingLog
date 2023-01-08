@@ -13,6 +13,7 @@ import { PeriodFilterType } from '../../models/training/past-trainings/period-fi
 import { isNeverCheck } from '../../helpers/is-never-check';
 import { StreamModelDto } from '../../models/common/stream.model';
 import { PaginatorParamsDto } from '../../models/common/paginator-params.model';
+import { SearchDataDto } from '../../models/common/search-data.model';
 
 @Injectable()
 export class PastTrainingsService {
@@ -23,17 +24,15 @@ export class PastTrainingsService {
 
     async searchTrainings(
         loggedUserId: string,
-        searchValue: string,
-        size: number,
-        page: number,
+        data: SearchDataDto,
     ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
         try {
-            if (searchValue !== '') {
+            if (data.searchValue !== '') {
                 const query: PaginatorParamsDto = {
-                    Page: page,
-                    Size: size,
+                    Page: data.page,
+                    Size: data.size,
                 };
-                const queryWordRegex = new RegExp(searchValue, 'i');
+                const queryWordRegex = new RegExp(data.searchValue, 'i');
                 const condition: FilterQuery<NewTrainingDto> = {
                     $and: [
                         {
