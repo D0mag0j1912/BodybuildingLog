@@ -15,7 +15,7 @@ import { NewTrainingDto } from '../../../models/training/new-training/new-traini
 import { DuplicateExercisePipe } from '../../../pipes/training/duplicate-exercise.pipe';
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
-@ApiTags('Training')
+@ApiTags('New training')
 @Controller('training/new-training')
 @UseGuards(AuthGuard())
 export class NewTrainingController {

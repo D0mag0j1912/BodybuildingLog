@@ -10,7 +10,7 @@ import { PastTrainingsDto } from '../../../models/training/past-trainings/past-t
 import { PaginatePipe } from '../../../pipes/common/paginate.pipe';
 import { PastTrainingsService } from '../../../services/training/past-trainings.service';
 
-@ApiTags('Training')
+@ApiTags('Past trainings')
 @UseGuards(AuthGuard())
 @Controller('training/search-trainings')
 export class SearchTrainingsController {

@@ -7,6 +7,7 @@ export const StreamModelResponse = <T extends Type<unknown>>(model: T, isArray =
         ApiOkResponse({
             status: 200,
             schema: {
+                title: `StreamResponseOf${model.name}`,
                 allOf: [
                     { $ref: getSchemaPath(StreamModelDto) },
                     {

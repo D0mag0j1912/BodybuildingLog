@@ -11,7 +11,7 @@ import { PaginatorDto } from '../../../models/common/paginator.model';
 import { PeriodFilterType } from '../../../models/training/past-trainings/period-filter.type';
 import { StreamModelDto } from '../../../models/common/stream.model';
 
-@ApiTags('Training')
+@ApiTags('Past trainings')
 @Controller('training/past-trainings')
 @UseGuards(AuthGuard())
 export class PastTrainingsController {
