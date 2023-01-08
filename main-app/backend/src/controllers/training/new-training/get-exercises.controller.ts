@@ -18,7 +18,7 @@ import { StreamModelResponse } from '../../../decorators/stream-model-response.d
 export class GetExercisesController {
     constructor(private _newTrainingService: NewTrainingService) {}
 
-    @StreamModelResponse(ExerciseDto)
+    @StreamModelResponse(ExerciseDto, true)
     @ApiInternalServerErrorResponse({
         status: 500,
         description: 'Server fails to return exercises',

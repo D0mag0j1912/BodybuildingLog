@@ -41,7 +41,6 @@ export class DeleteTrainingActionService {
                     meta.currentDate,
                     userPreferences.showByPeriod,
                     loggedUserId,
-                    true,
                 );
             } else {
                 pastTrainings = await this._pastTrainingService.searchTrainings(

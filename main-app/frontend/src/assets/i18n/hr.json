@@ -193,7 +193,6 @@
             },
             "actions": {
                 "delete_training": "Jeste li sigurni da želite izbrisati trening?",
-                "delete_success": "Trening uspješno izbrisan",
                 "errors": {
                     "error_delete_training": "Greška pri brisanju treninga"
                 }

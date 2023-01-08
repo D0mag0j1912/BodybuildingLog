@@ -102,7 +102,6 @@ export class PastTrainingsService {
         currentDate: Date,
         periodFilterType: PeriodFilterType,
         loggedUserId: string,
-        isDeleteTraining?: boolean,
     ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
         try {
             const dates: DateIntervalDto = setTrainingDate(new Date(currentDate));
@@ -136,9 +135,6 @@ export class PastTrainingsService {
             results.Results.IsNextWeek = isNextWeek(dates);
             if (periodFilterType === 'day') {
                 results.Results.DayName = this.getWeekDayName(new Date(currentDate));
-            }
-            if (isDeleteTraining) {
-                results.Results.Message = 'training.past_trainings.actions.delete_success';
             }
             return {
                 IsLoading: true,
