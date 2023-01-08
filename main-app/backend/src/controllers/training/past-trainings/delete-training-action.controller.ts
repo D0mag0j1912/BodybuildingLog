@@ -21,7 +21,7 @@ import { StreamModelDto } from '../../../models/common/stream.model';
 @ApiExtraModels(StreamModelDto, PastTrainingsDto)
 export class DeleteTrainingActionController {
     constructor(private _deleteTrainingActionService: DeleteTrainingActionService) {}
-    //TODO: Check if this works
+
     @StreamModelResponse(PastTrainingsDto)
     @ApiInternalServerErrorResponse({
         status: 500,

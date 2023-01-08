@@ -11,19 +11,23 @@ export const StreamModelResponse = <T extends Type<unknown>>(model: T, isArray =
                 allOf: [
                     { $ref: getSchemaPath(StreamModelDto) },
                     {
+                        type: 'object',
                         properties: {
                             IsLoading: {
                                 type: 'boolean',
-                                items: { $ref: getSchemaPath(model) },
                             },
                             IsError: {
                                 type: 'boolean',
-                                items: { $ref: getSchemaPath(model) },
                             },
-                            Value: {
-                                type: isArray ? 'array' : 'object',
-                                items: { $ref: getSchemaPath(model) },
-                            },
+                            Value: isArray
+                                ? {
+                                      type: 'array',
+                                      items: { $ref: getSchemaPath(model) },
+                                  }
+                                : {
+                                      type: 'object',
+                                      $ref: getSchemaPath(model),
+                                  },
                         },
                     },
                 ],
