@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { isNeverCheck } from '../../helpers/is-never-check';
-import { GeneralResponseData } from '../../models/common/response.model';
+import { GeneralResponseDto } from '../../models/common/response.model';
 import { PreferencesDto } from '../../models/preferences/preferences.model';
 import { PreferenceChangedType } from '../../models/preferences/preferences.type';
 
@@ -11,15 +11,19 @@ export class PreferencesService {
     constructor(@InjectModel('Preferences') private _preferencesModel: Model<PreferencesDto>) {}
 
     async getPreferences(userId: string): Promise<PreferencesDto> {
-        const preferences = await this._preferencesModel.findOne({ userId: userId }).exec();
-        return preferences;
+        try {
+            const preferences = await this._preferencesModel.findOne({ userId: userId }).exec();
+            return preferences;
+        } catch {
+            throw new InternalServerErrorException('common.errors.something_went_wrong');
+        }
     }
 
     async setPreferences(
         userId: string,
         preferencesDto: PreferencesDto,
         preferenceChanged: PreferenceChangedType,
-    ): Promise<GeneralResponseData> {
+    ): Promise<GeneralResponseDto> {
         try {
             const { languageCode, weightUnit, showByPeriod, setDurationUnit } = preferencesDto;
             const preferences = await this._preferencesModel.findOne({ userId: userId }).exec();
@@ -30,18 +34,18 @@ export class PreferencesService {
             await preferences.save();
             switch (preferenceChanged) {
                 case 'language': {
-                    return { Message: 'preferences.language_changed' } as GeneralResponseData;
+                    return { Message: 'preferences.language_changed' } as GeneralResponseDto;
                 }
                 case 'showByPeriod': {
-                    return { Message: '' } as GeneralResponseData;
+                    return { Message: '' } as GeneralResponseDto;
                 }
                 case 'weightUnit': {
-                    return { Message: 'preferences.weight_unit_changed' } as GeneralResponseData;
+                    return { Message: 'preferences.weight_unit_changed' } as GeneralResponseDto;
                 }
                 case 'setDurationUnit': {
                     return {
                         Message: 'preferences.set_duration_unit_changed',
-                    } as GeneralResponseData;
+                    } as GeneralResponseDto;
                 }
                 default: {
                     isNeverCheck(preferenceChanged);

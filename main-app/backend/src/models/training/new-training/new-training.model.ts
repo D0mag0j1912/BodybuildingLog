@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
     ArrayMinSize,
@@ -14,8 +14,8 @@ import {
     ValidateNested,
 } from 'class-validator';
 import { Schema } from 'mongoose';
-import { NewTrainingPreferencesType } from './new-training.type';
-import { SingleExercise, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model';
+import { NewTrainingPreferencesDto } from './new-training-preferences.model';
+import { SingleExerciseDto, SINGLE_EXERCISE_SCHEMA } from './single-exercise.model';
 
 export const NEW_TRAINING_SCHEMA = new Schema({
     exercises: {
@@ -48,25 +48,48 @@ export const NEW_TRAINING_SCHEMA = new Schema({
     },
 });
 
-export class NewTraining {
-    @ApiProperty({ required: false })
-    @IsString({ message: '@training.new_training.errors.error_save_training' })
-    @IsMongoId()
-    @IsOptional()
-    _id: string;
-
-    @ApiProperty()
+export class NewTrainingDto {
+    @ApiProperty({
+        type: [SingleExerciseDto],
+        description: 'Training exercises data',
+    })
     @ArrayMinSize(1, { message: 'training.new_training.errors.at_least_one_exercise' })
     @ValidateNested({ each: true })
-    @Type(() => SingleExercise)
-    exercises: SingleExercise[];
+    @Type(() => SingleExerciseDto)
+    exercises: SingleExerciseDto[];
 
-    @ApiProperty()
+    @ApiProperty({ description: "Whether it's edit mode or not" })
     @IsBoolean({ message: '@training.new_training.errors.error_save_training' })
     @IsNotEmpty()
     editMode: boolean;
 
-    @ApiProperty({ required: false })
+    @ApiProperty({ description: 'Training date' })
+    @IsDateString(
+        {},
+        {
+            message: '@common.errors.invalid_date',
+        },
+    )
+    trainingDate: Date;
+
+    @ApiProperty({ description: 'Id of authenticated user' })
+    @IsNotEmpty({ message: '@common.errors.not_authenticated' })
+    userId: string;
+
+    @ApiProperty({
+        type: NewTrainingPreferencesDto,
+        description: 'Training preferences',
+    })
+    @IsNotEmpty()
+    preferences: NewTrainingPreferencesDto;
+
+    @ApiPropertyOptional()
+    @IsString({ message: '@training.new_training.errors.error_save_training' })
+    @IsMongoId()
+    @IsOptional()
+    _id?: string;
+
+    @ApiPropertyOptional({ description: "User's bodyweight" })
     @IsOptional()
     @IsNumber(
         {},
@@ -80,22 +103,5 @@ export class NewTraining {
     @Max(300, {
         message: '@training.new_training.errors.bodyweight_max',
     })
-    bodyweight: number;
-
-    @ApiProperty()
-    @IsDateString(
-        {},
-        {
-            message: '@common.errors.invalid_date',
-        },
-    )
-    trainingDate: Date;
-
-    @ApiProperty()
-    @IsNotEmpty({ message: '@common.errors.not_authenticated' })
-    userId: string;
-
-    @ApiProperty()
-    @IsNotEmpty()
-    preferences: NewTrainingPreferencesType;
+    bodyweight?: number;
 }

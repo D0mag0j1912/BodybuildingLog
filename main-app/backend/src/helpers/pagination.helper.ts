@@ -1,19 +1,20 @@
 import { InternalServerErrorException } from '@nestjs/common';
 import { FilterQuery, Model } from 'mongoose';
-import { Paginator, PaginatorParams } from '../models/common/paginator.model';
-import { NewTraining } from '../models/training/new-training/new-training.model';
-import { PastTrainings } from '../models/training/past-trainings/past-trainings.model';
+import { PaginatorParamsDto } from '../models/common/paginator-params.model';
+import { PaginatorDto } from '../models/common/paginator.model';
+import { NewTrainingDto } from '../models/training/new-training/new-training.model';
+import { PastTrainingsDto } from '../models/training/past-trainings/past-trainings.model';
 
 export const paginate = async <
-    T extends Partial<PastTrainings>,
+    T extends Partial<PastTrainingsDto>,
     U extends Model<K>,
-    K extends NewTraining,
+    K extends NewTrainingDto,
 >(
     model: U,
     condition: FilterQuery<K>,
-    query?: PaginatorParams,
-): Promise<Paginator<T>> => {
-    const results: Partial<Paginator<T>> = {};
+    query?: PaginatorParamsDto,
+): Promise<PaginatorDto<T>> => {
+    const results: Partial<PaginatorDto<T>> = {};
     let page: number;
     let size: number;
     let startIndex: number;

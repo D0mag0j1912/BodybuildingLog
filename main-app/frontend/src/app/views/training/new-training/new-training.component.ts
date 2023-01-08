@@ -201,6 +201,7 @@ export class NewTrainingComponent implements OnDestroy {
                                     ...EMPTY_TRAINING,
                                     exercises: [createEmptyExercise(allExercisesChanged.Value)],
                                     userId: currentTrainingState?.userId ?? '',
+                                    trainingDate: new Date().toISOString(),
                                 };
                             } else if (!currentTrainingState.editMode && !this.editMode) {
                                 if (!currentTrainingState.exercises[0]?.exerciseData?.name) {
@@ -208,9 +209,13 @@ export class NewTrainingComponent implements OnDestroy {
                                         ...EMPTY_TRAINING,
                                         exercises: [createEmptyExercise(allExercisesChanged.Value)],
                                         userId: currentTrainingState?.userId ?? '',
+                                        trainingDate: new Date().toISOString(),
                                     };
                                 } else {
-                                    newTrainingState = currentTrainingState;
+                                    newTrainingState = {
+                                        ...currentTrainingState,
+                                        trainingDate: new Date().toISOString(),
+                                    };
                                 }
                             }
                             return this._newTrainingStoreService.updateTrainingState(

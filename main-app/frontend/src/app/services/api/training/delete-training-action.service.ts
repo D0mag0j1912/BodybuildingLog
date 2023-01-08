@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -19,11 +19,12 @@ export class TrainingActionsService {
             currentDate: Date | undefined;
         },
     ): Observable<StreamData<Paginator<PastTrainings>>> {
-        const params = new HttpParams().set('meta', JSON.stringify(deleteTrainingMeta));
         return this._http
             .delete<StreamData<Paginator<PastTrainings>>>(
                 environment.BACKEND + `/training/delete-training/${trainingId}`,
-                { params: params },
+                {
+                    body: { deleteTrainingMeta },
+                },
             )
             .pipe(
                 map((response: StreamData<Paginator<PastTrainings>>) => mapDateInterval(response)),

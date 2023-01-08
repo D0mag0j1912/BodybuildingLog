@@ -1,11 +1,14 @@
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDate, IsOptional } from 'class-validator';
-import { SearchDataDto } from '../../common/paginator.model';
+import { SearchDataDto } from '../../common/search-data.model';
 
 export class DeleteTrainingMetaDto {
+    @ApiPropertyOptional({ type: SearchDataDto })
     @IsOptional()
-    searchData: SearchDataDto;
+    searchData?: SearchDataDto;
 
+    @ApiPropertyOptional()
     @IsOptional()
     @IsDate()
-    currentDate: Date;
+    currentDate?: Date;
 }

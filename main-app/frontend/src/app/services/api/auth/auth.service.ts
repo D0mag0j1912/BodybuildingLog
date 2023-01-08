@@ -30,8 +30,8 @@ export class AuthService {
             weightUnit: weightUnit,
         };
         return this._http.post<AuthResponseData>(environment.BACKEND + '/auth/signup', {
-            signupData: signupData,
-            preferences: preferences,
+            ...signupData,
+            ...preferences,
         });
     }
 

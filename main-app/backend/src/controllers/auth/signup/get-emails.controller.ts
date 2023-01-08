@@ -1,15 +1,19 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../../../services/auth/auth.service';
-import { GetAllEmails } from '../../../models/auth/signup/get-all-email.model';
+import { GetAllEmailsDto } from '../../../models/auth/signup/get-all-email.model';
 
 @ApiTags('Authentication')
 @Controller('auth/get-all-emails')
 export class GetEmailsController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(private _authService: AuthService) {}
 
+    @ApiOkResponse({
+        status: 200,
+        description: 'Boolean indicating whether email already exists in database',
+    })
     @Get()
-    async getEmails(@Query() params: GetAllEmails): Promise<boolean> {
-        return this.authService.getAllEmails(params.email);
+    async getEmails(@Query() params: GetAllEmailsDto): Promise<boolean> {
+        return this._authService.getAllEmails(params.email);
     }
 }

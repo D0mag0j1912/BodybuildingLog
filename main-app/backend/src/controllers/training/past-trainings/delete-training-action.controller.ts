@@ -1,28 +1,47 @@
-import { Controller, Delete, Param, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Param, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags } from '@nestjs/swagger';
-import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
+import {
+    ApiExtraModels,
+    ApiInternalServerErrorResponse,
+    ApiTags,
+    ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { PastTrainingsDto } from '../../../models/training/past-trainings/past-trainings.model';
 import { DeleteTrainingActionService } from '../../../services/training/training-actions/delete-training-action.service';
 import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
-import { UserDto } from '../../../models/auth/login.model';
-import { StreamData } from '../../../models/common/response.model';
-import { DeleteTrainingMetaDto } from '../../../models/training/training-actions/delete-training-action.model';
-import { ParseDeleteTrainingRequest } from '../../../pipes/training/parse-delete-training-request.pipe';
+import { UserDto } from '../../../models/auth/login/login.model';
+import { DeleteTrainingActionRequestDto } from '../../../models/training/training-actions/delete-training-action-request.model';
+import { StreamModelResponse } from '../../../decorators/stream-model-response.decorator';
+import { StreamModelDto } from '../../../models/common/stream.model';
 
-@ApiTags('Training')
+@ApiTags('Past trainings')
 @Controller('training/delete-training')
 @UseGuards(AuthGuard())
+@ApiExtraModels(StreamModelDto, PastTrainingsDto)
 export class DeleteTrainingActionController {
-    constructor(private readonly deleteTrainingActionService: DeleteTrainingActionService) {}
+    constructor(private _deleteTrainingActionService: DeleteTrainingActionService) {}
 
+    @StreamModelResponse(PastTrainingsDto)
+    @ApiInternalServerErrorResponse({
+        status: 500,
+        description: 'Internal server error',
+    })
+    @ApiUnauthorizedResponse({
+        status: 401,
+        description: 'Unauthorized',
+    })
     @Delete(':id')
     @UseGuards(new TrainingGuard('training.past_trainings.actions.errors.error_delete_training'))
     async deleteTraining(
         @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
-        @Query(ParseDeleteTrainingRequest) meta: DeleteTrainingMetaDto,
-    ): Promise<StreamData<PastTrainings>> {
-        return this.deleteTrainingActionService.deleteTraining(trainingId, user._id, meta);
+        @Body() meta: DeleteTrainingActionRequestDto,
+    ): Promise<StreamModelDto<PastTrainingsDto>> {
+        return this._deleteTrainingActionService.deleteTraining(
+            trainingId,
+            user._id,
+            meta.deleteTrainingMeta,
+        );
     }
 }

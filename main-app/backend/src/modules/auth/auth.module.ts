@@ -6,7 +6,7 @@ import { CheckPassController } from '../../controllers/auth/login/check-pass.con
 import { LoginController } from '../../controllers/auth/login/login.controller';
 import { GetEmailsController } from '../../controllers/auth/signup/get-emails.controller';
 import { SignupController } from '../../controllers/auth/signup/signup.controller';
-import { USER_SCHEMA } from '../../models/auth/login.model';
+import { USER_SCHEMA } from '../../models/auth/login/login.model';
 import { PREFERENCES_SCHEMA } from '../../models/preferences/preferences.model';
 import { JWT_TOKEN } from '../../constants/jwt-web-token';
 import { JwtStrategy } from '../../middleware/jwt.strategy';

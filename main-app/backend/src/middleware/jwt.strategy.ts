@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JWT_TOKEN } from '../constants/jwt-web-token';
 import { JwtPayload } from '../models/auth/jwt-payload.model';
-import { UserDto } from '../models/auth/login.model';
+import { UserDto } from '../models/auth/login/login.model';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

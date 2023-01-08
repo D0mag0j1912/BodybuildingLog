@@ -1,5 +1,5 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
-import { SearchDataDto } from '../../models/common/paginator.model';
+import { SearchDataDto } from '../../models/common/search-data.model';
 import { INITIAL_PAGE, DEFAULT_SIZE } from '../../constants/paginator.const';
 
 @Injectable()

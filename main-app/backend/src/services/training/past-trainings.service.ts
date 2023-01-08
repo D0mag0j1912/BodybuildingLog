@@ -4,36 +4,36 @@ import { FilterQuery, Model } from 'mongoose';
 import { endOfDay, getDay, startOfDay } from 'date-fns';
 import { setTrainingDate, isNextWeek, isPreviousWeek } from '../../helpers/date.helper';
 import { paginate } from '../../helpers/pagination.helper';
-import { Paginator, PaginatorParams } from '../../models/common/paginator.model';
-import { StreamData } from '../../models/common/response.model';
-import { NewTraining } from '../../models/training/new-training/new-training.model';
-import { PastTrainings } from '../../models/training/past-trainings/past-trainings.model';
-import { DateInterval } from '../../models/common/dates.model';
+import { PaginatorDto } from '../../models/common/paginator.model';
+import { NewTrainingDto } from '../../models/training/new-training/new-training.model';
+import { PastTrainingsDto } from '../../models/training/past-trainings/past-trainings.model';
+import { DateIntervalDto } from '../../models/common/dates.model';
 import { PreferencesService } from '../preferences/preferences.service';
 import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
 import { isNeverCheck } from '../../helpers/is-never-check';
+import { StreamModelDto } from '../../models/common/stream.model';
+import { PaginatorParamsDto } from '../../models/common/paginator-params.model';
+import { SearchDataDto } from '../../models/common/search-data.model';
 
 @Injectable()
 export class PastTrainingsService {
     constructor(
-        @InjectModel('Training') private _trainingModel: Model<NewTraining>,
+        @InjectModel('Training') private _trainingModel: Model<NewTrainingDto>,
         private _preferencesService: PreferencesService,
     ) {}
 
     async searchTrainings(
         loggedUserId: string,
-        searchValue: string,
-        size: number,
-        page: number,
-    ): Promise<StreamData<Paginator<PastTrainings>>> {
+        data: SearchDataDto,
+    ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
         try {
-            if (searchValue !== '') {
-                const query: PaginatorParams = {
-                    Page: page,
-                    Size: size,
+            if (data.searchValue !== '') {
+                const query: PaginatorParamsDto = {
+                    Page: data.page,
+                    Size: data.size,
                 };
-                const queryWordRegex = new RegExp(searchValue, 'i');
-                const condition: FilterQuery<NewTraining> = {
+                const queryWordRegex = new RegExp(data.searchValue, 'i');
+                const condition: FilterQuery<NewTrainingDto> = {
                     $and: [
                         {
                             $or: [
@@ -52,7 +52,7 @@ export class PastTrainingsService {
                         },
                     ],
                 };
-                const results: Paginator<PastTrainings> = await paginate(
+                const results: PaginatorDto<PastTrainingsDto> = await paginate(
                     this._trainingModel,
                     condition,
                     query,
@@ -66,7 +66,7 @@ export class PastTrainingsService {
                     IsLoading: true,
                     Value: results,
                     IsError: false,
-                } as StreamData<Paginator<PastTrainings>>;
+                } as StreamModelDto<PaginatorDto<PastTrainingsDto>>;
             } else {
                 const userPreferences = await this._preferencesService.getPreferences(loggedUserId);
                 return this.getPastTrainings(
@@ -82,14 +82,14 @@ export class PastTrainingsService {
         }
     }
 
-    async getPastTraining(trainingId: string): Promise<StreamData<NewTraining>> {
+    async getPastTraining(trainingId: string): Promise<StreamModelDto<NewTrainingDto>> {
         try {
             const training = await this._trainingModel.findById(trainingId).exec();
             return {
                 IsLoading: true,
                 IsError: false,
                 Value: training,
-            } as StreamData<NewTraining>;
+            } as StreamModelDto<NewTrainingDto>;
         } catch (error: unknown) {
             throw new InternalServerErrorException(
                 'training.past_trainings.errors.error_load_training',
@@ -101,11 +101,10 @@ export class PastTrainingsService {
         currentDate: Date,
         periodFilterType: PeriodFilterType,
         loggedUserId: string,
-        isDeleteTraining?: boolean,
-    ): Promise<StreamData<Paginator<PastTrainings>>> {
+    ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
         try {
-            const dates: DateInterval = setTrainingDate(new Date(currentDate));
-            const condition: FilterQuery<NewTraining> = {
+            const dates: DateIntervalDto = setTrainingDate(new Date(currentDate));
+            const condition: FilterQuery<NewTrainingDto> = {
                 userId: loggedUserId,
                 trainingDate: {
                     $gte:
@@ -118,7 +117,7 @@ export class PastTrainingsService {
                             : endOfDay(new Date(currentDate)),
                 },
             };
-            const results: Paginator<PastTrainings> = await paginate(
+            const results: PaginatorDto<PastTrainingsDto> = await paginate(
                 this._trainingModel,
                 condition,
             );
@@ -136,14 +135,11 @@ export class PastTrainingsService {
             if (periodFilterType === 'day') {
                 results.Results.DayName = this.getWeekDayName(new Date(currentDate));
             }
-            if (isDeleteTraining) {
-                results.Results.Message = 'training.past_trainings.actions.delete_success';
-            }
             return {
                 IsLoading: true,
                 Value: results,
                 IsError: false,
-            } as StreamData<Paginator<PastTrainings>>;
+            } as StreamModelDto<PaginatorDto<PastTrainingsDto>>;
         } catch (error: unknown) {
             throw new InternalServerErrorException(
                 'training.past_trainings.errors.past_trainings_error_title',
