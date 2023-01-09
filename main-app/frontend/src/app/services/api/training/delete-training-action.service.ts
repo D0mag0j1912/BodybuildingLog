@@ -6,7 +6,7 @@ import { DeleteTrainingMetaDto } from '../../../../api';
 import { environment } from '../../../../environments/environment';
 import { mapDateInterval } from '../../../helpers/training/past-trainings/map-past-trainings-dates.helper';
 import { StreamData } from '../../../models/common/common.model';
-import { Paginator, SearchDataDto } from '../../../models/common/paginator.model';
+import { Paginator } from '../../../models/common/paginator.model';
 import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
 
 @Injectable({ providedIn: 'root' })

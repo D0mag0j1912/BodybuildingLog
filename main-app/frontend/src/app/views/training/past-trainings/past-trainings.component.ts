@@ -23,7 +23,7 @@ import { SharedStoreService } from '../../../services/store/shared/shared-store.
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/common.model';
-import { Paginator, PaginatorChanged, SearchDataDto } from '../../../models/common/paginator.model';
+import { Paginator, PaginatorChanged } from '../../../models/common/paginator.model';
 import {
     DateInterval,
     PastTrainingsQueryParams,
@@ -61,6 +61,7 @@ import {
 } from '../../shared/training/training-actions/delete-training-action/delete-training-action.component';
 import { TrainingActionsService } from '../../../services/api/training/delete-training-action.service';
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
+import { DeleteTrainingMetaDto, SearchDataDto } from '../../../../api';
 
 @Component({
     selector: 'bl-past-trainings',
@@ -451,13 +452,9 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     private initView(): void {
-        this.page = this._route.snapshot.queryParamMap?.get('page')
-            ? +this._route.snapshot.queryParamMap.get('page')
-            : INITIAL_PAGE;
-        this.size = this._route.snapshot.queryParamMap?.get('size')
-            ? +this._route.snapshot.queryParamMap.get('size')
-            : DEFAULT_SIZE;
-        this.searchText = this._route.snapshot.queryParamMap?.get('search');
+        this.page = this.currentQueryParams?.page ? +this.currentQueryParams.page : INITIAL_PAGE;
+        this.size = this.currentQueryParams?.size ? +this.currentQueryParams?.size : DEFAULT_SIZE;
+        this.searchText = this.currentQueryParams?.search;
         if (this.searchText) {
             this.pastTrainings$ = this._pastTrainingsService
                 .searchPastTrainings(this.searchText.trim().toLowerCase(), this.size, this.page)
@@ -468,9 +465,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                     mapStreamData(),
                 );
         } else {
-            this.periodFilter = this._route.snapshot.queryParamMap?.get(
-                'showBy',
-            ) as PeriodFilterType;
+            this.periodFilter = this.currentQueryParams.showBy as PeriodFilterType;
             if (this.periodFilter === 'day') {
                 this.showByDayStartDate = this.getDateTimeQueryParams();
                 this.dayActivated = {
@@ -613,7 +608,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     private getDateTimeQueryParams(): Date {
-        const splittedDate = this._route.snapshot.queryParams?.startDate?.split('-') ?? [];
+        const splittedDate = this.currentQueryParams?.startDate?.split('-') ?? [];
         const utc =
             splittedDate.length > 0
                 ? new Date(`${splittedDate[2]}-${splittedDate[1]}-${splittedDate[0]}`).toUTCString()
@@ -638,15 +633,12 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         }
     }
 
-    private getDeleteTrainingMeta(): {
-        searchData: SearchDataDto | undefined;
-        currentDate: string | undefined;
-    } {
-        const isSearch = !!this._route.snapshot.queryParams?.search;
+    private getDeleteTrainingMeta(): DeleteTrainingMetaDto {
+        const isSearch = !!this.currentQueryParams?.search;
         if (isSearch) {
-            const searchValue = (this._route.snapshot.queryParams?.search as string).trim();
-            const page = +this._route.snapshot.queryParams?.page ?? INITIAL_PAGE;
-            const size = +this._route.snapshot.queryParams?.size ?? DEFAULT_SIZE;
+            const searchValue = this.currentQueryParams.search?.trim() ?? '';
+            const page = +this.currentQueryParams?.page ?? INITIAL_PAGE;
+            const size = +this.currentQueryParams?.size ?? DEFAULT_SIZE;
             return {
                 searchData: {
                     page: page,
