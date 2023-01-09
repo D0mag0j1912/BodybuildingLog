@@ -8,6 +8,7 @@ import { AuthModel } from '../../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { LanguageCodeType, WeightUnitType } from '../../../models/common/preferences.type';
 import { AuthStoreService } from '../../store/auth/auth-store.service';
+import { LoginRequestDto, SignupResponseDto } from '../../../../api/models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -19,7 +20,7 @@ export class AuthService {
         email: string,
         password: string,
         confirmPassword: string,
-    ): Observable<AuthResponseData> {
+    ): Observable<SignupResponseDto> {
         const signupData: AuthModel = {
             email: email,
             password: password,
@@ -29,36 +30,34 @@ export class AuthService {
             languageCode: language,
             weightUnit: weightUnit,
         };
-        return this._http.post<AuthResponseData>(environment.BACKEND + '/auth/signup', {
+        return this._http.post<SignupResponseDto>(environment.apiUrl + '/auth/signup', {
             ...signupData,
             ...preferences,
         });
     }
 
     login(email: string, password: string): Observable<AuthResponseData> {
-        const authData: Partial<AuthModel> = {
-            email: email,
-            password: password,
+        const authData: LoginRequestDto = {
+            email,
+            password,
         };
-        return this._http
-            .post<AuthResponseData>(environment.BACKEND + '/auth/login', authData)
-            .pipe(
-                tap(async (response: AuthResponseData) => {
-                    if (response.Token) {
-                        this._authStoreService.emitLoggedUser(response);
-                        this._authStoreService.emitIsAuth(true);
-                        this._authStoreService.setToken(response.Token);
-                        const expiresInDuration = response.ExpiresIn;
-                        this._authStoreService.setAuthTimer(expiresInDuration);
-                        const now = new Date();
-                        const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
-                        await this._authStoreService.saveLS(
-                            this._authStoreService.getToken(),
-                            expirationDate,
-                            response._id,
-                        );
-                    }
-                }),
-            );
+        return this._http.post<AuthResponseData>(environment.apiUrl + '/auth/login', authData).pipe(
+            tap(async (response: AuthResponseData) => {
+                if (response.Token) {
+                    this._authStoreService.emitLoggedUser(response);
+                    this._authStoreService.emitIsAuth(true);
+                    this._authStoreService.setToken(response.Token);
+                    const expiresInDuration = response.ExpiresIn;
+                    this._authStoreService.setAuthTimer(expiresInDuration);
+                    const now = new Date();
+                    const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+                    await this._authStoreService.saveLS(
+                        this._authStoreService.getToken(),
+                        expirationDate,
+                        response._id,
+                    );
+                }
+            }),
+        );
     }
 }

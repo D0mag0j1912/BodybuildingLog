@@ -48,7 +48,6 @@ import {
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
-import { GeneralResponseData } from '../../../models/common/general-response.model';
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
@@ -57,6 +56,7 @@ import { SetCategoryType } from '../../../models/training/new-training/single-ex
 import { Preferences } from '../../../models/common/preferences.model';
 import { convertWeightUnit } from '../../../helpers/training/convert-units.helper';
 import { WeightUnitType } from '../../../models/common/preferences.type';
+import { GeneralResponseDto } from '../../../../api/models';
 import { SingleExerciseComponent } from './single-exercise/single-exercise.component';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
@@ -287,7 +287,7 @@ export class NewTrainingComponent implements OnDestroy {
                 }),
                 finalize(() => (this.isApiLoading = false)),
             )
-            .subscribe(async (response: GeneralResponseData) => {
+            .subscribe(async (response: GeneralResponseDto) => {
                 await this._toastControllerService.displayToast({
                     message: this._translateService.instant(response.Message),
                     duration: MESSAGE_DURATION.GENERAL,

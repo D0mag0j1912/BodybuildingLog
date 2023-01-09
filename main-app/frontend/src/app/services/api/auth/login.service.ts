@@ -8,6 +8,6 @@ export class LoginService {
 
     passwordFitsEmail(email: string, password: string): Observable<boolean> {
         const params = `?email=${email}&password=${password}`;
-        return this._http.get<boolean>(environment.BACKEND + '/auth/check-pass' + params);
+        return this._http.get<boolean>(environment.apiUrl + '/auth/check-pass' + params);
     }
 }

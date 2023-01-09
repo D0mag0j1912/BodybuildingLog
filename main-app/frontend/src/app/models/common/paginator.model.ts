@@ -24,9 +24,3 @@ export interface PaginatorChanged {
     DateInterval?: DateInterval;
     EarliestTrainingDate?: string;
 }
-
-export interface SearchDataDto {
-    page: number;
-    size: number;
-    searchValue: string;
-}

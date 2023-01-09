@@ -8,6 +8,6 @@ export class SignupService {
 
     getEmails(email: string): Observable<boolean> {
         const params = `?email=${email}`;
-        return this._http.get<boolean>(environment.BACKEND + '/auth/get-all-emails' + params);
+        return this._http.get<boolean>(environment.apiUrl + '/auth/get-all-emails' + params);
     }
 }
