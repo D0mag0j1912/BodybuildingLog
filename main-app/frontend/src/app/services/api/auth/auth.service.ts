@@ -8,7 +8,7 @@ import { AuthModel } from '../../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { LanguageCodeType, WeightUnitType } from '../../../models/common/preferences.type';
 import { AuthStoreService } from '../../store/auth/auth-store.service';
-import { LoginRequestDto } from '../../../../api/models';
+import { LoginRequestDto, SignupResponseDto } from '../../../../api/models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -20,7 +20,7 @@ export class AuthService {
         email: string,
         password: string,
         confirmPassword: string,
-    ): Observable<AuthResponseData> {
+    ): Observable<SignupResponseDto> {
         const signupData: AuthModel = {
             email: email,
             password: password,
@@ -30,7 +30,7 @@ export class AuthService {
             languageCode: language,
             weightUnit: weightUnit,
         };
-        return this._http.post<AuthResponseData>(environment.apiUrl + '/auth/signup', {
+        return this._http.post<SignupResponseDto>(environment.apiUrl + '/auth/signup', {
             ...signupData,
             ...preferences,
         });
