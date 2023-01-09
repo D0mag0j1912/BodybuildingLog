@@ -640,7 +640,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     private getDeleteTrainingMeta(): {
         searchData: SearchDataDto | undefined;
-        currentDate: Date | undefined;
+        currentDate: string | undefined;
     } {
         const isSearch = !!this._route.snapshot.queryParams?.search;
         if (isSearch) {
@@ -656,14 +656,14 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                 currentDate: undefined,
             };
         } else {
-            const splittedDate = (this._route.snapshot.queryParams.startDate as string)?.split('-');
+            const splittedDate = this.currentQueryParams.startDate?.split('-');
             return {
                 searchData: undefined,
                 currentDate: new Date(`
                     ${splittedDate[2]}-
                     ${splittedDate[1]}-
                     ${splittedDate[0]}
-                `),
+                `).toISOString(),
             };
         }
     }
