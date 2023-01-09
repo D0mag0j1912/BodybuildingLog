@@ -15,7 +15,7 @@ import { NewTrainingDto } from '../models/new-training-dto';
 @Injectable({
   providedIn: 'root',
 })
-export class NewTrainingService extends BaseService {
+export class SwaggerNewTrainingService extends BaseService {
   constructor(
     config: ApiConfiguration,
     http: HttpClient
@@ -40,7 +40,7 @@ export class NewTrainingService extends BaseService {
   }
 ): Observable<StrictHttpResponse<GeneralResponseDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, NewTrainingService.NewTrainingControllerAddTrainingPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerNewTrainingService.NewTrainingControllerAddTrainingPath, 'post');
     if (params) {
       rb.body(params.body, 'application/json');
     }
@@ -92,7 +92,7 @@ export class NewTrainingService extends BaseService {
   }
 ): Observable<StrictHttpResponse<GeneralResponseDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, NewTrainingService.NewTrainingControllerUpdateTrainingPath, 'put');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerNewTrainingService.NewTrainingControllerUpdateTrainingPath, 'put');
     if (params) {
       rb.path('id', params.id, {});
       rb.body(params.body, 'application/json');

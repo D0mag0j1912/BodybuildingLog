@@ -18,7 +18,7 @@ import { StreamModelDto } from '../models/stream-model-dto';
 @Injectable({
   providedIn: 'root',
 })
-export class PastTrainingsService extends BaseService {
+export class SwaggerPastTrainingsService extends BaseService {
   constructor(
     config: ApiConfiguration,
     http: HttpClient
@@ -48,7 +48,7 @@ export class PastTrainingsService extends BaseService {
 'Value'?: PaginatorDto;
 }>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PastTrainingsService.PastTrainingsControllerGetPastTrainingsPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerPastTrainingsService.PastTrainingsControllerGetPastTrainingsPath, 'get');
     if (params) {
       rb.query('currentDate', params.currentDate, {});
       rb.query('filterType', params.filterType, {});
@@ -121,7 +121,7 @@ export class PastTrainingsService extends BaseService {
 'Value'?: NewTrainingDto;
 }>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PastTrainingsService.PastTrainingsControllerGetPastTrainingPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerPastTrainingsService.PastTrainingsControllerGetPastTrainingPath, 'get');
     if (params) {
       rb.path('id', params.id, {});
     }
@@ -193,7 +193,7 @@ export class PastTrainingsService extends BaseService {
 'Value'?: PastTrainingsDto;
 }>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PastTrainingsService.DeleteTrainingActionControllerDeleteTrainingPath, 'delete');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerPastTrainingsService.DeleteTrainingActionControllerDeleteTrainingPath, 'delete');
     if (params) {
       rb.path('id', params.id, {});
       rb.body(params.body, 'application/json');
@@ -268,7 +268,7 @@ export class PastTrainingsService extends BaseService {
 'Value'?: PaginatorDto;
 }>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PastTrainingsService.SearchTrainingsControllerSearchTrainingsPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerPastTrainingsService.SearchTrainingsControllerSearchTrainingsPath, 'get');
     if (params) {
       rb.query('page', params.page, {});
       rb.query('size', params.size, {});

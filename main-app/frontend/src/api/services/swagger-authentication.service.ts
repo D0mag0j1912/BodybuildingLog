@@ -17,7 +17,7 @@ import { SignupResponseDto } from '../models/signup-response-dto';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthenticationService extends BaseService {
+export class SwaggerAuthenticationService extends BaseService {
   constructor(
     config: ApiConfiguration,
     http: HttpClient
@@ -46,7 +46,7 @@ export class AuthenticationService extends BaseService {
   }
 ): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AuthenticationService.GetEmailsControllerGetEmailsPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerAuthenticationService.GetEmailsControllerGetEmailsPath, 'get');
     if (params) {
       rb.query('email', params.email, {});
     }
@@ -101,7 +101,7 @@ export class AuthenticationService extends BaseService {
   }
 ): Observable<StrictHttpResponse<SignupResponseDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AuthenticationService.SignupControllerSignupPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerAuthenticationService.SignupControllerSignupPath, 'post');
     if (params) {
       rb.body(params.body, 'application/json');
     }
@@ -152,7 +152,7 @@ export class AuthenticationService extends BaseService {
   }
 ): Observable<StrictHttpResponse<LoginResponseDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AuthenticationService.LoginControllerLoginPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerAuthenticationService.LoginControllerLoginPath, 'post');
     if (params) {
       rb.body(params.body, 'application/json');
     }
@@ -213,7 +213,7 @@ export class AuthenticationService extends BaseService {
   }
 ): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AuthenticationService.CheckPassControllerPasswordFitsEmailPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerAuthenticationService.CheckPassControllerPasswordFitsEmailPath, 'get');
     if (params) {
       rb.query('email', params.email, {});
       rb.query('password', params.password, {});

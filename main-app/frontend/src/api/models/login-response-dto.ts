@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface LoginResponseDto {
+  ExpirationDate?: string;
 
   /**
    * Integer indicating token expiration

@@ -7,7 +7,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { init } from '@sentry/angular';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { RouteReuseStrategy } from '@angular/router';
-import { ApiModule } from '../api/api.module';
+import { SwaggerApiModule } from '../api/swagger-api.module';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -41,7 +41,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
             },
         }),
         IonicModule.forRoot(),
-        ApiModule.forRoot({ rootUrl: environment.apiUrl }),
+        SwaggerApiModule.forRoot({ rootUrl: environment.apiUrl }),
     ],
     providers: [
         {

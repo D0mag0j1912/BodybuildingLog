@@ -8,6 +8,7 @@ import { AuthModel } from '../../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { LanguageCodeType, WeightUnitType } from '../../../models/common/preferences.type';
 import { AuthStoreService } from '../../store/auth/auth-store.service';
+import { LoginRequestDto } from '../../../../api/models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -36,9 +37,9 @@ export class AuthService {
     }
 
     login(email: string, password: string): Observable<AuthResponseData> {
-        const authData: Partial<AuthModel> = {
-            email: email,
-            password: password,
+        const authData: LoginRequestDto = {
+            email,
+            password,
         };
         return this._http.post<AuthResponseData>(environment.apiUrl + '/auth/login', authData).pipe(
             tap(async (response: AuthResponseData) => {

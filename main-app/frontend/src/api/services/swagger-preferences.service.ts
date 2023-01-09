@@ -16,7 +16,7 @@ import { UpdatePreferencesDto } from '../models/update-preferences-dto';
 @Injectable({
   providedIn: 'root',
 })
-export class PreferencesService extends BaseService {
+export class SwaggerPreferencesService extends BaseService {
   constructor(
     config: ApiConfiguration,
     http: HttpClient
@@ -41,7 +41,7 @@ export class PreferencesService extends BaseService {
   }
 ): Observable<StrictHttpResponse<PreferencesDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PreferencesService.PreferencesControllerGetPreferencesPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerPreferencesService.PreferencesControllerGetPreferencesPath, 'get');
     if (params) {
       rb.path('userId', params.userId, {});
     }
@@ -93,7 +93,7 @@ export class PreferencesService extends BaseService {
   }
 ): Observable<StrictHttpResponse<GeneralResponseDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, PreferencesService.PreferencesControllerSetPreferencesPath, 'put');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerPreferencesService.PreferencesControllerSetPreferencesPath, 'put');
     if (params) {
       rb.path('userId', params.userId, {});
       rb.body(params.body, 'application/json');

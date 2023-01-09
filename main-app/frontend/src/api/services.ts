@@ -1,5 +1,5 @@
-export { AuthenticationService } from './services/authentication.service';
-export { PreferencesService } from './services/preferences.service';
-export { NewTrainingService } from './services/new-training.service';
-export { PastTrainingsService } from './services/past-trainings.service';
-export { TrainingService } from './services/training.service';
+export { SwaggerAuthenticationService } from './services/swagger-authentication.service';
+export { SwaggerPreferencesService } from './services/swagger-preferences.service';
+export { SwaggerNewTrainingService } from './services/swagger-new-training.service';
+export { SwaggerPastTrainingsService } from './services/swagger-past-trainings.service';
+export { SwaggerTrainingService } from './services/swagger-training.service';

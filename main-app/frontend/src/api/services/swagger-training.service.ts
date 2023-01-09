@@ -15,7 +15,7 @@ import { StreamModelDto } from '../models/stream-model-dto';
 @Injectable({
   providedIn: 'root',
 })
-export class TrainingService extends BaseService {
+export class SwaggerTrainingService extends BaseService {
   constructor(
     config: ApiConfiguration,
     http: HttpClient
@@ -43,7 +43,7 @@ export class TrainingService extends BaseService {
 'Value'?: Array<ExerciseDto>;
 }>> {
 
-    const rb = new RequestBuilder(this.rootUrl, TrainingService.GetExercisesControllerGetExercisesPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerTrainingService.GetExercisesControllerGetExercisesPath, 'get');
     if (params) {
     }
 

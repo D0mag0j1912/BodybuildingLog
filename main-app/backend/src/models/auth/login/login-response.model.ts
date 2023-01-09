@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class LoginResponseDto {
     @ApiProperty({
@@ -33,6 +33,11 @@ export class LoginResponseDto {
     @IsOptional()
     @IsNumber()
     ExpiresIn?: number;
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsDate()
+    ExpirationDate?: Date;
 
     @ApiPropertyOptional({
         description: 'Unique _id indicating authentication call',
