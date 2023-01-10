@@ -16,7 +16,7 @@ ion-card {
 }
 
 .ios ion-button {
-    font-size: 12px;
+    font-size: 8px;
 }
 
 .paginator {
@@ -31,6 +31,8 @@ ion-card {
 .controls-wrapper {
     display: flex;
     align-items: center;
+    column-gap: 5px;
+    max-width: 100%;
 
     .page-size-select::part(icon) {
         color: var(--ion-color-primary);
@@ -40,6 +42,11 @@ ion-card {
 .arrow-wrapper {
     display: flex;
     column-gap: 10px;
+
+    & > * {
+        margin-bottom: 0;
+        margin-top: 10px;
+    }
 }
 
 .previous:not([disabled]):hover,
