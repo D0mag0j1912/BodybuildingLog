@@ -25,6 +25,8 @@
         "date": "Datum",
         "seconds": "sec",
         "minutes": "min",
+        "pagination_label": "Stranica <strong class='primary'>{{ firstPage }}</strong> od <strong class='primary'>{{ secondPage }}</strong>",
+        "page_number": "Stranica <strong class='primary'>{{ page }}</strong>",
         "errors": {
             "something_went_wrong": "Došlo je do greške. Pokušajte ponovno.",
             "invalid_date": "Pogrešan format datuma",

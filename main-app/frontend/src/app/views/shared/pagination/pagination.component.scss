@@ -42,7 +42,9 @@ ion-card {
 .arrow-wrapper {
     display: flex;
     column-gap: 10px;
+}
 
+.arrow-wrapper-search {
     & > * {
         margin-bottom: 0;
         margin-top: 10px;

@@ -24,6 +24,8 @@
         "date": "Date",
         "seconds": "sec",
         "minutes": "min",
+        "pagination_label": "Page <strong class='primary'>{{ firstPage }}</strong> of <strong class='primary'>{{ secondPage }}</strong>",
+        "page_number": "Page <strong class='primary'>{{ page }}</strong>",
         "errors": {
             "something_went_wrong": "Something went wrong. Please try again.",
             "invalid_date": "Invalid date format",

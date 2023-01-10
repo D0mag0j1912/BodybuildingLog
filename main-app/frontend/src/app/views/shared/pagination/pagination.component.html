@@ -11,7 +11,7 @@
                         </ion-select>
                     </ion-item>
                 </ng-container>
-                <div class="arrow-wrapper">
+                <div class="arrow-wrapper" [class.arrow-wrapper-search]="isSearch">
                     <ion-button
                         *skeleton="isLoading; width: '50px'; height: '35px'"
                         mode="md"
@@ -62,12 +62,20 @@
                     </ion-button>
                 </div>
             </div>
-            <ng-container *ngIf="data?.Value?.TotalPages">
-                <div
-                    *skeleton="isLoading; width: '75px'; height: '25px'"
-                    class="label"
-                    [innerHTML]="setPageText$(data.Value?.TotalPages) | async | sanitizeHtml"
-                ></div>
+            <ng-container *ngIf="isSearch">
+                <ng-container *ngIf="data?.Value?.TotalPages; else noPages">
+                    <div
+                        *skeleton="isLoading; width: '75px'; height: '25px'"
+                        class="label"
+                        [innerHTML]="'common.pagination_label' | translate: { firstPage: page, secondPage: data.Value.TotalPages } | sanitizeHtml"
+                    ></div>
+                </ng-container>
+                <ng-template #noPages>
+                    <div
+                        *skeleton="isLoading; width: '75px'; height: '25px'"
+                        class="label"
+                        [innerHTML]="'common.page_number' | translate: { page } | sanitizeHtml"></div>
+                </ng-template>
             </ng-container>
         </div>
     </ion-card-content>
