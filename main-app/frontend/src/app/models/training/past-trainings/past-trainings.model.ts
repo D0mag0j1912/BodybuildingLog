@@ -1,27 +1,27 @@
 import { NewTraining } from '../new-training/new-training.model';
 
 export interface PastTrainings {
-    readonly Trainings: NewTraining[];
-    readonly Dates: DateInterval;
-    readonly IsPreviousWeek?: boolean;
-    readonly IsNextWeek?: boolean;
-    readonly EarliestTrainingDate?: string;
-    readonly DayName?: string;
-    readonly Message?: string;
+    Trainings: NewTraining[];
+    Dates: DateInterval;
+    IsPreviousWeek?: boolean;
+    IsNextWeek?: boolean;
+    EarliestTrainingDate?: string;
+    DayName?: string;
+    Message?: string;
 }
 
 export interface DateInterval {
-    readonly StartDate: Date;
-    readonly EndDate: Date;
+    StartDate: Date;
+    EndDate: Date;
 }
 
 export interface PastTrainingsQueryParams {
-    readonly startDate?: string;
-    readonly endDate?: string;
-    readonly search?: string;
-    readonly page?: string;
-    readonly size?: string;
-    readonly showBy?: PeriodFilterType;
+    startDate?: string;
+    endDate?: string;
+    search?: string;
+    page?: string;
+    size?: string;
+    showBy?: PeriodFilterType;
 }
 
 export type PeriodFilterType = 'week' | 'day';

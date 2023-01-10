@@ -1,7 +1,4 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { StreamData } from '../../../models/common/common.model';
 import { Paginator } from '../../../models/common/paginator.model';
@@ -47,8 +44,6 @@ export class PaginationComponent {
     readonly paginatorChanged: EventEmitter<PaginatorChanged> =
         new EventEmitter<PaginatorChanged>();
 
-    constructor(private _translateService: TranslateService) {}
-
     loadPage(
         page?: Page,
         dateInterval?: DateInterval,
@@ -93,19 +88,5 @@ export class PaginationComponent {
                 EarliestTrainingDate: earliestTrainingDate,
             } as PaginatorChanged);
         }
-    }
-
-    setPageText$(totalPages: number): Observable<string> {
-        return this._translateService.stream('common').pipe(
-            map(
-                (value: { [key: string]: string }) =>
-                    `
-                        ${value['page']}
-                        <strong class="primary">${this.page?.toString() ?? '1'}</strong>
-                        ${value['of']}
-                        <strong class="primary">${totalPages?.toString() ?? '1'}</strong>
-                    `,
-            ),
-        );
     }
 }
