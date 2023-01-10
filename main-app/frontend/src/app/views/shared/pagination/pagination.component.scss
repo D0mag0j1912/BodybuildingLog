@@ -34,6 +34,10 @@ ion-card {
     column-gap: 5px;
     max-width: 100%;
 
+    .page-size-item::part(native) {
+        padding-left: 0;
+    }
+
     .page-size-select::part(icon) {
         color: var(--ion-color-primary);
     }
