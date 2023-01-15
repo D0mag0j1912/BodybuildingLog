@@ -34,7 +34,9 @@
             <span *ngFor="let data of training.exercises | slice: 0:2; let i = index" class="exercise-name">
                 {{ i + 1 + '. ' + (data.exerciseData.name | translate) }}
             </span>
-            <span *ngIf="training.exercises.length > 2" class="exercise-dots"> &#8942; </span>
+            <span *ngIf="training.exercises.length > 2" class="exercise-dots">
+                {{ 'common.n_others' | translate: { n: training.exercises.length - 2 } }}
+            </span>
         </div>
         <div class="actions">
             <bl-training-item-actions
