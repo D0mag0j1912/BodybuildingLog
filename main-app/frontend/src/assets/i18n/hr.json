@@ -27,6 +27,7 @@
         "minutes": "min",
         "pagination_label": "Stranica <strong class='primary'>{{ firstPage }}</strong> od <strong class='primary'>{{ secondPage }}</strong>",
         "page_number": "Stranica <strong class='primary'>{{ page }}</strong>",
+        "n_others": "+ {{ n }} ostalih",
         "errors": {
             "something_went_wrong": "Došlo je do greške. Pokušajte ponovno.",
             "invalid_date": "Pogrešan format datuma",
@@ -262,19 +263,24 @@
         "squat": "Čučanj",
         "hip_thrust": "Potisak kukovima",
         "leg_curl": "Nožni pregib",
+        "leg_extension": "Nožna ekstenzija",
         "calf_raise": "Podizanje listova",
         "facepull": "Povlačenje prema licu",
         "hammer_dumbbell_curl": "Čekić pregib bučicama",
         "seated_dumbbell_overhead_extension": "Sjedeća triceps ekstenzija bučicom",
         "pushup": "Sklek",
         "chest_press_machine": "Prsni potisak na mašini",
-        "plank": "Izdržaj na laktovima",
-        "side_plank": "Izdržaj u stranu",
+        "plank": "Plank",
+        "side_plank": "Side plank",
         "deadlift": "Mrtvo dizanje",
         "trap_bar_deadlift": "Mrtvo dizanje hex šipkom",
         "incline_barbell_press": "Kosi potisak šipkom",
         "seated_dumbbell_shoulder_press": "Sjedeći rameni potisak bučicama",
         "deadbug": "Deadbug",
-        "deadbug_stability_ball": "Deadbug s pilates loptom"
+        "deadbug_stability_ball": "Deadbug s pilates loptom",
+        "lat_pulldown": "Lat povlačenje",
+        "one_arm_dumbbell_row": "Veslanje s jednom rukom",
+        "barbell_ez_bar_curl": "Biceps pregib EZ šipkom",
+        "barbell_skullcrushers": "Francuski potisak s EZ šipkom"
     }
 }
