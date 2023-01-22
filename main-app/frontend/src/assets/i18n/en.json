@@ -95,6 +95,7 @@
         "new_training": "New training",
         "edit_training": "Edit training",
         "past_trainings": "Past trainings",
+        "training_splits": "Training splits",
         "language": "Language",
         "weight_unit": "Weight unit",
         "set_duration_unit": "Set duration unit",
