@@ -16,7 +16,7 @@ import { TrainingSplitDto } from '../../../models/training/training-split/traini
 @ApiTags('Training splits')
 @Controller('api/training/training-splits')
 @UseGuards(AuthGuard())
-@ApiExtraModels(StreamModelDto)
+@ApiExtraModels(StreamModelDto, TrainingSplitDto)
 export class GetTrainingSplitsController {
     constructor(private _trainingSplitsService: TrainingSplitsService) {}
 

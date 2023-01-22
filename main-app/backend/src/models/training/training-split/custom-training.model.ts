@@ -18,7 +18,7 @@ export const CUSTOM_TRAINING_SCHEMA = new Schema({
 
 export class CustomTrainingDto {
     @ApiProperty({
-        type: DayOfWeek,
+        enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         description: 'Enum describing particular day of week',
     })
     @IsNotEmpty()
