@@ -4,7 +4,7 @@ import { UserDto } from '../../../models/auth/login/login.model';
 import { AuthService } from '../../../services/auth/auth.service';
 
 @ApiTags('Authentication')
-@Controller('auth/check-pass')
+@Controller('api/auth/check-pass')
 export class CheckPassController {
     constructor(private _authService: AuthService) {}
 

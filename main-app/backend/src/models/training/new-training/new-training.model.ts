@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
     ArrayMinSize,
+    IsArray,
     IsBoolean,
     IsDateString,
     IsMongoId,
@@ -56,6 +57,7 @@ export class NewTrainingDto {
     @ArrayMinSize(1, { message: 'training.new_training.errors.at_least_one_exercise' })
     @ValidateNested({ each: true })
     @Type(() => SingleExerciseDto)
+    @IsArray()
     exercises: SingleExerciseDto[];
 
     @ApiProperty({ description: "Whether it's edit mode or not" })

@@ -16,7 +16,7 @@ import { StreamModelResponse } from '../../../decorators/stream-model-response.d
 import { StreamModelDto } from '../../../models/common/stream.model';
 
 @ApiTags('Past trainings')
-@Controller('training/delete-training')
+@Controller('api/training/delete-training')
 @UseGuards(AuthGuard())
 @ApiExtraModels(StreamModelDto, PastTrainingsDto)
 export class DeleteTrainingActionController {

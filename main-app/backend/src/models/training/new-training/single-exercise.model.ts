@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
     ArrayMinSize,
+    IsArray,
     IsMongoId,
     IsNotEmpty,
     IsNumber,
@@ -36,6 +37,8 @@ export const SINGLE_EXERCISE_SCHEMA = new Schema({
 
 export class SingleExerciseDto {
     @ApiProperty({ type: ExerciseDto })
+    @ValidateNested({ each: true })
+    @Type(() => ExerciseDto)
     exerciseData: ExerciseDto;
 
     @ApiProperty({
@@ -45,6 +48,7 @@ export class SingleExerciseDto {
     @ArrayMinSize(1, { message: 'training.new_training.errors.at_least_one_set' })
     @ValidateNested({ each: true })
     @Type(() => SetDto)
+    @IsArray()
     sets: SetDto[];
 
     @ApiProperty()
@@ -55,6 +59,7 @@ export class SingleExerciseDto {
     @ApiProperty({ type: ExerciseDto })
     @ValidateNested({ each: true })
     @Type(() => ExerciseDto)
+    @IsArray()
     availableExercises: ExerciseDto[];
 
     @ApiPropertyOptional()

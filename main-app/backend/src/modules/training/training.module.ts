@@ -14,6 +14,10 @@ import { SearchTrainingsController } from '../../controllers/training/past-train
 import { AuthModule } from '../auth/auth.module';
 import { PreferencesModule } from '../preferences/preferences.module';
 import { GetExercisesController } from '../../controllers/training/new-training/get-exercises.controller';
+import { TrainingSplitsService } from '../../services/training/training-splits.service';
+import { CUSTOM_TRAINING_SCHEMA } from '../../models/training/training-split/custom-training.model';
+import { TRAINING_SPLIT_SCHEMA } from '../../models/training/training-split/training-split.model';
+import { GetTrainingSplitsController } from '../../controllers/training/training-splits/get-training-splits.controller';
 
 const CONTROLLERS = [
     NewTrainingController,
@@ -21,9 +25,15 @@ const CONTROLLERS = [
     DeleteTrainingActionController,
     SearchTrainingsController,
     GetExercisesController,
+    GetTrainingSplitsController,
 ];
 
-const SERVICES = [NewTrainingService, PastTrainingsService, DeleteTrainingActionService];
+const SERVICES = [
+    NewTrainingService,
+    PastTrainingsService,
+    DeleteTrainingActionService,
+    TrainingSplitsService,
+];
 
 const IMPORTS = [AuthModule, PreferencesModule];
 
@@ -45,6 +55,14 @@ const IMPORTS = [AuthModule, PreferencesModule];
             {
                 name: 'Training',
                 schema: NEW_TRAINING_SCHEMA,
+            },
+            {
+                name: 'CustomTraining',
+                schema: CUSTOM_TRAINING_SCHEMA,
+            },
+            {
+                name: 'TrainingSplit',
+                schema: TRAINING_SPLIT_SCHEMA,
             },
         ]),
         ...IMPORTS,

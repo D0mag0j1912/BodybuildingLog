@@ -159,7 +159,6 @@
                 "try_again": "Pokušajte ponovno",
                 "add_set": "Dodaj set",
                 "add_exercise": "Dodaj novu vježbu",
-                "delete_exercise": "Izbriši vježbu",
                 "delete_set": "Izbriši set"
             }
         },
@@ -205,6 +204,12 @@
                 "get_training_error": "Traženi trening nije dostupan",
                 "past_trainings_error_title": "Prošli treninzi trenutno nedostupni",
                 "past_trainings_error_description": "Prošli treninzi trenutno nisu dostupni. Molimo Vas pokušajte ponovno"
+            }
+        },
+        "training_split": {
+            "errors": {
+                "at_least_one_training": "Morate unijeti barem jedan trening",
+                "training_splits_not_available": "Trening splitovi nisu dostupni"
             }
         },
         "update_set_category": "Promijeni kategoriju seta",

@@ -14,7 +14,7 @@ import { PreferenceChangedType } from '../../models/preferences/preferences.type
 import { UpdatePreferencesDto } from '../../models/preferences/set-preferences.model';
 
 @ApiTags('Preferences')
-@Controller('preferences')
+@Controller('api/preferences')
 @UseGuards(AuthGuard())
 export class PreferencesController {
     constructor(private _preferencesService: PreferencesService) {}
