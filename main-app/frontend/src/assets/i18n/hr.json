@@ -206,6 +206,9 @@
                 "past_trainings_error_description": "Prošli treninzi trenutno nisu dostupni. Molimo Vas pokušajte ponovno"
             }
         },
+        "training_split": {
+            "at_least_one_training": "Morate unijeti barem jedan trening"
+        },
         "update_set_category": "Promijeni kategoriju seta",
         "set_categories": {
             "dynamic_bodyweight": "S tjelesnom težinom",

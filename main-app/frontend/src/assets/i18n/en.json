@@ -205,6 +205,9 @@
                 "past_trainings_error_description": "Past trainings are not currently available. Please try again"
             }
         },
+        "training_split": {
+            "at_least_one_training": "At least one training is required"
+        },
         "update_set_category": "Change set category",
         "set_categories": {
             "dynamic_bodyweight": "With bodyweight",
