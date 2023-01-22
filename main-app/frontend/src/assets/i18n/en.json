@@ -206,7 +206,10 @@
             }
         },
         "training_split": {
-            "at_least_one_training": "At least one training is required"
+            "errors": {
+                "at_least_one_training": "At least one training is required",
+                "training_splits_not_available": "Training splits not available"
+            }
         },
         "update_set_category": "Change set category",
         "set_categories": {

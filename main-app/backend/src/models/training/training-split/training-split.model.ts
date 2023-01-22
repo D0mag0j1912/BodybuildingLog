@@ -1,10 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { ArrayMinSize, IsArray, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import {
+    ArrayMinSize,
+    IsArray,
+    IsMongoId,
+    IsNotEmpty,
+    IsString,
+    ValidateNested,
+} from 'class-validator';
 import { Schema } from 'mongoose';
 import { CustomTrainingDto, CUSTOM_TRAINING_SCHEMA } from './custom-training.model';
 
 export const TRAINING_SPLIT_SCHEMA = new Schema({
+    userId: {
+        type: String,
+        required: true,
+    },
     name: {
         type: String,
         required: true,
@@ -16,6 +27,15 @@ export const TRAINING_SPLIT_SCHEMA = new Schema({
 });
 
 export class TrainingSplitDto {
+    @ApiProperty({
+        type: String,
+        description: 'Logged user ID',
+    })
+    @IsNotEmpty()
+    @IsString()
+    @IsMongoId()
+    userId: string;
+
     @ApiProperty({
         type: String,
         description: 'Training split name',
@@ -30,7 +50,7 @@ export class TrainingSplitDto {
     })
     @ValidateNested({ each: true })
     @Type(() => CustomTrainingDto)
-    @ArrayMinSize(1, { message: 'training.training_splits.at_least_one_training' })
+    @ArrayMinSize(1, { message: 'training.training_splits.errors.at_least_one_training' })
     @IsArray()
     trainings: CustomTrainingDto[];
 }
