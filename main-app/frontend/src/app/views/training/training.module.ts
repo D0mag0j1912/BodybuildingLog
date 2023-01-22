@@ -24,6 +24,7 @@ import { TrainingItemActionsComponent } from './past-trainings/training-item/tra
 import { TrainingItemComponent } from './past-trainings/training-item/training-item.component';
 import { TrainingSplitsComponent } from './training-splits/training-splits.component';
 import { TrainingComponent } from './training.component';
+import { TrainingSplitsSearchComponent } from './training-splits/training-splits-search/training-splits-search.component';
 
 const DIRECTIVES = [TrainingItemDirective];
 
@@ -41,6 +42,7 @@ const COMPONENTS = [
     ChangeSetCategoryComponent,
     SetComponent,
     TrainingSplitsComponent,
+    TrainingSplitsSearchComponent,
 ];
 
 const EXTERNAL_IMPORTS = [
