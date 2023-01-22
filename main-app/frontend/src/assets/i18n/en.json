@@ -157,7 +157,6 @@
             "buttons": {
                 "add_set": "Add new set",
                 "add_exercise": "Add new exercise",
-                "delete_exercise": "Delete exercise",
                 "delete_set": "Delete set"
             }
         },
