@@ -16,7 +16,7 @@ import { DuplicateExercisePipe } from '../../../pipes/training/duplicate-exercis
 import { NewTrainingService } from '../../../services/training/new-training.service';
 
 @ApiTags('New training')
-@Controller('training/new-training')
+@Controller('api/training/new-training')
 @UseGuards(AuthGuard())
 export class NewTrainingController {
     constructor(private _newTrainingService: NewTrainingService) {}

@@ -18,7 +18,7 @@ import { StreamModelDto } from '../../../models/common/stream.model';
 import { StreamModelResponse } from '../../../decorators/stream-model-response.decorator';
 
 @ApiTags('Past trainings')
-@Controller('training/past-trainings')
+@Controller('api/training/past-trainings')
 @UseGuards(AuthGuard())
 @ApiExtraModels(StreamModelDto, PaginatorDto)
 export class PastTrainingsController {

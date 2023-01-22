@@ -9,7 +9,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { LoginResponseDto } from '../../../models/auth/login/login-response.model';
 import { LoginRequestDto } from '../../../models/auth/login/login-request.model';
 @ApiTags('Authentication')
-@Controller('auth/login')
+@Controller('api/auth/login')
 export class LoginController {
     constructor(private _authService: AuthService) {}
 

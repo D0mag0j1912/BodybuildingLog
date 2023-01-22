@@ -12,7 +12,7 @@ import { StreamModelDto } from '../../../models/common/stream.model';
 import { StreamModelResponse } from '../../../decorators/stream-model-response.decorator';
 
 @ApiTags('Training')
-@Controller('training/get-exercises')
+@Controller('api/training/get-exercises')
 @UseGuards(AuthGuard())
 @ApiExtraModels(StreamModelDto, ExerciseDto)
 export class GetExercisesController {

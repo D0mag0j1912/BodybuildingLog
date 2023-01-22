@@ -11,7 +11,7 @@ import { SignupResponseDto } from '../../../models/auth/signup/signup-response.m
 import { SignupRequestDto } from '../../../models/auth/signup/signup-request.model';
 
 @ApiTags('Authentication')
-@Controller('auth/signup')
+@Controller('api/auth/signup')
 export class SignupController {
     constructor(private _authService: AuthService) {}
 

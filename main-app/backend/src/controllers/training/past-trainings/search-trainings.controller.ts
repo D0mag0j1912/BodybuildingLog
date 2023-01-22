@@ -18,7 +18,7 @@ import { PastTrainingsService } from '../../../services/training/past-trainings.
 
 @ApiTags('Past trainings')
 @UseGuards(AuthGuard())
-@Controller('training/search-trainings')
+@Controller('api/training/search-trainings')
 @ApiExtraModels(StreamModelDto, PaginatorDto)
 export class SearchTrainingsController {
     constructor(private _pastTrainingsService: PastTrainingsService) {}
