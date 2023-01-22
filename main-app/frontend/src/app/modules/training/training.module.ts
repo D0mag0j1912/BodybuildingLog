@@ -20,6 +20,7 @@ import { PastTrainingsComponent } from '../../views/training/past-trainings/past
 import { ShowByDayComponent } from '../../views/training/past-trainings/show-by-day/show-by-day.component';
 import { TrainingItemActionsComponent } from '../../views/training/past-trainings/training-item/training-item-actions/training-item-actions.component';
 import { TrainingItemComponent } from '../../views/training/past-trainings/training-item/training-item.component';
+import { TrainingSplitsComponent } from '../../views/training/training-splits/training-splits.component';
 import { TrainingComponent } from '../../views/training/training.component';
 import { SharedModule } from '../shared.module';
 import { TrainingRoutingModule } from './training-routing.module';
@@ -39,6 +40,7 @@ const COMPONENTS = [
     SetsComponent,
     ChangeSetCategoryComponent,
     SetComponent,
+    TrainingSplitsComponent,
 ];
 
 const EXTERNAL_IMPORTS = [
