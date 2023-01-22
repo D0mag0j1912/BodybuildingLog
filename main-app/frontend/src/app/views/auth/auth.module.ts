@@ -6,11 +6,11 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { LoginService } from '../../services/api/auth/login.service';
 import { SignupService } from '../../services/api/auth/signup.service';
-import { LoginComponent } from '../../views/auth/login/login.component';
-import { SignupComponent } from '../../views/auth/signup/signup.component';
-import { SharedModule } from '../shared.module';
+import { SharedModule } from '../shared/shared.module';
 import { AutofocusModule } from '../../directives/autofocus/autofocus.module';
 import { AuthRoutingModule } from './auth-routing.module';
+import { SignupComponent } from './signup/signup.component';
+import { LoginComponent } from './login/login.component';
 
 const COMPONENTS = [SignupComponent, LoginComponent];
 

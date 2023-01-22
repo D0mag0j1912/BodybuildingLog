@@ -14,7 +14,7 @@ import { AppComponent } from './app.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
-import { NavigationModule } from './modules/navigation.module';
+import { NavigationModule } from './views/navigation/navigation.module';
 import { SentryService } from './services/errors/sentry.service';
 
 init({

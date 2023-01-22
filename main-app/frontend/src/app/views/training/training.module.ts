@@ -9,21 +9,21 @@ import { TrainingItemDirective } from '../../directives/training-item/training-i
 import { PipesModule } from '../../pipes/pipes.module';
 import { CamelToSnakeCaseModule } from '../../pipes/shared/camel-to-snake-case/camel-to-snake-case.module';
 import { SanitizeHtmlModule } from '../../pipes/shared/sanitize-html/sanitize-html.module';
-import { NewTrainingComponent } from '../../views/training/new-training/new-training.component';
-import { ReorderExercisesComponent } from '../../views/training/new-training/reorder-exercises/reorder-exercises.component';
-import { ChangeSetCategoryComponent } from '../../views/training/new-training/single-exercise/sets/change-set-category/change-set-category.component';
-import { SetComponent } from '../../views/training/new-training/single-exercise/sets/set/set.component';
-import { SetsComponent } from '../../views/training/new-training/single-exercise/sets/sets.component';
-import { SingleExerciseComponent } from '../../views/training/new-training/single-exercise/single-exercise.component';
-import { PastTrainingsFiltersComponent } from '../../views/training/past-trainings/past-trainings-filters/past-trainings-filters.component';
-import { PastTrainingsComponent } from '../../views/training/past-trainings/past-trainings.component';
-import { ShowByDayComponent } from '../../views/training/past-trainings/show-by-day/show-by-day.component';
-import { TrainingItemActionsComponent } from '../../views/training/past-trainings/training-item/training-item-actions/training-item-actions.component';
-import { TrainingItemComponent } from '../../views/training/past-trainings/training-item/training-item.component';
-import { TrainingSplitsComponent } from '../../views/training/training-splits/training-splits.component';
-import { TrainingComponent } from '../../views/training/training.component';
-import { SharedModule } from '../shared.module';
+import { SharedModule } from '../shared/shared.module';
 import { TrainingRoutingModule } from './training-routing.module';
+import { NewTrainingComponent } from './new-training/new-training.component';
+import { ReorderExercisesComponent } from './new-training/reorder-exercises/reorder-exercises.component';
+import { ChangeSetCategoryComponent } from './new-training/single-exercise/sets/change-set-category/change-set-category.component';
+import { SetComponent } from './new-training/single-exercise/sets/set/set.component';
+import { SetsComponent } from './new-training/single-exercise/sets/sets.component';
+import { SingleExerciseComponent } from './new-training/single-exercise/single-exercise.component';
+import { PastTrainingsFiltersComponent } from './past-trainings/past-trainings-filters/past-trainings-filters.component';
+import { PastTrainingsComponent } from './past-trainings/past-trainings.component';
+import { ShowByDayComponent } from './past-trainings/show-by-day/show-by-day.component';
+import { TrainingItemActionsComponent } from './past-trainings/training-item/training-item-actions/training-item-actions.component';
+import { TrainingItemComponent } from './past-trainings/training-item/training-item.component';
+import { TrainingSplitsComponent } from './training-splits/training-splits.component';
+import { TrainingComponent } from './training.component';
 
 const DIRECTIVES = [TrainingItemDirective];
 

@@ -3,9 +3,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { PreferencesComponent } from '../views/navigation/preferences/preferences.component';
-import { SideNavComponent } from '../views/navigation/side-nav/side-nav.component';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
+import { PreferencesComponent } from './preferences/preferences.component';
+import { SideNavComponent } from './side-nav/side-nav.component';
 
 const COMPONENTS = [SideNavComponent, PreferencesComponent];
 
