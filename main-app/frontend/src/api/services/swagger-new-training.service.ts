@@ -26,7 +26,7 @@ export class SwaggerNewTrainingService extends BaseService {
   /**
    * Path part for operation newTrainingControllerAddTraining
    */
-  static readonly NewTrainingControllerAddTrainingPath = '/training/new-training';
+  static readonly NewTrainingControllerAddTrainingPath = '/api/training/new-training';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -77,7 +77,7 @@ export class SwaggerNewTrainingService extends BaseService {
   /**
    * Path part for operation newTrainingControllerUpdateTraining
    */
-  static readonly NewTrainingControllerUpdateTrainingPath = '/training/new-training/{id}';
+  static readonly NewTrainingControllerUpdateTrainingPath = '/api/training/new-training/{id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.

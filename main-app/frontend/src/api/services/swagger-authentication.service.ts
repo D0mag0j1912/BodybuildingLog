@@ -28,7 +28,7 @@ export class SwaggerAuthenticationService extends BaseService {
   /**
    * Path part for operation getEmailsControllerGetEmails
    */
-  static readonly GetEmailsControllerGetEmailsPath = '/auth/get-all-emails';
+  static readonly GetEmailsControllerGetEmailsPath = '/api/auth/get-all-emails';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -87,7 +87,7 @@ export class SwaggerAuthenticationService extends BaseService {
   /**
    * Path part for operation signupControllerSignup
    */
-  static readonly SignupControllerSignupPath = '/auth/signup';
+  static readonly SignupControllerSignupPath = '/api/auth/signup';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -138,7 +138,7 @@ export class SwaggerAuthenticationService extends BaseService {
   /**
    * Path part for operation loginControllerLogin
    */
-  static readonly LoginControllerLoginPath = '/auth/login';
+  static readonly LoginControllerLoginPath = '/api/auth/login';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -189,7 +189,7 @@ export class SwaggerAuthenticationService extends BaseService {
   /**
    * Path part for operation checkPassControllerPasswordFitsEmail
    */
-  static readonly CheckPassControllerPasswordFitsEmailPath = '/auth/check-pass';
+  static readonly CheckPassControllerPasswordFitsEmailPath = '/api/auth/check-pass';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.

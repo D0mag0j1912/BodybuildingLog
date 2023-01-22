@@ -18,3 +18,5 @@ export { PastTrainingsDto } from './models/past-trainings-dto';
 export { SearchDataDto } from './models/search-data-dto';
 export { DeleteTrainingMetaDto } from './models/delete-training-meta-dto';
 export { DeleteTrainingActionRequestDto } from './models/delete-training-action-request-dto';
+export { CustomTrainingDto } from './models/custom-training-dto';
+export { TrainingSplitDto } from './models/training-split-dto';

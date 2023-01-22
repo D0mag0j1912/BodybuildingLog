@@ -9,6 +9,7 @@ import { SwaggerPreferencesService } from './services/swagger-preferences.servic
 import { SwaggerNewTrainingService } from './services/swagger-new-training.service';
 import { SwaggerPastTrainingsService } from './services/swagger-past-trainings.service';
 import { SwaggerTrainingService } from './services/swagger-training.service';
+import { SwaggerTrainingSplitsService } from './services/swagger-training-splits.service';
 
 /**
  * Module that provides all services and configuration.
@@ -23,6 +24,7 @@ import { SwaggerTrainingService } from './services/swagger-training.service';
     SwaggerNewTrainingService,
     SwaggerPastTrainingsService,
     SwaggerTrainingService,
+    SwaggerTrainingSplitsService,
     ApiConfiguration
   ],
 })

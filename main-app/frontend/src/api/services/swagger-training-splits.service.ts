@@ -9,13 +9,13 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { ExerciseDto } from '../models/exercise-dto';
 import { StreamModelDto } from '../models/stream-model-dto';
+import { TrainingSplitDto } from '../models/training-split-dto';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SwaggerTrainingService extends BaseService {
+export class SwaggerTrainingSplitsService extends BaseService {
   constructor(
     config: ApiConfiguration,
     http: HttpClient
@@ -24,26 +24,26 @@ export class SwaggerTrainingService extends BaseService {
   }
 
   /**
-   * Path part for operation getExercisesControllerGetExercises
+   * Path part for operation getTrainingSplitsControllerGetTrainingSplits
    */
-  static readonly GetExercisesControllerGetExercisesPath = '/api/training/get-exercises';
+  static readonly GetTrainingSplitsControllerGetTrainingSplitsPath = '/api/training/training-splits';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getExercisesControllerGetExercises()` instead.
+   * To access only the response body, use `getTrainingSplitsControllerGetTrainingSplits()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getExercisesControllerGetExercises$Response(params?: {
+  getTrainingSplitsControllerGetTrainingSplits$Response(params?: {
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<StreamModelDto & {
 'IsLoading'?: boolean;
 'IsError'?: boolean;
-'Value'?: Array<ExerciseDto>;
+'Value'?: Array<TrainingSplitDto>;
 }>> {
 
-    const rb = new RequestBuilder(this.rootUrl, SwaggerTrainingService.GetExercisesControllerGetExercisesPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerTrainingSplitsService.GetTrainingSplitsControllerGetTrainingSplitsPath, 'get');
     if (params) {
     }
 
@@ -57,7 +57,7 @@ export class SwaggerTrainingService extends BaseService {
         return r as StrictHttpResponse<StreamModelDto & {
         'IsLoading'?: boolean;
         'IsError'?: boolean;
-        'Value'?: Array<ExerciseDto>;
+        'Value'?: Array<TrainingSplitDto>;
         }>;
       })
     );
@@ -65,28 +65,28 @@ export class SwaggerTrainingService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `getExercisesControllerGetExercises$Response()` instead.
+   * To access the full response (for headers, for example), `getTrainingSplitsControllerGetTrainingSplits$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getExercisesControllerGetExercises(params?: {
+  getTrainingSplitsControllerGetTrainingSplits(params?: {
     context?: HttpContext
   }
 ): Observable<StreamModelDto & {
 'IsLoading'?: boolean;
 'IsError'?: boolean;
-'Value'?: Array<ExerciseDto>;
+'Value'?: Array<TrainingSplitDto>;
 }> {
 
-    return this.getExercisesControllerGetExercises$Response(params).pipe(
+    return this.getTrainingSplitsControllerGetTrainingSplits$Response(params).pipe(
       map((r: StrictHttpResponse<StreamModelDto & {
 'IsLoading'?: boolean;
 'IsError'?: boolean;
-'Value'?: Array<ExerciseDto>;
+'Value'?: Array<TrainingSplitDto>;
 }>) => r.body as StreamModelDto & {
 'IsLoading'?: boolean;
 'IsError'?: boolean;
-'Value'?: Array<ExerciseDto>;
+'Value'?: Array<TrainingSplitDto>;
 })
     );
   }

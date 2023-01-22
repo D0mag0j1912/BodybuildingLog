@@ -27,7 +27,7 @@ export class SwaggerPreferencesService extends BaseService {
   /**
    * Path part for operation preferencesControllerGetPreferences
    */
-  static readonly PreferencesControllerGetPreferencesPath = '/preferences/{userId}';
+  static readonly PreferencesControllerGetPreferencesPath = '/api/preferences/{userId}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -78,7 +78,7 @@ export class SwaggerPreferencesService extends BaseService {
   /**
    * Path part for operation preferencesControllerSetPreferences
    */
-  static readonly PreferencesControllerSetPreferencesPath = '/preferences/{userId}';
+  static readonly PreferencesControllerSetPreferencesPath = '/api/preferences/{userId}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
