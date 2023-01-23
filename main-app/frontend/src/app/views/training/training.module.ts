@@ -17,9 +17,7 @@ import { ChangeSetCategoryComponent } from './new-training/single-exercise/sets/
 import { SetComponent } from './new-training/single-exercise/sets/set/set.component';
 import { SetsComponent } from './new-training/single-exercise/sets/sets.component';
 import { SingleExerciseComponent } from './new-training/single-exercise/single-exercise.component';
-import { TrainingSplitsComponent } from './training-splits/training-splits.component';
 import { TrainingComponent } from './training.component';
-import { TrainingSplitsSearchComponent } from './training-splits/training-splits-search/training-splits-search.component';
 
 const DIRECTIVES = [TrainingItemDirective];
 
@@ -31,8 +29,6 @@ const COMPONENTS = [
     SetsComponent,
     ChangeSetCategoryComponent,
     SetComponent,
-    TrainingSplitsComponent,
-    TrainingSplitsSearchComponent,
 ];
 
 const EXTERNAL_IMPORTS = [

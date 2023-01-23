@@ -2,7 +2,7 @@ import { NgModule, Type } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NewTrainingComponent } from './new-training/new-training.component';
 import { PastTrainingsModule } from './past-trainings/past-trainings.module';
-import { TrainingSplitsComponent } from './training-splits/training-splits.component';
+import { TrainingSplitsModule } from './training-splits/training-splits.module';
 import { TrainingComponent } from './training.component';
 
 const routes: Routes = [
@@ -32,7 +32,10 @@ const routes: Routes = [
             },
             {
                 path: 'training-splits',
-                component: TrainingSplitsComponent,
+                loadChildren: async (): Promise<Routes | Type<TrainingSplitsModule>> =>
+                    import('./training-splits/training-splits.module').then(
+                        (module) => module.TrainingSplitsModule,
+                    ),
             },
         ],
     },
