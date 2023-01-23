@@ -1,6 +1,6 @@
 import { NgModule, Type } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { NewTrainingComponent } from './new-training/new-training.component';
+import { NewTrainingModule } from './new-training/new-training.module';
 import { PastTrainingsModule } from './past-trainings/past-trainings.module';
 import { TrainingSplitsModule } from './training-splits/training-splits.module';
 import { TrainingComponent } from './training.component';
@@ -12,16 +12,10 @@ const routes: Routes = [
         children: [
             {
                 path: 'new-training',
-                children: [
-                    {
-                        path: '',
-                        component: NewTrainingComponent,
-                    },
-                    {
-                        path: ':id',
-                        component: NewTrainingComponent,
-                    },
-                ],
+                loadChildren: async (): Promise<Routes | Type<NewTrainingModule>> =>
+                    import('./new-training/new-training.module').then(
+                        (module) => module.NewTrainingModule,
+                    ),
             },
             {
                 path: 'past-trainings',

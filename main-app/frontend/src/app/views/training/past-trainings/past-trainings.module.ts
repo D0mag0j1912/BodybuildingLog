@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { SkeletonLoaderModule } from '../../../directives/skeleton-loader/skeleton-loader.module';
+import { TrainingItemDirective } from '../../../directives/training-item/training-item.directive';
 import { PipesModule } from '../../../pipes/pipes.module';
 import { SanitizeHtmlModule } from '../../../pipes/shared/sanitize-html/sanitize-html.module';
 import { SharedModule } from '../../shared/shared.module';
@@ -13,6 +14,8 @@ import { PastTrainingsComponent } from './past-trainings.component';
 import { ShowByDayComponent } from './show-by-day/show-by-day.component';
 import { TrainingItemActionsComponent } from './training-item/training-item-actions/training-item-actions.component';
 import { TrainingItemComponent } from './training-item/training-item.component';
+
+const DIRECTIVES = [TrainingItemDirective];
 
 const COMPONENTS = [
     PastTrainingsComponent,
@@ -35,7 +38,7 @@ const IMPORTS = [
 const PIPES_MODULES = [SanitizeHtmlModule];
 
 @NgModule({
-    declarations: [...COMPONENTS],
+    declarations: [...COMPONENTS, ...DIRECTIVES],
     imports: [...IMPORTS, ...EXTERNAL_IMPORTS, ...PIPES_MODULES],
     exports: [...COMPONENTS],
     providers: [DatePipe],

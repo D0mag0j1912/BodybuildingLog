@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { TrainingSplitsRoutingModule } from './training-splits-routing.module';
 import { TrainingSplitsSearchComponent } from './training-splits-search/training-splits-search.component';
@@ -8,7 +9,7 @@ const COMPONENTS = [TrainingSplitsComponent, TrainingSplitsSearchComponent];
 
 const IMPORTS = [TrainingSplitsRoutingModule];
 
-const EXTERNAL_IMPORTS = [TranslateModule];
+const EXTERNAL_IMPORTS = [TranslateModule, IonicModule];
 
 @NgModule({
     declarations: [...COMPONENTS],
