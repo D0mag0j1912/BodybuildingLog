@@ -208,6 +208,7 @@
             }
         },
         "training_split": {
+            "searchbar": "Pretraži trening splitove",
             "errors": {
                 "at_least_one_training": "Morate unijeti barem jedan trening",
                 "training_splits_not_available": "Trening splitovi nisu dostupni"
