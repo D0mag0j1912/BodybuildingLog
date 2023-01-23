@@ -1,4 +1,4 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
@@ -17,11 +17,6 @@ import { ChangeSetCategoryComponent } from './new-training/single-exercise/sets/
 import { SetComponent } from './new-training/single-exercise/sets/set/set.component';
 import { SetsComponent } from './new-training/single-exercise/sets/sets.component';
 import { SingleExerciseComponent } from './new-training/single-exercise/single-exercise.component';
-import { PastTrainingsFiltersComponent } from './past-trainings/past-trainings-filters/past-trainings-filters.component';
-import { PastTrainingsComponent } from './past-trainings/past-trainings.component';
-import { ShowByDayComponent } from './past-trainings/show-by-day/show-by-day.component';
-import { TrainingItemActionsComponent } from './past-trainings/training-item/training-item-actions/training-item-actions.component';
-import { TrainingItemComponent } from './past-trainings/training-item/training-item.component';
 import { TrainingSplitsComponent } from './training-splits/training-splits.component';
 import { TrainingComponent } from './training.component';
 import { TrainingSplitsSearchComponent } from './training-splits/training-splits-search/training-splits-search.component';
@@ -31,11 +26,6 @@ const DIRECTIVES = [TrainingItemDirective];
 const COMPONENTS = [
     TrainingComponent,
     NewTrainingComponent,
-    PastTrainingsComponent,
-    TrainingItemComponent,
-    TrainingItemActionsComponent,
-    PastTrainingsFiltersComponent,
-    ShowByDayComponent,
     ReorderExercisesComponent,
     SingleExerciseComponent,
     SetsComponent,
@@ -68,6 +58,5 @@ const PIPES_MODULES = [SanitizeHtmlModule];
     declarations: [...COMPONENTS, ...DIRECTIVES],
     imports: [...EXTERNAL_IMPORTS, ...IMPORTS, ...PIPES_MODULES],
     exports: [...COMPONENTS],
-    providers: [DatePipe],
 })
 export class TrainingModule {}
