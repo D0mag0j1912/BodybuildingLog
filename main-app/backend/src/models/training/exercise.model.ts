@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 import { SetCategoryType } from './new-training/set.type';
+import { PrimaryMuscleGroupType } from './primary-muscle-group.type';
 
 export const EXERCISE_SCHEMA = new Schema({
     name: {
@@ -33,10 +34,25 @@ export class ExerciseDto {
     @IsString()
     imageUrl: string;
 
-    @ApiProperty()
+    @ApiProperty({
+        enum: [
+            'Legs',
+            'Core',
+            'Back',
+            'Chest',
+            'Biceps',
+            'Triceps',
+            'Neck',
+            'Forearm',
+            'Glutes',
+            'Shoulders',
+            '',
+        ],
+        description: 'Enum describing exercise primary muscle group',
+    })
     @IsNotEmpty()
     @IsString()
-    primaryMuscleGroup: string;
+    primaryMuscleGroup: PrimaryMuscleGroupType;
 
     @ApiProperty({
         enum: [
