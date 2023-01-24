@@ -15,7 +15,7 @@ export interface SignupRequestDto {
   /**
    * User's current language code preference
    */
-  languageCode: string;
+  languageCode: 'hr' | 'en';
 
   /**
    * Password entered by user during registration
@@ -25,5 +25,5 @@ export interface SignupRequestDto {
   /**
    * User's current weight unit preference
    */
-  weightUnit: string;
+  weightUnit: 'lbs' | 'kg';
 }

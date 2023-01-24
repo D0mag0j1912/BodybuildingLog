@@ -22,7 +22,7 @@ import { PreferenceChangedType } from '../../../models/common/preferences.type';
 import { PreferencesStoreService } from '../shared/preferences-store.service';
 import { Preferences } from '../../../models/common/preferences.model';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
-import { NewTrainingPreferencesType } from '../../../models/training/new-training/new-training.type';
+import { NewTrainingPreferencesDto as NewTrainingPreferences } from '../../../../api/models/new-training-preferences-dto';
 import { ExercisesStoreService } from './exercises-store.service';
 
 @Injectable({ providedIn: 'root' })
@@ -41,7 +41,7 @@ export class NewTrainingStoreService {
 
     updateNewTrainingPreferences(
         preferenceChangedType: PreferenceChangedType,
-        newTrainingPreferences: NewTrainingPreferencesType,
+        newTrainingPreferences: NewTrainingPreferences,
     ): Observable<void> {
         return this._trainingState$.pipe(
             take(1),

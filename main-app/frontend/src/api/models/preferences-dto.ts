@@ -6,17 +6,17 @@ export interface PreferencesDto {
   /**
    * User's current language code preference
    */
-  languageCode: string;
+  languageCode: 'hr' | 'en';
 
   /**
    * User's current set duration unit preference
    */
-  setDurationUnit?: string;
+  setDurationUnit?: 'seconds' | 'minutes';
 
   /**
    * User's current past trainings period preference
    */
-  showByPeriod?: string;
+  showByPeriod?: 'week' | 'day';
 
   /**
    * Id of authenticated user
@@ -26,5 +26,5 @@ export interface PreferencesDto {
   /**
    * User's current weight unit preference
    */
-  weightUnit: string;
+  weightUnit: 'lbs' | 'kg';
 }
