@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Exercise } from '../../../models/training/exercise.model';
+import { ExerciseDto as Exercise } from '../../../../api/models/exercise-dto';
 import { SingleExercise } from '../../../models/training/new-training/single-exercise/single-exercise.model';
 
 @Pipe({ name: 'filterAvailableExercises' })

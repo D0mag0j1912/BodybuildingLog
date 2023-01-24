@@ -1,6 +1,6 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormType } from '../../../common/form.type';
-import { Exercise } from '../../exercise.model';
+import { ExerciseDto as Exercise } from '../../../../../api/models/exercise-dto';
 import { SingleExercise } from './single-exercise.model';
 
 export type SingleExerciseFormType = {

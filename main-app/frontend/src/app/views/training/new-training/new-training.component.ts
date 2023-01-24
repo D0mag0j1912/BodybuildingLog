@@ -32,7 +32,7 @@ import * as NewTrainingHandler from '../../../helpers/training/new-training/body
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/common.model';
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
-import { Exercise } from '../../../models/training/exercise.model';
+import { ExerciseDto as Exercise } from '../../../../api/models/exercise-dto';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { SingleExercise } from '../../../models/training/new-training/single-exercise/single-exercise.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';

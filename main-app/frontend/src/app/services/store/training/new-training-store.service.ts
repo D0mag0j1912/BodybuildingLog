@@ -3,7 +3,7 @@ import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { take, tap, map, switchMap, concatMap, withLatestFrom } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { StreamData } from '../../../models/common/common.model';
-import { Exercise } from '../../../models/training/exercise.model';
+import { ExerciseDto as Exercise } from '../../../../api/models/exercise-dto';
 import {
     createEmptyExercise,
     EMPTY_TRAINING,

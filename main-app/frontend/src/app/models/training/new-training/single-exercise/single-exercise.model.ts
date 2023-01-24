@@ -1,4 +1,4 @@
-import { Exercise } from '../../exercise.model';
+import { ExerciseDto as Exercise } from '../../../../../api/models/exercise-dto';
 import { Set } from './set/set.model';
 
 export interface SingleExercise {

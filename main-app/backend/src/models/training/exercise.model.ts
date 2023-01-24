@@ -38,12 +38,32 @@ export class ExerciseDto {
     @IsString()
     primaryMuscleGroup: string;
 
-    @ApiProperty()
+    @ApiProperty({
+        enum: [
+            'dynamicBodyweight',
+            'dynamicWeighted',
+            'staticBodyweight',
+            'staticWeighted',
+            'freeWeighted',
+        ],
+        description: 'Enum describing available set categories',
+        isArray: true,
+    })
     @IsArray()
     @IsNotEmpty()
     availableSetCategories: SetCategoryType[];
 
-    @ApiProperty()
+    @ApiProperty({
+        enum: [
+            'dynamicBodyweight',
+            'dynamicWeighted',
+            'staticBodyweight',
+            'staticWeighted',
+            'freeWeighted',
+        ],
+        description: 'Enum describing selected set categories',
+        isArray: true,
+    })
     @IsArray()
     @IsNotEmpty()
     selectedSetCategories: SetCategoryType[];

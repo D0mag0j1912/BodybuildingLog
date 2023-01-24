@@ -7,7 +7,7 @@ import { AuthResponseData } from '../../../models/auth/auth-data.model';
 import { environment } from '../../../../environments/environment';
 import { StreamData } from '../../../models/common/common.model';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
-import { Exercise } from '../../../models/training/exercise.model';
+import { ExerciseDto as Exercise } from '../../../../api/models/exercise-dto';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { AuthStoreService } from '../../store/auth/auth-store.service';
 import { NewTrainingStoreService } from '../../store/training/new-training-store.service';
