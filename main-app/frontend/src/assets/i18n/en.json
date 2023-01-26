@@ -208,6 +208,7 @@
         },
         "training_split": {
             "searchbar": "Search training splits",
+            "split": "split",
             "errors": {
                 "at_least_one_training": "At least one training is required",
                 "training_splits_not_available": "Training splits not available"
