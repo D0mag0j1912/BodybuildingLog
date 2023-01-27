@@ -54,6 +54,15 @@
             "october": "October",
             "november": "November",
             "december": "December"
+        },
+        "numbers": {
+            "1": "One",
+            "2": "Two",
+            "3": "Three",
+            "4": "Four",
+            "5": "Five",
+            "6": "Six",
+            "7": "Seven"
         }
     },
     "auth": {
@@ -209,6 +218,7 @@
         "training_split": {
             "searchbar": "Search training splits",
             "split": "split",
+            "times_a_week": "times a week",
             "errors": {
                 "at_least_one_training": "At least one training is required",
                 "training_splits_not_available": "Training splits not available"

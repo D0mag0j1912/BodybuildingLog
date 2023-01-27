@@ -1,35 +1,46 @@
 
-.header-container {
-    display: flex;
+ion-card-header {
+    padding-bottom: 5px;
 
-    .title-container {
+    .header-container {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        column-gap: 5px;
-        width: calc(100% - 66px);
-        max-width: 215px;
-        margin-right: 10px;
 
-        & > * {
-            font-size: 20px;
-            line-height: 24px;
+        .title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            column-gap: 5px;
+            width: calc(100% - 66px);
+            max-width: 215px;
+            margin: 0 auto;
+
+            & > * {
+                font-size: 20px;
+                line-height: 24px;
+            }
+
+            .name {
+                max-width: 170px;
+                text-align: center;
+                color: var(--ion-color-primary);
+            }
         }
 
-        .name {
-            max-width: 170px;
-            text-align: center;
-            color: var(--ion-color-primary);
+        .actions {
+            display: flex;
+            column-gap: 10px;
+
+            .action {
+                width: 28px;
+                width: 28px;
+            }
         }
     }
+}
 
-    .actions {
-        display: flex;
-        column-gap: 10px;
-
-        .action {
-            width: 28px;
-            width: 28px;
-        }
-    }
+.week-frequency-text {
+    font-size: 16px;
+    line-height: 18px;
+    color: var(--ion-color-medium);
+    margin-left: 48px;
 }
