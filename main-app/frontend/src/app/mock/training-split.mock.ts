@@ -43,6 +43,25 @@ export const TRAINING_SPLIT_LIST: TrainingSplit[] = [
                     },
                 ],
             },
+            {
+                dayOfWeek: 'Friday',
+                exercises: [
+                    {
+                        name: 'exercises.facepull',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Shoulders',
+                        availableSetCategories: ['freeWeighted'],
+                        selectedSetCategories: ['freeWeighted'],
+                    },
+                    {
+                        name: 'exercises.deadbug_stability_ball',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Core',
+                        availableSetCategories: ['dynamicBodyweight'],
+                        selectedSetCategories: ['dynamicBodyweight', 'dynamicBodyweight'],
+                    },
+                ],
+            },
         ],
     },
     {
@@ -70,6 +89,123 @@ export const TRAINING_SPLIT_LIST: TrainingSplit[] = [
             },
             {
                 dayOfWeek: 'Thursday',
+                exercises: [
+                    {
+                        name: 'exercises.squat',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Legs',
+                        availableSetCategories: ['freeWeighted', 'dynamicBodyweight'],
+                        selectedSetCategories: ['freeWeighted', 'freeWeighted', 'freeWeighted'],
+                    },
+                    {
+                        name: 'exercises.plank',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Core',
+                        availableSetCategories: ['staticBodyweight', 'staticWeighted'],
+                        selectedSetCategories: [
+                            'staticBodyweight',
+                            'staticBodyweight',
+                            'staticBodyweight',
+                        ],
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        name: 'Push pull legs',
+        userId: '63b5ac2e16f3601334a66bb0',
+        trainings: [
+            {
+                dayOfWeek: 'Tuesday',
+                exercises: [
+                    {
+                        name: 'exercises.deadbug',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Core',
+                        availableSetCategories: ['dynamicBodyweight', 'dynamicWeighted'],
+                        selectedSetCategories: ['dynamicBodyweight'],
+                    },
+                    {
+                        name: 'exercises.leg_curl',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Legs',
+                        availableSetCategories: ['freeWeighted'],
+                        selectedSetCategories: ['freeWeighted'],
+                    },
+                ],
+            },
+            {
+                dayOfWeek: 'Wednesday',
+                exercises: [
+                    {
+                        name: 'exercises.squat',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Legs',
+                        availableSetCategories: ['freeWeighted', 'dynamicBodyweight'],
+                        selectedSetCategories: ['freeWeighted', 'freeWeighted', 'freeWeighted'],
+                    },
+                    {
+                        name: 'exercises.plank',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Core',
+                        availableSetCategories: ['staticBodyweight', 'staticWeighted'],
+                        selectedSetCategories: [
+                            'staticBodyweight',
+                            'staticBodyweight',
+                            'staticBodyweight',
+                        ],
+                    },
+                ],
+            },
+            {
+                dayOfWeek: 'Thursday',
+                exercises: [
+                    {
+                        name: 'exercises.squat',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Legs',
+                        availableSetCategories: ['freeWeighted', 'dynamicBodyweight'],
+                        selectedSetCategories: ['freeWeighted', 'freeWeighted', 'freeWeighted'],
+                    },
+                    {
+                        name: 'exercises.plank',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Core',
+                        availableSetCategories: ['staticBodyweight', 'staticWeighted'],
+                        selectedSetCategories: [
+                            'staticBodyweight',
+                            'staticBodyweight',
+                            'staticBodyweight',
+                        ],
+                    },
+                ],
+            },
+            {
+                dayOfWeek: 'Saturday',
+                exercises: [
+                    {
+                        name: 'exercises.squat',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Legs',
+                        availableSetCategories: ['freeWeighted', 'dynamicBodyweight'],
+                        selectedSetCategories: ['freeWeighted', 'freeWeighted', 'freeWeighted'],
+                    },
+                    {
+                        name: 'exercises.plank',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Core',
+                        availableSetCategories: ['staticBodyweight', 'staticWeighted'],
+                        selectedSetCategories: [
+                            'staticBodyweight',
+                            'staticBodyweight',
+                            'staticBodyweight',
+                        ],
+                    },
+                ],
+            },
+            {
+                dayOfWeek: 'Sunday',
                 exercises: [
                     {
                         name: 'exercises.squat',
