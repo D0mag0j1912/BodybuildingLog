@@ -1,0 +1,57 @@
+
+ion-card-header {
+    padding-bottom: 5px;
+
+    .header-container {
+        display: flex;
+
+        .title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            column-gap: 5px;
+            width: calc(100% - 66px);
+            max-width: 215px;
+            margin: 0 auto;
+
+            & > * {
+                font-size: 20px;
+                line-height: 24px;
+            }
+
+            .name {
+                max-width: 170px;
+                text-align: center;
+                color: var(--ion-color-primary);
+            }
+        }
+
+        .actions {
+            display: flex;
+            column-gap: 10px;
+
+            .action {
+                width: 28px;
+                width: 28px;
+            }
+        }
+    }
+}
+
+.week-frequency-text,
+.days-text {
+    font-size: 16px;
+    line-height: 18px;
+    margin-left: 40px;
+    color: var(--ion-color-medium);
+    font-weight: 600;
+}
+
+.days-text {
+    margin-top: 10px;
+    margin-right: auto;
+
+    & > span {
+        color: var(--ion-color-medium);
+    }
+}

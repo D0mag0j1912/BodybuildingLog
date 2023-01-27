@@ -24,23 +24,35 @@ export const PREFERENCES_SCHEMA = new Schema({
 });
 
 export class PreferencesDto {
-    @ApiProperty({ description: "User's current language code preference" })
+    @ApiProperty({
+        enum: ['hr', 'en'],
+        description: "User's current language code preference",
+    })
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.language_required' })
     languageCode: LanguageCodeType;
 
-    @ApiProperty({ description: "User's current weight unit preference" })
+    @ApiProperty({
+        enum: ['lbs', 'kg'],
+        description: "User's current weight unit preference",
+    })
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.weight_unit_required' })
     weightUnit: WeightUnitType;
 
-    @ApiPropertyOptional({ description: "User's current past trainings period preference" })
+    @ApiPropertyOptional({
+        enum: ['week', 'day'],
+        description: "User's current past trainings period preference",
+    })
     @IsOptional()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.show_by_period_required' })
     showByPeriod?: PeriodFilterType;
 
-    @ApiPropertyOptional({ description: "User's current set duration unit preference" })
+    @ApiPropertyOptional({
+        enum: ['seconds', 'minutes'],
+        description: "User's current set duration unit preference",
+    })
     @IsOptional()
     @IsString({ message: '@common.errors.something_went_wrong' })
     @IsNotEmpty({ message: '@preferences.errors.set_duration_unit_required' })

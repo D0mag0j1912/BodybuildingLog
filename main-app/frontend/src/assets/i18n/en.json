@@ -54,6 +54,15 @@
             "october": "October",
             "november": "November",
             "december": "December"
+        },
+        "numbers": {
+            "1": "One",
+            "2": "Two",
+            "3": "Three",
+            "4": "Four",
+            "5": "Five",
+            "6": "Six",
+            "7": "Seven"
         }
     },
     "auth": {
@@ -95,6 +104,7 @@
         "new_training": "New training",
         "edit_training": "Edit training",
         "past_trainings": "Past trainings",
+        "training_splits": "Training splits",
         "language": "Language",
         "weight_unit": "Weight unit",
         "set_duration_unit": "Set duration unit",
@@ -206,6 +216,9 @@
             }
         },
         "training_split": {
+            "searchbar": "Search training splits",
+            "split": "split",
+            "times_a_week": "times a week",
             "errors": {
                 "at_least_one_training": "At least one training is required",
                 "training_splits_not_available": "Training splits not available"

@@ -3,3 +3,4 @@ export { SwaggerPreferencesService } from './services/swagger-preferences.servic
 export { SwaggerNewTrainingService } from './services/swagger-new-training.service';
 export { SwaggerPastTrainingsService } from './services/swagger-past-trainings.service';
 export { SwaggerTrainingService } from './services/swagger-training.service';
+export { SwaggerTrainingSplitsService } from './services/swagger-training-splits.service';

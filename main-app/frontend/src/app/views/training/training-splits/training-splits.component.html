@@ -1,0 +1,16 @@
+<ion-header>
+    <ion-toolbar class="toolbar-title">
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>{{ 'navigation.training_splits' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <div class="search-container">
+        <bl-training-splits-search></bl-training-splits-search>
+    </div>
+    <div class="list-container">
+        <bl-training-split *ngFor="let split of trainingSplits$ | async" [trainingSplit]="split"></bl-training-split>
+    </div>
+</ion-content>

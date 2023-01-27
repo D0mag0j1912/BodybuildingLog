@@ -5,10 +5,10 @@ export interface NewTrainingPreferencesDto {
   /**
    * User's current set duration unit preference
    */
-  setDurationUnit?: string;
+  setDurationUnit?: 'seconds' | 'minutes';
 
   /**
    * User's current weight unit preference
    */
-  weightUnit: string;
+  weightUnit: 'lbs' | 'kg';
 }

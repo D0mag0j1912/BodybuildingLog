@@ -29,7 +29,7 @@ export class SwaggerPastTrainingsService extends BaseService {
   /**
    * Path part for operation pastTrainingsControllerGetPastTrainings
    */
-  static readonly PastTrainingsControllerGetPastTrainingsPath = '/training/past-trainings';
+  static readonly PastTrainingsControllerGetPastTrainingsPath = '/api/training/past-trainings';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -103,7 +103,7 @@ export class SwaggerPastTrainingsService extends BaseService {
   /**
    * Path part for operation pastTrainingsControllerGetPastTraining
    */
-  static readonly PastTrainingsControllerGetPastTrainingPath = '/training/past-trainings/{id}';
+  static readonly PastTrainingsControllerGetPastTrainingPath = '/api/training/past-trainings/{id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -174,7 +174,7 @@ export class SwaggerPastTrainingsService extends BaseService {
   /**
    * Path part for operation deleteTrainingActionControllerDeleteTraining
    */
-  static readonly DeleteTrainingActionControllerDeleteTrainingPath = '/training/delete-training/{id}';
+  static readonly DeleteTrainingActionControllerDeleteTrainingPath = '/api/training/delete-training/{id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -248,7 +248,7 @@ export class SwaggerPastTrainingsService extends BaseService {
   /**
    * Path part for operation searchTrainingsControllerSearchTrainings
    */
-  static readonly SearchTrainingsControllerSearchTrainingsPath = '/training/search-trainings';
+  static readonly SearchTrainingsControllerSearchTrainingsPath = '/api/training/search-trainings';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.

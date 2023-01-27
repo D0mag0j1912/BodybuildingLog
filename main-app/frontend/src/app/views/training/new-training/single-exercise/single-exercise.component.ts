@@ -12,7 +12,7 @@ import { IonSelect } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { Exercise } from '../../../../models/training/exercise.model';
+import { ExerciseDto as Exercise } from '../../../../../api/models/exercise-dto';
 import { NewTraining } from '../../../../models/training/new-training/new-training.model';
 import {
     SelectedSetCategoriesChanged,
