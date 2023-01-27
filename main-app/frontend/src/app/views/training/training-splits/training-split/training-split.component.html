@@ -13,5 +13,17 @@
     </ion-card-header>
     <ion-card-content>
         <div class="week-frequency-text">{{ 'common.numbers.' + trainingSplit.trainings.length | translate }} {{ 'training.training_split.times_a_week' | translate }}</div>
+        <div class="days-text">
+            <span>{{ '(' }}</span>
+            <ng-container *ngFor="let training of trainingSplit.trainings; let i = index; let last = last">
+                <span>{{ training.dayOfWeek | slice: 0:3 | uppercase }}</span>
+                <ng-container *ngIf="last; else comma">
+                    <span>{{ ')' }}</span>
+                </ng-container>
+                <ng-template #comma>
+                    <span>{{ ', ' }}</span>
+                </ng-template>
+            </ng-container>
+        </div>
     </ion-card-content>
 </ion-card>

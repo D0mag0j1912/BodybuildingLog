@@ -38,9 +38,19 @@ ion-card-header {
     }
 }
 
-.week-frequency-text {
+.week-frequency-text,
+.days-text {
     font-size: 16px;
     line-height: 18px;
+    margin-left: 40px;
     color: var(--ion-color-medium);
-    margin-left: 48px;
+    font-weight: 600;
+}
+
+.days-text {
+    margin-top: 10px;
+
+    & > span {
+        color: var(--ion-color-medium);
+    }
 }
