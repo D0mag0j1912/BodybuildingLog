@@ -229,4 +229,144 @@ export const TRAINING_SPLIT_LIST: TrainingSplit[] = [
             },
         ],
     },
+    {
+        name: 'BRO',
+        userId: '63b5ac2e16f3601334a66bb0',
+        trainings: [
+            {
+                dayOfWeek: 'Monday',
+                exercises: [
+                    {
+                        name: 'exercises.deadbug',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Core',
+                        availableSetCategories: ['dynamicBodyweight', 'dynamicWeighted'],
+                        selectedSetCategories: ['dynamicBodyweight'],
+                    },
+                    {
+                        name: 'exercises.leg_curl',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Legs',
+                        availableSetCategories: ['freeWeighted'],
+                        selectedSetCategories: ['freeWeighted'],
+                    },
+                ],
+            },
+            {
+                dayOfWeek: 'Tuesday',
+                exercises: [
+                    {
+                        name: 'exercises.squat',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Legs',
+                        availableSetCategories: ['freeWeighted', 'dynamicBodyweight'],
+                        selectedSetCategories: ['freeWeighted', 'freeWeighted', 'freeWeighted'],
+                    },
+                    {
+                        name: 'exercises.plank',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Core',
+                        availableSetCategories: ['staticBodyweight', 'staticWeighted'],
+                        selectedSetCategories: [
+                            'staticBodyweight',
+                            'staticBodyweight',
+                            'staticBodyweight',
+                        ],
+                    },
+                ],
+            },
+            {
+                dayOfWeek: 'Wednesday',
+                exercises: [
+                    {
+                        name: 'exercises.squat',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Legs',
+                        availableSetCategories: ['freeWeighted', 'dynamicBodyweight'],
+                        selectedSetCategories: ['freeWeighted', 'freeWeighted', 'freeWeighted'],
+                    },
+                    {
+                        name: 'exercises.plank',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Core',
+                        availableSetCategories: ['staticBodyweight', 'staticWeighted'],
+                        selectedSetCategories: [
+                            'staticBodyweight',
+                            'staticBodyweight',
+                            'staticBodyweight',
+                        ],
+                    },
+                ],
+            },
+            {
+                dayOfWeek: 'Thursday',
+                exercises: [
+                    {
+                        name: 'exercises.squat',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Legs',
+                        availableSetCategories: ['freeWeighted', 'dynamicBodyweight'],
+                        selectedSetCategories: ['freeWeighted', 'freeWeighted', 'freeWeighted'],
+                    },
+                    {
+                        name: 'exercises.plank',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Core',
+                        availableSetCategories: ['staticBodyweight', 'staticWeighted'],
+                        selectedSetCategories: [
+                            'staticBodyweight',
+                            'staticBodyweight',
+                            'staticBodyweight',
+                        ],
+                    },
+                ],
+            },
+            {
+                dayOfWeek: 'Friday',
+                exercises: [
+                    {
+                        name: 'exercises.squat',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Legs',
+                        availableSetCategories: ['freeWeighted', 'dynamicBodyweight'],
+                        selectedSetCategories: ['freeWeighted', 'freeWeighted', 'freeWeighted'],
+                    },
+                    {
+                        name: 'exercises.plank',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Core',
+                        availableSetCategories: ['staticBodyweight', 'staticWeighted'],
+                        selectedSetCategories: [
+                            'staticBodyweight',
+                            'staticBodyweight',
+                            'staticBodyweight',
+                        ],
+                    },
+                ],
+            },
+            {
+                dayOfWeek: 'Saturday',
+                exercises: [
+                    {
+                        name: 'exercises.squat',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Legs',
+                        availableSetCategories: ['freeWeighted', 'dynamicBodyweight'],
+                        selectedSetCategories: ['freeWeighted', 'freeWeighted', 'freeWeighted'],
+                    },
+                    {
+                        name: 'exercises.plank',
+                        imageUrl: '',
+                        primaryMuscleGroup: 'Core',
+                        availableSetCategories: ['staticBodyweight', 'staticWeighted'],
+                        selectedSetCategories: [
+                            'staticBodyweight',
+                            'staticBodyweight',
+                            'staticBodyweight',
+                        ],
+                    },
+                ],
+            },
+        ],
+    },
 ];
