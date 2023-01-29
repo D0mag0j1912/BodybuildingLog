@@ -9,6 +9,7 @@ import { NewTrainingStoreService } from '../../../../services/store/training/new
 @Component({
     templateUrl: './reorder-exercises.component.html',
     styleUrls: ['./reorder-exercises.component.scss'],
+    //TODO: Remove service from this cmp
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReorderExercisesComponent {

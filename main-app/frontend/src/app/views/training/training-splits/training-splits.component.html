@@ -8,7 +8,8 @@
 </ion-header>
 <ion-content>
     <div class="search-container">
-        <bl-training-splits-search></bl-training-splits-search>
+        <bl-training-splits-search
+            (createTrainingSplitEvent)="createTrainingSplit()"></bl-training-splits-search>
     </div>
     <div
         *ngIf="trainingSplits$ | async as trainingSplits"
