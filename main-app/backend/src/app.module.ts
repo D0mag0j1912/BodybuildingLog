@@ -7,7 +7,7 @@ import { TrainingModule } from './modules/training/training.module';
 const MY_IMPORTS = [AuthModule, PreferencesModule, TrainingModule];
 
 @Module({
-    imports: [MongooseModule.forRoot('mongodb://localhost:27017/training'), ...MY_IMPORTS],
+    imports: [MongooseModule.forRoot('mongodb://127.0.0.1:27017/training'), ...MY_IMPORTS],
     controllers: [],
     providers: [],
 })
