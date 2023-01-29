@@ -1,7 +1,7 @@
 import { TrainingSplitDto as TrainingSplit } from '../../api/models/training-split-dto';
 
 export const TRAINING_SPLIT_LIST: TrainingSplit[] = [
-    /* {
+    {
         name: 'Fullbody',
         userId: '63b5ac2e16f3601334a66bb0',
         trainings: [
@@ -368,5 +368,5 @@ export const TRAINING_SPLIT_LIST: TrainingSplit[] = [
                 ],
             },
         ],
-    }, */
+    },
 ];
