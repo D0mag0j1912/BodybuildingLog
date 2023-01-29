@@ -1,4 +1,8 @@
 
+::ng-deep .md .card {
+    margin-bottom: 24px;
+}
+
 ion-card-header {
     padding-bottom: 5px;
 
@@ -8,11 +12,9 @@ ion-card-header {
         .title-container {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: start;
             column-gap: 5px;
             width: calc(100% - 66px);
-            max-width: 215px;
-            margin: 0 auto;
 
             & > * {
                 font-size: 20px;
@@ -21,8 +23,11 @@ ion-card-header {
 
             .name {
                 max-width: 170px;
-                text-align: center;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
                 color: var(--ion-color-primary);
+                line-height: 26px;
             }
         }
 
@@ -42,7 +47,6 @@ ion-card-header {
 .days-text {
     font-size: 16px;
     line-height: 18px;
-    margin-left: 40px;
     color: var(--ion-color-medium);
     font-weight: 600;
 }

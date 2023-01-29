@@ -5,4 +5,15 @@
 
 .list-container {
     margin: 0 6px;
+
+    .empty-screen-txt {
+        font-size: 20px;
+        color: var(--ion-color-medium);
+    }
+}
+
+.no-training-splits {
+    width: 250px;
+    margin: 0 auto;
+    margin-top: 20px;
 }
