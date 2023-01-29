@@ -31,6 +31,7 @@
         "@capacitor/storage": "^1.2.5",
         "@ionic/angular": "^6.2.2",
         "@ionic/cli": "^6.18.1",
+        "@ngrx/store": "^15.2.1",
         "@ngx-translate/core": "^13.0.0",
         "@ngx-translate/http-loader": "^6.0.0",
         "@sentry/angular": "^6.12.0",
