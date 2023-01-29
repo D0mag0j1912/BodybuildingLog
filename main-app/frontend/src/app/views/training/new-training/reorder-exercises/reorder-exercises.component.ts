@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { ItemReorderEventDetail, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -9,8 +9,6 @@ import { NewTrainingStoreService } from '../../../../services/store/training/new
 @Component({
     templateUrl: './reorder-exercises.component.html',
     styleUrls: ['./reorder-exercises.component.scss'],
-    //TODO: Remove service from this cmp
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReorderExercisesComponent {
     private reorderedTrainingState: NewTraining;
