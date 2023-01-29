@@ -4,7 +4,7 @@
 //if using mobile device emulator: http://192.168.0.114:3000
 export const environment = {
     production: false,
-    apiUrl: 'http://192.168.1.4:3000/api',
+    apiUrl: 'http://192.168.1.3:3000/api',
 };
 
 /*
