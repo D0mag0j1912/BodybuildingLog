@@ -7,6 +7,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { init } from '@sentry/angular';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { RouteReuseStrategy } from '@angular/router';
+import { StoreModule } from '@ngrx/store';
 import { SwaggerApiModule } from '../api/swagger-api.module';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -16,6 +17,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { NavigationModule } from './views/navigation/navigation.module';
 import { SentryService } from './services/errors/sentry.service';
+import { reducers } from '.';
 
 init({
     dsn: 'https://b4903b17554c4e40bbada176e50e4719@o997027.ingest.sentry.io/5955490',
@@ -42,6 +44,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         }),
         IonicModule.forRoot(),
         SwaggerApiModule.forRoot({ rootUrl: environment.apiUrl }),
+        StoreModule.forRoot(reducers),
     ],
     providers: [
         {
