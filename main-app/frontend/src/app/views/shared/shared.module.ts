@@ -14,6 +14,7 @@ import { MoreTrainingActionComponent } from './training/training-actions/more-tr
 import { PaginationComponent } from './pagination/pagination.component';
 import { DateTimePickerComponent } from './datetime-picker/datetime-picker.component';
 import { SkeletonLoaderComponent } from './skeleton-loader/skeleton-loader.component';
+import { DayOfWeekComponent } from './day-of-week/day-of-week.component';
 
 const DIRECTIVES = [PaginationDirective];
 
@@ -22,6 +23,7 @@ const COMPONENTS = [
     PaginationComponent,
     DateTimePickerComponent,
     SkeletonLoaderComponent,
+    DayOfWeekComponent,
 ];
 
 const ACTION_COMPONENTS = [DeleteTrainingActionComponent, MoreTrainingActionComponent];

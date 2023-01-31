@@ -15,9 +15,7 @@
             <ion-input formControlName="Name" class="training-split-name"></ion-input>
         </ion-item>
         <div class="days-of-week-wrapper">
-            <ion-fab-button *ngFor="let day of daysOfWeek$ | async">
-                {{ day | slice: 0:3 }}
-            </ion-fab-button>
+            <bl-day-of-week *ngFor="let day of daysOfWeek$ | async" formControlName="DayOfWeek"></bl-day-of-week>
         </div>
     </form>
 </ion-content>

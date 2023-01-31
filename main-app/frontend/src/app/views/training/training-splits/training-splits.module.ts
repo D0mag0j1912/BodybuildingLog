@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { StoreModule } from '@ngrx/store';
 import { TranslateModule } from '@ngx-translate/core';
 import * as fromTrainingSplits from '../../../store/training-splits/training-splits-index';
+import { SharedModule } from '../../shared/shared.module';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
 import { TrainingSplitComponent } from './training-split/training-split.component';
 import { TrainingSplitsRoutingModule } from './training-splits-routing.module';
@@ -18,7 +19,7 @@ const COMPONENTS = [
     CreateTrainingSplitComponent,
 ];
 
-const IMPORTS = [TrainingSplitsRoutingModule, ReactiveFormsModule];
+const IMPORTS = [TrainingSplitsRoutingModule, ReactiveFormsModule, SharedModule];
 
 const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule];
 

@@ -4,10 +4,8 @@ import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CustomTrainingDto } from '../../../../../api';
 import { DialogRoles } from '../../../../constants/enums/dialog-roles.enum';
-
-type DayOfWeek = CustomTrainingDto['dayOfWeek'];
+import { DayOfWeek } from '../../../../models/common/day-of-week.type';
 
 @Component({
     templateUrl: './create-training-split.component.html',
