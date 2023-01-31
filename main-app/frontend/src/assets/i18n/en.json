@@ -212,7 +212,7 @@
                 "error_load_training": "Error while loading training",
                 "get_training_error": "Requested training is not available",
                 "past_trainings_error_title": "Past trainings currently not available",
-                "past_trainings_error_description": "Past trainings are not currently available. Please try again"
+                "past_trainings_error_description": "Past trainings are not currently available. Please try again."
             }
         },
         "training_split": {
@@ -222,6 +222,7 @@
             "empty_screen": "You don't have any training splits yet",
             "create_training_split": "Create training split",
             "edit_training_split": "Edit training split",
+            "training_split_name": "Enter training split name",
             "errors": {
                 "at_least_one_training": "At least one training is required",
                 "training_splits_not_available": "Training splits not available"

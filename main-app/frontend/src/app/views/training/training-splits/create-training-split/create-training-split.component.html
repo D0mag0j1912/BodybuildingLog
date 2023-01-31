@@ -8,3 +8,11 @@
         <ion-title class="ion-text-center dialog-title">{{ 'training.training_split.create_training_split' | translate }}</ion-title>
     </ion-toolbar>
 </ion-header>
+<ion-content class="ion-padding ion-text-center">
+    <form [formGroup]="form">
+        <ion-item>
+            <ion-label position="floating">{{ 'training.training_split.training_split_name' | translate }}</ion-label>
+            <ion-input formControlName="Name" class="training-split-name"></ion-input>
+        </ion-item>
+    </form>
+</ion-content>
