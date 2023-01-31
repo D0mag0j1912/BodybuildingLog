@@ -220,6 +220,8 @@
             "split": "split",
             "times_a_week": "times a week",
             "empty_screen": "You don't have any training splits yet",
+            "create_training_split": "Create training split",
+            "edit_training_split": "Edit training split",
             "errors": {
                 "at_least_one_training": "At least one training is required",
                 "training_splits_not_available": "Training splits not available"
