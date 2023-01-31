@@ -30,12 +30,12 @@ export class ShowByDayComponent implements OnChanges {
     @Output()
     readonly dayActivated: EventEmitter<DayActivatedType> = new EventEmitter<DayActivatedType>();
 
-    readonly activeDay$$: BehaviorSubject<number> = new BehaviorSubject(1);
-    readonly daysOfWeek$: Observable<string[]> = this.translateService
+    readonly activeDay$$ = new BehaviorSubject(1);
+    readonly daysOfWeek$: Observable<string[]> = this._translateService
         .stream('weekdays')
         .pipe(map((value) => Object.values(value)));
 
-    constructor(private readonly translateService: TranslateService) {}
+    constructor(private _translateService: TranslateService) {}
 
     ngOnChanges(changes: SimpleChanges): void {
         const startDate = changes?.startDate?.currentValue as Date;

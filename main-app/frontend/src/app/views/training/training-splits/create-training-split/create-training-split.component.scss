@@ -6,3 +6,11 @@
         height: 30px;
     }
 }
+
+.days-of-week-wrapper {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 20px;
+}
