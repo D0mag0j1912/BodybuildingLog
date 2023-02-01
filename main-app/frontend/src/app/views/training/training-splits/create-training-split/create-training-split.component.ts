@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DialogRoles } from '../../../../constants/enums/dialog-roles.enum';
-import { DayOfWeek } from '../../../../models/common/day-of-week.type';
 
 @Component({
     templateUrl: './create-training-split.component.html',
@@ -18,7 +17,6 @@ export class CreateTrainingSplitComponent {
 
     form = new FormGroup({
         Name: new FormControl('', Validators.required),
-        DayOfWeek: new FormControl<DayOfWeek>('Monday', Validators.required),
     });
 
     constructor(

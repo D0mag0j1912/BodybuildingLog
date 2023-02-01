@@ -1,7 +1,5 @@
 {
     "common": {
-        "add": "Dodaj",
-        "edit": "Uredi",
         "please_wait": "Pričekajte...",
         "page": "Stranica",
         "of": "od",
@@ -37,6 +35,9 @@
             "internet_required": "Morate biti spojeni na Internet"
         },
         "actions": {
+            "add": "Dodaj",
+            "edit": "Uredi",
+            "create": "Kreiraj",
             "delete": "Izbriši",
             "close": "Izađi",
             "confirm": "Potvrdi",
@@ -221,7 +222,7 @@
             "split": "split",
             "times_a_week": "puta tjedno",
             "empty_screen": "Nemate registriranih trening splitova",
-            "create_training_split": "Napravi trening split",
+            "create_training_split": "Kreiraj trening split",
             "edit_training_split": "Uredi trening split",
             "training_split_name": "Unesite naziv trening splita",
             "errors": {

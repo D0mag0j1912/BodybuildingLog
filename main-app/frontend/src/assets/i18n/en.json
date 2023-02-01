@@ -1,7 +1,5 @@
 {
     "common": {
-        "add": "Add",
-        "edit": "Edit",
         "please_wait": "Please wait...",
         "page": "Page",
         "of": "of",
@@ -36,6 +34,9 @@
             "internet_required": "Internet connection is required"
         },
         "actions": {
+            "add": "Add",
+            "edit": "Edit",
+            "create": "Create",
             "delete": "Delete",
             "close": "Close",
             "confirm": "Confirm",
