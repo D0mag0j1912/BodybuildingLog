@@ -13,6 +13,10 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px 20px;
+
+    .active-day {
+        --background: var(--ion-color-primary-shade) !important;
+    }
 }
 
 .exercises-wrapper {

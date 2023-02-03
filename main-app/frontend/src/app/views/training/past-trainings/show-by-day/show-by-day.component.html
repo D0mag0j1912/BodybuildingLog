@@ -6,7 +6,7 @@
         <ion-fab-button
             *ngFor="let day of daysOfWeek$ | async; let i = index"
             type="button"
-            [class.active-day]="(activeDay$$ | async) === i + 1"
+            [class.active-day]="activeDay === i + 1"
             [disabled]="isLoading"
             (click)="$event.stopImmediatePropagation(); onDayActivated(i);"
         >

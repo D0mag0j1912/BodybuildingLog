@@ -17,7 +17,9 @@ export class CreateTrainingSplitComponent {
 
     form = new FormGroup({
         Name: new FormControl('', Validators.required),
+        DayOfWeek: new FormControl(1, Validators.required),
     });
+    activeDay = 1;
 
     constructor(
         private _translateService: TranslateService,
@@ -26,5 +28,9 @@ export class CreateTrainingSplitComponent {
 
     async onCancel(): Promise<void> {
         await this._modalController.dismiss(false, DialogRoles.CANCEL);
+    }
+
+    onDayActivated(index: number): void {
+        this.activeDay = index + 1;
     }
 }
