@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import { NewTrainingDto as NewTraining } from '../../../../api/models/new-training-dto';
 import { GeneralResponseDto } from '../../../../api/models';
 
 @Injectable({ providedIn: 'root' })

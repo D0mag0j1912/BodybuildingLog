@@ -33,7 +33,7 @@ import { mapStreamData } from '../../../helpers/training/past-trainings/map-stre
 import { StreamData } from '../../../models/common/common.model';
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 import { ExerciseDto as Exercise } from '../../../../api/models/exercise-dto';
-import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import { NewTrainingDto as NewTraining } from '../../../../api/models/new-training-dto';
 import { SingleExerciseDto as SingleExercise } from '../../../../api/models/single-exercise-dto';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';

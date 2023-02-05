@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { format } from 'date-fns';
-import { NewTraining } from '../../../../models/training/new-training/new-training.model';
+import { NewTrainingDto as NewTraining } from '../../../../../api/models/new-training-dto';
 import {
     DeleteTrainingActionData,
     TrainingActionPerformed,

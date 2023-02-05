@@ -21,7 +21,7 @@ import {
     convertSetDurationUnit,
     convertWeightUnit,
 } from '../../../../../helpers/training/convert-units.helper';
-import { NewTraining } from '../../../../../models/training/new-training/new-training.model';
+import { NewTrainingDto as NewTraining } from '../../../../../../api/models/new-training-dto';
 import { NewTrainingStoreService } from '../../../../../services/store/training/new-training-store.service';
 import {
     SetCategoryType,

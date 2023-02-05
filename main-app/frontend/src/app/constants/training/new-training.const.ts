@@ -1,5 +1,5 @@
 import { ExerciseDto as Exercise } from '../../../api/models/exercise-dto';
-import { NewTraining } from '../../models/training/new-training/new-training.model';
+import { NewTrainingDto as NewTraining } from '../../../api/models/new-training-dto';
 import { SingleExerciseDto as SingleExercise } from '../../../api/models/single-exercise-dto';
 import { DEFAULT_SET_DURATION_UNIT } from '../shared/default-set-duration-unit.const';
 import { DEFAULT_WEIGHT_UNIT } from '../shared/default-weight-unit.const';

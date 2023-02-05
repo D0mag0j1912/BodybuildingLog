@@ -50,7 +50,7 @@ import { DayActivatedType } from '../../../models/training/past-trainings/day-ac
 import { INITIAL_PAGE, DEFAULT_SIZE } from '../../../constants/shared/paginator.const';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { TrainingItemWrapperHeights } from '../../../constants/enums/training-item-wrapper-heights.enum';
-import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import { NewTrainingDto as NewTraining } from '../../../../api/models/new-training-dto';
 import {
     DeleteTrainingActionData,
     TrainingActionPerformed,

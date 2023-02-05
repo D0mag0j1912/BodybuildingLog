@@ -9,7 +9,7 @@ import {
     EMPTY_TRAINING,
     TOTAL_INITIAL_WEIGHT,
 } from '../../../constants/training/new-training.const';
-import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import { NewTrainingDto as NewTraining } from '../../../../api/models/new-training-dto';
 import { Set } from '../../../models/training/new-training/single-exercise/set/set.model';
 import { SingleExerciseDto as SingleExercise } from '../../../../api/models/single-exercise-dto';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
