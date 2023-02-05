@@ -2,13 +2,14 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, take } from 'rxjs/operators';
 import { ExerciseDto } from '../../../../../api';
 import { DialogRoles } from '../../../../constants/enums/dialog-roles.enum';
 import { mapStreamData } from '../../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../../models/common/common.model';
 import { ExercisesService } from '../../../../services/api/training/exercises.service';
+import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
 
 @Component({
     templateUrl: './create-training-split.component.html',
@@ -19,7 +20,15 @@ export class CreateTrainingSplitComponent {
         .stream('weekdays')
         .pipe(map((value) => Object.values(value)));
 
-    exercisesData$ = this._exercisesService.getExercises().pipe(
+    exercisesData$ = this._exercisesStoreService.allExercisesState$.pipe(
+        take(1),
+        switchMap((data: StreamData<ExerciseDto[]>) => {
+            if (data) {
+                return of(data);
+            } else {
+                return this._exercisesService.getExercises();
+            }
+        }),
         mapStreamData(),
         map((data: StreamData<ExerciseDto[]>) => {
             if (data.IsError) {
@@ -40,6 +49,7 @@ export class CreateTrainingSplitComponent {
 
     constructor(
         private _exercisesService: ExercisesService,
+        private _exercisesStoreService: ExercisesStoreService,
         private _translateService: TranslateService,
         private _modalController: ModalController,
     ) {}
