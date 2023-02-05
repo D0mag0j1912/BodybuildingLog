@@ -12,10 +12,8 @@ import { OverlayEventDetail } from '@ionic/core';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
 import { concatMap, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import {
-    Set,
-    SelectedSetCategoriesChanged,
-} from '../../../../../models/training/new-training/single-exercise/set/set.model';
+import { SelectedSetCategoriesChanged } from '../../../../../models/training/new-training/single-exercise/set/set.model';
+import { SetDto as Set } from '../../../../../../api/models/set-dto';
 import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
 import {
     convertSetDurationUnit,

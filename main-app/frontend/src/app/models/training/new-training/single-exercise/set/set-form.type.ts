@@ -1,7 +1,7 @@
 import { FormType } from '../../../../common/form.type';
 import { RawType } from '../../../../common/raw.type';
 import { SetConstituent } from './set.type';
-import { Set } from './set.model';
+import { SetDto as Set } from './../../../../../../api/models/set-dto';
 
 export type SetFormType = FormType<Pick<RawType<Set>, SetConstituent>>;
 
