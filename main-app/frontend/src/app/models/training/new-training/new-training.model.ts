@@ -1,5 +1,5 @@
 import { NewTrainingPreferencesDto as NewTrainingPreferences } from '../../../../api/models/new-training-preferences-dto';
-import { SingleExercise } from './single-exercise/single-exercise.model';
+import { SingleExerciseDto as SingleExercise } from '../../../../api/models/single-exercise-dto';
 
 export interface NewTraining {
     exercises: SingleExercise[];

@@ -18,7 +18,7 @@ import {
     SelectedSetCategoriesChanged,
     Set,
 } from '../../../../models/training/new-training/single-exercise/set/set.model';
-import { SingleExercise } from '../../../../models/training/new-training/single-exercise/single-exercise.model';
+import { SingleExerciseDto as SingleExercise } from '../../../../../api/models/single-exercise-dto';
 import {
     ExerciseFormType,
     SingleExerciseFormType,

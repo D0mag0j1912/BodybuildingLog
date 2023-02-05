@@ -11,7 +11,7 @@ import {
 } from '../../../constants/training/new-training.const';
 import { NewTraining } from '../../../models/training/new-training/new-training.model';
 import { Set } from '../../../models/training/new-training/single-exercise/set/set.model';
-import { SingleExercise } from '../../../models/training/new-training/single-exercise/single-exercise.model';
+import { SingleExerciseDto as SingleExercise } from '../../../../api/models/single-exercise-dto';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import {
     SetCategoryType,
