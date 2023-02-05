@@ -9,5 +9,5 @@ export interface PastTrainingsDto {
   IsNextWeek?: boolean;
   IsPreviousWeek?: boolean;
   Message?: string;
-  Trainings: NewTrainingDto;
+  Trainings: Array<NewTrainingDto>;
 }

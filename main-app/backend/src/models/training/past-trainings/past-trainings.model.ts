@@ -4,7 +4,7 @@ import { DateIntervalDto } from '../../common/dates.model';
 import { NewTrainingDto } from '../new-training/new-training.model';
 
 export class PastTrainingsDto {
-    @ApiProperty({ type: NewTrainingDto })
+    @ApiProperty({ type: [NewTrainingDto] })
     @IsNotEmpty()
     Trainings: NewTrainingDto[];
 
