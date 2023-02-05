@@ -20,7 +20,10 @@
             </ion-fab-button>
         </div>
         <div class="exercises-wrapper">
-
+            <ion-item (click)="select.open()" >
+                <ion-label>{{ 'common.exercises' | translate }}</ion-label>
+                <bl-select #select [title]="'training.training_split.search_exercises' | translate"></bl-select>
+            </ion-item>
         </div>
         <ion-button type="button" color="primary" class="create-btn">
             {{ 'common.actions.create' | translate }}

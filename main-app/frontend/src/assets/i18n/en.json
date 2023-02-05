@@ -4,7 +4,7 @@
         "page": "Page",
         "of": "of",
         "page_not_found": "Page not found",
-        "exercises": "Exercises: ",
+        "exercises": "Exercises",
         "change_preference_registration": "Your preferences can be changed during application use anytime",
         "did_you_know": "Did you know?",
         "kilograms": "Kilograms",
@@ -40,7 +40,9 @@
             "delete": "Delete",
             "close": "Close",
             "confirm": "Confirm",
-            "change": "Change"
+            "change": "Change",
+            "cancel": "Cancel",
+            "select": "Select"
         },
         "months": {
             "january": "January",
@@ -224,6 +226,7 @@
             "create_training_split": "Create training split",
             "edit_training_split": "Edit training split",
             "training_split_name": "Enter training split name",
+            "search_exercises": "Search exercises",
             "errors": {
                 "at_least_one_training": "At least one training is required",
                 "training_splits_not_available": "Training splits not available"

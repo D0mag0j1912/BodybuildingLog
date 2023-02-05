@@ -17,7 +17,7 @@ export class CreateTrainingSplitComponent {
 
     form = new FormGroup({
         Name: new FormControl('', Validators.required),
-        DayOfWeek: new FormControl(1, Validators.required),
+        Exercises: new FormControl<string[]>([], Validators.required),
     });
     activeDay = 1;
 

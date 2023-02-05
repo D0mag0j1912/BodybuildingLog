@@ -1,0 +1,15 @@
+<ion-modal [isOpen]="isOpen">
+    <ng-template>
+        <ion-header>
+            <ion-toolbar color="primary">
+                <ion-buttons slot="start">
+                    <ion-button (click)="cancel()">{{ 'common.actions.cancel' | translate }}</ion-button>
+                </ion-buttons>
+                <ion-title>{{ title }}</ion-title>
+                <ion-buttons slot="end">
+                    <ion-button (click)="select()">{{ 'common.actions.select' | translate }}</ion-button>
+                </ion-buttons>
+            </ion-toolbar>
+        </ion-header>
+    </ng-template>
+</ion-modal>

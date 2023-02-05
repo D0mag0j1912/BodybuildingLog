@@ -4,7 +4,7 @@
         "page": "Stranica",
         "of": "od",
         "page_not_found": "Stranica nije pronađena",
-        "exercises": "Vježbe: ",
+        "exercises": "Vježbe",
         "language": "Jezik",
         "change_preference_registration": "Vaše preference možete promijeniti bilo kada tijekom korištenja aplikacije",
         "did_you_know": "Jeste li znali?",
@@ -41,7 +41,9 @@
             "delete": "Izbriši",
             "close": "Izađi",
             "confirm": "Potvrdi",
-            "change": "Promijeni"
+            "change": "Promijeni",
+            "cancel": "Odustani",
+            "select": "Odaberi"
         },
         "months": {
             "january": "Siječanj",
@@ -225,6 +227,7 @@
             "create_training_split": "Kreiraj trening split",
             "edit_training_split": "Uredi trening split",
             "training_split_name": "Unesite naziv trening splita",
+            "search_exercises": "Pretraži vježbe",
             "errors": {
                 "at_least_one_training": "Morate unijeti barem jedan trening",
                 "training_splits_not_available": "Trening splitovi nisu dostupni"
