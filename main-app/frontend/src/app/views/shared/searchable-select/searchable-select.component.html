@@ -1,3 +1,10 @@
+<div *ngIf="selected.length; else placeholder">
+    <span *ngFor="let item of selected; let last = last">
+        {{ item[visibleValue] | translate }} {{ last ? '' : ', ' }}
+    </span>
+</div>
+<ng-template #placeholder>{{ 'common.actions.select' | translate }}</ng-template>
+
 <ion-modal [isOpen]="isOpen">
     <ng-template>
         <ion-header>
@@ -6,10 +13,19 @@
                     <ion-button (click)="cancel()">{{ 'common.actions.cancel' | translate }}</ion-button>
                 </ion-buttons>
                 <ion-title>{{ title }}</ion-title>
-                <ion-buttons slot="end">
+                <ion-buttons *ngIf="multiple" slot="end">
                     <ion-button (click)="select()">{{ 'common.actions.select' | translate }}</ion-button>
                 </ion-buttons>
             </ion-toolbar>
+            <ion-toolbar class="searchable-toolbar">
+                <ion-searchbar class="searchbar" (ionChange)="filter($any($event))"></ion-searchbar>
+            </ion-toolbar>
         </ion-header>
+        <ion-content>
+            <ion-item *ngFor="let item of filtered" (click)="itemSelected()">
+                <ion-checkbox slot="start" [(ngModel)]="item.selected"></ion-checkbox>
+                <ion-label>{{ item[visibleValue] | translate }}</ion-label>
+            </ion-item>
+        </ion-content>
     </ng-template>
 </ion-modal>

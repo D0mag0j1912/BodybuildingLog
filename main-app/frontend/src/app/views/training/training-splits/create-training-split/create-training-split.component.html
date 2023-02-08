@@ -31,7 +31,14 @@
                 <div class="exercises-wrapper">
                     <ion-item (click)="select.open()" >
                         <ion-label>{{ 'common.exercises' | translate }}</ion-label>
-                        <bl-select #select [title]="'training.training_split.search_exercises' | translate" [data]="data.Value"></bl-select>
+                        <bl-select
+                            #select
+                            formControlName="Exercises"
+                            [title]="'training.training_split.search_exercises' | translate"
+                            [multiple]="false"
+                            [data]="data.Value"
+                            [visibleValue]="'name'"
+                        ></bl-select>
                     </ion-item>
                 </div>
                 <ion-button type="button" color="primary" class="create-btn">
