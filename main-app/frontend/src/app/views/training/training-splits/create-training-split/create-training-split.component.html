@@ -30,7 +30,7 @@
                 </div>
                 <div class="exercises-wrapper">
                     <ion-item (click)="select.open()" >
-                        <ion-label>{{ 'common.exercises' | translate }}</ion-label>
+                        <ion-label [class.hide-label]="form.controls.Exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
                         <bl-select
                             #select
                             formControlName="Exercises"

@@ -1,4 +1,4 @@
-<div *ngIf="selected.length; else placeholder">
+<div *ngIf="selected.length; else placeholder" class="selected-items">
     <span *ngFor="let item of selected; let last = last">
         {{ item[visibleValue] | translate }} {{ last ? '' : ', ' }}
     </span>
