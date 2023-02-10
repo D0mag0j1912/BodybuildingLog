@@ -4,12 +4,13 @@ import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
-import { ExerciseDto } from '../../../../../api';
+import { ExerciseDto as Exercise } from '../../../../../api/models/exercise-dto';
 import { DialogRoles } from '../../../../constants/enums/dialog-roles.enum';
 import { mapStreamData } from '../../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../../models/common/common.model';
 import { ExercisesService } from '../../../../services/api/training/exercises.service';
 import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
+import { EXERCISE_MOCK } from '../../../../mock/training-split.mock';
 
 @Component({
     templateUrl: './create-training-split.component.html',
@@ -22,7 +23,7 @@ export class CreateTrainingSplitComponent {
 
     exercisesData$ = this._exercisesStoreService.allExercisesState$.pipe(
         take(1),
-        switchMap((data: StreamData<ExerciseDto[]>) => {
+        switchMap((data: StreamData<Exercise[]>) => {
             if (data) {
                 return of(data);
             } else {
@@ -30,7 +31,7 @@ export class CreateTrainingSplitComponent {
             }
         }),
         mapStreamData(),
-        map((data: StreamData<ExerciseDto[]>) => {
+        map((data: StreamData<Exercise[]>) => {
             if (data.IsError) {
                 return {
                     ...data,
@@ -43,7 +44,7 @@ export class CreateTrainingSplitComponent {
 
     form = new FormGroup({
         Name: new FormControl('', Validators.required),
-        Exercises: new FormControl<string[]>([], Validators.required),
+        Exercises: new FormControl<Exercise[]>(EXERCISE_MOCK, Validators.required),
     });
     activeDay = 1;
 

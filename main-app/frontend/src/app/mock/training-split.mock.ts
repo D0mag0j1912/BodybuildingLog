@@ -1,4 +1,24 @@
 import { TrainingSplitDto as TrainingSplit } from '../../api/models/training-split-dto';
+import { ExerciseDto as Exercise } from '../../api/models/exercise-dto';
+
+export const EXERCISE_MOCK: Exercise[] = [
+    {
+        name: 'exercises.pullups',
+        imageUrl: '',
+        primaryMuscleGroup: 'Back',
+        availableSetCategories: ['dynamicBodyweight', 'dynamicWeighted'],
+        selectedSetCategories: ['dynamicBodyweight'],
+        numberOfSets: 3,
+    },
+    {
+        name: 'exercises.chinups',
+        imageUrl: '',
+        primaryMuscleGroup: 'Back',
+        availableSetCategories: ['dynamicBodyweight', 'dynamicWeighted'],
+        selectedSetCategories: ['dynamicBodyweight'],
+        numberOfSets: 2,
+    },
+];
 
 export const TRAINING_SPLIT_LIST: TrainingSplit[] = [
     {
