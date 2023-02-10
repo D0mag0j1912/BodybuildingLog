@@ -55,8 +55,8 @@ export class SearchableSelectComponent implements ControlValueAccessor {
     constructor(private _translateService: TranslateService) {}
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    writeValue(items: any[]): void {
-        //TODO
+    writeValue(selectedItems: any[]): void {
+        this.selected = selectedItems;
     }
 
     registerOnChange(fn: () => void): void {

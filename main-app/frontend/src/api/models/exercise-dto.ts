@@ -1,6 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface ExerciseDto {
+
+  /**
+   * Exercise ID
+   */
   '_id'?: string;
 
   /**
@@ -9,6 +13,11 @@ export interface ExerciseDto {
   availableSetCategories: Array<'dynamicBodyweight' | 'dynamicWeighted' | 'staticBodyweight' | 'staticWeighted' | 'freeWeighted'>;
   imageUrl: string;
   name: string;
+
+  /**
+   * Number of sets for selected exercise
+   */
+  numberOfSets?: number;
 
   /**
    * Enum describing exercise primary muscle group

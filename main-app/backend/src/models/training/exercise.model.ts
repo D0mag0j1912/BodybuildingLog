@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsInt, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 import { SetCategoryType } from './new-training/set.type';
 import { PrimaryMuscleGroupType } from './primary-muscle-group.type';
@@ -22,6 +22,7 @@ export const EXERCISE_SCHEMA = new Schema({
         type: [String],
         required: true,
     },
+    numberOfSets: Number,
 });
 
 export class ExerciseDto {
@@ -84,7 +85,18 @@ export class ExerciseDto {
     @IsNotEmpty()
     selectedSetCategories: SetCategoryType[];
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        type: Number,
+        description: 'Number of sets for selected exercise',
+    })
+    @IsInt()
+    @IsOptional()
+    numberOfSets: number;
+
+    @ApiPropertyOptional({
+        type: String,
+        description: 'Exercise ID',
+    })
     @IsOptional()
     @IsString()
     @IsMongoId()
