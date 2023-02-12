@@ -34,7 +34,6 @@ export class SearchableSelectComponent implements ControlValueAccessor {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     set data(data: any[]) {
         this._data = data;
-        this.filtered = data;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     get data(): any[] {
@@ -57,6 +56,13 @@ export class SearchableSelectComponent implements ControlValueAccessor {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     writeValue(selectedItems: any[]): void {
         this.selected = selectedItems;
+        this.filtered = this.data.map((item) => {
+            const foundItem = this.selected.find((selectedItem) => selectedItem._id === item._id);
+            if (foundItem) {
+                item.selected = true;
+            }
+            return item;
+        });
     }
 
     registerOnChange(fn: () => void): void {
