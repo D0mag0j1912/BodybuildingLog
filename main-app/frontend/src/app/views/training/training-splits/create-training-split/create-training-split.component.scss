@@ -25,9 +25,18 @@
     margin: 0 10px 0 20px;
     border: 2px solid var(--ion-color-primary);
     border-radius: 8px;
+    overflow: auto;
 
     .hide-label {
         display: none;
+    }
+
+    .number-of-sets {
+        &--wrapper {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
     }
 }
 

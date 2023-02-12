@@ -227,6 +227,7 @@
             "edit_training_split": "Edit training split",
             "training_split_name": "Enter training split name",
             "search_exercises": "Search exercises",
+            "number_of_sets": "Number of sets",
             "errors": {
                 "at_least_one_training": "At least one training is required",
                 "training_splits_not_available": "Training splits not available"

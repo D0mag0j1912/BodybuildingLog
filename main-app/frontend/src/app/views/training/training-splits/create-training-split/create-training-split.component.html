@@ -39,7 +39,17 @@
                             [data]="data.Value"
                             [visibleValue]="'name'"
                         ></bl-select>
+                        <ng-container *ngIf="exercisesChanges$ | async"></ng-container>
                     </ion-item>
+                    <ng-container formArrayName="NumberOfSets">
+                        <div *ngFor="let control of form.controls.NumberOfSets.controls; let i = index" class="number-of-sets--wrapper">
+                            <div class="number-of-sets--exercise-name">{{ form.controls.Exercises.value[i].name | translate }}</div>
+                            <ion-item>
+                                <ion-label>{{ 'training.training_split.number_of_sets' | translate }}</ion-label>
+                                <ion-input [formControlName]="i"></ion-input>
+                            </ion-item>
+                        </div>
+                    </ng-container>
                 </div>
                 <ion-button type="button" color="primary" class="create-btn">
                     {{ 'common.actions.create' | translate }}
