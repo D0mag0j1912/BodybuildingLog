@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SearchbarCustomEvent } from '@ionic/angular';
@@ -18,28 +19,23 @@ import { TranslateService } from '@ngx-translate/core';
 export class SearchableSelectComponent implements ControlValueAccessor {
     isOpen = false;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     selected: any[] = [];
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     filtered: any[] = [];
 
-    onChange: () => void;
+    onChange: (obj: any[]) => void;
     onTouched: () => void;
 
     @Input()
     title: string;
 
     @Input()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     set data(data: any[]) {
         this._data = data;
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     get data(): any[] {
         return this._data;
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private _data: any[];
 
     @Input()
@@ -53,7 +49,6 @@ export class SearchableSelectComponent implements ControlValueAccessor {
 
     constructor(private _translateService: TranslateService) {}
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     writeValue(selectedItems: any[]): void {
         this.selected = selectedItems;
         this.filtered = this.data.map((item) => {
@@ -65,7 +60,7 @@ export class SearchableSelectComponent implements ControlValueAccessor {
         });
     }
 
-    registerOnChange(fn: () => void): void {
+    registerOnChange(fn: (obj: any[]) => void): void {
         this.onChange = fn;
     }
 
@@ -83,7 +78,7 @@ export class SearchableSelectComponent implements ControlValueAccessor {
 
     select(): void {
         this.selected = this.data.filter((item) => item.selected);
-        //this.selectedChanged.emit(this.selected);
+        this.onChange(this.selected);
         this.isOpen = false;
     }
 
@@ -104,7 +99,7 @@ export class SearchableSelectComponent implements ControlValueAccessor {
                 this.selected[0].selected = false;
             }
             this.selected = this.data.filter((item) => item.selected);
-            //this.selectedChanged.emit(this.selected);
+            this.onChange(this.selected);
             this.isOpen = false;
         }
     }
