@@ -29,7 +29,7 @@
                     </ion-fab-button>
                 </div>
                 <div class="exercises-wrapper">
-                    <ion-item (click)="select.open()" >
+                    <ion-item (click)="select.open()" class="exercises-item">
                         <ion-label [class.hide-label]="form.controls.Exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
                         <bl-select
                             #select

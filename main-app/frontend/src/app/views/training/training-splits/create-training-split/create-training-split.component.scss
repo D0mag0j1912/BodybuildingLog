@@ -27,6 +27,10 @@
     border-radius: 8px;
     overflow: auto;
 
+    .exercises-item::part(native) {
+        padding-left: 0;
+    }
+
     .hide-label {
         display: none;
     }
