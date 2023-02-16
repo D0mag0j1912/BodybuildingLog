@@ -75,4 +75,11 @@ export class CreateTrainingSplitComponent {
     onDayActivated(index: number): void {
         this.activeDay = index + 1;
     }
+
+    createTrainingSplit(): void {
+        //TODO: Create training split
+        if (!this.form.valid) {
+            return;
+        }
+    }
 }
