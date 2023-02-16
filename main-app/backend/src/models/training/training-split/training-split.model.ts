@@ -6,6 +6,7 @@ import {
     IsMongoId,
     IsNotEmpty,
     IsString,
+    MaxLength,
     ValidateNested,
 } from 'class-validator';
 import { Schema } from 'mongoose';
@@ -39,9 +40,11 @@ export class TrainingSplitDto {
     @ApiProperty({
         type: String,
         description: 'Training split name',
+        maxLength: 100,
     })
     @IsNotEmpty()
     @IsString()
+    @MaxLength(100)
     name: string;
 
     @ApiProperty({
