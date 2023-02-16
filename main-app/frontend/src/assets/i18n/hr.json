@@ -32,7 +32,8 @@
             "unknown_error": "Došlo je do greške",
             "not_authenticated": "Morate biti prijavljeni da biste izvršili ovu aktivnost",
             "not_authorized": "Morate imati korisničke ovlasti da biste izvršili ovu aktivnost",
-            "internet_required": "Morate biti spojeni na Internet"
+            "internet_required": "Morate biti spojeni na Internet",
+            "max_length": "Maksimalna duljina je {{ length }} znakova"
         },
         "actions": {
             "add": "Dodaj",

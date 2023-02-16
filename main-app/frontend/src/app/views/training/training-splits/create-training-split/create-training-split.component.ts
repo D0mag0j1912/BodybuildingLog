@@ -16,8 +16,10 @@ import { ExercisesStoreService } from '../../../../services/store/training/exerc
     styleUrls: ['./create-training-split.component.scss'],
 })
 export class CreateTrainingSplitComponent {
+    readonly TRAINING_SPLIT_NAME_MAXLENGTH = 100;
+
     form = new FormGroup({
-        Name: new FormControl('', Validators.required),
+        Name: new FormControl('', [Validators.required, Validators.maxLength(100)]),
         Exercises: new FormControl<Exercise[]>([], Validators.required),
         NumberOfSets: new FormArray<FormControl<number>>([]),
     });

@@ -25,6 +25,9 @@
                     <ion-note *ngIf="form.controls.Name.errors?.required  && (form.controls.Name.dirty || form.controls.Name.touched)" slot="error">
                         {{ 'training.training_split.errors.training_split_name_required' | translate }}
                     </ion-note>
+                    <ion-note *ngIf="form.controls.Name.errors?.maxlength  && (form.controls.Name.dirty || form.controls.Name.touched)" slot="error">
+                        {{ 'common.errors.max_length' | translate: { length: TRAINING_SPLIT_NAME_MAXLENGTH } }}
+                    </ion-note>
                 </ion-item>
                 <div class="days-of-week-wrapper">
                     <ion-fab-button *ngFor="let day of daysOfWeek$ | async; let i = index" [class.active-day]="activeDay === i + 1" (click)="onDayActivated(i)">
