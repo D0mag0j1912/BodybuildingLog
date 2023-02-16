@@ -1,7 +1,13 @@
 
-.item-input {
-    padding: 0 10px;
+.md .dialog-title {
+    margin: 0 auto;
+}
 
+.ios .form {
+    margin: 0 5px;
+}
+
+.training-split-name-item {
     ::ng-deep .training-split-name input {
         height: 30px;
     }
@@ -20,26 +26,50 @@
 }
 
 .exercises-wrapper {
-    height: 300px;
-    padding: 20px;
-    margin: 0 10px 0 20px;
-    border: 2px solid var(--ion-color-primary);
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    border: 2px solid var(--ion-color-medium);
     border-radius: 8px;
-    overflow: auto;
-
-    .exercises-item::part(native) {
-        padding-left: 0;
-    }
+    box-shadow: var(--ion-box-shadow);
+    padding: 10px 20px;
 
     .hide-label {
         display: none;
     }
 
-    .number-of-sets {
-        &--wrapper {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
+    .sets-container {
+        display: flex;
+        flex-direction: column;
+        height: 190px;
+        overflow: auto;
+
+        .individual-set {
+            &--wrapper {
+                display: flex;
+                align-items: center;
+
+                &:last-of-type {
+                    margin-bottom: 20px;
+                }
+
+                &:not(:first-of-type) {
+                    margin-top: 15px;
+                }
+            }
+
+            &--exercise-name {
+                font-weight: 600;
+                flex: 1;
+                align-self: flex-end;
+                padding-right: 15px;
+                max-width: 50%;
+            }
+        }
+
+        .set-number-item {
+            width: 150px;
+            flex: 1;
         }
     }
 }

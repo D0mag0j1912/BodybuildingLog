@@ -228,7 +228,7 @@
             "edit_training_split": "Uredi trening split",
             "training_split_name": "Unesite naziv trening splita",
             "search_exercises": "Pretraži vježbe",
-            "number_of_sets": "Broj setova",
+            "set_number": "Broj setova",
             "errors": {
                 "at_least_one_training": "Morate unijeti barem jedan trening",
                 "training_splits_not_available": "Trening splitovi nisu dostupni"

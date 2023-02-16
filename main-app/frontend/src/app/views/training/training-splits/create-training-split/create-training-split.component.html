@@ -18,8 +18,8 @@
             ></ion-spinner>
         </ng-container>
         <ng-template #exercises>
-            <form [formGroup]="form">
-                <ion-item>
+            <form [formGroup]="form" class="form">
+                <ion-item class="training-split-name-item ion-no-padding">
                     <ion-label position="floating">{{ 'training.training_split.training_split_name' | translate }}</ion-label>
                     <ion-input formControlName="Name" class="training-split-name"></ion-input>
                 </ion-item>
@@ -29,7 +29,7 @@
                     </ion-fab-button>
                 </div>
                 <div class="exercises-wrapper">
-                    <ion-item (click)="select.open()" class="exercises-item">
+                    <ion-item (click)="select.open()" class="exercises-item ion-no-padding">
                         <ion-label [class.hide-label]="form.controls.Exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
                         <bl-select
                             #select
@@ -41,13 +41,15 @@
                         ></bl-select>
                         <ng-container *ngIf="exercisesChanges$ | async"></ng-container>
                     </ion-item>
-                    <ng-container formArrayName="NumberOfSets">
-                        <div *ngFor="let control of form.controls.NumberOfSets.controls; let i = index" class="number-of-sets--wrapper">
-                            <div class="number-of-sets--exercise-name">{{ form.controls.Exercises.value[i].name | translate }}</div>
-                            <ion-item>
-                                <ion-label>{{ 'training.training_split.number_of_sets' | translate }}</ion-label>
-                                <ion-input [formControlName]="i"></ion-input>
-                            </ion-item>
+                    <ng-container *ngIf="form.controls.Exercises.value.length">
+                        <div formArrayName="NumberOfSets" class="sets-container">
+                            <div *ngFor="let control of form.controls.NumberOfSets.controls; let i = index" class="individual-set--wrapper">
+                                <ion-text class="individual-set--exercise-name">{{ form.controls.Exercises.value[i].name | translate }}</ion-text>
+                                <ion-item class="set-number-item ion-no-padding">
+                                    <ion-label position="stacked" class="">{{ 'training.training_split.set_number' | translate }}</ion-label>
+                                    <ion-input [formControlName]="i" type="number"></ion-input>
+                                </ion-item>
+                            </div>
                         </div>
                     </ng-container>
                 </div>
