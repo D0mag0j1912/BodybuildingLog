@@ -233,7 +233,8 @@
                 "at_least_one_training": "Morate unijeti barem jedan trening",
                 "training_splits_not_available": "Trening splitovi nisu dostupni",
                 "training_split_name_required": "Naziv trening splita je obavezan",
-                "exercises_required": "Vježbe su obavezne"
+                "exercises_required": "Vježbe su obavezne",
+                "set_number_required": "Broj setova je obavezan"
             }
         },
         "update_set_category": "Promijeni kategoriju seta",

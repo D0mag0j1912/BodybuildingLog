@@ -51,6 +51,9 @@
                                 <ion-item class="set-number-item ion-no-padding">
                                     <ion-label position="stacked" class="">{{ 'training.training_split.set_number' | translate }}</ion-label>
                                     <ion-input [formControlName]="i" type="number"></ion-input>
+                                    <ion-note *ngIf="control.errors?.required  && (control.dirty || control.touched)" slot="error">
+                                        {{ 'training.training_split.errors.set_number_required' | translate }}
+                                    </ion-note>
                                 </ion-item>
                             </div>
                         </div>
