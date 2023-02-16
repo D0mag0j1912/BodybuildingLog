@@ -78,6 +78,7 @@ export class CreateTrainingSplitComponent {
 
     createTrainingSplit(): void {
         //TODO: Create training split
+        this.form.markAllAsTouched();
         if (!this.form.valid) {
             return;
         }
