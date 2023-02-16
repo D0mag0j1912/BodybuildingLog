@@ -28,7 +28,7 @@
                         {{ day | slice:0:3 }}
                     </ion-fab-button>
                 </div>
-                <div class="exercises-wrapper">
+                <div class="exercises-wrapper" [class.bordered-wrapper]="form.controls.Exercises.value.length">
                     <ion-item (click)="select.open()" class="exercises-item ion-no-padding">
                         <ion-label [class.hide-label]="form.controls.Exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
                         <bl-select
