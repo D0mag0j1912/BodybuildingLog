@@ -16,7 +16,7 @@
         class="list-container"
         [class.no-training-splits]="!trainingSplits.length">
         <ng-container *ngIf="trainingSplits.length; else emptyScreen">
-            <bl-training-split *ngFor="let split of trainingSplits" [trainingSplit]="split"></bl-training-split>
+            <bl-training-split *ngFor="let split of trainingSplits; let first = first" [trainingSplit]="split" [isFirst]="first"></bl-training-split>
         </ng-container>
         <ng-template #emptyScreen>
             <span class="empty-screen-txt">{{ 'training.training_split.empty_screen' | translate }}</span>
