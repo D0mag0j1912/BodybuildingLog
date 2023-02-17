@@ -1,9 +1,8 @@
-<div *ngIf="selected.length; else placeholder" class="selected-items">
+<div *ngIf="selected.length" class="selected-items">
     <span *ngFor="let item of selected; let last = last">
         {{ item[visibleValue] | translate }} {{ last ? '' : ', ' }}
     </span>
 </div>
-<ng-template #placeholder>{{ 'common.actions.select' | translate }}</ng-template>
 
 <ion-modal [isOpen]="isOpen">
     <ng-template>
