@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { TrainingSplitDto as TrainingSplit } from '../../../../../api/models/training-split-dto';
 import { ExerciseDto as Exercise } from '../../../../../api/models/exercise-dto';
 import { DialogRoles } from '../../../../constants/enums/dialog-roles.enum';
 import { mapStreamData } from '../../../../helpers/training/past-trainings/map-stream-data.helper';
@@ -19,24 +20,14 @@ export class CreateTrainingSplitComponent {
     readonly TRAINING_SPLIT_NAME_MAXLENGTH = 100;
 
     form = new FormGroup({
-        Name: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-        Exercises: new FormControl<Exercise[]>([], Validators.required),
-        NumberOfSets: new FormArray<FormControl<number>>([]),
+        name: new FormControl('', [Validators.required, Validators.maxLength(100)]),
+        trainings: new FormArray([
+            new FormGroup({
+                exercises: new FormControl<Exercise[]>([], Validators.required),
+            }),
+        ]),
     });
-    activeDay = 1;
-
-    exercisesChanges$ = this.form.controls.Exercises.valueChanges.pipe(
-        tap((selectedExercises: Exercise[]) => {
-            while (this.form.controls.NumberOfSets.length !== 0) {
-                this.form.controls.NumberOfSets.removeAt(0);
-            }
-            [...selectedExercises].forEach((exercise: Exercise) => {
-                this.form.controls.NumberOfSets.push(
-                    new FormControl(exercise.numberOfSets, Validators.required),
-                );
-            });
-        }),
-    );
+    trainingSplitForm: TrainingSplit;
 
     daysOfWeek$: Observable<string[]> = this._translateService
         .stream('weekdays')
@@ -72,10 +63,6 @@ export class CreateTrainingSplitComponent {
 
     async onCancel(): Promise<void> {
         await this._modalController.dismiss(false, DialogRoles.CANCEL);
-    }
-
-    onDayActivated(index: number): void {
-        this.activeDay = index + 1;
     }
 
     createTrainingSplit(): void {
