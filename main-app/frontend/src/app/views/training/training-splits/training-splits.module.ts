@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { StoreModule } from '@ngrx/store';
 import { TranslateModule } from '@ngx-translate/core';
@@ -19,7 +19,7 @@ const COMPONENTS = [
     CreateTrainingSplitComponent,
 ];
 
-const IMPORTS = [TrainingSplitsRoutingModule, ReactiveFormsModule, SharedModule];
+const IMPORTS = [TrainingSplitsRoutingModule, ReactiveFormsModule, FormsModule, SharedModule];
 
 const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule];
 

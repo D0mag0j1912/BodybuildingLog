@@ -20,7 +20,7 @@
         border: 2px solid var(--ion-color-primary);
         border-radius: 8px;
         box-shadow: var(--ion-box-shadow);
-        padding: 10px 20px;
+        padding: 10px 20px 20px 20px;
         min-height: 300px;
         position: relative;
 
@@ -34,31 +34,13 @@
             margin-right: auto;
         }
     }
-
-    .arrow-left,
-    .arrow-right {
-        position: absolute;
-        width: 60px;
-        height: 60px;
-        right: -1px;
-        top: 0;
-        bottom: 0;
-        margin-top: auto;
-        margin-bottom: auto;
-        z-index: 100;
-    }
-
-    .arrow-right {
-        right: unset;
-        left: -1px;
-    }
 }
 
 .exercises-wrapper {
     display: flex;
     flex-direction: column;
     row-gap: 10px;
-    padding: 10px 0;
+    padding: 10px 0 20px 0;
     margin-top: 20px;
 
     .hide-label {
@@ -95,6 +77,22 @@
         .set-number-item {
             width: 150px;
             flex: 1;
+        }
+    }
+}
+
+.sets-wrapper {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+
+    .individual-exercise-wrapper {
+        display: flex;
+        align-items: center;
+
+        .exercise-name {
+            font-weight: 600;
+            width: 60%;
         }
     }
 }
