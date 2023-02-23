@@ -46,39 +46,6 @@
     .hide-label {
         display: none;
     }
-
-    .sets-container {
-        display: flex;
-        flex-direction: column;
-
-        .individual-set {
-            &--wrapper {
-                display: flex;
-                align-items: center;
-
-                &:last-of-type {
-                    margin-bottom: 20px;
-                }
-
-                &:not(:first-of-type) {
-                    margin-top: 15px;
-                }
-            }
-
-            &--exercise-name {
-                font-weight: 600;
-                flex: 1;
-                align-self: center;
-                padding-right: 15px;
-                max-width: 50%;
-            }
-        }
-
-        .set-number-item {
-            width: 150px;
-            flex: 1;
-        }
-    }
 }
 
 .sets-wrapper {
