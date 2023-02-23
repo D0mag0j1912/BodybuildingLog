@@ -1,12 +1,10 @@
 {
     "common": {
-        "add": "Dodaj",
-        "edit": "Uredi",
         "please_wait": "Pričekajte...",
         "page": "Stranica",
         "of": "od",
         "page_not_found": "Stranica nije pronađena",
-        "exercises": "Vježbe: ",
+        "exercises": "Vježbe",
         "language": "Jezik",
         "change_preference_registration": "Vaše preference možete promijeniti bilo kada tijekom korištenja aplikacije",
         "did_you_know": "Jeste li znali?",
@@ -34,13 +32,19 @@
             "unknown_error": "Došlo je do greške",
             "not_authenticated": "Morate biti prijavljeni da biste izvršili ovu aktivnost",
             "not_authorized": "Morate imati korisničke ovlasti da biste izvršili ovu aktivnost",
-            "internet_required": "Morate biti spojeni na Internet"
+            "internet_required": "Morate biti spojeni na Internet",
+            "max_length": "Maksimalna duljina je {{ length }} znakova"
         },
         "actions": {
+            "add": "Dodaj",
+            "edit": "Uredi",
+            "create": "Kreiraj",
             "delete": "Izbriši",
             "close": "Izađi",
             "confirm": "Potvrdi",
-            "change": "Promijeni"
+            "change": "Promijeni",
+            "cancel": "Odustani",
+            "select": "Odaberi"
         },
         "months": {
             "january": "Siječanj",
@@ -83,7 +87,7 @@
         "errors": {
             "signup_error": "Greška pri registraciji",
             "login_error": "Greška pri prijavi",
-            "email_required": "Email je obvezan",
+            "email_required": "Email je obavezan",
             "invalid_email": "Pogrešan format email-a",
             "email_already_registered": "Email je već registriran",
             "email_not_registered": "Email nije registriran",
@@ -130,12 +134,12 @@
             "log_training": "Završi",
             "reorder_exercises": "Promjena redoslijeda",
             "errors": {
-                "date_required": "Datum je obvezan",
+                "date_required": "Datum je obavezan",
                 "bodyweight_required": "Tjelesna težina je obvezna za unos",
                 "bodyweight_number": "Tjelesna težina mora biti numerička vrijednost",
                 "bodyweight_min": "Tjelesna težina mora biti veća od 30",
                 "bodyweight_max": "Tjelesna težina mora biti manja od 300",
-                "exercise_name_required": "Naziv vježbe je obvezan",
+                "exercise_name_required": "Naziv vježbe je obavezan",
                 "exercise_name_string": "Naziv vježbe mora biti tekstualnog formata",
                 "exercise_name_duplicate": "Naziv vježbe je dupliciran",
                 "at_least_one_exercise": "Morate unijeti barem jednu vježbu",
@@ -144,7 +148,7 @@
                 "weight_number": "Vrijednost kilaže mora biti broj",
                 "weight_min": "Minimalna vrijednost kilaže je 1",
                 "weight_max": "Maksimalna vrijednost kilaže je 1000",
-                "reps_required": "Broj ponavljanja je obvezan",
+                "reps_required": "Broj ponavljanja je obavezan",
                 "reps_number": "Broj ponavljanja mora biti broj",
                 "reps_min": "Minimalna vrijednost broja ponavljanja je 1",
                 "reps_max": "Maksimalna vrijednost broja ponavljanja je 1000",
@@ -162,7 +166,7 @@
                 "no_more_exercises_available": "Nema više dostupnih vježbi",
                 "pick_current_exercise": "Prvo morate izabrati trenutnu vježbu",
                 "delete_first_set": "Prvi set ne može biti izbrisan",
-                "set_required": "Set je obvezan",
+                "set_required": "Set je obavezan",
                 "set_invalid": "Dogodila se greška pri unosu seta"
             },
             "buttons": {
@@ -213,7 +217,7 @@
                 "error_load_training": "Greška pri učitavanju treninga",
                 "get_training_error": "Traženi trening nije dostupan",
                 "past_trainings_error_title": "Prošli treninzi trenutno nedostupni",
-                "past_trainings_error_description": "Prošli treninzi trenutno nisu dostupni. Molimo Vas pokušajte ponovno"
+                "past_trainings_error_description": "Prošli treninzi trenutno nisu dostupni. Molimo Vas pokušajte ponovno."
             }
         },
         "training_split": {
@@ -221,9 +225,17 @@
             "split": "split",
             "times_a_week": "puta tjedno",
             "empty_screen": "Nemate registriranih trening splitova",
+            "create_training_split": "Kreiraj trening split",
+            "edit_training_split": "Uredi trening split",
+            "training_split_name": "Unesite naziv trening splita",
+            "search_exercises": "Pretraži vježbe",
+            "set_number": "Broj setova",
             "errors": {
                 "at_least_one_training": "Morate unijeti barem jedan trening",
-                "training_splits_not_available": "Trening splitovi nisu dostupni"
+                "training_splits_not_available": "Trening splitovi nisu dostupni",
+                "training_split_name_required": "Naziv trening splita je obavezan",
+                "exercises_required": "Vježbe su obavezne",
+                "set_number_required": "Broj setova je obavezan"
             }
         },
         "update_set_category": "Promijeni kategoriju seta",
@@ -250,7 +262,7 @@
         "weight_unit_changed": "Jedinica težine je uspješno promijenjena",
         "set_duration_unit_changed": "Jedinica trajanja seta je uspješno promijenjena",
         "errors": {
-            "language_required": "Jezik je obvezan",
+            "language_required": "Jezik je obavezan",
             "language_change": "Došlo je do greške pri promjeni jezika",
             "weight_unit_required": "Jedinica težine je obvezna",
             "weight_unit_change": "Došlo je do greške pri promjeni jedinice težine",

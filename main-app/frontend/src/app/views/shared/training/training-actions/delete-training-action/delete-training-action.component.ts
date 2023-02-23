@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
-import { NewTraining } from '../../../../../models/training/new-training/new-training.model';
+import { NewTrainingDto as NewTraining } from '../../../../../../api/models/new-training-dto';
 import { DialogRoles } from '../../../../../constants/enums/dialog-roles.enum';
 
 export interface DeleteTrainingActionDialogData {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
     selector: 'bl-training-splits-search',
@@ -6,4 +6,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     styleUrls: ['./training-splits-search.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TrainingSplitsSearchComponent {}
+export class TrainingSplitsSearchComponent {
+    @Output()
+    createTrainingSplitEvent = new EventEmitter<void>();
+
+    createTrainingSplit(): void {
+        this.createTrainingSplitEvent.emit();
+    }
+}

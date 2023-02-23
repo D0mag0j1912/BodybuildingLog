@@ -6,7 +6,7 @@ import { environment } from '../../../../environments/environment';
 import { mapDateInterval } from '../../../helpers/training/past-trainings/map-past-trainings-dates.helper';
 import { StreamData } from '../../../models/common/common.model';
 import { Paginator } from '../../../models/common/paginator.model';
-import { NewTraining } from '../../../models/training/new-training/new-training.model';
+import { NewTrainingDto as NewTraining } from '../../../../api/models/new-training-dto';
 import {
     PastTrainings,
     PeriodFilterType,

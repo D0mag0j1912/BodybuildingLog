@@ -3,6 +3,10 @@
     margin-bottom: 24px;
 }
 
+::ng-deep .ios .first-card {
+    margin-top: 10px;
+}
+
 ion-card-header {
     padding-bottom: 5px;
 

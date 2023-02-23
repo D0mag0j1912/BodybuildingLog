@@ -1,4 +1,4 @@
-import { NewTraining } from '../new-training/new-training.model';
+import { NewTrainingDto as NewTraining } from '../../../../api/models/new-training-dto';
 
 export interface PastTrainings {
     Trainings: NewTraining[];

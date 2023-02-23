@@ -10,4 +10,7 @@ import { TrainingSplitDto as TrainingSplit } from '../../../../../api/models/tra
 export class TrainingSplitComponent {
     @Input()
     trainingSplit: TrainingSplit;
+
+    @Input()
+    isFirst = false;
 }

@@ -12,16 +12,14 @@ import { OverlayEventDetail } from '@ionic/core';
 import { ModalController } from '@ionic/angular';
 import { EMPTY, from, of } from 'rxjs';
 import { concatMap, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import {
-    Set,
-    SelectedSetCategoriesChanged,
-} from '../../../../../models/training/new-training/single-exercise/set/set.model';
+import { SelectedSetCategoriesChanged } from '../../../../../models/training/new-training/single-exercise/set/set.model';
+import { SetDto as Set } from '../../../../../../api/models/set-dto';
 import { UnsubscribeService } from '../../../../../services/shared/unsubscribe.service';
 import {
     convertSetDurationUnit,
     convertWeightUnit,
 } from '../../../../../helpers/training/convert-units.helper';
-import { NewTraining } from '../../../../../models/training/new-training/new-training.model';
+import { NewTrainingDto as NewTraining } from '../../../../../../api/models/new-training-dto';
 import { NewTrainingStoreService } from '../../../../../services/store/training/new-training-store.service';
 import {
     SetCategoryType,

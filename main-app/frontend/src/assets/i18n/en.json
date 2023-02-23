@@ -1,12 +1,10 @@
 {
     "common": {
-        "add": "Add",
-        "edit": "Edit",
         "please_wait": "Please wait...",
         "page": "Page",
         "of": "of",
         "page_not_found": "Page not found",
-        "exercises": "Exercises: ",
+        "exercises": "Exercises",
         "change_preference_registration": "Your preferences can be changed during application use anytime",
         "did_you_know": "Did you know?",
         "kilograms": "Kilograms",
@@ -33,13 +31,19 @@
             "unknown_error": "Unknown error occured",
             "not_authenticated": "You need to be authenticated to finish this activity",
             "not_authorized": "You need to be authorized to finish this activity",
-            "internet_required": "Internet connection is required"
+            "internet_required": "Internet connection is required",
+            "max_length": "Max length is {{ length }} characters"
         },
         "actions": {
+            "add": "Add",
+            "edit": "Edit",
+            "create": "Create",
             "delete": "Delete",
             "close": "Close",
             "confirm": "Confirm",
-            "change": "Change"
+            "change": "Change",
+            "cancel": "Cancel",
+            "select": "Select"
         },
         "months": {
             "january": "January",
@@ -212,7 +216,7 @@
                 "error_load_training": "Error while loading training",
                 "get_training_error": "Requested training is not available",
                 "past_trainings_error_title": "Past trainings currently not available",
-                "past_trainings_error_description": "Past trainings are not currently available. Please try again"
+                "past_trainings_error_description": "Past trainings are not currently available. Please try again."
             }
         },
         "training_split": {
@@ -220,9 +224,17 @@
             "split": "split",
             "times_a_week": "times a week",
             "empty_screen": "You don't have any training splits yet",
+            "create_training_split": "Create training split",
+            "edit_training_split": "Edit training split",
+            "training_split_name": "Enter training split name",
+            "search_exercises": "Search exercises",
+            "set_number": "Set number",
             "errors": {
                 "at_least_one_training": "At least one training is required",
-                "training_splits_not_available": "Training splits not available"
+                "training_splits_not_available": "Training splits not available",
+                "training_split_name_required": "Training split name is required",
+                "exercises_required": "Exercises are required",
+                "set_number_required": "Set number is required"
             }
         },
         "update_set_category": "Change set category",

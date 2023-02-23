@@ -1,5 +1,5 @@
 import { RawType } from '../../../../common/raw.type';
-import { Set } from './set.model';
+import { SetDto as Set } from './../../../../../../api/models/set-dto';
 
 export type SetConstituent = 'weight' | 'reps' | 'duration';
 

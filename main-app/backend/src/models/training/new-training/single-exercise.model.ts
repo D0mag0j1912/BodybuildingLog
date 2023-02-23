@@ -56,7 +56,7 @@ export class SingleExerciseDto {
     @IsNotEmpty({ message: '@training.new_training.errors.error_save_training' })
     total: number;
 
-    @ApiProperty({ type: ExerciseDto })
+    @ApiProperty({ type: [ExerciseDto] })
     @ValidateNested({ each: true })
     @Type(() => ExerciseDto)
     @IsArray()

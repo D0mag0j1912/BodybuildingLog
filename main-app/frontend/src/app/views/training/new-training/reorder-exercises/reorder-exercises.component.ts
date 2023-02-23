@@ -1,15 +1,14 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { ItemReorderEventDetail, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DialogRoles } from '../../../../constants/enums/dialog-roles.enum';
-import { NewTraining } from '../../../../models/training/new-training/new-training.model';
+import { NewTrainingDto as NewTraining } from '../../../../../api/models/new-training-dto';
 import { NewTrainingStoreService } from '../../../../services/store/training/new-training-store.service';
 
 @Component({
     templateUrl: './reorder-exercises.component.html',
     styleUrls: ['./reorder-exercises.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReorderExercisesComponent {
     private reorderedTrainingState: NewTraining;

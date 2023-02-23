@@ -13,12 +13,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { ExerciseDto as Exercise } from '../../../../../api/models/exercise-dto';
-import { NewTraining } from '../../../../models/training/new-training/new-training.model';
-import {
-    SelectedSetCategoriesChanged,
-    Set,
-} from '../../../../models/training/new-training/single-exercise/set/set.model';
-import { SingleExercise } from '../../../../models/training/new-training/single-exercise/single-exercise.model';
+import { NewTrainingDto as NewTraining } from '../../../../../api/models/new-training-dto';
+import { SelectedSetCategoriesChanged } from '../../../../models/training/new-training/single-exercise/set/set.model';
+import { SetDto as Set } from '../../../../../api/models/set-dto';
+import { SingleExerciseDto as SingleExercise } from '../../../../../api/models/single-exercise-dto';
 import {
     ExerciseFormType,
     SingleExerciseFormType,

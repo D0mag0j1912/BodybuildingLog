@@ -4,7 +4,7 @@ import { ExerciseDto } from './exercise-dto';
 import { SetDto } from './set-dto';
 export interface SingleExerciseDto {
   '_id'?: string;
-  availableExercises: ExerciseDto;
+  availableExercises: Array<ExerciseDto>;
   exerciseData: ExerciseDto;
 
   /**

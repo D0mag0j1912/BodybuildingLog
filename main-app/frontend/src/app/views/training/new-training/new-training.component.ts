@@ -33,8 +33,8 @@ import { mapStreamData } from '../../../helpers/training/past-trainings/map-stre
 import { StreamData } from '../../../models/common/common.model';
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 import { ExerciseDto as Exercise } from '../../../../api/models/exercise-dto';
-import { NewTraining } from '../../../models/training/new-training/new-training.model';
-import { SingleExercise } from '../../../models/training/new-training/single-exercise/single-exercise.model';
+import { NewTrainingDto as NewTraining } from '../../../../api/models/new-training-dto';
+import { SingleExerciseDto as SingleExercise } from '../../../../api/models/single-exercise-dto';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-picker.component';
 import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
@@ -57,6 +57,7 @@ import { Preferences } from '../../../models/common/preferences.model';
 import { convertWeightUnit } from '../../../helpers/training/convert-units.helper';
 import { WeightUnitType } from '../../../models/common/preferences.type';
 import { GeneralResponseDto } from '../../../../api/models';
+import { ExercisesService } from '../../../services/api/training/exercises.service';
 import { SingleExerciseComponent } from './single-exercise/single-exercise.component';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
@@ -143,6 +144,7 @@ export class NewTrainingComponent implements OnDestroy {
         private _newTrainingStoreService: NewTrainingStoreService,
         private _newTrainingService: NewTrainingService,
         private _pastTrainingService: PastTrainingsService,
+        private _exercisesService: ExercisesService,
         private _sharedStoreService: SharedStoreService,
         private _authStoreService: AuthStoreService,
         private _unsubscribeService: UnsubscribeService,
@@ -169,7 +171,7 @@ export class NewTrainingComponent implements OnDestroy {
                         if (value) {
                             return of(value);
                         } else {
-                            return this._newTrainingService.getExercises();
+                            return this._exercisesService.getExercises();
                         }
                     }),
                     tap((exercisesData) => (allExercisesChanged = exercisesData)),
@@ -426,11 +428,11 @@ export class NewTrainingComponent implements OnDestroy {
                             this.editTrainingData,
                         );
                     }),
-                    switchMap((_) => this._newTrainingService.getExercises()),
+                    switchMap((_) => this._exercisesService.getExercises()),
                     mapStreamData(),
                 );
         } else {
-            this.trainingStream$ = this._newTrainingService.getExercises().pipe(mapStreamData());
+            this.trainingStream$ = this._exercisesService.getExercises().pipe(mapStreamData());
         }
     }
 

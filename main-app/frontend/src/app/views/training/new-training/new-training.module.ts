@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { PipesModule } from '../../../pipes/pipes.module';
@@ -22,7 +22,13 @@ const COMPONENTS = [
     SetComponent,
 ];
 
-const EXTERNAL_IMPORTS = [CommonModule, ReactiveFormsModule, TranslateModule, IonicModule];
+const EXTERNAL_IMPORTS = [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    IonicModule,
+    FormsModule,
+];
 
 const IMPORTS = [PipesModule, CamelToSnakeCaseModule, NewTrainingRoutingModule];
 
