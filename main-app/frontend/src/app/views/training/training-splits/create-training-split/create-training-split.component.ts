@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
@@ -17,7 +17,7 @@ import { ExercisesStoreService } from '../../../../services/store/training/exerc
     templateUrl: './create-training-split.component.html',
     styleUrls: ['./create-training-split.component.scss'],
 })
-export class CreateTrainingSplitComponent {
+export class CreateTrainingSplitComponent implements OnInit {
     readonly SWIPER_CONFIG: SwiperOptions = {
         pagination: true,
     };
@@ -61,7 +61,7 @@ export class CreateTrainingSplitComponent {
         private _modalController: ModalController,
     ) {}
 
-    ionViewWillEnter(): void {
+    ngOnInit(): void {
         Swiper.use([Pagination]);
     }
 

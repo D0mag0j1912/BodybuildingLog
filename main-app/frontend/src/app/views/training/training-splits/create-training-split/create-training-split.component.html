@@ -33,9 +33,9 @@
                     <swiper [config]="SWIPER_CONFIG">
                         <ng-container *ngIf="daysOfWeek$ | async as daysOfWeek">
                             <ng-template *ngFor="let day of daysOfWeek" swiperSlide>
-                                <ion-card>
+                                <ion-card class="card">
                                     <ion-card-header>
-                                        <div class="day-of-week-placeholder">
+                                        <div class="day-of-week-text">
                                             {{ day }}
                                         </div>
                                     </ion-card-header>

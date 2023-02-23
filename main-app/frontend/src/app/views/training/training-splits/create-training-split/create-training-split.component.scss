@@ -16,39 +16,40 @@
 .trainings-wrapper {
     margin-top: 30px;
 
-    .day-of-week-placeholder {
-        position: absolute;
-        width: 100px;
-        left: 0;
-        right: 0;
-        top: -22px;
-        margin-left: auto;
-        margin-right: auto;
-    }
+    .card {
+        margin: 0 8px;
 
-    .exercises-wrapper {
-        display: flex;
-        flex-direction: column;
-        row-gap: 10px;
-        padding: 10px 0 20px 0;
-
-        .hide-label {
-            display: none;
+        .day-of-week-text {
+            color: var(--ion-color-primary);
+            font-weight: 600;
+            font-size: 20px;
+            line-height: 24px;
         }
-    }
 
-    .sets-wrapper {
-        display: flex;
-        flex-direction: column;
-        row-gap: 10px;
-
-        .individual-exercise-wrapper {
+        .exercises-wrapper {
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            row-gap: 10px;
+            padding: 10px 0 20px 0;
 
-            .exercise-name {
-                font-weight: 600;
-                width: 60%;
+            .hide-label {
+                display: none;
+            }
+        }
+
+        .sets-wrapper {
+            display: flex;
+            flex-direction: column;
+            row-gap: 10px;
+
+            .individual-exercise-wrapper {
+                display: flex;
+                align-items: center;
+
+                .exercise-name {
+                    font-weight: 600;
+                    width: 60%;
+                }
             }
         }
     }
