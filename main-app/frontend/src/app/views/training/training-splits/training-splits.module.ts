@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { StoreModule } from '@ngrx/store';
 import { TranslateModule } from '@ngx-translate/core';
+import { SwiperModule } from 'swiper/angular';
 import * as fromTrainingSplits from '../../../store/training-splits/training-splits-index';
 import { SharedModule } from '../../shared/shared.module';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
@@ -21,7 +22,7 @@ const COMPONENTS = [
 
 const IMPORTS = [TrainingSplitsRoutingModule, ReactiveFormsModule, FormsModule, SharedModule];
 
-const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule];
+const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule, SwiperModule];
 
 @NgModule({
     declarations: [...COMPONENTS],

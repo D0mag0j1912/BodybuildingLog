@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import Swiper, { SwiperOptions, Pagination } from 'swiper';
 import { TrainingSplitDto as TrainingSplit } from '../../../../../api/models/training-split-dto';
 import { ExerciseDto as Exercise } from '../../../../../api/models/exercise-dto';
 import { DialogRoles } from '../../../../constants/enums/dialog-roles.enum';
@@ -17,15 +18,14 @@ import { ExercisesStoreService } from '../../../../services/store/training/exerc
     styleUrls: ['./create-training-split.component.scss'],
 })
 export class CreateTrainingSplitComponent {
+    readonly SWIPER_CONFIG: SwiperOptions = {
+        pagination: true,
+    };
     readonly TRAINING_SPLIT_NAME_MAXLENGTH = 100;
 
     form = new FormGroup({
         name: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-        trainings: new FormArray([
-            new FormGroup({
-                exercises: new FormControl<Exercise[]>([], Validators.required),
-            }),
-        ]),
+        exercises: new FormControl<Exercise[]>([], Validators.required),
     });
     trainingSplitForm: TrainingSplit;
 
@@ -60,6 +60,10 @@ export class CreateTrainingSplitComponent {
         private _translateService: TranslateService,
         private _modalController: ModalController,
     ) {}
+
+    ionViewWillEnter(): void {
+        Swiper.use([Pagination]);
+    }
 
     async onCancel(): Promise<void> {
         await this._modalController.dismiss(false, DialogRoles.CANCEL);

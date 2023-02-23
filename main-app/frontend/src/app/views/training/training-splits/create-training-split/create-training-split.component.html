@@ -29,42 +29,48 @@
                         {{ 'common.errors.max_length' | translate: { length: TRAINING_SPLIT_NAME_MAXLENGTH } }}
                     </ion-note>
                 </ion-item>
-                <div formArrayName="trainings" class="trainings-wrapper">
-                    <ng-container *ngFor="let group of form.controls.trainings.controls; let i = index;">
-                        <div class="slideable-wrapper" [formGroupName]="i">
-                            <ng-container *ngIf="daysOfWeek$ | async as daysOfWeek">
-                                <ion-button type="button" color="primary" class="day-of-week-placeholder">
-                                    {{ daysOfWeek[i] }}
-                                </ion-button>
-                            </ng-container>
-                            <div class="exercises-wrapper" [class.bordered-wrapper]="group.controls.exercises.value.length">
-                                <ion-item (click)="select.open()" class="exercises-item ion-no-padding">
-                                    <ion-label [class.hide-label]="group.controls.exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
-                                    <bl-select
-                                        #select
-                                        formControlName="exercises"
-                                        [title]="'training.training_split.search_exercises' | translate"
-                                        [multiple]="true"
-                                        [data]="data.Value"
-                                        [visibleValue]="'name'">
-                                    </bl-select>
-                                </ion-item>
-                            </div>
-                            <ng-container *ngIf="group.controls.exercises.value.length">
-                                <div class="sets-wrapper">
-                                    <div
-                                        *ngFor="let exercise of group.controls.exercises.value"
-                                        class="individual-exercise-wrapper">
-                                        <span class="exercise-name">{{ exercise.name | translate }}</span>
-                                        <ion-item>
-                                            <ion-label position="stacked">{{ 'training.training_split.set_number' | translate }}</ion-label>
-                                            <ion-input type="number" [(ngModel)]="exercise.numberOfSets" [ngModelOptions]="{ standalone: true }"></ion-input>
-                                        </ion-item>
-                                    </div>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </ng-container>
+                <div class="trainings-wrapper">
+                    <swiper [config]="SWIPER_CONFIG">
+                        <ng-container *ngIf="daysOfWeek$ | async as daysOfWeek">
+                            <ng-template *ngFor="let day of daysOfWeek" swiperSlide>
+                                <ion-card>
+                                    <ion-card-header>
+                                        <div class="day-of-week-placeholder">
+                                            {{ day }}
+                                        </div>
+                                    </ion-card-header>
+                                    <ion-card-content>
+                                        <div class="exercises-wrapper" [class.bordered-wrapper]="form.controls.exercises.value.length">
+                                            <ion-item (click)="select.open()" class="exercises-item ion-no-padding">
+                                                <ion-label [class.hide-label]="form.controls.exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
+                                                <bl-select
+                                                    #select
+                                                    formControlName="exercises"
+                                                    [title]="'training.training_split.search_exercises' | translate"
+                                                    [multiple]="true"
+                                                    [data]="data.Value"
+                                                    [visibleValue]="'name'">
+                                                </bl-select>
+                                            </ion-item>
+                                        </div>
+                                        <ng-container *ngIf="form.controls.exercises.value.length">
+                                            <div class="sets-wrapper">
+                                                <div
+                                                    *ngFor="let exercise of form.controls.exercises.value"
+                                                    class="individual-exercise-wrapper">
+                                                    <span class="exercise-name">{{ exercise.name | translate }}</span>
+                                                    <ion-item>
+                                                        <ion-label position="stacked">{{ 'training.training_split.set_number' | translate }}</ion-label>
+                                                        <ion-input type="number" [(ngModel)]="exercise.numberOfSets" [ngModelOptions]="{ standalone: true }"></ion-input>
+                                                    </ion-item>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                    </ion-card-content>
+                                </ion-card>
+                            </ng-template>
+                        </ng-container>
+                    </swiper>
                 </div>
                 <ion-button type="button" color="primary" class="create-btn" (click)="createTrainingSplit()">
                     {{ 'common.actions.create' | translate }}
