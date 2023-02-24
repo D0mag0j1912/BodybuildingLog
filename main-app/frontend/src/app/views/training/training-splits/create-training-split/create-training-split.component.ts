@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { mapStreamData } from '../../../../helpers/training/past-trainings/map-s
 import { StreamData } from '../../../../models/common/common.model';
 import { ExercisesService } from '../../../../services/api/training/exercises.service';
 import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
+import { AuthStoreService } from '../../../../services/store/auth/auth-store.service';
 
 @Component({
     templateUrl: './create-training-split.component.html',
@@ -25,13 +26,32 @@ export class CreateTrainingSplitComponent implements OnInit {
 
     form = new FormGroup({
         name: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-        exercises: new FormControl<Exercise[]>([], Validators.required),
+        trainings: new FormArray([
+            new FormGroup({
+                exercises: new FormControl<Exercise[]>([], Validators.required),
+            }),
+        ]),
     });
-    trainingSplitForm: TrainingSplit;
+    trainingSplitForm: TrainingSplit = {
+        name: '',
+        trainings: [],
+        userId: this._authStoreService.getLoggedUser()._id,
+    };
 
-    daysOfWeek$: Observable<string[]> = this._translateService
-        .stream('weekdays')
-        .pipe(map((value) => Object.values(value)));
+    daysOfWeek$: Observable<string[]> = this._translateService.stream('weekdays').pipe(
+        map((value: { [key: string]: string }) =>
+            Object.values(value).map((value: string, index: number, array: string[]) => {
+                if (index < array.length - 1) {
+                    this.form.controls.trainings.push(
+                        new FormGroup({
+                            exercises: new FormControl<Exercise[]>([], Validators.required),
+                        }),
+                    );
+                }
+                return value;
+            }),
+        ),
+    );
 
     exercisesData$ = this._exercisesStoreService.allExercisesState$.pipe(
         take(1),
@@ -57,6 +77,7 @@ export class CreateTrainingSplitComponent implements OnInit {
     constructor(
         private _exercisesService: ExercisesService,
         private _exercisesStoreService: ExercisesStoreService,
+        private _authStoreService: AuthStoreService,
         private _translateService: TranslateService,
         private _modalController: ModalController,
     ) {}

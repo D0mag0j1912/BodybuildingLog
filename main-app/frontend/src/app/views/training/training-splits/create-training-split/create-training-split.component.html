@@ -18,7 +18,7 @@
             ></ion-spinner>
         </ng-container>
         <ng-template #exercises>
-            <form [formGroup]="form" class="form">
+            <form class="form" [formGroup]="form">
                 <ion-item class="training-split-name-item ion-no-padding">
                     <ion-label position="floating">{{ 'training.training_split.training_split_name' | translate }}</ion-label>
                     <ion-input formControlName="name" class="training-split-name"></ion-input>
@@ -29,20 +29,20 @@
                         {{ 'common.errors.max_length' | translate: { length: TRAINING_SPLIT_NAME_MAXLENGTH } }}
                     </ion-note>
                 </ion-item>
-                <div class="trainings-wrapper">
+                <div formArrayName="trainings" class="trainings-wrapper">
                     <swiper [config]="SWIPER_CONFIG">
                         <ng-container *ngIf="daysOfWeek$ | async as daysOfWeek">
-                            <ng-template *ngFor="let day of daysOfWeek" swiperSlide>
-                                <ion-card class="card">
+                            <ng-template *ngFor="let group of this.form.controls.trainings.controls; let i = index" swiperSlide>
+                                <ion-card class="card" [formGroupName]="i">
                                     <ion-card-header>
                                         <div class="day-of-week-text">
-                                            {{ day }}
+                                            {{ daysOfWeek[i] }}
                                         </div>
                                     </ion-card-header>
                                     <ion-card-content>
-                                        <div class="exercises-wrapper" [class.bordered-wrapper]="form.controls.exercises.value.length">
+                                        <div class="exercises-wrapper" [class.bordered-wrapper]="group.controls.exercises.value.length">
                                             <ion-item (click)="select.open()" class="exercises-item ion-no-padding">
-                                                <ion-label [class.hide-label]="form.controls.exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
+                                                <ion-label [class.hide-label]="group.controls.exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
                                                 <bl-select
                                                     #select
                                                     formControlName="exercises"
@@ -53,10 +53,10 @@
                                                 </bl-select>
                                             </ion-item>
                                         </div>
-                                        <ng-container *ngIf="form.controls.exercises.value.length">
+                                        <ng-container *ngIf="group.controls.exercises.value.length">
                                             <div class="sets-wrapper">
                                                 <div
-                                                    *ngFor="let exercise of form.controls.exercises.value"
+                                                    *ngFor="let exercise of group.controls.exercises.value"
                                                     class="individual-exercise-wrapper">
                                                     <span class="exercise-name">{{ exercise.name | translate }}</span>
                                                     <ion-item>
