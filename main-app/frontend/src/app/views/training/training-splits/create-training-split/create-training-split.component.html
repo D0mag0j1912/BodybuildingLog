@@ -39,7 +39,7 @@
                                             {{ daysOfWeek[i] }}
                                         </div>
                                     </ion-card-header>
-                                    <ion-card-content>
+                                    <ion-card-content class="card-content">
                                         <div class="exercises-wrapper" [class.bordered-wrapper]="group.controls.exercises.value.length">
                                             <ion-item (click)="select.open()" class="exercises-item ion-no-padding">
                                                 <ion-label [class.hide-label]="group.controls.exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
