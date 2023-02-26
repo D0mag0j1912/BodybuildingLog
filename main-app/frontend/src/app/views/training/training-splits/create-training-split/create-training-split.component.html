@@ -57,12 +57,12 @@
                                         <ng-container *ngIf="group.controls.exercises.value.length">
                                             <div class="sets-wrapper">
                                                 <div
-                                                    *ngFor="let exercise of group.controls.exercises.value"
+                                                    *ngFor="let exercise of group.controls.exercises.value; let j = index"
                                                     class="individual-exercise-wrapper">
                                                     <span class="exercise-name">{{ exercise.name | translate }}</span>
                                                     <ion-item>
                                                         <ion-label position="stacked">{{ 'training.training_split.set_number' | translate }}</ion-label>
-                                                        <ion-input type="number" [(ngModel)]="exercise.numberOfSets" [ngModelOptions]="{ standalone: true }" (ngModelChange)="onSetNumberChange()"></ion-input>
+                                                        <ion-input type="number" [ngModel]="exercise.numberOfSets" [ngModelOptions]="{ standalone: true }" (ngModelChange)="onSetNumberChange($event, i, j)"></ion-input>
                                                     </ion-item>
                                                 </div>
                                             </div>
@@ -76,6 +76,7 @@
                 <ion-button type="button" color="primary" class="create-btn" (click)="createTrainingSplit()">
                     {{ 'common.actions.create' | translate }}
                 </ion-button>
+                <ng-container *ngIf="formValueChanges$ | async"></ng-container>
             </form>
         </ng-template>
     </ng-container>

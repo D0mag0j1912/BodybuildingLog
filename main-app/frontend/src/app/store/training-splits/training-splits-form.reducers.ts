@@ -1,4 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
+import { ExerciseDto as Exercise } from '../../../api/models/exercise-dto';
+import { CustomTrainingDto as CustomTraining } from '../../../api/models/custom-training-dto';
 import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-split-dto';
 import * as trainingSplitActions from './training-splits.actions';
 
@@ -13,6 +15,34 @@ export const initialTrainingSplitsFormState: TrainingSplitsFormState = {
 export const trainingSplitsFormReducer = createReducer(
     initialTrainingSplitsFormState,
     on(trainingSplitActions.updateTrainingSplitForm, (state, action) => ({
+        ...state,
         trainingSplitsForm: action.trainingSplitForm,
+    })),
+    on(trainingSplitActions.updateNumberOfSets, (state, action) => ({
+        ...state,
+        trainingSplitsForm: {
+            ...action.trainingSplitForm,
+            trainings: [...action.trainingSplitForm.trainings].map(
+                (training: CustomTraining, indexTraining: number) => {
+                    if (indexTraining === action.trainingsIndex) {
+                        return {
+                            ...training,
+                            exercises: [...training.exercises].map(
+                                (exercise: Exercise, indexExercise: number) => {
+                                    if (indexExercise === action.exercisesIndex) {
+                                        return {
+                                            ...exercise,
+                                            numberOfSets: action.numberOfSets,
+                                        };
+                                    }
+                                    return exercise;
+                                },
+                            ),
+                        };
+                    }
+                    return training;
+                },
+            ),
+        },
     })),
 );

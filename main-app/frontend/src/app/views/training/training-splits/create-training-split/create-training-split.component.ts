@@ -3,7 +3,7 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { map, startWith, switchMap, take, tap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import Swiper, { SwiperOptions, Pagination } from 'swiper';
 import { TrainingSplitDto as TrainingSplit } from '../../../../../api/models/training-split-dto';
@@ -15,14 +15,12 @@ import { ExercisesService } from '../../../../services/api/training/exercises.se
 import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
 import { AuthStoreService } from '../../../../services/store/auth/auth-store.service';
 import { CustomTrainingDto as CustomTraining } from '../../../../../api/models/custom-training-dto';
-import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import * as trainingSplitActions from '../../../../store/training-splits/training-splits.actions';
 import { AppState } from '../../../..';
 
 @Component({
     templateUrl: './create-training-split.component.html',
     styleUrls: ['./create-training-split.component.scss'],
-    providers: [UnsubscribeService],
 })
 export class CreateTrainingSplitComponent implements OnInit {
     readonly SWIPER_CONFIG: SwiperOptions = {
@@ -47,6 +45,7 @@ export class CreateTrainingSplitComponent implements OnInit {
         trainings: [],
         userId: this._authStoreService.getLoggedUser()._id,
     };
+    exercises: Exercise[] = [];
 
     daysOfWeek$: Observable<string[]> = this._translateService.stream('weekdays').pipe(
         map((value: { [key: string]: string }) =>
@@ -90,20 +89,9 @@ export class CreateTrainingSplitComponent implements OnInit {
         }),
     );
 
-    constructor(
-        private _exercisesService: ExercisesService,
-        private _exercisesStoreService: ExercisesStoreService,
-        private _authStoreService: AuthStoreService,
-        private _translateService: TranslateService,
-        private _unsubscribeService: UnsubscribeService,
-        private _modalController: ModalController,
-        private _store: Store<AppState>,
-    ) {}
-
-    ngOnInit(): void {
-        Swiper.use([Pagination]);
-
-        this.form.valueChanges.pipe(takeUntil(this._unsubscribeService)).subscribe((value) => {
+    formValueChanges$ = this.form.valueChanges.pipe(
+        startWith(this.form.value),
+        tap((value) => {
             this.trainingSplitForm = {
                 ...this.trainingSplitForm,
                 name: value.name,
@@ -114,15 +102,35 @@ export class CreateTrainingSplitComponent implements OnInit {
                     trainingSplitForm: this.trainingSplitForm,
                 }),
             );
-        });
+        }),
+    );
+
+    constructor(
+        private _exercisesService: ExercisesService,
+        private _exercisesStoreService: ExercisesStoreService,
+        private _authStoreService: AuthStoreService,
+        private _translateService: TranslateService,
+        private _modalController: ModalController,
+        private _store: Store<AppState>,
+    ) {}
+
+    ngOnInit(): void {
+        Swiper.use([Pagination]);
     }
 
     async onCancel(): Promise<void> {
         await this._modalController.dismiss(false, DialogRoles.CANCEL);
     }
 
-    onSetNumberChange(): void {
-        this.form.updateValueAndValidity({ emitEvent: true });
+    onSetNumberChange(numberOfSets: number, trainingsIndex: number, exercisesIndex: number): void {
+        this._store.dispatch(
+            trainingSplitActions.updateNumberOfSets({
+                numberOfSets,
+                trainingsIndex,
+                exercisesIndex,
+                trainingSplitForm: this.trainingSplitForm,
+            }),
+        );
     }
 
     createTrainingSplit(): void {
