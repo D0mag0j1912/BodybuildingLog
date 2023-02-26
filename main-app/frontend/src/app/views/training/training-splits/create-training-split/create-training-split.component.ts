@@ -13,6 +13,7 @@ import { StreamData } from '../../../../models/common/common.model';
 import { ExercisesService } from '../../../../services/api/training/exercises.service';
 import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
 import { AuthStoreService } from '../../../../services/store/auth/auth-store.service';
+import { CustomTrainingDto as CustomTraining } from '../../../../../api/models/custom-training-dto';
 
 @Component({
     templateUrl: './create-training-split.component.html',
@@ -28,6 +29,10 @@ export class CreateTrainingSplitComponent implements OnInit {
         name: new FormControl('', [Validators.required, Validators.maxLength(100)]),
         trainings: new FormArray([
             new FormGroup({
+                dayOfWeek: new FormControl<CustomTraining['dayOfWeek']>(
+                    'Monday',
+                    Validators.required,
+                ),
                 exercises: new FormControl<Exercise[]>([], Validators.required),
             }),
         ]),
@@ -40,15 +45,21 @@ export class CreateTrainingSplitComponent implements OnInit {
 
     daysOfWeek$: Observable<string[]> = this._translateService.stream('weekdays').pipe(
         map((value: { [key: string]: string }) =>
-            Object.values(value).map((value: string, index: number, array: string[]) => {
-                if (index < array.length - 1) {
+            Object.entries(value).map((entry: [string, string], index: number) => {
+                if (index > 0) {
+                    const dayOfWeek = (entry[0].charAt(0).toUpperCase() +
+                        entry[0].slice(1)) as CustomTraining['dayOfWeek'];
                     this.form.controls.trainings.push(
                         new FormGroup({
+                            dayOfWeek: new FormControl<CustomTraining['dayOfWeek']>(
+                                dayOfWeek,
+                                Validators.required,
+                            ),
                             exercises: new FormControl<Exercise[]>([], Validators.required),
                         }),
                     );
                 }
-                return value;
+                return entry[1];
             }),
         ),
     );
@@ -88,6 +99,10 @@ export class CreateTrainingSplitComponent implements OnInit {
 
     async onCancel(): Promise<void> {
         await this._modalController.dismiss(false, DialogRoles.CANCEL);
+    }
+
+    onSetNumberChange(): void {
+        this.form.updateValueAndValidity({ emitEvent: true });
     }
 
     createTrainingSplit(): void {

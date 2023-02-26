@@ -22,6 +22,10 @@
     .card {
         margin: 0 8px 5px 8px;
 
+        &--header {
+            padding-bottom: 0;
+        }
+
         .day-of-week-text {
             color: var(--ion-color-primary);
             font-weight: 600;
@@ -63,5 +67,5 @@
 }
 
 .create-btn {
-    margin-top: 15px;
+    margin: 20px 0;
 }

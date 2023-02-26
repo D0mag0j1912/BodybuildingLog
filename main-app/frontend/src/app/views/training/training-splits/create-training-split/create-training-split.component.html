@@ -34,7 +34,7 @@
                         <ng-container *ngIf="daysOfWeek$ | async as daysOfWeek">
                             <ng-template *ngFor="let group of this.form.controls.trainings.controls; let i = index" swiperSlide>
                                 <ion-card class="card" [formGroupName]="i">
-                                    <ion-card-header>
+                                    <ion-card-header class="card--header">
                                         <div class="day-of-week-text">
                                             {{ daysOfWeek[i] }}
                                         </div>
@@ -62,7 +62,7 @@
                                                     <span class="exercise-name">{{ exercise.name | translate }}</span>
                                                     <ion-item>
                                                         <ion-label position="stacked">{{ 'training.training_split.set_number' | translate }}</ion-label>
-                                                        <ion-input type="number" [(ngModel)]="exercise.numberOfSets" [ngModelOptions]="{ standalone: true }"></ion-input>
+                                                        <ion-input type="number" [(ngModel)]="exercise.numberOfSets" [ngModelOptions]="{ standalone: true }" (ngModelChange)="onSetNumberChange()"></ion-input>
                                                     </ion-item>
                                                 </div>
                                             </div>
