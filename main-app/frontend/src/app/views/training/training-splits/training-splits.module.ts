@@ -5,7 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { StoreModule } from '@ngrx/store';
 import { TranslateModule } from '@ngx-translate/core';
 import { SwiperModule } from 'swiper/angular';
-import * as fromTrainingSplits from '../../../store/training-splits/training-splits-index';
+import * as trainingSplitsReducers from '../../../store/training-splits/training-splits-form.reducers';
 import { SharedModule } from '../../shared/shared.module';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
 import { TrainingSplitComponent } from './training-split/training-split.component';
@@ -29,7 +29,7 @@ const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule, SwiperModu
     imports: [
         ...IMPORTS,
         ...EXTERNAL_IMPORTS,
-        StoreModule.forFeature('trainingSplits', fromTrainingSplits.reducers),
+        StoreModule.forFeature('trainingSplits', trainingSplitsReducers.trainingSplitsFormReducer),
     ],
     exports: [...COMPONENTS],
 })

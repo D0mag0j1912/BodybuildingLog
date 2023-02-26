@@ -1,5 +1,5 @@
 import { ActionReducerMap } from '@ngrx/store';
-import { TrainingSplitsState } from './store/training-splits/training-splits-index';
+import { TrainingSplitsState } from './store/training-splits/training-splits.reducers';
 
 export interface AppState {
     trainingSplits?: TrainingSplitsState;

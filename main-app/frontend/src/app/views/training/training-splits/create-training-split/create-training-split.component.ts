@@ -16,7 +16,7 @@ import { ExercisesStoreService } from '../../../../services/store/training/exerc
 import { AuthStoreService } from '../../../../services/store/auth/auth-store.service';
 import { CustomTrainingDto as CustomTraining } from '../../../../../api/models/custom-training-dto';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
-import * as fromTrainingSplitActions from '../../../../store/training-splits/training-splits.actions';
+import * as trainingSplitActions from '../../../../store/training-splits/training-splits.actions';
 import { AppState } from '../../../..';
 
 @Component({
@@ -110,7 +110,7 @@ export class CreateTrainingSplitComponent implements OnInit {
                 trainings: value.trainings as CustomTraining[],
             };
             this._store.dispatch(
-                fromTrainingSplitActions.updateTrainingSplitForm({
+                trainingSplitActions.updateTrainingSplitForm({
                     trainingSplitForm: this.trainingSplitForm,
                 }),
             );
