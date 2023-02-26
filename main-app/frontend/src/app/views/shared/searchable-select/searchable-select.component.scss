@@ -1,4 +1,8 @@
 
+.md .title {
+    font-size: 18px;
+}
+
 .ios .searchable-toolbar {
     --background: white;
 
@@ -8,7 +12,7 @@
 }
 
 .selected-items {
-    max-width: 280px;
+    max-width: 270px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

@@ -20,7 +20,7 @@
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
-<ion-content class="ion-text-center ion-padding">
+<ion-content class="ion-text-center">
     <ng-container *ngIf="trainingStream$ | async as trainingData">
         <ng-container *ngIf="trainingData.IsError; else valueOrLoading">
             <div class="error-wrapper">
