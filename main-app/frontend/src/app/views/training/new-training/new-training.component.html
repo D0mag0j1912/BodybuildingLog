@@ -48,7 +48,7 @@
                 color="primary"
             ></ion-spinner>
             <form autocomplete="off" [class.hide-form]="trainingData.IsLoading" [formGroup]="newTrainingForm">
-                <ion-item>
+                <ion-item class="bodyweight-item">
                     <ion-label position="floating">{{ 'training.new_training.pick_bodyweight' | translate }}</ion-label>
                     <ng-container *ngIf="currentPreferences$ | async as currentPreferences">
                         <ion-input

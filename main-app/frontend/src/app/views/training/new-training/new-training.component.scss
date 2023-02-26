@@ -11,6 +11,10 @@ ion-item {
     padding: 0 10px;
 }
 
+.bodyweight-item::part(native) {
+    padding-left: 0;
+}
+
 .bodyweight-input {
     &--unit {
         position: absolute;
