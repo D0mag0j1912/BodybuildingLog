@@ -47,6 +47,9 @@ export class SearchableSelectComponent implements ControlValueAccessor {
     @Input()
     visibleValue: string;
 
+    @Input()
+    panelClass: string;
+
     constructor(private _translateService: TranslateService) {}
 
     writeValue(selectedItems: any[]): void {

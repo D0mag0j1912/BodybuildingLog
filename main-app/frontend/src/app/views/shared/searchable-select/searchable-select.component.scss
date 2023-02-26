@@ -12,8 +12,11 @@
 }
 
 .selected-items {
-    max-width: 270px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.trainingSplitClass {
+    max-width: 300px;
 }
