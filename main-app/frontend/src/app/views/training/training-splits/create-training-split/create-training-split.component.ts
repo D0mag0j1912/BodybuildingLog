@@ -30,15 +30,12 @@ export class CreateTrainingSplitComponent implements OnInit {
 
     form = new FormGroup({
         name: new FormControl('', [Validators.required, Validators.maxLength(100)]),
-        trainings: new FormArray([
-            new FormGroup({
-                dayOfWeek: new FormControl<CustomTraining['dayOfWeek']>(
-                    'Monday',
-                    Validators.required,
-                ),
-                exercises: new FormControl<Exercise[]>([], Validators.required),
-            }),
-        ]),
+        trainings: new FormArray<
+            FormGroup<{
+                dayOfWeek: FormControl<CustomTraining['dayOfWeek']>;
+                exercises: FormControl<Exercise[]>;
+            }>
+        >([]),
     });
     trainingSplitForm: TrainingSplit = {
         name: '',
@@ -49,20 +46,18 @@ export class CreateTrainingSplitComponent implements OnInit {
 
     daysOfWeek$: Observable<string[]> = this._translateService.stream('weekdays').pipe(
         map((value: { [key: string]: string }) =>
-            Object.entries(value).map((entry: [string, string], index: number) => {
-                if (index > 0) {
-                    const dayOfWeek = (entry[0].charAt(0).toUpperCase() +
-                        entry[0].slice(1)) as CustomTraining['dayOfWeek'];
-                    this.form.controls.trainings.push(
-                        new FormGroup({
-                            dayOfWeek: new FormControl<CustomTraining['dayOfWeek']>(
-                                dayOfWeek,
-                                Validators.required,
-                            ),
-                            exercises: new FormControl<Exercise[]>([], Validators.required),
-                        }),
-                    );
-                }
+            Object.entries(value).map((entry: [string, string]) => {
+                const dayOfWeek = (entry[0].charAt(0).toUpperCase() +
+                    entry[0].slice(1)) as CustomTraining['dayOfWeek'];
+                this.form.controls.trainings.push(
+                    new FormGroup({
+                        dayOfWeek: new FormControl<CustomTraining['dayOfWeek']>(
+                            dayOfWeek,
+                            Validators.required,
+                        ),
+                        exercises: new FormControl<Exercise[]>([], Validators.required),
+                    }),
+                );
                 return entry[1];
             }),
         ),
