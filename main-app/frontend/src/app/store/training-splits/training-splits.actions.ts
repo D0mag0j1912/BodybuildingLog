@@ -12,6 +12,5 @@ export const updateNumberOfSets = createAction(
         numberOfSets: number;
         trainingsIndex: number;
         exercisesIndex: number;
-        trainingSplitForm: TrainingSplit;
     }>(),
 );

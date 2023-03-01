@@ -21,8 +21,7 @@ export const trainingSplitsFormReducer = createReducer(
     on(trainingSplitActions.updateNumberOfSets, (state, action) => ({
         ...state,
         trainingSplitsForm: {
-            ...action.trainingSplitForm,
-            trainings: [...action.trainingSplitForm.trainings].map(
+            trainings: [...state.trainingSplitsForm.trainings].map(
                 (training: CustomTraining, indexTraining: number) => {
                     if (indexTraining === action.trainingsIndex) {
                         return {
@@ -43,6 +42,8 @@ export const trainingSplitsFormReducer = createReducer(
                     return training;
                 },
             ),
+            name: state.trainingSplitsForm.name,
+            userId: state.trainingSplitsForm.userId,
         },
     })),
 );

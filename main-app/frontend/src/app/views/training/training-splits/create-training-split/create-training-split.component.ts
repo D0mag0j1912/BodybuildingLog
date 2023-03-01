@@ -37,12 +37,7 @@ export class CreateTrainingSplitComponent implements OnInit {
             }>
         >([]),
     });
-    trainingSplitForm: TrainingSplit = {
-        name: '',
-        trainings: [],
-        userId: this._authStoreService.getLoggedUser()._id,
-    };
-    exercises: Exercise[] = [];
+    trainingSplitForm: TrainingSplit;
 
     daysOfWeek$: Observable<string[]> = this._translateService.stream('weekdays').pipe(
         map((value: { [key: string]: string }) =>
@@ -91,6 +86,7 @@ export class CreateTrainingSplitComponent implements OnInit {
                 ...this.trainingSplitForm,
                 name: value.name,
                 trainings: value.trainings as CustomTraining[],
+                userId: this._authStoreService.getLoggedUser()._id,
             };
             this._store.dispatch(
                 trainingSplitActions.updateTrainingSplitForm({
@@ -123,7 +119,6 @@ export class CreateTrainingSplitComponent implements OnInit {
                 numberOfSets,
                 trainingsIndex,
                 exercisesIndex,
-                trainingSplitForm: this.trainingSplitForm,
             }),
         );
     }
