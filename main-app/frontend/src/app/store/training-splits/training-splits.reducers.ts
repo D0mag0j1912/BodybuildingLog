@@ -1,12 +1,51 @@
-import { createReducer } from '@ngrx/store';
+import { createReducer, on } from '@ngrx/store';
 import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-split-dto';
+import { CustomTrainingDto as CustomTraining } from '../../../api/models/custom-training-dto';
+import { ExerciseDto as Exercise } from '../../../api/models/exercise-dto';
+import * as trainingSplitActions from './training-splits.actions';
 
 export interface TrainingSplitsState {
-    trainingSplits: TrainingSplit[];
+    trainingSplitsForm: TrainingSplit;
+    trainingSplitsList: TrainingSplit[];
 }
 
 export const initialTrainingSplitState: TrainingSplitsState = {
-    trainingSplits: undefined,
+    trainingSplitsForm: undefined,
+    trainingSplitsList: undefined,
 };
 
-export const trainingSplitsReducers = createReducer(initialTrainingSplitState);
+export const trainingSplitsReducer = createReducer(
+    initialTrainingSplitState,
+    on(trainingSplitActions.updateTrainingSplitForm, (state, action) => ({
+        ...state,
+        trainingSplitsForm: action.trainingSplitForm,
+    })),
+    on(trainingSplitActions.updateNumberOfSets, (state, action) => ({
+        ...state,
+        trainingSplitsForm: {
+            trainings: [...state.trainingSplitsForm.trainings].map(
+                (training: CustomTraining, indexTraining: number) => {
+                    if (indexTraining === action.trainingsIndex) {
+                        return {
+                            ...training,
+                            exercises: [...training.exercises].map(
+                                (exercise: Exercise, indexExercise: number) => {
+                                    if (indexExercise === action.exercisesIndex) {
+                                        return {
+                                            ...exercise,
+                                            numberOfSets: action.numberOfSets,
+                                        };
+                                    }
+                                    return exercise;
+                                },
+                            ),
+                        };
+                    }
+                    return training;
+                },
+            ),
+            name: state.trainingSplitsForm.name,
+            userId: state.trainingSplitsForm.userId,
+        },
+    })),
+);
