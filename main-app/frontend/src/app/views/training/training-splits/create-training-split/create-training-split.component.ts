@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { map, startWith, switchMap, take, tap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,8 +14,7 @@ import { ExercisesService } from '../../../../services/api/training/exercises.se
 import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
 import { AuthStoreService } from '../../../../services/store/auth/auth-store.service';
 import { CustomTrainingDto as CustomTraining } from '../../../../../api/models/custom-training-dto';
-import * as trainingSplitActions from '../../../../store/training-splits/training-splits.actions';
-import { AppState } from '../../../..';
+import { TrainingSplitsFacadeService } from '../../../../services/store/facade/training-splits-facade.service';
 
 @Component({
     templateUrl: './create-training-split.component.html',
@@ -88,11 +86,7 @@ export class CreateTrainingSplitComponent implements OnInit {
                 trainings: value.trainings as CustomTraining[],
                 userId: this._authStoreService.getLoggedUser()._id,
             };
-            this._store.dispatch(
-                trainingSplitActions.updateTrainingSplitForm({
-                    trainingSplitForm: this.trainingSplitForm,
-                }),
-            );
+            this._trainingSplitsFacadeService.updateTrainingSplitForm(this.trainingSplitForm);
         }),
     );
 
@@ -101,8 +95,8 @@ export class CreateTrainingSplitComponent implements OnInit {
         private _exercisesStoreService: ExercisesStoreService,
         private _authStoreService: AuthStoreService,
         private _translateService: TranslateService,
+        private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
         private _modalController: ModalController,
-        private _store: Store<AppState>,
     ) {}
 
     ngOnInit(): void {
@@ -114,12 +108,10 @@ export class CreateTrainingSplitComponent implements OnInit {
     }
 
     onSetNumberChange(numberOfSets: number, trainingsIndex: number, exercisesIndex: number): void {
-        this._store.dispatch(
-            trainingSplitActions.updateNumberOfSets({
-                numberOfSets,
-                trainingsIndex,
-                exercisesIndex,
-            }),
+        this._trainingSplitsFacadeService.updateNumberOfSets(
+            numberOfSets,
+            trainingsIndex,
+            exercisesIndex,
         );
     }
 

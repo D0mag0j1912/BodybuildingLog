@@ -6,6 +6,7 @@ import { StoreModule } from '@ngrx/store';
 import { TranslateModule } from '@ngx-translate/core';
 import { SwiperModule } from 'swiper/angular';
 import { FeatureKeys } from '../../../constants/enums/feature-keys.enum';
+import { TrainingSplitsFacadeService } from '../../../services/store/facade/training-splits-facade.service';
 import * as trainingSplitsReducers from '../../../store/training-splits/training-splits.reducers';
 import { SharedModule } from '../../shared/shared.module';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
@@ -25,6 +26,8 @@ const IMPORTS = [TrainingSplitsRoutingModule, ReactiveFormsModule, FormsModule, 
 
 const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule, SwiperModule];
 
+const PROVIDERS = [TrainingSplitsFacadeService];
+
 @NgModule({
     declarations: [...COMPONENTS],
     imports: [
@@ -36,5 +39,6 @@ const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule, SwiperModu
         ),
     ],
     exports: [...COMPONENTS],
+    providers: [...PROVIDERS],
 })
 export class TrainingSplitsModule {}
