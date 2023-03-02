@@ -94,8 +94,8 @@ export class CreateTrainingSplitComponent implements OnInit {
         private _exercisesService: ExercisesService,
         private _exercisesStoreService: ExercisesStoreService,
         private _authStoreService: AuthStoreService,
-        private _translateService: TranslateService,
         private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
+        private _translateService: TranslateService,
         private _modalController: ModalController,
     ) {}
 
