@@ -93,7 +93,7 @@ export class SearchableSelectComponent implements ControlValueAccessor {
 
     select(): void {
         this.selected = this.data.filter((item) => item.selected);
-        this.onChange(this.selected);
+        this._modifySelectedOutput();
         this.isOpen = false;
     }
 
@@ -114,10 +114,15 @@ export class SearchableSelectComponent implements ControlValueAccessor {
                 this.selected[0].selected = false;
             }
             this.selected = this.data.filter((item) => item.selected);
-            this.onChange(this.selected);
+            this._modifySelectedOutput();
             this.isOpen = false;
         } else {
             this.data = [...this.filtered];
         }
+    }
+
+    private _modifySelectedOutput(): void {
+        const selectedOutput = this.selected.map(({ selected, ...rest }) => rest);
+        this.onChange(selectedOutput);
     }
 }
