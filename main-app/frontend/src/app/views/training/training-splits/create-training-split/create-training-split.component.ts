@@ -16,6 +16,8 @@ import { AuthStoreService } from '../../../../services/store/auth/auth-store.ser
 import { CustomTrainingDto as CustomTraining } from '../../../../../api/models/custom-training-dto';
 import { TrainingSplitsFacadeService } from '../../../../services/store/facade/training-splits-facade.service';
 
+type NumberOfSetsType = Pick<CustomTraining, 'dayOfWeek'> & { sets: number[] };
+
 @Component({
     templateUrl: './create-training-split.component.html',
     styleUrls: ['./create-training-split.component.scss'],
@@ -36,6 +38,7 @@ export class CreateTrainingSplitComponent implements OnInit {
         >([]),
     });
     trainingSplitForm: TrainingSplit;
+    numberOfSets: NumberOfSetsType[] = [];
 
     daysOfWeek$: Observable<string[]> = this._translateService.stream('weekdays').pipe(
         map((value: { [key: string]: string }) =>
@@ -83,7 +86,25 @@ export class CreateTrainingSplitComponent implements OnInit {
             this.trainingSplitForm = {
                 ...this.trainingSplitForm,
                 name: value.name,
-                trainings: value.trainings as CustomTraining[],
+                trainings: [...(value.trainings as CustomTraining[])].map(
+                    (training: CustomTraining) => {
+                        const dayFound = this.numberOfSets.find(
+                            (value: NumberOfSetsType) => value.dayOfWeek === training.dayOfWeek,
+                        );
+                        if (dayFound) {
+                            return {
+                                ...training,
+                                exercises: [...training.exercises].map(
+                                    (exercise: Exercise, indexExercise: number) => ({
+                                        ...exercise,
+                                        numberOfSets: dayFound.sets[indexExercise],
+                                    }),
+                                ),
+                            };
+                        }
+                        return training;
+                    },
+                ),
                 userId: this._authStoreService.getLoggedUser()._id,
             };
             this._trainingSplitsFacadeService.updateTrainingSplitForm(this.trainingSplitForm);
@@ -107,12 +128,42 @@ export class CreateTrainingSplitComponent implements OnInit {
         await this._modalController.dismiss(false, DialogRoles.CANCEL);
     }
 
-    onSetNumberChange(numberOfSets: number, trainingsIndex: number, exercisesIndex: number): void {
-        this._trainingSplitsFacadeService.updateNumberOfSets(
-            numberOfSets,
-            trainingsIndex,
-            exercisesIndex,
+    onSetNumberChange(
+        numberOfSets: number,
+        dayOfWeek: CustomTraining['dayOfWeek'],
+        exercisesIndex: number,
+    ): void {
+        const dayFound = this.numberOfSets.find(
+            (value: NumberOfSetsType) => value.dayOfWeek === dayOfWeek,
         );
+        if (dayFound) {
+            this.numberOfSets = this.numberOfSets.map((data: NumberOfSetsType) => {
+                if (data.dayOfWeek === dayOfWeek) {
+                    const setNotEntered = exercisesIndex > data.sets.length - 1;
+                    let updatedSets: number[];
+                    if (!setNotEntered) {
+                        updatedSets = data.sets.map((setNumber: number, index: number) =>
+                            index === exercisesIndex ? numberOfSets : setNumber,
+                        );
+                    } else {
+                        updatedSets = [...data.sets, numberOfSets];
+                    }
+                    return {
+                        ...data,
+                        sets: updatedSets,
+                    };
+                }
+                return data;
+            });
+        } else {
+            const set = [numberOfSets];
+            const newData: NumberOfSetsType = {
+                dayOfWeek,
+                sets: set,
+            };
+            this.numberOfSets = [...this.numberOfSets, newData];
+        }
+        this.form.updateValueAndValidity({ emitEvent: true });
     }
 
     createTrainingSplit(): void {

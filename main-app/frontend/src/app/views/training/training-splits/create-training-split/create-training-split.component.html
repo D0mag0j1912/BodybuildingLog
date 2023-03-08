@@ -62,7 +62,7 @@
                                                     <span class="exercise-name">{{ exercise.name | translate }}</span>
                                                     <ion-item>
                                                         <ion-label position="stacked">{{ 'training.training_split.set_number' | translate }}</ion-label>
-                                                        <ion-input type="number" [ngModel]="exercise.numberOfSets" [ngModelOptions]="{ standalone: true }" (ngModelChange)="onSetNumberChange($event, i, j)"></ion-input>
+                                                        <ion-input type="number" [ngModel]="exercise.numberOfSets" [ngModelOptions]="{ standalone: true }" (ngModelChange)="onSetNumberChange($event, group.controls.dayOfWeek.value, j)"></ion-input>
                                                     </ion-item>
                                                 </div>
                                             </div>

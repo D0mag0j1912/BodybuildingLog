@@ -15,14 +15,4 @@ export class TrainingSplitsFacadeService {
             }),
         );
     }
-
-    updateNumberOfSets(numberOfSets: number, trainingsIndex: number, exercisesIndex: number): void {
-        this._store.dispatch(
-            trainingSplitActions.updateNumberOfSets({
-                numberOfSets,
-                trainingsIndex,
-                exercisesIndex,
-            }),
-        );
-    }
 }
