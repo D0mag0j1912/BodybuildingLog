@@ -312,6 +312,10 @@
         "lat_pulldown": "Lat povlačenje",
         "one_arm_dumbbell_row": "Veslanje s jednom rukom",
         "barbell_ez_bar_curl": "Biceps pregib EZ šipkom",
-        "barbell_skullcrushers": "Francuski potisak s EZ šipkom"
+        "barbell_skullcrushers": "Francuski potisak s EZ šipkom",
+        "dips": "Propadanja",
+        "dumbbell_curl": "Biceps pregib bučicama",
+        "dumbbell_press": "Kosi potisak bučicama",
+        "incline_dumbbell_curl": "Kosi biceps pregib bučicama"
     }
 }
