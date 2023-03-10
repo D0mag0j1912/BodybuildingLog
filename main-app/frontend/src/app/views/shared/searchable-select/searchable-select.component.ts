@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, forwardRef, Input, SimpleChanges } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SearchbarCustomEvent } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,9 +19,8 @@ import { TranslateService } from '@ngx-translate/core';
 export class SearchableSelectComponent implements ControlValueAccessor {
     isOpen = false;
 
-    selected: any[] = [];
-
-    filtered: any[] = [];
+    selectedItems: any[] = [];
+    filteredItems: any[] = [];
 
     onChange: (obj: any[]) => void;
     onTouched: () => void;
@@ -50,19 +49,8 @@ export class SearchableSelectComponent implements ControlValueAccessor {
     constructor(private _translateService: TranslateService) {}
 
     writeValue(selectedItems: any[]): void {
-        this.selected = selectedItems;
-        this.filtered = this.data.map((item) => {
-            const foundItem = this.selected.find(
-                (selectedItem) => selectedItem[this.hiddenValue] === item[this.hiddenValue],
-            );
-            if (foundItem) {
-                return {
-                    ...item,
-                    selected: true,
-                };
-            }
-            return item;
-        });
+        this.selectedItems = selectedItems;
+        this.filteredItems = this.data;
     }
 
     registerOnChange(fn: (obj: any[]) => void): void {
@@ -75,15 +63,18 @@ export class SearchableSelectComponent implements ControlValueAccessor {
 
     open(): void {
         this.isOpen = true;
-        this.filtered = this.filtered.map((value: any) => {
-            const itemFound = this.selected.find(
-                (selectedValue: any) => selectedValue[this.hiddenValue] === value[this.hiddenValue],
+        this.filteredItems = this.filteredItems.map((value) => {
+            const itemFound = this.selectedItems.find(
+                (selectedValue) => selectedValue[this.hiddenValue] === value[this.hiddenValue],
             );
             if (!itemFound) {
                 const { selected, ...rest } = value;
                 return rest;
             }
-            return value;
+            return {
+                ...value,
+                selected: true,
+            };
         });
     }
 
@@ -92,14 +83,14 @@ export class SearchableSelectComponent implements ControlValueAccessor {
     }
 
     select(): void {
-        this.selected = this.data.filter((item) => item.selected);
+        this.selectedItems = this.data.filter((item) => item.selected);
         this._modifySelectedOutput();
         this.isOpen = false;
     }
 
     filter(event: SearchbarCustomEvent): void {
         const filter = event.detail.value.toLowerCase();
-        this.filtered = this.data.filter(
+        this.filteredItems = this.data.filter(
             (item) =>
                 this._translateService
                     .instant(item[this.visibleValue])
@@ -110,19 +101,17 @@ export class SearchableSelectComponent implements ControlValueAccessor {
 
     itemSelected(): void {
         if (!this.multiple) {
-            if (this.selected.length) {
-                this.selected[0].selected = false;
+            if (this.selectedItems.length) {
+                this.selectedItems[0].selected = false;
             }
-            this.selected = this.data.filter((item) => item.selected);
+            this.selectedItems = this.data.filter((item) => item.selected);
             this._modifySelectedOutput();
             this.isOpen = false;
-        } else {
-            this.data = [...this.filtered];
         }
     }
 
     private _modifySelectedOutput(): void {
-        const selectedOutput = this.selected.map(({ selected, ...rest }) => rest);
+        const selectedOutput = this.selectedItems.map(({ selected, ...rest }) => rest);
         this.onChange(selectedOutput);
     }
 }

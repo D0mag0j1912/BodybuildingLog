@@ -1,5 +1,5 @@
-<div *ngIf="selected.length" class="selected-items" [ngClass]="panelClass">
-    <span *ngFor="let item of selected; let last = last">
+<div *ngIf="selectedItems.length" class="selected-items" [ngClass]="panelClass">
+    <span *ngFor="let item of selectedItems; let last = last">
         {{ item[visibleValue] | translate }} {{ last ? '' : ', ' }}
     </span>
 </div>
@@ -21,7 +21,7 @@
             </ion-toolbar>
         </ion-header>
         <ion-content>
-            <ion-item *ngFor="let item of filtered" (click)="itemSelected()">
+            <ion-item *ngFor="let item of filteredItems" (click)="itemSelected()">
                 <ion-checkbox slot="start" [(ngModel)]="item.selected"></ion-checkbox>
                 <ion-label>{{ item[visibleValue] | translate }}</ion-label>
             </ion-item>
