@@ -9,6 +9,9 @@ export class TrainingSplitsService {
     constructor(private _http: HttpClient) {}
 
     createTrainingSplit(trainingSplit: TrainingSplit): Observable<unknown> {
-        return this._http.post<unknown>(environment.apiUrl + '/training-splits', trainingSplit);
+        return this._http.post<unknown>(
+            environment.apiUrl + '/training/training-splits',
+            trainingSplit,
+        );
     }
 }
