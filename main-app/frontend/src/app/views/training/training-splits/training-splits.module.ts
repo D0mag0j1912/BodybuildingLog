@@ -7,9 +7,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SwiperModule } from 'swiper/angular';
 import { EffectsModule } from '@ngrx/effects';
 import { FeatureKeys } from '../../../constants/enums/feature-keys.enum';
-import { TrainingSplitsFacadeService } from '../../../services/store/facade/training-splits-facade.service';
+import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
 import * as trainingSplitsReducers from '../../../store/training-splits/training-splits.reducers';
 import { SharedModule } from '../../shared/shared.module';
+import { TrainingSplitsEffects } from '../../../store/training-splits/training-splits.effects';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
 import { TrainingSplitComponent } from './training-split/training-split.component';
 import { TrainingSplitsRoutingModule } from './training-splits-routing.module';
@@ -38,7 +39,7 @@ const PROVIDERS = [TrainingSplitsFacadeService];
             FeatureKeys.TRAINING_SPLITS,
             trainingSplitsReducers.trainingSplitsReducer,
         ),
-        EffectsModule.forFeature([]),
+        EffectsModule.forFeature([TrainingSplitsEffects]),
     ],
     exports: [...COMPONENTS],
     providers: [...PROVIDERS],

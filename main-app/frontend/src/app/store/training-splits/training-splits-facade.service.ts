@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../..';
-import * as trainingSplitActions from '../../../store/training-splits/training-splits.actions';
-import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
+import { AppState } from '../..';
+import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-split-dto';
+import * as trainingSplitActions from './training-splits.actions';
 
 @Injectable()
 export class TrainingSplitsFacadeService {

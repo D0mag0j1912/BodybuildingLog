@@ -234,7 +234,8 @@
                 "training_splits_not_available": "Training splits not available",
                 "training_split_name_required": "Training split name is required",
                 "exercises_required": "Exercises are required",
-                "set_number_required": "Set number is required"
+                "set_number_required": "Set number is required",
+                "error_create_training_split": "Error while creating training split"
             }
         },
         "update_set_category": "Change set category",

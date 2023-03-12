@@ -14,7 +14,7 @@ import { ExercisesService } from '../../../../services/api/training/exercises.se
 import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
 import { AuthStoreService } from '../../../../services/store/auth/auth-store.service';
 import { CustomTrainingDto as CustomTraining } from '../../../../../api/models/custom-training-dto';
-import { TrainingSplitsFacadeService } from '../../../../services/store/facade/training-splits-facade.service';
+import { TrainingSplitsFacadeService } from '../../../../store/training-splits/training-splits-facade.service';
 
 type NumberOfSetsType = Pick<CustomTraining, 'dayOfWeek'> & { sets: number[] };
 

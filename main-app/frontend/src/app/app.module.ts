@@ -46,7 +46,14 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         }),
         IonicModule.forRoot(),
         SwaggerApiModule.forRoot({ rootUrl: environment.apiUrl }),
-        StoreModule.forRoot(reducers),
+        StoreModule.forRoot(reducers, {
+            runtimeChecks: {
+                strictStateImmutability: true,
+                strictActionImmutability: true,
+                strictActionSerializability: true,
+                strictStateSerializability: true,
+            },
+        }),
         StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
         EffectsModule.forRoot([]),
     ],
