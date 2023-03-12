@@ -294,7 +294,6 @@
         "squat": "Čučanj",
         "hip_thrust": "Potisak kukovima",
         "leg_curl": "Nožni pregib",
-        "leg_extension": "Nožna ekstenzija",
         "calf_raise": "Podizanje listova",
         "facepull": "Povlačenje prema licu",
         "hammer_dumbbell_curl": "Čekić pregib bučicama",
@@ -316,6 +315,10 @@
         "dips": "Propadanja",
         "dumbbell_curl": "Biceps pregib bučicama",
         "dumbbell_press": "Kosi potisak bučicama",
-        "incline_dumbbell_curl": "Kosi biceps pregib bučicama"
+        "incline_dumbbell_curl": "Kosi biceps pregib bučicama",
+        "leg_extension": "Nožna ekstenzija",
+        "leg_press": "Nožni potisak",
+        "lunges": "Iskorak",
+        "stir_the_pot": "Krug oko svijeta"
     }
 }

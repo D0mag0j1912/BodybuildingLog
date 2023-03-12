@@ -293,7 +293,6 @@
         "squat": "Squat",
         "hip_thrust": "Hip thrust",
         "leg_curl": "Leg curl",
-        "leg_extension": "Leg extension",
         "calf_raise": "Calf raise",
         "facepull": "Facepull",
         "hammer_dumbbell_curl": "Hammer dumbbell curl",
@@ -315,6 +314,10 @@
         "dips": "Dips",
         "dumbbell_curl": "Dumbbell curl",
         "dumbbell_press": "Dumbbell press",
-        "incline_dumbbell_curl": "Incline dumbbell curl"
+        "incline_dumbbell_curl": "Incline dumbbell curl",
+        "leg_extension": "Leg extension",
+        "leg_press": "Leg press",
+        "lunges": "Lunges",
+        "stir_the_pot": "Stir the pot"
     }
 }
