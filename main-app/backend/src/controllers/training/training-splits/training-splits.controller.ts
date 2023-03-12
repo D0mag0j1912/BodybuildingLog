@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiExtraModels,
@@ -34,5 +34,10 @@ export class TrainingSplitsController {
         @GET_USER() user: UserDto,
     ): Promise<StreamModelDto<TrainingSplitDto[]>> {
         return this._trainingSplitsService.getTrainingSplits(user._id);
+    }
+
+    @Post()
+    async createTrainingSplit(): Promise<void> {
+        //TODO: Call service
     }
 }
