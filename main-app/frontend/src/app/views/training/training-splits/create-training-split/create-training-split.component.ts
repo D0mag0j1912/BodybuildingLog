@@ -167,7 +167,6 @@ export class CreateTrainingSplitComponent implements OnInit {
     }
 
     createTrainingSplit(): void {
-        //TODO: Create training split
         this.form.markAllAsTouched();
         if (!this.form.valid) {
             return;

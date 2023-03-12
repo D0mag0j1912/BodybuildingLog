@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { StoreModule } from '@ngrx/store';
 import { TranslateModule } from '@ngx-translate/core';
 import { SwiperModule } from 'swiper/angular';
+import { EffectsModule } from '@ngrx/effects';
 import { FeatureKeys } from '../../../constants/enums/feature-keys.enum';
 import { TrainingSplitsFacadeService } from '../../../services/store/facade/training-splits-facade.service';
 import * as trainingSplitsReducers from '../../../store/training-splits/training-splits.reducers';
@@ -37,6 +38,7 @@ const PROVIDERS = [TrainingSplitsFacadeService];
             FeatureKeys.TRAINING_SPLITS,
             trainingSplitsReducers.trainingSplitsReducer,
         ),
+        EffectsModule.forFeature([]),
     ],
     exports: [...COMPONENTS],
     providers: [...PROVIDERS],
