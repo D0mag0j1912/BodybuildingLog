@@ -172,5 +172,6 @@ export class CreateTrainingSplitComponent implements OnInit {
         if (!this.form.valid) {
             return;
         }
+        this._trainingSplitsFacadeService.createTrainingSplit(this.trainingSplitForm);
     }
 }

@@ -15,4 +15,8 @@ export class TrainingSplitsFacadeService {
             }),
         );
     }
+
+    createTrainingSplit(trainingSplit: TrainingSplit): void {
+        this._store.dispatch(trainingSplitActions.createTrainingSplit({ trainingSplit }));
+    }
 }
