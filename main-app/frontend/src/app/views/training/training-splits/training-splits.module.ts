@@ -11,6 +11,7 @@ import { TrainingSplitsFacadeService } from '../../../store/training-splits/trai
 import * as trainingSplitsReducers from '../../../store/training-splits/training-splits.reducers';
 import { SharedModule } from '../../shared/shared.module';
 import { TrainingSplitsEffects } from '../../../store/training-splits/training-splits.effects';
+import { TrainingSplitSuccessService } from '../../../services/helper/training-split-success.service';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
 import { TrainingSplitComponent } from './training-split/training-split.component';
 import { TrainingSplitsRoutingModule } from './training-splits-routing.module';
@@ -28,7 +29,7 @@ const IMPORTS = [TrainingSplitsRoutingModule, ReactiveFormsModule, FormsModule, 
 
 const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule, SwiperModule];
 
-const PROVIDERS = [TrainingSplitsFacadeService];
+const PROVIDERS = [TrainingSplitsFacadeService, TrainingSplitSuccessService];
 
 @NgModule({
     declarations: [...COMPONENTS],

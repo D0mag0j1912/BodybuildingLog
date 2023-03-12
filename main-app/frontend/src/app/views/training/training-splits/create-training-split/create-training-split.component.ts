@@ -15,6 +15,7 @@ import { ExercisesStoreService } from '../../../../services/store/training/exerc
 import { AuthStoreService } from '../../../../services/store/auth/auth-store.service';
 import { CustomTrainingDto as CustomTraining } from '../../../../../api/models/custom-training-dto';
 import { TrainingSplitsFacadeService } from '../../../../store/training-splits/training-splits-facade.service';
+import { TrainingSplitSuccessService } from '../../../../services/helper/training-split-success.service';
 
 type NumberOfSetsType = Pick<CustomTraining, 'dayOfWeek'> & { sets: number[] };
 
@@ -111,11 +112,19 @@ export class CreateTrainingSplitComponent implements OnInit {
         }),
     );
 
+    trainingSplitCreated$ = this._trainingSplitSuccessService.closeModal$.pipe(
+        tap(
+            async (_) =>
+                await this._modalController.dismiss(null, DialogRoles.CREATE_TRAINING_SPLIT),
+        ),
+    );
+
     constructor(
         private _exercisesService: ExercisesService,
         private _exercisesStoreService: ExercisesStoreService,
         private _authStoreService: AuthStoreService,
         private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
+        private _trainingSplitSuccessService: TrainingSplitSuccessService,
         private _translateService: TranslateService,
         private _modalController: ModalController,
     ) {}

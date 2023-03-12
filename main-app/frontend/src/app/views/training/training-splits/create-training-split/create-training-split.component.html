@@ -78,6 +78,7 @@
                     {{ 'common.actions.create' | translate }}
                 </ion-button>
                 <ng-container *ngIf="formValueChanges$ | async"></ng-container>
+                <ng-container *ngIf="trainingSplitCreated$ | async"></ng-container>
             </form>
         </ng-template>
     </ng-container>

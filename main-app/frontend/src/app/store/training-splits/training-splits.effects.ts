@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY } from 'rxjs';
-import { catchError, concatMap, map } from 'rxjs/operators';
+import { catchError, concatMap, map, tap } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../constants/shared/message-duration.const';
 import { TrainingSplitsService } from '../../services/api/training/training-splits.service';
+import { TrainingSplitSuccessService } from '../../services/helper/training-split-success.service';
 import { ToastControllerService } from '../../services/shared/toast-controller.service';
 import * as trainingSplitActions from './training-splits.actions';
 
@@ -31,8 +32,16 @@ export class TrainingSplitsEffects {
         ),
     );
 
+    createTrainingSplitSuccess$ = createEffect(() =>
+        this._actions$.pipe(
+            ofType(trainingSplitActions.createTrainingSplitSuccess),
+            tap(() => this._trainingSplitSuccessService.closeModal()),
+        ),
+    );
+
     constructor(
         private _trainingSplitsService: TrainingSplitsService,
+        private _trainingSplitSuccessService: TrainingSplitSuccessService,
         private _toastControllerService: ToastControllerService,
         private _translateService: TranslateService,
         private _actions$: Actions,
