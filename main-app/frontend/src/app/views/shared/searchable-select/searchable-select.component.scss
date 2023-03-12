@@ -1,4 +1,8 @@
 
+.md .title {
+    font-size: 18px;
+}
+
 .ios .searchable-toolbar {
     --background: white;
 
@@ -8,8 +12,11 @@
 }
 
 .selected-items {
-    max-width: 280px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.trainingSplitClass {
+    max-width: 300px;
 }

@@ -7,13 +7,9 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <div class="search-container">
-        <bl-training-splits-search
-            (createTrainingSplitEvent)="createTrainingSplit()"></bl-training-splits-search>
-    </div>
+    <bl-training-splits-search (createTrainingSplitEvent)="createTrainingSplit()"></bl-training-splits-search>
     <div
         *ngIf="trainingSplits$ | async as trainingSplits"
-        class="list-container"
         [class.no-training-splits]="!trainingSplits.length">
         <ng-container *ngIf="trainingSplits.length; else emptyScreen">
             <bl-training-split *ngFor="let split of trainingSplits; let first = first" [trainingSplit]="split" [isFirst]="first"></bl-training-split>

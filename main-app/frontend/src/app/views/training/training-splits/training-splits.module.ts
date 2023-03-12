@@ -4,8 +4,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { StoreModule } from '@ngrx/store';
 import { TranslateModule } from '@ngx-translate/core';
-import * as fromTrainingSplits from '../../../store/training-splits/training-splits-index';
+import { SwiperModule } from 'swiper/angular';
+import { EffectsModule } from '@ngrx/effects';
+import { FeatureKeys } from '../../../constants/enums/feature-keys.enum';
+import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
+import * as trainingSplitsReducers from '../../../store/training-splits/training-splits.reducers';
 import { SharedModule } from '../../shared/shared.module';
+import { TrainingSplitsEffects } from '../../../store/training-splits/training-splits.effects';
+import { TrainingSplitSuccessService } from '../../../services/helper/training-split-success.service';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
 import { TrainingSplitComponent } from './training-split/training-split.component';
 import { TrainingSplitsRoutingModule } from './training-splits-routing.module';
@@ -21,15 +27,22 @@ const COMPONENTS = [
 
 const IMPORTS = [TrainingSplitsRoutingModule, ReactiveFormsModule, FormsModule, SharedModule];
 
-const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule];
+const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule, SwiperModule];
+
+const PROVIDERS = [TrainingSplitsFacadeService, TrainingSplitSuccessService];
 
 @NgModule({
     declarations: [...COMPONENTS],
     imports: [
         ...IMPORTS,
         ...EXTERNAL_IMPORTS,
-        StoreModule.forFeature('trainingSplits', fromTrainingSplits.reducers),
+        StoreModule.forFeature(
+            FeatureKeys.TRAINING_SPLITS,
+            trainingSplitsReducers.trainingSplitsReducer,
+        ),
+        EffectsModule.forFeature([TrainingSplitsEffects]),
     ],
     exports: [...COMPONENTS],
+    providers: [...PROVIDERS],
 })
 export class TrainingSplitsModule {}

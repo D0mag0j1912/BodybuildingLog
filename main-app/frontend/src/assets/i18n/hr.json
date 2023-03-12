@@ -235,7 +235,8 @@
                 "training_splits_not_available": "Trening splitovi nisu dostupni",
                 "training_split_name_required": "Naziv trening splita je obavezan",
                 "exercises_required": "Vježbe su obavezne",
-                "set_number_required": "Broj setova je obavezan"
+                "set_number_required": "Broj setova je obavezan",
+                "error_create_training_split": "Greška prilikom kreiranja trening splita"
             }
         },
         "update_set_category": "Promijeni kategoriju seta",
@@ -294,7 +295,6 @@
         "squat": "Čučanj",
         "hip_thrust": "Potisak kukovima",
         "leg_curl": "Nožni pregib",
-        "leg_extension": "Nožna ekstenzija",
         "calf_raise": "Podizanje listova",
         "facepull": "Povlačenje prema licu",
         "hammer_dumbbell_curl": "Čekić pregib bučicama",
@@ -312,6 +312,14 @@
         "lat_pulldown": "Lat povlačenje",
         "one_arm_dumbbell_row": "Veslanje s jednom rukom",
         "barbell_ez_bar_curl": "Biceps pregib EZ šipkom",
-        "barbell_skullcrushers": "Francuski potisak s EZ šipkom"
+        "barbell_skullcrushers": "Francuski potisak s EZ šipkom",
+        "dips": "Propadanja",
+        "dumbbell_curl": "Biceps pregib bučicama",
+        "dumbbell_press": "Kosi potisak bučicama",
+        "incline_dumbbell_curl": "Kosi biceps pregib bučicama",
+        "leg_extension": "Nožna ekstenzija",
+        "leg_press": "Nožni potisak",
+        "lunges": "Iskorak",
+        "stir_the_pot": "Krug oko svijeta"
     }
 }

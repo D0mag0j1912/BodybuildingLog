@@ -8,7 +8,7 @@
         <ion-title class="ion-text-center dialog-title">{{ 'training.training_split.create_training_split' | translate }}</ion-title>
     </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding ion-text-center">
+<ion-content class="ion-text-center">
     <ng-container *ngIf="exercisesData$ | async as data">
         <ng-container *ngIf="data.IsLoading; else exercises">
             <ion-spinner
@@ -18,7 +18,7 @@
             ></ion-spinner>
         </ng-container>
         <ng-template #exercises>
-            <form [formGroup]="form" class="form">
+            <form class="form" [formGroup]="form">
                 <ion-item class="training-split-name-item ion-no-padding">
                     <ion-label position="floating">{{ 'training.training_split.training_split_name' | translate }}</ion-label>
                     <ion-input formControlName="name" class="training-split-name"></ion-input>
@@ -30,45 +30,55 @@
                     </ion-note>
                 </ion-item>
                 <div formArrayName="trainings" class="trainings-wrapper">
-                    <ng-container *ngFor="let group of form.controls.trainings.controls; let i = index;">
-                        <div class="slideable-wrapper" [formGroupName]="i">
-                            <ng-container *ngIf="daysOfWeek$ | async as daysOfWeek">
-                                <ion-button type="button" color="primary" class="day-of-week-placeholder">
-                                    {{ daysOfWeek[i] }}
-                                </ion-button>
-                            </ng-container>
-                            <div class="exercises-wrapper" [class.bordered-wrapper]="group.controls.exercises.value.length">
-                                <ion-item (click)="select.open()" class="exercises-item ion-no-padding">
-                                    <ion-label [class.hide-label]="group.controls.exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
-                                    <bl-select
-                                        #select
-                                        formControlName="exercises"
-                                        [title]="'training.training_split.search_exercises' | translate"
-                                        [multiple]="true"
-                                        [data]="data.Value"
-                                        [visibleValue]="'name'">
-                                    </bl-select>
-                                </ion-item>
-                            </div>
-                            <ng-container *ngIf="group.controls.exercises.value.length">
-                                <div class="sets-wrapper">
-                                    <div
-                                        *ngFor="let exercise of group.controls.exercises.value"
-                                        class="individual-exercise-wrapper">
-                                        <span class="exercise-name">{{ exercise.name | translate }}</span>
-                                        <ion-item>
-                                            <ion-label position="stacked">{{ 'training.training_split.set_number' | translate }}</ion-label>
-                                            <ion-input type="number" [(ngModel)]="exercise.numberOfSets" [ngModelOptions]="{ standalone: true }"></ion-input>
-                                        </ion-item>
-                                    </div>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </ng-container>
+                    <swiper [config]="SWIPER_CONFIG">
+                        <ng-container *ngIf="daysOfWeek$ | async as daysOfWeek">
+                            <ng-template *ngFor="let group of this.form.controls.trainings.controls; let i = index" swiperSlide>
+                                <ion-card class="card" [formGroupName]="i">
+                                    <ion-card-header class="card--header">
+                                        <div class="day-of-week-text">
+                                            {{ daysOfWeek[i] }}
+                                        </div>
+                                    </ion-card-header>
+                                    <ion-card-content class="card-content">
+                                        <div class="exercises-wrapper" [class.bordered-wrapper]="group.controls.exercises.value.length">
+                                            <ion-item (click)="select.open()" class="exercises-item ion-no-padding">
+                                                <ion-label [class.hide-label]="group.controls.exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
+                                                <bl-select
+                                                    #select
+                                                    formControlName="exercises"
+                                                    [title]="'training.training_split.search_exercises' | translate"
+                                                    [multiple]="true"
+                                                    [data]="data.Value"
+                                                    [visibleValue]="'name'"
+                                                    [hiddenValue]="'_id'"
+                                                    [panelClass]="'trainingSplitClass'">
+                                                </bl-select>
+                                            </ion-item>
+                                        </div>
+                                        <ng-container *ngIf="group.controls.exercises.value.length">
+                                            <div class="sets-wrapper">
+                                                <div
+                                                    *ngFor="let exercise of group.controls.exercises.value; let j = index"
+                                                    class="individual-exercise-wrapper">
+                                                    <span class="exercise-name">{{ exercise.name | translate }}</span>
+                                                    <ion-item>
+                                                        <ion-label position="stacked">{{ 'training.training_split.set_number' | translate }}</ion-label>
+                                                        <ion-input type="number" [ngModel]="exercise.numberOfSets" [ngModelOptions]="{ standalone: true }" (ngModelChange)="onSetNumberChange($event, group.controls.dayOfWeek.value, j)"></ion-input>
+                                                    </ion-item>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                    </ion-card-content>
+                                </ion-card>
+                            </ng-template>
+                        </ng-container>
+                    </swiper>
                 </div>
                 <ion-button type="button" color="primary" class="create-btn" (click)="createTrainingSplit()">
                     {{ 'common.actions.create' | translate }}
                 </ion-button>
+                <ng-container *ngIf="formValueChanges$ | async"></ng-container>
+                <ng-container *ngIf="trainingSplitCreated$ | async"></ng-container>
             </form>
         </ng-template>
     </ng-container>

@@ -1,6 +1,7 @@
 
 .md .dialog-title {
     margin: 0 auto;
+    padding-right: 0;
 }
 
 .ios .form {
@@ -8,6 +9,8 @@
 }
 
 .training-split-name-item {
+    padding: 0 10px;
+
     ::ng-deep .training-split-name input {
         height: 30px;
     }
@@ -16,54 +19,57 @@
 .trainings-wrapper {
     margin-top: 30px;
 
-    .slideable-wrapper {
-        border: 2px solid var(--ion-color-primary);
-        border-radius: 8px;
-        box-shadow: var(--ion-box-shadow);
-        padding: 10px 20px 20px 20px;
-        min-height: 300px;
-        position: relative;
+    .card {
+        margin: 0 8px 5px 8px;
 
-        .day-of-week-placeholder {
-            position: absolute;
-            width: 100px;
-            left: 0;
-            right: 0;
-            top: -22px;
-            margin-left: auto;
-            margin-right: auto;
+        &--header {
+            padding-bottom: 0;
         }
-    }
-}
 
-.exercises-wrapper {
-    display: flex;
-    flex-direction: column;
-    row-gap: 10px;
-    padding: 10px 0 20px 0;
-    margin-top: 20px;
-
-    .hide-label {
-        display: none;
-    }
-}
-
-.sets-wrapper {
-    display: flex;
-    flex-direction: column;
-    row-gap: 10px;
-
-    .individual-exercise-wrapper {
-        display: flex;
-        align-items: center;
-
-        .exercise-name {
+        .day-of-week-text {
+            color: var(--ion-color-primary);
             font-weight: 600;
-            width: 60%;
+            font-size: 20px;
+            line-height: 24px;
+        }
+
+        .card-content {
+            padding-bottom: 40px;
+        }
+
+        .exercises-wrapper {
+            display: flex;
+            flex-direction: column;
+            row-gap: 10px;
+            padding: 10px 0 20px 0;
+
+            .hide-label {
+                display: none;
+            }
+        }
+
+        .sets-wrapper {
+            display: flex;
+            flex-direction: column;
+            row-gap: 10px;
+
+            .individual-exercise-wrapper {
+                display: flex;
+                align-items: center;
+
+                .exercise-name {
+                    font-weight: 600;
+                    width: 60%;
+                }
+
+                &:last-of-type {
+                    margin-bottom: 10px;
+                }
+            }
         }
     }
 }
 
 .create-btn {
-    margin-top: 15px;
+    margin: 20px 0;
 }
