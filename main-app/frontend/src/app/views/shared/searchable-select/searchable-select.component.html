@@ -21,7 +21,7 @@
             </ion-toolbar>
         </ion-header>
         <ion-content>
-            <ion-item *ngFor="let item of filteredItems" (click)="itemSelected()">
+            <ion-item *ngFor="let item of filteredItems" (click)="itemSelected(item)">
                 <ion-checkbox slot="start" [(ngModel)]="item.selected"></ion-checkbox>
                 <ion-label>{{ item[visibleValue] | translate }}</ion-label>
             </ion-item>

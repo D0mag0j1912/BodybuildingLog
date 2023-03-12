@@ -63,16 +63,16 @@ export class SearchableSelectComponent implements ControlValueAccessor {
 
     open(): void {
         this.isOpen = true;
-        this.filteredItems = this.filteredItems.map((value) => {
+        this.filteredItems = this.data.map((item) => {
             const itemFound = this.selectedItems.find(
-                (selectedValue) => selectedValue[this.hiddenValue] === value[this.hiddenValue],
+                (selectedValue) => selectedValue[this.hiddenValue] === item[this.hiddenValue],
             );
             if (!itemFound) {
-                const { selected, ...rest } = value;
+                const { selected, ...rest } = item;
                 return rest;
             }
             return {
-                ...value,
+                ...item,
                 selected: true,
             };
         });
@@ -80,16 +80,30 @@ export class SearchableSelectComponent implements ControlValueAccessor {
 
     cancel(): void {
         this.isOpen = false;
+        this._resetFilteredItems();
     }
 
     select(): void {
-        this.selectedItems = this.data.filter((item) => item.selected);
         this._modifySelectedOutput();
+        this._resetFilteredItems();
         this.isOpen = false;
     }
 
     filter(event: SearchbarCustomEvent): void {
         const filter = event.detail.value.toLowerCase();
+        this.data = this.data.map((item) => {
+            const itemFound = this.selectedItems.find(
+                (selectedValue) => selectedValue[this.hiddenValue] === item[this.hiddenValue],
+            );
+            if (!itemFound) {
+                const { selected, ...rest } = item;
+                return rest;
+            }
+            return {
+                ...item,
+                selected: true,
+            };
+        });
         this.filteredItems = this.data.filter(
             (item) =>
                 this._translateService
@@ -99,7 +113,7 @@ export class SearchableSelectComponent implements ControlValueAccessor {
         );
     }
 
-    itemSelected(): void {
+    itemSelected(item: any): void {
         if (!this.multiple) {
             if (this.selectedItems.length) {
                 this.selectedItems[0].selected = false;
@@ -107,11 +121,23 @@ export class SearchableSelectComponent implements ControlValueAccessor {
             this.selectedItems = this.data.filter((item) => item.selected);
             this._modifySelectedOutput();
             this.isOpen = false;
+        } else {
+            if (item.selected) {
+                this.selectedItems = [...this.selectedItems, item];
+            } else {
+                this.selectedItems = this.selectedItems.filter(
+                    (selectedItem) => selectedItem[this.hiddenValue] !== item[this.hiddenValue],
+                );
+            }
         }
     }
 
     private _modifySelectedOutput(): void {
         const selectedOutput = this.selectedItems.map(({ selected, ...rest }) => rest);
         this.onChange(selectedOutput);
+    }
+
+    private _resetFilteredItems(): void {
+        this.filteredItems = this.filteredItems.map(({ selected, ...rest }) => rest);
     }
 }
