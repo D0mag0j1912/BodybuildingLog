@@ -237,7 +237,8 @@
                 "exercises_required": "Vježbe su obavezne",
                 "set_number_required": "Broj setova je obavezan",
                 "error_create_training_split": "Greška prilikom kreiranja trening splita"
-            }
+            },
+            "training_split_created": "Trening split je kreiran"
         },
         "update_set_category": "Promijeni kategoriju seta",
         "set_categories": {

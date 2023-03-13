@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY } from 'rxjs';
 import { catchError, concatMap, map, tap } from 'rxjs/operators';
+import { GeneralResponseDto as Message } from '../../../api/models/general-response-dto';
 import { MESSAGE_DURATION } from '../../constants/shared/message-duration.const';
 import { TrainingSplitsService } from '../../services/api/training/training-splits.service';
 import { TrainingSplitSuccessService } from '../../services/helper/training-split-success.service';
@@ -16,12 +17,19 @@ export class TrainingSplitsEffects {
             ofType(trainingSplitActions.createTrainingSplit),
             concatMap((action) =>
                 this._trainingSplitsService.createTrainingSplit(action.trainingSplit).pipe(
+                    tap(async (response: Message) => {
+                        await this._toastControllerService.displayToast({
+                            message: this._translateService.instant(response.Message),
+                            duration: MESSAGE_DURATION.GENERAL,
+                            color: 'primary',
+                        });
+                    }),
                     catchError(async (_) => {
                         await this._toastControllerService.displayToast({
                             message: this._translateService.instant(
                                 'training.training_split.errors.error_create_training_split',
                             ),
-                            duration: MESSAGE_DURATION.GENERAL,
+                            duration: MESSAGE_DURATION.ERROR,
                             color: 'danger',
                         });
                         return EMPTY;
@@ -32,11 +40,13 @@ export class TrainingSplitsEffects {
         ),
     );
 
-    createTrainingSplitSuccess$ = createEffect(() =>
-        this._actions$.pipe(
-            ofType(trainingSplitActions.createTrainingSplitSuccess),
-            tap(() => this._trainingSplitSuccessService.closeModal()),
-        ),
+    createTrainingSplitSuccess$ = createEffect(
+        () =>
+            this._actions$.pipe(
+                ofType(trainingSplitActions.createTrainingSplitSuccess),
+                tap(() => this._trainingSplitSuccessService.closeModal()),
+            ),
+        { dispatch: false },
     );
 
     constructor(

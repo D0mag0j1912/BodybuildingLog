@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiExtraModels,
@@ -12,6 +12,7 @@ import { StreamModelDto } from '../../../models/common/stream.model';
 import { StreamModelResponse } from '../../../decorators/stream-model-response.decorator';
 import { TrainingSplitsService } from '../../../services/training/training-splits.service';
 import { TrainingSplitDto } from '../../../models/training/training-split/training-split.model';
+import { GeneralResponseDto } from '../../../models/common/response.model';
 
 @ApiTags('Training splits')
 @Controller('api/training/training-splits')
@@ -37,7 +38,10 @@ export class TrainingSplitsController {
     }
 
     @Post()
-    async createTrainingSplit(): Promise<void> {
-        //TODO: Call service
+    async createTrainingSplit(
+        @Body() trainingSplit: TrainingSplitDto,
+        @GET_USER() user: UserDto,
+    ): Promise<GeneralResponseDto> {
+        return this._trainingSplitsService.createTrainingSplit(trainingSplit, user._id);
     }
 }

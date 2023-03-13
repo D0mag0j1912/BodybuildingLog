@@ -87,7 +87,9 @@ export class SignupComponent {
                 if (response.Success) {
                     await this._toastControllerService.displayToast({
                         message: this._translateService.instant(response.Message),
-                        duration: MESSAGE_DURATION.GENERAL,
+                        duration: response.Success
+                            ? MESSAGE_DURATION.GENERAL
+                            : MESSAGE_DURATION.ERROR,
                         color: response.Success ? 'primary' : 'danger',
                     });
                     await this._router.navigate(['/auth/login']);

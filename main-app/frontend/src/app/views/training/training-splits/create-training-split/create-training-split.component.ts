@@ -51,7 +51,7 @@ export class CreateTrainingSplitComponent implements OnInit {
                             dayOfWeek,
                             Validators.required,
                         ),
-                        exercises: new FormControl<Exercise[]>([], Validators.required),
+                        exercises: new FormControl<Exercise[]>([]),
                     }),
                 );
                 return entry[1];
