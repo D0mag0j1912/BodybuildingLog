@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
+    ApiCreatedResponse,
     ApiExtraModels,
     ApiInternalServerErrorResponse,
     ApiTags,
@@ -37,6 +38,19 @@ export class TrainingSplitsController {
         return this._trainingSplitsService.getTrainingSplits(user._id);
     }
 
+    @ApiInternalServerErrorResponse({
+        status: 500,
+        description: 'Internal server error',
+    })
+    @ApiUnauthorizedResponse({
+        status: 401,
+        description: 'Unauthorized',
+    })
+    @ApiCreatedResponse({
+        status: 201,
+        type: GeneralResponseDto,
+        description: 'Training split created',
+    })
     @Post()
     async createTrainingSplit(
         @Body() trainingSplit: TrainingSplitDto,
