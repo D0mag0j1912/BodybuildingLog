@@ -34,9 +34,9 @@ export class TrainingSplitsEffects {
                         });
                         return EMPTY;
                     }),
+                    map(() => trainingSplitActions.createTrainingSplitSuccess()),
                 ),
             ),
-            map(() => trainingSplitActions.createTrainingSplitSuccess()),
         ),
     );
 
