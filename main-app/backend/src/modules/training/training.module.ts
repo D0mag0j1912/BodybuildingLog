@@ -17,7 +17,7 @@ import { GetExercisesController } from '../../controllers/training/new-training/
 import { TrainingSplitsService } from '../../services/training/training-splits.service';
 import { CUSTOM_TRAINING_SCHEMA } from '../../models/training/training-split/custom-training.model';
 import { TRAINING_SPLIT_SCHEMA } from '../../models/training/training-split/training-split.model';
-import { GetTrainingSplitsController } from '../../controllers/training/training-splits/get-training-splits.controller';
+import { TrainingSplitsController } from '../../controllers/training/training-splits/training-splits.controller';
 
 const CONTROLLERS = [
     NewTrainingController,
@@ -25,7 +25,7 @@ const CONTROLLERS = [
     DeleteTrainingActionController,
     SearchTrainingsController,
     GetExercisesController,
-    GetTrainingSplitsController,
+    TrainingSplitsController,
 ];
 
 const SERVICES = [

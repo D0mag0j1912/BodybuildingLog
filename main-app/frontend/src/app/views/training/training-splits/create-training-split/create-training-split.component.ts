@@ -12,7 +12,6 @@ import { mapStreamData } from '../../../../helpers/training/past-trainings/map-s
 import { StreamData } from '../../../../models/common/common.model';
 import { ExercisesService } from '../../../../services/api/training/exercises.service';
 import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
-import { AuthStoreService } from '../../../../services/store/auth/auth-store.service';
 import { CustomTrainingDto as CustomTraining } from '../../../../../api/models/custom-training-dto';
 import { TrainingSplitsFacadeService } from '../../../../store/training-splits/training-splits-facade.service';
 import { TrainingSplitSuccessService } from '../../../../services/helper/training-split-success.service';
@@ -52,7 +51,7 @@ export class CreateTrainingSplitComponent implements OnInit {
                             dayOfWeek,
                             Validators.required,
                         ),
-                        exercises: new FormControl<Exercise[]>([], Validators.required),
+                        exercises: new FormControl<Exercise[]>([]),
                     }),
                 );
                 return entry[1];
@@ -106,7 +105,6 @@ export class CreateTrainingSplitComponent implements OnInit {
                         return training;
                     },
                 ),
-                userId: this._authStoreService.getLoggedUser()._id,
             };
             this._trainingSplitsFacadeService.updateTrainingSplitForm(this.trainingSplitForm);
         }),
@@ -122,7 +120,6 @@ export class CreateTrainingSplitComponent implements OnInit {
     constructor(
         private _exercisesService: ExercisesService,
         private _exercisesStoreService: ExercisesStoreService,
-        private _authStoreService: AuthStoreService,
         private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
         private _trainingSplitSuccessService: TrainingSplitSuccessService,
         private _translateService: TranslateService,
