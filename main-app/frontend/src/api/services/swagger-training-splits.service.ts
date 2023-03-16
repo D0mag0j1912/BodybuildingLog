@@ -9,6 +9,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { GeneralResponseDto } from '../models/general-response-dto';
 import { StreamModelDto } from '../models/stream-model-dto';
 import { TrainingSplitDto } from '../models/training-split-dto';
 
@@ -24,17 +25,17 @@ export class SwaggerTrainingSplitsService extends BaseService {
   }
 
   /**
-   * Path part for operation getTrainingSplitsControllerGetTrainingSplits
+   * Path part for operation trainingSplitsControllerGetTrainingSplits
    */
-  static readonly GetTrainingSplitsControllerGetTrainingSplitsPath = '/api/training/training-splits';
+  static readonly TrainingSplitsControllerGetTrainingSplitsPath = '/api/training/training-splits';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getTrainingSplitsControllerGetTrainingSplits()` instead.
+   * To access only the response body, use `trainingSplitsControllerGetTrainingSplits()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getTrainingSplitsControllerGetTrainingSplits$Response(params?: {
+  trainingSplitsControllerGetTrainingSplits$Response(params?: {
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<StreamModelDto & {
@@ -43,7 +44,7 @@ export class SwaggerTrainingSplitsService extends BaseService {
 'Value'?: Array<TrainingSplitDto>;
 }>> {
 
-    const rb = new RequestBuilder(this.rootUrl, SwaggerTrainingSplitsService.GetTrainingSplitsControllerGetTrainingSplitsPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerTrainingSplitsService.TrainingSplitsControllerGetTrainingSplitsPath, 'get');
     if (params) {
     }
 
@@ -65,11 +66,11 @@ export class SwaggerTrainingSplitsService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `getTrainingSplitsControllerGetTrainingSplits$Response()` instead.
+   * To access the full response (for headers, for example), `trainingSplitsControllerGetTrainingSplits$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getTrainingSplitsControllerGetTrainingSplits(params?: {
+  trainingSplitsControllerGetTrainingSplits(params?: {
     context?: HttpContext
   }
 ): Observable<StreamModelDto & {
@@ -78,7 +79,7 @@ export class SwaggerTrainingSplitsService extends BaseService {
 'Value'?: Array<TrainingSplitDto>;
 }> {
 
-    return this.getTrainingSplitsControllerGetTrainingSplits$Response(params).pipe(
+    return this.trainingSplitsControllerGetTrainingSplits$Response(params).pipe(
       map((r: StrictHttpResponse<StreamModelDto & {
 'IsLoading'?: boolean;
 'IsError'?: boolean;
@@ -88,6 +89,57 @@ export class SwaggerTrainingSplitsService extends BaseService {
 'IsError'?: boolean;
 'Value'?: Array<TrainingSplitDto>;
 })
+    );
+  }
+
+  /**
+   * Path part for operation trainingSplitsControllerCreateTrainingSplit
+   */
+  static readonly TrainingSplitsControllerCreateTrainingSplitPath = '/api/training/training-splits';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `trainingSplitsControllerCreateTrainingSplit()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  trainingSplitsControllerCreateTrainingSplit$Response(params: {
+    context?: HttpContext
+    body: TrainingSplitDto
+  }
+): Observable<StrictHttpResponse<GeneralResponseDto>> {
+
+    const rb = new RequestBuilder(this.rootUrl, SwaggerTrainingSplitsService.TrainingSplitsControllerCreateTrainingSplitPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<GeneralResponseDto>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `trainingSplitsControllerCreateTrainingSplit$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  trainingSplitsControllerCreateTrainingSplit(params: {
+    context?: HttpContext
+    body: TrainingSplitDto
+  }
+): Observable<GeneralResponseDto> {
+
+    return this.trainingSplitsControllerCreateTrainingSplit$Response(params).pipe(
+      map((r: StrictHttpResponse<GeneralResponseDto>) => r.body as GeneralResponseDto)
     );
   }
 
