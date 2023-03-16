@@ -51,14 +51,21 @@ export class TrainingSplitsEffects {
         { dispatch: false },
     );
 
-    /* getTrainingSplitList$ = createEffect(() =>
+    getTrainingSplitList$ = createEffect(() =>
         this._actions$.pipe(
             ofType(trainingSplitActions.getTrainingSplitList),
             switchMap((_) =>
-                this._swaggerTrainingSplitsService.trainingSplitsControllerGetTrainingSplits(),
+                this._swaggerTrainingSplitsService
+                    .trainingSplitsControllerGetTrainingSplits()
+                    .pipe(catchError((_) => EMPTY)),
+            ),
+            map((response) =>
+                trainingSplitActions.getTrainingSplitListSuccess({
+                    trainingSplitList: response.Value,
+                }),
             ),
         ),
-    ); */
+    );
 
     constructor(
         private _swaggerTrainingSplitsService: SwaggerTrainingSplitsService,

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { from, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TRAINING_SPLIT_LIST } from '../../../mock/training-split.mock';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
+import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
 
 @Component({
@@ -12,13 +13,18 @@ import { CreateTrainingSplitComponent } from './create-training-split/create-tra
     styleUrls: ['./training-splits.component.scss'],
     providers: [UnsubscribeService],
 })
-export class TrainingSplitsComponent {
+export class TrainingSplitsComponent implements OnInit {
     trainingSplits$ = of(TRAINING_SPLIT_LIST);
 
     constructor(
-        private _modalController: ModalController,
+        private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
         private _unsubscribeService: UnsubscribeService,
+        private _modalController: ModalController,
     ) {}
+
+    ngOnInit(): void {
+        this._trainingSplitsFacadeService.getTrainingSplitList();
+    }
 
     async createTrainingSplit(): Promise<void> {
         const modal = await this._modalController.create({

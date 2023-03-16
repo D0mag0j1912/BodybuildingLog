@@ -21,4 +21,9 @@ export const createTrainingSplitSuccess = createAction(
 /**
  * Get training splits
  */
-export const getTrainingSplitList = createAction('[Training splits] Get training splits');
+export const getTrainingSplitList = createAction('[Training splits] Get training split list');
+
+export const getTrainingSplitListSuccess = createAction(
+    '[Training splits] Get training split list success',
+    props<{ trainingSplitList: TrainingSplit[] }>(),
+);
