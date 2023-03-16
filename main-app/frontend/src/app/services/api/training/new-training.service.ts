@@ -11,14 +11,14 @@ export class NewTrainingService {
 
     addTraining(trainingData: NewTraining): Observable<GeneralResponseDto> {
         return this._http.post<GeneralResponseDto>(
-            environment.apiUrl + '/training/new-training',
+            environment.apiUrl + '/api/training/new-training',
             trainingData,
         );
     }
 
     updateTraining(trainingData: NewTraining, trainingId: string): Observable<GeneralResponseDto> {
         return this._http.put<GeneralResponseDto>(
-            environment.apiUrl + `/training/new-training/${trainingId}`,
+            environment.apiUrl + `/api/training/new-training/${trainingId}`,
             trainingData,
         );
     }

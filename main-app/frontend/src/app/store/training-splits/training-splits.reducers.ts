@@ -4,12 +4,12 @@ import * as trainingSplitActions from './training-splits.actions';
 
 export interface TrainingSplitsState {
     trainingSplitsForm: TrainingSplit;
-    trainingSplitsList: TrainingSplit[];
+    trainingSplitList: TrainingSplit[];
 }
 
 export const initialTrainingSplitState: TrainingSplitsState = {
     trainingSplitsForm: undefined,
-    trainingSplitsList: undefined,
+    trainingSplitList: undefined,
 };
 
 export const trainingSplitsReducer = createReducer(

@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 @Injectable()
 export class LoginService {
-    constructor(private readonly _http: HttpClient) {}
+    constructor(private _http: HttpClient) {}
 
     passwordFitsEmail(email: string, password: string): Observable<boolean> {
         const params = `?email=${email}&password=${password}`;
-        return this._http.get<boolean>(environment.apiUrl + '/auth/check-pass' + params);
+        return this._http.get<boolean>(environment.apiUrl + '/api/auth/check-pass' + params);
     }
 }

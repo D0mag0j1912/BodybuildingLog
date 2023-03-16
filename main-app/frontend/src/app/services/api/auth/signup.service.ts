@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 @Injectable()
 export class SignupService {
-    constructor(private readonly _http: HttpClient) {}
+    constructor(private _http: HttpClient) {}
 
     getEmails(email: string): Observable<boolean> {
         const params = `?email=${email}`;
-        return this._http.get<boolean>(environment.apiUrl + '/auth/get-all-emails' + params);
+        return this._http.get<boolean>(environment.apiUrl + '/api/auth/get-all-emails' + params);
     }
 }

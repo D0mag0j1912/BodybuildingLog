@@ -23,7 +23,7 @@ export class ExercisesService {
 
     getExercises(): Observable<StreamData<Exercise[]>> {
         return this._http
-            .get<StreamData<Exercise[]>>(environment.apiUrl + '/training/get-exercises')
+            .get<StreamData<Exercise[]>>(environment.apiUrl + '/api/training/get-exercises')
             .pipe(
                 switchMap((response: StreamData<Exercise[]>) => {
                     this._exercisesStoreService.emitAllExercises(response);
