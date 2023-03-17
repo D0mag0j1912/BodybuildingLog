@@ -61,7 +61,7 @@ export class TrainingSplitsEffects {
             ),
             map((response) =>
                 trainingSplitActions.getTrainingSplitListSuccess({
-                    trainingSplitList: response.Value,
+                    trainingSplitList: response,
                 }),
             ),
         ),

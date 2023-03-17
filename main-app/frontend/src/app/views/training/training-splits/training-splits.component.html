@@ -8,7 +8,7 @@
 </ion-header>
 <ion-content>
     <bl-training-splits-search (createTrainingSplitEvent)="createTrainingSplit()"></bl-training-splits-search>
-    <div
+    <!-- <div
         *ngIf="trainingSplits$ | async as trainingSplits"
         [class.no-training-splits]="!trainingSplits.length">
         <ng-container *ngIf="trainingSplits.length; else emptyScreen">
@@ -17,5 +17,7 @@
         <ng-template #emptyScreen>
             <span class="empty-screen-txt">{{ 'training.training_split.empty_screen' | translate }}</span>
         </ng-template>
-    </div>
+    </div> -->
+    <ng-container *ngIf="trainingSplits$ | async as trainingSplits">
+    </ng-container>
 </ion-content>

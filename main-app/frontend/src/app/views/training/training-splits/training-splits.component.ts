@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { from, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { TRAINING_SPLIT_LIST } from '../../../mock/training-split.mock';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
@@ -14,7 +15,9 @@ import { CreateTrainingSplitComponent } from './create-training-split/create-tra
     providers: [UnsubscribeService],
 })
 export class TrainingSplitsComponent implements OnInit {
-    trainingSplits$ = of(TRAINING_SPLIT_LIST);
+    trainingSplits$ = this._trainingSplitsFacadeService
+        .getTrainingSplitListSelector()
+        .pipe(mapStreamData());
 
     constructor(
         private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
