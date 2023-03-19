@@ -5,12 +5,11 @@ import { AppState } from '../..';
 import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-split-dto';
 import { StreamData } from '../../models/common/common.model';
 import * as trainingSplitActions from './training-splits.actions';
+import { selectTrainingSplitList } from './training-splits.selectors';
 
 @Injectable()
 export class TrainingSplitsFacadeService {
-    private _selectTrainingSplitList$ = this._store.select(
-        (state) => state.trainingSplits.trainingSplitList,
-    );
+    private _selectTrainingSplitList$ = this._store.select(selectTrainingSplitList);
 
     constructor(private _store: Store<AppState>) {}
 
