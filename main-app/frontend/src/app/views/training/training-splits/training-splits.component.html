@@ -7,17 +7,30 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <bl-training-splits-search (createTrainingSplitEvent)="createTrainingSplit()"></bl-training-splits-search>
-    <!-- <div
-        *ngIf="trainingSplits$ | async as trainingSplits"
-        [class.no-training-splits]="!trainingSplits.length">
-        <ng-container *ngIf="trainingSplits.length; else emptyScreen">
-            <bl-training-split *ngFor="let split of trainingSplits; let first = first" [trainingSplit]="split" [isFirst]="first"></bl-training-split>
-        </ng-container>
-        <ng-template #emptyScreen>
-            <span class="empty-screen-txt">{{ 'training.training_split.empty_screen' | translate }}</span>
-        </ng-template>
-    </div> -->
-    <ng-container *ngIf="trainingSplits$ | async as trainingSplits">
-    </ng-container>
+    <div class="wrapper">
+        <bl-training-splits-search (createTrainingSplitEvent)="createTrainingSplit()"></bl-training-splits-search>
+        <div *ngIf="trainingSplits$ | async as state" class="content-wrapper">
+            <ng-container *ngIf="state.IsLoading">
+                <ion-spinner
+                    class="ion-spinner-class"
+                    name="crescent"
+                    color="primary"
+                ></ion-spinner>
+            </ng-container>
+            <ng-container *ngIf="state.IsError">
+                {{ 'Error' }}
+            </ng-container>
+            <ng-container *ngIf="state.Value">
+                <div
+                    [class.no-training-splits]="!state.Value.length">
+                    <ng-container *ngIf="state.Value.length; else emptyScreen">
+                        <bl-training-split *ngFor="let split of state.Value; let first = first" [trainingSplit]="split" [isFirst]="first"></bl-training-split>
+                    </ng-container>
+                    <ng-template #emptyScreen>
+                        <span class="empty-screen-txt">{{ 'training.training_split.empty_screen' | translate }}</span>
+                    </ng-template>
+                </div>
+            </ng-container>
+        </div>
+    </div>
 </ion-content>
