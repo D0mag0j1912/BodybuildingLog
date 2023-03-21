@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { from, of } from 'rxjs';
-import { map, takeUntil, tap } from 'rxjs/operators';
+import { from } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { TRAINING_SPLIT_LIST } from '../../../mock/training-split.mock';
 import { StreamData } from '../../../models/common/common.model';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
