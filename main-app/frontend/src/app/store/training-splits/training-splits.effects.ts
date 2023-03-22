@@ -19,20 +19,17 @@ export class TrainingSplitsEffects {
                 this._swaggerTrainingSplitsService
                     .trainingSplitsControllerCreateTrainingSplit({ body: action.trainingSplit })
                     .pipe(
-                        tap(async (response: Message) => {
-                            await this._toastControllerService.displayToast({
-                                message: this._translateService.instant(response.Message),
-                                duration: MESSAGE_DURATION.GENERAL,
+                        tap((response: Message) => {
+                            trainingSplitActions.showToastMessage({
                                 color: 'primary',
+                                message: response.Message,
                             });
                         }),
-                        catchError(async (_) => {
-                            await this._toastControllerService.displayToast({
-                                message: this._translateService.instant(
-                                    'training.training_split.errors.error_create_training_split',
-                                ),
-                                duration: MESSAGE_DURATION.ERROR,
+                        catchError((_) => {
+                            trainingSplitActions.showToastMessage({
                                 color: 'danger',
+                                message:
+                                    'training.training_split.errors.error_create_training_split',
                             });
                             return EMPTY;
                         }),
@@ -55,9 +52,18 @@ export class TrainingSplitsEffects {
         this._actions$.pipe(
             ofType(trainingSplitActions.getTrainingSplitList),
             switchMap((_) =>
-                this._swaggerTrainingSplitsService
-                    .trainingSplitsControllerGetTrainingSplits()
-                    .pipe(catchError((_) => EMPTY)),
+                this._swaggerTrainingSplitsService.trainingSplitsControllerGetTrainingSplits().pipe(
+                    tap((_) => {
+                        throw new Error('Error happened!');
+                    }),
+                    catchError((_) => {
+                        trainingSplitActions.showToastMessage({
+                            color: 'danger',
+                            message: 'training.training_split.errors.error_create_training_split',
+                        });
+                        return EMPTY;
+                    }),
+                ),
             ),
             map((response) =>
                 trainingSplitActions.getTrainingSplitListSuccess({
@@ -65,6 +71,24 @@ export class TrainingSplitsEffects {
                 }),
             ),
         ),
+    );
+
+    showToastMessage$ = createEffect(
+        () =>
+            this._actions$.pipe(
+                ofType(trainingSplitActions.showToastMessage),
+                tap(async (action) => {
+                    await this._toastControllerService.displayToast({
+                        message: this._translateService.instant(action.message),
+                        duration:
+                            action.color === 'danger'
+                                ? MESSAGE_DURATION.ERROR
+                                : MESSAGE_DURATION.GENERAL,
+                        color: action.color,
+                    });
+                }),
+            ),
+        { dispatch: false },
     );
 
     constructor(
