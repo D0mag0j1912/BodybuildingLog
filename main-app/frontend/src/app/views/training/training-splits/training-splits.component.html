@@ -8,7 +8,6 @@
 </ion-header>
 <ion-content>
     <div *ngIf="trainingSplits$ | async as state" class="content-wrapper">
-        <bl-training-splits-search (createTrainingSplitEvent)="createTrainingSplit()"></bl-training-splits-search>
         <ng-container *ngIf="state.IsLoading">
             <ion-spinner
                 class="ion-spinner-class"
@@ -22,6 +21,7 @@
                 [title]="'training.training_split.errors.error_get_training_splits'"></bl-error>
         </ng-container>
         <ng-container *ngIf="state.Value">
+            <bl-training-splits-search (createTrainingSplitEvent)="createTrainingSplit()"></bl-training-splits-search>
             <div
                 [class.no-training-splits]="!state.Value.length">
                 <ng-container *ngIf="state.Value.length; else emptyScreen">
