@@ -23,22 +23,14 @@
 <ion-content class="ion-text-center">
     <ng-container *ngIf="trainingStream$ | async as trainingData">
         <ng-container *ngIf="trainingData.IsError; else valueOrLoading">
-            <div class="error-wrapper">
-                <img class="error-image" src="../../../../assets/svgs/error1.svg" />
-                <h3 class="error-title">
-                    {{ 'training.new_training.errors.new_training_error_title' | translate }}
-                </h3>
-                <span class="error-description">
-                    {{
-                        editMode
-                            ? ('training.new_training.errors.new_training_error_description' | translate)
-                            : ('training.new_training.errors.new_training_error_load' | translate)
-                    }}
-                </span>
-                <ion-button color="primary" type="button" (click)="tryAgain()">
+            <bl-error
+                [imagePath]="'../../../../assets/svgs/error1.svg'"
+                [title]="'training.new_training.errors.new_training_error_title'"
+                [description]="'training.new_training.errors.new_training_error_load'">
+                <ion-button color="primary" type="button" (click)="tryAgain()" cta>
                     {{ 'common.try_again' | translate }}
                 </ion-button>
-            </div>
+            </bl-error>
         </ng-container>
         <ng-template #valueOrLoading>
             <ion-spinner

@@ -15,6 +15,7 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { DateTimePickerComponent } from './datetime-picker/datetime-picker.component';
 import { SkeletonLoaderComponent } from './skeleton-loader/skeleton-loader.component';
 import { SearchableSelectComponent } from './searchable-select/searchable-select.component';
+import { ErrorComponent } from './error/error.component';
 
 const DIRECTIVES = [PaginationDirective];
 
@@ -24,6 +25,7 @@ const COMPONENTS = [
     DateTimePickerComponent,
     SkeletonLoaderComponent,
     SearchableSelectComponent,
+    ErrorComponent,
 ];
 
 const ACTION_COMPONENTS = [DeleteTrainingActionComponent, MoreTrainingActionComponent];

@@ -158,7 +158,6 @@
                 "set_number_max": "Maksimalni broj seta je 50",
                 "total_numerical": "Ukupna kilaža mora biti numerička vrijednost",
                 "new_training_error_title": "Trening nije trenutno dostupan",
-                "new_training_error_description": "Traženi trening trenutno nije dostupan. Molimo Vas pokušajte ponovno ili izaberite neki drugi",
                 "new_training_error_load": "Došlo je do problema pri učitavanju novog treninga. Molimo pokušajte ponovno",
                 "error_update_training": "Došlo je do greške pri ažuriranju treninga",
                 "error_save_training": "Došlo je do greške pri spremanju treninga",

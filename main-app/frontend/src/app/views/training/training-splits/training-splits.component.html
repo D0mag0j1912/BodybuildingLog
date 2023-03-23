@@ -17,7 +17,9 @@
             ></ion-spinner>
         </ng-container>
         <ng-container *ngIf="state.IsError">
-            <span>{{ 'training.training_split.errors.error_get_training_splits' | translate }}</span>
+            <bl-error
+                [imagePath]="'../../../../assets/svgs/error1.svg'"
+                [title]="'training.training_split.errors.error_get_training_splits'"></bl-error>
         </ng-container>
         <ng-container *ngIf="state.Value">
             <div
