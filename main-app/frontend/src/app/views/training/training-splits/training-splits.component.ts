@@ -17,7 +17,6 @@ import { CreateTrainingSplitComponent } from './create-training-split/create-tra
 })
 export class TrainingSplitsComponent implements OnInit {
     trainingSplits$ = this._trainingSplitsFacadeService.getTrainingSplitListSelector().pipe(
-        mapStreamData<TrainingSplit[]>(),
         map((response: StreamData<TrainingSplit[]>) => ({
             ...response,
             Value: response.Value,

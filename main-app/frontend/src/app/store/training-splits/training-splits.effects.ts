@@ -6,8 +6,11 @@ import { catchError, concatMap, map, switchMap, tap } from 'rxjs/operators';
 import { SwaggerTrainingSplitsService } from '../../../api';
 import { GeneralResponseDto as Message } from '../../../api/models/general-response-dto';
 import { MESSAGE_DURATION } from '../../constants/shared/message-duration.const';
+import { mapStreamData } from '../../helpers/training/past-trainings/map-stream-data.helper';
 import { TrainingSplitSuccessService } from '../../services/helper/training-split-success.service';
 import { ToastControllerService } from '../../services/shared/toast-controller.service';
+import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-split-dto';
+import * as commonActions from '../common/common.actions';
 import * as trainingSplitActions from './training-splits.actions';
 
 @Injectable()
@@ -19,21 +22,21 @@ export class TrainingSplitsEffects {
                 this._swaggerTrainingSplitsService
                     .trainingSplitsControllerCreateTrainingSplit({ body: action.trainingSplit })
                     .pipe(
-                        tap((response: Message) => {
-                            trainingSplitActions.showToastMessage({
-                                color: 'primary',
-                                message: response.Message,
-                            });
-                        }),
                         catchError((_) => {
-                            trainingSplitActions.showToastMessage({
+                            commonActions.showToastMessage({
                                 color: 'danger',
                                 message:
                                     'training.training_split.errors.error_create_training_split',
                             });
                             return EMPTY;
                         }),
-                        map(() => trainingSplitActions.createTrainingSplitSuccess()),
+                        map((response: Message) => {
+                            commonActions.showToastMessage({
+                                color: 'primary',
+                                message: response.Message,
+                            });
+                            return trainingSplitActions.createTrainingSplitSuccess();
+                        }),
                     ),
             ),
         ),
@@ -56,19 +59,13 @@ export class TrainingSplitsEffects {
                     tap((_) => {
                         throw new Error('Error happened!');
                     }),
-                    catchError((_) => {
-                        trainingSplitActions.showToastMessage({
-                            color: 'danger',
-                            message: 'training.training_split.errors.error_create_training_split',
-                        });
-                        return EMPTY;
-                    }),
+                    mapStreamData<TrainingSplit[]>(),
+                    map((response) =>
+                        trainingSplitActions.getTrainingSplitListSuccess({
+                            trainingSplitList: response,
+                        }),
+                    ),
                 ),
-            ),
-            map((response) =>
-                trainingSplitActions.getTrainingSplitListSuccess({
-                    trainingSplitList: response,
-                }),
             ),
         ),
     );
@@ -76,7 +73,7 @@ export class TrainingSplitsEffects {
     showToastMessage$ = createEffect(
         () =>
             this._actions$.pipe(
-                ofType(trainingSplitActions.showToastMessage),
+                ofType(commonActions.showToastMessage),
                 tap(async (action) => {
                     await this._toastControllerService.displayToast({
                         message: this._translateService.instant(action.message),

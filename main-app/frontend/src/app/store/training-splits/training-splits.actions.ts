@@ -1,4 +1,3 @@
-import { ToastOptions } from '@ionic/angular';
 import { createAction, props } from '@ngrx/store';
 import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-split-dto';
 import { StreamData } from '../../models/common/common.model';
@@ -28,9 +27,4 @@ export const getTrainingSplitList = createAction('[Training splits] Get training
 export const getTrainingSplitListSuccess = createAction(
     '[Training splits] Get training split list success',
     props<{ trainingSplitList: StreamData<TrainingSplit[]> }>(),
-);
-
-export const showToastMessage = createAction(
-    '[Training splits] Show toast message',
-    props<{ color: ToastOptions['color']; message: string }>(),
 );
