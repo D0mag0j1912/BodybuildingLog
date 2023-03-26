@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { from } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
-import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
-import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
-import { StreamData } from '../../../models/common/common.model';
+import { takeUntil } from 'rxjs/operators';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
@@ -16,12 +13,7 @@ import { CreateTrainingSplitComponent } from './create-training-split/create-tra
     providers: [UnsubscribeService],
 })
 export class TrainingSplitsComponent implements OnInit {
-    trainingSplits$ = this._trainingSplitsFacadeService.getTrainingSplitListSelector().pipe(
-        map((response: StreamData<TrainingSplit[]>) => ({
-            ...response,
-            Value: response.Value,
-        })),
-    );
+    trainingSplits$ = this._trainingSplitsFacadeService.getTrainingSplitListSelector();
 
     constructor(
         private _trainingSplitsFacadeService: TrainingSplitsFacadeService,

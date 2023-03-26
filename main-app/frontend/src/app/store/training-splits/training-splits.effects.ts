@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { TranslateService } from '@ngx-translate/core';
 import { EMPTY } from 'rxjs';
-import { catchError, concatMap, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, switchMap, tap } from 'rxjs/operators';
 import { SwaggerTrainingSplitsService } from '../../../api';
 import { GeneralResponseDto as Message } from '../../../api/models/general-response-dto';
 import { MESSAGE_DURATION } from '../../constants/shared/message-duration.const';
@@ -56,9 +56,6 @@ export class TrainingSplitsEffects {
             ofType(trainingSplitActions.getTrainingSplitList),
             switchMap((_) =>
                 this._swaggerTrainingSplitsService.trainingSplitsControllerGetTrainingSplits().pipe(
-                    tap((_) => {
-                        throw new Error('Error happened!');
-                    }),
                     mapStreamData<TrainingSplit[]>(),
                     map((response) =>
                         trainingSplitActions.getTrainingSplitListSuccess({
@@ -66,6 +63,19 @@ export class TrainingSplitsEffects {
                         }),
                     ),
                 ),
+            ),
+        ),
+    );
+
+    triggerToastMessage$ = createEffect(() =>
+        this._actions$.pipe(
+            ofType(trainingSplitActions.getTrainingSplitListSuccess),
+            filter((response) => response.trainingSplitList.IsError),
+            map((_) =>
+                commonActions.showToastMessage({
+                    color: 'danger',
+                    message: 'training.training_split.errors.error_get_training_splits',
+                }),
             ),
         ),
     );
