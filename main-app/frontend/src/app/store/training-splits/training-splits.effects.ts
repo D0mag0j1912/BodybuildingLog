@@ -67,7 +67,7 @@ export class TrainingSplitsEffects {
         ),
     );
 
-    triggerToastMessage$ = createEffect(() =>
+    dispatchToastErrorMessage = createEffect(() =>
         this._actions$.pipe(
             ofType(trainingSplitActions.getTrainingSplitListSuccess),
             filter((response) => response.trainingSplitList.IsError),
