@@ -15,18 +15,14 @@
             (dayActivated)="onDayActivated($event)"
         ></bl-show-by-day>
         <ng-container *ngIf="state.IsError; else valueOrLoading">
-            <div class="error-wrapper">
-                <img class="error-image" src="../../../../assets/svgs/error1.svg" />
-                <h3 class="error-title">
-                    {{ 'training.past_trainings.errors.past_trainings_error_title' | translate }}
-                </h3>
-                <span class="error-description">
-                    {{ 'training.past_trainings.errors.past_trainings_error_description' | translate }}
-                </span>
-                <ion-button color="primary" type="button" (click)="tryAgain()">
+            <bl-error
+                [imagePath]="'../../../../assets/svgs/error1.svg'"
+                [title]="'training.past_trainings.errors.past_trainings_error_title'"
+                [description]="'training.past_trainings.errors.past_trainings_error_description'">
+                <ion-button color="primary" type="button" (click)="tryAgain()" cta>
                     {{ 'common.try_again' | translate }}
                 </ion-button>
-            </div>
+            </bl-error>
         </ng-container>
         <ng-template #valueOrLoading>
             <ng-container *ngIf="state.IsLoading">

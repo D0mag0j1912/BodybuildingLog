@@ -12,7 +12,7 @@ import {
     PeriodFilterType,
 } from '../../../models/training/past-trainings/past-trainings.model';
 
-const ROUTE_PREFIX = '/training/';
+const ROUTE_PREFIX = '/api/training/';
 
 @Injectable({ providedIn: 'root' })
 export class PastTrainingsService {

@@ -8,7 +8,7 @@ export const mapStreamData =
         source.pipe(
             map((data: StreamData<T>) => ({
                 IsLoading: false,
-                Value: data.Value,
+                Value: data?.Value,
                 IsError: false,
             })),
             catchError((_) =>

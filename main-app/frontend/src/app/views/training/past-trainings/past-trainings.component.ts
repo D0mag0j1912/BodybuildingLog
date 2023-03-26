@@ -40,7 +40,7 @@ import { Page } from '../../../models/common/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
-import { PreferencesService } from '../../../services/shared/preferences.service';
+import { PreferencesService } from '../../../services/api/preferences/preferences.service';
 import {
     calculateFirstWeekDay,
     calculateLastWeekDay,

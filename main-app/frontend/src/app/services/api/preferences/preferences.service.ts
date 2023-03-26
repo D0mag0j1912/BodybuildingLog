@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
-import { MESSAGE_DURATION } from '../../constants/shared/message-duration.const';
-import { Preferences } from '../../models/common/preferences.model';
-import { PreferenceChangedType } from '../../models/common/preferences.type';
-import { PreferencesStoreService } from '../store/shared/preferences-store.service';
-import { NewTrainingStoreService } from '../store/training/new-training-store.service';
-import { GeneralResponseDto } from '../../../api/models';
-import { ToastControllerService } from './toast-controller.service';
+import { environment } from '../../../../environments/environment';
+import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
+import { Preferences } from '../../../models/common/preferences.model';
+import { PreferenceChangedType } from '../../../models/common/preferences.type';
+import { PreferencesStoreService } from '../../store/shared/preferences-store.service';
+import { NewTrainingStoreService } from '../../store/training/new-training-store.service';
+import { GeneralResponseDto } from '../../../../api/models';
+import { ToastControllerService } from '../../shared/toast-controller.service';
 
 @Injectable({ providedIn: 'root' })
 export class PreferencesService {
@@ -23,7 +23,7 @@ export class PreferencesService {
     ) {}
 
     getPreferences(userId: string): Observable<Preferences> {
-        return this._http.get<Preferences>(environment.apiUrl + `/preferences/${userId}`);
+        return this._http.get<Preferences>(environment.apiUrl + `/api/preferences/${userId}`);
     }
 
     setPreferences(
@@ -38,10 +38,13 @@ export class PreferencesService {
         };
         let apiResponse: GeneralResponseDto;
         return this._http
-            .put<GeneralResponseDto>(environment.apiUrl + `/preferences/${preferences.userId}`, {
-                preferences: apiPreferences,
-                preferenceChanged: preferenceChanged,
-            })
+            .put<GeneralResponseDto>(
+                environment.apiUrl + `/api/preferences/${preferences.userId}`,
+                {
+                    preferences: apiPreferences,
+                    preferenceChanged: preferenceChanged,
+                },
+            )
             .pipe(
                 switchMap((response: GeneralResponseDto) => {
                     apiResponse = response;

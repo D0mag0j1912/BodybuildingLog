@@ -68,7 +68,7 @@ export class CreateTrainingSplitComponent implements OnInit {
                 return this._exercisesService.getExercises();
             }
         }),
-        mapStreamData(),
+        mapStreamData<Exercise[]>(),
         map((data: StreamData<Exercise[]>) => {
             if (data.IsError) {
                 return {

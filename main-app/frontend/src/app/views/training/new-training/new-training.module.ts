@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { PipesModule } from '../../../pipes/pipes.module';
 import { CamelToSnakeCaseModule } from '../../../pipes/shared/camel-to-snake-case/camel-to-snake-case.module';
+import { SharedModule } from '../../shared/shared.module';
 import { NewTrainingRoutingModule } from './new-training-routing.module';
 import { NewTrainingComponent } from './new-training.component';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
@@ -28,6 +29,7 @@ const EXTERNAL_IMPORTS = [
     TranslateModule,
     IonicModule,
     FormsModule,
+    SharedModule,
 ];
 
 const IMPORTS = [PipesModule, CamelToSnakeCaseModule, NewTrainingRoutingModule];

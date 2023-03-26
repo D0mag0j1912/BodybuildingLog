@@ -3,7 +3,7 @@ import { CanLoad, Route, Router, UrlTree } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
-import { PreferencesService } from '../services/shared/preferences.service';
+import { PreferencesService } from '../services/api/preferences/preferences.service';
 import { AuthStoreService } from '../services/store/auth/auth-store.service';
 import { PreferencesStoreService } from '../services/store/shared/preferences-store.service';
 

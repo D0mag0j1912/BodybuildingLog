@@ -30,7 +30,7 @@ export class AuthService {
             languageCode: language,
             weightUnit: weightUnit,
         };
-        return this._http.post<SignupResponseDto>(environment.apiUrl + '/auth/signup', {
+        return this._http.post<SignupResponseDto>(environment.apiUrl + '/api/auth/signup', {
             ...signupData,
             ...preferences,
         });
@@ -41,23 +41,25 @@ export class AuthService {
             email,
             password,
         };
-        return this._http.post<AuthResponseData>(environment.apiUrl + '/auth/login', authData).pipe(
-            tap(async (response: AuthResponseData) => {
-                if (response.Token) {
-                    this._authStoreService.emitLoggedUser(response);
-                    this._authStoreService.emitIsAuth(true);
-                    this._authStoreService.setToken(response.Token);
-                    const expiresInDuration = response.ExpiresIn;
-                    this._authStoreService.setAuthTimer(expiresInDuration);
-                    const now = new Date();
-                    const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
-                    await this._authStoreService.saveLS(
-                        this._authStoreService.getToken(),
-                        expirationDate,
-                        response._id,
-                    );
-                }
-            }),
-        );
+        return this._http
+            .post<AuthResponseData>(environment.apiUrl + '/api/auth/login', authData)
+            .pipe(
+                tap(async (response: AuthResponseData) => {
+                    if (response.Token) {
+                        this._authStoreService.emitLoggedUser(response);
+                        this._authStoreService.emitIsAuth(true);
+                        this._authStoreService.setToken(response.Token);
+                        const expiresInDuration = response.ExpiresIn;
+                        this._authStoreService.setAuthTimer(expiresInDuration);
+                        const now = new Date();
+                        const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+                        await this._authStoreService.saveLS(
+                            this._authStoreService.getToken(),
+                            expirationDate,
+                            response._id,
+                        );
+                    }
+                }),
+            );
     }
 }

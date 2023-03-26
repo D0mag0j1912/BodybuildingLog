@@ -157,8 +157,7 @@
                 "set_number_max": "Maximum set number is 50",
                 "total_numerical": "Total must be numerical value",
                 "new_training_error_title": "Training is not available",
-                "new_training_error_description": "Desired training is not currently available. Please try again or pick another one",
-                "new_training_error_load": "There is a problem in loading new training. Please try again",
+                "new_training_error_load": "There is a problem in loading training. Please try again",
                 "error_update_training": "Error while trying to update training. Please check your data again",
                 "error_save_training": "Error while trying to save training. Please check your data again",
                 "exercises_not_available": "Exercises not available",
@@ -235,7 +234,8 @@
                 "training_split_name_required": "Training split name is required",
                 "exercises_required": "Exercises are required",
                 "set_number_required": "Set number is required",
-                "error_create_training_split": "Error while creating training split"
+                "error_create_training_split": "Error while creating training split",
+                "error_get_training_splits": "Error while getting training splits"
             },
             "training_split_created": "Training split created"
         },

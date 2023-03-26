@@ -1,0 +1,14 @@
+<div class="error-wrapper">
+    <img *ngIf="imagePath" class="error-image" [src]="imagePath" />
+    <h3 class="error-title">
+        {{ title | translate }}
+    </h3>
+    <span
+        *ngIf="description"
+        class="error-description">
+        {{
+            description | translate
+        }}
+    </span>
+    <ng-content select="[cta]"></ng-content>
+</div>

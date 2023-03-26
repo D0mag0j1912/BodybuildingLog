@@ -13,7 +13,7 @@ import {
 } from '../../../models/common/preferences.type';
 import { Preferences } from '../../../models/common/preferences.model';
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
-import { PreferencesService } from '../../../services/shared/preferences.service';
+import { PreferencesService } from '../../../services/api/preferences/preferences.service';
 import { SetDurationUnitType } from '../../../models/training/new-training/single-exercise/set/set.type';
 
 @Component({
