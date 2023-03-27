@@ -12,6 +12,7 @@ import * as trainingSplitsReducers from '../../../store/training-splits/training
 import { SharedModule } from '../../shared/shared.module';
 import { TrainingSplitsEffects } from '../../../store/training-splits/training-splits.effects';
 import { TrainingSplitSuccessService } from '../../../services/helper/training-split-success.service';
+import { TimesAWeekModule } from '../../../pipes/training/training-splits/times-a-week/times-a-week.module';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
 import { TrainingSplitComponent } from './training-split/training-split.component';
 import { TrainingSplitsRoutingModule } from './training-splits-routing.module';
@@ -25,7 +26,13 @@ const COMPONENTS = [
     CreateTrainingSplitComponent,
 ];
 
-const IMPORTS = [TrainingSplitsRoutingModule, ReactiveFormsModule, FormsModule, SharedModule];
+const IMPORTS = [
+    TrainingSplitsRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    SharedModule,
+    TimesAWeekModule,
+];
 
 const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule, SwiperModule];
 
