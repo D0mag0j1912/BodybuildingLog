@@ -4,7 +4,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { EMPTY } from 'rxjs';
 import { catchError, concatMap, filter, map, switchMap, tap } from 'rxjs/operators';
 import { SwaggerTrainingSplitsService } from '../../../api';
-import { GeneralResponseDto as Message } from '../../../api/models/general-response-dto';
 import { MESSAGE_DURATION } from '../../constants/shared/message-duration.const';
 import { mapStreamData } from '../../helpers/training/past-trainings/map-stream-data.helper';
 import { TrainingSplitSuccessService } from '../../services/helper/training-split-success.service';
@@ -30,13 +29,9 @@ export class TrainingSplitsEffects {
                             });
                             return EMPTY;
                         }),
-                        map((response: Message) => {
-                            commonActions.showToastMessage({
-                                color: 'primary',
-                                message: response.Message,
-                            });
-                            return trainingSplitActions.createTrainingSplitSuccess();
-                        }),
+                        map((trainingSplit: TrainingSplit) =>
+                            trainingSplitActions.createTrainingSplitSuccess({ trainingSplit }),
+                        ),
                     ),
             ),
         ),

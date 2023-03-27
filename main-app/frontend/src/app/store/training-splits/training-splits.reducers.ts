@@ -19,6 +19,13 @@ export const trainingSplitsReducer = createReducer(
         ...state,
         trainingSplitsForm: action.trainingSplitForm,
     })),
+    on(trainingSplitActions.createTrainingSplitSuccess, (state, action) => ({
+        ...state,
+        trainingSplitList: {
+            ...state.trainingSplitList,
+            Value: [...state.trainingSplitList.Value, action.trainingSplit],
+        },
+    })),
     on(trainingSplitActions.getTrainingSplitListSuccess, (state, action) => ({
         ...state,
         trainingSplitList: action.trainingSplitList,
