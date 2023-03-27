@@ -32,6 +32,21 @@ export class TrainingSplitsService {
         }
     }
 
+    async getTrainingSplit(trainingSplitId: string): Promise<StreamModelDto<TrainingSplitDto>> {
+        try {
+            const trainingSplit = await this._trainingSplitModel.findById(trainingSplitId).exec();
+            return {
+                IsLoading: true,
+                IsError: false,
+                Value: trainingSplit,
+            } as StreamModelDto<TrainingSplitDto>;
+        } catch (error: unknown) {
+            throw new InternalServerErrorException(
+                'training.training_split.errors.training_split_not_available',
+            );
+        }
+    }
+
     async createTrainingSplit(
         trainingSplit: TrainingSplitDto,
         userId: string,

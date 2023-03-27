@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiCreatedResponse,
@@ -21,6 +21,9 @@ import { TrainingSplitDto } from '../../../models/training/training-split/traini
 export class TrainingSplitsController {
     constructor(private _trainingSplitsService: TrainingSplitsService) {}
 
+    /**
+     * Get training splits
+     */
     @ApiInternalServerErrorResponse({
         status: 500,
         description: 'Internal server error',
@@ -36,6 +39,20 @@ export class TrainingSplitsController {
     ): Promise<StreamModelDto<TrainingSplitDto[]>> {
         return this._trainingSplitsService.getTrainingSplits(user._id);
     }
+
+    /**
+     * Get training split
+     */
+    @Get(':id')
+    async getTrainingSplit(
+        @Param('id') trainingSplitId: string,
+    ): Promise<StreamModelDto<TrainingSplitDto>> {
+        return this._trainingSplitsService.getTrainingSplit(trainingSplitId);
+    }
+
+    /**
+     * Create training split
+     */
 
     @ApiInternalServerErrorResponse({
         status: 500,
