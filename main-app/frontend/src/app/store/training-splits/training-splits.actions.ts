@@ -17,6 +17,7 @@ export const createTrainingSplit = createAction(
 
 export const createTrainingSplitSuccess = createAction(
     '[Training splits] Create training split success',
+    props<{ trainingSplit: TrainingSplit }>(),
 );
 
 /**

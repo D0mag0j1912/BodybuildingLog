@@ -1,7 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { GeneralResponseDto } from '../../models/common/response.model';
 import { StreamModelDto } from '../../models/common/stream.model';
 import { TrainingSplitDto } from '../../models/training/training-split/training-split.model';
 
@@ -36,16 +35,14 @@ export class TrainingSplitsService {
     async createTrainingSplit(
         trainingSplit: TrainingSplitDto,
         userId: string,
-    ): Promise<GeneralResponseDto> {
+    ): Promise<TrainingSplitDto> {
         try {
             const updatedTrainingSplit = {
                 ...trainingSplit,
                 userId,
             };
-            await this._trainingSplitModel.create(updatedTrainingSplit);
-            return {
-                Message: 'training.training_split.training_split_created',
-            } as GeneralResponseDto;
+            const newTrainingSplit = await this._trainingSplitModel.create(updatedTrainingSplit);
+            return newTrainingSplit;
         } catch (error: unknown) {
             throw new InternalServerErrorException(
                 'training.training_splits.errors.error_create_training_split',

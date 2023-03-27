@@ -9,7 +9,6 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { GeneralResponseDto } from '../models/general-response-dto';
 import { StreamModelDto } from '../models/stream-model-dto';
 import { TrainingSplitDto } from '../models/training-split-dto';
 
@@ -107,7 +106,7 @@ export class SwaggerTrainingSplitsService extends BaseService {
     context?: HttpContext
     body: TrainingSplitDto
   }
-): Observable<StrictHttpResponse<GeneralResponseDto>> {
+): Observable<StrictHttpResponse<TrainingSplitDto>> {
 
     const rb = new RequestBuilder(this.rootUrl, SwaggerTrainingSplitsService.TrainingSplitsControllerCreateTrainingSplitPath, 'post');
     if (params) {
@@ -121,7 +120,7 @@ export class SwaggerTrainingSplitsService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<GeneralResponseDto>;
+        return r as StrictHttpResponse<TrainingSplitDto>;
       })
     );
   }
@@ -136,10 +135,10 @@ export class SwaggerTrainingSplitsService extends BaseService {
     context?: HttpContext
     body: TrainingSplitDto
   }
-): Observable<GeneralResponseDto> {
+): Observable<TrainingSplitDto> {
 
     return this.trainingSplitsControllerCreateTrainingSplit$Response(params).pipe(
-      map((r: StrictHttpResponse<GeneralResponseDto>) => r.body as GeneralResponseDto)
+      map((r: StrictHttpResponse<TrainingSplitDto>) => r.body as TrainingSplitDto)
     );
   }
 
