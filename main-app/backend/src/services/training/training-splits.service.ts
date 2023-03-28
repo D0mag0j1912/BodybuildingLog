@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { StreamModelDto } from '../../models/common/stream.model';
@@ -61,6 +61,30 @@ export class TrainingSplitsService {
         } catch (error: unknown) {
             throw new InternalServerErrorException(
                 'training.training_splits.errors.error_create_training_split',
+            );
+        }
+    }
+
+    async editTrainingSplit(
+        trainingSplitId: string,
+        updatedData: TrainingSplitDto,
+        userId: string,
+    ): Promise<TrainingSplitDto> {
+        try {
+            const trainingSplitToBeUpdated = await this._trainingSplitModel
+                .findById(trainingSplitId)
+                .exec();
+            if (trainingSplitToBeUpdated.userId.toString() !== userId.toString()) {
+                throw new UnauthorizedException('common.errors.not_authorized');
+            }
+            const updatedTrainingSplitData = await this._trainingSplitModel
+                .updateOne({ _id: trainingSplitId }, { $set: updatedData })
+                .exec();
+            //TODO: Update response data
+            return updatedData;
+        } catch (error: unknown) {
+            throw new InternalServerErrorException(
+                'training.new_training.errors.error_edit_training_split',
             );
         }
     }
