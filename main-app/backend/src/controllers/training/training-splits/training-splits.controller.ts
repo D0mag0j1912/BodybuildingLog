@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiCreatedResponse,
     ApiExtraModels,
     ApiInternalServerErrorResponse,
+    ApiOkResponse,
     ApiTags,
     ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -13,7 +14,6 @@ import { StreamModelDto } from '../../../models/common/stream.model';
 import { StreamModelResponse } from '../../../decorators/stream-model-response.decorator';
 import { TrainingSplitsService } from '../../../services/training/training-splits.service';
 import { TrainingSplitDto } from '../../../models/training/training-split/training-split.model';
-
 @ApiTags('Training splits')
 @Controller('api/training/training-splits')
 @UseGuards(AuthGuard())
@@ -21,6 +21,9 @@ import { TrainingSplitDto } from '../../../models/training/training-split/traini
 export class TrainingSplitsController {
     constructor(private _trainingSplitsService: TrainingSplitsService) {}
 
+    /**
+     * Get training splits
+     */
     @ApiInternalServerErrorResponse({
         status: 500,
         description: 'Internal server error',
@@ -36,6 +39,29 @@ export class TrainingSplitsController {
     ): Promise<StreamModelDto<TrainingSplitDto[]>> {
         return this._trainingSplitsService.getTrainingSplits(user._id);
     }
+
+    /**
+     * Get training split
+     */
+    @ApiInternalServerErrorResponse({
+        status: 500,
+        description: 'Internal server error',
+    })
+    @ApiUnauthorizedResponse({
+        status: 401,
+        description: 'Unauthorized',
+    })
+    @StreamModelResponse(TrainingSplitDto)
+    @Get(':id')
+    async getTrainingSplit(
+        @Param('id') trainingSplitId: string,
+    ): Promise<StreamModelDto<TrainingSplitDto>> {
+        return this._trainingSplitsService.getTrainingSplit(trainingSplitId);
+    }
+
+    /**
+     * Create training split
+     */
 
     @ApiInternalServerErrorResponse({
         status: 500,
@@ -56,5 +82,34 @@ export class TrainingSplitsController {
         @GET_USER() user: UserDto,
     ): Promise<TrainingSplitDto> {
         return this._trainingSplitsService.createTrainingSplit(trainingSplit, user._id);
+    }
+
+    /**
+     * Edit training split
+     */
+    @ApiOkResponse({
+        status: 200,
+        type: TrainingSplitDto,
+        description: 'Returns updated data',
+    })
+    @ApiInternalServerErrorResponse({
+        status: 500,
+        description: 'Returns server error',
+    })
+    @ApiUnauthorizedResponse({
+        status: 401,
+        description: 'Unauthorized',
+    })
+    @Put(':id')
+    async updateTraining(
+        @GET_USER() user: UserDto,
+        @Param('id') trainingId: string,
+        updatedTrainingSplit: TrainingSplitDto,
+    ): Promise<TrainingSplitDto> {
+        return this._trainingSplitsService.editTrainingSplit(
+            trainingId,
+            updatedTrainingSplit,
+            user._id,
+        );
     }
 }
