@@ -10,14 +10,19 @@
 </ion-header>
 <ion-content class="ion-text-center">
     <ng-container *ngIf="exercisesData$ | async as data">
-        <ng-container *ngIf="data.IsLoading; else exercises">
+        <ng-container *ngIf="data.IsLoading">
             <ion-spinner
                 class="ion-spinner-class"
                 name="crescent"
                 color="primary"
             ></ion-spinner>
         </ng-container>
-        <ng-template #exercises>
+        <ng-container *ngIf="data.IsError">
+            <bl-error
+                [imagePath]="'../../../assets/svgs/error1.svg'"
+                [title]="'common.errors.something_went_wrong'"></bl-error>
+        </ng-container>
+        <ng-container *ngIf="data.Value">
             <form class="form" [formGroup]="form">
                 <ion-item class="training-split-name-item ion-no-padding">
                     <ion-label position="floating">{{ 'training.training_split.training_split_name' | translate }}</ion-label>
@@ -80,6 +85,6 @@
                 <ng-container *ngIf="formValueChanges$ | async"></ng-container>
                 <ng-container *ngIf="trainingSplitCreated$ | async"></ng-container>
             </form>
-        </ng-template>
+        </ng-container>
     </ng-container>
 </ion-content>
