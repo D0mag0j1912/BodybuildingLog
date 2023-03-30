@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { from } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
+import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
 import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
 
@@ -10,14 +8,12 @@ import { CreateTrainingSplitComponent } from './create-training-split/create-tra
     selector: 'bl-training-splits',
     templateUrl: './training-splits.component.html',
     styleUrls: ['./training-splits.component.scss'],
-    providers: [UnsubscribeService],
 })
 export class TrainingSplitsComponent implements OnInit {
     trainingSplits$ = this._trainingSplitsFacadeService.getTrainingSplitListSelector();
 
     constructor(
         private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
-        private _unsubscribeService: UnsubscribeService,
         private _modalController: ModalController,
     ) {}
 
@@ -25,14 +21,15 @@ export class TrainingSplitsComponent implements OnInit {
         this._trainingSplitsFacadeService.getTrainingSplitList();
     }
 
-    async createTrainingSplit(): Promise<void> {
+    async openTrainingSplitModal(trainingSplit: TrainingSplit = null): Promise<void> {
         const modal = await this._modalController.create({
             component: CreateTrainingSplitComponent,
+            componentProps: {
+                trainingSplit,
+            },
             keyboardClose: true,
         });
 
         await modal.present();
-
-        from(modal.onDidDismiss()).pipe(takeUntil(this._unsubscribeService)).subscribe();
     }
 }

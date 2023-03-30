@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
@@ -116,6 +116,9 @@ export class CreateTrainingSplitComponent implements OnInit {
                 await this._modalController.dismiss(null, DialogRoles.CREATE_TRAINING_SPLIT),
         ),
     );
+
+    @Input()
+    trainingSplit: TrainingSplit = null;
 
     constructor(
         private _exercisesService: ExercisesService,
