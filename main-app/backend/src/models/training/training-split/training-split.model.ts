@@ -1,10 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
     ArrayMinSize,
     IsArray,
     IsMongoId,
     IsNotEmpty,
+    IsOptional,
     IsString,
     MaxLength,
     ValidateNested,
@@ -56,4 +57,13 @@ export class TrainingSplitDto {
     @ArrayMinSize(1, { message: 'training.training_splits.errors.at_least_one_training' })
     @IsArray()
     trainings: CustomTrainingDto[];
+
+    @ApiPropertyOptional({
+        type: String,
+        description: 'Training split id',
+    })
+    @IsOptional()
+    @IsString()
+    @IsMongoId()
+    _id?: string;
 }

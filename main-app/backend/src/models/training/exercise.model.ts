@@ -95,7 +95,7 @@ export class ExerciseDto {
 
     @ApiPropertyOptional({
         type: String,
-        description: 'Exercise ID',
+        description: 'Exercise id',
     })
     @IsOptional()
     @IsString()
