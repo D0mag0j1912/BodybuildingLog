@@ -79,8 +79,8 @@
                         </ng-container>
                     </swiper>
                 </div>
-                <ion-button type="button" color="primary" class="create-btn" (click)="createTrainingSplit()">
-                    {{ 'common.actions.create' | translate }}
+                <ion-button type="button" color="primary" class="cta-btn" (click)="submitTrainingSplit()">
+                    {{ ('common.actions.' + (trainingSplit ? 'edit' : 'create')) | translate }}
                 </ion-button>
                 <ng-container *ngIf="trainingSplitCreated$ | async"></ng-container>
             </form>

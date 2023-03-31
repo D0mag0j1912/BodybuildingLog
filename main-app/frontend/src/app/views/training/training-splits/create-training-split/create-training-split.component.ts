@@ -185,11 +185,18 @@ export class CreateTrainingSplitComponent implements OnInit {
         this.form.updateValueAndValidity({ emitEvent: true });
     }
 
-    createTrainingSplit(): void {
+    submitTrainingSplit(): void {
         this.form.markAllAsTouched();
         if (!this.form.valid) {
             return;
         }
-        this._trainingSplitsFacadeService.createTrainingSplit(this.trainingSplitForm);
+        if (this.trainingSplit) {
+            this._trainingSplitsFacadeService.editTrainingSplit(
+                this.trainingSplit._id,
+                this.trainingSplit,
+            );
+        } else {
+            this._trainingSplitsFacadeService.createTrainingSplit(this.trainingSplitForm);
+        }
     }
 }
