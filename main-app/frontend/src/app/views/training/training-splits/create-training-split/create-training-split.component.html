@@ -5,7 +5,7 @@
                 <ion-icon name="close"></ion-icon>
             </ion-button>
         </ion-buttons>
-        <ion-title class="ion-text-center dialog-title">{{ 'training.training_split.create_training_split' | translate }}</ion-title>
+        <ion-title class="ion-text-center dialog-title">{{ ('training.training_split.' + (trainingSplit ? 'edit' : 'create') + '_training_split') | translate }}</ion-title>
     </ion-toolbar>
 </ion-header>
 <ion-content class="ion-text-center">
@@ -82,7 +82,6 @@
                 <ion-button type="button" color="primary" class="create-btn" (click)="createTrainingSplit()">
                     {{ 'common.actions.create' | translate }}
                 </ion-button>
-                <ng-container *ngIf="formValueChanges$ | async"></ng-container>
                 <ng-container *ngIf="trainingSplitCreated$ | async"></ng-container>
             </form>
         </ng-container>
