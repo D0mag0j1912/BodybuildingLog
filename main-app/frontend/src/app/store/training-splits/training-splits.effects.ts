@@ -27,17 +27,42 @@ export class TrainingSplitsEffects {
                             return EMPTY;
                         }),
                         map((trainingSplit: TrainingSplit) =>
-                            trainingSplitActions.createTrainingSplitSuccess({ trainingSplit }),
+                            trainingSplitActions.submitTrainingSplitSuccess({ trainingSplit }),
                         ),
                     ),
             ),
         ),
     );
 
-    createTrainingSplitSuccess$ = createEffect(
+    editTrainingSplit$ = createEffect(() =>
+        this._actions$.pipe(
+            ofType(trainingSplitActions.editTrainingSplit),
+            concatMap((action) =>
+                this._swaggerTrainingSplitsService
+                    .trainingSplitsControllerUpdateTraining({
+                        id: action.id,
+                        body: action.trainingSplit,
+                    })
+                    .pipe(
+                        catchError((_) => {
+                            commonActions.showToastMessage({
+                                color: 'danger',
+                                message: 'training.training_split.errors.error_edit_training_split',
+                            });
+                            return EMPTY;
+                        }),
+                        map((trainingSplit: TrainingSplit) =>
+                            trainingSplitActions.submitTrainingSplitSuccess({ trainingSplit }),
+                        ),
+                    ),
+            ),
+        ),
+    );
+
+    submitTrainingSplitSuccess$ = createEffect(
         () =>
             this._actions$.pipe(
-                ofType(trainingSplitActions.createTrainingSplitSuccess),
+                ofType(trainingSplitActions.submitTrainingSplitSuccess),
                 tap(() => this._trainingSplitSuccessService.closeModal()),
             ),
         { dispatch: false },

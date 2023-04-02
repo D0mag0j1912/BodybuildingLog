@@ -104,7 +104,7 @@ export class TrainingSplitsController {
     async updateTraining(
         @GET_USER() user: UserDto,
         @Param('id') trainingId: string,
-        updatedTrainingSplit: TrainingSplitDto,
+        @Body() updatedTrainingSplit: TrainingSplitDto,
     ): Promise<TrainingSplitDto> {
         return this._trainingSplitsService.editTrainingSplit(
             trainingId,
