@@ -27,11 +27,20 @@ export class TrainingSplitsEffects {
                             return EMPTY;
                         }),
                         map((trainingSplit: TrainingSplit) =>
-                            trainingSplitActions.submitTrainingSplitSuccess({ trainingSplit }),
+                            trainingSplitActions.createTrainingSplitSuccess({ trainingSplit }),
                         ),
                     ),
             ),
         ),
+    );
+
+    createTrainingSplitSuccess$ = createEffect(
+        () =>
+            this._actions$.pipe(
+                ofType(trainingSplitActions.createTrainingSplitSuccess),
+                tap(() => this._trainingSplitSuccessService.closeModal()),
+            ),
+        { dispatch: false },
     );
 
     editTrainingSplit$ = createEffect(() =>
@@ -52,17 +61,17 @@ export class TrainingSplitsEffects {
                             return EMPTY;
                         }),
                         map((trainingSplit: TrainingSplit) =>
-                            trainingSplitActions.submitTrainingSplitSuccess({ trainingSplit }),
+                            trainingSplitActions.editTrainingSplitSuccess({ trainingSplit }),
                         ),
                     ),
             ),
         ),
     );
 
-    submitTrainingSplitSuccess$ = createEffect(
+    editTrainingSplitSuccess$ = createEffect(
         () =>
             this._actions$.pipe(
-                ofType(trainingSplitActions.submitTrainingSplitSuccess),
+                ofType(trainingSplitActions.editTrainingSplitSuccess),
                 tap(() => this._trainingSplitSuccessService.closeModal()),
             ),
         { dispatch: false },

@@ -191,9 +191,14 @@ export class CreateTrainingSplitComponent implements OnInit {
             return;
         }
         if (this.trainingSplit) {
+            const trainingSplitData = {
+                ...this.trainingSplit,
+                name: this.trainingSplitForm.name,
+                trainings: this.trainingSplitForm.trainings,
+            };
             this._trainingSplitsFacadeService.editTrainingSplit(
-                this.trainingSplit._id,
-                this.trainingSplit,
+                trainingSplitData._id,
+                trainingSplitData,
             );
         } else {
             this._trainingSplitsFacadeService.createTrainingSplit(this.trainingSplitForm);

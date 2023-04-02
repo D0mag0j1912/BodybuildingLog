@@ -15,16 +15,20 @@ export const createTrainingSplit = createAction(
     props<{ trainingSplit: TrainingSplit }>(),
 );
 
+export const createTrainingSplitSuccess = createAction(
+    '[Training splits] Create training split success',
+    props<{ trainingSplit: TrainingSplit }>(),
+);
+
 export const editTrainingSplit = createAction(
     '[Training splits] Edit training split',
     props<{ id: string; trainingSplit: TrainingSplit }>(),
 );
 
-export const submitTrainingSplitSuccess = createAction(
-    '[Training splits] Submit training split success',
+export const editTrainingSplitSuccess = createAction(
+    '[Training splits] Edit training split success',
     props<{ trainingSplit: TrainingSplit }>(),
 );
-
 /**
  * Get training splits
  */
