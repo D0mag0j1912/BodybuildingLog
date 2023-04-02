@@ -77,6 +77,28 @@ export class TrainingSplitsEffects {
         { dispatch: false },
     );
 
+    deleteTrainingSplit$ = createEffect(
+        () =>
+            this._actions$.pipe(
+                ofType(trainingSplitActions.deleteTrainingSplit),
+                switchMap((action) =>
+                    this._swaggerTrainingSplitsService
+                        .trainingSplitsControllerDeleteTrainingSplit({ id: action.trainingSplitId })
+                        .pipe(
+                            catchError((_) => {
+                                commonActions.showToastMessage({
+                                    color: 'danger',
+                                    message:
+                                        'training.training_split.errors.error_delete_training_split',
+                                });
+                                return EMPTY;
+                            }),
+                        ),
+                ),
+            ),
+        { dispatch: false },
+    );
+
     getTrainingSplitList$ = createEffect(() =>
         this._actions$.pipe(
             ofType(trainingSplitActions.getTrainingSplitList),

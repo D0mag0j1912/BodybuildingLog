@@ -73,4 +73,22 @@ export class TrainingSplitsService {
             );
         }
     }
+
+    async deleteTrainingSplit(trainingSplitId: string, userId: string): Promise<void> {
+        try {
+            const trainingSplitToBeRemoved = await this._trainingSplitModel
+                .findById(trainingSplitId)
+                .exec();
+            if (userId.toString() !== trainingSplitToBeRemoved.userId.toString()) {
+                throw new UnauthorizedException('common.errors.not_authorized');
+            }
+            await this._trainingSplitModel
+                .findByIdAndRemove(trainingSplitId, { useFindAndModify: false })
+                .exec();
+        } catch (error: unknown) {
+            throw new InternalServerErrorException(
+                'training.new_training.errors.error_delete_training_split',
+            );
+        }
+    }
 }

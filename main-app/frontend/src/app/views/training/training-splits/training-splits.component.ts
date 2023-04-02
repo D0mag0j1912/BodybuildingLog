@@ -32,4 +32,8 @@ export class TrainingSplitsComponent implements OnInit {
 
         await modal.present();
     }
+
+    onDeleteTrainingSplit(trainingSplitId: string): void {
+        this._trainingSplitsFacadeService.deleteTrainingSplit(trainingSplitId);
+    }
 }

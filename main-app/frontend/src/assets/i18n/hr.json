@@ -238,7 +238,8 @@
                 "set_number_required": "Broj setova je obavezan",
                 "error_create_training_split": "Greška prilikom kreiranja trening splita",
                 "error_get_training_splits": "Greška prilikom dohvata trening splitova",
-                "error_edit_training_split": "Greška prilikom ažuriranja trening splita"
+                "error_edit_training_split": "Greška prilikom ažuriranja trening splita",
+                "error_delete_training_split": "Greška prilikom brisanja trening splita"
             },
             "training_split_created": "Trening split je kreiran"
         },
