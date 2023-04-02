@@ -3,7 +3,7 @@
 export interface ExerciseDto {
 
   /**
-   * Exercise ID
+   * Exercise id
    */
   '_id'?: string;
 

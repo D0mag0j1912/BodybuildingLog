@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
-import { map, startWith, switchMap, take, tap } from 'rxjs/operators';
+import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import Swiper, { SwiperOptions, Pagination } from 'swiper';
 import { TrainingSplitDto as TrainingSplit } from '../../../../../api/models/training-split-dto';
@@ -15,12 +15,14 @@ import { ExercisesStoreService } from '../../../../services/store/training/exerc
 import { CustomTrainingDto as CustomTraining } from '../../../../../api/models/custom-training-dto';
 import { TrainingSplitsFacadeService } from '../../../../store/training-splits/training-splits-facade.service';
 import { TrainingSplitSuccessService } from '../../../../services/helper/training-split-success.service';
+import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 
 type NumberOfSetsType = Pick<CustomTraining, 'dayOfWeek'> & { sets: number[] };
 
 @Component({
     templateUrl: './create-training-split.component.html',
     styleUrls: ['./create-training-split.component.scss'],
+    providers: [UnsubscribeService],
 })
 export class CreateTrainingSplitComponent implements OnInit {
     readonly SWIPER_CONFIG: SwiperOptions = {
@@ -42,9 +44,8 @@ export class CreateTrainingSplitComponent implements OnInit {
 
     daysOfWeek$: Observable<string[]> = this._translateService.stream('weekdays').pipe(
         map((value: { [key: string]: string }) =>
-            Object.entries(value).map((entry: [string, string]) => {
-                const dayOfWeek = (entry[0].charAt(0).toUpperCase() +
-                    entry[0].slice(1)) as CustomTraining['dayOfWeek'];
+            Object.entries(value).map((entry: [string, string], index: number) => {
+                const dayOfWeek = entry[1] as CustomTraining['dayOfWeek'];
                 this.form.controls.trainings.push(
                     new FormGroup({
                         dayOfWeek: new FormControl<CustomTraining['dayOfWeek']>(
@@ -54,7 +55,17 @@ export class CreateTrainingSplitComponent implements OnInit {
                         exercises: new FormControl<Exercise[]>([]),
                     }),
                 );
-                return entry[1];
+                if (this.trainingSplit) {
+                    const editExercises =
+                        this.trainingSplit.trainings.find(
+                            (training: CustomTraining) => training.dayOfWeek === dayOfWeek,
+                        )?.exercises ?? [];
+                    this.form.controls.trainings.at(index).patchValue({
+                        dayOfWeek,
+                        exercises: editExercises,
+                    });
+                }
+                return dayOfWeek;
             }),
         ),
     );
@@ -80,9 +91,31 @@ export class CreateTrainingSplitComponent implements OnInit {
         }),
     );
 
-    formValueChanges$ = this.form.valueChanges.pipe(
-        startWith(this.form.value),
-        tap((value) => {
+    trainingSplitCreated$ = this._trainingSplitSuccessService.closeModal$.pipe(
+        tap(
+            async (_) =>
+                await this._modalController.dismiss(null, DialogRoles.CREATE_TRAINING_SPLIT),
+        ),
+    );
+
+    @Input()
+    trainingSplit: TrainingSplit;
+
+    constructor(
+        private _exercisesService: ExercisesService,
+        private _exercisesStoreService: ExercisesStoreService,
+        private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
+        private _trainingSplitSuccessService: TrainingSplitSuccessService,
+        private _translateService: TranslateService,
+        private _unsubscribeService: UnsubscribeService,
+        private _modalController: ModalController,
+    ) {}
+
+    ngOnInit(): void {
+        Swiper.use([Pagination]);
+        this.form.controls.name.patchValue(this.trainingSplit?.name ?? '');
+
+        this.form.valueChanges.pipe(takeUntil(this._unsubscribeService)).subscribe((value) => {
             this.trainingSplitForm = {
                 ...this.trainingSplitForm,
                 name: value.name,
@@ -107,27 +140,7 @@ export class CreateTrainingSplitComponent implements OnInit {
                 ),
             };
             this._trainingSplitsFacadeService.updateTrainingSplitForm(this.trainingSplitForm);
-        }),
-    );
-
-    trainingSplitCreated$ = this._trainingSplitSuccessService.closeModal$.pipe(
-        tap(
-            async (_) =>
-                await this._modalController.dismiss(null, DialogRoles.CREATE_TRAINING_SPLIT),
-        ),
-    );
-
-    constructor(
-        private _exercisesService: ExercisesService,
-        private _exercisesStoreService: ExercisesStoreService,
-        private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
-        private _trainingSplitSuccessService: TrainingSplitSuccessService,
-        private _translateService: TranslateService,
-        private _modalController: ModalController,
-    ) {}
-
-    ngOnInit(): void {
-        Swiper.use([Pagination]);
+        });
     }
 
     async onCancel(): Promise<void> {
@@ -162,7 +175,7 @@ export class CreateTrainingSplitComponent implements OnInit {
                 return data;
             });
         } else {
-            const set = [numberOfSets];
+            const set = [numberOfSets].filter(Boolean);
             const newData: NumberOfSetsType = {
                 dayOfWeek,
                 sets: set,
@@ -172,11 +185,23 @@ export class CreateTrainingSplitComponent implements OnInit {
         this.form.updateValueAndValidity({ emitEvent: true });
     }
 
-    createTrainingSplit(): void {
+    submitTrainingSplit(): void {
         this.form.markAllAsTouched();
         if (!this.form.valid) {
             return;
         }
-        this._trainingSplitsFacadeService.createTrainingSplit(this.trainingSplitForm);
+        if (this.trainingSplit) {
+            const trainingSplitData = {
+                ...this.trainingSplit,
+                name: this.trainingSplitForm.name,
+                trainings: this.trainingSplitForm.trainings,
+            };
+            this._trainingSplitsFacadeService.editTrainingSplit(
+                trainingSplitData._id,
+                trainingSplitData,
+            );
+        } else {
+            this._trainingSplitsFacadeService.createTrainingSplit(this.trainingSplitForm);
+        }
     }
 }

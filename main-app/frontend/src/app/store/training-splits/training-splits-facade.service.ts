@@ -29,6 +29,10 @@ export class TrainingSplitsFacadeService {
         this._store.dispatch(trainingSplitActions.createTrainingSplit({ trainingSplit }));
     }
 
+    editTrainingSplit(id: string, trainingSplit: TrainingSplit): void {
+        this._store.dispatch(trainingSplitActions.editTrainingSplit({ id, trainingSplit }));
+    }
+
     getTrainingSplitList(): void {
         this._store.dispatch(trainingSplitActions.getTrainingSplitList());
     }

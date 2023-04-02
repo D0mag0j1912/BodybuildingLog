@@ -26,6 +26,22 @@ export const trainingSplitsReducer = createReducer(
             Value: [...state.trainingSplitList.Value, action.trainingSplit],
         },
     })),
+    on(trainingSplitActions.editTrainingSplitSuccess, (state, action) => ({
+        ...state,
+        trainingSplitList: {
+            ...state.trainingSplitList,
+            Value: [...state.trainingSplitList.Value].map((trainingSplit: TrainingSplit) => {
+                if (trainingSplit._id === action.trainingSplit._id) {
+                    return {
+                        ...trainingSplit,
+                        name: action.trainingSplit.name,
+                        trainings: action.trainingSplit.trainings,
+                    };
+                }
+                return trainingSplit;
+            }),
+        },
+    })),
     on(trainingSplitActions.getTrainingSplitListSuccess, (state, action) => ({
         ...state,
         trainingSplitList: action.trainingSplitList,

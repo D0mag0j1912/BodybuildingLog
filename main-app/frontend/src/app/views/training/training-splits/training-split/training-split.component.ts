@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TrainingSplitDto as TrainingSplit } from '../../../../../api/models/training-split-dto';
 
 @Component({
@@ -13,4 +13,11 @@ export class TrainingSplitComponent {
 
     @Input()
     isFirst = false;
+
+    @Output()
+    editTrainingSplit = new EventEmitter<TrainingSplit>();
+
+    onEdit(): void {
+        this.editTrainingSplit.emit(this.trainingSplit);
+    }
 }

@@ -19,6 +19,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { NavigationModule } from './views/navigation/navigation.module';
 import { SentryService } from './services/errors/sentry.service';
+import { CommonEffects } from './store/common/common.effects';
 import { reducers } from '.';
 
 init({
@@ -55,7 +56,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
             },
         }),
         StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
-        EffectsModule.forRoot([]),
+        EffectsModule.forRoot([CommonEffects]),
     ],
     providers: [
         {

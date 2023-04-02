@@ -4,6 +4,11 @@ import { CustomTrainingDto } from './custom-training-dto';
 export interface TrainingSplitDto {
 
   /**
+   * Training split id
+   */
+  '_id'?: string;
+
+  /**
    * Training split name
    */
   name: string;

@@ -21,11 +21,11 @@
                 [title]="'training.training_split.errors.error_get_training_splits'"></bl-error>
         </ng-container>
         <ng-container *ngIf="state.Value">
-            <bl-training-splits-search (createTrainingSplitEvent)="createTrainingSplit()"></bl-training-splits-search>
+            <bl-training-splits-search (createTrainingSplitEvent)="openTrainingSplitModal()"></bl-training-splits-search>
             <div
                 [class.no-training-splits]="!state.Value.length">
                 <ng-container *ngIf="state.Value.length; else emptyScreen">
-                    <bl-training-split *ngFor="let split of state.Value; let first = first" [trainingSplit]="split" [isFirst]="first"></bl-training-split>
+                    <bl-training-split *ngFor="let split of state.Value; let first = first" [trainingSplit]="split" [isFirst]="first" (editTrainingSplit)="openTrainingSplitModal($event)"></bl-training-split>
                 </ng-container>
                 <ng-template #emptyScreen>
                     <span class="empty-screen-txt">{{ 'training.training_split.empty_screen' | translate }}</span>
