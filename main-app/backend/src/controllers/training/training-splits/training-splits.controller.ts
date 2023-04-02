@@ -41,25 +41,6 @@ export class TrainingSplitsController {
     }
 
     /**
-     * Get training split
-     */
-    @ApiInternalServerErrorResponse({
-        status: 500,
-        description: 'Internal server error',
-    })
-    @ApiUnauthorizedResponse({
-        status: 401,
-        description: 'Unauthorized',
-    })
-    @StreamModelResponse(TrainingSplitDto)
-    @Get(':id')
-    async getTrainingSplit(
-        @Param('id') trainingSplitId: string,
-    ): Promise<StreamModelDto<TrainingSplitDto>> {
-        return this._trainingSplitsService.getTrainingSplit(trainingSplitId);
-    }
-
-    /**
      * Create training split
      */
 
