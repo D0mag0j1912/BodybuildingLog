@@ -175,7 +175,7 @@ export class CreateTrainingSplitComponent implements OnInit {
                 return data;
             });
         } else {
-            const set = [numberOfSets];
+            const set = [numberOfSets].filter(Boolean);
             const newData: NumberOfSetsType = {
                 dayOfWeek,
                 sets: set,
