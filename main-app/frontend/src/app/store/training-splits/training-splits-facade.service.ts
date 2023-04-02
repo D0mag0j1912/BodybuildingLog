@@ -33,6 +33,10 @@ export class TrainingSplitsFacadeService {
         this._store.dispatch(trainingSplitActions.editTrainingSplit({ id, trainingSplit }));
     }
 
+    deleteTrainingSplit(id: string): void {
+        this._store.dispatch(trainingSplitActions.deleteTrainingSplit({ trainingSplitId: id }));
+    }
+
     getTrainingSplitList(): void {
         this._store.dispatch(trainingSplitActions.getTrainingSplitList());
     }

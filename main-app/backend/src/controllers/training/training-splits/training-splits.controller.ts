@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiCreatedResponse,
@@ -84,13 +84,36 @@ export class TrainingSplitsController {
     @Put(':id')
     async updateTraining(
         @GET_USER() user: UserDto,
-        @Param('id') trainingId: string,
+        @Param('id') trainingSplitId: string,
         @Body() updatedTrainingSplit: TrainingSplitDto,
     ): Promise<TrainingSplitDto> {
         return this._trainingSplitsService.editTrainingSplit(
-            trainingId,
+            trainingSplitId,
             updatedTrainingSplit,
             user._id,
         );
+    }
+
+    /**
+     * Delete training split
+     */
+    @ApiOkResponse({
+        status: 200,
+        description: 'Training split deleted successfully',
+    })
+    @ApiInternalServerErrorResponse({
+        status: 500,
+        description: 'Returns server error',
+    })
+    @ApiUnauthorizedResponse({
+        status: 401,
+        description: 'Unauthorized',
+    })
+    @Delete(':id')
+    async deleteTrainingSplit(
+        @GET_USER() user: UserDto,
+        @Param('id') trainingSplitId: string,
+    ): Promise<void> {
+        return this._trainingSplitsService.deleteTrainingSplit(trainingSplitId, user._id);
     }
 }

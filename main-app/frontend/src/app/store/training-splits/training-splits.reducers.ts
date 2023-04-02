@@ -42,6 +42,15 @@ export const trainingSplitsReducer = createReducer(
             }),
         },
     })),
+    on(trainingSplitActions.deleteTrainingSplit, (state, action) => ({
+        ...state,
+        trainingSplitList: {
+            ...state.trainingSplitList,
+            Value: [...state.trainingSplitList.Value].filter(
+                (trainingSplit: TrainingSplit) => trainingSplit._id !== action.trainingSplitId,
+            ),
+        },
+    })),
     on(trainingSplitActions.getTrainingSplitListSuccess, (state, action) => ({
         ...state,
         trainingSplitList: action.trainingSplitList,

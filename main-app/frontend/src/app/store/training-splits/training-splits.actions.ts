@@ -29,6 +29,15 @@ export const editTrainingSplitSuccess = createAction(
     '[Training splits] Edit training split success',
     props<{ trainingSplit: TrainingSplit }>(),
 );
+
+/**
+ * Delete training split
+ */
+export const deleteTrainingSplit = createAction(
+    '[Training splits] Delete training split',
+    props<{ trainingSplitId: string }>(),
+);
+
 /**
  * Get training splits
  */

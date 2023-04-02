@@ -143,77 +143,6 @@ export class SwaggerTrainingSplitsService extends BaseService {
   }
 
   /**
-   * Path part for operation trainingSplitsControllerGetTrainingSplit
-   */
-  static readonly TrainingSplitsControllerGetTrainingSplitPath = '/api/training/training-splits/{id}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `trainingSplitsControllerGetTrainingSplit()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  trainingSplitsControllerGetTrainingSplit$Response(params: {
-    id: string;
-    context?: HttpContext
-  }
-): Observable<StrictHttpResponse<StreamModelDto & {
-'IsLoading'?: boolean;
-'IsError'?: boolean;
-'Value'?: TrainingSplitDto;
-}>> {
-
-    const rb = new RequestBuilder(this.rootUrl, SwaggerTrainingSplitsService.TrainingSplitsControllerGetTrainingSplitPath, 'get');
-    if (params) {
-      rb.path('id', params.id, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<StreamModelDto & {
-        'IsLoading'?: boolean;
-        'IsError'?: boolean;
-        'Value'?: TrainingSplitDto;
-        }>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `trainingSplitsControllerGetTrainingSplit$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  trainingSplitsControllerGetTrainingSplit(params: {
-    id: string;
-    context?: HttpContext
-  }
-): Observable<StreamModelDto & {
-'IsLoading'?: boolean;
-'IsError'?: boolean;
-'Value'?: TrainingSplitDto;
-}> {
-
-    return this.trainingSplitsControllerGetTrainingSplit$Response(params).pipe(
-      map((r: StrictHttpResponse<StreamModelDto & {
-'IsLoading'?: boolean;
-'IsError'?: boolean;
-'Value'?: TrainingSplitDto;
-}>) => r.body as StreamModelDto & {
-'IsLoading'?: boolean;
-'IsError'?: boolean;
-'Value'?: TrainingSplitDto;
-})
-    );
-  }
-
-  /**
    * Path part for operation trainingSplitsControllerUpdateTraining
    */
   static readonly TrainingSplitsControllerUpdateTrainingPath = '/api/training/training-splits/{id}';
@@ -264,6 +193,57 @@ export class SwaggerTrainingSplitsService extends BaseService {
 
     return this.trainingSplitsControllerUpdateTraining$Response(params).pipe(
       map((r: StrictHttpResponse<TrainingSplitDto>) => r.body as TrainingSplitDto)
+    );
+  }
+
+  /**
+   * Path part for operation trainingSplitsControllerDeleteTrainingSplit
+   */
+  static readonly TrainingSplitsControllerDeleteTrainingSplitPath = '/api/training/training-splits/{id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `trainingSplitsControllerDeleteTrainingSplit()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  trainingSplitsControllerDeleteTrainingSplit$Response(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, SwaggerTrainingSplitsService.TrainingSplitsControllerDeleteTrainingSplitPath, 'delete');
+    if (params) {
+      rb.path('id', params.id, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*',
+      context: params?.context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `trainingSplitsControllerDeleteTrainingSplit$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  trainingSplitsControllerDeleteTrainingSplit(params: {
+    id: string;
+    context?: HttpContext
+  }
+): Observable<void> {
+
+    return this.trainingSplitsControllerDeleteTrainingSplit$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
