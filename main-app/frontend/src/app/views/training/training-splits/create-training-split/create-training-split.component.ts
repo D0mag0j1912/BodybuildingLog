@@ -64,6 +64,14 @@ export class CreateTrainingSplitComponent implements OnInit {
                         dayOfWeek,
                         exercises: editExercises,
                     });
+                    this.numberOfSets = this.trainingSplit.trainings.map(
+                        (trainingSplit: CustomTraining) => ({
+                            dayOfWeek: trainingSplit.dayOfWeek,
+                            sets: trainingSplit.exercises
+                                .map((exercise: Exercise) => exercise.numberOfSets)
+                                .filter(Boolean),
+                        }),
+                    );
                 }
                 return dayOfWeek;
             }),
