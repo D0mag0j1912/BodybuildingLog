@@ -314,7 +314,7 @@
         "deadbug_stability_ball": "Deadbug with stability ball",
         "lat_pulldown": "Lat pulldown",
         "one_arm_dumbbell_row": "One arm dumbbell row",
-        "barbell_ez_bar_curl": "Barbell ez bar curl",
+        "barbell_ez_bar_curl": "Barbell EZ bar curl",
         "barbell_skullcrushers": "Barbell skullcrushers",
         "dips": "Dips",
         "dumbbell_curl": "Dumbbell curl",
@@ -322,7 +322,7 @@
         "incline_dumbbell_curl": "Incline dumbbell curl",
         "leg_extension": "Leg extension",
         "leg_press": "Leg press",
-        "lunges": "Lunges",
+        "lunges": "Lunge",
         "stir_the_pot": "Stir the pot"
     }
 }

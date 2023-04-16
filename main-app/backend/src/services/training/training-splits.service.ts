@@ -10,15 +10,22 @@ export class TrainingSplitsService {
         @InjectModel('TrainingSplit') private _trainingSplitModel: Model<TrainingSplitDto>,
     ) {}
 
-    async getTrainingSplits(loggedUserId: string): Promise<StreamModelDto<TrainingSplitDto[]>> {
+    async getTrainingSplits(
+        loggedUserId: string,
+        contains = '',
+    ): Promise<StreamModelDto<TrainingSplitDto[]>> {
         try {
-            const trainingSplits = await this._trainingSplitModel
-                .find({ userId: loggedUserId })
-                .exec();
-            if (!trainingSplits.length) {
-                throw new InternalServerErrorException(
-                    'training.training_split.errors.training_splits_not_available',
-                );
+            let trainingSplits;
+            if (!contains) {
+                trainingSplits = await this._trainingSplitModel
+                    .find({ userId: loggedUserId })
+                    .exec();
+            } else {
+                const queryWordRegex = new RegExp(contains, 'i');
+                trainingSplits = await this._trainingSplitModel.find({
+                    name: { $regex: queryWordRegex },
+                    userId: loggedUserId,
+                });
             }
             return {
                 IsLoading: true,

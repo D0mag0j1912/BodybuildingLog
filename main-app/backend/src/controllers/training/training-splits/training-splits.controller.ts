@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiCreatedResponse,
@@ -36,8 +36,9 @@ export class TrainingSplitsController {
     @Get()
     async getTrainingSplits(
         @GET_USER() user: UserDto,
+        @Query('contains') contains: string,
     ): Promise<StreamModelDto<TrainingSplitDto[]>> {
-        return this._trainingSplitsService.getTrainingSplits(user._id);
+        return this._trainingSplitsService.getTrainingSplits(user._id, contains);
     }
 
     /**
