@@ -115,6 +115,24 @@ export class TrainingSplitsEffects {
         ),
     );
 
+    searchTrainingSplits$ = createEffect(() =>
+        this._actions$.pipe(
+            ofType(trainingSplitActions.searchTrainingSplits),
+            switchMap((action) =>
+                this._swaggerTrainingSplitsService
+                    .trainingSplitsControllerGetTrainingSplits({ contains: action.contains })
+                    .pipe(
+                        mapStreamData<TrainingSplit[]>(),
+                        map((response) =>
+                            trainingSplitActions.getTrainingSplitListSuccess({
+                                trainingSplitList: response,
+                            }),
+                        ),
+                    ),
+            ),
+        ),
+    );
+
     dispatchTrainingSplitErrorMessage$ = createEffect(() =>
         this._actions$.pipe(
             ofType(trainingSplitActions.getTrainingSplitListSuccess),

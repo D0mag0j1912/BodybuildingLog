@@ -7,20 +7,17 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrainingSplitsSearchComponent {
-    readonly INPUT_DEBOUNCE = 500;
-
     @Output()
     createTrainingSplitEvent = new EventEmitter<void>();
 
     @Output()
-    searchChange = new EventEmitter<string>();
+    searchChange = new EventEmitter<Event>();
 
     createTrainingSplit(): void {
         this.createTrainingSplitEvent.emit();
     }
 
     onSearchChange(event: Event): void {
-        const value = (event.target as HTMLInputElement).value.toLowerCase();
-        this.searchChange.emit(value);
+        this.searchChange.emit(event);
     }
 }

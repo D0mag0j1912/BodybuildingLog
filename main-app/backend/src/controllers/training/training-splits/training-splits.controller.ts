@@ -5,6 +5,7 @@ import {
     ApiExtraModels,
     ApiInternalServerErrorResponse,
     ApiOkResponse,
+    ApiQuery,
     ApiTags,
     ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -32,11 +33,17 @@ export class TrainingSplitsController {
         status: 401,
         description: 'Unauthorized',
     })
+    @ApiQuery({
+        name: 'contains',
+        type: String,
+        description: 'search value',
+        required: false,
+    })
     @StreamModelResponse(TrainingSplitDto, true)
     @Get()
     async getTrainingSplits(
         @GET_USER() user: UserDto,
-        @Query('contains') contains: string,
+        @Query('contains') contains?: string,
     ): Promise<StreamModelDto<TrainingSplitDto[]>> {
         return this._trainingSplitsService.getTrainingSplits(user._id, contains);
     }
