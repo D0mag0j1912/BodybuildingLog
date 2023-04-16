@@ -21,7 +21,7 @@
                 [title]="'training.training_split.errors.error_get_training_splits'"></bl-error>
         </ng-container>
         <ng-container *ngIf="state.Value">
-            <bl-training-splits-search (createTrainingSplitEvent)="openTrainingSplitModal()"></bl-training-splits-search>
+            <bl-training-splits-search (createTrainingSplitEvent)="openTrainingSplitModal()" (searchChange)="onSearchChange($event)"></bl-training-splits-search>
             <div
                 [class.no-training-splits]="!state.Value.length">
                 <ng-container *ngIf="state.Value.length; else emptyScreen">

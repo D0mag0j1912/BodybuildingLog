@@ -3,4 +3,8 @@
         <ion-icon name="add"></ion-icon>
     </ion-fab-button>
 </ion-fab>
-<ion-searchbar [placeholder]="'training.training_split.searchbar' | translate"></ion-searchbar>
+<ion-searchbar
+    type="text"
+    [placeholder]="'training.training_split.searchbar' | translate"
+    [debounce]="INPUT_DEBOUNCE"
+    (ionInput)="onSearchChange($event)"></ion-searchbar>

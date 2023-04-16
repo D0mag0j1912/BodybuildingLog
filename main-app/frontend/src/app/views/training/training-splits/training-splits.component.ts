@@ -36,4 +36,6 @@ export class TrainingSplitsComponent implements OnInit {
     onDeleteTrainingSplit(trainingSplitId: string): void {
         this._trainingSplitsFacadeService.deleteTrainingSplit(trainingSplitId);
     }
+
+    onSearchChange(search: string): void {}
 }
