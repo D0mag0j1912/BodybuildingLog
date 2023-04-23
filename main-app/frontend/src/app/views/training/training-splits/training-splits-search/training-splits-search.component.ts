@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output, Input } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Output,
+    Input,
+    ViewChild,
+    AfterViewInit,
+} from '@angular/core';
+import { IonSearchbar } from '@ionic/angular';
 
 @Component({
     selector: 'bl-training-splits-search',
@@ -6,7 +15,10 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output, Input } from 
     styleUrls: ['./training-splits-search.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TrainingSplitsSearchComponent {
+export class TrainingSplitsSearchComponent implements AfterViewInit {
+    @ViewChild('searchbar')
+    searchBar: IonSearchbar;
+
     @Output()
     createTrainingSplitEvent = new EventEmitter<void>();
 
@@ -15,6 +27,10 @@ export class TrainingSplitsSearchComponent {
 
     @Input()
     value = '';
+
+    ngAfterViewInit(): void {
+        setTimeout(async () => await this.searchBar?.setFocus(), 150);
+    }
 
     createTrainingSplit(): void {
         this.createTrainingSplitEvent.emit();
