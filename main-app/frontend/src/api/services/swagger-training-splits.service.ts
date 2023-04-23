@@ -35,6 +35,11 @@ export class SwaggerTrainingSplitsService extends BaseService {
    * This method doesn't expect any request body.
    */
   trainingSplitsControllerGetTrainingSplits$Response(params?: {
+
+    /**
+     * search value
+     */
+    contains?: string;
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<StreamModelDto & {
@@ -45,6 +50,7 @@ export class SwaggerTrainingSplitsService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, SwaggerTrainingSplitsService.TrainingSplitsControllerGetTrainingSplitsPath, 'get');
     if (params) {
+      rb.query('contains', params.contains, {});
     }
 
     return this.http.request(rb.build({
@@ -70,6 +76,11 @@ export class SwaggerTrainingSplitsService extends BaseService {
    * This method doesn't expect any request body.
    */
   trainingSplitsControllerGetTrainingSplits(params?: {
+
+    /**
+     * search value
+     */
+    contains?: string;
     context?: HttpContext
   }
 ): Observable<StreamModelDto & {

@@ -40,4 +40,8 @@ export class TrainingSplitsFacadeService {
     getTrainingSplitList(): void {
         this._store.dispatch(trainingSplitActions.getTrainingSplitList());
     }
+
+    searchTrainingSplits(contains: string): void {
+        this._store.dispatch(trainingSplitActions.searchTrainingSplits({ contains }));
+    }
 }

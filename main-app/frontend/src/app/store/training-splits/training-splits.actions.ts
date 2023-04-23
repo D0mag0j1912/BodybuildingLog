@@ -47,3 +47,11 @@ export const getTrainingSplitListSuccess = createAction(
     '[Training splits] Get training split list success',
     props<{ trainingSplitList: StreamData<TrainingSplit[]> }>(),
 );
+
+/**
+ * Search training splits
+ */
+export const searchTrainingSplits = createAction(
+    '[Training splits] Search training splits',
+    props<{ contains: string }>(),
+);
