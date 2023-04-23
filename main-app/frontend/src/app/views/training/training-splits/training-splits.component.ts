@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
 import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
@@ -17,14 +18,23 @@ export class TrainingSplitsComponent implements OnInit {
     private _searchChanged$ = new Subject<Event>();
     trainingSplits$ = this._trainingSplitsFacadeService.getTrainingSplitListSelector();
 
+    searchValue = '';
+
     constructor(
         private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
         private _unsubscribeService: UnsubscribeService,
         private _modalController: ModalController,
+        private _route: ActivatedRoute,
+        private _router: Router,
     ) {}
 
     ngOnInit(): void {
-        this._trainingSplitsFacadeService.getTrainingSplitList();
+        this.searchValue = this._route.snapshot.queryParams.contains;
+        if (this.searchValue) {
+            this._trainingSplitsFacadeService.searchTrainingSplits(this.searchValue);
+        } else {
+            this._trainingSplitsFacadeService.getTrainingSplitList();
+        }
 
         this._searchChanged$
             .pipe(
@@ -35,9 +45,14 @@ export class TrainingSplitsComponent implements OnInit {
                 distinctUntilChanged(),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe((value: string) =>
-                this._trainingSplitsFacadeService.searchTrainingSplits(value),
-            );
+            .subscribe(async (value: string) => {
+                this._trainingSplitsFacadeService.searchTrainingSplits(value);
+                await this._router.navigate([], {
+                    relativeTo: this._route,
+                    queryParams: { contains: value },
+                });
+                this.searchValue = value;
+            });
     }
 
     async openTrainingSplitModal(trainingSplit: TrainingSplit = null): Promise<void> {
