@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+import { Translations } from './translations';
 export interface ExerciseDto {
 
   /**
@@ -11,7 +12,7 @@ export interface ExerciseDto {
    * Enum describing available set categories
    */
   availableSetCategories: Array<'dynamicBodyweight' | 'dynamicWeighted' | 'staticBodyweight' | 'staticWeighted' | 'freeWeighted'>;
-  imageUrl: string;
+  imageUrl?: string;
   name: string;
 
   /**
@@ -28,4 +29,9 @@ export interface ExerciseDto {
    * Enum describing selected set categories
    */
   selectedSetCategories: Array<'dynamicBodyweight' | 'dynamicWeighted' | 'staticBodyweight' | 'staticWeighted' | 'freeWeighted'>;
+
+  /**
+   * Exercise translation
+   */
+  translations: Translations;
 }

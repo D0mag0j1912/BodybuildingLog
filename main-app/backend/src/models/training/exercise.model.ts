@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsArray, IsInt, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
+import { Translations } from '../common/translations.model';
 import { SetCategoryType } from './new-training/set.type';
 import { PrimaryMuscleGroupType } from './primary-muscle-group.type';
 
@@ -30,10 +31,6 @@ export class ExerciseDto {
     @IsNotEmpty()
     @IsString()
     name: string;
-
-    @ApiProperty()
-    @IsString()
-    imageUrl: string;
 
     @ApiProperty({
         enum: [
@@ -85,6 +82,13 @@ export class ExerciseDto {
     @IsNotEmpty()
     selectedSetCategories: SetCategoryType[];
 
+    @ApiProperty({
+        description: 'Exercise translation',
+        type: Translations,
+    })
+    @IsNotEmpty()
+    translations: Translations;
+
     @ApiPropertyOptional({
         type: Number,
         description: 'Number of sets for selected exercise',
@@ -92,6 +96,10 @@ export class ExerciseDto {
     @IsInt()
     @IsOptional()
     numberOfSets: number;
+
+    @ApiPropertyOptional()
+    @IsString()
+    imageUrl: string;
 
     @ApiPropertyOptional({
         type: String,

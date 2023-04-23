@@ -36,7 +36,6 @@ export class PastTrainingsService {
                 const condition: FilterQuery<NewTrainingDto> = {
                     $and: [
                         {
-                            //TODO: Translations from individual exercises are removed. Find another way.
                             $or: [
                                 {
                                     'exercises.exerciseData.translations.en': {
