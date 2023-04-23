@@ -49,7 +49,7 @@ export class TrainingSplitsComponent implements OnInit {
                 this._trainingSplitsFacadeService.searchTrainingSplits(value);
                 await this._router.navigate([], {
                     relativeTo: this._route,
-                    queryParams: { contains: value },
+                    queryParams: value ? { contains: value } : undefined,
                 });
                 this.searchValue = value;
             });
