@@ -10,6 +10,7 @@ export { LoginResponseDto } from './models/login-response-dto';
 export { PreferencesDto } from './models/preferences-dto';
 export { UpdatePreferencesDto } from './models/update-preferences-dto';
 export { GeneralResponseDto } from './models/general-response-dto';
+export { Translations } from './models/translations';
 export { ExerciseDto } from './models/exercise-dto';
 export { SetDto } from './models/set-dto';
 export { SingleExerciseDto } from './models/single-exercise-dto';
