@@ -28,6 +28,7 @@ import { CreateTrainingSplitComponent } from './create-training-split/create-tra
 export class TrainingSplitsComponent implements OnInit {
     private _searchChanged$ = new Subject<Event>();
     trainingSplits$ = this._trainingSplitsFacadeService.getTrainingSplitListSelector();
+    currentPreferences$ = this._preferencesStoreService.preferencesChanged$;
 
     searchValue = '';
 

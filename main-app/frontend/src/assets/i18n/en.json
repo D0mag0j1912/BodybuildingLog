@@ -228,6 +228,8 @@
             "training_split_name": "Enter training split name",
             "search_exercises": "Search exercises",
             "set_number": "Set number",
+            "training_split_created": "Training split created",
+            "currently_used": "Currently used",
             "errors": {
                 "at_least_one_training": "At least one training is required",
                 "training_splits_not_available": "Training splits are not available",
@@ -239,8 +241,7 @@
                 "error_get_training_splits": "Error while getting training splits",
                 "error_edit_training_split": "Error while editing training split",
                 "error_delete_training_split": "Error while removing training split"
-            },
-            "training_split_created": "Training split created"
+            }
         },
         "update_set_category": "Change set category",
         "set_categories": {

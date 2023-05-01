@@ -12,7 +12,7 @@
             </div>
         </div>
     </ion-card-header>
-    <ion-card-content>
+    <ion-card-content [class.training-split-content]="isUsed">
         <div class="week-frequency-text">{{ 'common.numbers.' + (trainingSplit.trainings | timesAWeek).length | translate }} {{ 'training.training_split.times_a_week' | translate }}</div>
         <div class="days-text">
             <span>{{ '(' }}</span>
@@ -25,6 +25,11 @@
                     <span>{{ ', ' }}</span>
                 </ng-template>
             </ng-container>
+        </div>
+        <div
+            *ngIf="isUsed"
+            class="currently-used">
+            {{ 'training.training_split.currently_used' | translate }}
         </div>
     </ion-card-content>
 </ion-card>
