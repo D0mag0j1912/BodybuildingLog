@@ -2,15 +2,21 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsLowercase, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class SearchDataDto {
-    @ApiProperty()
+    @ApiProperty({
+        type: Number,
+    })
     @IsNotEmpty()
     page: number;
 
-    @ApiProperty()
+    @ApiProperty({
+        type: Number,
+    })
     @IsNotEmpty()
     size: number;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        type: String,
+    })
     @IsOptional()
     @IsString()
     @IsLowercase()
