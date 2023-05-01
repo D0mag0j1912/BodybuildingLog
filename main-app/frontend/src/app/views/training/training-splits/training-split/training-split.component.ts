@@ -27,4 +27,6 @@ export class TrainingSplitComponent {
     onDelete(): void {
         this.deleteTrainingSplit.emit(this.trainingSplit._id);
     }
+
+    useTrainingSplit(): void {}
 }

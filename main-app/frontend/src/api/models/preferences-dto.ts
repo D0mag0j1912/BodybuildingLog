@@ -19,6 +19,11 @@ export interface PreferencesDto {
   showByPeriod?: 'week' | 'day';
 
   /**
+   * Training split ID
+   */
+  trainingSplitId?: string;
+
+  /**
    * Id of authenticated user
    */
   userId?: string;
