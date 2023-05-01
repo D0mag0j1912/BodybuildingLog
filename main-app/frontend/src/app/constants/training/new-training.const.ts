@@ -1,3 +1,4 @@
+import { Translations } from '../../../api/models/translations';
 import { ExerciseDto as Exercise } from '../../../api/models/exercise-dto';
 import { NewTrainingDto as NewTraining } from '../../../api/models/new-training-dto';
 import { SingleExerciseDto as SingleExercise } from '../../../api/models/single-exercise-dto';
@@ -16,7 +17,7 @@ export const createEmptyExercise = (exercises: Exercise[]): SingleExercise => ({
         translations: {
             en: '',
             hr: '',
-        },
+        } as Translations,
     },
     sets: [],
     total: TOTAL_INITIAL_WEIGHT,
