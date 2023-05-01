@@ -53,7 +53,7 @@ import { ToastControllerService } from '../../../services/shared/toast-controlle
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
 import { ExercisesStoreService } from '../../../services/store/training/exercises-store.service';
 import { SetCategoryType } from '../../../models/training/new-training/single-exercise/set/set.type';
-import { Preferences } from '../../../models/common/preferences.model';
+import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 import { convertWeightUnit } from '../../../helpers/training/convert-units.helper';
 import { WeightUnitType } from '../../../models/common/preferences.type';
 import { GeneralResponseDto } from '../../../../api/models';

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { Preferences } from '../../../models/common/preferences.model';
+import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 import { environment } from '../../../../environments/environment';
 import { AuthModel } from '../../../models/auth/auth-data.model';
 import { AuthResponseData } from '../../../models/auth/auth-data.model';

@@ -20,6 +20,9 @@ export class TrainingSplitComponent {
     @Output()
     deleteTrainingSplit = new EventEmitter<string>();
 
+    @Output()
+    emitTrainingSplitId = new EventEmitter<string>();
+
     onEdit(): void {
         this.editTrainingSplit.emit(this.trainingSplit);
     }
@@ -28,5 +31,7 @@ export class TrainingSplitComponent {
         this.deleteTrainingSplit.emit(this.trainingSplit._id);
     }
 
-    useTrainingSplit(): void {}
+    useTrainingSplit(): void {
+        this.emitTrainingSplitId.emit(this.trainingSplit._id);
+    }
 }

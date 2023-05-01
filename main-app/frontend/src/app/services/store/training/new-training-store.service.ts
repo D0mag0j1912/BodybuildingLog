@@ -20,7 +20,7 @@ import {
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { PreferenceChangedType } from '../../../models/common/preferences.type';
 import { PreferencesStoreService } from '../shared/preferences-store.service';
-import { Preferences } from '../../../models/common/preferences.model';
+import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
 import { NewTrainingPreferencesDto as NewTrainingPreferences } from '../../../../api/models/new-training-preferences-dto';
 import { ExercisesStoreService } from './exercises-store.service';

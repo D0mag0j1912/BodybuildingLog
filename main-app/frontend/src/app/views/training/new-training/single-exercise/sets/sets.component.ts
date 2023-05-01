@@ -33,7 +33,7 @@ import {
     SetFormType,
 } from '../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import { PreferencesStoreService } from '../../../../../services/store/shared/preferences-store.service';
-import { Preferences } from '../../../../../models/common/preferences.model';
+import { PreferencesDto as Preferences } from '../../../../../../api/models/preferences-dto';
 import { ChangeSetCategoryComponent } from './change-set-category/change-set-category.component';
 import { SetComponent } from './set/set.component';
 
