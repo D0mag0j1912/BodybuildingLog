@@ -274,7 +274,8 @@
             "show_by_period_required": "Jedinica perioda treninga je obvezna",
             "period_change": "Došlo je do greške pri promjeni perioda",
             "set_duration_unit_required": "Jedinica trajanja seta je obvezna",
-            "set_duration_unit_change": "Došlo je do greške pri promjeni jedinica trajanja seta"
+            "set_duration_unit_change": "Došlo je do greške pri promjeni jedinica trajanja seta",
+            "training_split_change": "Došlo je do greške pri upotrebi trening splita"
         }
     },
     "weekdays": {

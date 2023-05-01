@@ -25,12 +25,16 @@ export class PreferencesService {
         preferenceChanged: PreferenceChangedType,
     ): Promise<GeneralResponseDto> {
         try {
-            const { languageCode, weightUnit, showByPeriod, setDurationUnit } = preferencesDto;
+            const { languageCode, weightUnit, showByPeriod, setDurationUnit, trainingSplitId } =
+                preferencesDto;
             const preferences = await this._preferencesModel.findOne({ userId: userId }).exec();
             preferences.languageCode = languageCode;
             preferences.weightUnit = weightUnit;
             preferences.showByPeriod = showByPeriod;
             preferences.setDurationUnit = setDurationUnit;
+            if (preferenceChanged === 'trainingSplit') {
+                preferences.trainingSplitId = trainingSplitId;
+            }
             await preferences.save();
             switch (preferenceChanged) {
                 case 'language': {
@@ -46,6 +50,9 @@ export class PreferencesService {
                     return {
                         Message: 'preferences.set_duration_unit_changed',
                     } as GeneralResponseDto;
+                }
+                case 'trainingSplit': {
+                    return { Message: '' } as GeneralResponseDto;
                 }
                 default: {
                     isNeverCheck(preferenceChanged);
@@ -65,6 +72,11 @@ export class PreferencesService {
                 case 'setDurationUnit': {
                     throw new InternalServerErrorException(
                         'preferences.errors.set_duration_unit_change',
+                    );
+                }
+                case 'trainingSplit': {
+                    throw new InternalServerErrorException(
+                        'preferences.errors.training_split_change',
                     );
                 }
                 default: {

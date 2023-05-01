@@ -35,6 +35,7 @@ export class PreferencesService {
             weightUnit: preferences.weightUnit,
             showByPeriod: preferences.showByPeriod,
             setDurationUnit: preferences.setDurationUnit,
+            trainingSplitId: preferences.trainingSplitId,
         };
         let apiResponse: GeneralResponseDto;
         return this._http

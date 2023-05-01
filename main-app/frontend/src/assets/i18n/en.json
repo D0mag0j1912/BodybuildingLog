@@ -273,7 +273,8 @@
             "show_by_period_required": "Past trainings period unit is required",
             "period_change": "Error while trying to change period",
             "set_duration_unit_required": "Set duration unit is required",
-            "set_duration_unit_change": "Error while trying to change set duration unit"
+            "set_duration_unit_change": "Error while trying to change set duration unit",
+            "training_split_change": "Error while trying to use training split"
         }
     },
     "weekdays": {
