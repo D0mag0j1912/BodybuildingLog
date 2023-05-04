@@ -23,6 +23,7 @@ import { PreferencesStoreService } from '../shared/preferences-store.service';
 import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
 import { NewTrainingPreferencesDto as NewTrainingPreferences } from '../../../../api/models/new-training-preferences-dto';
+import { SwaggerTrainingSplitsService } from '../../../../api/services/swagger-training-splits.service';
 import { ExercisesStoreService } from './exercises-store.service';
 
 @Injectable({ providedIn: 'root' })
@@ -33,6 +34,7 @@ export class NewTrainingStoreService {
     constructor(
         private _exercisesStoreService: ExercisesStoreService,
         private _preferencesStoreService: PreferencesStoreService,
+        private _swaggerTrainingSplitService: SwaggerTrainingSplitsService,
     ) {}
 
     getCurrentTrainingState(): NewTraining {
