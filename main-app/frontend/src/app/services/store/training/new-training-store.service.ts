@@ -66,7 +66,7 @@ export class NewTrainingStoreService {
                         },
                     };
                 }
-                return this.saveTrainingData(updatedTraining);
+                return this._saveTrainingData(updatedTraining);
             }),
         );
     }
@@ -79,7 +79,7 @@ export class NewTrainingStoreService {
                     ...trainingState,
                     trainingDate,
                 };
-                return this.saveTrainingData(updatedTraining);
+                return this._saveTrainingData(updatedTraining);
             }),
         );
     }
@@ -129,7 +129,7 @@ export class NewTrainingStoreService {
                 };
                 return updatedTraining;
             }),
-            switchMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+            switchMap((updatedTraining: NewTraining) => this._saveTrainingData(updatedTraining)),
         );
     }
 
@@ -203,7 +203,7 @@ export class NewTrainingStoreService {
                 };
                 return updatedTraining;
             }),
-            concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+            concatMap((updatedTraining: NewTraining) => this._saveTrainingData(updatedTraining)),
         );
     }
 
@@ -269,7 +269,7 @@ export class NewTrainingStoreService {
                 return updatedTraining;
             }),
             concatMap((updatedTraining: NewTraining) =>
-                this.saveTrainingData(updatedTraining).pipe(map((_) => setCategory)),
+                this._saveTrainingData(updatedTraining).pipe(map((_) => setCategory)),
             ),
         );
     }
@@ -313,7 +313,7 @@ export class NewTrainingStoreService {
                 };
                 return updatedTraining;
             }),
-            concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+            concatMap((updatedTraining: NewTraining) => this._saveTrainingData(updatedTraining)),
         );
     }
 
@@ -334,13 +334,13 @@ export class NewTrainingStoreService {
                         availableExercises: [
                             ...exercise.availableExercises,
                             toBeAddedExercise[0],
-                        ].sort(this.compare),
+                        ].sort(this._compare),
                     };
                 }
                 return exercise;
             }),
         };
-        return this.saveTrainingData(updatedTraining);
+        return this._saveTrainingData(updatedTraining);
     }
 
     deleteExercise(
@@ -374,7 +374,7 @@ export class NewTrainingStoreService {
                 ),
             };
             const response = [updatedTraining, [] as Exercise[]] as [NewTraining, Exercise[]];
-            return this.saveTrainingData(updatedTraining).pipe(switchMap((_) => of(response)));
+            return this._saveTrainingData(updatedTraining).pipe(switchMap((_) => of(response)));
         }
     }
 
@@ -505,7 +505,7 @@ export class NewTrainingStoreService {
                         ),
                     };
                 }
-                return this.saveTrainingData(updatedTraining);
+                return this._saveTrainingData(updatedTraining);
             }),
         );
     }
@@ -561,7 +561,7 @@ export class NewTrainingStoreService {
                 };
                 return updatedTraining;
             }),
-            concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+            concatMap((updatedTraining: NewTraining) => this._saveTrainingData(updatedTraining)),
             concatMap((_) => of(setCategory)),
         );
     }
@@ -603,10 +603,10 @@ export class NewTrainingStoreService {
                             availableExercises = [
                                 ...exercise.availableExercises,
                                 previousSelectedExercise,
-                            ].sort(this.compare);
+                            ].sort(this._compare);
                         } else {
                             availableExercises = [...exercise.availableExercises].sort(
-                                this.compare,
+                                this._compare,
                             );
                         }
                         return {
@@ -619,7 +619,7 @@ export class NewTrainingStoreService {
                 },
             ),
         };
-        return this.saveTrainingData(updatedTraining);
+        return this._saveTrainingData(updatedTraining);
     }
 
     keepTrainingState(): Observable<boolean> {
@@ -668,11 +668,11 @@ export class NewTrainingStoreService {
                 }
                 return updatedTraining;
             }),
-            switchMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+            switchMap((updatedTraining: NewTraining) => this._saveTrainingData(updatedTraining)),
         );
     }
 
-    private saveTrainingData(updatedTraining: NewTraining): Observable<void> {
+    private _saveTrainingData(updatedTraining: NewTraining): Observable<void> {
         this._trainingState$.next(updatedTraining);
         return from(
             Storage.set({
@@ -682,7 +682,7 @@ export class NewTrainingStoreService {
         ).pipe(take(1));
     }
 
-    private compare(a: Exercise, b: Exercise): number {
+    private _compare(a: Exercise, b: Exercise): number {
         if (a.name < b.name) {
             return -1;
         }
