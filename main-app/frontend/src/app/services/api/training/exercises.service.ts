@@ -34,10 +34,12 @@ export class ExercisesService {
                                     take(1),
                                     switchMap((authResponseData: AuthResponseData) =>
                                         this._newTrainingStoreService.updateTrainingState(
-                                            undefined,
-                                            response.Value,
-                                            true,
-                                            authResponseData._id,
+                                            'getExercises',
+                                            {
+                                                trainingState: undefined,
+                                                exercises: response.Value,
+                                                userId: authResponseData._id,
+                                            },
                                         ),
                                     ),
                                     switchMap((_) => of(response)),

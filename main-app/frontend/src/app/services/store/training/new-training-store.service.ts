@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { take, tap, map, switchMap, concatMap, withLatestFrom } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
+import { getDay } from 'date-fns';
 import { StreamData } from '../../../models/common/common.model';
 import { ExerciseDto as Exercise } from '../../../../api/models/exercise-dto';
 import {
@@ -24,6 +25,10 @@ import { PreferencesDto as Preferences } from '../../../../api/models/preference
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
 import { NewTrainingPreferencesDto as NewTrainingPreferences } from '../../../../api/models/new-training-preferences-dto';
 import { SwaggerTrainingSplitsService } from '../../../../api/services/swagger-training-splits.service';
+import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
+import { DAYS_OF_WEEK } from '../../../helpers/days-of-week.helper';
+import { CustomTrainingDto as CustomTraining } from '../../../../api/models/custom-training-dto';
+import { UpdateTrainingStateType } from '../../../models/training/new-training/update-training-state.type';
 import { ExercisesStoreService } from './exercises-store.service';
 
 @Injectable({ providedIn: 'root' })
@@ -575,7 +580,10 @@ export class NewTrainingStoreService {
                 ),
             ),
             concatMap((availableExercises: Exercise[]) =>
-                this.updateTrainingState(undefined, availableExercises),
+                this.updateTrainingState('addNewExercise', {
+                    trainingState: undefined,
+                    exercises: availableExercises,
+                }),
             ),
         );
     }
@@ -636,39 +644,93 @@ export class NewTrainingStoreService {
     }
 
     updateTrainingState(
-        newTrainingState?: NewTraining,
-        exercises?: Exercise[],
-        restartAll?: boolean,
-        userId?: string,
+        type: UpdateTrainingStateType,
+        data: {
+            trainingState: NewTraining;
+            exercises?: Exercise[];
+            userId?: string;
+        },
     ): Observable<void> {
         return this._trainingState$.pipe(
             take(1),
             withLatestFrom(this._preferencesStoreService.preferencesChanged$),
             map(([currentTrainingState, currentPreferences]: [NewTraining, Preferences]) => {
                 let updatedTraining: NewTraining;
-                if (exercises) {
-                    updatedTraining = currentTrainingState;
-                    if (restartAll) {
+                switch (type) {
+                    case 'getExercises': {
                         const weightUnit = currentPreferences?.weightUnit ?? DEFAULT_WEIGHT_UNIT;
                         updatedTraining = {
                             ...EMPTY_TRAINING,
-                            userId,
+                            userId: data.userId,
                             preferences: {
                                 weightUnit,
                                 setDurationUnit: currentPreferences.setDurationUnit,
                             },
+                            exercises: [
+                                ...currentTrainingState.exercises,
+                                createEmptyExercise(data.exercises),
+                            ],
                         };
+
+                        break;
                     }
-                    updatedTraining = {
-                        ...updatedTraining,
-                        exercises: [...updatedTraining.exercises, createEmptyExercise(exercises)],
-                    };
-                } else {
-                    updatedTraining = newTrainingState;
+                    case 'addNewExercise': {
+                        updatedTraining = {
+                            ...currentTrainingState,
+                            exercises: [
+                                ...updatedTraining.exercises,
+                                createEmptyExercise(data.exercises),
+                            ],
+                        };
+                        break;
+                    }
+                    case 'newTrainingInit':
+                    case 'openReorderModal':
+                    case 'tryAgain': {
+                        updatedTraining = { ...data.trainingState };
+                        break;
+                    }
+                    case 'useTrainingSplit': {
+                        updatedTraining = { ...currentTrainingState };
+                        break;
+                    }
+                    default: {
+                    }
                 }
                 return updatedTraining;
             }),
             switchMap((updatedTraining: NewTraining) => this._saveTrainingData(updatedTraining)),
+        );
+    }
+
+    useTrainingSplit(): Observable<void> {
+        return this._preferencesStoreService.preferencesChanged$.pipe(
+            take(1),
+            switchMap((preferences: Preferences) => {
+                const trainingSplitId = preferences.trainingSplitId;
+                if (trainingSplitId) {
+                    return this._swaggerTrainingSplitService
+                        .trainingSplitsControllerGetTrainingSplit({ id: trainingSplitId })
+                        .pipe(
+                            switchMap((trainingSplit: TrainingSplit) => {
+                                const todaysDayIndex = getDay(new Date());
+                                const todaysDayName = DAYS_OF_WEEK.find(
+                                    (dayData) => dayData.index === todaysDayIndex,
+                                ).day;
+                                const customTraining = trainingSplit.trainings.find(
+                                    (training: CustomTraining) =>
+                                        training.dayOfWeek === todaysDayName,
+                                );
+                                return this.updateTrainingState('useTrainingSplit', {
+                                    trainingState: undefined,
+                                    exercises: customTraining.exercises,
+                                });
+                            }),
+                        );
+                } else {
+                    return of(null);
+                }
+            }),
         );
     }
 

@@ -189,7 +189,8 @@ export class NewTrainingComponent implements OnDestroy {
                                 trainingDate: response.Value.trainingDate,
                             };
                             return this._newTrainingStoreService.updateTrainingState(
-                                this.editTrainingData,
+                                'newTrainingInit',
+                                { trainingState: this.editTrainingData },
                             );
                         }),
                     );
@@ -221,12 +222,14 @@ export class NewTrainingComponent implements OnDestroy {
                                 }
                             }
                             return this._newTrainingStoreService.updateTrainingState(
-                                newTrainingState,
+                                'newTrainingInit',
+                                { trainingState: newTrainingState },
                             );
                         }),
                     );
                 }
             }),
+            switchMap((_) => this._newTrainingStoreService.useTrainingSplit()),
             switchMap((_) =>
                 of(allExercisesChanged).pipe(
                     tap((_) => {
@@ -328,7 +331,9 @@ export class NewTrainingComponent implements OnDestroy {
                         delay(300),
                         switchMap((_) =>
                             this._newTrainingStoreService
-                                .updateTrainingState(response.data)
+                                .updateTrainingState('openReorderModal', {
+                                    trainingState: response.data,
+                                })
                                 .pipe(tap((_) => this._formInit())),
                         ),
                         switchMap((_) => of(streamData)),
@@ -424,9 +429,9 @@ export class NewTrainingComponent implements OnDestroy {
                             editMode: true,
                             trainingDate: response?.Value?.trainingDate,
                         };
-                        return this._newTrainingStoreService.updateTrainingState(
-                            this.editTrainingData,
-                        );
+                        return this._newTrainingStoreService.updateTrainingState('tryAgain', {
+                            trainingState: this.editTrainingData,
+                        });
                     }),
                     switchMap((_) => this._exercisesService.getExercises()),
                     mapStreamData(),
