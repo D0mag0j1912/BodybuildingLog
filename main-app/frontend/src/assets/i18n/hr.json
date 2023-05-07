@@ -26,6 +26,7 @@
         "pagination_label": "Stranica <strong class='primary'>{{ firstPage }}</strong> od <strong class='primary'>{{ secondPage }}</strong>",
         "page_number": "Stranica <strong class='primary'>{{ page }}</strong>",
         "n_others": "+ {{ n }} ostalih",
+        "warning": "Upozorenje",
         "errors": {
             "something_went_wrong": "Došlo je do greške. Pokušajte ponovno.",
             "invalid_date": "Pogrešan format datuma",
@@ -231,6 +232,7 @@
             "set_number": "Broj setova",
             "training_split_created": "Trening split je kreiran",
             "currently_used": "Trenutno se koristi",
+            "alert_message": "Trenutno koristite trening split koji nema zabilježenih vježbi za {{ dayName }}. Je li želite dodati ove vježbe u trenutno korišteni trening split?",
             "errors": {
                 "at_least_one_training": "Morate unijeti barem jedan trening",
                 "training_splits_not_available": "Trening splitovi nisu dostupni",

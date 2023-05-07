@@ -25,6 +25,7 @@
         "pagination_label": "Page <strong class='primary'>{{ firstPage }}</strong> of <strong class='primary'>{{ secondPage }}</strong>",
         "page_number": "Page <strong class='primary'>{{ page }}</strong>",
         "n_others": "+ {{ n }} others",
+        "warning": "Warning",
         "errors": {
             "something_went_wrong": "Something went wrong. Please try again.",
             "invalid_date": "Invalid date format",
@@ -230,6 +231,7 @@
             "set_number": "Set number",
             "training_split_created": "Training split created",
             "currently_used": "Currently used",
+            "alert_message": "You are currently using training split which doesn't have exercises for {{ dayName }}. Would you like to add these exercises into currently used training split?",
             "errors": {
                 "at_least_one_training": "At least one training is required",
                 "training_splits_not_available": "Training splits are not available",

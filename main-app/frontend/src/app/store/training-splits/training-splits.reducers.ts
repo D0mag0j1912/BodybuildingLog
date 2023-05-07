@@ -6,11 +6,13 @@ import * as trainingSplitActions from './training-splits.actions';
 export interface TrainingSplitsState {
     trainingSplitsForm: TrainingSplit;
     trainingSplitList: StreamData<TrainingSplit[]>;
+    activeTrainingSplit: TrainingSplit;
 }
 
 export const initialTrainingSplitState: TrainingSplitsState = {
     trainingSplitsForm: undefined,
     trainingSplitList: undefined,
+    activeTrainingSplit: undefined,
 };
 
 export const trainingSplitsReducer = createReducer(
