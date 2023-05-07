@@ -678,7 +678,7 @@ export class NewTrainingStoreService {
                         updatedTraining = {
                             ...currentTrainingState,
                             exercises: [
-                                ...updatedTraining.exercises,
+                                ...currentTrainingState.exercises,
                                 createEmptyExercise(data.exercises),
                             ],
                         };
@@ -691,7 +691,28 @@ export class NewTrainingStoreService {
                         break;
                     }
                     case 'useTrainingSplit': {
-                        updatedTraining = { ...currentTrainingState };
+                        updatedTraining = {
+                            ...currentTrainingState,
+                            exercises: [...data.exercises].map((exercise: Exercise) => ({
+                                ...currentTrainingState.exercises[0],
+                                exerciseData: {
+                                    ...exercise,
+                                    selectedSetCategories: Array(exercise.numberOfSets).fill(
+                                        exercise.selectedSetCategories[0],
+                                    ),
+                                },
+                                sets: Array(exercise.numberOfSets)
+                                    .fill({
+                                        setNumber: 1,
+                                        weight: undefined,
+                                        reps: undefined,
+                                    } as Set)
+                                    .map((set: Set, index: number) => ({
+                                        ...set,
+                                        setNumber: index + 1,
+                                    })),
+                            })),
+                        };
                         break;
                     }
                     default: {
