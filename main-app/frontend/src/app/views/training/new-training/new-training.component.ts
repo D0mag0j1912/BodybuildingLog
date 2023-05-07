@@ -229,7 +229,12 @@ export class NewTrainingComponent implements OnDestroy {
                     );
                 }
             }),
-            switchMap((_) => this._newTrainingStoreService.useTrainingSplit()),
+            switchMap((_) => {
+                if (!this.editMode) {
+                    return this._newTrainingStoreService.useTrainingSplit();
+                }
+                return of(null);
+            }),
             switchMap((_) =>
                 of(allExercisesChanged).pipe(
                     tap((_) => {
