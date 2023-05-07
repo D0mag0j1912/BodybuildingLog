@@ -10,7 +10,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
-import { format, parseISO } from 'date-fns';
+import { endOfDay, endOfWeek, format, parseISO, startOfDay, startOfWeek } from 'date-fns';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import {
     concatMap,
@@ -58,6 +58,7 @@ import { convertWeightUnit } from '../../../helpers/training/convert-units.helpe
 import { WeightUnitType } from '../../../models/common/preferences.type';
 import { GeneralResponseDto } from '../../../../api/models';
 import { ExercisesService } from '../../../services/api/training/exercises.service';
+import { QUERY_PARAMS_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
 import { SingleExerciseComponent } from './single-exercise/single-exercise.component';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
@@ -390,9 +391,24 @@ export class NewTrainingComponent implements OnDestroy {
         this._pastTrainingsStoreService.pastTrainingsQueryParams$
             .pipe(take(1))
             .subscribe(async (params: PastTrainingsQueryParams) => {
-                await this._router.navigate(['/training/tabs/past-trainings'], {
-                    queryParams: params,
-                });
+                let queryParams: PastTrainingsQueryParams;
+                if (Object.keys(params).length) {
+                    queryParams = params;
+                } else {
+                    const showByPeriod =
+                        this._preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
+                    const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
+                    const endDate =
+                        showByPeriod === 'week'
+                            ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 })
+                            : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
+                    queryParams = {
+                        startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
+                        endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
+                        showBy: showByPeriod,
+                    };
+                }
+                await this._router.navigate(['/training/tabs/past-trainings'], { queryParams });
                 await Storage.remove({ key: StorageItems.QUERY_PARAMS });
             });
     }

@@ -45,7 +45,8 @@ export class CreateTrainingSplitComponent implements OnInit {
     daysOfWeek$: Observable<string[]> = this._translateService.stream('weekdays').pipe(
         map((value: { [key: string]: string }) =>
             Object.entries(value).map((entry: [string, string], index: number) => {
-                const dayOfWeek = entry[1] as CustomTraining['dayOfWeek'];
+                const dayOfWeek = (entry[0].charAt(0).toUpperCase() +
+                    entry[0].slice(1)) as CustomTraining['dayOfWeek'];
                 this.form.controls.trainings.push(
                     new FormGroup({
                         dayOfWeek: new FormControl<CustomTraining['dayOfWeek']>(
