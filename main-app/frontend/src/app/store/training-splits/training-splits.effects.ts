@@ -7,8 +7,8 @@ import { TrainingSplitSuccessService } from '../../services/helper/training-spli
 import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-split-dto';
 import * as CommonActions from '../common/common.actions';
 import { GeneralResponseDto as GeneralResponse } from '../../../api/models/general-response-dto';
-import { SwaggerPreferencesService } from '../../../api/services/swagger-preferences.service';
 import { SwaggerTrainingSplitsService } from '../../../api/services/swagger-training-splits.service';
+import { PreferencesService } from '../../services/api/preferences/preferences.service';
 import * as TrainingSplitActions from './training-splits.actions';
 
 @Injectable()
@@ -140,13 +140,10 @@ export class TrainingSplitsEffects {
             ofType(TrainingSplitActions.setTrainingSplitAsActive),
             switchMap((action) =>
                 combineLatest([
-                    this._swaggerPreferencesService.preferencesControllerSetPreferences({
-                        userId: action.preferences.userId,
-                        body: {
-                            preferences: action.preferences,
-                            preferenceChanged: action.preferenceChangedType,
-                        },
-                    }),
+                    this._preferencesService.setPreferences(
+                        action.preferences,
+                        action.preferenceChangedType,
+                    ),
                     of(action.activeTrainingSplit),
                 ]).pipe(
                     map(([message, trainingSplit]: [GeneralResponse, TrainingSplit]) =>
@@ -174,8 +171,8 @@ export class TrainingSplitsEffects {
 
     constructor(
         private _swaggerTrainingSplitsService: SwaggerTrainingSplitsService,
-        private _swaggerPreferencesService: SwaggerPreferencesService,
         private _trainingSplitSuccessService: TrainingSplitSuccessService,
+        private _preferencesService: PreferencesService,
         private _actions$: Actions,
     ) {}
 }
