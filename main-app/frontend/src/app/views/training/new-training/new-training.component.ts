@@ -10,7 +10,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
-import { endOfDay, endOfWeek, format, parseISO, startOfDay, startOfWeek } from 'date-fns';
+import { endOfDay, endOfWeek, format, getDay, parseISO, startOfDay, startOfWeek } from 'date-fns';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import {
     concatMap,
@@ -59,6 +59,10 @@ import { WeightUnitType } from '../../../models/common/preferences.type';
 import { GeneralResponseDto } from '../../../../api/models';
 import { ExercisesService } from '../../../services/api/training/exercises.service';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
+import { SwaggerTrainingSplitsService } from '../../../../api/services/swagger-training-splits.service';
+import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
+import { DAYS_OF_WEEK } from '../../../helpers/days-of-week.helper';
+import { CustomTrainingDto as CustomTraining } from '../../../../api/models/custom-training-dto';
 import { SingleExerciseComponent } from './single-exercise/single-exercise.component';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
@@ -142,6 +146,7 @@ export class NewTrainingComponent implements OnDestroy {
     singleExerciseComponents: QueryList<SingleExerciseComponent>;
 
     constructor(
+        private _swaggerTrainingSplitsService: SwaggerTrainingSplitsService,
         private _newTrainingStoreService: NewTrainingStoreService,
         private _newTrainingService: NewTrainingService,
         private _pastTrainingService: PastTrainingsService,
@@ -232,7 +237,39 @@ export class NewTrainingComponent implements OnDestroy {
             }),
             switchMap((_) => {
                 if (!this.editMode) {
-                    return this._newTrainingStoreService.useTrainingSplit();
+                    return this._preferencesStoreService.preferencesChanged$.pipe(
+                        take(1),
+                        switchMap((preferences: Preferences) => {
+                            const trainingSplitId = preferences.trainingSplitId;
+                            if (trainingSplitId) {
+                                return this._swaggerTrainingSplitsService
+                                    .trainingSplitsControllerGetTrainingSplit({
+                                        id: trainingSplitId,
+                                    })
+                                    .pipe(
+                                        switchMap((trainingSplit: TrainingSplit) => {
+                                            const todaysDayIndex = getDay(new Date());
+                                            const todaysDayName = DAYS_OF_WEEK.find(
+                                                (dayData) => dayData.index === todaysDayIndex,
+                                            ).day;
+                                            const customTraining = trainingSplit.trainings.find(
+                                                (training: CustomTraining) =>
+                                                    training.dayOfWeek === todaysDayName,
+                                            );
+                                            return this._newTrainingStoreService.updateTrainingState(
+                                                'useTrainingSplit',
+                                                {
+                                                    trainingState: undefined,
+                                                    exercises: customTraining.exercises,
+                                                },
+                                            );
+                                        }),
+                                    );
+                            } else {
+                                return of(null);
+                            }
+                        }),
+                    );
                 }
                 return of(null);
             }),

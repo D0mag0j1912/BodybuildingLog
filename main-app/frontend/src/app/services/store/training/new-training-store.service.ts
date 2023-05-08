@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { take, tap, map, switchMap, concatMap, withLatestFrom } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
-import { getDay } from 'date-fns';
 import { StreamData } from '../../../models/common/common.model';
 import { ExerciseDto as Exercise } from '../../../../api/models/exercise-dto';
 import {
@@ -24,10 +23,6 @@ import { PreferencesStoreService } from '../shared/preferences-store.service';
 import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
 import { NewTrainingPreferencesDto as NewTrainingPreferences } from '../../../../api/models/new-training-preferences-dto';
-import { SwaggerTrainingSplitsService } from '../../../../api/services/swagger-training-splits.service';
-import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
-import { DAYS_OF_WEEK } from '../../../helpers/days-of-week.helper';
-import { CustomTrainingDto as CustomTraining } from '../../../../api/models/custom-training-dto';
 import { UpdateTrainingStateType } from '../../../models/training/new-training/update-training-state.type';
 import { ExercisesStoreService } from './exercises-store.service';
 
@@ -39,7 +34,6 @@ export class NewTrainingStoreService {
     constructor(
         private _exercisesStoreService: ExercisesStoreService,
         private _preferencesStoreService: PreferencesStoreService,
-        private _swaggerTrainingSplitService: SwaggerTrainingSplitsService,
     ) {}
 
     getCurrentTrainingState(): NewTraining {
@@ -721,37 +715,6 @@ export class NewTrainingStoreService {
                 return updatedTraining;
             }),
             switchMap((updatedTraining: NewTraining) => this._saveTrainingData(updatedTraining)),
-        );
-    }
-
-    useTrainingSplit(): Observable<void> {
-        return this._preferencesStoreService.preferencesChanged$.pipe(
-            take(1),
-            switchMap((preferences: Preferences) => {
-                const trainingSplitId = preferences.trainingSplitId;
-                if (trainingSplitId) {
-                    return this._swaggerTrainingSplitService
-                        .trainingSplitsControllerGetTrainingSplit({ id: trainingSplitId })
-                        .pipe(
-                            switchMap((trainingSplit: TrainingSplit) => {
-                                const todaysDayIndex = getDay(new Date());
-                                const todaysDayName = DAYS_OF_WEEK.find(
-                                    (dayData) => dayData.index === todaysDayIndex,
-                                ).day;
-                                const customTraining = trainingSplit.trainings.find(
-                                    (training: CustomTraining) =>
-                                        training.dayOfWeek === todaysDayName,
-                                );
-                                return this.updateTrainingState('useTrainingSplit', {
-                                    trainingState: undefined,
-                                    exercises: customTraining.exercises,
-                                });
-                            }),
-                        );
-                } else {
-                    return of(null);
-                }
-            }),
         );
     }
 
