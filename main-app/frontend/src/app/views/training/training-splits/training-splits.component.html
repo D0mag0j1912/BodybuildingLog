@@ -35,7 +35,7 @@
                         [isUsed]="split._id === (currentPreferences$ | async).trainingSplitId"
                         (editTrainingSplit)="openTrainingSplitModal($event)"
                         (deleteTrainingSplit)="onDeleteTrainingSplit($event)"
-                        (emitTrainingSplitId)="onEmitTrainingSplitId($event)"></bl-training-split>
+                        (emitTrainingSplit)="onEmitTrainingSplitId($event)"></bl-training-split>
                 </ng-container>
                 <ng-template #emptyScreen>
                     <span class="empty-screen-txt">{{ 'training.training_split.empty_screen' | translate }}</span>
