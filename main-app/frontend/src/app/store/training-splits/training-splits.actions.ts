@@ -59,6 +59,14 @@ export const searchTrainingSplits = createAction(
 );
 
 /**
+ * Get training split
+ */
+export const getTrainingSplit = createAction(
+    '[Training splits] Get training split',
+    props<{ trainingSplitId: string }>(),
+);
+
+/**
  * Set training split as active
  */
 export const setTrainingSplitAsActive = createAction(

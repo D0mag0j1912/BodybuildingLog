@@ -106,6 +106,13 @@ export class TrainingSplitsEffects {
             ofType(TrainingSplitActions.getTrainingSplitList),
             switchMap((_) =>
                 this._swaggerTrainingSplitsService.trainingSplitsControllerGetTrainingSplits().pipe(
+                    catchError((_) => {
+                        CommonActions.showToastMessage({
+                            color: 'danger',
+                            message: 'training.training_split.errors.training_splits_not_available',
+                        });
+                        return EMPTY;
+                    }),
                     mapStreamData<TrainingSplit[]>(),
                     map((response) =>
                         TrainingSplitActions.getTrainingSplitListSuccess({
@@ -124,10 +131,43 @@ export class TrainingSplitsEffects {
                 this._swaggerTrainingSplitsService
                     .trainingSplitsControllerGetTrainingSplits({ contains: action.contains })
                     .pipe(
+                        catchError((_) => {
+                            CommonActions.showToastMessage({
+                                color: 'danger',
+                                message:
+                                    'training.training_split.errors.training_splits_not_available',
+                            });
+                            return EMPTY;
+                        }),
                         mapStreamData<TrainingSplit[]>(),
                         map((response) =>
                             TrainingSplitActions.getTrainingSplitListSuccess({
                                 trainingSplitList: response,
+                            }),
+                        ),
+                    ),
+            ),
+        ),
+    );
+
+    getTrainingSplit$ = createEffect(() =>
+        this._actions$.pipe(
+            ofType(TrainingSplitActions.getTrainingSplit),
+            switchMap((action) =>
+                this._swaggerTrainingSplitsService
+                    .trainingSplitsControllerGetTrainingSplit({ id: action.trainingSplitId })
+                    .pipe(
+                        catchError((_) => {
+                            CommonActions.showToastMessage({
+                                color: 'danger',
+                                message:
+                                    'training.training_split.errors.training_split_not_available',
+                            });
+                            return EMPTY;
+                        }),
+                        map((response: TrainingSplit) =>
+                            TrainingSplitActions.setTrainingSplitAsActiveSuccess({
+                                activeTrainingSplit: response,
                             }),
                         ),
                     ),
@@ -146,6 +186,13 @@ export class TrainingSplitsEffects {
                     ),
                     of(action.activeTrainingSplit),
                 ]).pipe(
+                    catchError((_) => {
+                        CommonActions.showToastMessage({
+                            color: 'danger',
+                            message: 'training.training_split.errors.training_split_active',
+                        });
+                        return EMPTY;
+                    }),
                     map(([message, trainingSplit]: [GeneralResponse, TrainingSplit]) =>
                         TrainingSplitActions.setTrainingSplitAsActiveSuccess({
                             activeTrainingSplit: trainingSplit,

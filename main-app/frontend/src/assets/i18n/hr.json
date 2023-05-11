@@ -238,6 +238,7 @@
                 "training_splits_not_available": "Trening splitovi nisu dostupni",
                 "training_split_not_available": "Trening split nije dostupan",
                 "training_split_name_required": "Naziv trening splita je obavezan",
+                "training_split_active": "Greška prilikom postavljanja trening splita kao aktivnog",
                 "exercises_required": "Vježbe su obavezne",
                 "set_number_required": "Broj setova je obavezan",
                 "error_create_training_split": "Greška prilikom kreiranja trening splita",

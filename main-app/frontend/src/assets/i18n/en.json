@@ -237,6 +237,7 @@
                 "training_splits_not_available": "Training splits are not available",
                 "training_split_not_available": "Training split is not available",
                 "training_split_name_required": "Training split name is required",
+                "training_split_active": "Error while setting training split as active",
                 "exercises_required": "Exercises are required",
                 "set_number_required": "Set number is required",
                 "error_create_training_split": "Error while creating training split",
