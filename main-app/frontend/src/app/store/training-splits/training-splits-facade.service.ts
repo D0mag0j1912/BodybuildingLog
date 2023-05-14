@@ -56,6 +56,10 @@ export class TrainingSplitsFacadeService {
         this._store.dispatch(TrainingSplitActions.searchTrainingSplits({ contains }));
     }
 
+    getTrainingSplit(trainingSplitId: string): void {
+        this._store.dispatch(TrainingSplitActions.getTrainingSplit({ trainingSplitId }));
+    }
+
     setTrainingSplitAsActive(
         preferences: Preferences,
         preferenceChangedType: PreferenceChangedType,
