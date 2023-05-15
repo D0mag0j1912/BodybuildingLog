@@ -43,6 +43,12 @@ export const trainingSplitsReducer = createReducer(
                 return trainingSplit;
             }),
         },
+        activeTrainingSplit:
+            state.activeTrainingSplit?._id === action.trainingSplit._id
+                ? {
+                      ...action.trainingSplit,
+                  }
+                : { ...state.activeTrainingSplit },
     })),
     on(TrainingSplitActions.deleteTrainingSplit, (state, action) => ({
         ...state,
