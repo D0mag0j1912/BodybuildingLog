@@ -24,7 +24,7 @@ export class TrainingComponent {
             .pipe(take(1))
             .subscribe(async (params) => {
                 let queryParams: PastTrainingsQueryParams;
-                if (params) {
+                if (Object.keys(params).length) {
                     queryParams = params;
                 } else {
                     const showByPeriod =

@@ -20,9 +20,10 @@ import {
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { PreferenceChangedType } from '../../../models/common/preferences.type';
 import { PreferencesStoreService } from '../shared/preferences-store.service';
-import { Preferences } from '../../../models/common/preferences.model';
+import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
 import { NewTrainingPreferencesDto as NewTrainingPreferences } from '../../../../api/models/new-training-preferences-dto';
+import { UpdateTrainingStateType } from '../../../models/training/new-training/update-training-state.type';
 import { ExercisesStoreService } from './exercises-store.service';
 
 @Injectable({ providedIn: 'root' })
@@ -64,7 +65,7 @@ export class NewTrainingStoreService {
                         },
                     };
                 }
-                return this.saveTrainingData(updatedTraining);
+                return this._saveTrainingData(updatedTraining);
             }),
         );
     }
@@ -77,7 +78,7 @@ export class NewTrainingStoreService {
                     ...trainingState,
                     trainingDate,
                 };
-                return this.saveTrainingData(updatedTraining);
+                return this._saveTrainingData(updatedTraining);
             }),
         );
     }
@@ -127,7 +128,7 @@ export class NewTrainingStoreService {
                 };
                 return updatedTraining;
             }),
-            switchMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+            switchMap((updatedTraining: NewTraining) => this._saveTrainingData(updatedTraining)),
         );
     }
 
@@ -201,7 +202,7 @@ export class NewTrainingStoreService {
                 };
                 return updatedTraining;
             }),
-            concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+            concatMap((updatedTraining: NewTraining) => this._saveTrainingData(updatedTraining)),
         );
     }
 
@@ -267,7 +268,7 @@ export class NewTrainingStoreService {
                 return updatedTraining;
             }),
             concatMap((updatedTraining: NewTraining) =>
-                this.saveTrainingData(updatedTraining).pipe(map((_) => setCategory)),
+                this._saveTrainingData(updatedTraining).pipe(map((_) => setCategory)),
             ),
         );
     }
@@ -311,7 +312,7 @@ export class NewTrainingStoreService {
                 };
                 return updatedTraining;
             }),
-            concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+            concatMap((updatedTraining: NewTraining) => this._saveTrainingData(updatedTraining)),
         );
     }
 
@@ -332,13 +333,13 @@ export class NewTrainingStoreService {
                         availableExercises: [
                             ...exercise.availableExercises,
                             toBeAddedExercise[0],
-                        ].sort(this.compare),
+                        ].sort(this._compare),
                     };
                 }
                 return exercise;
             }),
         };
-        return this.saveTrainingData(updatedTraining);
+        return this._saveTrainingData(updatedTraining);
     }
 
     deleteExercise(
@@ -372,7 +373,7 @@ export class NewTrainingStoreService {
                 ),
             };
             const response = [updatedTraining, [] as Exercise[]] as [NewTraining, Exercise[]];
-            return this.saveTrainingData(updatedTraining).pipe(switchMap((_) => of(response)));
+            return this._saveTrainingData(updatedTraining).pipe(switchMap((_) => of(response)));
         }
     }
 
@@ -503,7 +504,7 @@ export class NewTrainingStoreService {
                         ),
                     };
                 }
-                return this.saveTrainingData(updatedTraining);
+                return this._saveTrainingData(updatedTraining);
             }),
         );
     }
@@ -559,7 +560,7 @@ export class NewTrainingStoreService {
                 };
                 return updatedTraining;
             }),
-            concatMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+            concatMap((updatedTraining: NewTraining) => this._saveTrainingData(updatedTraining)),
             concatMap((_) => of(setCategory)),
         );
     }
@@ -573,7 +574,10 @@ export class NewTrainingStoreService {
                 ),
             ),
             concatMap((availableExercises: Exercise[]) =>
-                this.updateTrainingState(undefined, availableExercises),
+                this.updateTrainingState('addNewExercise', {
+                    trainingState: undefined,
+                    exercises: availableExercises,
+                }),
             ),
         );
     }
@@ -601,10 +605,10 @@ export class NewTrainingStoreService {
                             availableExercises = [
                                 ...exercise.availableExercises,
                                 previousSelectedExercise,
-                            ].sort(this.compare);
+                            ].sort(this._compare);
                         } else {
                             availableExercises = [...exercise.availableExercises].sort(
-                                this.compare,
+                                this._compare,
                             );
                         }
                         return {
@@ -617,7 +621,7 @@ export class NewTrainingStoreService {
                 },
             ),
         };
-        return this.saveTrainingData(updatedTraining);
+        return this._saveTrainingData(updatedTraining);
     }
 
     keepTrainingState(): Observable<boolean> {
@@ -634,43 +638,87 @@ export class NewTrainingStoreService {
     }
 
     updateTrainingState(
-        newTrainingState?: NewTraining,
-        exercises?: Exercise[],
-        restartAll?: boolean,
-        userId?: string,
+        type: UpdateTrainingStateType,
+        data: {
+            trainingState: NewTraining;
+            exercises?: Exercise[];
+            userId?: string;
+        },
     ): Observable<void> {
         return this._trainingState$.pipe(
             take(1),
             withLatestFrom(this._preferencesStoreService.preferencesChanged$),
             map(([currentTrainingState, currentPreferences]: [NewTraining, Preferences]) => {
                 let updatedTraining: NewTraining;
-                if (exercises) {
-                    updatedTraining = currentTrainingState;
-                    if (restartAll) {
+                switch (type) {
+                    case 'getExercises': {
                         const weightUnit = currentPreferences?.weightUnit ?? DEFAULT_WEIGHT_UNIT;
                         updatedTraining = {
                             ...EMPTY_TRAINING,
-                            userId,
+                            userId: data.userId,
                             preferences: {
                                 weightUnit,
                                 setDurationUnit: currentPreferences.setDurationUnit,
                             },
+                            exercises: [
+                                ...currentTrainingState.exercises,
+                                createEmptyExercise(data.exercises),
+                            ],
                         };
+
+                        break;
                     }
-                    updatedTraining = {
-                        ...updatedTraining,
-                        exercises: [...updatedTraining.exercises, createEmptyExercise(exercises)],
-                    };
-                } else {
-                    updatedTraining = newTrainingState;
+                    case 'addNewExercise': {
+                        updatedTraining = {
+                            ...currentTrainingState,
+                            exercises: [
+                                ...currentTrainingState.exercises,
+                                createEmptyExercise(data.exercises),
+                            ],
+                        };
+                        break;
+                    }
+                    case 'newTrainingInit':
+                    case 'openReorderModal':
+                    case 'tryAgain': {
+                        updatedTraining = { ...data.trainingState };
+                        break;
+                    }
+                    case 'useTrainingSplit': {
+                        updatedTraining = {
+                            ...currentTrainingState,
+                            exercises: [...data.exercises].map((exercise: Exercise) => ({
+                                ...currentTrainingState.exercises[0],
+                                exerciseData: {
+                                    ...exercise,
+                                    selectedSetCategories: Array(exercise.numberOfSets).fill(
+                                        exercise.selectedSetCategories[0],
+                                    ),
+                                },
+                                sets: Array(exercise.numberOfSets)
+                                    .fill({
+                                        setNumber: 1,
+                                        weight: undefined,
+                                        reps: undefined,
+                                    } as Set)
+                                    .map((set: Set, index: number) => ({
+                                        ...set,
+                                        setNumber: index + 1,
+                                    })),
+                            })),
+                        };
+                        break;
+                    }
+                    default: {
+                    }
                 }
                 return updatedTraining;
             }),
-            switchMap((updatedTraining: NewTraining) => this.saveTrainingData(updatedTraining)),
+            switchMap((updatedTraining: NewTraining) => this._saveTrainingData(updatedTraining)),
         );
     }
 
-    private saveTrainingData(updatedTraining: NewTraining): Observable<void> {
+    private _saveTrainingData(updatedTraining: NewTraining): Observable<void> {
         this._trainingState$.next(updatedTraining);
         return from(
             Storage.set({
@@ -680,7 +728,7 @@ export class NewTrainingStoreService {
         ).pipe(take(1));
     }
 
-    private compare(a: Exercise, b: Exercise): number {
+    private _compare(a: Exercise, b: Exercise): number {
         if (a.name < b.name) {
             return -1;
         }

@@ -26,6 +26,7 @@
         "pagination_label": "Stranica <strong class='primary'>{{ firstPage }}</strong> od <strong class='primary'>{{ secondPage }}</strong>",
         "page_number": "Stranica <strong class='primary'>{{ page }}</strong>",
         "n_others": "+ {{ n }} ostalih",
+        "warning": "Upozorenje",
         "errors": {
             "something_went_wrong": "Došlo je do greške. Pokušajte ponovno.",
             "invalid_date": "Pogrešan format datuma",
@@ -229,19 +230,22 @@
             "training_split_name": "Unesite naziv trening splita",
             "search_exercises": "Pretraži vježbe",
             "set_number": "Broj setova",
+            "training_split_created": "Trening split je kreiran",
+            "currently_used": "Trenutno se koristi",
+            "alert_message": "Trenutno koristite trening split koji nema zabilježenih vježbi za {{ dayName }}. Je li želite dodati ove vježbe u trenutno korišteni trening split?",
             "errors": {
                 "at_least_one_training": "Morate unijeti barem jedan trening",
                 "training_splits_not_available": "Trening splitovi nisu dostupni",
                 "training_split_not_available": "Trening split nije dostupan",
                 "training_split_name_required": "Naziv trening splita je obavezan",
+                "training_split_active": "Greška prilikom postavljanja trening splita kao aktivnog",
                 "exercises_required": "Vježbe su obavezne",
                 "set_number_required": "Broj setova je obavezan",
                 "error_create_training_split": "Greška prilikom kreiranja trening splita",
                 "error_get_training_splits": "Greška prilikom dohvata trening splitova",
                 "error_edit_training_split": "Greška prilikom ažuriranja trening splita",
                 "error_delete_training_split": "Greška prilikom brisanja trening splita"
-            },
-            "training_split_created": "Trening split je kreiran"
+            }
         },
         "update_set_category": "Promijeni kategoriju seta",
         "set_categories": {
@@ -274,7 +278,8 @@
             "show_by_period_required": "Jedinica perioda treninga je obvezna",
             "period_change": "Došlo je do greške pri promjeni perioda",
             "set_duration_unit_required": "Jedinica trajanja seta je obvezna",
-            "set_duration_unit_change": "Došlo je do greške pri promjeni jedinica trajanja seta"
+            "set_duration_unit_change": "Došlo je do greške pri promjeni jedinica trajanja seta",
+            "training_split_change": "Došlo je do greške pri upotrebi trening splita"
         }
     },
     "weekdays": {

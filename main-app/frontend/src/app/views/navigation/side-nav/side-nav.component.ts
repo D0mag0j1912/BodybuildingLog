@@ -11,7 +11,7 @@ import {
     PreferenceChangedType,
     WeightUnitType,
 } from '../../../models/common/preferences.type';
-import { Preferences } from '../../../models/common/preferences.model';
+import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 import { PreferencesService } from '../../../services/api/preferences/preferences.service';
 import { SetDurationUnitType } from '../../../models/training/new-training/single-exercise/set/set.type';

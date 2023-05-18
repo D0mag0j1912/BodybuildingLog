@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDefined, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Schema } from 'mongoose';
 import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
 import { SetDurationUnitType } from '../training/new-training/set.type';
@@ -21,6 +21,7 @@ export const PREFERENCES_SCHEMA = new Schema({
     },
     showByPeriod: String,
     setDurationUnit: String,
+    trainingSplitId: String,
 });
 
 export class PreferencesDto {
@@ -60,7 +61,6 @@ export class PreferencesDto {
 
     @ApiPropertyOptional()
     @IsOptional()
-    @IsDefined()
     @IsMongoId()
     _id?: string;
 
@@ -69,7 +69,14 @@ export class PreferencesDto {
         type: String,
     })
     @IsOptional()
-    @IsDefined({ message: '@common.errors.something_went_wrong' })
-    @IsString({ message: '@common.errors.something_went_wrong' })
+    @IsMongoId()
     userId?: string;
+
+    @ApiPropertyOptional({
+        description: 'Training split ID',
+        type: String,
+    })
+    @IsOptional()
+    @IsMongoId()
+    trainingSplitId?: string;
 }

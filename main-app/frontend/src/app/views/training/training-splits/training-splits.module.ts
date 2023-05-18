@@ -2,16 +2,9 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { StoreModule } from '@ngrx/store';
 import { TranslateModule } from '@ngx-translate/core';
 import { SwiperModule } from 'swiper/angular';
-import { EffectsModule } from '@ngrx/effects';
-import { FeatureKeys } from '../../../constants/enums/feature-keys.enum';
-import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
-import * as trainingSplitsReducers from '../../../store/training-splits/training-splits.reducers';
 import { SharedModule } from '../../shared/shared.module';
-import { TrainingSplitsEffects } from '../../../store/training-splits/training-splits.effects';
-import { TrainingSplitSuccessService } from '../../../services/helper/training-split-success.service';
 import { TimesAWeekModule } from '../../../pipes/training/training-splits/times-a-week/times-a-week.module';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
 import { TrainingSplitComponent } from './training-split/training-split.component';
@@ -36,20 +29,9 @@ const IMPORTS = [
 
 const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule, SwiperModule];
 
-const PROVIDERS = [TrainingSplitsFacadeService, TrainingSplitSuccessService];
-
 @NgModule({
     declarations: [...COMPONENTS],
-    imports: [
-        ...IMPORTS,
-        ...EXTERNAL_IMPORTS,
-        StoreModule.forFeature(
-            FeatureKeys.TRAINING_SPLITS,
-            trainingSplitsReducers.trainingSplitsReducer,
-        ),
-        EffectsModule.forFeature([TrainingSplitsEffects]),
-    ],
+    imports: [...IMPORTS, ...EXTERNAL_IMPORTS],
     exports: [...COMPONENTS],
-    providers: [...PROVIDERS],
 })
 export class TrainingSplitsModule {}

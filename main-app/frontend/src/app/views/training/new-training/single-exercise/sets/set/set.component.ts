@@ -15,7 +15,7 @@ import {
     convertSetDurationUnit,
     convertWeightUnit,
 } from '../../../../../../helpers/training/convert-units.helper';
-import { Preferences } from '../../../../../../models/common/preferences.model';
+import { PreferencesDto as Preferences } from '../../../../../../../api/models/preferences-dto';
 import { SetFormType } from '../../../../../../models/training/new-training/single-exercise/set/set-form.type';
 import { SetTrainingData } from '../../../../../../models/training/new-training/single-exercise/set/set.type';
 import {

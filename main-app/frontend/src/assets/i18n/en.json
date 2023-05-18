@@ -25,6 +25,7 @@
         "pagination_label": "Page <strong class='primary'>{{ firstPage }}</strong> of <strong class='primary'>{{ secondPage }}</strong>",
         "page_number": "Page <strong class='primary'>{{ page }}</strong>",
         "n_others": "+ {{ n }} others",
+        "warning": "Warning",
         "errors": {
             "something_went_wrong": "Something went wrong. Please try again.",
             "invalid_date": "Invalid date format",
@@ -228,19 +229,22 @@
             "training_split_name": "Enter training split name",
             "search_exercises": "Search exercises",
             "set_number": "Set number",
+            "training_split_created": "Training split created",
+            "currently_used": "Currently used",
+            "alert_message": "You are currently using training split which doesn't have exercises for {{ dayName }}. Would you like to add these exercises into currently used training split?",
             "errors": {
                 "at_least_one_training": "At least one training is required",
                 "training_splits_not_available": "Training splits are not available",
                 "training_split_not_available": "Training split is not available",
                 "training_split_name_required": "Training split name is required",
+                "training_split_active": "Error while setting training split as active",
                 "exercises_required": "Exercises are required",
                 "set_number_required": "Set number is required",
                 "error_create_training_split": "Error while creating training split",
                 "error_get_training_splits": "Error while getting training splits",
                 "error_edit_training_split": "Error while editing training split",
                 "error_delete_training_split": "Error while removing training split"
-            },
-            "training_split_created": "Training split created"
+            }
         },
         "update_set_category": "Change set category",
         "set_categories": {
@@ -273,7 +277,8 @@
             "show_by_period_required": "Past trainings period unit is required",
             "period_change": "Error while trying to change period",
             "set_duration_unit_required": "Set duration unit is required",
-            "set_duration_unit_change": "Error while trying to change set duration unit"
+            "set_duration_unit_change": "Error while trying to change set duration unit",
+            "training_split_change": "Error while trying to use training split"
         }
     },
     "weekdays": {

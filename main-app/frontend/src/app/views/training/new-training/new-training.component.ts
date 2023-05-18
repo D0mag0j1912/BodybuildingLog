@@ -2,6 +2,7 @@ import {
     ChangeDetectorRef,
     Component,
     OnDestroy,
+    OnInit,
     QueryList,
     ViewChild,
     ViewChildren,
@@ -10,8 +11,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
-import { format, parseISO } from 'date-fns';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { endOfDay, endOfWeek, format, getDay, parseISO, startOfDay, startOfWeek } from 'date-fns';
+import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
 import {
     concatMap,
     delay,
@@ -53,11 +54,16 @@ import { ToastControllerService } from '../../../services/shared/toast-controlle
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
 import { ExercisesStoreService } from '../../../services/store/training/exercises-store.service';
 import { SetCategoryType } from '../../../models/training/new-training/single-exercise/set/set.type';
-import { Preferences } from '../../../models/common/preferences.model';
+import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 import { convertWeightUnit } from '../../../helpers/training/convert-units.helper';
 import { WeightUnitType } from '../../../models/common/preferences.type';
-import { GeneralResponseDto } from '../../../../api/models';
+import { GeneralResponseDto as GeneralResponse } from '../../../../api/models/general-response-dto';
 import { ExercisesService } from '../../../services/api/training/exercises.service';
+import { QUERY_PARAMS_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
+import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
+import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
+import { DAYS_OF_WEEK } from '../../../helpers/days-of-week.helper';
+import { CustomTrainingDto as CustomTraining } from '../../../../api/models/custom-training-dto';
 import { SingleExerciseComponent } from './single-exercise/single-exercise.component';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
@@ -67,7 +73,7 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
     styleUrls: ['./new-training.component.scss'],
     providers: [UnsubscribeService],
 })
-export class NewTrainingComponent implements OnDestroy {
+export class NewTrainingComponent implements OnInit, OnDestroy {
     private _restartExercises$ = new BehaviorSubject<SingleExercise[]>([]);
 
     restartExercises$ = this._restartExercises$.asObservable();
@@ -141,6 +147,7 @@ export class NewTrainingComponent implements OnDestroy {
     singleExerciseComponents: QueryList<SingleExerciseComponent>;
 
     constructor(
+        private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
         private _newTrainingStoreService: NewTrainingStoreService,
         private _newTrainingService: NewTrainingService,
         private _pastTrainingService: PastTrainingsService,
@@ -160,8 +167,9 @@ export class NewTrainingComponent implements OnDestroy {
     ) {}
 
     ionViewWillEnter(): void {
-        this.currentWeightUnit = this._preferencesStoreService.getPreferences().weightUnit;
         let allExercisesChanged: StreamData<Exercise[]>;
+        this.currentWeightUnit = this._preferencesStoreService.getPreferences().weightUnit;
+
         this.trainingStream$ = this._route.params.pipe(
             take(1),
             switchMap((params: Params) =>
@@ -189,7 +197,8 @@ export class NewTrainingComponent implements OnDestroy {
                                 trainingDate: response.Value.trainingDate,
                             };
                             return this._newTrainingStoreService.updateTrainingState(
-                                this.editTrainingData,
+                                'newTrainingInit',
+                                { trainingState: this.editTrainingData },
                             );
                         }),
                     );
@@ -221,7 +230,8 @@ export class NewTrainingComponent implements OnDestroy {
                                 }
                             }
                             return this._newTrainingStoreService.updateTrainingState(
-                                newTrainingState,
+                                'newTrainingInit',
+                                { trainingState: newTrainingState },
                             );
                         }),
                     );
@@ -253,12 +263,47 @@ export class NewTrainingComponent implements OnDestroy {
                 ),
             ),
         );
+
+        this._trainingSplitsFacadeService
+            .selectActiveTrainingSplit()
+            .pipe(
+                switchMap((activeTrainingSplit: TrainingSplit) => {
+                    if (activeTrainingSplit) {
+                        const todaysDayIndex = getDay(new Date());
+                        const todaysDayName = DAYS_OF_WEEK.find(
+                            (dayData) => dayData.index === todaysDayIndex,
+                        ).day;
+                        const customTraining = activeTrainingSplit.trainings.find(
+                            (training: CustomTraining) => training.dayOfWeek === todaysDayName,
+                        );
+                        return this._newTrainingStoreService.updateTrainingState(
+                            'useTrainingSplit',
+                            {
+                                trainingState: undefined,
+                                exercises: customTraining.exercises,
+                            },
+                        );
+                    } else {
+                        return EMPTY;
+                    }
+                }),
+                takeUntil(this._unsubscribeService),
+            )
+            .subscribe();
+
         this._changeDetectorRef.detectChanges();
     }
 
     ionViewDidEnter(): void {
         if (this.ionContent) {
             setTimeout(async () => await this.ionContent.scrollToBottom(500), 300);
+        }
+    }
+
+    ngOnInit(): void {
+        const trainingSplitId = this._preferencesStoreService.getPreferences().trainingSplitId;
+        if (trainingSplitId) {
+            this._trainingSplitsFacadeService.getTrainingSplit(trainingSplitId);
         }
     }
 
@@ -289,7 +334,7 @@ export class NewTrainingComponent implements OnDestroy {
                 }),
                 finalize(() => (this.isApiLoading = false)),
             )
-            .subscribe(async (response: GeneralResponseDto) => {
+            .subscribe(async (response: GeneralResponse) => {
                 await this._toastControllerService.displayToast({
                     message: this._translateService.instant(response.Message),
                     duration: MESSAGE_DURATION.GENERAL,
@@ -328,7 +373,9 @@ export class NewTrainingComponent implements OnDestroy {
                         delay(300),
                         switchMap((_) =>
                             this._newTrainingStoreService
-                                .updateTrainingState(response.data)
+                                .updateTrainingState('openReorderModal', {
+                                    trainingState: response.data,
+                                })
                                 .pipe(tap((_) => this._formInit())),
                         ),
                         switchMap((_) => of(streamData)),
@@ -380,9 +427,24 @@ export class NewTrainingComponent implements OnDestroy {
         this._pastTrainingsStoreService.pastTrainingsQueryParams$
             .pipe(take(1))
             .subscribe(async (params: PastTrainingsQueryParams) => {
-                await this._router.navigate(['/training/tabs/past-trainings'], {
-                    queryParams: params,
-                });
+                let queryParams: PastTrainingsQueryParams;
+                if (Object.keys(params).length) {
+                    queryParams = params;
+                } else {
+                    const showByPeriod =
+                        this._preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
+                    const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
+                    const endDate =
+                        showByPeriod === 'week'
+                            ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 })
+                            : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
+                    queryParams = {
+                        startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
+                        endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
+                        showBy: showByPeriod,
+                    };
+                }
+                await this._router.navigate(['/training/tabs/past-trainings'], { queryParams });
                 await Storage.remove({ key: StorageItems.QUERY_PARAMS });
             });
     }
@@ -424,9 +486,9 @@ export class NewTrainingComponent implements OnDestroy {
                             editMode: true,
                             trainingDate: response?.Value?.trainingDate,
                         };
-                        return this._newTrainingStoreService.updateTrainingState(
-                            this.editTrainingData,
-                        );
+                        return this._newTrainingStoreService.updateTrainingState('tryAgain', {
+                            trainingState: this.editTrainingData,
+                        });
                     }),
                     switchMap((_) => this._exercisesService.getExercises()),
                     mapStreamData(),

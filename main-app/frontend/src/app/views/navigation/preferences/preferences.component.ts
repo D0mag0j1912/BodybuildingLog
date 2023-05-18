@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
-import { Preferences } from '../../../models/common/preferences.model';
+import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 import {
     LanguageCodeType,
     PreferenceChangedType,

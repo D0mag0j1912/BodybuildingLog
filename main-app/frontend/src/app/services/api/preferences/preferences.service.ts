@@ -5,12 +5,12 @@ import { Observable, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
-import { Preferences } from '../../../models/common/preferences.model';
 import { PreferenceChangedType } from '../../../models/common/preferences.type';
 import { PreferencesStoreService } from '../../store/shared/preferences-store.service';
 import { NewTrainingStoreService } from '../../store/training/new-training-store.service';
 import { GeneralResponseDto } from '../../../../api/models';
 import { ToastControllerService } from '../../shared/toast-controller.service';
+import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 
 @Injectable({ providedIn: 'root' })
 export class PreferencesService {
@@ -35,6 +35,7 @@ export class PreferencesService {
             weightUnit: preferences.weightUnit,
             showByPeriod: preferences.showByPeriod,
             setDurationUnit: preferences.setDurationUnit,
+            trainingSplitId: preferences.trainingSplitId,
         };
         let apiResponse: GeneralResponseDto;
         return this._http

@@ -8,10 +8,11 @@
             <div class="actions">
                 <ion-icon name="pencil-sharp" color="primary" class="action" (click)="onEdit()"></ion-icon>
                 <ion-icon name="trash-sharp" color="primary" class="action" (click)="onDelete()"></ion-icon>
+                <ion-icon name="checkmark-sharp" color="primary" class="action" (click)="useTrainingSplit()"></ion-icon>
             </div>
         </div>
     </ion-card-header>
-    <ion-card-content>
+    <ion-card-content [class.training-split-content]="isUsed">
         <div class="week-frequency-text">{{ 'common.numbers.' + (trainingSplit.trainings | timesAWeek).length | translate }} {{ 'training.training_split.times_a_week' | translate }}</div>
         <div class="days-text">
             <span>{{ '(' }}</span>
@@ -24,6 +25,11 @@
                     <span>{{ ', ' }}</span>
                 </ng-template>
             </ng-container>
+        </div>
+        <div
+            *ngIf="isUsed"
+            class="currently-used">
+            {{ 'training.training_split.currently_used' | translate }}
         </div>
     </ion-card-content>
 </ion-card>

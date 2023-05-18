@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Preferences } from '../../../models/common/preferences.model';
+import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 
 @Injectable({ providedIn: 'root' })
 export class PreferencesStoreService {
