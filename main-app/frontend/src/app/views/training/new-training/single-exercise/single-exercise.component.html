@@ -72,7 +72,7 @@
                 </ion-row>
             </ion-grid>
             <bl-sets
-                [sets]="exercisesState[i].sets"
+                [sets]="exercisesState[i]?.sets ?? []"
                 [editTrainingData]="editTrainingData"
                 [exerciseIndex]="i"
                 [bodyweightControl]="bodyweightControl"
