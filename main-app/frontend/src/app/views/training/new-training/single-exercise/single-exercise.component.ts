@@ -194,7 +194,7 @@ export class SingleExerciseComponent implements OnDestroy {
                             (exercise: Exercise) => exercise.name === (element.value as string),
                         );
                         return this._newTrainingStoreService
-                            .updateExerciseChoices(
+                            .updateExerciseName(
                                 element.value as string,
                                 indexExercise,
                                 currentTrainingState,

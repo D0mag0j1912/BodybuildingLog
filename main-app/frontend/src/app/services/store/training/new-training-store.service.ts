@@ -582,7 +582,7 @@ export class NewTrainingStoreService {
         );
     }
 
-    updateExerciseChoices(
+    updateExerciseName(
         selectedExercise: string,
         selectedIndex: number,
         trainingToBeUpdated: NewTraining,
@@ -705,11 +705,13 @@ export class NewTrainingStoreService {
                                         ...set,
                                         setNumber: index + 1,
                                     })),
+                                availableExercises: [],
                             })),
                         };
                         break;
                     }
                     default: {
+                        isNeverCheck(type);
                     }
                 }
                 return updatedTraining;

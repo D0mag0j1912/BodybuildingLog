@@ -225,6 +225,12 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                 } else {
                                     newTrainingState = {
                                         ...currentTrainingState,
+                                        exercises: [...currentTrainingState.exercises].map(
+                                            (singleExercise) => ({
+                                                ...singleExercise,
+                                                availableExercises: [...allExercisesChanged.Value],
+                                            }),
+                                        ),
                                         trainingDate: new Date().toISOString(),
                                     };
                                 }
