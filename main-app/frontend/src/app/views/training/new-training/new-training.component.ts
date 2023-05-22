@@ -287,6 +287,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             {
                                 trainingState: undefined,
                                 exercises: customTraining.exercises,
+                                userId: activeTrainingSplit.userId,
                             },
                         );
                     } else {

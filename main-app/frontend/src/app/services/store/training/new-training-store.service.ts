@@ -707,6 +707,7 @@ export class NewTrainingStoreService {
                                     })),
                                 availableExercises: [],
                             })),
+                            userId: data.userId,
                         };
                         break;
                     }
