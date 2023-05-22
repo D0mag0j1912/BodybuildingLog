@@ -4,7 +4,6 @@
     [formGroup]="group">
     <ion-card class="wrapper">
         <ng-container
-            *ngIf="exercisesState$ | async as exercisesState"
             formGroupName="exerciseData">
             <ion-grid class="exercise-grid">
                 <ion-row
@@ -29,7 +28,7 @@
                             >
                                 <ion-select-option
                                     *ngFor="
-                                        let exercise of exercisesState | filterAvailableExercises: i
+                                        let exercise of exercises | filterAvailableExercises: i
                                     "
                                     [value]="exercise.name"
                                 >
@@ -72,7 +71,7 @@
                 </ion-row>
             </ion-grid>
             <bl-sets
-                [sets]="exercisesState[i]?.sets ?? []"
+                [sets]="exercises[i]?.sets ?? []"
                 [editTrainingData]="editTrainingData"
                 [exerciseIndex]="i"
                 [bodyweightControl]="bodyweightControl"
