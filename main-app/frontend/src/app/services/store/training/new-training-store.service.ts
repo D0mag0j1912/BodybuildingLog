@@ -565,7 +565,7 @@ export class NewTrainingStoreService {
         );
     }
 
-    addNewExercise(alreadyUsedExercises: string[]): Observable<void> {
+    addNewExercise(alreadyUsedExercises: string[]): Observable<NewTraining> {
         return this._exercisesStoreService.allExercisesState$.pipe(
             take(1),
             map((streamData: StreamData<Exercise[]>) =>
@@ -644,12 +644,12 @@ export class NewTrainingStoreService {
             exercises?: Exercise[];
             userId?: string;
         },
-    ): Observable<void> {
+    ): Observable<NewTraining> {
+        let updatedTraining: NewTraining;
         return this._trainingState$.pipe(
             take(1),
             withLatestFrom(this._preferencesStoreService.preferencesChanged$),
             map(([currentTrainingState, currentPreferences]: [NewTraining, Preferences]) => {
-                let updatedTraining: NewTraining;
                 switch (type) {
                     case 'getExercises': {
                         const weightUnit = currentPreferences?.weightUnit ?? DEFAULT_WEIGHT_UNIT;
@@ -717,7 +717,9 @@ export class NewTrainingStoreService {
                 }
                 return updatedTraining;
             }),
-            switchMap((updatedTraining: NewTraining) => this._saveTrainingData(updatedTraining)),
+            switchMap((updatedTraining: NewTraining) =>
+                this._saveTrainingData(updatedTraining).pipe(map((_) => updatedTraining)),
+            ),
         );
     }
 

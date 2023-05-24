@@ -277,7 +277,10 @@ export class SingleExerciseComponent implements OnDestroy {
             this._newTrainingStoreService
                 .addNewExercise(this._getAlreadyUsedExercises())
                 .pipe(takeUntil(this._unsubscribeService))
-                .subscribe((_) => this.exerciseAdded.next(event));
+                .subscribe((updatedTrainingState: NewTraining) => {
+                    this.exerciseAdded.next(event);
+                    this.exercises = [...updatedTrainingState.exercises];
+                });
         }
     }
 
