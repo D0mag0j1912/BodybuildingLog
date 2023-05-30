@@ -69,11 +69,9 @@ export class SingleExerciseComponent implements OnDestroy {
     );
 
     form = new FormArray<FormGroup<SingleExerciseFormType>>([]);
-    exercises: SingleExercise[] = [];
 
     @Input()
     set restartExercises(exercises: SingleExercise[]) {
-        this.exercises = exercises;
         if (exercises.length > 0) {
             while (this.form.length !== 0) {
                 this.form.removeAt(0);
@@ -277,10 +275,7 @@ export class SingleExerciseComponent implements OnDestroy {
             this._newTrainingStoreService
                 .addNewExercise(this._getAlreadyUsedExercises())
                 .pipe(takeUntil(this._unsubscribeService))
-                .subscribe((updatedTrainingState: NewTraining) => {
-                    this.exerciseAdded.next(event);
-                    this.exercises = [...updatedTrainingState.exercises];
-                });
+                .subscribe((_) => this.exerciseAdded.next(event));
         }
     }
 

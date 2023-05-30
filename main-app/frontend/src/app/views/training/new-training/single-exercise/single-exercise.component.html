@@ -4,6 +4,7 @@
     [formGroup]="group">
     <ion-card class="wrapper">
         <ng-container
+            *ngIf="exercisesState$ | async as exercises"
             formGroupName="exerciseData">
             <ion-grid class="exercise-grid">
                 <ion-row

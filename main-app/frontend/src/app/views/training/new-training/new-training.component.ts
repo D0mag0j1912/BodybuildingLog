@@ -205,8 +205,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 } else {
                     return this._newTrainingStoreService.trainingState$.pipe(
                         take(1),
-                        switchMap((currentTrainingState) => {
+                        switchMap((currentTrainingState: NewTraining) => {
                             let newTrainingState: NewTraining;
+                            //TODO: Fill form with training split data if used
                             if (currentTrainingState.editMode && !this.editMode) {
                                 newTrainingState = {
                                     ...EMPTY_TRAINING,
