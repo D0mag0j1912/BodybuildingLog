@@ -207,16 +207,38 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                         take(1),
                         switchMap((currentTrainingState: NewTraining) => {
                             let newTrainingState: NewTraining;
-                            //TODO: Fill form with training split data if used
+                            const exerciseNames = currentTrainingState.exercises.map(
+                                (singleExercise: SingleExercise) =>
+                                    singleExercise.exerciseData.name,
+                            );
+                            //If previous page was edit training and present page is new training
                             if (currentTrainingState.editMode && !this.editMode) {
                                 newTrainingState = {
-                                    ...EMPTY_TRAINING,
-                                    exercises: [createEmptyExercise(allExercisesChanged.Value)],
-                                    userId: currentTrainingState?.userId ?? '',
-                                    trainingDate: new Date().toISOString(),
+                                    ...currentTrainingState,
+                                    editMode: false,
+                                    exercises: [...currentTrainingState.exercises].map(
+                                        (singleExercise: SingleExercise) => {
+                                            const filteredExerciseNames = exerciseNames.filter(
+                                                (exerciseName: string) =>
+                                                    exerciseName !==
+                                                    singleExercise.exerciseData.name,
+                                            );
+                                            return {
+                                                ...singleExercise,
+                                                availableExercises:
+                                                    allExercisesChanged.Value.filter(
+                                                        (availableExercise: Exercise) =>
+                                                            filteredExerciseNames.indexOf(
+                                                                availableExercise.name,
+                                                            ) === -1,
+                                                    ),
+                                            };
+                                        },
+                                    ),
                                 };
+                                //If present page is new training
                             } else if (!currentTrainingState.editMode && !this.editMode) {
-                                if (!currentTrainingState.exercises[0]?.exerciseData?.name) {
+                                if (!currentTrainingState.exercises.length) {
                                     newTrainingState = {
                                         ...EMPTY_TRAINING,
                                         exercises: [createEmptyExercise(allExercisesChanged.Value)],
@@ -227,12 +249,24 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                     newTrainingState = {
                                         ...currentTrainingState,
                                         exercises: [...currentTrainingState.exercises].map(
-                                            (singleExercise) => ({
-                                                ...singleExercise,
-                                                availableExercises: [...allExercisesChanged.Value],
-                                            }),
+                                            (singleExercise: SingleExercise) => {
+                                                const filteredExerciseNames = exerciseNames.filter(
+                                                    (exerciseName: string) =>
+                                                        exerciseName !==
+                                                        singleExercise.exerciseData.name,
+                                                );
+                                                return {
+                                                    ...singleExercise,
+                                                    availableExercises:
+                                                        allExercisesChanged.Value.filter(
+                                                            (availableExercise: Exercise) =>
+                                                                filteredExerciseNames.indexOf(
+                                                                    availableExercise.name,
+                                                                ) === -1,
+                                                        ),
+                                                };
+                                            },
                                         ),
-                                        trainingDate: new Date().toISOString(),
                                     };
                                 }
                             }
