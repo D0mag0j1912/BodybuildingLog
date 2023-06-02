@@ -230,7 +230,6 @@
             "search_exercises": "Search exercises",
             "set_number": "Set number",
             "training_split_created": "Training split created",
-            "currently_used": "Currently used",
             "alert_message": "You are currently using training split which doesn't have exercises for {{ dayName }}. Would you like to add these exercises into currently used training split?",
             "errors": {
                 "at_least_one_training": "At least one training is required",

@@ -231,7 +231,6 @@
             "search_exercises": "Pretraži vježbe",
             "set_number": "Broj setova",
             "training_split_created": "Trening split je kreiran",
-            "currently_used": "Trenutno se koristi",
             "alert_message": "Trenutno koristite trening split koji nema zabilježenih vježbi za {{ dayName }}. Je li želite dodati ove vježbe u trenutno korišteni trening split?",
             "errors": {
                 "at_least_one_training": "Morate unijeti barem jedan trening",

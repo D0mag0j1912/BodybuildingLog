@@ -15,7 +15,7 @@ export class TrainingSplitComponent {
     isFirst = false;
 
     @Input()
-    isUsed = false;
+    selectedTrainingSplit: string;
 
     @Output()
     editTrainingSplit = new EventEmitter<TrainingSplit>();
@@ -34,7 +34,9 @@ export class TrainingSplitComponent {
         this.deleteTrainingSplit.emit(this.trainingSplit._id);
     }
 
-    useTrainingSplit(): void {
-        this.emitTrainingSplit.emit(this.trainingSplit);
+    onSelectedTrainingSplitChange(isChecked: boolean): void {
+        if (isChecked) {
+            this.emitTrainingSplit.emit(this.trainingSplit);
+        }
     }
 }

@@ -37,6 +37,7 @@ ion-card-header {
 
         .actions {
             display: flex;
+            align-items: center;
             column-gap: 10px;
             margin-left: auto;
 
@@ -45,23 +46,6 @@ ion-card-header {
                 width: 28px;
             }
         }
-    }
-}
-
-.training-split-content {
-    position: relative;
-    padding-bottom: 30px;
-
-    .currently-used {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        font-size: 13px;
-        line-height: 16px;
-        background-color: var(--ion-color-primary);
-        color: white;
-        padding: 5px;
-        border-top-left-radius: 8px;
     }
 }
 
