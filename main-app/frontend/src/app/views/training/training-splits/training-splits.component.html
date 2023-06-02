@@ -32,7 +32,7 @@
                         *ngFor="let split of state.Value; let first = first"
                         [trainingSplit]="split"
                         [isFirst]="first"
-                        [isUsed]="split._id === (currentPreferences$ | async).trainingSplitId"
+                        [selectedTrainingSplit]="(split._id === (currentPreferences$ | async).trainingSplitId) ? split._id : undefined"
                         (editTrainingSplit)="openTrainingSplitModal($event)"
                         (deleteTrainingSplit)="onDeleteTrainingSplit($event)"
                         (emitTrainingSplit)="onEmitTrainingSplitId($event)"></bl-training-split>

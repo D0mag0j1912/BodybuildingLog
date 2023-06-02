@@ -15,7 +15,7 @@ export class TrainingSplitComponent {
     isFirst = false;
 
     @Input()
-    isUsed = false;
+    selectedTrainingSplit: string;
 
     @Output()
     editTrainingSplit = new EventEmitter<TrainingSplit>();
