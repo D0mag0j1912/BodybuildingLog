@@ -5,6 +5,6 @@ import { SingleExerciseDto as SingleExercise } from '../../../../api/models/sing
 @Pipe({ name: 'filterAvailableExercises' })
 export class FilterAvailableExercisesPipe implements PipeTransform {
     transform(currentExerciseState: SingleExercise[], index: number): Exercise[] {
-        return currentExerciseState[index].availableExercises;
+        return currentExerciseState[index]?.availableExercises ?? [];
     }
 }

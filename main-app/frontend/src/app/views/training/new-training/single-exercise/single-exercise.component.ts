@@ -10,7 +10,7 @@ import {
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonSelect } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, EMPTY } from 'rxjs';
 import { delay, map, switchMap, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { ExerciseDto as Exercise } from '../../../../../api/models/exercise-dto';
 import { NewTrainingDto as NewTraining } from '../../../../../api/models/new-training-dto';
@@ -279,41 +279,29 @@ export class SingleExerciseComponent implements OnDestroy {
         }
     }
 
-    async deleteExercise(indexExercise: number, exerciseName: string): Promise<void> {
-        if (exerciseName) {
-            this._newTrainingStoreService.trainingState$
-                .pipe(
-                    take(1),
-                    switchMap((currentTrainingState: NewTraining) =>
-                        this._newTrainingStoreService.deleteExercise(
-                            currentTrainingState,
-                            exerciseName,
-                        ),
+    deleteExercise(indexExercise: number, exerciseName: string): void {
+        this._newTrainingStoreService.trainingState$
+            .pipe(
+                take(1),
+                switchMap((currentTrainingState: NewTraining) =>
+                    this._newTrainingStoreService.deleteExercise(
+                        currentTrainingState,
+                        exerciseName,
+                        exerciseName ? undefined : indexExercise,
                     ),
-                    switchMap((data: [NewTraining, Exercise[]]) => {
-                        this.form.removeAt(indexExercise);
+                ),
+                switchMap((data: [NewTraining, Exercise[]]) => {
+                    this.form.removeAt(indexExercise);
+                    if (exerciseName) {
                         return this._newTrainingStoreService.pushToAvailableExercises(
                             data[0],
                             data[1],
                         );
-                    }),
-                )
-                .subscribe();
-        } else {
-            this._newTrainingStoreService.trainingState$
-                .pipe(
-                    take(1),
-                    switchMap((currentTrainingState: NewTraining) =>
-                        this._newTrainingStoreService.deleteExercise(
-                            currentTrainingState,
-                            null,
-                            indexExercise,
-                        ),
-                    ),
-                    takeUntil(this._unsubscribeService),
-                )
-                .subscribe((_) => this.form.removeAt(indexExercise));
-        }
+                    }
+                    return EMPTY;
+                }),
+            )
+            .subscribe();
     }
 
     getExercises(): FormGroup<SingleExerciseFormType>[] {
