@@ -28,44 +28,30 @@ export const trainingSplitsReducer = createReducer(
             Value: [...state.trainingSplitList.Value, action.trainingSplit],
         },
     })),
-    on(TrainingSplitActions.editTrainingSplitSuccess, (state, action) => {
-        if (action.trainingState) {
-            return {
-                ...state,
-                activeTrainingSplit:
-                    state.activeTrainingSplit?._id === action.trainingSplit._id
-                        ? {
-                              ...action.trainingSplit,
-                          }
-                        : { ...state.activeTrainingSplit },
-            };
-        } else {
-            return {
-                ...state,
-                trainingSplitList: {
-                    ...state.trainingSplitList,
-                    Value: [...state.trainingSplitList.Value].map(
-                        (trainingSplit: TrainingSplit) => {
-                            if (trainingSplit._id === action.trainingSplit._id) {
-                                return {
-                                    ...trainingSplit,
-                                    name: action.trainingSplit.name,
-                                    trainings: action.trainingSplit.trainings,
-                                };
-                            }
-                            return trainingSplit;
-                        },
-                    ),
+    on(TrainingSplitActions.editTrainingSplitSuccess, (state, action) => ({
+        ...state,
+        trainingSplitList: {
+            ...state.trainingSplitList,
+            Value: [...(state.trainingSplitList?.Value ?? [])].map(
+                (trainingSplit: TrainingSplit) => {
+                    if (trainingSplit._id === action.trainingSplit._id) {
+                        return {
+                            ...trainingSplit,
+                            name: action.trainingSplit.name,
+                            trainings: action.trainingSplit.trainings,
+                        };
+                    }
+                    return trainingSplit;
                 },
-                activeTrainingSplit:
-                    state.activeTrainingSplit?._id === action.trainingSplit._id
-                        ? {
-                              ...action.trainingSplit,
-                          }
-                        : { ...state.activeTrainingSplit },
-            };
-        }
-    }),
+            ),
+        },
+        activeTrainingSplit:
+            state.activeTrainingSplit?._id === action.trainingSplit._id
+                ? {
+                      ...action.trainingSplit,
+                  }
+                : { ...state.activeTrainingSplit },
+    })),
     on(TrainingSplitActions.deleteTrainingSplit, (state, action) => ({
         ...state,
         trainingSplitList: {
