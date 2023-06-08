@@ -324,10 +324,10 @@ export class NewTrainingStoreService {
         updatedTraining = {
             ...updatedTraining,
             exercises: [...updatedTraining.exercises].map((exercise) => {
-                const isDeletedExerciseInAE = exercise.availableExercises.find(
+                const isDeletedExerciseInAvailableExercises = exercise.availableExercises.find(
                     (exercise) => exercise._id === toBeAddedExercise[0]._id,
                 );
-                if (!isDeletedExerciseInAE) {
+                if (!isDeletedExerciseInAvailableExercises) {
                     return {
                         ...exercise,
                         availableExercises: [
