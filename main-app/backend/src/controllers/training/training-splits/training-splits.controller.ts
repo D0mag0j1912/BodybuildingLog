@@ -110,7 +110,7 @@ export class TrainingSplitsController {
         description: 'Unauthorized',
     })
     @Put(':id')
-    async updateTraining(
+    async updateTrainingSplit(
         @GET_USER() user: UserDto,
         @Param('id') trainingSplitId: string,
         @Body() updatedTrainingSplit: TrainingSplitDto,
