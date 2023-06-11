@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Injectable()
-export class TrainingSplitSuccessService {
+export class TrainingSplitsSuccessService {
     private _closeModal$ = new Subject<void>();
     closeModal$ = this._closeModal$.asObservable();
 

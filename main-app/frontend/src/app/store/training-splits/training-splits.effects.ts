@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY, combineLatest, of } from 'rxjs';
 import { catchError, concatMap, filter, map, switchMap, tap } from 'rxjs/operators';
 import { mapStreamData } from '../../helpers/training/past-trainings/map-stream-data.helper';
-import { TrainingSplitSuccessService } from '../../services/helper/training-split-success.service';
+import { TrainingSplitsSuccessService } from '../../services/helper/training-split-success.service';
 import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-split-dto';
 import * as CommonActions from '../common/common.actions';
 import { GeneralResponseDto as GeneralResponse } from '../../../api/models/general-response-dto';
@@ -232,7 +232,7 @@ export class TrainingSplitsEffects {
 
     constructor(
         private _swaggerTrainingSplitsService: SwaggerTrainingSplitsService,
-        private _trainingSplitSuccessService: TrainingSplitSuccessService,
+        private _trainingSplitSuccessService: TrainingSplitsSuccessService,
         private _preferencesService: PreferencesService,
         private _newTrainingService: NewTrainingService,
         private _actions$: Actions,

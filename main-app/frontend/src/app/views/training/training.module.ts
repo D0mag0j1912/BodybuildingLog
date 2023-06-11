@@ -8,7 +8,7 @@ import { FeatureKeys } from '../../constants/enums/feature-keys.enum';
 import { SanitizeHtmlModule } from '../../pipes/shared/sanitize-html/sanitize-html.module';
 import { TrainingSplitsEffects } from '../../store/training-splits/training-splits.effects';
 import * as TrainingSplitsReducers from '../../store/training-splits/training-splits.reducers';
-import { TrainingSplitSuccessService } from '../../services/helper/training-split-success.service';
+import { TrainingSplitsSuccessService } from '../../services/helper/training-split-success.service';
 import { TrainingSplitsFacadeService } from '../../store/training-splits/training-splits-facade.service';
 import { TrainingComponent } from './training.component';
 import { TrainingRoutingModule } from './training-routing.module';
@@ -21,7 +21,7 @@ const IMPORTS = [TrainingRoutingModule];
 
 const PIPES_MODULES = [SanitizeHtmlModule];
 
-const PROVIDERS = [TrainingSplitSuccessService, TrainingSplitsFacadeService];
+const PROVIDERS = [TrainingSplitsSuccessService, TrainingSplitsFacadeService];
 
 @NgModule({
     declarations: [...COMPONENTS],
