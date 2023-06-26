@@ -136,12 +136,17 @@ export class CreateTrainingSplitComponent implements OnInit {
                         if (dayFound) {
                             return {
                                 ...training,
-                                exercises: [...training.exercises].map(
-                                    (exercise: Exercise, indexExercise: number) => ({
+                                exercises: [...training.exercises]
+                                    .map((exercise: Exercise, indexExercise: number) => ({
                                         ...exercise,
                                         numberOfSets: dayFound.sets[indexExercise],
-                                    }),
-                                ),
+                                    }))
+                                    .map((exercise: Exercise) => ({
+                                        ...exercise,
+                                        selectedSetCategories: Array(exercise.numberOfSets).fill(
+                                            exercise.selectedSetCategories[0],
+                                        ),
+                                    })),
                             };
                         }
                         return training;
