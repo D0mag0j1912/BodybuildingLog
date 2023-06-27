@@ -682,64 +682,67 @@ export class NewTrainingStoreService {
                         break;
                     }
                     case 'useTrainingSplit': {
-                        const trainingSplitExercisesIds = data.exercises.map(
-                            (value: Exercise) => value._id,
-                        );
                         updatedTraining = {
                             ...currentTrainingState,
-                            exercises: [...data.exercises].map((exercise: Exercise) => ({
-                                total: 0,
-                                exerciseData: { ...exercise },
-                                sets: Array.from({ length: exercise.numberOfSets }).map(
-                                    (_, setArrayIndex: number) => {
-                                        const selectedSetCategory =
-                                            exercise.selectedSetCategories[0];
-                                        switch (selectedSetCategory) {
-                                            case 'freeWeighted': {
-                                                return {
-                                                    setNumber: setArrayIndex + 1,
-                                                    weight: null,
-                                                    reps: null,
-                                                };
+                            exercises: [...data.exercises].map((exercise: Exercise) => {
+                                const trainingSplitExercisesIds = data.exercises
+                                    .map((value: Exercise) => value._id)
+                                    .filter((id: string) => id !== exercise._id);
+                                return {
+                                    total: 0,
+                                    exerciseData: { ...exercise },
+                                    sets: Array.from({ length: exercise.numberOfSets }).map(
+                                        (_, setArrayIndex: number) => {
+                                            const selectedSetCategory =
+                                                exercise.selectedSetCategories[0];
+                                            switch (selectedSetCategory) {
+                                                case 'freeWeighted': {
+                                                    return {
+                                                        setNumber: setArrayIndex + 1,
+                                                        weight: null,
+                                                        reps: null,
+                                                    };
+                                                }
+                                                case 'dynamicBodyweight': {
+                                                    return {
+                                                        setNumber: setArrayIndex + 1,
+                                                        reps: null,
+                                                    };
+                                                }
+                                                case 'dynamicWeighted': {
+                                                    return {
+                                                        setNumber: setArrayIndex + 1,
+                                                        weight: null,
+                                                        reps: null,
+                                                    };
+                                                }
+                                                case 'staticBodyweight': {
+                                                    return {
+                                                        setNumber: setArrayIndex + 1,
+                                                        duration: null,
+                                                    };
+                                                }
+                                                case 'staticWeighted': {
+                                                    return {
+                                                        setNumber: setArrayIndex + 1,
+                                                        weight: null,
+                                                        duration: null,
+                                                    };
+                                                }
+                                                default: {
+                                                    isNeverCheck(selectedSetCategory);
+                                                }
                                             }
-                                            case 'dynamicBodyweight': {
-                                                return {
-                                                    setNumber: setArrayIndex + 1,
-                                                    reps: null,
-                                                };
-                                            }
-                                            case 'dynamicWeighted': {
-                                                return {
-                                                    setNumber: setArrayIndex + 1,
-                                                    weight: null,
-                                                    reps: null,
-                                                };
-                                            }
-                                            case 'staticBodyweight': {
-                                                return {
-                                                    setNumber: setArrayIndex + 1,
-                                                    duration: null,
-                                                };
-                                            }
-                                            case 'staticWeighted': {
-                                                return {
-                                                    setNumber: setArrayIndex + 1,
-                                                    weight: null,
-                                                    duration: null,
-                                                };
-                                            }
-                                            default: {
-                                                isNeverCheck(selectedSetCategory);
-                                            }
-                                        }
-                                    },
-                                ),
-                                availableExercises: data.allExercises.filter(
-                                    (availableExercise: Exercise) =>
-                                        trainingSplitExercisesIds.indexOf(availableExercise._id) ===
-                                        -1,
-                                ),
-                            })),
+                                        },
+                                    ),
+                                    availableExercises: data.allExercises.filter(
+                                        (availableExercise: Exercise) =>
+                                            !trainingSplitExercisesIds.includes(
+                                                availableExercise._id,
+                                            ),
+                                    ),
+                                };
+                            }),
                             bodyweight: null,
                             editMode: false,
                             userId: data.userId,
