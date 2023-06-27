@@ -3,6 +3,7 @@ import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-
 import { StreamData } from '../../models/common/common.model';
 import { PreferencesDto as Preferences } from '../../../api/models/preferences-dto';
 import { PreferenceChangedType } from '../../models/common/preferences.type';
+import { NewTrainingDto as NewTraining } from '../../../api/models/new-training-dto';
 
 /**
  * Create/Edit training split
@@ -24,12 +25,12 @@ export const createTrainingSplitSuccess = createAction(
 
 export const editTrainingSplit = createAction(
     '[Training splits] Edit training split',
-    props<{ id: string; trainingSplit: TrainingSplit }>(),
+    props<{ id: string; trainingSplit: TrainingSplit; trainingState?: NewTraining }>(),
 );
 
 export const editTrainingSplitSuccess = createAction(
     '[Training splits] Edit training split success',
-    props<{ trainingSplit: TrainingSplit }>(),
+    props<{ trainingSplit: TrainingSplit; trainingState: NewTraining }>(),
 );
 
 /**

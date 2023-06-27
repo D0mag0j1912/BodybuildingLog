@@ -324,10 +324,10 @@ export class NewTrainingStoreService {
         updatedTraining = {
             ...updatedTraining,
             exercises: [...updatedTraining.exercises].map((exercise) => {
-                const isDeletedExerciseInAE = exercise.availableExercises.find(
+                const isDeletedExerciseInAvailableExercises = exercise.availableExercises.find(
                     (exercise) => exercise._id === toBeAddedExercise[0]._id,
                 );
-                if (!isDeletedExerciseInAE) {
+                if (!isDeletedExerciseInAvailableExercises) {
                     return {
                         ...exercise,
                         availableExercises: [
@@ -643,6 +643,7 @@ export class NewTrainingStoreService {
             trainingState: NewTraining;
             exercises?: Exercise[];
             userId?: string;
+            allExercises?: Exercise[];
         },
     ): Observable<NewTraining> {
         let updatedTraining: NewTraining;
@@ -660,10 +661,6 @@ export class NewTrainingStoreService {
                                 weightUnit,
                                 setDurationUnit: currentPreferences.setDurationUnit,
                             },
-                            exercises: [
-                                ...currentTrainingState.exercises,
-                                createEmptyExercise(data.exercises),
-                            ],
                         };
 
                         break;
@@ -687,26 +684,67 @@ export class NewTrainingStoreService {
                     case 'useTrainingSplit': {
                         updatedTraining = {
                             ...currentTrainingState,
-                            exercises: [...data.exercises].map((exercise: Exercise) => ({
-                                ...currentTrainingState.exercises[0],
-                                exerciseData: {
-                                    ...exercise,
-                                    selectedSetCategories: Array(exercise.numberOfSets).fill(
-                                        exercise.selectedSetCategories[0],
+                            exercises: [...data.exercises].map((exercise: Exercise) => {
+                                const trainingSplitExercisesIds = data.exercises
+                                    .map((value: Exercise) => value._id)
+                                    .filter((id: string) => id !== exercise._id);
+                                return {
+                                    total: 0,
+                                    exerciseData: { ...exercise },
+                                    sets: Array.from({ length: exercise.numberOfSets }).map(
+                                        (_, setArrayIndex: number) => {
+                                            const selectedSetCategory =
+                                                exercise.selectedSetCategories[0];
+                                            switch (selectedSetCategory) {
+                                                case 'freeWeighted': {
+                                                    return {
+                                                        setNumber: setArrayIndex + 1,
+                                                        weight: null,
+                                                        reps: null,
+                                                    };
+                                                }
+                                                case 'dynamicBodyweight': {
+                                                    return {
+                                                        setNumber: setArrayIndex + 1,
+                                                        reps: null,
+                                                    };
+                                                }
+                                                case 'dynamicWeighted': {
+                                                    return {
+                                                        setNumber: setArrayIndex + 1,
+                                                        weight: null,
+                                                        reps: null,
+                                                    };
+                                                }
+                                                case 'staticBodyweight': {
+                                                    return {
+                                                        setNumber: setArrayIndex + 1,
+                                                        duration: null,
+                                                    };
+                                                }
+                                                case 'staticWeighted': {
+                                                    return {
+                                                        setNumber: setArrayIndex + 1,
+                                                        weight: null,
+                                                        duration: null,
+                                                    };
+                                                }
+                                                default: {
+                                                    isNeverCheck(selectedSetCategory);
+                                                }
+                                            }
+                                        },
                                     ),
-                                },
-                                sets: Array(exercise.numberOfSets)
-                                    .fill({
-                                        setNumber: 1,
-                                        weight: undefined,
-                                        reps: undefined,
-                                    } as Set)
-                                    .map((set: Set, index: number) => ({
-                                        ...set,
-                                        setNumber: index + 1,
-                                    })),
-                                availableExercises: [],
-                            })),
+                                    availableExercises: data.allExercises.filter(
+                                        (availableExercise: Exercise) =>
+                                            !trainingSplitExercisesIds.includes(
+                                                availableExercise._id,
+                                            ),
+                                    ),
+                                };
+                            }),
+                            bodyweight: null,
+                            editMode: false,
                             userId: data.userId,
                         };
                         break;

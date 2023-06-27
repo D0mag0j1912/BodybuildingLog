@@ -24,6 +24,7 @@ import {
     take,
     takeUntil,
     tap,
+    withLatestFrom,
 } from 'rxjs/operators';
 import { Storage } from '@capacitor/storage';
 import { TranslateService } from '@ngx-translate/core';
@@ -49,7 +50,6 @@ import {
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
-import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
 import { ExercisesStoreService } from '../../../services/store/training/exercises-store.service';
@@ -57,13 +57,14 @@ import { SetCategoryType } from '../../../models/training/new-training/single-ex
 import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 import { convertWeightUnit } from '../../../helpers/training/convert-units.helper';
 import { WeightUnitType } from '../../../models/common/preferences.type';
-import { GeneralResponseDto as GeneralResponse } from '../../../../api/models/general-response-dto';
 import { ExercisesService } from '../../../services/api/training/exercises.service';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
 import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
 import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
 import { DAYS_OF_WEEK } from '../../../helpers/days-of-week.helper';
 import { CustomTrainingDto as CustomTraining } from '../../../../api/models/custom-training-dto';
+import { GeneralResponseDto as GeneralResponse } from '../../../../api/models/general-response-dto';
+import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
 import { SingleExerciseComponent } from './single-exercise/single-exercise.component';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
@@ -120,11 +121,13 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }),
     );
 
+    activeTrainingSplit: TrainingSplit;
     currentWeightUnit: WeightUnitType;
     formattedTodayDate: string;
     editTrainingData: NewTraining;
     bodyweightValidators = [Validators.min(30), Validators.max(300)];
     bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
+    allExercises: StreamData<Exercise[]>;
 
     newTrainingForm = new FormGroup({
         bodyweight: new FormControl(0, {
@@ -167,7 +170,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     ) {}
 
     ionViewWillEnter(): void {
-        let allExercisesChanged: StreamData<Exercise[]>;
         this.currentWeightUnit = this._preferencesStoreService.getPreferences().weightUnit;
 
         this.trainingStream$ = this._route.params.pipe(
@@ -182,7 +184,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             return this._exercisesService.getExercises();
                         }
                     }),
-                    tap((exercisesData) => (allExercisesChanged = exercisesData)),
+                    tap(
+                        (allExercises: StreamData<Exercise[]>) =>
+                            (this.allExercises = allExercises),
+                    ),
                     map((_) => params),
                 ),
             ),
@@ -205,81 +210,53 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 } else {
                     return this._newTrainingStoreService.trainingState$.pipe(
                         take(1),
-                        switchMap((currentTrainingState: NewTraining) => {
-                            let newTrainingState: NewTraining;
-                            const exerciseNames = currentTrainingState.exercises.map(
-                                (singleExercise: SingleExercise) =>
-                                    singleExercise.exerciseData.name,
-                            );
-                            //If previous page was edit training and present page is new training
-                            if (currentTrainingState.editMode && !this.editMode) {
-                                newTrainingState = {
-                                    ...currentTrainingState,
-                                    editMode: false,
-                                    exercises: [...currentTrainingState.exercises].map(
-                                        (singleExercise: SingleExercise) => {
-                                            const filteredExerciseNames = exerciseNames.filter(
-                                                (exerciseName: string) =>
-                                                    exerciseName !==
-                                                    singleExercise.exerciseData.name,
-                                            );
-                                            return {
-                                                ...singleExercise,
-                                                availableExercises:
-                                                    allExercisesChanged.Value.filter(
-                                                        (availableExercise: Exercise) =>
-                                                            filteredExerciseNames.indexOf(
-                                                                availableExercise.name,
-                                                            ) === -1,
-                                                    ),
-                                            };
+                        withLatestFrom(
+                            this._trainingSplitsFacadeService.selectActiveTrainingSplit(),
+                        ),
+                        switchMap(
+                            ([currentTrainingState, activeTrainingSplit]: [
+                                NewTraining,
+                                TrainingSplit,
+                            ]) => {
+                                let newTrainingState: NewTraining;
+                                if (activeTrainingSplit) {
+                                    this.activeTrainingSplit = activeTrainingSplit;
+                                    const todaysDayIndex = getDay(new Date());
+                                    const todaysDayName = DAYS_OF_WEEK.find(
+                                        (dayData) => dayData.index === todaysDayIndex,
+                                    ).day;
+                                    const customTraining = activeTrainingSplit.trainings.find(
+                                        (training: CustomTraining) =>
+                                            training.dayOfWeek === todaysDayName,
+                                    );
+                                    return this._newTrainingStoreService.updateTrainingState(
+                                        'useTrainingSplit',
+                                        {
+                                            trainingState: undefined,
+                                            exercises: customTraining.exercises,
+                                            userId: activeTrainingSplit.userId,
+                                            allExercises: this.allExercises.Value,
                                         },
-                                    ),
-                                };
-                                //If present page is new training
-                            } else if (!currentTrainingState.editMode && !this.editMode) {
-                                if (!currentTrainingState.exercises.length) {
+                                    );
+                                } else {
                                     newTrainingState = {
                                         ...EMPTY_TRAINING,
-                                        exercises: [createEmptyExercise(allExercisesChanged.Value)],
+                                        exercises: [createEmptyExercise(this.allExercises.Value)],
                                         userId: currentTrainingState?.userId ?? '',
                                         trainingDate: new Date().toISOString(),
                                     };
-                                } else {
-                                    newTrainingState = {
-                                        ...currentTrainingState,
-                                        exercises: [...currentTrainingState.exercises].map(
-                                            (singleExercise: SingleExercise) => {
-                                                const filteredExerciseNames = exerciseNames.filter(
-                                                    (exerciseName: string) =>
-                                                        exerciseName !==
-                                                        singleExercise.exerciseData.name,
-                                                );
-                                                return {
-                                                    ...singleExercise,
-                                                    availableExercises:
-                                                        allExercisesChanged.Value.filter(
-                                                            (availableExercise: Exercise) =>
-                                                                filteredExerciseNames.indexOf(
-                                                                    availableExercise.name,
-                                                                ) === -1,
-                                                        ),
-                                                };
-                                            },
-                                        ),
-                                    };
+                                    return this._newTrainingStoreService.updateTrainingState(
+                                        'newTrainingInit',
+                                        { trainingState: newTrainingState },
+                                    );
                                 }
-                            }
-                            return this._newTrainingStoreService.updateTrainingState(
-                                'newTrainingInit',
-                                { trainingState: newTrainingState },
-                            );
-                        }),
+                            },
+                        ),
                     );
                 }
             }),
             switchMap((_) =>
-                of(allExercisesChanged).pipe(
+                of(this.allExercises).pipe(
                     tap((_) => {
                         this._formInit();
                         if (this.editTrainingData) {
@@ -304,34 +281,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                 ),
             ),
         );
-
-        this._trainingSplitsFacadeService
-            .selectActiveTrainingSplit()
-            .pipe(
-                switchMap((activeTrainingSplit: TrainingSplit) => {
-                    if (activeTrainingSplit) {
-                        const todaysDayIndex = getDay(new Date());
-                        const todaysDayName = DAYS_OF_WEEK.find(
-                            (dayData) => dayData.index === todaysDayIndex,
-                        ).day;
-                        const customTraining = activeTrainingSplit.trainings.find(
-                            (training: CustomTraining) => training.dayOfWeek === todaysDayName,
-                        );
-                        return this._newTrainingStoreService.updateTrainingState(
-                            'useTrainingSplit',
-                            {
-                                trainingState: undefined,
-                                exercises: customTraining.exercises,
-                                userId: activeTrainingSplit.userId,
-                            },
-                        );
-                    } else {
-                        return EMPTY;
-                    }
-                }),
-                takeUntil(this._unsubscribeService),
-            )
-            .subscribe();
 
         this._changeDetectorRef.detectChanges();
     }
@@ -358,30 +307,68 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         if (!this.newTrainingForm.valid || !this._isExerciseFormValid()) {
             return;
         }
+        //TODO: Remove loading
         this.isApiLoading = true;
 
         this._newTrainingStoreService.trainingState$
             .pipe(
                 take(1),
-                switchMap((trainingData: NewTraining) => {
+                switchMap((trainingState: NewTraining) => {
                     if (this.editMode) {
                         return this._newTrainingService.updateTraining(
-                            trainingData,
-                            this.editTrainingData._id,
+                            trainingState,
+                            trainingState._id,
                         );
                     } else {
-                        delete trainingData._id;
-                        return this._newTrainingService.addTraining(trainingData);
+                        return of(trainingState);
                     }
                 }),
                 finalize(() => (this.isApiLoading = false)),
             )
-            .subscribe(async (response: GeneralResponse) => {
-                await this._toastControllerService.displayToast({
-                    message: this._translateService.instant(response.Message),
-                    duration: MESSAGE_DURATION.GENERAL,
-                    color: 'primary',
-                });
+            .subscribe(async (data: GeneralResponse | NewTraining) => {
+                if ('exercises' in data) {
+                    this.activeTrainingSplit = {
+                        ...this.activeTrainingSplit,
+                        trainings: [...this.activeTrainingSplit.trainings].map(
+                            (customTraining: CustomTraining) => {
+                                const todaysDayIndex: number = getDay(new Date());
+                                const todaysDayName: CustomTraining['dayOfWeek'] =
+                                    DAYS_OF_WEEK.find(
+                                        (dayData) => dayData.index === todaysDayIndex,
+                                    ).day;
+                                if (todaysDayName === customTraining.dayOfWeek) {
+                                    return {
+                                        ...customTraining,
+                                        exercises: [...data.exercises].map(
+                                            (singleExercise: SingleExercise) => ({
+                                                ...singleExercise.exerciseData,
+                                                numberOfSets: singleExercise.sets.length,
+                                            }),
+                                        ),
+                                    };
+                                }
+                                return customTraining;
+                            },
+                        ),
+                    };
+                    const facadeTrainingState: NewTraining = this.editMode
+                        ? {
+                              ...data,
+                              _id: this.editTrainingData._id,
+                          }
+                        : { ...data };
+                    this._trainingSplitsFacadeService.editTrainingSplit(
+                        this.activeTrainingSplit._id,
+                        this.activeTrainingSplit,
+                        facadeTrainingState,
+                    );
+                } else {
+                    await this._toastControllerService.displayToast({
+                        message: this._translateService.instant(data.Message),
+                        duration: MESSAGE_DURATION.GENERAL,
+                        color: 'primary',
+                    });
+                }
             });
     }
 

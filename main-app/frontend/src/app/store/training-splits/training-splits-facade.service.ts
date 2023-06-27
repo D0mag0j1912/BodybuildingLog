@@ -6,6 +6,7 @@ import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-
 import { StreamData } from '../../models/common/common.model';
 import { PreferencesDto as Preferences } from '../../../api/models/preferences-dto';
 import { PreferenceChangedType } from '../../models/common/preferences.type';
+import { NewTrainingDto as NewTraining } from '../../../api/models/new-training-dto';
 import * as TrainingSplitActions from './training-splits.actions';
 import { selectActiveTrainingSplit, selectTrainingSplitList } from './training-splits.selectors';
 
@@ -40,8 +41,14 @@ export class TrainingSplitsFacadeService {
         this._store.dispatch(TrainingSplitActions.createTrainingSplit({ trainingSplit }));
     }
 
-    editTrainingSplit(id: string, trainingSplit: TrainingSplit): void {
-        this._store.dispatch(TrainingSplitActions.editTrainingSplit({ id, trainingSplit }));
+    editTrainingSplit(id: string, trainingSplit: TrainingSplit, trainingState?: NewTraining): void {
+        this._store.dispatch(
+            TrainingSplitActions.editTrainingSplit({
+                id,
+                trainingSplit,
+                trainingState,
+            }),
+        );
     }
 
     deleteTrainingSplit(id: string): void {

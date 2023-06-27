@@ -32,16 +32,18 @@ export const trainingSplitsReducer = createReducer(
         ...state,
         trainingSplitList: {
             ...state.trainingSplitList,
-            Value: [...state.trainingSplitList.Value].map((trainingSplit: TrainingSplit) => {
-                if (trainingSplit._id === action.trainingSplit._id) {
-                    return {
-                        ...trainingSplit,
-                        name: action.trainingSplit.name,
-                        trainings: action.trainingSplit.trainings,
-                    };
-                }
-                return trainingSplit;
-            }),
+            Value: [...(state.trainingSplitList?.Value ?? [])].map(
+                (trainingSplit: TrainingSplit) => {
+                    if (trainingSplit._id === action.trainingSplit._id) {
+                        return {
+                            ...trainingSplit,
+                            name: action.trainingSplit.name,
+                            trainings: action.trainingSplit.trainings,
+                        };
+                    }
+                    return trainingSplit;
+                },
+            ),
         },
         activeTrainingSplit:
             state.activeTrainingSplit?._id === action.trainingSplit._id
