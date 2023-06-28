@@ -35,8 +35,6 @@ export class TrainingSplitComponent {
     }
 
     onSelectedTrainingSplitChange(isChecked: boolean): void {
-        if (isChecked) {
-            this.emitTrainingSplit.emit(this.trainingSplit);
-        }
+        this.emitTrainingSplit.emit(isChecked ? this.trainingSplit : undefined);
     }
 }
