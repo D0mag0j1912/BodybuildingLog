@@ -81,8 +81,8 @@ export class TrainingSplitsComponent implements OnInit {
             .subscribe((preferences: Preferences) => {
                 const apiPreferences = {
                     ...preferences,
-                    trainingSplitId: trainingSplit._id,
-                };
+                    trainingSplitId: trainingSplit ? trainingSplit._id : undefined,
+                } as Preferences;
                 this._trainingSplitsFacadeService.setTrainingSplitAsActive(
                     apiPreferences,
                     'trainingSplit',
