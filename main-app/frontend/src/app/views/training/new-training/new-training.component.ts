@@ -219,8 +219,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                 TrainingSplit,
                             ]) => {
                                 let newTrainingState: NewTraining;
+                                this.activeTrainingSplit = activeTrainingSplit;
                                 if (activeTrainingSplit) {
-                                    this.activeTrainingSplit = activeTrainingSplit;
                                     const todaysDayIndex = getDay(new Date());
                                     const todaysDayName = DAYS_OF_WEEK.find(
                                         (dayData) => dayData.index === todaysDayIndex,
@@ -320,49 +320,67 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                             trainingState._id,
                         );
                     } else {
-                        return of(trainingState);
+                        if (!this.activeTrainingSplit) {
+                            const { _id, ...rest } = trainingState;
+                            return this._newTrainingService.addTraining(rest);
+                        } else {
+                            return of(trainingState);
+                        }
                     }
                 }),
                 finalize(() => (this.isApiLoading = false)),
             )
             .subscribe(async (data: GeneralResponse | NewTraining) => {
-                if ('exercises' in data) {
-                    this.activeTrainingSplit = {
-                        ...this.activeTrainingSplit,
-                        trainings: [...this.activeTrainingSplit.trainings].map(
-                            (customTraining: CustomTraining) => {
-                                const todaysDayIndex: number = getDay(new Date());
-                                const todaysDayName: CustomTraining['dayOfWeek'] =
-                                    DAYS_OF_WEEK.find(
-                                        (dayData) => dayData.index === todaysDayIndex,
-                                    ).day;
-                                if (todaysDayName === customTraining.dayOfWeek) {
-                                    return {
-                                        ...customTraining,
-                                        exercises: [...data.exercises].map(
-                                            (singleExercise: SingleExercise) => ({
-                                                ...singleExercise.exerciseData,
-                                                numberOfSets: singleExercise.sets.length,
-                                            }),
-                                        ),
-                                    };
-                                }
-                                return customTraining;
-                            },
-                        ),
-                    };
-                    const facadeTrainingState: NewTraining = this.editMode
-                        ? {
-                              ...data,
-                              _id: this.editTrainingData._id,
-                          }
-                        : { ...data };
-                    this._trainingSplitsFacadeService.editTrainingSplit(
-                        this.activeTrainingSplit._id,
-                        this.activeTrainingSplit,
-                        facadeTrainingState,
-                    );
-                } else {
+                //If mode is create
+                if (!this.editMode) {
+                    //If there is no active training split
+                    if ('Message' in data) {
+                        await this._toastControllerService.displayToast({
+                            message: this._translateService.instant(data.Message),
+                            duration: MESSAGE_DURATION.GENERAL,
+                            color: 'primary',
+                        });
+                        //If there is active training split
+                    } else {
+                        this.activeTrainingSplit = {
+                            ...this.activeTrainingSplit,
+                            trainings: [...this.activeTrainingSplit.trainings].map(
+                                (customTraining: CustomTraining) => {
+                                    const todaysDayIndex: number = getDay(new Date());
+                                    const todaysDayName: CustomTraining['dayOfWeek'] =
+                                        DAYS_OF_WEEK.find(
+                                            (dayData) => dayData.index === todaysDayIndex,
+                                        ).day;
+                                    if (todaysDayName === customTraining.dayOfWeek) {
+                                        return {
+                                            ...customTraining,
+                                            exercises: [...data.exercises].map(
+                                                (singleExercise: SingleExercise) => ({
+                                                    ...singleExercise.exerciseData,
+                                                    numberOfSets: singleExercise.sets.length,
+                                                }),
+                                            ),
+                                        };
+                                    }
+                                    return customTraining;
+                                },
+                            ),
+                        };
+                        const facadeTrainingState: NewTraining = this.editMode
+                            ? {
+                                  ...data,
+                                  _id: this.editTrainingData._id,
+                              }
+                            : { ...data };
+                        this._trainingSplitsFacadeService.editTrainingSplit(
+                            this.activeTrainingSplit._id,
+                            this.activeTrainingSplit,
+                            facadeTrainingState,
+                        );
+                    }
+                }
+                //If mode is edit
+                if (this.editMode && 'Message' in data) {
                     await this._toastControllerService.displayToast({
                         message: this._translateService.instant(data.Message),
                         duration: MESSAGE_DURATION.GENERAL,
