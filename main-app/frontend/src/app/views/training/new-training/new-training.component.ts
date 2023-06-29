@@ -12,7 +12,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { endOfDay, endOfWeek, format, getDay, parseISO, startOfDay, startOfWeek } from 'date-fns';
-import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import {
     concatMap,
     delay,
@@ -307,7 +307,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         if (!this.newTrainingForm.valid || !this._isExerciseFormValid()) {
             return;
         }
-        //TODO: Remove loading
         this.isApiLoading = true;
 
         this._newTrainingStoreService.trainingState$
