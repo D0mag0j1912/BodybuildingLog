@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import Swiper, { SwiperOptions, Pagination } from 'swiper';
+import { getDay } from 'date-fns';
 import { TrainingSplitDto as TrainingSplit } from '../../../../../api/models/training-split-dto';
 import { ExerciseDto as Exercise } from '../../../../../api/models/exercise-dto';
 import { DialogRoles } from '../../../../constants/enums/dialog-roles.enum';
@@ -18,6 +19,7 @@ import { UnsubscribeService } from '../../../../services/shared/unsubscribe.serv
 import { TrainingSplitsSuccessService } from '../../../../services/helper/training-split-success.service';
 
 type NumberOfSetsType = Pick<CustomTraining, 'dayOfWeek'> & { sets: number[] };
+const SUNDAY_SLIDE = 6;
 
 @Component({
     templateUrl: './create-training-split.component.html',
@@ -25,9 +27,7 @@ type NumberOfSetsType = Pick<CustomTraining, 'dayOfWeek'> & { sets: number[] };
     providers: [UnsubscribeService],
 })
 export class CreateTrainingSplitComponent implements OnInit {
-    readonly SWIPER_CONFIG: SwiperOptions = {
-        pagination: true,
-    };
+    swiperConfig: SwiperOptions;
     readonly TRAINING_SPLIT_NAME_MAXLENGTH = 100;
 
     form = new FormGroup({
@@ -121,6 +121,16 @@ export class CreateTrainingSplitComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        let initialSlide: number;
+        if (this.trainingSplit) {
+            initialSlide = !getDay(new Date()) ? SUNDAY_SLIDE : getDay(new Date()) - 1;
+        } else {
+            initialSlide = undefined;
+        }
+        this.swiperConfig = {
+            pagination: true,
+            initialSlide,
+        };
         Swiper.use([Pagination]);
         this.form.controls.name.patchValue(this.trainingSplit?.name ?? '');
 
