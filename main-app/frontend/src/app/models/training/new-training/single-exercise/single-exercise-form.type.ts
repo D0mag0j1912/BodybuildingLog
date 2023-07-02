@@ -10,6 +10,7 @@ export type SingleExerciseFormType = {
 export type ExerciseValueType = Partial<
     Pick<
         Exercise,
+        | '_id'
         | 'name'
         | 'imageUrl'
         | 'primaryMuscleGroup'

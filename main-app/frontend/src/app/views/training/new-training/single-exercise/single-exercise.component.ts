@@ -255,6 +255,7 @@ export class SingleExerciseComponent implements OnDestroy {
         this.form.push(
             new FormGroup<SingleExerciseFormType>({
                 exerciseData: new FormGroup<ExerciseFormType>({
+                    _id: new FormControl(exercise?.exerciseData?._id),
                     name: new FormControl(exercise?.exerciseData?.name ?? '', [
                         Validators.required,
                     ]),

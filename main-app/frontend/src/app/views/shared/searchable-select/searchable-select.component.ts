@@ -45,8 +45,14 @@ export class SearchableSelectComponent implements ControlValueAccessor {
 
     constructor(private _translateService: TranslateService) {}
 
-    writeValue(selectedItems: any[]): void {
-        this.selectedItems = selectedItems;
+    writeValue(input: any): void {
+        if (Array.isArray(input)) {
+            this.selectedItems = input;
+        } else {
+            this.selectedItems = [
+                this.data.find((value) => value[this.hiddenValue] === input),
+            ].filter(Boolean);
+        }
         this.filteredItems = this.data;
     }
 

@@ -15,11 +15,20 @@
                             isSubmitted) &&
                         !isLoading">
                     <ion-col size="10">
-                        <ion-item>
-                            <ion-label position="floating">{{
+                        <ion-item (click)="select.open()">
+                            <ion-label>{{
                                 'training.new_training.pick_exercise' | translate
                             }}</ion-label>
-                            <ion-select
+                            <bl-select
+                                #select
+                                formControlName="_id"
+                                [title]="'training.training_split.search_exercises' | translate"
+                                [multiple]="false"
+                                [data]="exercises | filterAvailableExercises: i"
+                                [visibleValue]="'name'"
+                                [hiddenValue]="'_id'">
+                            </bl-select>
+                            <!-- <ion-select
                                 *ngIf="isExercisePicker$ | async"
                                 #exercisePicker
                                 class="exercise-picker"
@@ -35,7 +44,7 @@
                                 >
                                     {{ exercise.name | translate }}
                                 </ion-select-option>
-                            </ion-select>
+                            </ion-select> -->
                             <ion-note
                                 *ngIf="
                                 form.controls[i].controls.exerciseData.controls.name.errors?.required &&
