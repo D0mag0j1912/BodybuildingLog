@@ -46,6 +46,12 @@
             .hide-label {
                 display: none;
             }
+
+            ::ng-deep .exercise-selector {
+                .selected-items {
+                    max-width: 300px;
+                }
+            }
         }
 
         .sets-wrapper {
