@@ -16,7 +16,7 @@
                         !isLoading">
                     <ion-col size="10">
                         <ion-item (click)="select.open()">
-                            <ion-label>{{
+                            <ion-label [class.remove-item]="form.controls[i].controls.exerciseData.controls.name.value">{{
                                 'training.new_training.pick_exercise' | translate
                             }}</ion-label>
                             <bl-select
