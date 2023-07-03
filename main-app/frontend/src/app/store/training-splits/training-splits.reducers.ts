@@ -60,6 +60,10 @@ export const trainingSplitsReducer = createReducer(
                 (trainingSplit: TrainingSplit) => trainingSplit._id !== action.trainingSplitId,
             ),
         },
+        activeTrainingSplit:
+            state.activeTrainingSplit._id === action.trainingSplitId
+                ? undefined
+                : state.activeTrainingSplit,
     })),
     on(TrainingSplitActions.getTrainingSplitListSuccess, (state, action) => ({
         ...state,
