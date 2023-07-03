@@ -222,6 +222,7 @@
         "training_split": {
             "searchbar": "Search training splits",
             "split": "split",
+            "time_a_week": "time a week",
             "times_a_week": "times a week",
             "empty_screen": "You don't have any training splits yet",
             "create_training_split": "Create training split",

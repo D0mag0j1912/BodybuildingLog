@@ -223,6 +223,7 @@
         "training_split": {
             "searchbar": "Pretraži trening splitove",
             "split": "split",
+            "time_a_week": "put tjedno",
             "times_a_week": "puta tjedno",
             "empty_screen": "Nemate registriranih trening splitova",
             "create_training_split": "Kreiraj trening split",
