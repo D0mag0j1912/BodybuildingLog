@@ -86,12 +86,6 @@ export class SearchableSelectComponent implements ControlValueAccessor {
         this._resetFilteredItems();
     }
 
-    select(): void {
-        this._modifySelectedOutput();
-        this._resetFilteredItems();
-        this.isOpen = false;
-    }
-
     filter(event: SearchbarCustomEvent): void {
         const filter = event.detail.value.toLowerCase();
         this.data = this.data.map((item) => {
@@ -121,9 +115,8 @@ export class SearchableSelectComponent implements ControlValueAccessor {
             if (this.selectedItems.length) {
                 this.selectedItems[0].selected = false;
             }
-            this.selectedItems = this.data.filter((item) => item.selected);
-            this._modifySelectedOutput();
-            this.isOpen = false;
+            this.selectedItems = [item];
+            this._emitOutputEvent();
         } else {
             if (item.selected) {
                 this.selectedItems = [...this.selectedItems, item];
@@ -133,6 +126,12 @@ export class SearchableSelectComponent implements ControlValueAccessor {
                 );
             }
         }
+    }
+
+    private _emitOutputEvent(): void {
+        this._modifySelectedOutput();
+        this._resetFilteredItems();
+        this.isOpen = false;
     }
 
     private _modifySelectedOutput(): void {
