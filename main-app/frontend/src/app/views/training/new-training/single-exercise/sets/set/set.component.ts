@@ -42,7 +42,7 @@ export class SetComponent implements OnChanges {
             this._activeSetCategory = category;
             setTimeout(async () => {
                 await this._focusSetConstituent(this._activeSetCategory);
-            }, 400);
+            }, 600);
         }
     }
     get activeSetCategory(): SetCategoryType {
