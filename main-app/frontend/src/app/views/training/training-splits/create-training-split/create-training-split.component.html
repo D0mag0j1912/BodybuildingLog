@@ -52,11 +52,11 @@
                                                     #select
                                                     class="exercise-selector"
                                                     formControlName="exercises"
-                                                    [title]="'training.training_split.search_exercises' | translate"
                                                     [multiple]="true"
                                                     [data]="data.Value"
                                                     [visibleValue]="'name'"
                                                     [hiddenValue]="'_id'">
+                                                    <ion-title class="title">{{ 'training.training_split.search_exercises' | translate }}</ion-title>
                                                 </bl-select>
                                             </ion-item>
                                         </div>

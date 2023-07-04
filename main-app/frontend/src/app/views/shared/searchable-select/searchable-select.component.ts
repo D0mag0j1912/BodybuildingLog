@@ -26,9 +26,6 @@ export class SearchableSelectComponent implements ControlValueAccessor {
     onTouched: () => void;
 
     @Input()
-    title: string;
-
-    @Input()
     data: any[];
 
     @Input()
@@ -86,6 +83,12 @@ export class SearchableSelectComponent implements ControlValueAccessor {
         this._resetFilteredItems();
     }
 
+    select(): void {
+        this._modifySelectedOutput();
+        this._resetFilteredItems();
+        this.isOpen = false;
+    }
+
     filter(event: SearchbarCustomEvent): void {
         const filter = event.detail.value.toLowerCase();
         this.data = this.data.map((item) => {
@@ -116,7 +119,7 @@ export class SearchableSelectComponent implements ControlValueAccessor {
                 this.selectedItems[0].selected = false;
             }
             this.selectedItems = [item];
-            this._emitOutputEvent();
+            this.select();
         } else {
             if (item.selected) {
                 this.selectedItems = [...this.selectedItems, item];
@@ -126,12 +129,6 @@ export class SearchableSelectComponent implements ControlValueAccessor {
                 );
             }
         }
-    }
-
-    private _emitOutputEvent(): void {
-        this._modifySelectedOutput();
-        this._resetFilteredItems();
-        this.isOpen = false;
     }
 
     private _modifySelectedOutput(): void {
