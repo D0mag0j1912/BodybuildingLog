@@ -24,14 +24,10 @@ ion-grid:first-of-type {
     padding-bottom: 0;
 }
 
-.exercise-picker {
-    color: var(--ion-color-primary);
-    max-width: 230px;
-    padding-bottom: 0;
-}
-
-.md .exercise-picker::part(icon) {
-    top: 7px;
+::ng-deep .exercise-picker {
+    .selected-items {
+        max-width: 250px;
+    }
 }
 
 .delete-exercise-icon {

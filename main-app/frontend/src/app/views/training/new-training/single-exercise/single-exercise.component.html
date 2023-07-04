@@ -15,12 +15,13 @@
                             isSubmitted) &&
                         !isLoading">
                     <ion-col size="10">
-                        <ion-item (click)="select.open()">
+                        <ion-item *ngIf="isExercisePicker$ | async" (click)="exercisePicker.open()">
                             <ion-label [class.remove-item]="form.controls[i].controls.exerciseData.controls.name.value">{{
                                 'training.new_training.pick_exercise' | translate
                             }}</ion-label>
                             <bl-select
-                                #select
+                                #exercisePicker
+                                class="exercise-picker"
                                 formControlName="_id"
                                 [multiple]="false"
                                 [data]="exercises | filterAvailableExercises: i"
@@ -29,23 +30,6 @@
                                 (selectItem)="onExerciseNameChange(i, $event)">
                                 <ion-title class="title">{{ 'training.training_split.search_exercises' | translate }}</ion-title>
                             </bl-select>
-                            <!-- <ion-select
-                                *ngIf="isExercisePicker$ | async"
-                                #exercisePicker
-                                class="exercise-picker"
-                                interface="popover"
-                                formControlName="name"
-                                (ionChange)="onExerciseNameChange(i, exercisePicker)"
-                            >
-                                <ion-select-option
-                                    *ngFor="
-                                        let exercise of exercises | filterAvailableExercises: i
-                                    "
-                                    [value]="exercise.name"
-                                >
-                                    {{ exercise.name | translate }}
-                                </ion-select-option>
-                            </ion-select> -->
                             <ion-note
                                 *ngIf="
                                 form.controls[i].controls.exerciseData.controls.name.errors?.required &&
