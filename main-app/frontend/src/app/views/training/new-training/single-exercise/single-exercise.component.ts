@@ -182,8 +182,8 @@ export class SingleExerciseComponent implements OnDestroy {
         }
     }
 
-    onExerciseNameChange(indexExercise: number, element: IonSelect): void {
-        if (element?.value) {
+    onExerciseNameChange(indexExercise: number, selectedExercise: Exercise): void {
+        if (selectedExercise?.name) {
             this._newTrainingStoreService.trainingState$
                 .pipe(
                     take(1),
@@ -191,11 +191,11 @@ export class SingleExerciseComponent implements OnDestroy {
                         const selectedExerciseData = currentTrainingState.exercises[
                             indexExercise
                         ].availableExercises.find(
-                            (exercise: Exercise) => exercise.name === (element.value as string),
+                            (exercise: Exercise) => exercise.name === selectedExercise.name,
                         );
                         return this._newTrainingStoreService
                             .updateExerciseName(
-                                element.value as string,
+                                selectedExercise.name,
                                 indexExercise,
                                 currentTrainingState,
                                 selectedExerciseData,
@@ -204,6 +204,9 @@ export class SingleExerciseComponent implements OnDestroy {
                     }),
                 )
                 .subscribe((selectedExerciseData: Exercise) => {
+                    this.form.controls[
+                        indexExercise
+                    ].controls.exerciseData.controls.name.patchValue(selectedExerciseData.name);
                     this.form.controls[
                         indexExercise
                     ].controls.exerciseData.controls.imageUrl.patchValue(

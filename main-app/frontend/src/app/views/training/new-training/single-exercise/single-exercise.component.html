@@ -25,7 +25,8 @@
                                 [multiple]="false"
                                 [data]="exercises | filterAvailableExercises: i"
                                 [visibleValue]="'name'"
-                                [hiddenValue]="'_id'">
+                                [hiddenValue]="'_id'"
+                                (selectItem)="onExerciseNameChange(i, $event)">
                                 <ion-title class="title">{{ 'training.training_split.search_exercises' | translate }}</ion-title>
                             </bl-select>
                             <!-- <ion-select

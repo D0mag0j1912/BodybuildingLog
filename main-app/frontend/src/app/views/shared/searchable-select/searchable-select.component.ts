@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SearchbarCustomEvent } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -39,6 +39,9 @@ export class SearchableSelectComponent implements ControlValueAccessor {
 
     @Input()
     hiddenValue: string;
+
+    @Output()
+    selectItem = new EventEmitter<any>();
 
     constructor(private _translateService: TranslateService) {}
 
@@ -120,6 +123,7 @@ export class SearchableSelectComponent implements ControlValueAccessor {
             }
             this.selectedItems = [item];
             this.select();
+            this.selectItem.emit(item);
         } else {
             if (item.selected) {
                 this.selectedItems = [...this.selectedItems, item];
