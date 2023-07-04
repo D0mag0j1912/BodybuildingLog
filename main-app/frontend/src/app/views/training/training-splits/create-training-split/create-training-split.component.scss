@@ -43,8 +43,14 @@
             row-gap: 10px;
             padding: 10px 0 20px 0;
 
-            .hide-label {
+            .remove-item {
                 display: none;
+            }
+
+            ::ng-deep .exercise-selector {
+                .selected-items {
+                    max-width: 300px;
+                }
             }
         }
 

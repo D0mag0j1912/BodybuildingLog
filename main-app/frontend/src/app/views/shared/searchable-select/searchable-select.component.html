@@ -1,4 +1,4 @@
-<div *ngIf="selectedItems.length" class="selected-items" [ngClass]="panelClass">
+<div *ngIf="selectedItems.length" class="selected-items">
     <span *ngFor="let item of selectedItems; let last = last">
         {{ item[visibleValue] | translate }} {{ last ? '' : ', ' }}
     </span>
@@ -11,7 +11,7 @@
                 <ion-buttons slot="start">
                     <ion-button (click)="cancel()">{{ 'common.actions.cancel' | translate }}</ion-button>
                 </ion-buttons>
-                <ion-title class="title">{{ title }}</ion-title>
+                <ng-content select=".title"></ng-content>
                 <ion-buttons *ngIf="multiple" slot="end">
                     <ion-button (click)="select()">{{ 'common.actions.select' | translate }}</ion-button>
                 </ion-buttons>

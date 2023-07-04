@@ -27,7 +27,7 @@
                 <ion-item class="training-split-name-item ion-no-padding">
                     <ion-label position="floating">{{ 'training.training_split.training_split_name' | translate }}</ion-label>
                     <ion-input formControlName="name" class="training-split-name"></ion-input>
-                    <ion-note *ngIf="form.controls.name.errors?.required  && (form.controls.name.dirty || form.controls.name.touched)" slot="error">
+                    <ion-note *ngIf="form.controls.name.errors?.required && (form.controls.name.dirty || form.controls.name.touched)" slot="error">
                         {{ 'training.training_split.errors.training_split_name_required' | translate }}
                     </ion-note>
                     <ion-note *ngIf="form.controls.name.errors?.maxlength  && (form.controls.name.dirty || form.controls.name.touched)" slot="error">
@@ -46,17 +46,17 @@
                                     </ion-card-header>
                                     <ion-card-content class="card-content">
                                         <div class="exercises-wrapper" [class.bordered-wrapper]="group.controls.exercises.value.length">
-                                            <ion-item (click)="select.open()" class="exercises-item ion-no-padding">
-                                                <ion-label [class.hide-label]="group.controls.exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
+                                            <ion-item (click)="select.open()" class="ion-no-padding">
+                                                <ion-label [class.remove-item]="group.controls.exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
                                                 <bl-select
                                                     #select
+                                                    class="exercise-selector"
                                                     formControlName="exercises"
-                                                    [title]="'training.training_split.search_exercises' | translate"
                                                     [multiple]="true"
                                                     [data]="data.Value"
                                                     [visibleValue]="'name'"
-                                                    [hiddenValue]="'_id'"
-                                                    [panelClass]="'trainingSplitClass'">
+                                                    [hiddenValue]="'_id'">
+                                                    <ion-title class="title">{{ 'training.training_split.search_exercises' | translate }}</ion-title>
                                                 </bl-select>
                                             </ion-item>
                                         </div>

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SearchbarCustomEvent } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -26,9 +26,6 @@ export class SearchableSelectComponent implements ControlValueAccessor {
     onTouched: () => void;
 
     @Input()
-    title: string;
-
-    @Input()
     data: any[];
 
     @Input()
@@ -43,13 +40,19 @@ export class SearchableSelectComponent implements ControlValueAccessor {
     @Input()
     hiddenValue: string;
 
-    @Input()
-    panelClass: string;
+    @Output()
+    selectItem = new EventEmitter<any>();
 
     constructor(private _translateService: TranslateService) {}
 
-    writeValue(selectedItems: any[]): void {
-        this.selectedItems = selectedItems;
+    writeValue(input: any): void {
+        if (Array.isArray(input)) {
+            this.selectedItems = input;
+        } else {
+            this.selectedItems = [
+                this.data.find((value) => value[this.hiddenValue] === input),
+            ].filter(Boolean);
+        }
         this.filteredItems = this.data;
     }
 
@@ -118,9 +121,9 @@ export class SearchableSelectComponent implements ControlValueAccessor {
             if (this.selectedItems.length) {
                 this.selectedItems[0].selected = false;
             }
-            this.selectedItems = this.data.filter((item) => item.selected);
-            this._modifySelectedOutput();
-            this.isOpen = false;
+            this.selectedItems = [item];
+            this.select();
+            this.selectItem.emit(item);
         } else {
             if (item.selected) {
                 this.selectedItems = [...this.selectedItems, item];
