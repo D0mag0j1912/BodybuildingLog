@@ -474,7 +474,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             .pipe(take(1))
             .subscribe(async (params: PastTrainingsQueryParams) => {
                 let queryParams: PastTrainingsQueryParams;
-                if (Object.keys(params).length) {
+                if (params) {
                     queryParams = params;
                 } else {
                     const showByPeriod =

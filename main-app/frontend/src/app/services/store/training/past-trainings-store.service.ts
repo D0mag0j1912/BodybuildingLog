@@ -7,7 +7,7 @@ import { PastTrainingsQueryParams } from '../../../models/training/past-training
 
 @Injectable({ providedIn: 'root' })
 export class PastTrainingsStoreService {
-    private _pastTrainingsQueryParams$ = new BehaviorSubject<PastTrainingsQueryParams>({});
+    private _pastTrainingsQueryParams$ = new BehaviorSubject<PastTrainingsQueryParams>(undefined);
     pastTrainingsQueryParams$ = this._pastTrainingsQueryParams$.asObservable();
 
     private _pastTrainingsWrapperScroll$ = new BehaviorSubject<number>(0);
