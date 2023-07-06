@@ -1,4 +1,4 @@
 export enum TrainingItemWrapperHeights {
-    WEEK_HEIGHT = 340,
-    SEARCH_HEIGHT = 365,
+    WEEK_HEIGHT = 310,
+    SEARCH_HEIGHT = 340,
 }
