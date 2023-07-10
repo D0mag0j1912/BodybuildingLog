@@ -17,7 +17,7 @@
             {{ (trainingSplit.trainings | timesAWeek).length | numberTranslate | async }} {{ ((trainingSplit.trainings | timesAWeek).length === 1 ? ('training.training_split.time_a_week' | translate) : ('training.training_split.times_a_week' | translate)) }}
         </div>
         <div class="days-text">
-            <span>{{ '(' }}</span>
+            <span *ngIf="(trainingSplit.trainings | timesAWeek).length">{{ '(' }}</span>
             <ng-container *ngFor="let training of trainingSplit.trainings | timesAWeek; let i = index; let last = last">
                 <span>{{ training.dayOfWeek | slice: 0:3 | uppercase }}</span>
                 <ng-container *ngIf="last; else comma">
