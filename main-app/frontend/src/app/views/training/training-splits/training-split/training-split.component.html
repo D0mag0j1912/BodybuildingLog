@@ -14,7 +14,7 @@
     </ion-card-header>
     <ion-card-content>
         <div class="week-frequency-text">
-            {{ 'common.numbers.' + (trainingSplit.trainings | timesAWeek).length | translate }} {{ ((trainingSplit.trainings | timesAWeek).length === 1 ? ('training.training_split.time_a_week' | translate) : ('training.training_split.times_a_week' | translate)) }}
+            {{ (trainingSplit.trainings | timesAWeek).length | numberTranslate | async }} {{ ((trainingSplit.trainings | timesAWeek).length === 1 ? ('training.training_split.time_a_week' | translate) : ('training.training_split.times_a_week' | translate)) }}
         </div>
         <div class="days-text">
             <span>{{ '(' }}</span>

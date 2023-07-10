@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { SharedModule } from '../../shared/shared.module';
 import { TimesAWeekModule } from '../../../pipes/training/training-splits/times-a-week/times-a-week.module';
+import { NumberTranslateModule } from '../../../pipes/shared/number-translation/number-translate.module';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
 import { TrainingSplitComponent } from './training-split/training-split.component';
 import { TrainingSplitsRoutingModule } from './training-splits-routing.module';
@@ -25,6 +26,7 @@ const IMPORTS = [
     FormsModule,
     SharedModule,
     TimesAWeekModule,
+    NumberTranslateModule,
 ];
 
 const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule];

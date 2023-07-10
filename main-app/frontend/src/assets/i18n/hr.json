@@ -62,13 +62,14 @@
             "december": "Prosinac"
         },
         "numbers": {
-            "1": "Jedan",
-            "2": "Dva",
-            "3": "Tri",
-            "4": "Četiri",
-            "5": "Pet",
-            "6": "Šest",
-            "7": "Sedam"
+            "zero": "Nula",
+            "one": "Jedan",
+            "two": "Dva",
+            "three": "Tri",
+            "four": "Četiri",
+            "five": "Pet",
+            "six": "Šest",
+            "seven": "Sedam"
         }
     },
     "auth": {
