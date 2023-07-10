@@ -63,7 +63,7 @@ export const trainingSplitsReducer = createReducer(
             ),
         },
         activeTrainingSplit:
-            state.activeTrainingSplit._id === action.trainingSplitId
+            state.activeTrainingSplit?._id === action.trainingSplitId
                 ? undefined
                 : state.activeTrainingSplit,
     })),
