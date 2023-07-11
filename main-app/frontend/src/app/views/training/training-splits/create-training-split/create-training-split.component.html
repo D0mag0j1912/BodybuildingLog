@@ -35,7 +35,7 @@
                     </ion-note>
                 </ion-item>
                 <div formArrayName="trainings" class="trainings-wrapper">
-                    <swiper-container #swiperElement [pagination]="true" [initialSlide]="initialSlide">
+                    <swiper-container #swiperElement [pagination]="true">
                         <ng-container *ngIf="daysOfWeek$ | async as daysOfWeek">
                             <swiper-slide *ngFor="let group of this.form.controls.trainings.controls; let i = index">
                                 <ion-card class="card" [formGroupName]="i">

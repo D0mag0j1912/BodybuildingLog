@@ -112,9 +112,10 @@ export class CreateTrainingSplitComponent implements OnInit {
     trainingSplit: TrainingSplit;
 
     @ViewChild('swiperElement')
-    set swiper(element: ElementRef) {
+    set swiperElement(element: ElementRef) {
         if (element) {
             const swiper = (element.nativeElement as SwiperContainer).swiper;
+            swiper.slideTo(this.initialSlide);
         }
     }
 
