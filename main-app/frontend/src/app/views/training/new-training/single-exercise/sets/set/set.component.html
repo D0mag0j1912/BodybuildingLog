@@ -28,8 +28,7 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.weight.errors?.min &&
-                            !isLoading
+                            form.controls.weight.errors?.min
                         "
                         slot="error"
                     >
@@ -37,8 +36,7 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.weight.errors?.max &&
-                            !isLoading
+                            form.controls.weight.errors?.max
                         "
                         slot="error"
                     >
@@ -46,9 +44,9 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.weight.errors?.required &&
-                            form.controls.weight.touched &&
-                            !isLoading
+                            (form.controls.weight.errors?.required &&
+                            form.controls.weight.touched) ||
+                            isSubmitted
                         "
                         slot="error"
                     >
@@ -73,8 +71,7 @@
                     ></ion-input>
                     <ion-text
                         *ngIf="
-                            form.controls.reps.errors?.min &&
-                            !isLoading
+                            form.controls.reps.errors?.min
                         "
                         slot="error"
                     >
@@ -82,8 +79,7 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.reps.errors?.max &&
-                            !isLoading
+                            form.controls.reps.errors?.max
                         "
                         slot="error"
                     >
@@ -91,9 +87,8 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.reps.errors?.required &&
-                            form.controls.reps.touched &&
-                            !isLoading
+                            (form.controls.reps.errors?.required &&
+                            form.controls.reps.touched) || isSubmitted
                         "
                         slot="error"
                     >
@@ -123,8 +118,7 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.duration.errors?.min &&
-                            !isLoading
+                            form.controls.duration.errors?.min
                         "
                         slot="error"
                     >
@@ -132,9 +126,8 @@
                     </ion-text>
                     <ion-text
                         *ngIf="
-                            form.controls.duration.errors?.required &&
-                            form.controls.duration.touched &&
-                            !isLoading
+                            (form.controls.duration.errors?.required &&
+                            form.controls.duration.touched) || isSubmitted
                         "
                         slot="error"
                     >
@@ -146,7 +139,7 @@
                 <ion-button
                     class="button-no-background delete-set-btn"
                     type="button"
-                    [disabled]="isFirstSet || isLoading"
+                    [disabled]="isFirstSet"
                     (click)="deleteSet()"
                 >
                     <ion-icon name="trash-sharp" color="primary" class="set-cta-icon"></ion-icon>

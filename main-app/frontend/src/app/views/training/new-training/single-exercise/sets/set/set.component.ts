@@ -57,10 +57,10 @@ export class SetComponent implements OnChanges {
     availableSetCategoriesControl: FormControl<SetCategoryType[]>;
 
     @Input()
-    isLoading = false;
+    isFirstSet = true;
 
     @Input()
-    isFirstSet = true;
+    isSubmitted = false;
 
     @Output()
     setChanged = new EventEmitter<{ setData: SetTrainingData; setCategory: SetCategoryType }>();
