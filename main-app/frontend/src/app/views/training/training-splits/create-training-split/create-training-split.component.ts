@@ -6,7 +6,6 @@ import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { getDay } from 'date-fns';
 import { SwiperContainer } from 'swiper/element';
-import Swiper from 'swiper';
 import { TrainingSplitDto as TrainingSplit } from '../../../../../api/models/training-split-dto';
 import { ExerciseDto as Exercise } from '../../../../../api/models/exercise-dto';
 import { DialogRoles } from '../../../../constants/enums/dialog-roles.enum';
@@ -21,7 +20,6 @@ import { TrainingSplitsSuccessService } from '../../../../services/helper/traini
 
 type NumberOfSetsType = Pick<CustomTraining, 'dayOfWeek'> & { sets: number[] };
 const SUNDAY_SLIDE = 6;
-const INITIAL_CARD_HEIGHT = 140;
 
 @Component({
     templateUrl: './create-training-split.component.html',
@@ -169,10 +167,6 @@ export class CreateTrainingSplitComponent implements OnInit {
             };
             this._trainingSplitsFacadeService.updateTrainingSplitForm(this.trainingSplitForm);
         });
-    }
-
-    onSlideChange(data: Event): void {
-        const swiper = (data as CustomEvent).detail[0] as Swiper;
     }
 
     async onCancel(): Promise<void> {
