@@ -58,15 +58,15 @@
                             {{ bodyweightRef?.value ? currentPreferences.weightUnit : '' }}
                         </ion-text>
                     </ng-container>
-                    <ion-note *ngIf="newTrainingForm.controls.bodyweight.errors?.min" slot="error">
+                    <ion-text *ngIf="newTrainingForm.controls.bodyweight.errors?.min" slot="error">
                         {{ 'training.new_training.errors.bodyweight_min' | translate }}
-                    </ion-note>
-                    <ion-note *ngIf="newTrainingForm.controls.bodyweight.errors?.max" slot="error">
+                    </ion-text>
+                    <ion-text *ngIf="newTrainingForm.controls.bodyweight.errors?.max" slot="error">
                         {{ 'training.new_training.errors.bodyweight_max' | translate }}
-                    </ion-note>
-                    <ion-note *ngIf="newTrainingForm.controls.bodyweight.errors?.required" slot="error">
+                    </ion-text>
+                    <ion-text *ngIf="newTrainingForm.controls.bodyweight.errors?.required" slot="error">
                         {{ 'training.new_training.errors.bodyweight_required' | translate }}
-                    </ion-note>
+                    </ion-text>
                 </ion-item>
 
                 <ion-item class="datetime-item" lines="none" (click)="openDateTimePicker()">
@@ -75,7 +75,7 @@
                     <ion-text color="primary">{{ formattedTodayDate }}</ion-text>
                 </ion-item>
                 <ng-container *ngIf="newTrainingForm.controls.trainingDate.errors?.required">
-                    <ion-note class="error">{{ 'training.new_training.errors.date_required' | translate }}</ion-note>
+                    <ion-text class="error">{{ 'training.new_training.errors.date_required' | translate }}</ion-text>
                 </ng-container>
 
                 <ng-container *ngIf="exercisesState$ | async as exercisesState">

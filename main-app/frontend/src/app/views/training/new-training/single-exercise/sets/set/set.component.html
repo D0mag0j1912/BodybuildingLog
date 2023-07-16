@@ -45,7 +45,7 @@
                     <ion-text
                         *ngIf="
                             (form.controls.weight.errors?.required &&
-                            form.controls.weight.touched) ||
+                            form.controls.weight.touched) &&
                             isSubmitted
                         "
                         slot="error"
@@ -88,7 +88,7 @@
                     <ion-text
                         *ngIf="
                             (form.controls.reps.errors?.required &&
-                            form.controls.reps.touched) || isSubmitted
+                            form.controls.reps.touched) && isSubmitted
                         "
                         slot="error"
                     >
@@ -127,7 +127,7 @@
                     <ion-text
                         *ngIf="
                             (form.controls.duration.errors?.required &&
-                            form.controls.duration.touched) || isSubmitted
+                            form.controls.duration.touched) && isSubmitted
                         "
                         slot="error"
                     >

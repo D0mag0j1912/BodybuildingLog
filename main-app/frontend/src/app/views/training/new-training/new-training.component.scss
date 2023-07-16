@@ -8,11 +8,13 @@
 }
 
 ion-item {
-    padding: 0 10px;
+    padding: 0 20px;
 }
 
-.bodyweight-item::part(native) {
-    padding-left: 0;
+.bodyweight-item {
+    &::part(native) {
+        padding-left: 0;
+    }
 }
 
 .bodyweight-input {
