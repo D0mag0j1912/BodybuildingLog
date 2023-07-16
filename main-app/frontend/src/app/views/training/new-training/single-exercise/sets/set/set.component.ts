@@ -4,7 +4,6 @@ import {
     Output,
     EventEmitter,
     ViewChild,
-    ChangeDetectionStrategy,
     OnChanges,
     SimpleChanges,
 } from '@angular/core';
@@ -27,7 +26,6 @@ import {
     selector: 'bl-set',
     templateUrl: './set.component.html',
     styleUrls: ['./set.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SetComponent implements OnChanges {
     @Input()
