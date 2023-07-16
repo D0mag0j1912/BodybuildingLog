@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
+import { register } from 'swiper/element/bundle';
 import { StorageItems } from './constants/enums/storage-items.enum';
 import { UnsubscribeService } from './services/shared/unsubscribe.service';
 import { NewTrainingStoreService } from './services/store/training/new-training-store.service';
 import { PastTrainingsStoreService } from './services/store/training/past-trainings-store.service';
 
+register();
 @Component({
     selector: 'bl-root',
     templateUrl: './app.component.html',

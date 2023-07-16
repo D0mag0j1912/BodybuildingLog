@@ -35,16 +35,16 @@
                     </ion-note>
                 </ion-item>
                 <div formArrayName="trainings" class="trainings-wrapper">
-                    <swiper [config]="swiperConfig">
+                    <swiper-container #swiperElement [pagination]="true">
                         <ng-container *ngIf="daysOfWeek$ | async as daysOfWeek">
-                            <ng-template *ngFor="let group of this.form.controls.trainings.controls; let i = index" swiperSlide>
+                            <swiper-slide *ngFor="let group of this.form.controls.trainings.controls; let i = index">
                                 <ion-card class="card" [formGroupName]="i">
                                     <ion-card-header class="card--header">
                                         <div class="day-of-week-text">
                                             {{ daysOfWeek[i] }}
                                         </div>
                                     </ion-card-header>
-                                    <ion-card-content class="card-content">
+                                    <ion-card-content>
                                         <div class="exercises-wrapper" [class.bordered-wrapper]="group.controls.exercises.value.length">
                                             <ion-item (click)="select.open()" class="ion-no-padding">
                                                 <ion-label [class.remove-item]="group.controls.exercises.value.length">{{ 'common.exercises' | translate }}</ion-label>
@@ -75,9 +75,9 @@
                                         </ng-container>
                                     </ion-card-content>
                                 </ion-card>
-                            </ng-template>
+                            </swiper-slide>
                         </ng-container>
-                    </swiper>
+                    </swiper-container>
                 </div>
                 <ion-button type="button" color="primary" class="cta-btn" (click)="submitTrainingSplit()">
                     {{ ('common.actions.' + (trainingSplit ? 'edit' : 'create')) | translate }}

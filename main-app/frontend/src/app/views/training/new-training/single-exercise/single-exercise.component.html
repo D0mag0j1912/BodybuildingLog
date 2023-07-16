@@ -31,13 +31,8 @@
                                 <ion-title class="title">{{ 'training.training_split.search_exercises' | translate }}</ion-title>
                             </bl-select>
                             <ion-note
-                                *ngIf="
-                                form.controls[i].controls.exerciseData.controls.name.errors?.required &&
-                                    (form.controls[i].controls.exerciseData.controls.name.touched ||
-                                    form.controls[i].controls.exerciseData.controls.name.dirty ||
-                                        isSubmitted) &&
-                                    !isLoading
-                                "
+                                *ngIf="form.controls[i].controls.exerciseData.controls.name.errors?.required && isSubmitted && !isLoading"
+                                class="exercise-name-error"
                                 slot="error"
                             >
                                 {{ 'training.new_training.errors.exercise_name_required' | translate }}
@@ -48,6 +43,7 @@
                                 form.errors?.duplicateExerciseName &&
                                 form.errors?.duplicateExerciseName ===
                                 form.controls[i].controls.exerciseData.controls.name.value &&
+                                isSubmitted &&
                                 !isLoading
                             "
                             class="error"
