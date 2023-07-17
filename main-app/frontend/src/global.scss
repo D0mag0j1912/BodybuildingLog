@@ -44,6 +44,10 @@ ion-toolbar {
     }
 }
 
+.primary {
+    color: var(--ion-color-primary);
+}
+
 .datetime-picker {
     --background: rgba(44, 39, 45, 0.2);
 
@@ -62,22 +66,6 @@ ion-toolbar {
             --background: white;
         }
     }
-}
-
-.ion-invalid.ion-touched ion-label {
-    color: var(--ion-color-danger);
-}
-
-.ion-valid.ion-touched ion-label {
-    color: var(--ion-color-primary);
-}
-
-span {
-    color: black;
-}
-
-.primary {
-    color: var(--ion-color-primary);
 }
 
 ion-icon {

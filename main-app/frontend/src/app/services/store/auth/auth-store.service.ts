@@ -102,7 +102,6 @@ export class AuthStoreService {
     private async clearData(): Promise<void> {
         await Storage.remove({ key: StorageItems.USER_DATA });
         await Storage.remove({ key: StorageItems.TRAINING_STATE });
-        await Storage.remove({ key: StorageItems.QUERY_PARAMS });
         await Storage.remove({ key: StorageItems.PAST_TRAININGS_SCROLL_WRAPPER });
     }
 }

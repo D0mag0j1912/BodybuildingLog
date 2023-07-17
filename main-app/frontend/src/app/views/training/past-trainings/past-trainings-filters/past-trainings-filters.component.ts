@@ -67,11 +67,6 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
         private _translateService: TranslateService,
         private _route: ActivatedRoute,
     ) {
-        const searchQueryParam = this._route.snapshot.queryParamMap?.get('search');
-        if (searchQueryParam) {
-            this.searchValue = searchQueryParam;
-        }
-
         this.keyUp$$
             .pipe(
                 map((event: Event) => (event.target as HTMLInputElement).value),
@@ -82,6 +77,10 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe((value: string) => this.trainingEmitted.next(value));
+
+        this._route.queryParams
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe((params) => (this.searchValue = params.search));
     }
 
     ngAfterViewInit(): void {

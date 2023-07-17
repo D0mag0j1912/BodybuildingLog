@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { AfterViewChecked, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
     add,
@@ -18,7 +18,6 @@ import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
 import { catchError, concatMap, delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController, NavController } from '@ionic/angular';
-import { Storage } from '@capacitor/storage';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
@@ -48,7 +47,6 @@ import {
 } from '../../../helpers/training/show-by-day.helper';
 import { DayActivatedType } from '../../../models/training/past-trainings/day-activated.type';
 import { INITIAL_PAGE, DEFAULT_SIZE } from '../../../constants/shared/paginator.const';
-import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { TrainingItemWrapperHeights } from '../../../constants/enums/training-item-wrapper-heights.enum';
 import { NewTrainingDto as NewTraining } from '../../../../api/models/new-training-dto';
 import {
@@ -150,12 +148,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     async ionViewWillEnter(): Promise<void> {
-        await Storage.remove({ key: StorageItems.QUERY_PARAMS });
         this.initView();
-    }
-
-    async ionViewWillLeave(): Promise<void> {
-        await this._pastTrainingsStoreService.emitPastTrainingsQueryParams(this.currentQueryParams);
     }
 
     ngAfterViewChecked(): void {
@@ -317,21 +310,11 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     async onTrainingItemClicked(clickedTraining: NewTraining): Promise<void> {
-        this._route.queryParams.pipe(take(1)).subscribe(async (params: Params) => {
-            await this._pastTrainingsStoreService.emitPastTrainingsQueryParams(
-                params as PastTrainingsQueryParams,
-            );
-            await Storage.set({
-                key: StorageItems.QUERY_PARAMS,
-                value: JSON.stringify(params as PastTrainingsQueryParams),
-            });
-            await this._router.navigate(['/training/tabs/new-training', clickedTraining._id]);
-            if (this.trainingItemWrapper) {
-                const scrollTop = (this.trainingItemWrapper.nativeElement as HTMLDivElement)
-                    .scrollTop;
-                await this._pastTrainingsStoreService.emitWrapperScroll(scrollTop);
-            }
-        });
+        await this._router.navigate(['/training/tabs/new-training', clickedTraining._id]);
+        if (this.trainingItemWrapper) {
+            const scrollTop = (this.trainingItemWrapper.nativeElement as HTMLDivElement).scrollTop;
+            await this._pastTrainingsStoreService.emitWrapperScroll(scrollTop);
+        }
     }
 
     async onTrainingActionPerformed(
@@ -455,6 +438,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         this.page = this.currentQueryParams?.page ? +this.currentQueryParams.page : INITIAL_PAGE;
         this.size = this.currentQueryParams?.size ? +this.currentQueryParams?.size : DEFAULT_SIZE;
         this.searchText = this.currentQueryParams?.search;
+        this._isSearch$.next(!!this.searchText);
         if (this.searchText) {
             this.pastTrainings$ = this._pastTrainingsService
                 .searchPastTrainings(this.searchText.trim().toLowerCase(), this.size, this.page)

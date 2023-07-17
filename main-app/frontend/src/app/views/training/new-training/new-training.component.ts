@@ -26,7 +26,6 @@ import {
     tap,
     withLatestFrom,
 } from 'rxjs/operators';
-import { Storage } from '@capacitor/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { PastTrainingsService } from '../../../services/api/training/past-trainings.service';
@@ -47,7 +46,6 @@ import {
     EMPTY_TRAINING,
     createEmptyExercise,
 } from '../../../constants/training/new-training.const';
-import { StorageItems } from '../../../constants/enums/storage-items.enum';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
@@ -291,6 +289,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
+    ionViewDidLeave(): void {
+        this.isSubmitted = false;
+    }
+
     ngOnInit(): void {
         const trainingSplitId = this._preferencesStoreService.getPreferences().trainingSplitId;
         if (trainingSplitId) {
@@ -470,29 +472,18 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     }
 
     async goToPastTraining(): Promise<void> {
-        this._pastTrainingsStoreService.pastTrainingsQueryParams$
-            .pipe(take(1))
-            .subscribe(async (params: PastTrainingsQueryParams) => {
-                let queryParams: PastTrainingsQueryParams;
-                if (params) {
-                    queryParams = params;
-                } else {
-                    const showByPeriod =
-                        this._preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
-                    const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
-                    const endDate =
-                        showByPeriod === 'week'
-                            ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 })
-                            : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
-                    queryParams = {
-                        startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
-                        endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
-                        showBy: showByPeriod,
-                    };
-                }
-                await this._router.navigate(['/training/tabs/past-trainings'], { queryParams });
-                await Storage.remove({ key: StorageItems.QUERY_PARAMS });
-            });
+        const showByPeriod = this._preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
+        const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
+        const endDate =
+            showByPeriod === 'week'
+                ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 })
+                : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
+        const queryParams = {
+            startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
+            endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
+            showBy: showByPeriod,
+        } as Partial<PastTrainingsQueryParams>;
+        await this._router.navigate(['/training/tabs/past-trainings'], { queryParams });
     }
 
     onBodyweightChange(): void {
