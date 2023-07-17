@@ -3,23 +3,11 @@ import { GetResult, Storage } from '@capacitor/storage';
 import { BehaviorSubject, combineLatest, from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StorageItems } from '../../../constants/enums/storage-items.enum';
-import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 
 @Injectable({ providedIn: 'root' })
 export class PastTrainingsStoreService {
-    private _pastTrainingsQueryParams$ = new BehaviorSubject<PastTrainingsQueryParams>(undefined);
-    pastTrainingsQueryParams$ = this._pastTrainingsQueryParams$.asObservable();
-
     private _pastTrainingsWrapperScroll$ = new BehaviorSubject<number>(0);
     pastTrainingsWrapperScroll$ = this._pastTrainingsWrapperScroll$.asObservable();
-
-    async emitPastTrainingsQueryParams(params: PastTrainingsQueryParams): Promise<void> {
-        this._pastTrainingsQueryParams$.next(params);
-        await Storage.set({
-            key: StorageItems.QUERY_PARAMS,
-            value: JSON.stringify(params),
-        });
-    }
 
     async emitWrapperScroll(scrollTop: number): Promise<void> {
         this._pastTrainingsWrapperScroll$.next(scrollTop);
@@ -47,10 +35,6 @@ export class PastTrainingsStoreService {
                         switch (selectedStorageItem) {
                             case 'pastTrainingsScrollWrapper': {
                                 this._pastTrainingsWrapperScroll$.next(parsedData);
-                                break;
-                            }
-                            case 'queryParams': {
-                                this._pastTrainingsQueryParams$.next(parsedData);
                                 break;
                             }
                         }

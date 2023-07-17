@@ -29,10 +29,7 @@ export class AppComponent implements OnInit {
             .subscribe();
 
         this._pastTrainingsStoreService
-            .keepStreamValues([
-                StorageItems.PAST_TRAININGS_SCROLL_WRAPPER,
-                StorageItems.QUERY_PARAMS,
-            ])
+            .keepStreamValues([StorageItems.PAST_TRAININGS_SCROLL_WRAPPER])
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe();
 
