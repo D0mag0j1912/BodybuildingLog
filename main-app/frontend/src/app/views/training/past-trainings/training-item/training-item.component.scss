@@ -48,6 +48,7 @@ ion-card {
                 &--value {
                     justify-content: center;
                     font-size: 16px;
+                    color: var(--ion-color-dark);
                 }
 
                 &--no-bodyweight {
@@ -71,6 +72,7 @@ ion-card {
                 overflow: hidden;
                 text-overflow: ellipsis;
                 font-size: 16px;
+                color: var(--ion-color-dark);
             }
 
             .exercise-dots {

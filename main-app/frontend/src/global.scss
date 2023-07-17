@@ -44,6 +44,10 @@ ion-toolbar {
     }
 }
 
+.primary {
+    color: var(--ion-color-primary);
+}
+
 .datetime-picker {
     --background: rgba(44, 39, 45, 0.2);
 
