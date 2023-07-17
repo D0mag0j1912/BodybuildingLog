@@ -291,6 +291,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         }
     }
 
+    ionViewDidLeave(): void {
+        this.isSubmitted = false;
+    }
+
     ngOnInit(): void {
         const trainingSplitId = this._preferencesStoreService.getPreferences().trainingSplitId;
         if (trainingSplitId) {
