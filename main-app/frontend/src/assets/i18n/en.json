@@ -135,7 +135,6 @@
             "training_saved": "Training saved",
             "log_training": "Log",
             "reorder_exercises": "Reorder exercises",
-            "training_deleted": "This training was deleted",
             "errors": {
                 "date_required": "Date is required",
                 "bodyweight_required": "Bodyweight is required",
