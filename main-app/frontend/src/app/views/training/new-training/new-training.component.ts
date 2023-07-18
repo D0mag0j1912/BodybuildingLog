@@ -8,10 +8,10 @@ import {
     ViewChildren,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { IonContent, ModalController } from '@ionic/angular';
+import { ActivatedRoute, Params } from '@angular/router';
+import { IonContent, ModalController, NavController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
-import { endOfDay, endOfWeek, format, getDay, parseISO, startOfDay, startOfWeek } from 'date-fns';
+import { format, getDay, parseISO } from 'date-fns';
 import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
 import {
     concatMap,
@@ -41,7 +41,6 @@ import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-p
 import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
 import { NewTrainingService } from '../../../services/api/training/new-training.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
-import { PastTrainingsQueryParams } from '../../../models/training/past-trainings/past-trainings.model';
 import {
     EMPTY_TRAINING,
     createEmptyExercise,
@@ -55,7 +54,6 @@ import { PreferencesDto as Preferences } from '../../../../api/models/preference
 import { convertWeightUnit } from '../../../helpers/training/convert-units.helper';
 import { WeightUnitType } from '../../../models/common/preferences.type';
 import { ExercisesService } from '../../../services/api/training/exercises.service';
-import { QUERY_PARAMS_DATE_FORMAT } from '../../../constants/training/past-trainings-date-format.const';
 import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
 import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
 import { DAYS_OF_WEEK } from '../../../helpers/days-of-week.helper';
@@ -160,9 +158,9 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         private _toastControllerService: ToastControllerService,
         private _translateService: TranslateService,
         private _route: ActivatedRoute,
-        private _router: Router,
         private _modalController: ModalController,
         private _changeDetectorRef: ChangeDetectorRef,
+        private _navController: NavController,
     ) {}
 
     ionViewWillEnter(): void {
@@ -472,19 +470,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
             });
     }
 
-    async goToPastTraining(): Promise<void> {
-        const showByPeriod = this._preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
-        const startDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
-        const endDate =
-            showByPeriod === 'week'
-                ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 })
-                : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
-        const queryParams = {
-            startDate: format(startDate, QUERY_PARAMS_DATE_FORMAT),
-            endDate: format(endDate, QUERY_PARAMS_DATE_FORMAT),
-            showBy: showByPeriod,
-        } as Partial<PastTrainingsQueryParams>;
-        await this._router.navigate(['/training/tabs/past-trainings'], { queryParams });
+    goToPastTraining(): void {
+        this._navController.back();
     }
 
     onBodyweightChange(): void {
