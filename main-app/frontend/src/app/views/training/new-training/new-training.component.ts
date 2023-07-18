@@ -12,7 +12,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { IonContent, ModalController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core';
 import { endOfDay, endOfWeek, format, getDay, parseISO, startOfDay, startOfWeek } from 'date-fns';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
 import {
     concatMap,
     delay,
@@ -47,7 +47,6 @@ import {
     createEmptyExercise,
 } from '../../../constants/training/new-training.const';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
-import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
 import { ExercisesStoreService } from '../../../services/store/training/exercises-store.service';
@@ -157,7 +156,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         private _authStoreService: AuthStoreService,
         private _unsubscribeService: UnsubscribeService,
         private _preferencesStoreService: PreferencesStoreService,
-        private _pastTrainingsStoreService: PastTrainingsStoreService,
         private _exercisesStoreService: ExercisesStoreService,
         private _toastControllerService: ToastControllerService,
         private _translateService: TranslateService,
@@ -194,15 +192,18 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                     this.editMode = true;
                     return this._pastTrainingService.getPastTraining(params['id']).pipe(
                         switchMap((response: StreamData<NewTraining>) => {
-                            this.editTrainingData = {
-                                ...response.Value,
-                                editMode: true,
-                                trainingDate: response.Value.trainingDate,
-                            };
-                            return this._newTrainingStoreService.updateTrainingState(
-                                'newTrainingInit',
-                                { trainingState: this.editTrainingData },
-                            );
+                            if (response.Value) {
+                                this.editTrainingData = {
+                                    ...response.Value,
+                                    editMode: true,
+                                    trainingDate: response.Value.trainingDate,
+                                };
+                                return this._newTrainingStoreService.updateTrainingState(
+                                    'newTrainingInit',
+                                    { trainingState: this.editTrainingData },
+                                );
+                            }
+                            return EMPTY;
                         }),
                     );
                 } else {

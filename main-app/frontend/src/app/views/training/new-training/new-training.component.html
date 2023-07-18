@@ -21,7 +21,7 @@
     </ion-toolbar>
 </ion-header>
 <ion-content class="ion-text-center">
-    <ng-container *ngIf="trainingStream$ | async as trainingData">
+    <ng-container *ngIf="trainingStream$ | async as trainingData; else trainingDeleted">
         <ng-container *ngIf="trainingData.IsError; else valueOrLoading">
             <bl-error
                 [imagePath]="'../../../../assets/svgs/error1.svg'"
@@ -117,4 +117,7 @@
             </form>
         </ng-template>
     </ng-container>
+    <ng-template #trainingDeleted>
+        <span class="training-deleted-msg">{{ 'training.new_training.training_deleted' | translate }}</span>
+    </ng-template>
 </ion-content>
