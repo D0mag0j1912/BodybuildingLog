@@ -45,7 +45,8 @@
             "confirm": "Potvrdi",
             "change": "Promijeni",
             "cancel": "Odustani",
-            "select": "Odaberi"
+            "select": "Odaberi",
+            "save": "Spremi"
         },
         "months": {
             "january": "Siječanj",
