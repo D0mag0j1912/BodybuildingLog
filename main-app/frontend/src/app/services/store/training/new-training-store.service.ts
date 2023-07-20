@@ -132,6 +132,27 @@ export class NewTrainingStoreService {
         );
     }
 
+    setTrainingToInitialState(): Observable<void> {
+        return this._trainingState$.pipe(
+            take(1),
+            withLatestFrom(this._exercisesStoreService.allExercisesState$),
+            switchMap(
+                ([currentTrainingState, allExercisesData]: [
+                    NewTraining,
+                    StreamData<Exercise[]>,
+                ]) => {
+                    const initialTrainingState: NewTraining = {
+                        ...EMPTY_TRAINING,
+                        exercises: [createEmptyExercise(allExercisesData.Value)],
+                        userId: currentTrainingState?.userId ?? '',
+                        trainingDate: new Date().toISOString(),
+                    };
+                    return this._saveTrainingData(initialTrainingState);
+                },
+            ),
+        );
+    }
+
     updatePrimarySetCategory(
         indexExercise: number,
         indexSet: number,
@@ -662,7 +683,6 @@ export class NewTrainingStoreService {
                                 setDurationUnit: currentPreferences.setDurationUnit,
                             },
                         };
-
                         break;
                     }
                     case 'addNewExercise': {

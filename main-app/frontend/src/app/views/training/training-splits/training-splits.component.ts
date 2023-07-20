@@ -1,13 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
+import {
+    debounceTime,
+    distinctUntilChanged,
+    filter,
+    map,
+    switchMap,
+    take,
+    takeUntil,
+} from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
 import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
+import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
 import { CreateTrainingSplitComponent } from './create-training-split/create-training-split.component';
 
 @Component({
@@ -27,6 +36,7 @@ export class TrainingSplitsComponent implements OnInit {
         private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
         private _unsubscribeService: UnsubscribeService,
         private _preferencesStoreService: PreferencesStoreService,
+        private _newTrainingStoreService: NewTrainingStoreService,
         private _modalController: ModalController,
         private _route: ActivatedRoute,
         private _router: Router,
@@ -77,12 +87,25 @@ export class TrainingSplitsComponent implements OnInit {
 
     onEmitTrainingSplitId(trainingSplit: TrainingSplit): void {
         this._preferencesStoreService.preferencesChanged$
-            .pipe(take(1))
+            .pipe(
+                take(1),
+                switchMap((preferences) => {
+                    //Restart training to initial state
+                    if (!trainingSplit) {
+                        return this._newTrainingStoreService
+                            .setTrainingToInitialState()
+                            .pipe(map((_) => preferences));
+                    }
+                    return of(preferences);
+                }),
+            )
             .subscribe((preferences: Preferences) => {
                 const apiPreferences = {
                     ...preferences,
                     trainingSplitId: trainingSplit ? trainingSplit._id : undefined,
                 } as Preferences;
+                if (!trainingSplit) {
+                }
                 this._trainingSplitsFacadeService.setTrainingSplitAsActive(
                     apiPreferences,
                     'trainingSplit',
