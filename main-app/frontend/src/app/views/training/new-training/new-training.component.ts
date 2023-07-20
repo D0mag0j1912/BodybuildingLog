@@ -41,10 +41,6 @@ import { DateTimePickerComponent } from '../../shared/datetime-picker/datetime-p
 import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
 import { NewTrainingService } from '../../../services/api/training/new-training.service';
 import { AuthStoreService } from '../../../services/store/auth/auth-store.service';
-import {
-    EMPTY_TRAINING,
-    createEmptyExercise,
-} from '../../../constants/training/new-training.const';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
@@ -237,8 +233,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                     );
                                 } else {
                                     newTrainingState = {
-                                        ...EMPTY_TRAINING,
-                                        exercises: [createEmptyExercise(this.allExercises.Value)],
+                                        ...currentTrainingState,
                                         userId: currentTrainingState?.userId ?? '',
                                         trainingDate: new Date().toISOString(),
                                     };
