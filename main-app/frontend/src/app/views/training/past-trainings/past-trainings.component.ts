@@ -60,6 +60,7 @@ import {
 import { TrainingActionsService } from '../../../services/api/training/delete-training-action.service';
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 import { DeleteTrainingMetaDto, SearchDataDto } from '../../../../api';
+import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
 
 @Component({
     selector: 'bl-past-trainings',
@@ -121,6 +122,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         private _preferencesService: PreferencesService,
         private _preferencesStoreService: PreferencesStoreService,
         private _trainingActionsService: TrainingActionsService,
+        private _newTrainingStoreService: NewTrainingStoreService,
         private _route: ActivatedRoute,
         private _datePipe: DatePipe,
         private _router: Router,
@@ -364,9 +366,14 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     async logNewTraining(): Promise<void> {
-        const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
-        this._sharedStoreService.emitDayClicked(dayClickedDate.toISOString());
-        await this._navController.navigateForward('/training/tabs/new-training');
+        this._newTrainingStoreService
+            .setTrainingToInitialState()
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe(async (_) => {
+                const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
+                this._sharedStoreService.emitDayClicked(dayClickedDate.toISOString());
+                await this._navController.navigateForward('/training/tabs/new-training');
+            });
     }
 
     //TODO: align with 'ShowByDay' feature
