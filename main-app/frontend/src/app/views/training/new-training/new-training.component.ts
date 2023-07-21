@@ -56,6 +56,10 @@ import { DAYS_OF_WEEK } from '../../../helpers/days-of-week.helper';
 import { CustomTrainingDto as CustomTraining } from '../../../../api/models/custom-training-dto';
 import { GeneralResponseDto as GeneralResponse } from '../../../../api/models/general-response-dto';
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
+import {
+    EMPTY_TRAINING,
+    createEmptyExercise,
+} from '../../../constants/training/new-training.const';
 import { SingleExerciseComponent } from './single-exercise/single-exercise.component';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
@@ -211,9 +215,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                 NewTraining,
                                 TrainingSplit,
                             ]) => {
-                                let newTrainingState: NewTraining;
                                 this.activeTrainingSplit = activeTrainingSplit;
-                                if (activeTrainingSplit) {
+                                if (this.activeTrainingSplit) {
                                     const todaysDayIndex = getDay(new Date());
                                     const todaysDayName = DAYS_OF_WEEK.find(
                                         (dayData) => dayData.index === todaysDayIndex,
@@ -232,11 +235,53 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
                                         },
                                     );
                                 } else {
-                                    newTrainingState = {
-                                        ...currentTrainingState,
-                                        userId: currentTrainingState?.userId ?? '',
-                                        trainingDate: new Date().toISOString(),
-                                    };
+                                    let newTrainingState: NewTraining;
+                                    //If training was in edit mode, but currently is in creation mode
+                                    if (currentTrainingState.editMode && !this.editMode) {
+                                        newTrainingState = {
+                                            ...EMPTY_TRAINING,
+                                            exercises: [
+                                                createEmptyExercise(this.allExercises.Value),
+                                            ],
+                                            userId: currentTrainingState?.userId ?? '',
+                                            trainingDate: new Date().toISOString(),
+                                            editMode: false,
+                                        };
+                                    }
+                                    //If training is in creation mode
+                                    if (!currentTrainingState.editMode && !this.editMode) {
+                                        newTrainingState = {
+                                            ...currentTrainingState,
+                                            userId: currentTrainingState?.userId ?? '',
+                                            trainingDate: new Date().toISOString(),
+                                            exercises: [...currentTrainingState.exercises].map(
+                                                (singleExercise: SingleExercise) => {
+                                                    const trainingSplitExercisesIds =
+                                                        currentTrainingState.exercises
+                                                            .map(
+                                                                (singleExercise: SingleExercise) =>
+                                                                    singleExercise.exerciseData,
+                                                            )
+                                                            .map((value: Exercise) => value._id)
+                                                            .filter(
+                                                                (id: string) =>
+                                                                    id !==
+                                                                    singleExercise.exerciseData._id,
+                                                            );
+                                                    return {
+                                                        ...singleExercise,
+                                                        availableExercises:
+                                                            this.allExercises.Value.filter(
+                                                                (availableExercise: Exercise) =>
+                                                                    !trainingSplitExercisesIds.includes(
+                                                                        availableExercise._id,
+                                                                    ),
+                                                            ),
+                                                    };
+                                                },
+                                            ),
+                                        };
+                                    }
                                     return this._newTrainingStoreService.updateTrainingState(
                                         'newTrainingInit',
                                         { trainingState: newTrainingState },
