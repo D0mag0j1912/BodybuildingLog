@@ -14,10 +14,7 @@ export class TrainingComponent {
     showByPeriod$ = this._preferencesStoreService.preferencesChanged$.pipe(
         map((preferences: Preferences) => preferences.showByPeriod),
     );
-    startDate = format(
-        startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 }),
-        QUERY_PARAMS_DATE_FORMAT,
-    );
+    startDate = format(startOfDay(new Date()), QUERY_PARAMS_DATE_FORMAT);
     endDate$ = this.showByPeriod$.pipe(
         map((showByPeriod: Preferences['showByPeriod']) =>
             format(

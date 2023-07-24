@@ -187,9 +187,9 @@
             "created_at": "Training created: ",
             "show_by_week": "Show by week",
             "show_by_day": "Show by day",
+            "filter_trainings": "Filter trainings",
             "filters": {
                 "enter_search_term": "Search by exercise name",
-                "choose_custom_query": "Choose custom query",
                 "apply_filters": "Apply filters",
                 "errors": {
                     "search_empty": "Your search needs a value",

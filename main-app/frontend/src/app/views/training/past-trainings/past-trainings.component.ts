@@ -61,6 +61,7 @@ import { TrainingActionsService } from '../../../services/api/training/delete-tr
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 import { DeleteTrainingMetaDto, SearchDataDto } from '../../../../api';
 import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
+import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-dialog/past-trainings-filters-dialog.component';
 
 @Component({
     selector: 'bl-past-trainings',
@@ -170,6 +171,14 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     onFiltersSearchEmitted(isSearch: boolean): void {
         this._isSearch$.next(isSearch);
+    }
+
+    async openFilterDialog(): Promise<void> {
+        const modal = await this._modalController.create({
+            component: PastTrainingsFiltersDialogComponent,
+            componentProps: {},
+        });
+        await modal.present();
     }
 
     searchEmitted(searchText: string): void {

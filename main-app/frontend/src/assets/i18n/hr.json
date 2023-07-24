@@ -188,9 +188,9 @@
             "created_at": "Trening kreiran: ",
             "show_by_week": "Prikaži po tjednima",
             "show_by_day": "Prikaži po danima",
+            "filter_trainings": "Filtiraj treninge",
             "filters": {
                 "enter_search_term": "Pretražite po nazivu vježbe",
-                "choose_custom_query": "Izaberite Vaš upit",
                 "apply_filters": "Primjenite filtere",
                 "errors": {
                     "search_empty": "Morate unijeti vrijednost u pretrazi",

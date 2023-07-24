@@ -25,7 +25,7 @@ import { PeriodFilterType } from '../../../../models/training/past-trainings/pas
     providers: [UnsubscribeService],
 })
 export class PastTrainingsFiltersComponent implements AfterViewInit {
-    private readonly keyUp$$: Subject<KeyboardEvent> = new Subject<KeyboardEvent>();
+    private _keyUp$ = new Subject<KeyboardEvent>();
 
     @Input()
     periodFilter = 'week';
@@ -34,13 +34,16 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     periodDisabled = false;
 
     @Output()
-    readonly trainingEmitted: EventEmitter<string> = new EventEmitter<string>();
+    trainingEmitted = new EventEmitter<string>();
 
     @Output()
-    readonly periodEmitted: EventEmitter<PeriodFilterType> = new EventEmitter<PeriodFilterType>();
+    periodEmitted = new EventEmitter<PeriodFilterType>();
 
     @Output()
-    readonly searchEmitted: EventEmitter<boolean> = new EventEmitter<boolean>();
+    searchEmitted = new EventEmitter<boolean>();
+
+    @Output()
+    filterDialogOpened = new EventEmitter<void>();
 
     @ViewChild('search', { read: IonInput })
     searchEl: IonInput;
@@ -67,7 +70,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
         private _translateService: TranslateService,
         private _route: ActivatedRoute,
     ) {
-        this.keyUp$$
+        this._keyUp$
             .pipe(
                 map((event: Event) => (event.target as HTMLInputElement).value),
                 map((value: string) => value?.trim().toLowerCase()),
@@ -93,7 +96,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     }
 
     emitKeyboardEvent($event: KeyboardEvent): void {
-        this.keyUp$$.next($event);
+        this._keyUp$.next($event);
     }
 
     segmentChanged($event: CustomEvent<SegmentChangeEventDetail>): void {
@@ -101,6 +104,6 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     }
 
     openFilterDialog(): void {
-        //TODO
+        this.filterDialogOpened.emit();
     }
 }

@@ -14,6 +14,7 @@ import { PastTrainingsComponent } from './past-trainings.component';
 import { ShowByDayComponent } from './show-by-day/show-by-day.component';
 import { TrainingItemActionsComponent } from './training-item/training-item-actions/training-item-actions.component';
 import { TrainingItemComponent } from './training-item/training-item.component';
+import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-dialog/past-trainings-filters-dialog.component';
 
 const DIRECTIVES = [TrainingItemDirective];
 
@@ -23,6 +24,7 @@ const COMPONENTS = [
     TrainingItemActionsComponent,
     PastTrainingsFiltersComponent,
     ShowByDayComponent,
+    PastTrainingsFiltersDialogComponent,
 ];
 
 const EXTERNAL_IMPORTS = [CommonModule, TranslateModule, IonicModule];
