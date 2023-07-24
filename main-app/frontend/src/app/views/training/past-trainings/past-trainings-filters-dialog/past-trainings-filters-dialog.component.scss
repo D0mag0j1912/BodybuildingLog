@@ -1,0 +1,11 @@
+
+.actions {
+    display: flex;
+    justify-content: center;
+    column-gap: 15px;
+
+    .filter-icon {
+        width: 24px;
+        height: 24px;
+    }
+}

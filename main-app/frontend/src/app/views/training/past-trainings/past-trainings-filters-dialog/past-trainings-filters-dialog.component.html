@@ -8,4 +8,15 @@
         <ion-title>{{ 'training.past_trainings.filter_trainings' | translate }}</ion-title>
     </ion-toolbar>
 </ion-header>
-<ion-content></ion-content>
+<ion-content>
+    <div class="actions">
+        <ion-button color="medium">
+            <ion-icon name="close" class="filter-icon" slot="start"></ion-icon>
+            {{ 'common.actions.clear' | translate }}
+        </ion-button>
+        <ion-button color="primary">
+            <ion-icon name="search-sharp" class="filter-icon" slot="start"></ion-icon>
+            {{ 'common.actions.apply' | translate }}
+        </ion-button>
+    </div>
+</ion-content>

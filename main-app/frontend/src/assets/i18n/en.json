@@ -45,7 +45,9 @@
             "change": "Change",
             "cancel": "Cancel",
             "select": "Select",
-            "save": "Save"
+            "save": "Save",
+            "clear": "Clear",
+            "apply": "Apply"
         },
         "months": {
             "january": "January",
@@ -195,7 +197,8 @@
                     "search_empty": "Your search needs a value",
                     "search_error": "Error searching training",
                     "search_max_length": "Maximum number of characters is reached"
-                }
+                },
+                "muscle_group": "Muscle group"
             },
             "buttons": {
                 "first_page": "First page",

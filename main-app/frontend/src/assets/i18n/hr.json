@@ -46,7 +46,9 @@
             "change": "Promijeni",
             "cancel": "Odustani",
             "select": "Odaberi",
-            "save": "Spremi"
+            "save": "Spremi",
+            "clear": "Očisti",
+            "apply": "Primijeni"
         },
         "months": {
             "january": "Siječanj",
@@ -196,7 +198,8 @@
                     "search_empty": "Morate unijeti vrijednost u pretrazi",
                     "search_error": "Greška pri pretraživanju treninga",
                     "search_max_length": "Maksimalni broj znakova je dostignut"
-                }
+                },
+                "muscle_group": "Mišićna skupina"
             },
             "buttons": {
                 "first_page": "Prva stranica",
