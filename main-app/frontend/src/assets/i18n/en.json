@@ -198,7 +198,7 @@
                     "search_error": "Error searching training",
                     "search_max_length": "Maximum number of characters is reached"
                 },
-                "muscle_group": "Muscle group"
+                "select_muscle_groups": "Select muscle groups"
             },
             "buttons": {
                 "first_page": "First page",
