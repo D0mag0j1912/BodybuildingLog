@@ -19,6 +19,15 @@ ion-card {
     font-size: 8px;
 }
 
+.first,
+.last,
+.next,
+.previous {
+    &::part(native) {
+        border: none;
+    }
+}
+
 .paginator {
     display: flex;
     flex-direction: column;
