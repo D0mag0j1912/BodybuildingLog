@@ -7,8 +7,11 @@ import { StreamData } from '../../models/common/common.model';
 import { PreferencesDto as Preferences } from '../../../api/models/preferences-dto';
 import { PreferenceChangedType } from '../../models/common/preferences.type';
 import { NewTrainingDto as NewTraining } from '../../../api/models/new-training-dto';
-import * as TrainingSplitActions from './training-splits.actions';
-import { selectActiveTrainingSplit, selectTrainingSplitList } from './training-splits.selectors';
+import * as TrainingSplitActions from './actions/training-splits.actions';
+import {
+    selectActiveTrainingSplit,
+    selectTrainingSplitList,
+} from './selectors/training-splits.selectors';
 
 @Injectable()
 export class TrainingSplitsFacadeService {

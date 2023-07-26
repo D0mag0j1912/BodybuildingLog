@@ -1,5 +1,5 @@
 import { ActionReducerMap } from '@ngrx/store';
-import { TrainingSplitsState } from './store/training-splits/training-splits.reducers';
+import { TrainingSplitsState } from './store/training-splits/reducers/training-splits.reducers';
 import { FeatureKeys } from './constants/enums/feature-keys.enum';
 import { PastTrainingsFilterState } from './store/past-trainings-filters/reducers/past-trainings-filters.reducer';
 

@@ -1,9 +1,9 @@
 import { createAction, props } from '@ngrx/store';
-import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-split-dto';
-import { StreamData } from '../../models/common/common.model';
-import { PreferencesDto as Preferences } from '../../../api/models/preferences-dto';
-import { PreferenceChangedType } from '../../models/common/preferences.type';
-import { NewTrainingDto as NewTraining } from '../../../api/models/new-training-dto';
+import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
+import { StreamData } from '../../../models/common/common.model';
+import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
+import { PreferenceChangedType } from '../../../models/common/preferences.type';
+import { NewTrainingDto as NewTraining } from '../../../../api/models/new-training-dto';
 
 /**
  * Create/Edit training split

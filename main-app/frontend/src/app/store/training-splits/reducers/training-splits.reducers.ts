@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
-import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-split-dto';
-import { StreamData } from '../../models/common/common.model';
-import * as TrainingSplitActions from './training-splits.actions';
+import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
+import { StreamData } from '../../../models/common/common.model';
+import * as TrainingSplitActions from '../actions/training-splits.actions';
 
 export interface TrainingSplitsState {
     trainingSplitsForm: TrainingSplit;
