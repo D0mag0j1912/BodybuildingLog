@@ -1,11 +1,14 @@
 import { ActionReducerMap } from '@ngrx/store';
 import { TrainingSplitsState } from './store/training-splits/training-splits.reducers';
 import { FeatureKeys } from './constants/enums/feature-keys.enum';
+import { PastTrainingsFilterState } from './store/past-trainings-filters/reducers/past-trainings-filters.reducer';
 
 export interface AppState {
     [FeatureKeys.TRAINING_SPLITS]: TrainingSplitsState;
+    [FeatureKeys.PAST_TRAININGS_FILTERS]: PastTrainingsFilterState;
 }
 
 export const reducers: ActionReducerMap<AppState> = {
     trainingSplits: undefined,
+    pastTrainingsFilters: undefined,
 };
