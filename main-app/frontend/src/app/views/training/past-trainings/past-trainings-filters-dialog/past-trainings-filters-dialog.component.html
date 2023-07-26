@@ -12,7 +12,7 @@
     <div class="filters-container">
         <ion-list class="list">
             <ion-item>
-                <ion-select interface="popover" [placeholder]="'training.past_trainings.filters.select_muscle_groups' | translate" [multiple]="true">
+                <ion-select interface="popover" [placeholder]="'training.past_trainings.filters.select_muscle_groups' | translate" [multiple]="true" [(ngModel)]="selectedMuscleGroups">
                     <ion-select-option *ngFor="let group of muscleGroups" [value]="group">
                         {{ group }}
                     </ion-select-option>
@@ -21,11 +21,11 @@
         </ion-list>
     </div>
     <div class="actions">
-        <ion-button color="medium">
+        <ion-button color="medium" (click)="clearFilters()">
             <ion-icon name="close" class="filter-icon" slot="start" type="button"></ion-icon>
             {{ 'common.actions.clear' | translate }}
         </ion-button>
-        <ion-button color="primary">
+        <ion-button color="primary" (click)="applyFilters()">
             <ion-icon name="search-sharp" class="filter-icon" slot="start" type="button"></ion-icon>
             {{ 'common.actions.apply' | translate }}
         </ion-button>
