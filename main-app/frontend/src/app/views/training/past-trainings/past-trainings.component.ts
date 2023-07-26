@@ -28,6 +28,7 @@ import {
     PastTrainingsQueryParams,
     PastTrainings,
     PeriodFilterType,
+    PastTrainingsFiltersType,
 } from '../../../models/training/past-trainings/past-trainings.model';
 import {
     QUERY_PARAMS_DATE_FORMAT,
@@ -179,6 +180,12 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             componentProps: {},
         });
         await modal.present();
+        from(modal.onDidDismiss<OverlayEventDetail<PastTrainingsFiltersType>>())
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe((response) => {
+                if (response.role === DialogRoles.FILTER_TRAININGS) {
+                }
+            });
     }
 
     searchEmitted(searchText: string): void {

@@ -3,7 +3,7 @@
         <div class="paginator">
             <div class="controls-wrapper">
                 <ng-container *ngIf="isSearch">
-                    <ion-item class="page-size-item">
+                    <ion-item *skeleton="isLoading; width: '50px'; height: '35px'" class="page-size-item">
                         <ion-select class="page-size-select" [(ngModel)]="size" (ionChange)="loadPage()">
                             <ion-select-option *ngFor="let size of pageSizeOptions" [value]="size">
                                 {{ size }}

@@ -25,7 +25,6 @@ export class PastTrainingsFiltersDialogComponent {
         const filtersData: PastTrainingsFiltersType = {
             muscleGroup: this.selectedMuscleGroups,
         };
-        const base64 = btoa(JSON.stringify(filtersData));
         await this._modalController.dismiss(filtersData, DialogRoles.FILTER_TRAININGS);
     }
 
