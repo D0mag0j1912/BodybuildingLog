@@ -5,7 +5,7 @@
             <ion-label>{{ 'navigation.new_training' | translate }}</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="past-trainings?startDate={{ startDate }}&endDate={{ endDate$ | async }}&showBy={{ showByPeriod$ | async }}">
+        <ion-tab-button tab="past-trainings?filter={{ filter }}">
             <ion-icon name="analytics-sharp"></ion-icon>
             <ion-label>{{ 'navigation.past_trainings' | translate }}</ion-label>
         </ion-tab-button>

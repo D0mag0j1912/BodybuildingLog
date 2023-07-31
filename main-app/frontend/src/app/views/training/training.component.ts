@@ -1,29 +1,43 @@
 import { Component } from '@angular/core';
 import { endOfDay, endOfWeek, format, startOfDay, startOfWeek } from 'date-fns';
-import { map } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../constants/training/past-trainings-date-format.const';
 import { PreferencesStoreService } from '../../services/store/shared/preferences-store.service';
 import { PreferencesDto as Preferences } from '../../../api/models/preferences-dto';
+import { PastTrainingsQueryParams } from '../../models/training/past-trainings/past-trainings.model';
+import { UnsubscribeService } from '../../services/shared/unsubscribe.service';
+import { encodeFilter } from '../../helpers/encode-decode.helper';
 
 @Component({
     selector: 'bl-training',
     templateUrl: './training.component.html',
     styleUrls: ['./training.component.scss'],
+    providers: [UnsubscribeService],
 })
 export class TrainingComponent {
-    showByPeriod$ = this._preferencesStoreService.preferencesChanged$.pipe(
-        map((preferences: Preferences) => preferences.showByPeriod),
-    );
-    startDate = format(startOfDay(new Date()), QUERY_PARAMS_DATE_FORMAT);
-    endDate$ = this.showByPeriod$.pipe(
-        map((showByPeriod: Preferences['showByPeriod']) =>
-            format(
-                showByPeriod === 'week'
-                    ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 })
-                    : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 }),
-                QUERY_PARAMS_DATE_FORMAT,
-            ),
-        ),
-    );
-    constructor(private _preferencesStoreService: PreferencesStoreService) {}
+    filter: string;
+
+    constructor(
+        private _preferencesStoreService: PreferencesStoreService,
+        private _unsubscribeService: UnsubscribeService,
+    ) {}
+
+    ionViewWillEnter(): void {
+        this._preferencesStoreService.preferencesChanged$
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe((preferences: Preferences) => {
+                const showByPeriod = preferences.showByPeriod;
+                const queryParams: PastTrainingsQueryParams = {
+                    startDate: format(startOfDay(new Date()), QUERY_PARAMS_DATE_FORMAT),
+                    endDate: format(
+                        showByPeriod === 'week'
+                            ? endOfWeek(endOfDay(new Date()), { weekStartsOn: 1 })
+                            : startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 }),
+                        QUERY_PARAMS_DATE_FORMAT,
+                    ),
+                    showBy: showByPeriod,
+                };
+                this.filter = encodeFilter(queryParams);
+            });
+    }
 }

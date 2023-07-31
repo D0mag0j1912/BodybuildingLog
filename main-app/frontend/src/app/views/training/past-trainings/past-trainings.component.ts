@@ -62,6 +62,7 @@ import { TrainingActionsService } from '../../../services/api/training/delete-tr
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 import { DeleteTrainingMetaDto, SearchDataDto } from '../../../../api';
 import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
+import { decodeFilter, encodeFilter } from '../../../helpers/encode-decode.helper';
 import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-dialog/past-trainings-filters-dialog.component';
 
 @Component({
@@ -131,9 +132,10 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         private _navController: NavController,
         private _modalController: ModalController,
     ) {
-        this._route.queryParams
-            .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((params) => (this.currentQueryParams = params));
+        this._route.queryParams.pipe(takeUntil(this._unsubscribeService)).subscribe((params) => {
+            const filter = params.filter;
+            this.currentQueryParams = decodeFilter(filter);
+        });
 
         this._sharedStoreService.deletedTraining$$
             .pipe(takeUntil(this._unsubscribeService))
@@ -551,22 +553,23 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     private handleQueryParams(
         trainingData: StreamData<Paginator<PastTrainings>>,
         searchValue?: string,
-    ): PastTrainingsQueryParams {
-        return {
+    ): { filter: string } {
+        const params: PastTrainingsQueryParams = {
             startDate: this.handleSpecificQueryParam(searchValue, trainingData, 'startDate'),
             endDate: this.handleSpecificQueryParam(searchValue, trainingData, 'endDate'),
             search: searchValue ?? undefined,
             page: this.handleSpecificQueryParam(searchValue, trainingData, 'page'),
             size: this.handleSpecificQueryParam(searchValue, trainingData, 'size'),
             showBy: !searchValue ? this.periodFilter : undefined,
-        } as PastTrainingsQueryParams;
+        };
+        return { filter: encodeFilter(params) };
     }
 
     private handleSpecificQueryParam(
         searchValue: string | undefined,
         trainingData: StreamData<Paginator<PastTrainings>>,
         queryParam: keyof PastTrainingsQueryParams,
-    ): string | void {
+    ): string | undefined {
         if (searchValue) {
             if (trainingData?.Value?.TotalCount > 0) {
                 if (queryParam === 'page') {
