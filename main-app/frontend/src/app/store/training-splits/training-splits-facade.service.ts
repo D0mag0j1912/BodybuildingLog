@@ -29,9 +29,9 @@ export class TrainingSplitsFacadeService {
     selectActiveTrainingSplit(): Observable<TrainingSplit> {
         return this._selectActiveTrainingSplit$;
     }
-    //Selectors END --------------------------
+    //Selectors END ---------------------------
 
-    //Actions BEGIN --------------------------
+    //Actions BEGIN ---------------------------
     updateTrainingSplitForm(trainingSplitForm: TrainingSplit): void {
         this._store.dispatch(
             TrainingSplitActions.updateTrainingSplitForm({

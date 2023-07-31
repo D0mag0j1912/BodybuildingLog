@@ -63,6 +63,7 @@ import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 import { DeleteTrainingMetaDto, SearchDataDto } from '../../../../api';
 import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
 import { decodeFilter, encodeFilter } from '../../../helpers/encode-decode.helper';
+import { PastTrainingsFiltersFacadeService } from '../../../store/past-trainings-filters/past-trainings-filters-facade.service';
 import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-dialog/past-trainings-filters-dialog.component';
 
 @Component({
@@ -77,7 +78,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     readonly isSearch$ = this._isSearch$.asObservable();
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
 
-    readonly pageSizeOptions = [1, 3, 5, 10];
+    readonly PAGE_SIZE_OPTIONS = [1, 3, 5, 10];
     size = DEFAULT_SIZE;
     page = INITIAL_PAGE;
 
@@ -126,6 +127,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         private _preferencesStoreService: PreferencesStoreService,
         private _trainingActionsService: TrainingActionsService,
         private _newTrainingStoreService: NewTrainingStoreService,
+        private _pastTrainingsFiltersFacadeService: PastTrainingsFiltersFacadeService,
         private _route: ActivatedRoute,
         private _datePipe: DatePipe,
         private _router: Router,
@@ -186,6 +188,8 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe((response) => {
                 if (response.role === DialogRoles.FILTER_TRAININGS) {
+                    const base64 = encodeFilter(response.data);
+                    this._pastTrainingsFiltersFacadeService.saveFilter(base64);
                 }
             });
     }
