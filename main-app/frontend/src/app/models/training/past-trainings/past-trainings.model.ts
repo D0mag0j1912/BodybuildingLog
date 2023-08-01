@@ -23,10 +23,7 @@ export interface PastTrainingsQueryParams {
     page?: string;
     size?: string;
     showBy?: PeriodFilterType;
+    muscleGroups?: MuscleGroupsType[];
 }
 
 export type PeriodFilterType = 'week' | 'day';
-
-export interface PastTrainingsFiltersType {
-    muscleGroup: MuscleGroupsType[];
-}

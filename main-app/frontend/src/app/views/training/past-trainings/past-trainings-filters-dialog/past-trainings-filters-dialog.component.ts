@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { DialogRoles } from '../../../../constants/enums/dialog-roles.enum';
 import { MUSCLE_GROUPS } from '../../../../constants/training/muscle-groups.const';
 import { MuscleGroupsType } from '../../../../models/common/muscle-groups.type';
-import { PastTrainingsFiltersType } from '../../../../models/training/past-trainings/past-trainings.model';
+import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
 
 @Component({
     selector: 'bl-past-trainings-filters-dialog',
@@ -22,8 +22,8 @@ export class PastTrainingsFiltersDialogComponent {
     }
 
     async applyFilters(): Promise<void> {
-        const filtersData: PastTrainingsFiltersType = {
-            muscleGroup: this.selectedMuscleGroups,
+        const filtersData: Partial<PastTrainingsQueryParams> = {
+            muscleGroups: this.selectedMuscleGroups,
         };
         await this._modalController.dismiss(filtersData, DialogRoles.FILTER_TRAININGS);
     }

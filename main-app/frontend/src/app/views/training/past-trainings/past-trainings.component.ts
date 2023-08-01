@@ -28,7 +28,6 @@ import {
     PastTrainingsQueryParams,
     PastTrainings,
     PeriodFilterType,
-    PastTrainingsFiltersType,
 } from '../../../models/training/past-trainings/past-trainings.model';
 import {
     QUERY_PARAMS_DATE_FORMAT,
@@ -174,7 +173,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         this._isSearch$.complete();
     }
 
-    onFiltersSearchEmitted(isSearch: boolean): void {
+    onSearchEmitted(isSearch: boolean): void {
         this._isSearch$.next(isSearch);
     }
 
@@ -184,12 +183,26 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             componentProps: {},
         });
         await modal.present();
-        from(modal.onDidDismiss<OverlayEventDetail<PastTrainingsFiltersType>>())
+        from(modal.onDidDismiss<OverlayEventDetail<Partial<PastTrainingsQueryParams>>>())
             .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((response) => {
+            .subscribe(async (response) => {
                 if (response.role === DialogRoles.FILTER_TRAININGS) {
-                    const base64 = encodeFilter(response.data);
-                    this._pastTrainingsFiltersFacadeService.saveFilter(base64);
+                    //Get current query params and append applied filters
+                    const currentQueryParams = this._route.snapshot.queryParams as {
+                        filter: string;
+                    };
+                    let pastTrainingsQueryParams = decodeFilter<Partial<PastTrainingsQueryParams>>(
+                        currentQueryParams.filter,
+                    );
+                    pastTrainingsQueryParams = {
+                        ...pastTrainingsQueryParams,
+                        ...response.data,
+                    };
+                    const filter = encodeFilter(pastTrainingsQueryParams);
+                    await this._router.navigate([], {
+                        relativeTo: this._route,
+                        queryParams: { filter },
+                    });
                 }
             });
     }
