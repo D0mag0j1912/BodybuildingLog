@@ -64,6 +64,7 @@ import { NewTrainingStoreService } from '../../../services/store/training/new-tr
 import { decodeFilter, encodeFilter } from '../../../helpers/encode-decode.helper';
 import { PastTrainingsFacadeService } from '../../../store/past-trainings/past-trainings-facade.service';
 import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-dialog/past-trainings-filters-dialog.component';
+
 @Component({
     selector: 'bl-past-trainings',
     templateUrl: './past-trainings.component.html',

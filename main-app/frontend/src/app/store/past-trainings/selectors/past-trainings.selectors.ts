@@ -3,16 +3,21 @@ import { PastTrainingsState } from '../reducers/past-trainings.reducer';
 import { FeatureKeys } from '../../../constants/enums/feature-keys.enum';
 
 /**
- * Get training split state
+ * Get past trainings state
  */
 export const pastTrainingsState = createFeatureSelector<PastTrainingsState>(
     FeatureKeys.PAST_TRAININGS,
 );
 
-/**
- * Get training split list state
- */
+/** Select past trainings */
+export const selectPastTrainings = createSelector(
+    pastTrainingsState,
+    (state: PastTrainingsState) => state.pastTrainings,
+);
 
+/**
+ * Select past trainings filters
+ */
 export const selectPastTrainingsFilter = createSelector(
     pastTrainingsState,
     (state: PastTrainingsState) => state.filter,

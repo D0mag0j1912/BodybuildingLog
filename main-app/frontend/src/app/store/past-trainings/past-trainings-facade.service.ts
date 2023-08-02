@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from '../..';
+import { PeriodFilterType } from '../../models/training/past-trainings/past-trainings.model';
 import { selectPastTrainingsFilter } from './selectors/past-trainings.selectors';
 import * as PastTrainingsActions from './actions/past-trainings.actions';
 
@@ -20,6 +21,12 @@ export class PastTrainingsFacadeService {
     //Actions BEGIN ---------------------------
     setLoading(loading: boolean): void {
         this._store.dispatch(PastTrainingsActions.setLoading({ loading }));
+    }
+
+    getPastTrainings(currentDate: Date, periodFilterType: PeriodFilterType): void {
+        this._store.dispatch(
+            PastTrainingsActions.getPastTrainings({ currentDate, periodFilterType }),
+        );
     }
 
     saveFilter(filter: string): void {

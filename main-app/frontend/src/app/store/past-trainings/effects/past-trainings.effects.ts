@@ -6,7 +6,6 @@ import * as PastTrainingsActions from '../actions/past-trainings.actions';
 import { PastTrainingsFacadeService } from '../past-trainings-facade.service';
 import { SwaggerPastTrainingsService } from '../../../../api';
 import * as CommonActions from '../../common/common.actions';
-import { mapDateInterval } from '../../../helpers/training/past-trainings/map-past-trainings-dates.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 
 @Injectable()
@@ -31,7 +30,6 @@ export class PastTrainingsEffects {
                             this._pastTrainingsFacadeService.setLoading(false);
                             return EMPTY;
                         }),
-                        map((response) => mapDateInterval(response)),
                         map((response) => {
                             this._pastTrainingsFacadeService.setLoading(false);
                             return PastTrainingsActions.setPastTrainings({ response });
