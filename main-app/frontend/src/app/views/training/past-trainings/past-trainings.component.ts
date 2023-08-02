@@ -64,7 +64,6 @@ import { NewTrainingStoreService } from '../../../services/store/training/new-tr
 import { decodeFilter, encodeFilter } from '../../../helpers/encode-decode.helper';
 import { PastTrainingsFiltersFacadeService } from '../../../store/past-trainings-filters/past-trainings-filters-facade.service';
 import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-dialog/past-trainings-filters-dialog.component';
-
 @Component({
     selector: 'bl-past-trainings',
     templateUrl: './past-trainings.component.html',
@@ -199,6 +198,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                         ...response.data,
                     };
                     const filter = encodeFilter(pastTrainingsQueryParams);
+                    this._pastTrainingsFiltersFacadeService.saveFilter(filter);
                     await this._router.navigate([], {
                         relativeTo: this._route,
                         queryParams: { filter },
@@ -279,7 +279,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             this.pastTrainings$ = this._pastTrainingsService
                 .getPastTrainings($event.Date, 'day')
                 .pipe(
-                    tap(async (response) => {
+                    tap(async (response: StreamData<Paginator<PastTrainings>>) => {
                         await this._router.navigate([], {
                             relativeTo: this._route,
                             queryParams: this.handleQueryParams(response),
