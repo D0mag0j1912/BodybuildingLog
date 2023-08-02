@@ -1,4 +1,5 @@
 import { NewTrainingDto as NewTraining } from '../../../../api/models/new-training-dto';
+import { MuscleGroupsType } from '../../common/muscle-groups.type';
 
 export interface PastTrainings {
     Trainings: NewTraining[];
@@ -22,11 +23,7 @@ export interface PastTrainingsQueryParams {
     page?: string;
     size?: string;
     showBy?: PeriodFilterType;
+    muscleGroups?: MuscleGroupsType[];
 }
 
 export type PeriodFilterType = 'week' | 'day';
-
-export interface PastTrainingsFilterType {
-    periodFilter?: PeriodFilterType;
-    //TODO: add more types
-}

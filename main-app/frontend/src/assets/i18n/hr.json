@@ -46,7 +46,9 @@
             "change": "Promijeni",
             "cancel": "Odustani",
             "select": "Odaberi",
-            "save": "Spremi"
+            "save": "Spremi",
+            "clear": "Očisti",
+            "apply": "Primijeni"
         },
         "months": {
             "january": "Siječanj",
@@ -188,15 +190,16 @@
             "created_at": "Trening kreiran: ",
             "show_by_week": "Prikaži po tjednima",
             "show_by_day": "Prikaži po danima",
+            "filter_trainings": "Filtiraj treninge",
             "filters": {
                 "enter_search_term": "Pretražite po nazivu vježbe",
-                "choose_custom_query": "Izaberite Vaš upit",
                 "apply_filters": "Primjenite filtere",
                 "errors": {
                     "search_empty": "Morate unijeti vrijednost u pretrazi",
                     "search_error": "Greška pri pretraživanju treninga",
                     "search_max_length": "Maksimalni broj znakova je dostignut"
-                }
+                },
+                "select_muscle_groups": "Odaberite mišićne skupine"
             },
             "buttons": {
                 "first_page": "Prva stranica",

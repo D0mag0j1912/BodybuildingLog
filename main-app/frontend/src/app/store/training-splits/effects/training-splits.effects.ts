@@ -2,15 +2,15 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY, combineLatest, of } from 'rxjs';
 import { catchError, concatMap, filter, map, switchMap, tap } from 'rxjs/operators';
-import { mapStreamData } from '../../helpers/training/past-trainings/map-stream-data.helper';
-import { TrainingSplitsSuccessService } from '../../services/helper/training-split-success.service';
-import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-split-dto';
-import * as CommonActions from '../common/common.actions';
-import { GeneralResponseDto as GeneralResponse } from '../../../api/models/general-response-dto';
-import { SwaggerTrainingSplitsService } from '../../../api/services/swagger-training-splits.service';
-import { PreferencesService } from '../../services/api/preferences/preferences.service';
-import { NewTrainingService } from '../../services/api/training/new-training.service';
-import * as TrainingSplitActions from './training-splits.actions';
+import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
+import { TrainingSplitsSuccessService } from '../../../services/helper/training-split-success.service';
+import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
+import * as CommonActions from '../../common/common.actions';
+import { GeneralResponseDto as GeneralResponse } from '../../../../api/models/general-response-dto';
+import { SwaggerTrainingSplitsService } from '../../../../api/services/swagger-training-splits.service';
+import { PreferencesService } from '../../../services/api/preferences/preferences.service';
+import { NewTrainingService } from '../../../services/api/training/new-training.service';
+import * as TrainingSplitActions from '../actions/training-splits.actions';
 
 @Injectable()
 export class TrainingSplitsEffects {

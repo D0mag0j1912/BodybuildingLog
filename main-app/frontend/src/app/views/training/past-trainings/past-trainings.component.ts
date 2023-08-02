@@ -61,7 +61,9 @@ import { TrainingActionsService } from '../../../services/api/training/delete-tr
 import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 import { DeleteTrainingMetaDto, SearchDataDto } from '../../../../api';
 import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
-
+import { decodeFilter, encodeFilter } from '../../../helpers/encode-decode.helper';
+import { PastTrainingsFacadeService } from '../../../store/past-trainings/past-trainings-facade.service';
+import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-dialog/past-trainings-filters-dialog.component';
 @Component({
     selector: 'bl-past-trainings',
     templateUrl: './past-trainings.component.html',
@@ -74,7 +76,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     readonly isSearch$ = this._isSearch$.asObservable();
     pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
 
-    readonly pageSizeOptions = [1, 3, 5, 10];
+    readonly PAGE_SIZE_OPTIONS = [1, 3, 5, 10];
     size = DEFAULT_SIZE;
     page = INITIAL_PAGE;
 
@@ -123,15 +125,17 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         private _preferencesStoreService: PreferencesStoreService,
         private _trainingActionsService: TrainingActionsService,
         private _newTrainingStoreService: NewTrainingStoreService,
+        private _pastTrainingsFacadeService: PastTrainingsFacadeService,
         private _route: ActivatedRoute,
         private _datePipe: DatePipe,
         private _router: Router,
         private _navController: NavController,
         private _modalController: ModalController,
     ) {
-        this._route.queryParams
-            .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((params) => (this.currentQueryParams = params));
+        this._route.queryParams.pipe(takeUntil(this._unsubscribeService)).subscribe((params) => {
+            const filter = params.filter;
+            this.currentQueryParams = decodeFilter(filter);
+        });
 
         this._sharedStoreService.deletedTraining$$
             .pipe(takeUntil(this._unsubscribeService))
@@ -168,8 +172,39 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         this._isSearch$.complete();
     }
 
-    onFiltersSearchEmitted(isSearch: boolean): void {
+    onSearchEmitted(isSearch: boolean): void {
         this._isSearch$.next(isSearch);
+    }
+
+    async openFilterDialog(): Promise<void> {
+        const modal = await this._modalController.create({
+            component: PastTrainingsFiltersDialogComponent,
+            componentProps: {},
+        });
+        await modal.present();
+        from(modal.onDidDismiss<OverlayEventDetail<Partial<PastTrainingsQueryParams>>>())
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe(async (response) => {
+                if (response.role === DialogRoles.FILTER_TRAININGS) {
+                    //Get current query params and append applied filters
+                    const currentQueryParams = this._route.snapshot.queryParams as {
+                        filter: string;
+                    };
+                    let pastTrainingsQueryParams = decodeFilter<Partial<PastTrainingsQueryParams>>(
+                        currentQueryParams.filter,
+                    );
+                    pastTrainingsQueryParams = {
+                        ...pastTrainingsQueryParams,
+                        ...response.data,
+                    };
+                    const filter = encodeFilter(pastTrainingsQueryParams);
+                    this._pastTrainingsFacadeService.saveFilter(filter);
+                    await this._router.navigate([], {
+                        relativeTo: this._route,
+                        queryParams: { filter },
+                    });
+                }
+            });
     }
 
     searchEmitted(searchText: string): void {
@@ -244,7 +279,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             this.pastTrainings$ = this._pastTrainingsService
                 .getPastTrainings($event.Date, 'day')
                 .pipe(
-                    tap(async (response) => {
+                    tap(async (response: StreamData<Paginator<PastTrainings>>) => {
                         await this._router.navigate([], {
                             relativeTo: this._route,
                             queryParams: this.handleQueryParams(response),
@@ -535,22 +570,23 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     private handleQueryParams(
         trainingData: StreamData<Paginator<PastTrainings>>,
         searchValue?: string,
-    ): PastTrainingsQueryParams {
-        return {
+    ): { filter: string } {
+        const params: PastTrainingsQueryParams = {
             startDate: this.handleSpecificQueryParam(searchValue, trainingData, 'startDate'),
             endDate: this.handleSpecificQueryParam(searchValue, trainingData, 'endDate'),
             search: searchValue ?? undefined,
             page: this.handleSpecificQueryParam(searchValue, trainingData, 'page'),
             size: this.handleSpecificQueryParam(searchValue, trainingData, 'size'),
             showBy: !searchValue ? this.periodFilter : undefined,
-        } as PastTrainingsQueryParams;
+        };
+        return { filter: encodeFilter(params) };
     }
 
     private handleSpecificQueryParam(
         searchValue: string | undefined,
         trainingData: StreamData<Paginator<PastTrainings>>,
         queryParam: keyof PastTrainingsQueryParams,
-    ): string | void {
+    ): string | undefined {
         if (searchValue) {
             if (trainingData?.Value?.TotalCount > 0) {
                 if (queryParam === 'page') {

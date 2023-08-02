@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { FeatureKeys } from '../../constants/enums/feature-keys.enum';
-import { TrainingSplitsState } from './training-splits.reducers';
+import { FeatureKeys } from '../../../constants/enums/feature-keys.enum';
+import { TrainingSplitsState } from '../reducers/training-splits.reducers';
 
 /**
  * Get training split state

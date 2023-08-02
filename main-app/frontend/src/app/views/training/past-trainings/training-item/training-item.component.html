@@ -1,13 +1,13 @@
-<ion-card mode="md" class="ion-text-center" (click)="trainingClicked()">
+<ion-card class="ion-text-center" class="training-item" (click)="trainingClicked()">
     <ion-card-header>
-        <ion-card-title>
+        <ion-card-title class="ion-text-center">
             <strong class="day-name">{{ 'weekdays.' + weekDays[dayIndex] | translate }}</strong>
-            <ion-text class="day-date">{{ '(' + (training.trainingDate | date: 'dd.MM.yyyy') + ')' }}</ion-text>
+            <div class="day-date">{{ '(' + (training.trainingDate | date: 'dd.MM.yyyy') + ')' }}</div>
         </ion-card-title>
     </ion-card-header>
-    <ion-card-content>
-        <ion-grid class="info-grid">
-            <ion-row>
+    <ion-card-content class="training-item--content">
+        <ion-grid>
+            <ion-row class="ion-text-center">
                 <ion-col *ngIf="training?.bodyweight">
                     <div class="bodyweight">
                         <strong class="bodyweight--key">

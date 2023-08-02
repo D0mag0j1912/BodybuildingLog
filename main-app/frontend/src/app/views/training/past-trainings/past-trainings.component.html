@@ -33,7 +33,8 @@
                 [periodFilter]="periodFilter"
                 (trainingEmitted)="searchEmitted($event)"
                 (periodEmitted)="onPeriodEmitted($event, state.Value?.Results?.Dates?.StartDate)"
-                (searchEmitted)="onFiltersSearchEmitted($event)"
+                (searchEmitted)="onSearchEmitted($event)"
+                (filterDialogOpened)="openFilterDialog()"
             ></bl-past-trainings-filters>
             <ion-card class="card-info-wrapper ion-text-center">
                 <ion-card-header class="card-info-wrapper--header">

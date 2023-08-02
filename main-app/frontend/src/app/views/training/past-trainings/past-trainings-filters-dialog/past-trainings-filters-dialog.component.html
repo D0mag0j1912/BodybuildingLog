@@ -1,0 +1,33 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="end">
+            <ion-button (click)="onCancel()">
+                <ion-icon name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>{{ 'training.past_trainings.filter_trainings' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+    <div class="filters-container">
+        <ion-list class="list">
+            <ion-item>
+                <ion-select interface="popover" [placeholder]="'training.past_trainings.filters.select_muscle_groups' | translate" [multiple]="true" [(ngModel)]="selectedMuscleGroups">
+                    <ion-select-option *ngFor="let group of muscleGroups" [value]="group">
+                        {{ group }}
+                    </ion-select-option>
+                </ion-select>
+            </ion-item>
+        </ion-list>
+    </div>
+    <div class="actions">
+        <ion-button color="medium" (click)="clearFilters()">
+            <ion-icon name="close" class="filter-icon" slot="start" type="button"></ion-icon>
+            {{ 'common.actions.clear' | translate }}
+        </ion-button>
+        <ion-button color="primary" (click)="applyFilters()">
+            <ion-icon name="search-sharp" class="filter-icon" slot="start" type="button"></ion-icon>
+            {{ 'common.actions.apply' | translate }}
+        </ion-button>
+    </div>
+</ion-content>

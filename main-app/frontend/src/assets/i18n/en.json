@@ -45,7 +45,9 @@
             "change": "Change",
             "cancel": "Cancel",
             "select": "Select",
-            "save": "Save"
+            "save": "Save",
+            "clear": "Clear",
+            "apply": "Apply"
         },
         "months": {
             "january": "January",
@@ -187,15 +189,16 @@
             "created_at": "Training created: ",
             "show_by_week": "Show by week",
             "show_by_day": "Show by day",
+            "filter_trainings": "Filter trainings",
             "filters": {
                 "enter_search_term": "Search by exercise name",
-                "choose_custom_query": "Choose custom query",
                 "apply_filters": "Apply filters",
                 "errors": {
                     "search_empty": "Your search needs a value",
                     "search_error": "Error searching training",
                     "search_max_length": "Maximum number of characters is reached"
-                }
+                },
+                "select_muscle_groups": "Select muscle groups"
             },
             "buttons": {
                 "first_page": "First page",

@@ -3,7 +3,7 @@
         <div class="paginator">
             <div class="controls-wrapper">
                 <ng-container *ngIf="isSearch">
-                    <ion-item class="page-size-item">
+                    <ion-item *skeleton="isLoading; width: '50px'; height: '35px'" class="page-size-item">
                         <ion-select class="page-size-select" [(ngModel)]="size" (ionChange)="loadPage()">
                             <ion-select-option *ngFor="let size of pageSizeOptions" [value]="size">
                                 {{ size }}
@@ -14,7 +14,6 @@
                 <div class="arrow-wrapper" [class.arrow-wrapper-search]="isSearch">
                     <ion-button
                         *skeleton="isLoading; width: '50px'; height: '35px'"
-                        mode="md"
                         class="first"
                         type="button"
                         color="primary"
@@ -26,7 +25,6 @@
                     </ion-button>
                     <ion-button
                         *skeleton="isLoading; width: '50px'; height: '35px'"
-                        mode="md"
                         type="button"
                         class="previous"
                         color="primary"
@@ -38,7 +36,6 @@
                     </ion-button>
                     <ion-button
                         *skeleton="isLoading; width: '50px'; height: '35px'"
-                        mode="md"
                         type="button"
                         class="next"
                         color="primary"
@@ -50,7 +47,6 @@
                     </ion-button>
                     <ion-button
                         *skeleton="isLoading; width: '50px'; height: '35px'"
-                        mode="md"
                         type="button"
                         class="last"
                         color="primary"
