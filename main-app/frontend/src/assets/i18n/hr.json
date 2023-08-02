@@ -219,6 +219,7 @@
                 }
             },
             "errors": {
+                "get_past_trainings": "Greška prilikom dohvata treninga",
                 "error_load_training": "Greška pri učitavanju treninga",
                 "get_training_error": "Traženi trening nije dostupan",
                 "past_trainings_error_title": "Prošli treninzi trenutno nedostupni",

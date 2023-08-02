@@ -18,6 +18,10 @@ export class PastTrainingsFacadeService {
     //Selectors END ---------------------------
 
     //Actions BEGIN ---------------------------
+    setLoading(loading: boolean): void {
+        this._store.dispatch(PastTrainingsActions.setLoading({ loading }));
+    }
+
     saveFilter(filter: string): void {
         this._store.dispatch(PastTrainingsActions.saveFilter({ filter }));
     }

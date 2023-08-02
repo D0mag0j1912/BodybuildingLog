@@ -218,6 +218,7 @@
                 }
             },
             "errors": {
+                "get_past_trainings": "Error while loading past trainings",
                 "error_load_training": "Error while loading training",
                 "get_training_error": "Requested training is not available",
                 "past_trainings_error_title": "Past trainings currently not available",
