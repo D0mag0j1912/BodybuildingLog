@@ -10,9 +10,9 @@ import { TrainingItemDirective } from '../../../directives/training-item/trainin
 import { PipesModule } from '../../../pipes/pipes.module';
 import { SanitizeHtmlModule } from '../../../pipes/shared/sanitize-html/sanitize-html.module';
 import { SharedModule } from '../../shared/shared.module';
-import * as PastTrainingsFiltersReducer from '../../../store/past-trainings-filters/reducers/past-trainings-filters.reducer';
+import * as PastTrainingsReducer from '../../../store/past-trainings/reducers/past-trainings.reducer';
 import { FeatureKeys } from '../../../constants/enums/feature-keys.enum';
-import { PastTrainingsFiltersEffects } from '../../../store/past-trainings-filters/effects/past-trainings-filters.effects';
+import { PastTrainingsEffects } from '../../../store/past-trainings/effects/past-trainings.effects';
 import { PastTrainingsFiltersComponent } from './past-trainings-filters/past-trainings-filters.component';
 import { PastTrainingsRoutingModule } from './past-trainings-routing.module';
 import { PastTrainingsComponent } from './past-trainings.component';
@@ -40,11 +40,8 @@ const IMPORTS = [
     SkeletonLoaderModule,
     SharedModule,
     FormsModule,
-    StoreModule.forFeature(
-        FeatureKeys.PAST_TRAININGS_FILTERS,
-        PastTrainingsFiltersReducer.pastTrainingsFiltersReducer,
-    ),
-    EffectsModule.forFeature([PastTrainingsFiltersEffects]),
+    StoreModule.forFeature(FeatureKeys.PAST_TRAININGS, PastTrainingsReducer.pastTrainingsReducer),
+    EffectsModule.forFeature([PastTrainingsEffects]),
 ];
 
 const PIPES_MODULES = [SanitizeHtmlModule];
