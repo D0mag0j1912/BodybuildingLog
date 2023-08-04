@@ -536,10 +536,10 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     ): Date {
         switch (page) {
             case 'Previous': {
-                return subDays(startingDate ? startingDate : dateInterval.StartDate, 7);
+                return subDays(startingDate ? startingDate : new Date(dateInterval.StartDate), 7);
             }
             case 'Next': {
-                return addDays(startingDate ? startingDate : dateInterval.StartDate, 7);
+                return addDays(startingDate ? startingDate : new Date(dateInterval.StartDate), 7);
             }
             case 'First': {
                 return this.periodFilter === 'week'
