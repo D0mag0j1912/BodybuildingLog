@@ -8,6 +8,7 @@ import {
 } from '../../models/training/past-trainings/past-trainings.model';
 import { Paginator } from '../../models/common/paginator.model';
 import { StreamData } from '../../models/common/common.model';
+import { SearchParams } from '../../models/common/search-params';
 import {
     selectPastTrainings,
     selectPastTrainingsFilter,
@@ -37,9 +38,13 @@ export class PastTrainingsFacadeService {
         this._store.dispatch(PastTrainingsActions.setLoading({ loading }));
     }
 
-    getPastTrainings(currentDate: string, periodFilterType: PeriodFilterType): void {
+    getPastTrainings(
+        currentDate: string,
+        periodFilterType: PeriodFilterType,
+        searchData?: SearchParams,
+    ): void {
         this._store.dispatch(
-            PastTrainingsActions.getPastTrainings({ currentDate, periodFilterType }),
+            PastTrainingsActions.getPastTrainings({ currentDate, periodFilterType, searchData }),
         );
     }
 

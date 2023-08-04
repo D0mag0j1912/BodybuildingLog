@@ -8,7 +8,7 @@ import {
     PastTrainings,
 } from '../../../models/training/past-trainings/past-trainings.model';
 import { PaginatorChanged } from '../../../models/common/paginator.model';
-import { DEFAULT_SIZE, INITIAL_PAGE } from '../../../constants/shared/paginator.const';
+import { DEFAULT_PER_PAGE, INITIAL_PAGE } from '../../../constants/shared/paginator.const';
 
 @Component({
     selector: 'bl-pagination',
@@ -26,7 +26,7 @@ export class PaginationComponent {
     page: number = INITIAL_PAGE;
 
     @Input()
-    size: number = DEFAULT_SIZE;
+    perPage: number = DEFAULT_PER_PAGE;
 
     @Input()
     isPreviousPage = false;
@@ -75,13 +75,13 @@ export class PaginationComponent {
             }
             this.paginatorChanged.emit({
                 Page: +this.page,
-                Size: +this.size,
+                Size: +this.perPage,
                 IsSearch: true,
             } as PaginatorChanged);
         } else {
             this.paginatorChanged.emit({
                 Page: +this.page,
-                Size: +this.size,
+                Size: +this.perPage,
                 IsSearch: false,
                 PageType: page,
                 DateInterval: dateInterval,

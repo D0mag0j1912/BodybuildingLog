@@ -15,12 +15,11 @@ import {
     subDays,
 } from 'date-fns';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
-import { delay, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { delay, map, take, takeUntil, tap } from 'rxjs/operators';
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
-import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../models/common/common.model';
 import { Paginator, PaginatorChanged } from '../../../models/common/paginator.model';
 import {
@@ -46,7 +45,7 @@ import {
     getCurrentDayIndex,
 } from '../../../helpers/training/show-by-day.helper';
 import { DayActivatedType } from '../../../models/training/past-trainings/day-activated.type';
-import { INITIAL_PAGE, DEFAULT_SIZE } from '../../../constants/shared/paginator.const';
+import { INITIAL_PAGE, DEFAULT_PER_PAGE } from '../../../constants/shared/paginator.const';
 import { TrainingItemWrapperHeights } from '../../../constants/enums/training-item-wrapper-heights.enum';
 import { NewTrainingDto as NewTraining } from '../../../../api/models/new-training-dto';
 import {
@@ -61,6 +60,7 @@ import { DialogRoles } from '../../../constants/enums/dialog-roles.enum';
 import { NewTrainingStoreService } from '../../../services/store/training/new-training-store.service';
 import { decodeFilter, encodeFilter } from '../../../helpers/encode-decode.helper';
 import { PastTrainingsFacadeService } from '../../../store/past-trainings/past-trainings-facade.service';
+import { SearchParams } from '../../../models/common/search-params';
 import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-dialog/past-trainings-filters-dialog.component';
 
 @Component({
@@ -72,10 +72,14 @@ import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-di
 export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     pastTrainings$ = this._pastTrainingsFacadeService.selectPastTrainings().pipe(
         tap(async (response: StreamData<Paginator<PastTrainings>>) => {
+            if (response?.Value?.Size) {
+                this.showByDayStartDate = new Date();
+                this.updatePageAndSize(response);
+            }
             this.handlePaginationArrows(response);
             await this._router.navigate([], {
                 relativeTo: this._route,
-                queryParams: this.handleQueryParams(response),
+                queryParams: this.handleQueryParams(response, this.searchText),
             });
         }),
     );
@@ -84,7 +88,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     readonly isSearch$ = this._isSearch$.asObservable();
 
     readonly PAGE_SIZE_OPTIONS = [1, 3, 5, 10];
-    size = DEFAULT_SIZE;
+    perPage = DEFAULT_PER_PAGE;
     page = INITIAL_PAGE;
 
     searchText = '';
@@ -208,29 +212,18 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     searchEmitted(searchText: string): void {
+        this.searchText = searchText;
         this._isSearch$.next(!!searchText);
         this.page = INITIAL_PAGE;
-        this.pastTrainings$ = of(searchText).pipe(
-            switchMap((searchText: string) => {
-                this.searchText = searchText;
-                return this._pastTrainingsService
-                    .searchPastTrainings(this.searchText, this.size, this.page)
-                    .pipe(
-                        tap(async (response: StreamData<Paginator<PastTrainings>>) => {
-                            this.showByDayStartDate = new Date();
-                            this.updatePageAndSize(response);
-                            await this._router.navigate([], {
-                                relativeTo: this._route,
-                                queryParams: this.handleQueryParams(
-                                    response,
-                                    searchText?.trim() ?? undefined,
-                                ),
-                            });
-                            this.handlePaginationArrows(response);
-                        }),
-                        mapStreamData(),
-                    );
-            }),
+        const searchData: SearchParams = {
+            page: this.page,
+            perPage: this.perPage,
+            searchText,
+        };
+        this._pastTrainingsFacadeService.getPastTrainings(
+            new Date().toISOString(),
+            this.periodFilter,
+            searchData,
         );
     }
 
@@ -274,23 +267,16 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     onPaginatorChanged($event: PaginatorChanged, dayFilterDate: string): void {
         if ($event?.IsSearch) {
-            this.pastTrainings$ = this._pastTrainingsService
-                .searchPastTrainings(
-                    this.searchText?.trim()?.toLowerCase() ?? '',
-                    $event.Size,
-                    $event.Page,
-                )
-                .pipe(
-                    tap(async (response: StreamData<Paginator<PastTrainings>>) => {
-                        this.updatePageAndSize(response);
-                        await this._router.navigate([], {
-                            relativeTo: this._route,
-                            queryParams: this.handleQueryParams(response, this.searchText),
-                        });
-                        this.handlePaginationArrows(response);
-                    }),
-                    mapStreamData(),
-                );
+            const searchData: SearchParams = {
+                perPage: $event.Size,
+                page: $event.Page,
+                searchText: this.searchText?.trim()?.toLowerCase() ?? '',
+            };
+            this._pastTrainingsFacadeService.getPastTrainings(
+                new Date().toISOString(),
+                this.periodFilter,
+                searchData,
+            );
         } else {
             if (this.periodFilter === 'day') {
                 this.showByDayStartDate = this.calculateDate(
@@ -453,18 +439,22 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     private initView(): void {
         this.page = this.currentQueryParams?.page ? +this.currentQueryParams.page : INITIAL_PAGE;
-        this.size = this.currentQueryParams?.size ? +this.currentQueryParams?.size : DEFAULT_SIZE;
+        this.perPage = this.currentQueryParams?.size
+            ? +this.currentQueryParams?.size
+            : DEFAULT_PER_PAGE;
         this.searchText = this.currentQueryParams?.search;
         this._isSearch$.next(!!this.searchText);
         if (this.searchText) {
-            this.pastTrainings$ = this._pastTrainingsService
-                .searchPastTrainings(this.searchText.trim().toLowerCase(), this.size, this.page)
-                .pipe(
-                    tap((response: StreamData<Paginator<PastTrainings>>) =>
-                        this.handlePaginationArrows(response),
-                    ),
-                    mapStreamData(),
-                );
+            const searchData: SearchParams = {
+                perPage: this.perPage,
+                page: this.page,
+                searchText: this.searchText.trim().toLowerCase(),
+            };
+            this._pastTrainingsFacadeService.getPastTrainings(
+                new Date().toISOString(),
+                this.periodFilter,
+                searchData,
+            );
         } else {
             this.periodFilter = this.currentQueryParams.showBy as PeriodFilterType;
             if (this.periodFilter === 'day') {
@@ -508,7 +498,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     private updatePageAndSize(response: StreamData<Paginator<PastTrainings>>): void {
         this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
-        this.size = response?.Value?.Size ?? DEFAULT_SIZE;
+        this.perPage = response?.Value?.Size ?? DEFAULT_PER_PAGE;
     }
 
     private calculateDate(
@@ -578,7 +568,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                         QUERY_PARAMS_DATE_FORMAT,
                     );
                 } else {
-                    return this.size.toString();
+                    return this.perPage.toString();
                 }
             } else {
                 return undefined;

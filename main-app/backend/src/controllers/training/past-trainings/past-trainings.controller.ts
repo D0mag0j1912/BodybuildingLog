@@ -16,6 +16,8 @@ import { PaginatorDto } from '../../../models/common/paginator.model';
 import { PeriodFilterType } from '../../../models/training/past-trainings/period-filter.type';
 import { StreamModelDto } from '../../../models/common/stream.model';
 import { StreamModelResponse } from '../../../decorators/stream-model-response.decorator';
+import { PaginatePipe } from '../../../pipes/common/paginate.pipe';
+import { SearchDataDto } from '../../../models/common/search-data.model';
 
 @ApiTags('Past trainings')
 @Controller('api/training/past-trainings')
@@ -38,6 +40,7 @@ export class PastTrainingsController {
         @GET_USER() user: UserDto,
         @Query('currentDate') currentDate: Date,
         @Query('filterType') filterType: PeriodFilterType,
+        @Query(PaginatePipe) searchData: SearchDataDto,
     ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
         //TODO: Create custom Pipe
         if (!currentDate || !filterType) {
@@ -45,7 +48,12 @@ export class PastTrainingsController {
                 'training.past_trainings.errors.past_trainings_error_title',
             );
         }
-        return this._pastTrainingsService.getPastTrainings(currentDate, filterType, user._id);
+        return this._pastTrainingsService.getPastTrainings(
+            currentDate,
+            filterType,
+            user._id,
+            searchData,
+        );
     }
 
     @StreamModelResponse(NewTrainingDto)

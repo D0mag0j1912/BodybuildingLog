@@ -5,6 +5,7 @@ import {
 } from '../../../models/training/past-trainings/past-trainings.model';
 import { StreamData } from '../../../models/common/common.model';
 import { Paginator } from '../../../models/common/paginator.model';
+import { SearchParams } from '../../../models/common/search-params';
 
 /** Loading */
 export const setLoading = createAction(
@@ -15,7 +16,7 @@ export const setLoading = createAction(
 /** Past trainings */
 export const getPastTrainings = createAction(
     '[Past trainings] Get past trainings',
-    props<{ currentDate: string; periodFilterType: PeriodFilterType }>(),
+    props<{ currentDate: string; periodFilterType: PeriodFilterType; searchData?: SearchParams }>(),
 );
 
 export const setPastTrainings = createAction(
