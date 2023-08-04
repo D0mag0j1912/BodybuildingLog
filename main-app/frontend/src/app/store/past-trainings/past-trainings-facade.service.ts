@@ -43,6 +43,10 @@ export class PastTrainingsFacadeService {
         );
     }
 
+    deleteTraining(trainingId: string): void {
+        this._store.dispatch(PastTrainingsActions.deleteTraining({ trainingId }));
+    }
+
     saveFilter(filter: string): void {
         this._store.dispatch(PastTrainingsActions.saveFilter({ filter }));
     }

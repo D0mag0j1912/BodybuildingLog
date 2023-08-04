@@ -51,7 +51,7 @@ export class TrainingSplitsEffects {
             ofType(TrainingSplitActions.editTrainingSplit),
             concatMap((action) =>
                 this._swaggerTrainingSplitsService
-                    .trainingSplitsControllerUpdateTraining({
+                    .trainingSplitsControllerUpdateTrainingSplit({
                         id: action.id,
                         body: action.trainingSplit,
                     })

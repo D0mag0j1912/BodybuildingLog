@@ -23,5 +23,12 @@ export const setPastTrainings = createAction(
     props<{ response: StreamData<Paginator<PastTrainings>> }>(),
 );
 
+export const deleteTraining = createAction(
+    '[Past trainings] Delete training',
+    props<{ trainingId: string }>(),
+);
+
+export const deleteTrainingSuccess = createAction('[Past trainings] Delete training success');
+
 /** Past trainings filters */
 export const saveFilter = createAction('[Past trainings] Save filter', props<{ filter: string }>());
