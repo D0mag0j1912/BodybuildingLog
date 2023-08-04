@@ -34,7 +34,7 @@ export const paginate = async <
         }
 
         results.CurrentPage = page;
-        results.Size = size;
+        results.PerPage = size;
         startIndex = (results.CurrentPage - 1) * size;
         endIndex = results.CurrentPage * size;
 

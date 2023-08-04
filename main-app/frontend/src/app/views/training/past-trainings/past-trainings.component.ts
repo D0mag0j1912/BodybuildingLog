@@ -72,7 +72,7 @@ import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-di
 export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     pastTrainings$ = this._pastTrainingsFacadeService.selectPastTrainings().pipe(
         tap(async (response: StreamData<Paginator<PastTrainings>>) => {
-            if (response?.Value?.Size) {
+            if (response?.Value?.PerPage) {
                 this.showByDayStartDate = new Date();
                 this.updatePageAndSize(response);
             }
@@ -498,7 +498,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     private updatePageAndSize(response: StreamData<Paginator<PastTrainings>>): void {
         this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
-        this.perPage = response?.Value?.Size ?? DEFAULT_PER_PAGE;
+        this.perPage = response?.Value?.PerPage ?? DEFAULT_PER_PAGE;
     }
 
     private calculateDate(
