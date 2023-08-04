@@ -6,9 +6,14 @@ import { PastTrainings } from '../../../models/training/past-trainings/past-trai
 
 @Injectable({ providedIn: 'root' })
 export class SharedStoreService {
-    deletedTraining$$ = new Subject<StreamData<Paginator<PastTrainings>>>();
+    private _trainingDeleted$ = new Subject<StreamData<Paginator<PastTrainings>>>();
+    trainingDeleted$ = this._trainingDeleted$.asObservable();
 
     _dayClicked$ = new BehaviorSubject<string>(null);
+
+    emitTrainingDeletion(response: StreamData<Paginator<PastTrainings>>): void {
+        this._trainingDeleted$.next(response);
+    }
 
     completeDayClicked(): void {
         this._dayClicked$.complete();

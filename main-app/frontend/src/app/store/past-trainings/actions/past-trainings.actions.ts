@@ -15,7 +15,7 @@ export const setLoading = createAction(
 /** Past trainings */
 export const getPastTrainings = createAction(
     '[Past trainings] Get past trainings',
-    props<{ currentDate: Date; periodFilterType: PeriodFilterType }>(),
+    props<{ currentDate: string; periodFilterType: PeriodFilterType }>(),
 );
 
 export const setPastTrainings = createAction(

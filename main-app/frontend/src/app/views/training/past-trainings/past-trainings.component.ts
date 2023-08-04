@@ -72,10 +72,18 @@ import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-di
     providers: [UnsubscribeService],
 })
 export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
-    private _isSearch$ = new BehaviorSubject<boolean>(false);
+    pastTrainings$ = this._pastTrainingsFacadeService.selectPastTrainings().pipe(
+        tap(async (response: StreamData<Paginator<PastTrainings>>) => {
+            this.handlePaginationArrows(response);
+            await this._router.navigate([], {
+                relativeTo: this._route,
+                queryParams: this.handleQueryParams(response),
+            });
+        }),
+    );
 
+    private _isSearch$ = new BehaviorSubject<boolean>(false);
     readonly isSearch$ = this._isSearch$.asObservable();
-    pastTrainings$: Observable<StreamData<Paginator<PastTrainings>>> | undefined = undefined;
 
     readonly PAGE_SIZE_OPTIONS = [1, 3, 5, 10];
     size = DEFAULT_SIZE;
@@ -137,12 +145,12 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             const filter = params.filter;
             this.currentQueryParams = decodeFilter(filter);
         });
-
-        this._sharedStoreService.deletedTraining$$
+        //TODO: Update UI
+        /* this._sharedStoreService.trainingDeleted$
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe((response: StreamData<Paginator<PastTrainings>>) => {
                 this.pastTrainings$ = of(response).pipe(mapStreamData());
-            });
+            }); */
     }
 
     getDayTranslation$(dayName: string): Observable<string> {
@@ -235,11 +243,11 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         );
     }
 
-    onPeriodEmitted($event: PeriodFilterType, mondayDate: Date): void {
+    onPeriodEmitted($event: PeriodFilterType, mondayDate: string): void {
         if (mondayDate) {
             this.periodFilter = $event;
             if (this.periodFilter === 'day') {
-                this.showByDayStartDate = mondayDate;
+                this.showByDayStartDate = new Date(mondayDate);
                 this.dayActivated = {
                     Date: this.showByDayStartDate,
                     DayNumber: getCurrentDayIndex(this.showByDayStartDate),
@@ -256,20 +264,11 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                 )
                 .pipe(take(1))
                 .subscribe((_) => {
-                    this.pastTrainings$ = this._pastTrainingsService
-                        .getPastTrainings(
-                            startOfWeek(mondayDate, { weekStartsOn: 1 }),
-                            this.periodFilter,
-                        )
-                        .pipe(
-                            tap(async (response) => {
-                                await this._router.navigate([], {
-                                    relativeTo: this._route,
-                                    queryParams: this.handleQueryParams(response),
-                                });
-                            }),
-                            mapStreamData(),
-                        );
+                    const currentDate = startOfWeek(new Date(mondayDate), { weekStartsOn: 1 });
+                    this._pastTrainingsFacadeService.getPastTrainings(
+                        currentDate.toISOString(),
+                        this.periodFilter,
+                    );
                 });
         }
     }
@@ -277,21 +276,12 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     onDayActivated($event: DayActivatedType): void {
         if (!this._isSearch$.getValue()) {
             this.dayActivated = $event;
-            this.pastTrainings$ = this._pastTrainingsService
-                .getPastTrainings($event.Date, 'day')
-                .pipe(
-                    tap(async (response: StreamData<Paginator<PastTrainings>>) => {
-                        await this._router.navigate([], {
-                            relativeTo: this._route,
-                            queryParams: this.handleQueryParams(response),
-                        });
-                    }),
-                    mapStreamData(),
-                );
+            const currentDate = $event.Date;
+            this._pastTrainingsFacadeService.getPastTrainings(currentDate.toISOString(), 'day');
         }
     }
 
-    onPaginatorChanged($event: PaginatorChanged, dayFilterDate: Date): void {
+    onPaginatorChanged($event: PaginatorChanged, dayFilterDate: string): void {
         if ($event?.IsSearch) {
             this.pastTrainings$ = this._pastTrainingsService
                 .searchPastTrainings(
@@ -316,34 +306,25 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                     $event.PageType,
                     undefined,
                     $event.EarliestTrainingDate,
-                    dayFilterDate,
+                    new Date(dayFilterDate),
                 );
                 this.dayActivated = {
                     Date: this.showByDayStartDate,
                     DayNumber: getCurrentDayIndex(this.showByDayStartDate),
                 };
             }
-            this.pastTrainings$ = this._pastTrainingsService
-                .getPastTrainings(
-                    this.periodFilter === 'week'
-                        ? this.onPaginatorChangedFilterHandler(this.periodFilter, $event)
-                        : this.onPaginatorChangedFilterHandler(
-                              this.periodFilter,
-                              undefined,
-                              this.showByDayStartDate,
-                          ),
-                    this.periodFilter,
-                )
-                .pipe(
-                    tap(async (response: StreamData<Paginator<PastTrainings>>) => {
-                        this.handlePaginationArrows(response);
-                        await this._router.navigate([], {
-                            relativeTo: this._route,
-                            queryParams: this.handleQueryParams(response),
-                        });
-                    }),
-                    mapStreamData(),
-                );
+            const currentDate =
+                this.periodFilter === 'week'
+                    ? this.onPaginatorChangedFilterHandler(this.periodFilter, $event)
+                    : this.onPaginatorChangedFilterHandler(
+                          this.periodFilter,
+                          undefined,
+                          this.showByDayStartDate,
+                      );
+            this._pastTrainingsFacadeService.getPastTrainings(
+                currentDate.toISOString(),
+                this.periodFilter,
+            );
         }
     }
 
@@ -397,7 +378,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                 takeUntil(this._unsubscribeService),
             )
             .subscribe((response: StreamData<Paginator<PastTrainings>>) =>
-                this._sharedStoreService.deletedTraining$$.next(response),
+                this._sharedStoreService.emitTrainingDeletion(response),
             );
     }
 
@@ -420,19 +401,26 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     setTimePeriod$(results: PastTrainings): Observable<string> {
         const dateInterval = results.Dates;
         if (dateInterval?.StartDate && dateInterval?.EndDate) {
-            const isDay = isSameDay(dateInterval.StartDate, dateInterval.EndDate);
+            const isDay = isSameDay(
+                new Date(dateInterval.StartDate),
+                new Date(dateInterval.EndDate),
+            );
             if (isDay) {
                 return this._translateService
                     .stream(results.DayName)
                     .pipe(
                         map((value: string) =>
-                            this.generateHeaderTitle(value, dateInterval.StartDate),
+                            this.generateHeaderTitle(value, new Date(dateInterval.StartDate)),
                         ),
                     );
             }
-            const isWeek = isSameWeek(dateInterval.StartDate, dateInterval.EndDate, {
-                weekStartsOn: 1,
-            });
+            const isWeek = isSameWeek(
+                new Date(dateInterval.StartDate),
+                new Date(dateInterval.EndDate),
+                {
+                    weekStartsOn: 1,
+                },
+            );
             if (isWeek) {
                 return this._translateService
                     .stream('common.week')
@@ -440,23 +428,26 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                         map((value: string) =>
                             this.generateHeaderTitle(
                                 value,
-                                dateInterval.StartDate,
-                                dateInterval.EndDate,
+                                new Date(dateInterval.StartDate),
+                                new Date(dateInterval.EndDate),
                             ),
                         ),
                     );
             }
-            const isMonth = isSameMonth(dateInterval.StartDate, dateInterval.EndDate);
+            const isMonth = isSameMonth(
+                new Date(dateInterval.StartDate),
+                new Date(dateInterval.EndDate),
+            );
             if (isMonth) {
-                const month = getMonth(dateInterval.StartDate);
+                const month = getMonth(new Date(dateInterval.StartDate));
                 return this._translateService
                     .stream(`common.months.${ALL_MONTHS[month]}`)
                     .pipe(
                         map((value: string) =>
                             this.generateHeaderTitle(
                                 value,
-                                dateInterval.StartDate,
-                                dateInterval.EndDate,
+                                new Date(dateInterval.StartDate),
+                                new Date(dateInterval.EndDate),
                             ),
                         ),
                     );
@@ -467,8 +458,8 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                     map((value: string) =>
                         this.generateHeaderTitle(
                             value,
-                            dateInterval.StartDate,
-                            dateInterval.EndDate,
+                            new Date(dateInterval.StartDate),
+                            new Date(dateInterval.EndDate),
                         ),
                     ),
                 );
@@ -500,14 +491,11 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                     DayNumber: getCurrentDayIndex(this.showByDayStartDate),
                 };
             }
-            this.pastTrainings$ = this._pastTrainingsService
-                .getPastTrainings(this.getDateTimeQueryParams(), this.periodFilter ?? 'week')
-                .pipe(
-                    tap((response: StreamData<Paginator<PastTrainings>>) =>
-                        this.handlePaginationArrows(response),
-                    ),
-                    mapStreamData(),
-                );
+            const currentDate = this.getDateTimeQueryParams();
+            this._pastTrainingsFacadeService.getPastTrainings(
+                currentDate.toISOString(),
+                this.periodFilter ?? 'week',
+            );
         }
     }
 
@@ -594,12 +582,16 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                     return this.page.toString();
                 } else if (queryParam === 'startDate') {
                     return format(
-                        trainingData?.Value?.Results?.Dates?.StartDate ?? new Date(),
+                        trainingData?.Value?.Results?.Dates?.StartDate
+                            ? new Date(trainingData.Value.Results.Dates.StartDate)
+                            : new Date(),
                         QUERY_PARAMS_DATE_FORMAT,
                     );
                 } else if (queryParam === 'endDate') {
                     return format(
-                        trainingData?.Value?.Results?.Dates?.EndDate ?? new Date(),
+                        trainingData?.Value?.Results?.Dates?.EndDate
+                            ? new Date(trainingData.Value.Results.Dates.EndDate)
+                            : new Date(),
                         QUERY_PARAMS_DATE_FORMAT,
                     );
                 } else {
@@ -611,12 +603,16 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         } else {
             if (queryParam === 'startDate') {
                 return format(
-                    trainingData?.Value?.Results?.Dates?.StartDate ?? new Date(),
+                    trainingData?.Value?.Results?.Dates?.StartDate
+                        ? new Date(trainingData.Value.Results.Dates.StartDate)
+                        : new Date(),
                     QUERY_PARAMS_DATE_FORMAT,
                 );
             } else if (queryParam === 'endDate') {
                 return format(
-                    trainingData?.Value?.Results?.Dates?.EndDate ?? new Date(),
+                    trainingData?.Value?.Results?.Dates?.EndDate
+                        ? new Date(trainingData.Value.Results.Dates.EndDate)
+                        : new Date(),
                     QUERY_PARAMS_DATE_FORMAT,
                 );
             } else {
@@ -626,12 +622,14 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     private handlePaginationArrows(response: StreamData<Paginator<PastTrainings>>): void {
-        if (response.Value.Results.EarliestTrainingDate) {
-            this.isPreviousPage = response.Value.Results.IsPreviousWeek ?? false;
-            this.isNextPage = response.Value.Results.IsNextWeek ?? false;
-        } else {
-            this.isPreviousPage = !!response.Value.Previous;
-            this.isNextPage = !!response.Value.Next;
+        if (response?.Value) {
+            if (response.Value.Results.EarliestTrainingDate) {
+                this.isPreviousPage = response.Value.Results.IsPreviousWeek ?? false;
+                this.isNextPage = response.Value.Results.IsNextWeek ?? false;
+            } else {
+                this.isPreviousPage = !!response.Value.Previous;
+                this.isNextPage = !!response.Value.Next;
+            }
         }
     }
 
