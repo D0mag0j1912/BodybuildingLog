@@ -560,7 +560,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         queryParam: keyof PastTrainingsQueryParams,
     ): string | undefined {
         if (searchValue) {
-            if (trainingData?.Value?.TotalCount > 0) {
+            if (trainingData?.Value?.Results?.Trainings?.length > 0) {
                 if (queryParam === 'page') {
                     return this.page.toString();
                 } else if (queryParam === 'startDate') {

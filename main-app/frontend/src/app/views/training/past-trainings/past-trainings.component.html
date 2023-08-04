@@ -48,7 +48,7 @@
                 </ion-card-header>
             </ion-card>
             <div #itemWrapper class="training-item-wrapper">
-                <ng-container *ngIf="state.Value?.TotalCount > 0; else noTrainings">
+                <ng-container *ngIf="state.Value?.Results?.Trainings?.length > 0; else noTrainings">
                     <bl-training-item
                         *ngFor="let training of state.Value?.Results?.Trainings"
                         [training]="training"
@@ -58,7 +58,7 @@
                 </ng-container>
                 <ng-template #noTrainings>
                     <section class="no-trainings">
-                        <ng-container *ngIf="state.Value?.TotalCount === 0">
+                        <ng-container *ngIf="state.Value?.Results?.Trainings?.length === 0">
                             <h1 class="no-trainings-title">
                                 <ng-container *ngIf="!(isSearch$ | async); else noResultSearch">
                                     {{
