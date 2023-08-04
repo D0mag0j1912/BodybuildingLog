@@ -142,12 +142,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             const filter = params.filter;
             this.currentQueryParams = decodeFilter(filter);
         });
-        //TODO: Update UI
-        /* this._sharedStoreService.trainingDeleted$
-            .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((response: StreamData<Paginator<PastTrainings>>) => {
-                this.pastTrainings$ = of(response).pipe(mapStreamData());
-            }); */
     }
 
     getDayTranslation$(dayName: string): Observable<string> {
