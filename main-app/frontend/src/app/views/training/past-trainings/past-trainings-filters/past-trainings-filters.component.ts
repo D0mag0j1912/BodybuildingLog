@@ -8,14 +8,18 @@ import {
     Output,
     ViewChild,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { IonInput, SegmentChangeEventDetail } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 import { INPUT_MAX_LENGTH } from '../../../../constants/shared/input-maxlength.const';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
-import { PeriodFilterType } from '../../../../models/training/past-trainings/past-trainings.model';
+import {
+    PastTrainingsQueryParams,
+    PeriodFilterType,
+} from '../../../../models/training/past-trainings/past-trainings.model';
+import { decodeFilter } from '../../../../helpers/encode-decode.helper';
 
 @Component({
     selector: 'bl-past-trainings-filters',
@@ -80,7 +84,12 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
 
         this._route.queryParams
             .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((params) => (this.searchValue = params.search));
+            .subscribe((params: Params) => {
+                const currentQueryParams = params.filter;
+                const pastTrainingsQueryParams =
+                    decodeFilter<PastTrainingsQueryParams>(currentQueryParams);
+                this.searchValue = pastTrainingsQueryParams.search;
+            });
     }
 
     ngAfterViewInit(): void {

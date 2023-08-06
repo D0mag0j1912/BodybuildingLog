@@ -71,16 +71,18 @@ import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-di
 export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     pastTrainings$ = this._pastTrainingsFacadeService.selectPastTrainings().pipe(
         tap(async (response: StreamData<Paginator<PastTrainings>>) => {
-            //If searching
-            if (response?.Value?.PerPage) {
-                this.showByDayStartDate = new Date();
-                this.updatePageAndSize(response);
+            if (response) {
+                //If searching
+                if (response?.Value?.PerPage) {
+                    this.showByDayStartDate = new Date();
+                    this.updatePageAndSize(response);
+                }
+                this.handlePaginationArrows(response);
+                await this._router.navigate([], {
+                    relativeTo: this._route,
+                    queryParams: this.handleQueryParams(response, this.searchText),
+                });
             }
-            this.handlePaginationArrows(response);
-            await this._router.navigate([], {
-                relativeTo: this._route,
-                queryParams: this.handleQueryParams(response, this.searchText),
-            });
         }),
     );
 
