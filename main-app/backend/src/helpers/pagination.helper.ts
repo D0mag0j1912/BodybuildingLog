@@ -16,7 +16,7 @@ export const paginate = async <
 ): Promise<PaginatorDto<T>> => {
     const results: Partial<PaginatorDto<T>> = {};
     let page: number;
-    let size: number;
+    let perPage: number;
     let startIndex: number;
     let endIndex: number;
 
@@ -25,40 +25,40 @@ export const paginate = async <
 
     if (query) {
         page = +query.Page;
-        size = +query.Size;
+        perPage = +query.PerPage;
 
         if (results.TotalCount > 0) {
-            while (page > Math.ceil(results.TotalCount / size)) {
+            while (page > Math.ceil(results.TotalCount / perPage)) {
                 page--;
             }
         }
 
         results.CurrentPage = page;
-        results.PerPage = size;
-        startIndex = (results.CurrentPage - 1) * size;
-        endIndex = results.CurrentPage * size;
+        results.PerPage = perPage;
+        startIndex = (results.CurrentPage - 1) * perPage;
+        endIndex = results.CurrentPage * perPage;
 
         if (endIndex < total) {
             results.Next = {
                 Page: results.CurrentPage + 1,
-                Size: size,
+                PerPage: perPage,
             };
         }
 
         if (startIndex > 0) {
             results.Previous = {
                 Page: results.CurrentPage - 1,
-                Size: size,
+                PerPage: perPage,
             };
         }
-        results.TotalPages = Math.ceil(results.TotalCount / size);
+        results.TotalPages = Math.ceil(results.TotalCount / perPage);
     }
     results.Results = Object.create({});
     try {
         if (query) {
             results.Results.Trainings = await model
                 .find(condition)
-                .limit(size)
+                .limit(perPage)
                 .skip(startIndex)
                 .sort({ trainingDate: 'desc' })
                 .exec();

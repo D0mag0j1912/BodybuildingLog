@@ -12,7 +12,7 @@ export class SearchDataDto {
         type: Number,
     })
     @IsNotEmpty()
-    size: number;
+    perPage: number;
 
     @ApiPropertyOptional({
         type: String,

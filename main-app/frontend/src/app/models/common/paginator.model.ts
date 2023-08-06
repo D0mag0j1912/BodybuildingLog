@@ -12,7 +12,7 @@ export interface Paginator<T> {
 
 export interface PaginatorParams {
     Page: number;
-    Size: number;
+    PerPage: number;
 }
 
 export interface PaginatorChanged {

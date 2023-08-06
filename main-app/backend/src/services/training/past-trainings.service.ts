@@ -45,7 +45,7 @@ export class PastTrainingsService {
             if (searchData?.searchText) {
                 const query: PaginatorParamsDto = {
                     Page: searchData.page,
-                    Size: searchData.size,
+                    PerPage: searchData.perPage,
                 };
                 const queryWordRegex = new RegExp(searchData.searchText, 'i');
                 condition = {

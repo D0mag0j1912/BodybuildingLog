@@ -20,7 +20,7 @@ export class PastTrainingsEffects {
                         currentDate: action.currentDate.toString(),
                         filterType: action.periodFilterType,
                         page: action.searchData?.page,
-                        size: action.searchData?.perPage,
+                        perPage: action.searchData?.perPage,
                         searchText: action.searchData?.searchText,
                     })
                     .pipe(

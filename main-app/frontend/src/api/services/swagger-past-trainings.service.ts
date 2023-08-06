@@ -39,7 +39,7 @@ export class SwaggerPastTrainingsService extends BaseService {
     currentDate: string;
     filterType: string;
     page: number;
-    size: number;
+    perPage: number;
     searchText?: string;
     context?: HttpContext
   }
@@ -54,7 +54,7 @@ export class SwaggerPastTrainingsService extends BaseService {
       rb.query('currentDate', params.currentDate, {});
       rb.query('filterType', params.filterType, {});
       rb.query('page', params.page, {});
-      rb.query('size', params.size, {});
+      rb.query('perPage', params.perPage, {});
       rb.query('searchText', params.searchText, {});
     }
 
@@ -84,7 +84,7 @@ export class SwaggerPastTrainingsService extends BaseService {
     currentDate: string;
     filterType: string;
     page: number;
-    size: number;
+    perPage: number;
     searchText?: string;
     context?: HttpContext
   }
