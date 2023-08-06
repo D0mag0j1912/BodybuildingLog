@@ -34,13 +34,10 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     periodDisabled = false;
 
     @Output()
-    trainingEmitted = new EventEmitter<string>();
-
-    @Output()
     periodEmitted = new EventEmitter<PeriodFilterType>();
 
     @Output()
-    searchEmitted = new EventEmitter<boolean>();
+    searchEmitted = new EventEmitter<string>();
 
     @Output()
     filterDialogOpened = new EventEmitter<void>();
@@ -79,7 +76,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
                 distinctUntilChanged(),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe((value: string) => this.trainingEmitted.next(value));
+            .subscribe((value: string) => this.searchEmitted.next(value));
 
         this._route.queryParams
             .pipe(takeUntil(this._unsubscribeService))
@@ -89,8 +86,8 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     ngAfterViewInit(): void {
         setTimeout(() => {
             if (this.searchEl) {
-                const value = this.searchEl?.value;
-                this.searchEmitted.emit(!!value);
+                const value = this.searchEl?.value as string;
+                this.searchEmitted.emit(value);
             }
         });
     }

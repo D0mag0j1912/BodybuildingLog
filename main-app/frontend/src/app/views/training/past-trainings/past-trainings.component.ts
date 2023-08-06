@@ -33,7 +33,6 @@ import {
     TEMPLATE_DATE_FORMAT,
 } from '../../../constants/training/past-trainings-date-format.const';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
-import { PastTrainingsService } from '../../../services/api/training/past-trainings.service';
 import { Page } from '../../../models/common/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
@@ -128,7 +127,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     constructor(
-        private _pastTrainingsService: PastTrainingsService,
         private _pastTrainingsStoreService: PastTrainingsStoreService,
         private _unsubscribeService: UnsubscribeService,
         private _translateService: TranslateService,
@@ -177,10 +175,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         this._isSearch$.complete();
     }
 
-    onSearchEmitted(isSearch: boolean): void {
-        this._isSearch$.next(isSearch);
-    }
-
     async openFilterDialog(): Promise<void> {
         const modal = await this._modalController.create({
             component: PastTrainingsFiltersDialogComponent,
@@ -212,7 +206,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             });
     }
 
-    searchEmitted(searchText: string): void {
+    onSearchEmitted(searchText: string): void {
         this.searchText = searchText;
         this._isSearch$.next(!!searchText);
         this.page = INITIAL_PAGE;
