@@ -219,8 +219,7 @@
                 "error_load_training": "Error while loading training",
                 "error_delete_training": "Error while deleting training",
                 "get_training_error": "Requested training is not available",
-                "past_trainings_error_title": "Past trainings currently not available",
-                "past_trainings_error_description": "Past trainings are not currently available. Please try again."
+                "past_trainings_error_title": "Past trainings are currently not available"
             }
         },
         "training_split": {

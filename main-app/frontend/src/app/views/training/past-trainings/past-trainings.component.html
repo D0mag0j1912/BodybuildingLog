@@ -17,8 +17,7 @@
         <ng-container *ngIf="state.IsError; else valueOrLoading">
             <bl-error
                 [imagePath]="'../../../../assets/svgs/error1.svg'"
-                [title]="'training.past_trainings.errors.past_trainings_error_title'"
-                [description]="'training.past_trainings.errors.past_trainings_error_description'">
+                [title]="'training.past_trainings.errors.past_trainings_error_title'">
                 <ion-button color="primary" type="button" (click)="tryAgain()" cta>
                     {{ 'common.try_again' | translate }}
                 </ion-button>

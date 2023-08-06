@@ -220,8 +220,7 @@
                 "error_load_training": "Greška pri učitavanju treninga",
                 "error_delete_training": "Greška prilikom brisanja treninga",
                 "get_training_error": "Traženi trening nije dostupan",
-                "past_trainings_error_title": "Prošli treninzi trenutno nedostupni",
-                "past_trainings_error_description": "Prošli treninzi trenutno nisu dostupni. Molimo Vas pokušajte ponovno."
+                "past_trainings_error_title": "Prošli treninzi su trenutno nedostupni"
             }
         },
         "training_split": {

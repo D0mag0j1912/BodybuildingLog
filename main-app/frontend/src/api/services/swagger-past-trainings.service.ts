@@ -38,6 +38,9 @@ export class SwaggerPastTrainingsService extends BaseService {
   pastTrainingsControllerGetPastTrainings$Response(params: {
     currentDate: string;
     filterType: string;
+    page: number;
+    size: number;
+    searchText?: string;
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<StreamModelDto & {
@@ -50,6 +53,9 @@ export class SwaggerPastTrainingsService extends BaseService {
     if (params) {
       rb.query('currentDate', params.currentDate, {});
       rb.query('filterType', params.filterType, {});
+      rb.query('page', params.page, {});
+      rb.query('size', params.size, {});
+      rb.query('searchText', params.searchText, {});
     }
 
     return this.http.request(rb.build({
@@ -77,6 +83,9 @@ export class SwaggerPastTrainingsService extends BaseService {
   pastTrainingsControllerGetPastTrainings(params: {
     currentDate: string;
     filterType: string;
+    page: number;
+    size: number;
+    searchText?: string;
     context?: HttpContext
   }
 ): Observable<StreamModelDto & {
@@ -217,83 +226,6 @@ export class SwaggerPastTrainingsService extends BaseService {
 
     return this.deleteTrainingActionControllerDeleteTraining$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
-    );
-  }
-
-  /**
-   * Path part for operation searchTrainingsControllerSearchTrainings
-   */
-  static readonly SearchTrainingsControllerSearchTrainingsPath = '/api/training/search-trainings';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `searchTrainingsControllerSearchTrainings()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  searchTrainingsControllerSearchTrainings$Response(params: {
-    page: number;
-    size: number;
-    searchValue?: string;
-    context?: HttpContext
-  }
-): Observable<StrictHttpResponse<StreamModelDto & {
-'IsLoading'?: boolean;
-'IsError'?: boolean;
-'Value'?: PaginatorDto;
-}>> {
-
-    const rb = new RequestBuilder(this.rootUrl, SwaggerPastTrainingsService.SearchTrainingsControllerSearchTrainingsPath, 'get');
-    if (params) {
-      rb.query('page', params.page, {});
-      rb.query('size', params.size, {});
-      rb.query('searchValue', params.searchValue, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json',
-      context: params?.context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<StreamModelDto & {
-        'IsLoading'?: boolean;
-        'IsError'?: boolean;
-        'Value'?: PaginatorDto;
-        }>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `searchTrainingsControllerSearchTrainings$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  searchTrainingsControllerSearchTrainings(params: {
-    page: number;
-    size: number;
-    searchValue?: string;
-    context?: HttpContext
-  }
-): Observable<StreamModelDto & {
-'IsLoading'?: boolean;
-'IsError'?: boolean;
-'Value'?: PaginatorDto;
-}> {
-
-    return this.searchTrainingsControllerSearchTrainings$Response(params).pipe(
-      map((r: StrictHttpResponse<StreamModelDto & {
-'IsLoading'?: boolean;
-'IsError'?: boolean;
-'Value'?: PaginatorDto;
-}>) => r.body as StreamModelDto & {
-'IsLoading'?: boolean;
-'IsError'?: boolean;
-'Value'?: PaginatorDto;
-})
     );
   }
 

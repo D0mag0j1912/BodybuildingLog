@@ -4,8 +4,8 @@ import { PaginatorParamsDto } from './paginator-params-dto';
 export interface PaginatorDto {
   CurrentPage: number;
   Next?: PaginatorParamsDto;
+  PerPage: number;
   Previous?: PaginatorParamsDto;
-  Size: number;
   TotalCount: number;
   TotalPages: number;
 }

@@ -10,7 +10,7 @@ import { mapStreamData } from '../../../helpers/training/past-trainings/map-stre
 
 @Injectable()
 export class PastTrainingsEffects {
-    pastTrainings$ = createEffect(() =>
+    getPastTrainings$ = createEffect(() =>
         this._actions$.pipe(
             ofType(PastTrainingsActions.getPastTrainings),
             tap((_) => this._pastTrainingsFacadeService.setLoading(true)),
@@ -19,6 +19,9 @@ export class PastTrainingsEffects {
                     .pastTrainingsControllerGetPastTrainings({
                         currentDate: action.currentDate.toString(),
                         filterType: action.periodFilterType,
+                        page: action.searchData?.page,
+                        size: action.searchData?.perPage,
+                        searchText: action.searchData?.searchText,
                     })
                     .pipe(
                         mapStreamData(),
