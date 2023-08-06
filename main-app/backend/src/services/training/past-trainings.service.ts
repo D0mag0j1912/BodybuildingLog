@@ -76,6 +76,12 @@ export class PastTrainingsService {
                             StartDate: new Date(await this.getEarliestDate(loggedUserId)),
                             EndDate: new Date(await this.getLatestDate(loggedUserId)),
                         }),
+                    },
+                };
+                results = {
+                    ...results,
+                    Results: {
+                        ...results.Results,
                         DayName: this.getWeekDayName(results.Results.Dates.StartDate),
                     },
                 };
