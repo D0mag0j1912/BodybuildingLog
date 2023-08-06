@@ -1,4 +1,3 @@
-import { DateInterval } from '../training/past-trainings/past-trainings.model';
 import { Page } from './page.type';
 
 export interface Paginator<T> {
@@ -17,10 +16,9 @@ export interface PaginatorParams {
 }
 
 export interface PaginatorChanged {
-    Page: number;
-    Size: number;
-    IsSearch?: boolean;
-    PageType?: Page;
-    DateInterval?: DateInterval;
-    EarliestTrainingDate?: string;
+    page: number;
+    perPage: number;
+    isSearch?: boolean;
+    pageType?: Page;
+    earliestTrainingDate?: string;
 }

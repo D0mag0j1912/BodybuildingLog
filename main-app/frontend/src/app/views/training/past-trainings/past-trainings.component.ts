@@ -72,6 +72,7 @@ import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-di
 export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     pastTrainings$ = this._pastTrainingsFacadeService.selectPastTrainings().pipe(
         tap(async (response: StreamData<Paginator<PastTrainings>>) => {
+            //If searching
             if (response?.Value?.PerPage) {
                 this.showByDayStartDate = new Date();
                 this.updatePageAndSize(response);
@@ -265,11 +266,11 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         }
     }
 
-    onPaginatorChanged($event: PaginatorChanged, dayFilterDate: string): void {
-        if ($event?.IsSearch) {
+    onPaginatorChanged($event: PaginatorChanged, startDate: string, endDate: string): void {
+        if ($event?.isSearch) {
             const searchData: SearchParams = {
-                perPage: $event.Size,
-                page: $event.Page,
+                perPage: $event.perPage,
+                page: $event.page,
                 searchText: this.searchText?.trim()?.toLowerCase() ?? '',
             };
             this._pastTrainingsFacadeService.getPastTrainings(
@@ -280,10 +281,10 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         } else {
             if (this.periodFilter === 'day') {
                 this.showByDayStartDate = this.calculateDate(
-                    $event.PageType,
+                    $event.pageType,
                     undefined,
-                    $event.EarliestTrainingDate,
-                    new Date(dayFilterDate),
+                    $event.earliestTrainingDate,
+                    new Date(startDate),
                 );
                 this.dayActivated = {
                     Date: this.showByDayStartDate,
@@ -292,7 +293,12 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             }
             const currentDate =
                 this.periodFilter === 'week'
-                    ? this.onPaginatorChangedFilterHandler(this.periodFilter, $event)
+                    ? this.onPaginatorChangedFilterHandler(this.periodFilter, {
+                          PageType: $event.pageType,
+                          EarliestTrainingDate: $event.earliestTrainingDate,
+                          StartDate: startDate,
+                          EndDate: endDate,
+                      })
                     : this.onPaginatorChangedFilterHandler(
                           this.periodFilter,
                           undefined,
@@ -474,15 +480,23 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     private onPaginatorChangedFilterHandler(
         periodFilterType: PeriodFilterType,
-        $weekEvent?: PaginatorChanged,
+        weekData?: {
+            PageType?: Page;
+            EarliestTrainingDate?: string;
+            StartDate: string;
+            EndDate: string;
+        },
         startOfCurrentWeek?: Date,
     ): Date {
         switch (periodFilterType) {
             case 'week': {
                 return this.calculateDate(
-                    $weekEvent.PageType,
-                    $weekEvent.DateInterval,
-                    $weekEvent.EarliestTrainingDate,
+                    weekData.PageType,
+                    {
+                        StartDate: new Date(weekData.StartDate),
+                        EndDate: new Date(weekData.EndDate),
+                    },
+                    weekData.EarliestTrainingDate,
                 );
             }
             case 'day': {

@@ -102,7 +102,7 @@
                 [isNextPage]="isNextPage"
                 [data]="state"
                 [isLoading]="state.IsLoading"
-                (paginatorChanged)="onPaginatorChanged($event, state.Value?.Results?.Dates?.StartDate)"
+                (paginatorChanged)="onPaginatorChanged($event, state.Value?.Results?.Dates?.StartDate, state.Value.Results.Dates.EndDate)"
             ></bl-pagination>
         </ng-template>
     </ng-container>
