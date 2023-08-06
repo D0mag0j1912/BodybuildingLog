@@ -439,8 +439,8 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     private initView(): void {
         this.page = this.currentQueryParams?.page ? +this.currentQueryParams.page : INITIAL_PAGE;
-        this.perPage = this.currentQueryParams?.size
-            ? +this.currentQueryParams?.size
+        this.perPage = this.currentQueryParams?.perPage
+            ? +this.currentQueryParams?.perPage
             : DEFAULT_PER_PAGE;
         this.searchText = this.currentQueryParams?.search;
         this._isSearch$.next(!!this.searchText);
@@ -546,7 +546,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             endDate: this.handleSpecificQueryParam(searchValue, trainingData, 'endDate'),
             search: searchValue ?? undefined,
             page: this.handleSpecificQueryParam(searchValue, trainingData, 'page'),
-            size: this.handleSpecificQueryParam(searchValue, trainingData, 'size'),
+            perPage: this.handleSpecificQueryParam(searchValue, trainingData, 'perPage'),
             showBy: !searchValue ? this.periodFilter : undefined,
         };
         return { filter: encodeFilter(params) };

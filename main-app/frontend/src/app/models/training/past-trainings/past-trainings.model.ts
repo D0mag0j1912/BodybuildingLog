@@ -24,7 +24,7 @@ export interface PastTrainingsQueryParams {
     endDate?: string;
     search?: string;
     page?: string;
-    size?: string;
+    perPage?: string;
     showBy?: PeriodFilterType;
     muscleGroups?: MuscleGroupsType[];
 }
