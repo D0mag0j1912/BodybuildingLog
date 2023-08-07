@@ -1,6 +1,5 @@
 import { KeyValue } from '@angular/common';
 import {
-    AfterViewInit,
     ChangeDetectionStrategy,
     Component,
     EventEmitter,
@@ -12,7 +11,14 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { IonInput, SegmentChangeEventDetail } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
+import {
+    debounceTime,
+    distinctUntilChanged,
+    filter,
+    map,
+    startWith,
+    takeUntil,
+} from 'rxjs/operators';
 import { INPUT_MAX_LENGTH } from '../../../../constants/shared/input-maxlength.const';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import {
@@ -28,7 +34,7 @@ import { decodeFilter } from '../../../../helpers/encode-decode.helper';
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class PastTrainingsFiltersComponent implements AfterViewInit {
+export class PastTrainingsFiltersComponent {
     private _keyUp$ = new Subject<KeyboardEvent>();
 
     @Input()
@@ -78,6 +84,7 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
                 filter((value: string) => value.length <= 50),
                 debounceTime(500),
                 distinctUntilChanged(),
+                startWith(this.searchValue),
                 takeUntil(this._unsubscribeService),
             )
             .subscribe((value: string) => this.searchEmitted.next(value));
@@ -90,15 +97,6 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
                     decodeFilter<PastTrainingsQueryParams>(currentQueryParams);
                 this.searchValue = pastTrainingsQueryParams.search;
             });
-    }
-
-    ngAfterViewInit(): void {
-        setTimeout(() => {
-            if (this.searchEl) {
-                const value = this.searchEl?.value as string;
-                this.searchEmitted.emit(value);
-            }
-        });
     }
 
     emitKeyboardEvent($event: KeyboardEvent): void {
