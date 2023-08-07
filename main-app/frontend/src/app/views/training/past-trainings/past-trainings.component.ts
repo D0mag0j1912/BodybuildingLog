@@ -73,7 +73,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         tap(async (response: StreamData<Paginator<PastTrainings>>) => {
             if (response) {
                 //If searching
-                if (response?.Value?.PerPage) {
+                if (response?.Value?.TotalPages) {
                     this.showByDayStartDate = new Date();
                     this.updatePageAndSize(response);
                 }

@@ -227,6 +227,11 @@ export class SingleExerciseComponent implements OnDestroy {
                     ].controls.exerciseData.controls.selectedSetCategories.patchValue(
                         selectedExerciseData.selectedSetCategories,
                     );
+                    this.form.controls[
+                        indexExercise
+                    ].controls.exerciseData.controls.translations.patchValue(
+                        selectedExercise.translations,
+                    );
                     if (this.bodyweightControl?.errors) {
                         this.bodyweightControl.markAsTouched();
                     }
@@ -272,6 +277,7 @@ export class SingleExerciseComponent implements OnDestroy {
                     selectedSetCategories: new FormControl(
                         exercise?.exerciseData?.selectedSetCategories ?? [],
                     ),
+                    translations: new FormControl(exercise?.exerciseData?.translations),
                 }),
             }),
         );
