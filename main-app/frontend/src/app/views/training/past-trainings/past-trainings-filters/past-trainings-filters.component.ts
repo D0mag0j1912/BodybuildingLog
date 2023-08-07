@@ -1,6 +1,5 @@
 import { KeyValue } from '@angular/common';
 import {
-    AfterViewInit,
     ChangeDetectionStrategy,
     Component,
     EventEmitter,
@@ -8,14 +7,25 @@ import {
     Output,
     ViewChild,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { IonInput, SegmentChangeEventDetail } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
+import {
+    debounceTime,
+    distinctUntilChanged,
+    filter,
+    map,
+    startWith,
+    takeUntil,
+} from 'rxjs/operators';
 import { INPUT_MAX_LENGTH } from '../../../../constants/shared/input-maxlength.const';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
-import { PeriodFilterType } from '../../../../models/training/past-trainings/past-trainings.model';
+import {
+    PastTrainingsQueryParams,
+    PeriodFilterType,
+} from '../../../../models/training/past-trainings/past-trainings.model';
+import { decodeFilter } from '../../../../helpers/encode-decode.helper';
 
 @Component({
     selector: 'bl-past-trainings-filters',
@@ -24,7 +34,7 @@ import { PeriodFilterType } from '../../../../models/training/past-trainings/pas
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [UnsubscribeService],
 })
-export class PastTrainingsFiltersComponent implements AfterViewInit {
+export class PastTrainingsFiltersComponent {
     private _keyUp$ = new Subject<KeyboardEvent>();
 
     @Input()
@@ -34,13 +44,10 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
     periodDisabled = false;
 
     @Output()
-    trainingEmitted = new EventEmitter<string>();
-
-    @Output()
     periodEmitted = new EventEmitter<PeriodFilterType>();
 
     @Output()
-    searchEmitted = new EventEmitter<boolean>();
+    searchEmitted = new EventEmitter<string>();
 
     @Output()
     filterDialogOpened = new EventEmitter<void>();
@@ -77,22 +84,19 @@ export class PastTrainingsFiltersComponent implements AfterViewInit {
                 filter((value: string) => value.length <= 50),
                 debounceTime(500),
                 distinctUntilChanged(),
+                startWith(this.searchValue),
                 takeUntil(this._unsubscribeService),
             )
-            .subscribe((value: string) => this.trainingEmitted.next(value));
+            .subscribe((value: string) => this.searchEmitted.next(value));
 
         this._route.queryParams
             .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((params) => (this.searchValue = params.search));
-    }
-
-    ngAfterViewInit(): void {
-        setTimeout(() => {
-            if (this.searchEl) {
-                const value = this.searchEl?.value;
-                this.searchEmitted.emit(!!value);
-            }
-        });
+            .subscribe((params: Params) => {
+                const currentQueryParams = params.filter;
+                const pastTrainingsQueryParams =
+                    decodeFilter<PastTrainingsQueryParams>(currentQueryParams);
+                this.searchValue = pastTrainingsQueryParams.search;
+            });
     }
 
     emitKeyboardEvent($event: KeyboardEvent): void {

@@ -766,6 +766,7 @@ export class NewTrainingStoreService {
                             bodyweight: null,
                             editMode: false,
                             userId: data.userId,
+                            trainingDate: new Date().toISOString(),
                         };
                         break;
                     }

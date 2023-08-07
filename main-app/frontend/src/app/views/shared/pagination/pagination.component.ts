@@ -3,12 +3,9 @@ import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { StreamData } from '../../../models/common/common.model';
 import { Paginator } from '../../../models/common/paginator.model';
 import { Page } from '../../../models/common/page.type';
-import {
-    DateInterval,
-    PastTrainings,
-} from '../../../models/training/past-trainings/past-trainings.model';
+import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
 import { PaginatorChanged } from '../../../models/common/paginator.model';
-import { DEFAULT_SIZE, INITIAL_PAGE } from '../../../constants/shared/paginator.const';
+import { DEFAULT_PER_PAGE, INITIAL_PAGE } from '../../../constants/shared/paginator.const';
 
 @Component({
     selector: 'bl-pagination',
@@ -26,7 +23,7 @@ export class PaginationComponent {
     page: number = INITIAL_PAGE;
 
     @Input()
-    size: number = DEFAULT_SIZE;
+    perPage: number = DEFAULT_PER_PAGE;
 
     @Input()
     isPreviousPage = false;
@@ -41,15 +38,9 @@ export class PaginationComponent {
     isLoading = false;
 
     @Output()
-    readonly paginatorChanged: EventEmitter<PaginatorChanged> =
-        new EventEmitter<PaginatorChanged>();
+    readonly paginatorChanged = new EventEmitter<PaginatorChanged>();
 
-    loadPage(
-        page?: Page,
-        dateInterval?: DateInterval,
-        earliestTrainingDate?: string,
-        lastPage?: number,
-    ): void {
+    loadPage(page?: Page, earliestTrainingDate?: string, lastPage?: number): void {
         if (this.isSearch) {
             if (page) {
                 switch (page) {
@@ -74,18 +65,17 @@ export class PaginationComponent {
                 }
             }
             this.paginatorChanged.emit({
-                Page: +this.page,
-                Size: +this.size,
-                IsSearch: true,
+                page: +this.page,
+                perPage: +this.perPage,
+                isSearch: true,
             } as PaginatorChanged);
         } else {
             this.paginatorChanged.emit({
-                Page: +this.page,
-                Size: +this.size,
-                IsSearch: false,
-                PageType: page,
-                DateInterval: dateInterval,
-                EarliestTrainingDate: earliestTrainingDate,
+                page: +this.page,
+                perPage: +this.perPage,
+                isSearch: false,
+                pageType: page,
+                earliestTrainingDate: earliestTrainingDate,
             } as PaginatorChanged);
         }
     }

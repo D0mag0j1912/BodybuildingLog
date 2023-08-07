@@ -12,7 +12,7 @@ export class SearchDataDto {
         type: Number,
     })
     @IsNotEmpty()
-    size: number;
+    perPage: number;
 
     @ApiPropertyOptional({
         type: String,
@@ -20,5 +20,5 @@ export class SearchDataDto {
     @IsOptional()
     @IsString()
     @IsLowercase()
-    searchValue?: string;
+    searchText?: string;
 }

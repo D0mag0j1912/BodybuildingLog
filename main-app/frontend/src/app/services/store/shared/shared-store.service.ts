@@ -1,13 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { StreamData } from '../../../models/common/common.model';
-import { Paginator } from '../../../models/common/paginator.model';
-import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class SharedStoreService {
-    deletedTraining$$ = new Subject<StreamData<Paginator<PastTrainings>>>();
-
     _dayClicked$ = new BehaviorSubject<string>(null);
 
     completeDayClicked(): void {

@@ -5,6 +5,17 @@ import { Translations } from '../common/translations.model';
 import { SetCategoryType } from './new-training/set.type';
 import { PrimaryMuscleGroupType } from './primary-muscle-group.type';
 
+const TRANSLATIONS_SCHEMA = new Schema({
+    en: {
+        type: String,
+        required: true,
+    },
+    hr: {
+        type: String,
+        required: true,
+    },
+});
+
 export const EXERCISE_SCHEMA = new Schema({
     name: {
         type: String,
@@ -24,6 +35,10 @@ export const EXERCISE_SCHEMA = new Schema({
         required: true,
     },
     numberOfSets: Number,
+    translations: {
+        type: TRANSLATIONS_SCHEMA,
+        required: true,
+    },
 });
 
 export class ExerciseDto {

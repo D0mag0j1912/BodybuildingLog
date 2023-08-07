@@ -16,6 +16,7 @@ export type ExerciseValueType = Partial<
         | 'primaryMuscleGroup'
         | 'selectedSetCategories'
         | 'availableSetCategories'
+        | 'translations'
     >
 >;
 

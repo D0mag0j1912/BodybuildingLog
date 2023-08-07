@@ -3,7 +3,10 @@ import { MuscleGroupsType } from '../../common/muscle-groups.type';
 
 export interface PastTrainings {
     Trainings: NewTraining[];
-    Dates: DateInterval;
+    Dates: {
+        StartDate: string;
+        EndDate: string;
+    };
     IsPreviousWeek?: boolean;
     IsNextWeek?: boolean;
     EarliestTrainingDate?: string;
@@ -21,7 +24,7 @@ export interface PastTrainingsQueryParams {
     endDate?: string;
     search?: string;
     page?: string;
-    size?: string;
+    perPage?: string;
     showBy?: PeriodFilterType;
     muscleGroups?: MuscleGroupsType[];
 }

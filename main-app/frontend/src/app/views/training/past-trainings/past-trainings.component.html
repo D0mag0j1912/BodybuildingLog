@@ -17,8 +17,7 @@
         <ng-container *ngIf="state.IsError; else valueOrLoading">
             <bl-error
                 [imagePath]="'../../../../assets/svgs/error1.svg'"
-                [title]="'training.past_trainings.errors.past_trainings_error_title'"
-                [description]="'training.past_trainings.errors.past_trainings_error_description'">
+                [title]="'training.past_trainings.errors.past_trainings_error_title'">
                 <ion-button color="primary" type="button" (click)="tryAgain()" cta>
                     {{ 'common.try_again' | translate }}
                 </ion-button>
@@ -31,7 +30,6 @@
             <bl-past-trainings-filters
                 [periodDisabled]="(isSearch$ | async) || state.IsLoading"
                 [periodFilter]="periodFilter"
-                (trainingEmitted)="searchEmitted($event)"
                 (periodEmitted)="onPeriodEmitted($event, state.Value?.Results?.Dates?.StartDate)"
                 (searchEmitted)="onSearchEmitted($event)"
                 (filterDialogOpened)="openFilterDialog()"
@@ -48,7 +46,7 @@
                 </ion-card-header>
             </ion-card>
             <div #itemWrapper class="training-item-wrapper">
-                <ng-container *ngIf="state.Value?.TotalCount > 0; else noTrainings">
+                <ng-container *ngIf="state.Value?.Results?.Trainings?.length > 0; else noTrainings">
                     <bl-training-item
                         *ngFor="let training of state.Value?.Results?.Trainings"
                         [training]="training"
@@ -58,7 +56,7 @@
                 </ng-container>
                 <ng-template #noTrainings>
                     <section class="no-trainings">
-                        <ng-container *ngIf="state.Value?.TotalCount === 0">
+                        <ng-container *ngIf="state.Value?.Results?.Trainings?.length === 0">
                             <h1 class="no-trainings-title">
                                 <ng-container *ngIf="!(isSearch$ | async); else noResultSearch">
                                     {{
@@ -97,12 +95,12 @@
             <bl-pagination
                 [isSearch]="isSearch$ | async"
                 [page]="page"
-                [size]="size"
+                [perPage]="perPage"
                 [isPreviousPage]="isPreviousPage"
                 [isNextPage]="isNextPage"
                 [data]="state"
                 [isLoading]="state.IsLoading"
-                (paginatorChanged)="onPaginatorChanged($event, state.Value?.Results?.Dates?.StartDate)"
+                (paginatorChanged)="onPaginatorChanged($event, state.Value?.Results?.Dates?.StartDate, state.Value.Results.Dates.EndDate)"
             ></bl-pagination>
         </ng-template>
     </ng-container>

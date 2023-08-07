@@ -8,7 +8,6 @@ import { PaginatorDto } from '../../models/common/paginator.model';
 import { NewTrainingDto } from '../../models/training/new-training/new-training.model';
 import { PastTrainingsDto } from '../../models/training/past-trainings/past-trainings.model';
 import { DateIntervalDto } from '../../models/common/dates.model';
-import { PreferencesService } from '../preferences/preferences.service';
 import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
 import { isNeverCheck } from '../../helpers/is-never-check';
 import { StreamModelDto } from '../../models/common/stream.model';
@@ -17,70 +16,7 @@ import { SearchDataDto } from '../../models/common/search-data.model';
 
 @Injectable()
 export class PastTrainingsService {
-    constructor(
-        @InjectModel('Training') private _trainingModel: Model<NewTrainingDto>,
-        private _preferencesService: PreferencesService,
-    ) {}
-
-    async searchTrainings(
-        loggedUserId: string,
-        data: SearchDataDto,
-    ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
-        try {
-            if (data.searchValue !== '') {
-                const query: PaginatorParamsDto = {
-                    Page: data.page,
-                    Size: data.size,
-                };
-                const queryWordRegex = new RegExp(data.searchValue, 'i');
-                const condition: FilterQuery<NewTrainingDto> = {
-                    $and: [
-                        {
-                            $or: [
-                                {
-                                    'exercises.exerciseData.translations.en': {
-                                        $regex: queryWordRegex,
-                                    },
-                                },
-                                {
-                                    'exercises.exerciseData.translations.hr': {
-                                        $regex: queryWordRegex,
-                                    },
-                                },
-                            ],
-                            userId: loggedUserId,
-                        },
-                    ],
-                };
-                const results: PaginatorDto<PastTrainingsDto> = await paginate(
-                    this._trainingModel,
-                    condition,
-                    query,
-                );
-                results.Results.Dates = setTrainingDate(results?.Results.Trainings, {
-                    StartDate: new Date(await this.getEarliestDate(loggedUserId)),
-                    EndDate: new Date(await this.getLatestDate(loggedUserId)),
-                });
-                results.Results.DayName = this.getWeekDayName(results.Results.Dates.StartDate);
-                return {
-                    IsLoading: true,
-                    Value: results,
-                    IsError: false,
-                } as StreamModelDto<PaginatorDto<PastTrainingsDto>>;
-            } else {
-                const userPreferences = await this._preferencesService.getPreferences(loggedUserId);
-                return this.getPastTrainings(
-                    new Date(),
-                    userPreferences.showByPeriod,
-                    loggedUserId,
-                );
-            }
-        } catch (error: unknown) {
-            throw new InternalServerErrorException(
-                'training.past_trainings.filters.errors.search_error',
-            );
-        }
-    }
+    constructor(@InjectModel('Training') private _trainingModel: Model<NewTrainingDto>) {}
 
     async getPastTraining(trainingId: string): Promise<StreamModelDto<NewTrainingDto>> {
         try {
@@ -101,39 +37,105 @@ export class PastTrainingsService {
         currentDate: Date,
         periodFilterType: PeriodFilterType,
         loggedUserId: string,
+        searchData: SearchDataDto,
     ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
         try {
-            const dates: DateIntervalDto = setTrainingDate(new Date(currentDate));
-            const condition: FilterQuery<NewTrainingDto> = {
-                userId: loggedUserId,
-                trainingDate: {
-                    $gte:
-                        periodFilterType === 'week'
-                            ? dates.StartDate
-                            : startOfDay(new Date(currentDate)),
-                    $lt:
-                        periodFilterType === 'week'
-                            ? dates.EndDate
-                            : endOfDay(new Date(currentDate)),
-                },
-            };
-            const results: PaginatorDto<PastTrainingsDto> = await paginate(
-                this._trainingModel,
-                condition,
-            );
-            results.Results.Dates =
-                periodFilterType === 'week'
-                    ? dates
-                    : { StartDate: new Date(currentDate), EndDate: new Date(currentDate) };
-            results.Results.EarliestTrainingDate =
-                (await this.getEarliestDate(loggedUserId)) ?? new Date().toString();
-            results.Results.IsPreviousWeek = isPreviousWeek(
-                new Date(results.Results?.EarliestTrainingDate),
-                dates,
-            );
-            results.Results.IsNextWeek = isNextWeek(dates);
-            if (periodFilterType === 'day') {
-                results.Results.DayName = this.getWeekDayName(new Date(currentDate));
+            let condition: FilterQuery<NewTrainingDto>;
+            let results: PaginatorDto<PastTrainingsDto>;
+            if (searchData?.searchText) {
+                const query: PaginatorParamsDto = {
+                    Page: searchData.page,
+                    PerPage: searchData.perPage,
+                };
+                const queryWordRegex = new RegExp(searchData.searchText, 'i');
+                condition = {
+                    $and: [
+                        {
+                            $or: [
+                                {
+                                    'exercises.exerciseData.translations.en': {
+                                        $regex: queryWordRegex,
+                                    },
+                                },
+                                {
+                                    'exercises.exerciseData.translations.hr': {
+                                        $regex: queryWordRegex,
+                                    },
+                                },
+                            ],
+                            userId: loggedUserId,
+                        },
+                    ],
+                };
+                results = await paginate(this._trainingModel, condition, query);
+                results = {
+                    ...results,
+                    Results: {
+                        ...results.Results,
+                        Dates: setTrainingDate(results?.Results.Trainings, {
+                            StartDate: new Date(await this.getEarliestDate(loggedUserId)),
+                            EndDate: new Date(await this.getLatestDate(loggedUserId)),
+                        }),
+                    },
+                };
+                results = {
+                    ...results,
+                    Results: {
+                        ...results.Results,
+                        DayName: this.getWeekDayName(results.Results.Dates.StartDate),
+                    },
+                };
+            } else {
+                const dates: DateIntervalDto = setTrainingDate(new Date(currentDate));
+                condition = {
+                    userId: loggedUserId,
+                    trainingDate: {
+                        $gte:
+                            periodFilterType === 'week'
+                                ? dates.StartDate
+                                : startOfDay(new Date(currentDate)),
+                        $lt:
+                            periodFilterType === 'week'
+                                ? dates.EndDate
+                                : endOfDay(new Date(currentDate)),
+                    },
+                };
+                results = await paginate(this._trainingModel, condition);
+                results = {
+                    ...results,
+                    Results: {
+                        ...results.Results,
+                        Dates:
+                            periodFilterType === 'week'
+                                ? dates
+                                : {
+                                      StartDate: new Date(currentDate),
+                                      EndDate: new Date(currentDate),
+                                  },
+                        EarliestTrainingDate:
+                            (await this.getEarliestDate(loggedUserId)) ?? new Date().toString(),
+                    },
+                };
+                results = {
+                    ...results,
+                    Results: {
+                        ...results.Results,
+                        IsPreviousWeek: isPreviousWeek(
+                            new Date(results.Results?.EarliestTrainingDate),
+                            dates,
+                        ),
+                        IsNextWeek: isNextWeek(dates),
+                    },
+                };
+                if (periodFilterType === 'day') {
+                    results = {
+                        ...results,
+                        Results: {
+                            ...results.Results,
+                            DayName: this.getWeekDayName(new Date(currentDate)),
+                        },
+                    };
+                }
             }
             return {
                 IsLoading: true,

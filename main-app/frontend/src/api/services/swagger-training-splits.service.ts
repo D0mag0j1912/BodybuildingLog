@@ -205,24 +205,24 @@ export class SwaggerTrainingSplitsService extends BaseService {
   }
 
   /**
-   * Path part for operation trainingSplitsControllerUpdateTraining
+   * Path part for operation trainingSplitsControllerUpdateTrainingSplit
    */
-  static readonly TrainingSplitsControllerUpdateTrainingPath = '/api/training/training-splits/{id}';
+  static readonly TrainingSplitsControllerUpdateTrainingSplitPath = '/api/training/training-splits/{id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `trainingSplitsControllerUpdateTraining()` instead.
+   * To access only the response body, use `trainingSplitsControllerUpdateTrainingSplit()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  trainingSplitsControllerUpdateTraining$Response(params: {
+  trainingSplitsControllerUpdateTrainingSplit$Response(params: {
     id: string;
     context?: HttpContext
     body: TrainingSplitDto
   }
 ): Observable<StrictHttpResponse<TrainingSplitDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, SwaggerTrainingSplitsService.TrainingSplitsControllerUpdateTrainingPath, 'put');
+    const rb = new RequestBuilder(this.rootUrl, SwaggerTrainingSplitsService.TrainingSplitsControllerUpdateTrainingSplitPath, 'put');
     if (params) {
       rb.path('id', params.id, {});
       rb.body(params.body, 'application/json');
@@ -242,18 +242,18 @@ export class SwaggerTrainingSplitsService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `trainingSplitsControllerUpdateTraining$Response()` instead.
+   * To access the full response (for headers, for example), `trainingSplitsControllerUpdateTrainingSplit$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  trainingSplitsControllerUpdateTraining(params: {
+  trainingSplitsControllerUpdateTrainingSplit(params: {
     id: string;
     context?: HttpContext
     body: TrainingSplitDto
   }
 ): Observable<TrainingSplitDto> {
 
-    return this.trainingSplitsControllerUpdateTraining$Response(params).pipe(
+    return this.trainingSplitsControllerUpdateTrainingSplit$Response(params).pipe(
       map((r: StrictHttpResponse<TrainingSplitDto>) => r.body as TrainingSplitDto)
     );
   }

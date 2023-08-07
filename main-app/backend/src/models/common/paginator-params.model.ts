@@ -10,5 +10,5 @@ export class PaginatorParamsDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsNumber()
-    Size: number;
+    PerPage: number;
 }

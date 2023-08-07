@@ -10,7 +10,6 @@ import { SINGLE_EXERCISE_SCHEMA } from '../../models/training/new-training/singl
 import { NewTrainingService } from '../../services/training/new-training.service';
 import { PastTrainingsService } from '../../services/training/past-trainings.service';
 import { DeleteTrainingActionService } from '../../services/training/training-actions/delete-training-action.service';
-import { SearchTrainingsController } from '../../controllers/training/past-trainings/search-trainings.controller';
 import { AuthModule } from '../auth/auth.module';
 import { PreferencesModule } from '../preferences/preferences.module';
 import { GetExercisesController } from '../../controllers/training/new-training/get-exercises.controller';
@@ -23,7 +22,6 @@ const CONTROLLERS = [
     NewTrainingController,
     PastTrainingsController,
     DeleteTrainingActionController,
-    SearchTrainingsController,
     GetExercisesController,
     TrainingSplitsController,
 ];

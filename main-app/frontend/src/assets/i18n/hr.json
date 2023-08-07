@@ -213,16 +213,14 @@
                 "delete_training": "Izbriši trening"
             },
             "actions": {
-                "delete_training": "Jeste li sigurni da želite izbrisati trening?",
-                "errors": {
-                    "error_delete_training": "Greška pri brisanju treninga"
-                }
+                "delete_training": "Jeste li sigurni da želite izbrisati trening?"
             },
             "errors": {
+                "get_past_trainings": "Greška prilikom dohvata treninga",
                 "error_load_training": "Greška pri učitavanju treninga",
+                "error_delete_training": "Greška prilikom brisanja treninga",
                 "get_training_error": "Traženi trening nije dostupan",
-                "past_trainings_error_title": "Prošli treninzi trenutno nedostupni",
-                "past_trainings_error_description": "Prošli treninzi trenutno nisu dostupni. Molimo Vas pokušajte ponovno."
+                "past_trainings_error_title": "Prošli treninzi su trenutno nedostupni"
             }
         },
         "training_split": {

@@ -19,7 +19,7 @@ export class PaginatorDto<T> {
     @ApiProperty()
     @IsOptional()
     @IsNumber()
-    Size?: number;
+    PerPage?: number;
 
     @ApiProperty()
     @IsOptional()

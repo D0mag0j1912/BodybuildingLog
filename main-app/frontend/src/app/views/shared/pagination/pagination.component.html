@@ -4,7 +4,7 @@
             <div class="controls-wrapper">
                 <ng-container *ngIf="isSearch">
                     <ion-item *skeleton="isLoading; width: '50px'; height: '35px'" class="page-size-item">
-                        <ion-select class="page-size-select" [(ngModel)]="size" (ionChange)="loadPage()">
+                        <ion-select class="page-size-select" [(ngModel)]="perPage" (ionChange)="loadPage()">
                             <ion-select-option *ngFor="let size of pageSizeOptions" [value]="size">
                                 {{ size }}
                             </ion-select-option>
@@ -18,7 +18,7 @@
                         type="button"
                         color="primary"
                         fill="outline"
-                        (click)="loadPage('First', undefined, data?.Value?.Results?.EarliestTrainingDate)"
+                        (click)="loadPage('First', data?.Value?.Results?.EarliestTrainingDate)"
                         [disabled]="!isPreviousPage"
                     >
                         <ion-icon name="play-back-sharp"></ion-icon>
@@ -30,7 +30,7 @@
                         color="primary"
                         fill="outline"
                         [disabled]="data?.IsLoading || !isPreviousPage"
-                        (click)="loadPage('Previous', data.Value?.Results?.Dates)"
+                        (click)="loadPage('Previous')"
                     >
                         <ion-icon name="chevron-back-sharp"></ion-icon>
                     </ion-button>
@@ -41,7 +41,7 @@
                         color="primary"
                         fill="outline"
                         [disabled]="data.IsLoading || !isNextPage"
-                        (click)="loadPage('Next', data.Value?.Results?.Dates)"
+                        (click)="loadPage('Next')"
                     >
                         <ion-icon name="chevron-forward-sharp"></ion-icon>
                     </ion-button>
@@ -51,7 +51,7 @@
                         class="last"
                         color="primary"
                         fill="outline"
-                        (click)="loadPage('Last', undefined, undefined, data?.Value?.TotalPages)"
+                        (click)="loadPage('Last', undefined, data?.Value?.TotalPages)"
                         [disabled]="!isNextPage"
                     >
                         <ion-icon name="play-forward-sharp"></ion-icon>

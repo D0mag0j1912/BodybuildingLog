@@ -1,20 +1,20 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
 import { SearchDataDto } from '../../models/common/search-data.model';
-import { INITIAL_PAGE, DEFAULT_SIZE } from '../../constants/paginator.const';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '../../constants/paginator.const';
 
 @Injectable()
 export class PaginatePipe implements PipeTransform {
     transform(query: SearchDataDto): SearchDataDto {
         if (!query?.page) {
-            query.page = INITIAL_PAGE;
+            query.page = DEFAULT_PAGE;
         }
-        if (!query?.size) {
-            query.size = DEFAULT_SIZE;
+        if (!query?.perPage) {
+            query.perPage = DEFAULT_PER_PAGE;
         }
         return {
             ...query,
             page: +query.page,
-            size: +query.size,
+            perPage: +query.perPage,
         };
     }
 }
