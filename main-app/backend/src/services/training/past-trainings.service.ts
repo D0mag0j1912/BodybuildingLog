@@ -114,6 +114,12 @@ export class PastTrainingsService {
                                   },
                         EarliestTrainingDate:
                             (await this.getEarliestDate(loggedUserId)) ?? new Date().toString(),
+                    },
+                };
+                results = {
+                    ...results,
+                    Results: {
+                        ...results.Results,
                         IsPreviousWeek: isPreviousWeek(
                             new Date(results.Results?.EarliestTrainingDate),
                             dates,
