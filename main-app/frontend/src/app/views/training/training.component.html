@@ -5,10 +5,12 @@
             <ion-label>{{ 'navigation.new_training' | translate }}</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="past-trainings?filter={{ filter }}">
-            <ion-icon name="analytics-sharp"></ion-icon>
-            <ion-label>{{ 'navigation.past_trainings' | translate }}</ion-label>
-        </ion-tab-button>
+        <ng-container *ngIf="pastTrainingsFilter$ | async as filter">
+            <ion-tab-button tab="past-trainings?filter={{ filter }}" (click)="saveFilter(filter)">
+                <ion-icon name="analytics-sharp"></ion-icon>
+                <ion-label>{{ 'navigation.past_trainings' | translate }}</ion-label>
+            </ion-tab-button>
+        </ng-container>
 
         <ion-tab-button tab="training-splits">
             <ion-icon name="fitness-sharp"></ion-icon>

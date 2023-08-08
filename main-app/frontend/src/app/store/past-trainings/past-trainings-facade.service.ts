@@ -17,19 +17,19 @@ import * as PastTrainingsActions from './actions/past-trainings.actions';
 
 @Injectable({ providedIn: 'root' })
 export class PastTrainingsFacadeService {
-    private _selectPastTrainingsFilter = this._store.select(selectPastTrainingsFilter);
+    private _selectPastTrainingsFilter$ = this._store.select(selectPastTrainingsFilter);
 
-    private _selectPastTrainings = this._store.select(selectPastTrainings);
+    private _selectPastTrainings$ = this._store.select(selectPastTrainings);
 
     constructor(private _store: Store<AppState>) {}
 
     //Selectors BEGIN -------------------------
     selectPastTrainings(): Observable<StreamData<Paginator<PastTrainings>>> {
-        return this._selectPastTrainings;
+        return this._selectPastTrainings$;
     }
 
     selectPastTrainingsFilter(): Observable<string> {
-        return this._selectPastTrainingsFilter;
+        return this._selectPastTrainingsFilter$;
     }
     //Selectors END ---------------------------
 
