@@ -158,8 +158,8 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         return of('');
     }
 
-    async ionViewWillEnter(): Promise<void> {
-        this.initView();
+    ngOnInit(): void {
+        this.initPastTrainings();
     }
 
     ngAfterViewChecked(): void {
@@ -366,7 +366,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     //TODO: align with 'ShowByDay' feature
     tryAgain(): void {
-        this.initView();
+        this.initPastTrainings();
     }
 
     setTimePeriod$(results: PastTrainings): Observable<string> {
@@ -439,7 +439,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         }
     }
 
-    private initView(): void {
+    private initPastTrainings(): void {
         this.page = this.currentQueryParams?.page ? +this.currentQueryParams.page : INITIAL_PAGE;
         this.perPage = this.currentQueryParams?.perPage
             ? +this.currentQueryParams?.perPage
