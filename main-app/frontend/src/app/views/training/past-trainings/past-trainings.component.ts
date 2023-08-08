@@ -200,10 +200,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                     };
                     const filter = encodeFilter(pastTrainingsQueryParams);
                     this._pastTrainingsFacadeService.saveFilter(filter);
-                    await this._router.navigate([], {
-                        relativeTo: this._route,
-                        queryParams: { filter },
-                    });
                 }
             });
     }
