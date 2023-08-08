@@ -551,7 +551,9 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             perPage: this.handleSpecificQueryParam(searchValue, trainingData, 'perPage'),
             showBy: !searchValue ? this.periodFilter : undefined,
         };
-        return { filter: encodeFilter(params) };
+        const filter = encodeFilter(params);
+        this._pastTrainingsFacadeService.saveFilter(filter);
+        return { filter };
     }
 
     private handleSpecificQueryParam(

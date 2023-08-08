@@ -20,5 +20,5 @@ export const selectPastTrainings = createSelector(
  */
 export const selectPastTrainingsFilter = createSelector(
     pastTrainingsState,
-    (state: PastTrainingsState) => state.filter,
+    (state: PastTrainingsState) => state?.filter,
 );
