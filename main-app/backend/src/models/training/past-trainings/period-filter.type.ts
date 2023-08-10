@@ -1,1 +1,1 @@
-export type PeriodFilterType = 'week' | 'day';
+export type PeriodFilterType = 'day' | 'week' | 'month' | 'year' | 'allTime';

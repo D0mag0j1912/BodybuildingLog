@@ -42,7 +42,7 @@ export class PreferencesDto {
     weightUnit: WeightUnitType;
 
     @ApiPropertyOptional({
-        enum: ['week', 'day'],
+        enum: ['day', 'week', 'month', 'year', 'allTime'],
         description: "User's current past trainings period preference",
     })
     @IsOptional()
