@@ -12,62 +12,49 @@ export const paginate = async <
 >(
     model: U,
     condition: FilterQuery<K>,
-    query?: PaginatorParamsDto,
+    query: PaginatorParamsDto,
 ): Promise<PaginatorDto<T>> => {
-    const results: Partial<PaginatorDto<T>> = {};
-    let page: number;
-    let perPage: number;
-    let startIndex: number;
-    let endIndex: number;
+    const results: PaginatorDto<T> = {};
 
     const total = (await model.countDocuments(condition).exec()) ?? 0;
     results.TotalCount = total;
 
-    if (query) {
-        page = +query.Page;
-        perPage = +query.PerPage;
+    let page = +query.Page;
+    const perPage = +query.PerPage;
 
-        if (results.TotalCount > 0) {
-            while (page > Math.ceil(results.TotalCount / perPage)) {
-                page--;
-            }
+    if (results.TotalCount > 0) {
+        while (page > Math.ceil(results.TotalCount / perPage)) {
+            page--;
         }
-
-        results.CurrentPage = page;
-        results.PerPage = perPage;
-        startIndex = (results.CurrentPage - 1) * perPage;
-        endIndex = results.CurrentPage * perPage;
-
-        if (endIndex < total) {
-            results.Next = {
-                Page: results.CurrentPage + 1,
-                PerPage: perPage,
-            };
-        }
-
-        if (startIndex > 0) {
-            results.Previous = {
-                Page: results.CurrentPage - 1,
-                PerPage: perPage,
-            };
-        }
-        results.TotalPages = Math.ceil(results.TotalCount / perPage);
     }
+
+    results.Page = page;
+    results.PerPage = perPage;
+    const startIndex = (results.Page - 1) * perPage;
+    const endIndex = results.Page * perPage;
+
+    if (endIndex < total) {
+        results.Next = {
+            Page: results.Page + 1,
+            PerPage: perPage,
+        };
+    }
+
+    if (startIndex > 0) {
+        results.Previous = {
+            Page: results.Page - 1,
+            PerPage: perPage,
+        };
+    }
+    results.TotalPages = Math.ceil(results.TotalCount / perPage);
     results.Results = Object.create({});
     try {
-        if (query) {
-            results.Results.Trainings = await model
-                .find(condition)
-                .limit(perPage)
-                .skip(startIndex)
-                .sort({ trainingDate: 'desc' })
-                .exec();
-        } else {
-            results.Results.Trainings = await model
-                .find(condition)
-                .sort({ trainingDate: 'desc' })
-                .exec();
-        }
+        results.Results.Trainings = await model
+            .find(condition)
+            .limit(perPage)
+            .skip(startIndex)
+            .sort({ trainingDate: 'desc' })
+            .exec();
         return results;
     } catch (error) {
         throw new InternalServerErrorException(

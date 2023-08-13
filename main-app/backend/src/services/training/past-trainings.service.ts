@@ -1,7 +1,17 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { endOfDay, getDay, startOfDay } from 'date-fns';
+import {
+    endOfDay,
+    endOfMonth,
+    endOfWeek,
+    endOfYear,
+    getDay,
+    startOfDay,
+    startOfMonth,
+    startOfWeek,
+    startOfYear,
+} from 'date-fns';
 import { setTrainingDate, isNextWeek, isPreviousWeek } from '../../helpers/date.helper';
 import { paginate } from '../../helpers/pagination.helper';
 import { PaginatorDto } from '../../models/common/paginator.model';
@@ -42,101 +52,93 @@ export class PastTrainingsService {
         try {
             let condition: FilterQuery<NewTrainingDto>;
             let results: PaginatorDto<PastTrainingsDto>;
-            if (searchData?.searchText) {
-                const query: PaginatorParamsDto = {
-                    Page: searchData.page,
-                    PerPage: searchData.perPage,
-                };
-                const queryWordRegex = new RegExp(searchData.searchText, 'i');
-                condition = {
-                    $and: [
-                        {
-                            $or: [
-                                {
-                                    'exercises.exerciseData.translations.en': {
-                                        $regex: queryWordRegex,
-                                    },
+            let startDate: Date;
+            let endDate: Date;
+            const queryWordRegex = new RegExp(searchData.searchText, 'i');
+            const searchCondition = {
+                $and: [
+                    {
+                        $or: [
+                            {
+                                'exercises.exerciseData.translations.en': {
+                                    $regex: queryWordRegex,
                                 },
-                                {
-                                    'exercises.exerciseData.translations.hr': {
-                                        $regex: queryWordRegex,
-                                    },
+                            },
+                            {
+                                'exercises.exerciseData.translations.hr': {
+                                    $regex: queryWordRegex,
                                 },
-                            ],
-                            userId: loggedUserId,
-                        },
-                    ],
-                };
-                results = await paginate(this._trainingModel, condition, query);
-                results = {
-                    ...results,
-                    Results: {
-                        ...results.Results,
-                        Dates: setTrainingDate(results?.Results.Trainings, {
-                            StartDate: new Date(await this.getEarliestDate(loggedUserId)),
-                            EndDate: new Date(await this.getLatestDate(loggedUserId)),
-                        }),
+                            },
+                        ],
+                        userId: loggedUserId,
                     },
-                };
-                results = {
-                    ...results,
-                    Results: {
-                        ...results.Results,
-                        DayName: this.getWeekDayName(results.Results.Dates.StartDate),
-                    },
-                };
-            } else {
-                const dates: DateIntervalDto = setTrainingDate(new Date(currentDate));
-                condition = {
-                    userId: loggedUserId,
-                    trainingDate: {
-                        $gte:
-                            periodFilterType === 'week'
-                                ? dates.StartDate
-                                : startOfDay(new Date(currentDate)),
-                        $lt:
-                            periodFilterType === 'week'
-                                ? dates.EndDate
-                                : endOfDay(new Date(currentDate)),
-                    },
-                };
-                results = await paginate(this._trainingModel, condition);
-                results = {
-                    ...results,
-                    Results: {
-                        ...results.Results,
-                        Dates:
-                            periodFilterType === 'week'
-                                ? dates
-                                : {
-                                      StartDate: new Date(currentDate),
-                                      EndDate: new Date(currentDate),
-                                  },
-                        EarliestTrainingDate:
-                            (await this.getEarliestDate(loggedUserId)) ?? new Date().toString(),
-                    },
-                };
-                results = {
-                    ...results,
-                    Results: {
-                        ...results.Results,
-                        IsPreviousWeek: isPreviousWeek(
-                            new Date(results.Results?.EarliestTrainingDate),
-                            dates,
-                        ),
-                        IsNextWeek: isNextWeek(dates),
-                    },
-                };
-                if (periodFilterType === 'day') {
-                    results = {
-                        ...results,
-                        Results: {
-                            ...results.Results,
-                            DayName: this.getWeekDayName(new Date(currentDate)),
+                ],
+            };
+            switch (periodFilterType) {
+                case 'day': {
+                    startDate = startOfDay(new Date(currentDate));
+                    endDate = endOfDay(new Date(currentDate));
+                    condition = {
+                        ...searchCondition,
+                        userId: loggedUserId,
+                        trainingDate: {
+                            $gte: startDate,
+                            $lt: endDate,
                         },
                     };
+                    break;
+                }
+                case 'week': {
+                    startDate = startOfWeek(startOfDay(new Date(currentDate)), { weekStartsOn: 1 });
+                    endDate = endOfWeek(endOfDay(new Date(currentDate)), { weekStartsOn: 1 });
+                    condition = {
+                        ...searchCondition,
+                        userId: loggedUserId,
+                        trainingDate: {
+                            $gte: startDate,
+                            $lt: endDate,
+                        },
+                    };
+                    break;
+                }
+                case 'month': {
+                    startDate = startOfMonth(startOfDay(new Date(currentDate)));
+                    endDate = endOfMonth(endOfDay(new Date(currentDate)));
+                    condition = {
+                        ...searchCondition,
+                        userId: loggedUserId,
+                        trainingDate: {
+                            $gte: startDate,
+                            $lt: endDate,
+                        },
+                    };
+                    break;
+                }
+                case 'year': {
+                    startDate = startOfYear(startOfDay(new Date(currentDate)));
+                    endDate = endOfYear(endOfDay(new Date(currentDate)));
+                    condition = {
+                        ...searchCondition,
+                        userId: loggedUserId,
+                        trainingDate: {
+                            $gte: startDate,
+                            $lt: endDate,
+                        },
+                    };
+                    break;
+                }
+                case 'allTime': {
+                    const earliestDate = await this._getEarliestDate(loggedUserId);
+                    const latestDate = await this._getLatestDate(loggedUserId);
+                    startDate = new Date(earliestDate);
+                    endDate = new Date(latestDate);
+                    break;
+                }
+                default: {
+                    isNeverCheck(periodFilterType);
                 }
             }
+
             return {
                 IsLoading: true,
                 Value: results,
@@ -172,7 +174,7 @@ export class PastTrainingsService {
         }
     }
 
-    private async getEarliestDate(loggedUserId: string): Promise<string> {
+    private async _getEarliestDate(loggedUserId: string): Promise<string> {
         const minDate = await this._trainingModel
             .findOne(
                 {
@@ -186,7 +188,7 @@ export class PastTrainingsService {
         return minDate?.trainingDate?.toString() ?? new Date().toISOString();
     }
 
-    private async getLatestDate(loggedUserId: string): Promise<string> {
+    private async _getLatestDate(loggedUserId: string): Promise<string> {
         const maxDate = await this._trainingModel
             .findOne(
                 {

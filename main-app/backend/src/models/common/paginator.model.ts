@@ -14,7 +14,7 @@ export class PaginatorDto<T> {
     @ApiProperty()
     @IsOptional()
     @IsNumber()
-    CurrentPage?: number;
+    Page?: number;
 
     @ApiProperty()
     @IsOptional()
