@@ -3,8 +3,6 @@
     align-items: flex-start;
     column-gap: 10px;
     padding: 5px 0;
-    border: 2px solid var(--ion-color-primary);
-    border-radius: 4px;
 
     .search-wrapper {
         display: flex;
@@ -12,7 +10,6 @@
         align-items: center;
         flex-grow: 1;
         column-gap: 10px;
-        margin-left: 5px;
 
         .filter-wrapper {
             display: flex;
@@ -25,6 +22,7 @@
                     border-radius: 6px;
                     box-shadow: var(--ion-box-shadow);
                     height: 35px;
+                    padding-left: 5px;
 
                     &:focus {
                         outline: none;
@@ -41,20 +39,13 @@
                 padding-top: 2px;
             }
         }
-
-        ion-segment {
-            margin-top: 10px;
-            background-color: var(--ion-color-light);
-            width: 90%;
-            margin-right: auto;
-        }
     }
 
     .or-wrapper {
         display: flex;
         align-items: center;
         column-gap: 10px;
-        margin-right: 10px;
+        margin-right: 5px;
         height: 35px;
 
         .or {

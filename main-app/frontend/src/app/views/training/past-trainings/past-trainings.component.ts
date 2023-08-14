@@ -187,19 +187,28 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe(async (response) => {
                 if (response.role === DialogRoles.FILTER_TRAININGS) {
-                    //Get current query params and append applied filters
-                    const currentQueryParams = this._route.snapshot.queryParams as {
-                        filter: string;
+                    const showBy = (response.data as PastTrainingsQueryParams).showBy;
+                    let payloadDate: Date;
+                    const searchData: SearchParams = {
+                        page: this.page,
+                        perPage: this.perPage,
+                        searchText: '',
                     };
-                    let pastTrainingsQueryParams = decodeFilter<Partial<PastTrainingsQueryParams>>(
-                        currentQueryParams.filter,
+                    switch (showBy) {
+                        case 'day': {
+                            payloadDate = new Date();
+                            break;
+                        }
+                        case 'week': {
+                            payloadDate = startOfWeek(startOfDay(new Date()));
+                            break;
+                        }
+                    }
+                    this._pastTrainingsFacadeService.getPastTrainings(
+                        payloadDate.toISOString(),
+                        showBy,
+                        searchData,
                     );
-                    pastTrainingsQueryParams = {
-                        ...pastTrainingsQueryParams,
-                        ...response.data,
-                    };
-                    const filter = encodeFilter(pastTrainingsQueryParams);
-                    this._pastTrainingsFacadeService.saveFilter(filter);
                 }
             });
     }

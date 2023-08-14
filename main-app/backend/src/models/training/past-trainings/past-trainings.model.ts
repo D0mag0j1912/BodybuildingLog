@@ -10,17 +10,17 @@ export class PastTrainingsDto {
 
     @ApiProperty({ type: DateIntervalDto })
     @IsNotEmpty()
-    Dates: DateIntervalDto;
+    Dates?: DateIntervalDto;
 
     @ApiPropertyOptional()
     @IsOptional()
     @IsBoolean()
-    IsPreviousWeek?: boolean;
+    IsPrevious?: boolean;
 
     @ApiPropertyOptional()
     @IsOptional()
     @IsBoolean()
-    IsNextWeek?: boolean;
+    IsNext?: boolean;
 
     @ApiPropertyOptional()
     @IsOptional()

@@ -24,7 +24,7 @@ export class TrainingItemComponent {
         'saturday',
     ];
 
-    readonly actions: TrainingItemActions[] = ['delete', 'more'];
+    readonly actions: TrainingItemActions[] = ['delete'];
 
     timeCreated: string;
     dayIndex: number;
