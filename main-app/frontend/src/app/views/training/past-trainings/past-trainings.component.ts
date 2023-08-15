@@ -613,7 +613,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     private handlePaginationArrows(response: StreamData<Paginator<PastTrainings>>): void {
         if (response?.Value) {
-            if (response.Value.Results.EarliestTrainingDate) {
+            if (response.Value.Results.EarliestTrainingDate !== undefined) {
                 this.isPreviousPage = response.Value.Results.IsPrevious ?? false;
                 this.isNextPage = response.Value.Results.IsNext ?? false;
             } else {
