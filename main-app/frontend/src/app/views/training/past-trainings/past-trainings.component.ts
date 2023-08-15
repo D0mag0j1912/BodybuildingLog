@@ -187,14 +187,14 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe(async (response) => {
                 if (response.role === DialogRoles.FILTER_TRAININGS) {
-                    const showBy = (response.data as PastTrainingsQueryParams).showBy;
+                    this.periodFilter = (response.data as PastTrainingsQueryParams).showBy;
                     let payloadDate: Date;
                     const searchData: SearchParams = {
                         page: this.page,
                         perPage: this.perPage,
                         searchText: '',
                     };
-                    switch (showBy) {
+                    switch (this.periodFilter) {
                         case 'day': {
                             payloadDate = new Date();
                             break;
@@ -206,7 +206,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                     }
                     this._pastTrainingsFacadeService.getPastTrainings(
                         payloadDate.toISOString(),
-                        showBy,
+                        this.periodFilter,
                         searchData,
                     );
                 }

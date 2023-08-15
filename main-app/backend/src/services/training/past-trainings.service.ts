@@ -92,10 +92,8 @@ export class PastTrainingsService {
                 let dates: DateIntervalDto;
                 switch (periodFilterType) {
                     case 'day': {
-                        const startOfWeekDate = startOfWeek(startOfDay(currentDate), {
-                            weekStartsOn: 1,
-                        });
-                        const endOfWeekDate = endOfWeek(endOfDay(currentDate), { weekStartsOn: 1 });
+                        const startOfWeekDate = startOfDay(currentDate);
+                        const endOfWeekDate = endOfDay(currentDate);
                         dates = {
                             StartDate: startOfWeekDate,
                             EndDate: endOfWeekDate,
