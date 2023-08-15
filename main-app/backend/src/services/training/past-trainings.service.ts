@@ -42,7 +42,8 @@ export class PastTrainingsService {
         try {
             let condition: FilterQuery<NewTrainingDto>;
             let results: PaginatorDto<PastTrainingsDto>;
-            if (searchData?.searchText) {
+            const isSearch = !!searchData?.searchText;
+            if (isSearch) {
                 const query: PaginatorParamsDto = {
                     Page: searchData.page,
                     PerPage: searchData.perPage,
@@ -135,8 +136,8 @@ export class PastTrainingsService {
                         Trainings: query,
                         IsPrevious: isPrevious(periodFilterType, earliestDate, currentDate),
                         IsNext: isNext(periodFilterType, latestDate, currentDate),
-                        EarliestTrainingDate: earliestDate.toISOString(),
-                        DayName: this._getWeekDayName(new Date(currentDate)),
+                        EarliestTrainingDate: isSearch ? undefined : earliestDate.toISOString(),
+                        DayName: isSearch ? undefined : this._getWeekDayName(new Date(currentDate)),
                         Dates: dates,
                     },
                 };

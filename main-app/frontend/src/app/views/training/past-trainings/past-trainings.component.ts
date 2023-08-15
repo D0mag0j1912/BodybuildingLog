@@ -614,8 +614,8 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     private handlePaginationArrows(response: StreamData<Paginator<PastTrainings>>): void {
         if (response?.Value) {
             if (response.Value.Results.EarliestTrainingDate) {
-                this.isPreviousPage = response.Value.Results.IsPreviousWeek ?? false;
-                this.isNextPage = response.Value.Results.IsNextWeek ?? false;
+                this.isPreviousPage = response.Value.Results.IsPrevious ?? false;
+                this.isNextPage = response.Value.Results.IsNext ?? false;
             } else {
                 this.isPreviousPage = !!response.Value.Previous;
                 this.isNextPage = !!response.Value.Next;

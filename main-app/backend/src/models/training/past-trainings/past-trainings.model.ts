@@ -15,22 +15,22 @@ export class PastTrainingsDto {
     @ApiPropertyOptional()
     @IsOptional()
     @IsBoolean()
-    IsPrevious?: boolean;
+    IsPrevious: boolean;
 
     @ApiPropertyOptional()
     @IsOptional()
     @IsBoolean()
-    IsNext?: boolean;
+    IsNext: boolean;
 
     @ApiPropertyOptional()
     @IsOptional()
     @IsString()
-    EarliestTrainingDate?: string;
+    EarliestTrainingDate: string;
 
     @ApiPropertyOptional()
     @IsOptional()
     @IsString()
-    DayName?: string;
+    DayName: string;
 
     @ApiPropertyOptional()
     @IsOptional()
