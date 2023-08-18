@@ -14,7 +14,7 @@ import { DEFAULT_PER_PAGE, INITIAL_PAGE } from '../../../constants/shared/pagina
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginationComponent {
-    readonly pageSizeOptions: number[] = [1, 3, 5, 10];
+    readonly PAGE_SIZE_OPTIONS = [1, 3, 5, 10];
 
     @Input()
     isSearch = false;
@@ -38,9 +38,9 @@ export class PaginationComponent {
     isLoading = false;
 
     @Output()
-    readonly paginatorChanged = new EventEmitter<PaginatorChanged>();
+    paginatorChanged = new EventEmitter<PaginatorChanged>();
 
-    loadPage(page?: Page, earliestTrainingDate?: string, lastPage?: number): void {
+    loadPage(page?: Page): void {
         if (this.isSearch) {
             if (page) {
                 switch (page) {
@@ -57,7 +57,7 @@ export class PaginationComponent {
                         break;
                     }
                     case 'Last': {
-                        this.page = lastPage;
+                        //this.page = lastPage;
                         break;
                     }
                     default:
@@ -71,11 +71,10 @@ export class PaginationComponent {
             } as PaginatorChanged);
         } else {
             this.paginatorChanged.emit({
-                page: +this.page,
-                perPage: +this.perPage,
+                page: this.page,
+                perPage: this.perPage,
                 isSearch: false,
                 pageType: page,
-                earliestTrainingDate: earliestTrainingDate,
             } as PaginatorChanged);
         }
     }

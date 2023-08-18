@@ -16,7 +16,6 @@ import { PastTrainingsEffects } from '../../../store/past-trainings/effects/past
 import { PastTrainingsFiltersComponent } from './past-trainings-filters/past-trainings-filters.component';
 import { PastTrainingsRoutingModule } from './past-trainings-routing.module';
 import { PastTrainingsComponent } from './past-trainings.component';
-import { ShowByDayComponent } from './show-by-day/show-by-day.component';
 import { TrainingItemActionsComponent } from './training-item/training-item-actions/training-item-actions.component';
 import { TrainingItemComponent } from './training-item/training-item.component';
 import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-dialog/past-trainings-filters-dialog.component';
@@ -28,7 +27,6 @@ const COMPONENTS = [
     TrainingItemComponent,
     TrainingItemActionsComponent,
     PastTrainingsFiltersComponent,
-    ShowByDayComponent,
     PastTrainingsFiltersDialogComponent,
 ];
 

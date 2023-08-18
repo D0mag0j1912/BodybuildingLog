@@ -8,12 +8,6 @@
 </ion-header>
 <ion-content>
     <ng-container *ngIf="pastTrainings$ | async as state">
-        <!-- <bl-show-by-day
-            *ngIf="periodFilter === 'day' && !(isSearch$ | async) && !state.IsError"
-            [startDate]="showByDayStartDate"
-            [isLoading]="state.IsLoading"
-            (dayActivated)="onDayActivated($event)"
-        ></bl-show-by-day> -->
         <ng-container *ngIf="state.IsError; else valueOrLoading">
             <bl-error
                 [imagePath]="'../../../../assets/svgs/error1.svg'"
@@ -97,7 +91,7 @@
                 [isNextPage]="isNextPage"
                 [data]="state"
                 [isLoading]="state.IsLoading"
-                (paginatorChanged)="onPaginatorChanged($event, state.Value?.Results?.Dates?.StartDate, state.Value.Results.Dates.EndDate)"
+                (paginatorChanged)="onPaginatorChanged($event, state.Value?.Results)"
             ></bl-pagination>
         </ng-template>
     </ng-container>

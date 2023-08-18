@@ -108,8 +108,10 @@ export class PastTrainingsService {
                         break;
                     }
                     case 'week': {
-                        const startOfDayDate = new Date(currentDate);
-                        const endOfDayDate = new Date(currentDate);
+                        const startOfDayDate = startOfWeek(startOfDay(currentDate), {
+                            weekStartsOn: 1,
+                        });
+                        const endOfDayDate = endOfWeek(endOfDay(currentDate), { weekStartsOn: 1 });
                         dates = {
                             StartDate: startOfDayDate,
                             EndDate: endOfDayDate,

@@ -20,5 +20,4 @@ export interface PaginatorChanged {
     perPage: number;
     isSearch?: boolean;
     pageType?: Page;
-    earliestTrainingDate?: string;
 }

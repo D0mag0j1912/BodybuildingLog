@@ -3,7 +3,6 @@ import { AfterViewChecked, Component, ElementRef, OnDestroy, ViewChild } from '@
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
-    add,
     addDays,
     format,
     getMonth,
@@ -15,7 +14,16 @@ import {
     subDays,
 } from 'date-fns';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
-import { delay, map, take, takeUntil, tap } from 'rxjs/operators';
+import {
+    delay,
+    filter,
+    map,
+    switchMap,
+    take,
+    takeUntil,
+    tap,
+    withLatestFrom,
+} from 'rxjs/operators';
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
@@ -23,7 +31,6 @@ import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { StreamData } from '../../../models/common/common.model';
 import { Paginator, PaginatorChanged } from '../../../models/common/paginator.model';
 import {
-    DateInterval,
     PastTrainingsQueryParams,
     PastTrainings,
     PeriodFilterType,
@@ -33,17 +40,10 @@ import {
     TEMPLATE_DATE_FORMAT,
 } from '../../../constants/training/past-trainings-date-format.const';
 import { UnsubscribeService } from '../../../services/shared/unsubscribe.service';
-import { Page } from '../../../models/common/page.type';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
 import { PastTrainingsStoreService } from '../../../services/store/training/past-trainings-store.service';
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 import { PreferencesService } from '../../../services/api/preferences/preferences.service';
-import {
-    calculateFirstWeekDay,
-    calculateLastWeekDay,
-    getCurrentDayIndex,
-} from '../../../helpers/training/show-by-day.helper';
-import { DayActivatedType } from '../../../models/training/past-trainings/day-activated.type';
 import { INITIAL_PAGE, DEFAULT_PER_PAGE } from '../../../constants/shared/paginator.const';
 import { TrainingItemWrapperHeights } from '../../../constants/enums/training-item-wrapper-heights.enum';
 import { NewTrainingDto as NewTraining } from '../../../../api/models/new-training-dto';
@@ -60,6 +60,7 @@ import { NewTrainingStoreService } from '../../../services/store/training/new-tr
 import { decodeFilter, encodeFilter } from '../../../helpers/encode-decode.helper';
 import { PastTrainingsFacadeService } from '../../../store/past-trainings/past-trainings-facade.service';
 import { SearchParams } from '../../../models/common/search-params';
+import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-dialog/past-trainings-filters-dialog.component';
 
 @Component({
@@ -74,7 +75,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             if (response) {
                 //If searching
                 if (response?.Value?.TotalPages) {
-                    this.showByDayStartDate = new Date();
                     this.updatePageAndSize(response);
                 }
                 this.handlePaginationArrows(response);
@@ -96,11 +96,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     searchText = '';
     currentQueryParams: PastTrainingsQueryParams;
     periodFilter = this._preferencesStoreService.getPreferences()?.showByPeriod ?? 'week';
-    dayActivated: DayActivatedType = {
-        Date: startOfDay(new Date()),
-        DayNumber: 0,
-    };
-    showByDayStartDate: Date;
     dateFormat = TEMPLATE_DATE_FORMAT;
 
     isNextPage = false;
@@ -180,36 +175,59 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     async openFilterDialog(): Promise<void> {
         const modal = await this._modalController.create({
             component: PastTrainingsFiltersDialogComponent,
-            componentProps: {},
+            componentProps: {
+                periodFilter: this.periodFilter,
+            },
         });
         await modal.present();
-        from(modal.onDidDismiss<OverlayEventDetail<Partial<PastTrainingsQueryParams>>>())
-            .pipe(takeUntil(this._unsubscribeService))
-            .subscribe(async (response) => {
-                if (response.role === DialogRoles.FILTER_TRAININGS) {
-                    this.periodFilter = (response.data as PastTrainingsQueryParams).showBy;
-                    let payloadDate: Date;
-                    const searchData: SearchParams = {
-                        page: this.page,
-                        perPage: this.perPage,
-                        searchText: '',
-                    };
-                    switch (this.periodFilter) {
-                        case 'day': {
-                            payloadDate = new Date();
-                            break;
+        from(modal.onDidDismiss())
+            .pipe(
+                filter((response) => response.role === DialogRoles.FILTER_TRAININGS),
+                withLatestFrom(this._preferencesStoreService.preferencesChanged$),
+                switchMap(
+                    ([response, preferences]: [
+                        OverlayEventDetail<Partial<PastTrainingsQueryParams>>,
+                        Preferences,
+                    ]) => {
+                        if (response.data.showBy !== this.periodFilter) {
+                            return this._preferencesService
+                                .setPreferences(
+                                    {
+                                        ...preferences,
+                                        showByPeriod: response.data.showBy,
+                                    },
+                                    'showByPeriod',
+                                )
+                                .pipe(map((_) => response));
                         }
-                        case 'week': {
-                            payloadDate = startOfWeek(startOfDay(new Date()));
-                            break;
-                        }
+                        return of(response);
+                    },
+                ),
+                takeUntil(this._unsubscribeService),
+            )
+            .subscribe((response: OverlayEventDetail<Partial<PastTrainingsQueryParams>>) => {
+                this.periodFilter = (response.data as PastTrainingsQueryParams).showBy;
+                let payloadDate: Date;
+                const searchData: SearchParams = {
+                    page: this.page,
+                    perPage: this.perPage,
+                    searchText: '',
+                };
+                switch (this.periodFilter) {
+                    case 'day': {
+                        payloadDate = new Date();
+                        break;
                     }
-                    this._pastTrainingsFacadeService.getPastTrainings(
-                        payloadDate.toISOString(),
-                        this.periodFilter,
-                        searchData,
-                    );
+                    case 'week': {
+                        payloadDate = startOfWeek(startOfDay(new Date()));
+                        break;
+                    }
                 }
+                this._pastTrainingsFacadeService.getPastTrainings(
+                    payloadDate.toISOString(),
+                    this.periodFilter,
+                    searchData,
+                );
             });
     }
 
@@ -229,45 +247,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         );
     }
 
-    onPeriodEmitted($event: PeriodFilterType, mondayDate: string): void {
-        if (mondayDate) {
-            this.periodFilter = $event;
-            if (this.periodFilter === 'day') {
-                this.showByDayStartDate = new Date(mondayDate);
-                this.dayActivated = {
-                    Date: this.showByDayStartDate,
-                    DayNumber: getCurrentDayIndex(this.showByDayStartDate),
-                };
-            }
-            const currentPreferences = this._preferencesStoreService.getPreferences();
-            this._preferencesService
-                .setPreferences(
-                    {
-                        ...currentPreferences,
-                        showByPeriod: this.periodFilter,
-                    },
-                    'showByPeriod',
-                )
-                .pipe(take(1))
-                .subscribe((_) => {
-                    const currentDate = startOfWeek(new Date(mondayDate), { weekStartsOn: 1 });
-                    this._pastTrainingsFacadeService.getPastTrainings(
-                        currentDate.toISOString(),
-                        this.periodFilter,
-                    );
-                });
-        }
-    }
-
-    onDayActivated($event: DayActivatedType): void {
-        if (!this._isSearch$.getValue()) {
-            this.dayActivated = $event;
-            const currentDate = $event.Date;
-            this._pastTrainingsFacadeService.getPastTrainings(currentDate.toISOString(), 'day');
-        }
-    }
-
-    onPaginatorChanged($event: PaginatorChanged, startDate: string, endDate: string): void {
+    onPaginatorChanged($event: PaginatorChanged, results: PastTrainings): void {
         if ($event?.isSearch) {
             const searchData: SearchParams = {
                 perPage: $event.perPage,
@@ -280,31 +260,62 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                 searchData,
             );
         } else {
-            if (this.periodFilter === 'day') {
-                this.showByDayStartDate = this.calculateDate(
-                    $event.pageType,
-                    undefined,
-                    $event.earliestTrainingDate,
-                    new Date(startDate),
-                );
-                this.dayActivated = {
-                    Date: this.showByDayStartDate,
-                    DayNumber: getCurrentDayIndex(this.showByDayStartDate),
-                };
+            let currentDate: Date;
+            switch (this.periodFilter) {
+                case 'day': {
+                    const pageType = $event.pageType;
+                    switch (pageType) {
+                        case 'First': {
+                            currentDate = new Date(results.EarliestTrainingDate);
+                            break;
+                        }
+                        case 'Previous': {
+                            currentDate = subDays(new Date(results.Dates.StartDate), 1);
+                            break;
+                        }
+                        case 'Next': {
+                            currentDate = addDays(new Date(results.Dates.StartDate), 1);
+                            break;
+                        }
+                        case 'Last': {
+                            currentDate = new Date();
+                            break;
+                        }
+                        default: {
+                            isNeverCheck(pageType);
+                        }
+                    }
+                    break;
+                }
+                case 'week': {
+                    const pageType = $event.pageType;
+                    switch (pageType) {
+                        case 'First': {
+                            currentDate = new Date(results.EarliestTrainingDate);
+                            break;
+                        }
+                        case 'Previous': {
+                            currentDate = subDays(new Date(results.Dates.StartDate), 7);
+                            break;
+                        }
+                        case 'Next': {
+                            currentDate = addDays(new Date(results.Dates.StartDate), 7);
+                            break;
+                        }
+                        case 'Last': {
+                            currentDate = new Date();
+                            break;
+                        }
+                        default: {
+                            isNeverCheck(pageType);
+                        }
+                    }
+                    break;
+                }
+                default: {
+                    isNeverCheck(this.periodFilter);
+                }
             }
-            const currentDate =
-                this.periodFilter === 'week'
-                    ? this.onPaginatorChangedFilterHandler(this.periodFilter, {
-                          PageType: $event.pageType,
-                          EarliestTrainingDate: $event.earliestTrainingDate,
-                          StartDate: startDate,
-                          EndDate: endDate,
-                      })
-                    : this.onPaginatorChangedFilterHandler(
-                          this.periodFilter,
-                          undefined,
-                          this.showByDayStartDate,
-                      );
             this._pastTrainingsFacadeService.getPastTrainings(
                 currentDate.toISOString(),
                 this.periodFilter,
@@ -358,15 +369,16 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             });
     }
 
+    //TODO: Fix
     async logNewTraining(): Promise<void> {
-        this._newTrainingStoreService
+        /* this._newTrainingStoreService
             .setTrainingToInitialState()
             .pipe(takeUntil(this._unsubscribeService))
             .subscribe(async (_) => {
                 const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
                 this._sharedStoreService.emitDayClicked(dayClickedDate.toISOString());
                 await this._navController.navigateForward('/training/tabs/new-training');
-            });
+            }); */
     }
 
     //TODO: align with 'ShowByDay' feature
@@ -464,13 +476,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             );
         } else {
             this.periodFilter = this.currentQueryParams.showBy as PeriodFilterType;
-            if (this.periodFilter === 'day') {
-                this.showByDayStartDate = this.getDateTimeQueryParams();
-                this.dayActivated = {
-                    Date: this.showByDayStartDate,
-                    DayNumber: getCurrentDayIndex(this.showByDayStartDate),
-                };
-            }
             const currentDate = this.getDateTimeQueryParams();
             this._pastTrainingsFacadeService.getPastTrainings(
                 currentDate.toISOString(),
@@ -479,69 +484,9 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         }
     }
 
-    private onPaginatorChangedFilterHandler(
-        periodFilterType: PeriodFilterType,
-        weekData?: {
-            PageType?: Page;
-            EarliestTrainingDate?: string;
-            StartDate: string;
-            EndDate: string;
-        },
-        startOfCurrentWeek?: Date,
-    ): Date {
-        switch (periodFilterType) {
-            case 'week': {
-                return this.calculateDate(
-                    weekData.PageType,
-                    {
-                        StartDate: new Date(weekData.StartDate),
-                        EndDate: new Date(weekData.EndDate),
-                    },
-                    weekData.EarliestTrainingDate,
-                );
-            }
-            case 'day': {
-                return addDays(
-                    startOfWeek(startOfCurrentWeek, { weekStartsOn: 1 }),
-                    this.dayActivated.DayNumber,
-                );
-            }
-            default:
-                isNeverCheck(periodFilterType);
-        }
-    }
-
     private updatePageAndSize(response: StreamData<Paginator<PastTrainings>>): void {
         this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
         this.perPage = response?.Value?.PerPage ?? DEFAULT_PER_PAGE;
-    }
-
-    private calculateDate(
-        page: Page,
-        dateInterval: DateInterval,
-        earliestTrainingDate: string,
-        startingDate?: Date,
-    ): Date {
-        switch (page) {
-            case 'Previous': {
-                return subDays(startingDate ? startingDate : new Date(dateInterval.StartDate), 7);
-            }
-            case 'Next': {
-                return addDays(startingDate ? startingDate : new Date(dateInterval.StartDate), 7);
-            }
-            case 'First': {
-                return this.periodFilter === 'week'
-                    ? new Date(earliestTrainingDate)
-                    : calculateFirstWeekDay(earliestTrainingDate, startingDate);
-            }
-            case 'Last': {
-                return this.periodFilter === 'week'
-                    ? new Date()
-                    : calculateLastWeekDay(startingDate);
-            }
-            default:
-                return isNeverCheck(page);
-        }
     }
 
     private handleQueryParams(
@@ -614,8 +559,8 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     private handlePaginationArrows(response: StreamData<Paginator<PastTrainings>>): void {
         if (response?.Value) {
             if (response.Value.Results.EarliestTrainingDate !== undefined) {
-                this.isPreviousPage = response.Value.Results.IsPrevious ?? false;
-                this.isNextPage = response.Value.Results.IsNext ?? false;
+                this.isPreviousPage = response.Value.Results.IsPrevious;
+                this.isNextPage = response.Value.Results.IsNext;
             } else {
                 this.isPreviousPage = !!response.Value.Previous;
                 this.isNextPage = !!response.Value.Next;

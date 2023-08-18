@@ -12,23 +12,23 @@ export class PastTrainingsDto {
     @IsNotEmpty()
     Dates?: DateIntervalDto;
 
-    @ApiPropertyOptional()
-    @IsOptional()
+    @ApiProperty({ type: Boolean })
+    @IsNotEmpty()
     @IsBoolean()
     IsPrevious: boolean;
 
-    @ApiPropertyOptional()
-    @IsOptional()
+    @ApiProperty({ type: Boolean })
+    @IsNotEmpty()
     @IsBoolean()
     IsNext: boolean;
 
-    @ApiPropertyOptional()
-    @IsOptional()
+    @ApiProperty({ type: String })
+    @IsNotEmpty()
     @IsString()
     EarliestTrainingDate: string;
 
-    @ApiPropertyOptional()
-    @IsOptional()
+    @ApiProperty({ type: String })
+    @IsNotEmpty()
     @IsString()
     DayName: string;
 
