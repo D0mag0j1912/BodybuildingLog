@@ -88,7 +88,6 @@ export class PastTrainingsService {
                 };
             } else {
                 const earliestDate = new Date(await this._getEarliestDate(loggedUserId));
-                const latestDate = new Date(await this._getLatestDate(loggedUserId));
                 let dates: DateIntervalDto;
                 switch (periodFilterType) {
                     case 'day': {

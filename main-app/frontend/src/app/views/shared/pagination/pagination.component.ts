@@ -14,16 +14,16 @@ import { DEFAULT_PER_PAGE, INITIAL_PAGE } from '../../../constants/shared/pagina
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginationComponent {
-    readonly PAGE_SIZE_OPTIONS = [1, 3, 5, 10];
+    readonly PAGE_SIZE_OPTIONS = [10, 20, 50];
 
     @Input()
     isSearch = false;
 
     @Input()
-    page: number = INITIAL_PAGE;
+    page = INITIAL_PAGE;
 
     @Input()
-    perPage: number = DEFAULT_PER_PAGE;
+    perPage = DEFAULT_PER_PAGE;
 
     @Input()
     isPreviousPage = false;
