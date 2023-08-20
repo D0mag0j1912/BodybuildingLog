@@ -135,7 +135,7 @@ export class PastTrainingsService {
                     Results: {
                         Trainings: query,
                         IsPrevious: isPrevious(periodFilterType, earliestDate, currentDate),
-                        IsNext: isNext(periodFilterType, latestDate, currentDate),
+                        IsNext: isNext(periodFilterType, new Date(), currentDate),
                         EarliestTrainingDate: isSearch ? undefined : earliestDate.toISOString(),
                         DayName: isSearch ? undefined : this._getWeekDayName(new Date(currentDate)),
                         Dates: dates,

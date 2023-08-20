@@ -6,6 +6,7 @@ import {
     startOfDay,
     endOfDay,
     compareAsc,
+    isSameDay,
 } from 'date-fns';
 import { max, min } from 'date-fns';
 import { NewTrainingDto } from '../models/training/new-training/new-training.model';
@@ -76,7 +77,10 @@ export const isPrevious = (
 export const isNext = (periodFilterType: PeriodFilterType, latestDate: Date, currentDate: Date) => {
     switch (periodFilterType) {
         case 'day': {
-            return compareAsc(new Date(currentDate), latestDate) === 1 ? false : true;
+            if (isSameDay(latestDate, currentDate)) {
+                return false;
+            }
+            return compareAsc(startOfDay(new Date(currentDate)), latestDate) === 1 ? false : true;
         }
         case 'week': {
             const startDate = startOfWeek(startOfDay(currentDate), { weekStartsOn: 1 });
