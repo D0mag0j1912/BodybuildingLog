@@ -1,7 +1,6 @@
 import {
     ChangeDetectorRef,
     Component,
-    OnDestroy,
     OnInit,
     QueryList,
     ViewChild,
@@ -27,7 +26,6 @@ import {
     withLatestFrom,
 } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { PastTrainingsService } from '../../../services/api/training/past-trainings.service';
 import * as NewTrainingHandler from '../../../helpers/training/new-training/bodyweight.helper';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
@@ -69,7 +67,7 @@ import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises
     styleUrls: ['./new-training.component.scss'],
     providers: [UnsubscribeService],
 })
-export class NewTrainingComponent implements OnInit, OnDestroy {
+export class NewTrainingComponent implements OnInit {
     private _restartExercises$ = new BehaviorSubject<SingleExercise[]>([]);
 
     restartExercises$ = this._restartExercises$.asObservable();
@@ -150,7 +148,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         private _newTrainingService: NewTrainingService,
         private _pastTrainingService: PastTrainingsService,
         private _exercisesService: ExercisesService,
-        private _sharedStoreService: SharedStoreService,
         private _authStoreService: AuthStoreService,
         private _unsubscribeService: UnsubscribeService,
         private _preferencesStoreService: PreferencesStoreService,
@@ -337,10 +334,6 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         if (trainingSplitId) {
             this._trainingSplitsFacadeService.getTrainingSplit(trainingSplitId);
         }
-    }
-
-    ngOnDestroy(): void {
-        this._sharedStoreService.completeDayClicked();
     }
 
     onSubmit(): void {
@@ -565,13 +558,10 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
     private _formInit(): void {
         const currentTrainingState = this._newTrainingStoreService.getCurrentTrainingState();
-        const dayClickedDate = this._sharedStoreService.getDayClickedDate();
         this.newTrainingForm.controls.bodyweight.patchValue(
             this._fillBodyweight(currentTrainingState.bodyweight),
         );
-        this.newTrainingForm.controls.trainingDate.patchValue(
-            this._fillTrainingDate(dayClickedDate),
-        );
+        this._fillTrainingDate(currentTrainingState.trainingDate);
         this._setFormattedDate(this.newTrainingForm.controls.trainingDate.value);
         this._restartExercises$.next(currentTrainingState.exercises);
     }
@@ -584,11 +574,11 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
         );
     }
 
-    private _fillTrainingDate(dayClickedDate: string | undefined): string {
+    private _fillTrainingDate(trainingDate: string | undefined): string {
         if (this.editTrainingData) {
             return this.editTrainingData.trainingDate.toString();
         } else {
-            return dayClickedDate ? dayClickedDate : new Date().toISOString();
+            return trainingDate ? trainingDate : new Date().toISOString();
         }
     }
 

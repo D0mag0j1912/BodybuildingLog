@@ -75,7 +75,7 @@
                                 *ngIf="!(isSearch$ | async)"
                                 type="button"
                                 color="primary"
-                                (click)="logNewTraining()"
+                                (click)="logNewTraining(state.Value.Results.Dates.StartDate)"
                             >
                                 {{ 'training.past_trainings.log_training' | translate }}
                             </ion-button>

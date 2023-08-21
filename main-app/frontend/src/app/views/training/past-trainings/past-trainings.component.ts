@@ -3,6 +3,7 @@ import { AfterViewChecked, Component, ElementRef, OnDestroy, ViewChild } from '@
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
+    add,
     addDays,
     format,
     getMonth,
@@ -26,7 +27,6 @@ import {
 } from 'rxjs/operators';
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController, NavController } from '@ionic/angular';
-import { SharedStoreService } from '../../../services/store/shared/shared-store.service';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
 import { StreamData } from '../../../models/common/common.model';
 import { Paginator, PaginatorChanged } from '../../../models/common/paginator.model';
@@ -126,7 +126,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         private _pastTrainingsStoreService: PastTrainingsStoreService,
         private _unsubscribeService: UnsubscribeService,
         private _translateService: TranslateService,
-        private _sharedStoreService: SharedStoreService,
         private _preferencesService: PreferencesService,
         private _preferencesStoreService: PreferencesStoreService,
         private _newTrainingStoreService: NewTrainingStoreService,
@@ -368,16 +367,31 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             });
     }
 
-    //TODO: Fix
-    async logNewTraining(): Promise<void> {
-        /* this._newTrainingStoreService
-            .setTrainingToInitialState()
+    async logNewTraining(startDate: string): Promise<void> {
+        let trainingDate: Date;
+        switch (this.periodFilter) {
+            case 'day': {
+                trainingDate = add(startOfDay(new Date(startDate)), { hours: 7 });
+                break;
+            }
+            case 'week': {
+                trainingDate = add(
+                    startOfWeek(startOfDay(new Date(startDate)), { weekStartsOn: 1 }),
+                    { hours: 7 },
+                );
+                break;
+            }
+            default: {
+                isNeverCheck(this.periodFilter);
+            }
+        }
+        this._newTrainingStoreService
+            .setTrainingToInitialState(trainingDate)
             .pipe(takeUntil(this._unsubscribeService))
-            .subscribe(async (_) => {
-                const dayClickedDate = add(this.dayActivated.Date, { hours: 7 });
-                this._sharedStoreService.emitDayClicked(dayClickedDate.toISOString());
-                await this._navController.navigateForward('/training/tabs/new-training');
-            }); */
+            .subscribe(
+                async (_) =>
+                    await this._navController.navigateForward('/training/tabs/new-training'),
+            );
     }
 
     //TODO: align with 'ShowByDay' feature
