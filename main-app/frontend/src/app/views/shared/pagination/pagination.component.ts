@@ -57,7 +57,7 @@ export class PaginationComponent {
                         break;
                     }
                     case 'Last': {
-                        //this.page = lastPage;
+                        this.page = this.data.Value.TotalPages;
                         break;
                     }
                     default:

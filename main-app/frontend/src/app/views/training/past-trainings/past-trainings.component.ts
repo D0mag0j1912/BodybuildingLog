@@ -89,7 +89,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     private _isSearch$ = new BehaviorSubject<boolean>(false);
     readonly isSearch$ = this._isSearch$.asObservable();
 
-    readonly PAGE_SIZE_OPTIONS = [1, 3, 5, 10];
     perPage = DEFAULT_PER_PAGE;
     page = INITIAL_PAGE;
 
