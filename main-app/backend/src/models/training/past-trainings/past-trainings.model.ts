@@ -10,27 +10,27 @@ export class PastTrainingsDto {
 
     @ApiProperty({ type: DateIntervalDto })
     @IsNotEmpty()
-    Dates: DateIntervalDto;
+    Dates?: DateIntervalDto;
 
-    @ApiPropertyOptional()
-    @IsOptional()
+    @ApiProperty({ type: Boolean })
+    @IsNotEmpty()
     @IsBoolean()
-    IsPreviousWeek?: boolean;
+    IsPrevious: boolean;
 
-    @ApiPropertyOptional()
-    @IsOptional()
+    @ApiProperty({ type: Boolean })
+    @IsNotEmpty()
     @IsBoolean()
-    IsNextWeek?: boolean;
+    IsNext: boolean;
 
-    @ApiPropertyOptional()
-    @IsOptional()
+    @ApiProperty({ type: String })
+    @IsNotEmpty()
     @IsString()
-    EarliestTrainingDate?: string;
+    EarliestTrainingDate: string;
 
-    @ApiPropertyOptional()
-    @IsOptional()
+    @ApiProperty({ type: String })
+    @IsNotEmpty()
     @IsString()
-    DayName?: string;
+    DayName: string;
 
     @ApiPropertyOptional()
     @IsOptional()

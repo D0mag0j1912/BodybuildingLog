@@ -5,7 +5,7 @@ import { EMPTY } from 'rxjs';
 import * as PastTrainingsActions from '../actions/past-trainings.actions';
 import { PastTrainingsFacadeService } from '../past-trainings-facade.service';
 import { SwaggerPastTrainingsService } from '../../../../api';
-import * as CommonActions from '../../common/common.actions';
+import * as CommonActions from '../../common/actions/common.actions';
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 
 @Injectable()

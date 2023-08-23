@@ -132,7 +132,7 @@ export class NewTrainingStoreService {
         );
     }
 
-    setTrainingToInitialState(): Observable<void> {
+    setTrainingToInitialState(trainingDate = new Date()): Observable<void> {
         return this._trainingState$.pipe(
             take(1),
             withLatestFrom(this._exercisesStoreService.allExercisesState$),
@@ -145,7 +145,7 @@ export class NewTrainingStoreService {
                         ...EMPTY_TRAINING,
                         exercises: [createEmptyExercise(allExercisesData.Value)],
                         userId: currentTrainingState?.userId ?? '',
-                        trainingDate: new Date().toISOString(),
+                        trainingDate: trainingDate.toISOString(),
                     };
                     return this._saveTrainingData(initialTrainingState);
                 },

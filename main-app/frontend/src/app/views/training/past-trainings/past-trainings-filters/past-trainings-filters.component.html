@@ -20,18 +20,5 @@
                 <ion-icon name="filter-outline" class="filter-icon" (click)="openFilterDialog()"></ion-icon>
             </div>
         </div>
-        <ion-segment
-            color="primary"
-            mode="ios"
-            [value]="periodFilter"
-            [disabled]="periodDisabled"
-            (ionChange)="segmentChanged($any($event))"
-        >
-            <ng-container *ngFor="let option of sortOptions">
-                <ion-segment-button [value]="option.key">
-                    <ion-label color="primary">{{ option.value | async }}</ion-label>
-                </ion-segment-button>
-            </ng-container>
-        </ion-segment>
     </form>
 </div>

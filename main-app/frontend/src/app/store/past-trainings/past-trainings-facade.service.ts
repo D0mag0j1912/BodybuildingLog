@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AppState } from '../..';
 import {
     PastTrainings,
     PeriodFilterType,
@@ -9,6 +8,7 @@ import {
 import { Paginator } from '../../models/common/paginator.model';
 import { StreamData } from '../../models/common/common.model';
 import { SearchParams } from '../../models/common/search-params';
+import { TrainingsState } from '../../views/training/training-store.module';
 import {
     selectPastTrainings,
     selectPastTrainingsFilter,
@@ -21,7 +21,7 @@ export class PastTrainingsFacadeService {
 
     private _selectPastTrainings$ = this._store.select(selectPastTrainings);
 
-    constructor(private _store: Store<AppState>) {}
+    constructor(private _store: Store<TrainingsState>) {}
 
     //Selectors BEGIN -------------------------
     selectPastTrainings(): Observable<StreamData<Paginator<PastTrainings>>> {

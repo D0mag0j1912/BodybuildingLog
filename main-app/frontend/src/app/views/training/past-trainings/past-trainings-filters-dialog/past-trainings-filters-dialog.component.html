@@ -9,6 +9,22 @@
     </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
+    <div class="period-container">
+        <ion-segment
+            class="period-filter"
+            color="primary"
+            mode="ios"
+            [value]="periodFilter"
+            [disabled]="periodDisabled"
+            (ionChange)="segmentChanged($any($event))"
+        >
+            <ng-container *ngFor="let option of sortOptions">
+                <ion-segment-button [value]="option.key">
+                    <ion-label color="primary">{{ option.value | async }}</ion-label>
+                </ion-segment-button>
+            </ng-container>
+        </ion-segment>
+    </div>
     <div class="filters-container">
         <ion-list class="list">
             <ion-item>

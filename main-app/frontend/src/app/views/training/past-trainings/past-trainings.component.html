@@ -8,12 +8,6 @@
 </ion-header>
 <ion-content>
     <ng-container *ngIf="pastTrainings$ | async as state">
-        <bl-show-by-day
-            *ngIf="periodFilter === 'day' && !(isSearch$ | async) && !state.IsError"
-            [startDate]="showByDayStartDate"
-            [isLoading]="state.IsLoading"
-            (dayActivated)="onDayActivated($event)"
-        ></bl-show-by-day>
         <ng-container *ngIf="state.IsError; else valueOrLoading">
             <bl-error
                 [imagePath]="'../../../../assets/svgs/error1.svg'"
@@ -28,9 +22,6 @@
                 <ion-spinner class="ion-spinner-class" name="crescent" color="primary"></ion-spinner>
             </ng-container>
             <bl-past-trainings-filters
-                [periodDisabled]="(isSearch$ | async) || state.IsLoading"
-                [periodFilter]="periodFilter"
-                (periodEmitted)="onPeriodEmitted($event, state.Value?.Results?.Dates?.StartDate)"
                 (searchEmitted)="onSearchEmitted($event)"
                 (filterDialogOpened)="openFilterDialog()"
             ></bl-past-trainings-filters>
@@ -84,7 +75,7 @@
                                 *ngIf="!(isSearch$ | async)"
                                 type="button"
                                 color="primary"
-                                (click)="logNewTraining()"
+                                (click)="logNewTraining(state.Value.Results.Dates.StartDate)"
                             >
                                 {{ 'training.past_trainings.log_training' | translate }}
                             </ion-button>
@@ -100,7 +91,7 @@
                 [isNextPage]="isNextPage"
                 [data]="state"
                 [isLoading]="state.IsLoading"
-                (paginatorChanged)="onPaginatorChanged($event, state.Value?.Results?.Dates?.StartDate, state.Value.Results.Dates.EndDate)"
+                (paginatorChanged)="onPaginatorChanged($event, state.Value?.Results)"
             ></bl-pagination>
         </ng-template>
     </ng-container>

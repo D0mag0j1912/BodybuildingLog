@@ -1,16 +1,7 @@
-import { KeyValue } from '@angular/common';
-import {
-    ChangeDetectionStrategy,
-    Component,
-    EventEmitter,
-    Input,
-    Output,
-    ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { IonInput, SegmentChangeEventDetail } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subject } from 'rxjs';
+import { IonInput } from '@ionic/angular';
+import { Subject } from 'rxjs';
 import {
     debounceTime,
     distinctUntilChanged,
@@ -21,10 +12,7 @@ import {
 } from 'rxjs/operators';
 import { INPUT_MAX_LENGTH } from '../../../../constants/shared/input-maxlength.const';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
-import {
-    PastTrainingsQueryParams,
-    PeriodFilterType,
-} from '../../../../models/training/past-trainings/past-trainings.model';
+import { PastTrainingsQueryParams } from '../../../../models/training/past-trainings/past-trainings.model';
 import { decodeFilter } from '../../../../helpers/encode-decode.helper';
 
 @Component({
@@ -36,15 +24,6 @@ import { decodeFilter } from '../../../../helpers/encode-decode.helper';
 })
 export class PastTrainingsFiltersComponent {
     private _keyUp$ = new Subject<KeyboardEvent>();
-
-    @Input()
-    periodFilter = 'week';
-
-    @Input()
-    periodDisabled = false;
-
-    @Output()
-    periodEmitted = new EventEmitter<PeriodFilterType>();
 
     @Output()
     searchEmitted = new EventEmitter<string>();
@@ -58,23 +37,8 @@ export class PastTrainingsFiltersComponent {
     searchValue = '';
     inputMaxLength = INPUT_MAX_LENGTH;
 
-    sortOptions: [
-        KeyValue<PeriodFilterType, Observable<string>>,
-        KeyValue<PeriodFilterType, Observable<string>>,
-    ] = [
-        {
-            key: 'week',
-            value: this._translateService.stream('training.past_trainings.show_by_week'),
-        },
-        {
-            key: 'day',
-            value: this._translateService.stream('training.past_trainings.show_by_day'),
-        },
-    ];
-
     constructor(
         private _unsubscribeService: UnsubscribeService,
-        private _translateService: TranslateService,
         private _route: ActivatedRoute,
     ) {
         this._keyUp$
@@ -101,10 +65,6 @@ export class PastTrainingsFiltersComponent {
 
     emitKeyboardEvent($event: KeyboardEvent): void {
         this._keyUp$.next($event);
-    }
-
-    segmentChanged($event: CustomEvent<SegmentChangeEventDetail>): void {
-        this.periodEmitted.emit($event?.detail?.value as PeriodFilterType);
     }
 
     openFilterDialog(): void {

@@ -5,7 +5,7 @@
                 <ng-container *ngIf="isSearch">
                     <ion-item *skeleton="isLoading; width: '50px'; height: '35px'" class="page-size-item">
                         <ion-select class="page-size-select" [(ngModel)]="perPage" (ionChange)="loadPage()">
-                            <ion-select-option *ngFor="let size of pageSizeOptions" [value]="size">
+                            <ion-select-option *ngFor="let size of PAGE_SIZE_OPTIONS" [value]="size">
                                 {{ size }}
                             </ion-select-option>
                         </ion-select>
@@ -18,7 +18,7 @@
                         type="button"
                         color="primary"
                         fill="outline"
-                        (click)="loadPage('First', data?.Value?.Results?.EarliestTrainingDate)"
+                        (click)="loadPage('First')"
                         [disabled]="!isPreviousPage"
                     >
                         <ion-icon name="play-back-sharp"></ion-icon>
@@ -51,7 +51,7 @@
                         class="last"
                         color="primary"
                         fill="outline"
-                        (click)="loadPage('Last', undefined, data?.Value?.TotalPages)"
+                        (click)="loadPage('Last')"
                         [disabled]="!isNextPage"
                     >
                         <ion-icon name="play-forward-sharp"></ion-icon>

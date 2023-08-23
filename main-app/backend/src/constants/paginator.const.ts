@@ -1,2 +1,2 @@
 export const DEFAULT_PAGE = 1;
-export const DEFAULT_PER_PAGE = 3;
+export const DEFAULT_PER_PAGE = 10;
