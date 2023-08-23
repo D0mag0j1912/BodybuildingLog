@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { TrainingsState } from '../../views/training/training-store.module';
-import * as CommonActions from './actions/common.actions';
+import * as TrainingsCommonActions from '../trainings-common/actions/trainings-common.actions';
 
 @Injectable({ providedIn: 'root' })
 export class CommonFacadeService {
@@ -9,7 +9,7 @@ export class CommonFacadeService {
 
     //Actions BEGIN ---------------------------
     getExercises(): void {
-        this._store.dispatch(CommonActions.getExercises());
+        this._store.dispatch(TrainingsCommonActions.getExercises());
     }
     //Actions END ---------------------------
 }
