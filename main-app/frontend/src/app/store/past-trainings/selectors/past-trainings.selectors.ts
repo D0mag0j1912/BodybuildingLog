@@ -1,12 +1,16 @@
-import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { createSelector } from '@ngrx/store';
 import { PastTrainingsState } from '../reducers/past-trainings.reducer';
-import { FeatureKeys } from '../../../constants/enums/feature-keys.enum';
+import {
+    TrainingsState,
+    selectTrainingsState,
+} from '../../../views/training/training-store.module';
 
 /**
  * Get past trainings state
  */
-export const pastTrainingsState = createFeatureSelector<PastTrainingsState>(
-    FeatureKeys.PAST_TRAININGS,
+export const pastTrainingsState = createSelector(
+    selectTrainingsState,
+    (state: TrainingsState) => state.pastTrainings,
 );
 
 /** Select past trainings */

@@ -5,7 +5,7 @@ import { catchError, concatMap, filter, map, switchMap, tap } from 'rxjs/operato
 import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 import { TrainingSplitsSuccessService } from '../../../services/helper/training-split-success.service';
 import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
-import * as CommonActions from '../../common/common.actions';
+import * as CommonActions from '../../common/actions/common.actions';
 import { GeneralResponseDto as GeneralResponse } from '../../../../api/models/general-response-dto';
 import { SwaggerTrainingSplitsService } from '../../../../api/services/swagger-training-splits.service';
 import { PreferencesService } from '../../../services/api/preferences/preferences.service';

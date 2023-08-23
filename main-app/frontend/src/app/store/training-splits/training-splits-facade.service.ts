@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AppState } from '../..';
 import { TrainingSplitDto as TrainingSplit } from '../../../api/models/training-split-dto';
 import { StreamData } from '../../models/common/common.model';
 import { PreferencesDto as Preferences } from '../../../api/models/preferences-dto';
 import { PreferenceChangedType } from '../../models/common/preferences.type';
 import { NewTrainingDto as NewTraining } from '../../../api/models/new-training-dto';
+import { TrainingsState } from '../../views/training/training-store.module';
 import * as TrainingSplitActions from './actions/training-splits.actions';
 import {
     selectActiveTrainingSplit,
@@ -19,7 +19,7 @@ export class TrainingSplitsFacadeService {
 
     private _selectActiveTrainingSplit$ = this._store.select(selectActiveTrainingSplit);
 
-    constructor(private _store: Store<AppState>) {}
+    constructor(private _store: Store<TrainingsState>) {}
 
     //Selectors BEGIN -------------------------
     selectTrainingSplitList(): Observable<StreamData<TrainingSplit[]>> {

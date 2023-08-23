@@ -19,8 +19,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { NavigationModule } from './views/navigation/navigation.module';
 import { SentryService } from './services/errors/sentry.service';
-import { CommonEffects } from './store/common/common.effects';
-import { reducers } from '.';
+import { CommonEffects } from './store/common/effects/common.effects';
+import { appReducers } from './index';
 
 init({
     dsn: 'https://b4903b17554c4e40bbada176e50e4719@o997027.ingest.sentry.io/5955490',
@@ -47,7 +47,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         }),
         IonicModule.forRoot(),
         SwaggerApiModule.forRoot({ rootUrl: environment.apiUrl }),
-        StoreModule.forRoot(reducers, {
+        StoreModule.forRoot(appReducers, {
             runtimeChecks: {
                 strictStateImmutability: true,
                 strictActionImmutability: true,
