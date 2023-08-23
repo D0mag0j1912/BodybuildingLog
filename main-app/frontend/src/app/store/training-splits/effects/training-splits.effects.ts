@@ -11,6 +11,7 @@ import { SwaggerTrainingSplitsService } from '../../../../api/services/swagger-t
 import { PreferencesService } from '../../../services/api/preferences/preferences.service';
 import { NewTrainingService } from '../../../services/api/training/new-training.service';
 import * as TrainingSplitActions from '../actions/training-splits.actions';
+import { CommonFacadeService } from '../../common/common-facade.service';
 
 @Injectable()
 export class TrainingSplitsEffects {
@@ -22,11 +23,10 @@ export class TrainingSplitsEffects {
                     .trainingSplitsControllerCreateTrainingSplit({ body: action.trainingSplit })
                     .pipe(
                         catchError((_) => {
-                            CommonActions.showToastMessage({
-                                color: 'danger',
-                                message:
-                                    'training.training_split.errors.error_create_training_split',
-                            });
+                            this._commonFacadeService.showToastMessage(
+                                'danger',
+                                'training.training_split.errors.error_create_training_split',
+                            );
                             return EMPTY;
                         }),
                         map((trainingSplit: TrainingSplit) =>
@@ -57,10 +57,10 @@ export class TrainingSplitsEffects {
                     })
                     .pipe(
                         catchError((_) => {
-                            CommonActions.showToastMessage({
-                                color: 'danger',
-                                message: 'training.training_split.errors.error_edit_training_split',
-                            });
+                            this._commonFacadeService.showToastMessage(
+                                'danger',
+                                'training.training_split.errors.error_edit_training_split',
+                            );
                             return EMPTY;
                         }),
                         map((trainingSplit: TrainingSplit) =>
@@ -102,11 +102,10 @@ export class TrainingSplitsEffects {
                         .trainingSplitsControllerDeleteTrainingSplit({ id: action.trainingSplitId })
                         .pipe(
                             catchError((_) => {
-                                CommonActions.showToastMessage({
-                                    color: 'danger',
-                                    message:
-                                        'training.training_split.errors.error_delete_training_split',
-                                });
+                                this._commonFacadeService.showToastMessage(
+                                    'danger',
+                                    'training.training_split.errors.error_delete_training_split',
+                                );
                                 return EMPTY;
                             }),
                         ),
@@ -121,10 +120,10 @@ export class TrainingSplitsEffects {
             switchMap((_) =>
                 this._swaggerTrainingSplitsService.trainingSplitsControllerGetTrainingSplits().pipe(
                     catchError((_) => {
-                        CommonActions.showToastMessage({
-                            color: 'danger',
-                            message: 'training.training_split.errors.training_splits_not_available',
-                        });
+                        this._commonFacadeService.showToastMessage(
+                            'danger',
+                            'training.training_split.errors.training_splits_not_available',
+                        );
                         return EMPTY;
                     }),
                     mapStreamData<TrainingSplit[]>(),
@@ -146,11 +145,10 @@ export class TrainingSplitsEffects {
                     .trainingSplitsControllerGetTrainingSplits({ contains: action.contains })
                     .pipe(
                         catchError((_) => {
-                            CommonActions.showToastMessage({
-                                color: 'danger',
-                                message:
-                                    'training.training_split.errors.training_splits_not_available',
-                            });
+                            this._commonFacadeService.showToastMessage(
+                                'danger',
+                                'training.training_split.errors.training_splits_not_available',
+                            );
                             return EMPTY;
                         }),
                         mapStreamData<TrainingSplit[]>(),
@@ -172,11 +170,10 @@ export class TrainingSplitsEffects {
                     .trainingSplitsControllerGetTrainingSplit({ id: action.trainingSplitId })
                     .pipe(
                         catchError((_) => {
-                            CommonActions.showToastMessage({
-                                color: 'danger',
-                                message:
-                                    'training.training_split.errors.training_split_not_available',
-                            });
+                            this._commonFacadeService.showToastMessage(
+                                'danger',
+                                'training.training_split.errors.training_split_not_available',
+                            );
                             return EMPTY;
                         }),
                         map((response: TrainingSplit) =>
@@ -201,10 +198,10 @@ export class TrainingSplitsEffects {
                     of(action.activeTrainingSplit),
                 ]).pipe(
                     catchError((_) => {
-                        CommonActions.showToastMessage({
-                            color: 'danger',
-                            message: 'training.training_split.errors.training_split_active',
-                        });
+                        this._commonFacadeService.showToastMessage(
+                            'danger',
+                            'training.training_split.errors.training_split_active',
+                        );
                         return EMPTY;
                     }),
                     map(([message, trainingSplit]: [GeneralResponse, TrainingSplit]) =>
@@ -231,6 +228,7 @@ export class TrainingSplitsEffects {
     );
 
     constructor(
+        private _commonFacadeService: CommonFacadeService,
         private _swaggerTrainingSplitsService: SwaggerTrainingSplitsService,
         private _trainingSplitSuccessService: TrainingSplitsSuccessService,
         private _preferencesService: PreferencesService,
