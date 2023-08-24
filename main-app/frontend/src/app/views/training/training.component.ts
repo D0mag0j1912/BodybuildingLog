@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { endOfDay, endOfWeek, format, startOfDay, startOfWeek } from 'date-fns';
 import { map, startWith, withLatestFrom } from 'rxjs/operators';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../constants/training/past-trainings-date-format.const';
@@ -7,13 +7,14 @@ import { PreferencesDto as Preferences } from '../../../api/models/preferences-d
 import { PastTrainingsQueryParams } from '../../models/training/past-trainings/past-trainings.model';
 import { encodeFilter } from '../../helpers/encode-decode.helper';
 import { PastTrainingsFacadeService } from '../../store/past-trainings/past-trainings-facade.service';
+import { TrainingsCommonFacadeService } from '../../store/trainings-common/trainings-common-facade.service';
 
 @Component({
     selector: 'bl-training',
     templateUrl: './training.component.html',
     styleUrls: ['./training.component.scss'],
 })
-export class TrainingComponent {
+export class TrainingComponent implements OnInit {
     pastTrainingsFilter$ = this._pastTrainingsFacadeService.selectPastTrainingsFilter().pipe(
         startWith(''),
         withLatestFrom(this._preferencesStoreService.preferencesChanged$),
@@ -40,7 +41,12 @@ export class TrainingComponent {
     constructor(
         private _preferencesStoreService: PreferencesStoreService,
         private _pastTrainingsFacadeService: PastTrainingsFacadeService,
+        private _trainingsCommonFacadeService: TrainingsCommonFacadeService,
     ) {}
+
+    ngOnInit(): void {
+        this._trainingsCommonFacadeService.getExercises();
+    }
 
     saveFilter(filter: string): void {
         this._pastTrainingsFacadeService.saveFilter(filter);

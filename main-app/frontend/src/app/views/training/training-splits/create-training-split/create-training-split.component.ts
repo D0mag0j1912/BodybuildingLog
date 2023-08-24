@@ -1,8 +1,8 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { Observable, of } from 'rxjs';
-import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, take, takeUntil, tap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { getDay } from 'date-fns';
 import { SwiperContainer } from 'swiper/element';
@@ -11,12 +11,11 @@ import { ExerciseDto as Exercise } from '../../../../../api/models/exercise-dto'
 import { DialogRoles } from '../../../../constants/enums/dialog-roles.enum';
 import { mapStreamData } from '../../../../helpers/training/past-trainings/map-stream-data.helper';
 import { StreamData } from '../../../../models/common/common.model';
-import { ExercisesService } from '../../../../services/api/training/exercises.service';
-import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
 import { CustomTrainingDto as CustomTraining } from '../../../../../api/models/custom-training-dto';
 import { TrainingSplitsFacadeService } from '../../../../store/training-splits/training-splits-facade.service';
 import { UnsubscribeService } from '../../../../services/shared/unsubscribe.service';
 import { TrainingSplitsSuccessService } from '../../../../services/helper/training-split-success.service';
+import { TrainingsCommonFacadeService } from '../../../../store/trainings-common/trainings-common-facade.service';
 
 type NumberOfSetsType = Pick<CustomTraining, 'dayOfWeek'> & { sets: number[] };
 const SUNDAY_SLIDE = 6;
@@ -79,15 +78,8 @@ export class CreateTrainingSplitComponent implements OnInit {
         ),
     );
 
-    exercisesData$ = this._exercisesStoreService.allExercisesState$.pipe(
+    exercisesData$ = this._trainingsCommonFacadeService.selectExercises().pipe(
         take(1),
-        switchMap((data: StreamData<Exercise[]>) => {
-            if (data) {
-                return of(data);
-            } else {
-                return this._exercisesService.getExercises();
-            }
-        }),
         mapStreamData<Exercise[]>(),
         map((data: StreamData<Exercise[]>) => {
             if (data.IsError) {
@@ -119,8 +111,7 @@ export class CreateTrainingSplitComponent implements OnInit {
     }
 
     constructor(
-        private _exercisesService: ExercisesService,
-        private _exercisesStoreService: ExercisesStoreService,
+        private _trainingsCommonFacadeService: TrainingsCommonFacadeService,
         private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
         private _trainingSplitsSuccessService: TrainingSplitsSuccessService,
         private _translateService: TranslateService,

@@ -4,14 +4,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { tap } from 'rxjs/operators';
 import { MESSAGE_DURATION } from '../../../constants/shared/message-duration.const';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
-import * as commonActions from '../actions/common.actions';
+import * as CommonActions from '../../common/actions/common.actions';
 
 @Injectable()
 export class CommonEffects {
     showToastMessage$ = createEffect(
         () =>
             this._actions$.pipe(
-                ofType(commonActions.showToastMessage),
+                ofType(CommonActions.showToastMessage),
                 tap(async (action) => {
                     await this._toastControllerService.displayToast({
                         message: this._translateService.instant(action.message),
