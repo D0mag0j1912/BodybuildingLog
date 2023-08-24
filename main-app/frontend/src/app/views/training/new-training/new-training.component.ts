@@ -42,12 +42,10 @@ import { AuthStoreService } from '../../../services/store/auth/auth-store.servic
 import { PreferencesStoreService } from '../../../services/store/shared/preferences-store.service';
 import { ToastControllerService } from '../../../services/shared/toast-controller.service';
 import { BODYWEIGHT_SET_CATEGORIES } from '../../../constants/training/bodyweight-set-categories.const';
-import { ExercisesStoreService } from '../../../services/store/training/exercises-store.service';
 import { SetCategoryType } from '../../../models/training/new-training/single-exercise/set/set.type';
 import { PreferencesDto as Preferences } from '../../../../api/models/preferences-dto';
 import { convertWeightUnit } from '../../../helpers/training/convert-units.helper';
 import { WeightUnitType } from '../../../models/common/preferences.type';
-import { ExercisesService } from '../../../services/api/training/exercises.service';
 import { TrainingSplitsFacadeService } from '../../../store/training-splits/training-splits-facade.service';
 import { TrainingSplitDto as TrainingSplit } from '../../../../api/models/training-split-dto';
 import { DAYS_OF_WEEK } from '../../../helpers/days-of-week.helper';
@@ -58,6 +56,7 @@ import {
     EMPTY_TRAINING,
     createEmptyExercise,
 } from '../../../constants/training/new-training.const';
+import { TrainingsCommonFacadeService } from '../../../store/trainings-common/trainings-common-facade.service';
 import { SingleExerciseComponent } from './single-exercise/single-exercise.component';
 import { ReorderExercisesComponent } from './reorder-exercises/reorder-exercises.component';
 
@@ -144,14 +143,13 @@ export class NewTrainingComponent implements OnInit {
 
     constructor(
         private _trainingSplitsFacadeService: TrainingSplitsFacadeService,
+        private _trainingsCommonFacadeService: TrainingsCommonFacadeService,
         private _newTrainingStoreService: NewTrainingStoreService,
         private _newTrainingService: NewTrainingService,
         private _pastTrainingService: PastTrainingsService,
-        private _exercisesService: ExercisesService,
         private _authStoreService: AuthStoreService,
         private _unsubscribeService: UnsubscribeService,
         private _preferencesStoreService: PreferencesStoreService,
-        private _exercisesStoreService: ExercisesStoreService,
         private _toastControllerService: ToastControllerService,
         private _translateService: TranslateService,
         private _route: ActivatedRoute,
@@ -166,15 +164,8 @@ export class NewTrainingComponent implements OnInit {
         this.trainingStream$ = this._route.params.pipe(
             take(1),
             switchMap((params: Params) =>
-                this._exercisesStoreService.allExercisesState$.pipe(
+                this._trainingsCommonFacadeService.selectExercises().pipe(
                     take(1),
-                    switchMap((value) => {
-                        if (value) {
-                            return of(value);
-                        } else {
-                            return this._exercisesService.getExercises();
-                        }
-                    }),
                     tap(
                         (allExercises: StreamData<Exercise[]>) =>
                             (this.allExercises = allExercises),
@@ -440,30 +431,35 @@ export class NewTrainingComponent implements OnInit {
             .subscribe((response) => {
                 if (response?.data) {
                     let streamData: StreamData<Exercise[]>;
-                    this.trainingStream$ = this._exercisesStoreService.allExercisesState$.pipe(
-                        take(1),
-                        map((value) => {
-                            streamData = {
-                                IsLoading: true,
-                                Value: value.Value,
-                                IsError: false,
-                            };
-                            return streamData;
-                        }),
-                        delay(300),
-                        switchMap((_) =>
-                            this._newTrainingStoreService
-                                .updateTrainingState('openReorderModal', {
-                                    trainingState: response.data,
-                                })
-                                .pipe(tap((_) => this._formInit())),
-                        ),
-                        switchMap((_) => of(streamData)),
-                        mapStreamData<Exercise[]>(),
-                        tap((_) =>
-                            setTimeout(async () => await this.ionContent.scrollToBottom(500), 100),
-                        ),
-                    );
+                    this.trainingStream$ = this._trainingsCommonFacadeService
+                        .selectExercises()
+                        .pipe(
+                            take(1),
+                            map((value) => {
+                                streamData = {
+                                    IsLoading: true,
+                                    Value: value.Value,
+                                    IsError: false,
+                                };
+                                return streamData;
+                            }),
+                            delay(300),
+                            switchMap((_) =>
+                                this._newTrainingStoreService
+                                    .updateTrainingState('openReorderModal', {
+                                        trainingState: response.data,
+                                    })
+                                    .pipe(tap((_) => this._formInit())),
+                            ),
+                            switchMap((_) => of(streamData)),
+                            mapStreamData<Exercise[]>(),
+                            tap((_) =>
+                                setTimeout(
+                                    async () => await this.ionContent.scrollToBottom(500),
+                                    100,
+                                ),
+                            ),
+                        );
                 }
             });
     }
@@ -532,9 +528,9 @@ export class NewTrainingComponent implements OnInit {
                 .subscribe();
         }
     }
-
+    //TODO: Fix
     tryAgain(): void {
-        if (this.editTrainingData) {
+        /* if (this.editTrainingData) {
             this.trainingStream$ = this._pastTrainingService
                 .getPastTraining(this.editTrainingData?._id)
                 .pipe(
@@ -548,12 +544,10 @@ export class NewTrainingComponent implements OnInit {
                             trainingState: this.editTrainingData,
                         });
                     }),
-                    switchMap((_) => this._exercisesService.getExercises()),
-                    mapStreamData(),
                 );
         } else {
             this.trainingStream$ = this._exercisesService.getExercises().pipe(mapStreamData());
-        }
+        } */
     }
 
     private _formInit(): void {

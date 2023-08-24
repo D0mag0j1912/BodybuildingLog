@@ -24,7 +24,7 @@ import { PreferencesDto as Preferences } from '../../../../api/models/preference
 import { DEFAULT_WEIGHT_UNIT } from '../../../constants/shared/default-weight-unit.const';
 import { NewTrainingPreferencesDto as NewTrainingPreferences } from '../../../../api/models/new-training-preferences-dto';
 import { UpdateTrainingStateType } from '../../../models/training/new-training/update-training-state.type';
-import { ExercisesStoreService } from './exercises-store.service';
+import { TrainingsCommonFacadeService } from '../../../store/trainings-common/trainings-common-facade.service';
 
 @Injectable({ providedIn: 'root' })
 export class NewTrainingStoreService {
@@ -32,8 +32,8 @@ export class NewTrainingStoreService {
     trainingState$ = this._trainingState$.asObservable();
 
     constructor(
-        private _exercisesStoreService: ExercisesStoreService,
         private _preferencesStoreService: PreferencesStoreService,
+        private _trainingsCommonFacadeService: TrainingsCommonFacadeService,
     ) {}
 
     getCurrentTrainingState(): NewTraining {
@@ -135,7 +135,7 @@ export class NewTrainingStoreService {
     setTrainingToInitialState(trainingDate = new Date()): Observable<void> {
         return this._trainingState$.pipe(
             take(1),
-            withLatestFrom(this._exercisesStoreService.allExercisesState$),
+            withLatestFrom(this._trainingsCommonFacadeService.selectExercises()),
             switchMap(
                 ([currentTrainingState, allExercisesData]: [
                     NewTraining,
@@ -370,7 +370,7 @@ export class NewTrainingStoreService {
     ): Observable<[NewTraining, Exercise[]]> {
         let updatedTraining: NewTraining;
         if (deletedExerciseName) {
-            return this._exercisesStoreService.allExercisesState$.pipe(
+            return this._trainingsCommonFacadeService.selectExercises().pipe(
                 take(1),
                 map((value) => value.Value),
                 tap((_) => {
@@ -587,7 +587,7 @@ export class NewTrainingStoreService {
     }
 
     addNewExercise(alreadyUsedExercises: string[]): Observable<NewTraining> {
-        return this._exercisesStoreService.allExercisesState$.pipe(
+        return this._trainingsCommonFacadeService.selectExercises().pipe(
             take(1),
             map((streamData: StreamData<Exercise[]>) =>
                 streamData.Value.filter(

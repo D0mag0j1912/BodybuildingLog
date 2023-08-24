@@ -30,8 +30,8 @@ import {
     SetConstituentExistsType,
 } from '../../../../models/training/new-training/single-exercise/set/set.type';
 import { isNeverCheck } from '../../../../helpers/is-never-check.helper';
-import { ExercisesStoreService } from '../../../../services/store/training/exercises-store.service';
 import { SetFormType } from '../../../../models/training/new-training/single-exercise/set/set-form.type';
+import { TrainingsCommonFacadeService } from '../../../../store/trainings-common/trainings-common-facade.service';
 import { SetsComponent } from './sets/sets.component';
 
 @Component({
@@ -49,7 +49,7 @@ export class SingleExerciseComponent implements OnDestroy {
     );
     isAddExerciseAllowed$ = this.exercisesState$.pipe(
         delay(0),
-        withLatestFrom(this._exercisesStoreService.allExercisesState$),
+        withLatestFrom(this._trainingsCommonFacadeService.selectExercises()),
         map(([exerciseState, allExercises]: [SingleExercise[], StreamData<Exercise[]>]) => {
             if (exerciseState.length > 0) {
                 if (this.setsCmpRef) {
@@ -116,9 +116,9 @@ export class SingleExerciseComponent implements OnDestroy {
     setsCmpRef: QueryList<SetsComponent>;
 
     constructor(
+        private _trainingsCommonFacadeService: TrainingsCommonFacadeService,
         private _newTrainingStoreService: NewTrainingStoreService,
         private _unsubscribeService: UnsubscribeService,
-        private _exercisesStoreService: ExercisesStoreService,
         private _translateService: TranslateService,
     ) {
         this._translateService.onLangChange
