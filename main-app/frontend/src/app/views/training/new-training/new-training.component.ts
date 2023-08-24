@@ -241,7 +241,7 @@ export class NewTrainingComponent implements OnInit {
                                         newTrainingState = {
                                             ...currentTrainingState,
                                             userId: currentTrainingState?.userId ?? '',
-                                            trainingDate: new Date().toISOString(),
+                                            trainingDate: currentTrainingState.trainingDate,
                                             exercises: [...currentTrainingState.exercises].map(
                                                 (singleExercise: SingleExercise) => {
                                                     const trainingSplitExercisesIds =
@@ -555,7 +555,9 @@ export class NewTrainingComponent implements OnInit {
         this.newTrainingForm.controls.bodyweight.patchValue(
             this._fillBodyweight(currentTrainingState.bodyweight),
         );
-        this._fillTrainingDate(currentTrainingState.trainingDate);
+        this.newTrainingForm.controls.trainingDate.patchValue(
+            this._fillTrainingDate(currentTrainingState.trainingDate),
+        );
         this._setFormattedDate(this.newTrainingForm.controls.trainingDate.value);
         this._restartExercises$.next(currentTrainingState.exercises);
     }
