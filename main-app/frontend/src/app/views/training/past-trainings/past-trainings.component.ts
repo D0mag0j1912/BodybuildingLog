@@ -220,6 +220,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                 const payload: PastTrainingsPayloadType = {
                     currentDate: payloadDate.toISOString(),
                     periodFilterType: this.periodFilter,
+                    muscleGroups: response.data.muscleGroups ?? [],
                 };
                 this._pastTrainingsFacadeService.getPastTrainings(payload);
             });

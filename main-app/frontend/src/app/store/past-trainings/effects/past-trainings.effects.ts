@@ -22,6 +22,7 @@ export class PastTrainingsEffects {
                         page: action.payload.searchData?.page,
                         perPage: action.payload.searchData?.perPage,
                         searchText: action.payload.searchData?.searchText,
+                        muscleGroups: action.payload.muscleGroups,
                     })
                     .pipe(
                         mapStreamData(),

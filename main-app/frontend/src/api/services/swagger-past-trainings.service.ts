@@ -41,6 +41,7 @@ export class SwaggerPastTrainingsService extends BaseService {
     page: number;
     perPage: number;
     searchText?: string;
+    muscleGroups: Array<string>;
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<StreamModelDto & {
@@ -56,6 +57,7 @@ export class SwaggerPastTrainingsService extends BaseService {
       rb.query('page', params.page, {});
       rb.query('perPage', params.perPage, {});
       rb.query('searchText', params.searchText, {});
+      rb.query('muscleGroups', params.muscleGroups, {});
     }
 
     return this.http.request(rb.build({
@@ -86,6 +88,7 @@ export class SwaggerPastTrainingsService extends BaseService {
     page: number;
     perPage: number;
     searchText?: string;
+    muscleGroups: Array<string>;
     context?: HttpContext
   }
 ): Observable<StreamModelDto & {

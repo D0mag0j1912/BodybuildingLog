@@ -18,6 +18,8 @@ import { StreamModelDto } from '../../../models/common/stream.model';
 import { StreamModelResponse } from '../../../decorators/stream-model-response.decorator';
 import { PaginatePipe } from '../../../pipes/common/paginate.pipe';
 import { SearchDataDto } from '../../../models/common/search-data.model';
+import { ExerciseDto } from '../../../models/training/exercise.model';
+import { PastTrainingsPayload } from '../../../models/training/past-trainings/past-trainings-payload.model';
 
 @ApiTags('Past trainings')
 @Controller('api/training/past-trainings')
@@ -41,13 +43,15 @@ export class PastTrainingsController {
         @Query('currentDate') currentDate: Date,
         @Query('filterType') filterType: PeriodFilterType,
         @Query(PaginatePipe) searchData: SearchDataDto,
+        @Query('muscleGroups') muscleGroups: ExerciseDto['primaryMuscleGroup'][],
     ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
-        return this._pastTrainingsService.getPastTrainings(
+        const payload: PastTrainingsPayload = {
             currentDate,
-            filterType,
-            user._id,
+            periodFilterType: filterType,
             searchData,
-        );
+            muscleGroups,
+        };
+        return this._pastTrainingsService.getPastTrainings(payload, user._id);
     }
 
     @StreamModelResponse(NewTrainingDto)
