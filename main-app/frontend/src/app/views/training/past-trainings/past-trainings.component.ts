@@ -394,9 +394,17 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             );
     }
 
-    //TODO: align with 'ShowByDay' feature
     tryAgain(): void {
-        this.initPastTrainings();
+        const searchData: SearchParams = {
+            perPage: this.perPage,
+            page: this.page,
+            searchText: this.searchText?.trim().toLowerCase(),
+        };
+        this._pastTrainingsFacadeService.getPastTrainings(
+            new Date().toISOString(),
+            this.periodFilter,
+            searchData,
+        );
     }
 
     setTimePeriod$(results: PastTrainings): Observable<string> {
