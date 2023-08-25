@@ -1,22 +1,21 @@
 import { createAction, props } from '@ngrx/store';
 import {
     PastTrainings,
-    PeriodFilterType,
+    PastTrainingsPayloadType,
 } from '../../../models/training/past-trainings/past-trainings.model';
 import { StreamData } from '../../../models/common/common.model';
 import { Paginator } from '../../../models/common/paginator.model';
-import { SearchParams } from '../../../models/common/search-params';
 
 /** Loading */
 export const setLoading = createAction(
     '[Past trainings] Set loading',
-    props<{ loading: boolean }>(),
+    props<{ isLoading: boolean }>(),
 );
 
 /** Past trainings */
 export const getPastTrainings = createAction(
     '[Past trainings] Get past trainings',
-    props<{ currentDate: string; periodFilterType: PeriodFilterType; searchData?: SearchParams }>(),
+    props<{ payload: PastTrainingsPayloadType }>(),
 );
 
 export const setPastTrainings = createAction(

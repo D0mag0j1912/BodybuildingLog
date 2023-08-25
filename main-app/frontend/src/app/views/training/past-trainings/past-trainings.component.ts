@@ -34,6 +34,7 @@ import {
     PastTrainingsQueryParams,
     PastTrainings,
     PeriodFilterType,
+    PastTrainingsPayloadType,
 } from '../../../models/training/past-trainings/past-trainings.model';
 import {
     QUERY_PARAMS_DATE_FORMAT,
@@ -206,11 +207,6 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             .subscribe((response: OverlayEventDetail<Partial<PastTrainingsQueryParams>>) => {
                 this.periodFilter = (response.data as PastTrainingsQueryParams).showBy;
                 let payloadDate: Date;
-                const searchData: SearchParams = {
-                    page: this.page,
-                    perPage: this.perPage,
-                    searchText: '',
-                };
                 switch (this.periodFilter) {
                     case 'day': {
                         payloadDate = new Date();
@@ -221,28 +217,33 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                         break;
                     }
                 }
-                this._pastTrainingsFacadeService.getPastTrainings(
-                    payloadDate.toISOString(),
-                    this.periodFilter,
-                    searchData,
-                );
+                const payload: PastTrainingsPayloadType = {
+                    currentDate: payloadDate.toISOString(),
+                    periodFilterType: this.periodFilter,
+                };
+                this._pastTrainingsFacadeService.getPastTrainings(payload);
             });
     }
 
     onSearchEmitted(searchText: string): void {
         this.searchText = searchText;
         this._isSearch$.next(!!searchText);
-        this.page = INITIAL_PAGE;
-        const searchData: SearchParams = {
-            page: this.page,
-            perPage: this.perPage,
-            searchText,
-        };
-        this._pastTrainingsFacadeService.getPastTrainings(
-            new Date().toISOString(),
-            this.periodFilter,
-            searchData,
-        );
+        let payload: PastTrainingsPayloadType;
+        if (this.searchText) {
+            this.page = INITIAL_PAGE;
+            const searchData: SearchParams = {
+                page: this.page,
+                perPage: this.perPage,
+                searchText,
+            };
+            payload = { searchData };
+        } else {
+            payload = {
+                currentDate: new Date().toISOString(),
+                periodFilterType: this.periodFilter,
+            };
+        }
+        this._pastTrainingsFacadeService.getPastTrainings(payload);
     }
 
     onPaginatorChanged($event: PaginatorChanged, results: PastTrainings): void {
@@ -252,11 +253,8 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                 page: $event.page,
                 searchText: this.searchText?.trim()?.toLowerCase() ?? '',
             };
-            this._pastTrainingsFacadeService.getPastTrainings(
-                new Date().toISOString(),
-                this.periodFilter,
-                searchData,
-            );
+            const payload: PastTrainingsPayloadType = { searchData };
+            this._pastTrainingsFacadeService.getPastTrainings(payload);
         } else {
             let currentDate: Date;
             switch (this.periodFilter) {
@@ -314,10 +312,11 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                     isNeverCheck(this.periodFilter);
                 }
             }
-            this._pastTrainingsFacadeService.getPastTrainings(
-                currentDate.toISOString(),
-                this.periodFilter,
-            );
+            const payload: PastTrainingsPayloadType = {
+                currentDate: currentDate.toISOString(),
+                periodFilterType: this.periodFilter,
+            };
+            this._pastTrainingsFacadeService.getPastTrainings(payload);
         }
     }
 
@@ -395,16 +394,23 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     }
 
     tryAgain(): void {
-        const searchData: SearchParams = {
-            perPage: this.perPage,
-            page: this.page,
-            searchText: this.searchText?.trim().toLowerCase(),
-        };
-        this._pastTrainingsFacadeService.getPastTrainings(
-            new Date().toISOString(),
-            this.periodFilter,
-            searchData,
-        );
+        this.isSearch$.pipe(take(1)).subscribe((isSearch: boolean) => {
+            let payload: PastTrainingsPayloadType;
+            if (isSearch) {
+                const searchData: SearchParams = {
+                    perPage: this.perPage,
+                    page: this.page,
+                    searchText: this.searchText?.trim().toLowerCase(),
+                };
+                payload = { searchData };
+            } else {
+                payload = {
+                    currentDate: new Date().toISOString(),
+                    periodFilterType: this.periodFilter,
+                };
+            }
+            this._pastTrainingsFacadeService.getPastTrainings(payload);
+        });
     }
 
     setTimePeriod$(results: PastTrainings): Observable<string> {
@@ -490,18 +496,16 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                 page: this.page,
                 searchText: this.searchText.trim().toLowerCase(),
             };
-            this._pastTrainingsFacadeService.getPastTrainings(
-                new Date().toISOString(),
-                this.periodFilter,
-                searchData,
-            );
+            const payload: PastTrainingsPayloadType = { searchData };
+            this._pastTrainingsFacadeService.getPastTrainings(payload);
         } else {
             this.periodFilter = this.currentQueryParams.showBy as PeriodFilterType;
             const currentDate = this.getDateTimeQueryParams();
-            this._pastTrainingsFacadeService.getPastTrainings(
-                currentDate.toISOString(),
-                this.periodFilter ?? 'week',
-            );
+            const payload: PastTrainingsPayloadType = {
+                currentDate: currentDate.toISOString(),
+                periodFilterType: this.periodFilter,
+            };
+            this._pastTrainingsFacadeService.getPastTrainings(payload);
         }
     }
 

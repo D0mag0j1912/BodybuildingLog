@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiExtraModels,
@@ -42,12 +42,6 @@ export class PastTrainingsController {
         @Query('filterType') filterType: PeriodFilterType,
         @Query(PaginatePipe) searchData: SearchDataDto,
     ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
-        //TODO: Create custom Pipe
-        if (!currentDate || !filterType) {
-            throw new BadRequestException(
-                'training.past_trainings.errors.past_trainings_error_title',
-            );
-        }
         return this._pastTrainingsService.getPastTrainings(
             currentDate,
             filterType,

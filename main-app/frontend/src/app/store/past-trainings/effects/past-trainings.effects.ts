@@ -17,11 +17,11 @@ export class PastTrainingsEffects {
             switchMap((action) =>
                 this._swaggerPastTrainingsService
                     .pastTrainingsControllerGetPastTrainings({
-                        currentDate: action.currentDate.toString(),
-                        filterType: action.periodFilterType,
-                        page: action.searchData?.page,
-                        perPage: action.searchData?.perPage,
-                        searchText: action.searchData?.searchText,
+                        currentDate: action.payload.currentDate?.toString(),
+                        filterType: action.payload.periodFilterType,
+                        page: action.payload.searchData?.page,
+                        perPage: action.payload.searchData?.perPage,
+                        searchText: action.payload.searchData?.searchText,
                     })
                     .pipe(
                         mapStreamData(),
