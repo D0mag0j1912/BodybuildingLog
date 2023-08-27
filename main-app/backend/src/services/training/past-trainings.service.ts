@@ -35,7 +35,7 @@ export class PastTrainingsService {
     async getPastTrainings(
         payload: PastTrainingsPayload,
         userId: string,
-    ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
+    ): Promise<PaginatorDto<PastTrainingsDto>> {
         try {
             const searchData = payload.searchData;
             const currentDate = payload.currentDate;
@@ -141,11 +141,7 @@ export class PastTrainingsService {
                     },
                 };
             }
-            return {
-                IsLoading: true,
-                Value: results,
-                IsError: false,
-            } as StreamModelDto<PaginatorDto<PastTrainingsDto>>;
+            return results;
         } catch (error: unknown) {
             throw new InternalServerErrorException(
                 'training.past_trainings.errors.past_trainings_error_title',

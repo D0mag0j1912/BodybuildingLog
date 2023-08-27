@@ -3,7 +3,6 @@ import {
     PastTrainings,
     PastTrainingsPayloadType,
 } from '../../../models/training/past-trainings/past-trainings.model';
-import { StreamData } from '../../../models/common/common.model';
 import { Paginator } from '../../../models/common/paginator.model';
 
 /** Loading */
@@ -20,7 +19,7 @@ export const getPastTrainings = createAction(
 
 export const setPastTrainings = createAction(
     '[Past trainings] Set past trainings',
-    props<{ response: StreamData<Paginator<PastTrainings>> }>(),
+    props<{ response: Paginator<PastTrainings> }>(),
 );
 
 export const deleteTraining = createAction(

@@ -20,11 +20,12 @@ import { PaginatePipe } from '../../../pipes/common/paginate.pipe';
 import { SearchDataDto } from '../../../models/common/search-data.model';
 import { ExerciseDto } from '../../../models/training/exercise.model';
 import { PastTrainingsPayload } from '../../../models/training/past-trainings/past-trainings-payload.model';
+import { PaginatorResponse } from '../../../decorators/paginator-response.decorator';
 
 @ApiTags('Past trainings')
 @Controller('api/training/past-trainings')
 @UseGuards(AuthGuard())
-@ApiExtraModels(StreamModelDto, PaginatorDto)
+@ApiExtraModels(PaginatorDto, PastTrainingsDto)
 export class PastTrainingsController {
     constructor(private _pastTrainingsService: PastTrainingsService) {}
 
@@ -36,7 +37,7 @@ export class PastTrainingsController {
         status: 401,
         description: 'Unauthorized',
     })
-    @StreamModelResponse(PaginatorDto, false, true)
+    @PaginatorResponse()
     @Get()
     async getPastTrainings(
         @GET_USER() user: UserDto,
@@ -44,7 +45,7 @@ export class PastTrainingsController {
         @Query('filterType') filterType: PeriodFilterType,
         @Query(PaginatePipe) searchData: SearchDataDto,
         @Query('muscleGroups') muscleGroups: ExerciseDto['primaryMuscleGroup'][],
-    ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
+    ): Promise<PaginatorDto<PastTrainingsDto>> {
         const payload: PastTrainingsPayload = {
             currentDate,
             periodFilterType: filterType,

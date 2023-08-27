@@ -72,10 +72,10 @@ import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-di
 })
 export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     pastTrainings$ = this._pastTrainingsFacadeService.selectPastTrainings().pipe(
-        tap(async (response: StreamData<Paginator<PastTrainings>>) => {
+        tap(async (response: Paginator<PastTrainings>) => {
             if (response) {
                 //If searching
-                if (response?.Value?.TotalPages) {
+                if (response?.TotalPages) {
                     this.updatePageAndSize(response);
                 }
                 this.handlePaginationArrows(response);
@@ -86,6 +86,8 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             }
         }),
     );
+
+    isLoading$ = this._pastTrainingsFacadeService.selectIsLoading();
 
     private _isSearch$ = new BehaviorSubject<boolean>(false);
     readonly isSearch$ = this._isSearch$.asObservable();
@@ -510,13 +512,13 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         }
     }
 
-    private updatePageAndSize(response: StreamData<Paginator<PastTrainings>>): void {
-        this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
-        this.perPage = response?.Value?.PerPage ?? DEFAULT_PER_PAGE;
+    private updatePageAndSize(response: Paginator<PastTrainings>): void {
+        this.page = response?.CurrentPage ?? INITIAL_PAGE;
+        this.perPage = response?.PerPage ?? DEFAULT_PER_PAGE;
     }
 
     private handleQueryParams(
-        trainingData: StreamData<Paginator<PastTrainings>>,
+        trainingData: Paginator<PastTrainings>,
         searchValue?: string,
     ): { filter: string } {
         const params: PastTrainingsQueryParams = {
@@ -534,24 +536,24 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     private handleSpecificQueryParam(
         searchValue: string | undefined,
-        trainingData: StreamData<Paginator<PastTrainings>>,
+        trainingData: Paginator<PastTrainings>,
         queryParam: keyof PastTrainingsQueryParams,
     ): string | undefined {
         if (searchValue) {
-            if (trainingData?.Value?.Results?.Trainings?.length > 0) {
+            if (trainingData.Results.Trainings.length > 0) {
                 if (queryParam === 'page') {
                     return this.page.toString();
                 } else if (queryParam === 'startDate') {
                     return format(
-                        trainingData?.Value?.Results?.Dates?.StartDate
-                            ? new Date(trainingData.Value.Results.Dates.StartDate)
+                        trainingData.Results.Dates.StartDate
+                            ? new Date(trainingData.Results.Dates.StartDate)
                             : new Date(),
                         QUERY_PARAMS_DATE_FORMAT,
                     );
                 } else if (queryParam === 'endDate') {
                     return format(
-                        trainingData?.Value?.Results?.Dates?.EndDate
-                            ? new Date(trainingData.Value.Results.Dates.EndDate)
+                        trainingData.Results.Dates.EndDate
+                            ? new Date(trainingData.Results.Dates.EndDate)
                             : new Date(),
                         QUERY_PARAMS_DATE_FORMAT,
                     );
@@ -564,15 +566,15 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         } else {
             if (queryParam === 'startDate') {
                 return format(
-                    trainingData?.Value?.Results?.Dates?.StartDate
-                        ? new Date(trainingData.Value.Results.Dates.StartDate)
+                    trainingData.Results.Dates.StartDate
+                        ? new Date(trainingData.Results.Dates.StartDate)
                         : new Date(),
                     QUERY_PARAMS_DATE_FORMAT,
                 );
             } else if (queryParam === 'endDate') {
                 return format(
-                    trainingData?.Value?.Results?.Dates?.EndDate
-                        ? new Date(trainingData.Value.Results.Dates.EndDate)
+                    trainingData.Results.Dates.EndDate
+                        ? new Date(trainingData.Results.Dates.EndDate)
                         : new Date(),
                     QUERY_PARAMS_DATE_FORMAT,
                 );
@@ -582,15 +584,13 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         }
     }
 
-    private handlePaginationArrows(response: StreamData<Paginator<PastTrainings>>): void {
-        if (response?.Value) {
-            if (response.Value.Results.EarliestTrainingDate !== undefined) {
-                this.isPreviousPage = response.Value.Results.IsPrevious;
-                this.isNextPage = response.Value.Results.IsNext;
-            } else {
-                this.isPreviousPage = !!response.Value.Previous;
-                this.isNextPage = !!response.Value.Next;
-            }
+    private handlePaginationArrows(response: Paginator<PastTrainings>): void {
+        if (response.Results.EarliestTrainingDate !== undefined) {
+            this.isPreviousPage = response.Results.IsPrevious;
+            this.isNextPage = response.Results.IsNext;
+        } else {
+            this.isPreviousPage = !!response.Previous;
+            this.isNextPage = !!response.Next;
         }
     }
 

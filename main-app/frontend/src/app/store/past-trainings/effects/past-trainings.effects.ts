@@ -6,7 +6,6 @@ import * as PastTrainingsActions from '../actions/past-trainings.actions';
 import { PastTrainingsFacadeService } from '../past-trainings-facade.service';
 import { SwaggerPastTrainingsService } from '../../../../api';
 import * as CommonActions from '../../common/actions/common.actions';
-import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 
 @Injectable()
 export class PastTrainingsEffects {
@@ -25,7 +24,6 @@ export class PastTrainingsEffects {
                         muscleGroups: action.payload.muscleGroups,
                     })
                     .pipe(
-                        mapStreamData(),
                         catchError((_) => {
                             CommonActions.showToastMessage({
                                 color: 'danger',

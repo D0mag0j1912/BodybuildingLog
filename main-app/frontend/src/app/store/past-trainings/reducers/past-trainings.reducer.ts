@@ -1,19 +1,20 @@
 import { createReducer, on } from '@ngrx/store';
 import * as PastTrainingsActions from '../actions/past-trainings.actions';
-import { StreamData } from '../../../models/common/common.model';
 import { Paginator } from '../../../models/common/paginator.model';
 import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
 import { mapDateInterval } from '../../../helpers/training/past-trainings/map-past-trainings-dates.helper';
 import { NewTrainingDto as NewTraining } from '../../../../api/models/new-training-dto';
 
 export interface PastTrainingsState {
-    pastTrainings: StreamData<Paginator<PastTrainings>>;
+    pastTrainings: Paginator<PastTrainings>;
     filter: string;
+    isLoading: boolean;
 }
 
 export const initialPastTrainingsState: PastTrainingsState = {
     pastTrainings: undefined,
     filter: undefined,
+    isLoading: false,
 };
 
 export const pastTrainingsReducer = createReducer(
@@ -26,19 +27,20 @@ export const pastTrainingsReducer = createReducer(
         ...state,
         pastTrainings: {
             ...state.pastTrainings,
-            Value: {
-                ...state.pastTrainings.Value,
-                Results: {
-                    ...state.pastTrainings.Value.Results,
-                    Trainings: [...state.pastTrainings.Value.Results.Trainings].filter(
-                        (training: NewTraining) => training._id !== trainingId,
-                    ),
-                },
+            Results: {
+                ...state.pastTrainings.Results,
+                Trainings: [...state.pastTrainings.Results.Trainings].filter(
+                    (training: NewTraining) => training._id !== trainingId,
+                ),
             },
         },
     })),
     on(PastTrainingsActions.saveFilter, (state, { filter }) => ({
         ...state,
         filter,
+    })),
+    on(PastTrainingsActions.setLoading, (state, { isLoading }) => ({
+        ...state,
+        isLoading,
     })),
 );

@@ -9,6 +9,7 @@ import { Paginator } from '../../models/common/paginator.model';
 import { StreamData } from '../../models/common/common.model';
 import { TrainingsState } from '../../views/training/training-store.module';
 import {
+    selectIsLoading,
     selectPastTrainings,
     selectPastTrainingsFilter,
 } from './selectors/past-trainings.selectors';
@@ -20,15 +21,21 @@ export class PastTrainingsFacadeService {
 
     private _selectPastTrainings$ = this._store.select(selectPastTrainings);
 
+    private _selectIsLoading$ = this._store.select(selectIsLoading);
+
     constructor(private _store: Store<TrainingsState>) {}
 
     //Selectors BEGIN -------------------------
-    selectPastTrainings(): Observable<StreamData<Paginator<PastTrainings>>> {
+    selectPastTrainings(): Observable<Paginator<PastTrainings>> {
         return this._selectPastTrainings$;
     }
 
     selectPastTrainingsFilter(): Observable<string> {
         return this._selectPastTrainingsFilter$;
+    }
+
+    selectIsLoading(): Observable<boolean> {
+        return this._selectIsLoading$;
     }
     //Selectors END ---------------------------
 
