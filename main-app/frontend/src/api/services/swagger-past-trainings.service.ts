@@ -37,13 +37,12 @@ export class SwaggerPastTrainingsService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  pastTrainingsControllerGetPastTrainings$Response(params: {
-    currentDate: string;
-    filterType: string;
-    page: number;
-    perPage: number;
-    searchText?: string;
-    muscleGroups: Array<string>;
+  pastTrainingsControllerGetPastTrainings$Response(params?: {
+    currentDate?: string;
+    periodFilterType?: string;
+    searchData?: {
+};
+    muscleGroups?: Array<any>;
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<PaginatorDto & {
@@ -59,10 +58,8 @@ export class SwaggerPastTrainingsService extends BaseService {
     const rb = new RequestBuilder(this.rootUrl, SwaggerPastTrainingsService.PastTrainingsControllerGetPastTrainingsPath, 'get');
     if (params) {
       rb.query('currentDate', params.currentDate, {});
-      rb.query('filterType', params.filterType, {});
-      rb.query('page', params.page, {});
-      rb.query('perPage', params.perPage, {});
-      rb.query('searchText', params.searchText, {});
+      rb.query('periodFilterType', params.periodFilterType, {});
+      rb.query('searchData', params.searchData, {});
       rb.query('muscleGroups', params.muscleGroups, {});
     }
 
@@ -92,13 +89,12 @@ export class SwaggerPastTrainingsService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  pastTrainingsControllerGetPastTrainings(params: {
-    currentDate: string;
-    filterType: string;
-    page: number;
-    perPage: number;
-    searchText?: string;
-    muscleGroups: Array<string>;
+  pastTrainingsControllerGetPastTrainings(params?: {
+    currentDate?: string;
+    periodFilterType?: string;
+    searchData?: {
+};
+    muscleGroups?: Array<any>;
     context?: HttpContext
   }
 ): Observable<PaginatorDto & {

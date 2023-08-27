@@ -1,14 +1,14 @@
-import { ApiExtraModels, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsArray, IsOptional, IsString } from 'class-validator';
 import { SearchDataDto } from '../../common/search-data.model';
 import { ExerciseDto } from '../exercise.model';
 import { PeriodFilterType } from './period-filter.type';
 
-@ApiExtraModels(PastTrainingsPayload)
 export class PastTrainingsPayload {
     @ApiPropertyOptional({
         type: Date,
-        title: 'Current date'
+        title: 'Current date',
+        required: false,
     })
     @IsOptional()
     currentDate?: Date;
@@ -16,14 +16,16 @@ export class PastTrainingsPayload {
     @ApiPropertyOptional({
         type: String,
         title: 'Period filter',
+        required: false,
     })
     @IsOptional()
     @IsString()
     periodFilterType?: PeriodFilterType;
 
     @ApiPropertyOptional({
-        type: Object,
+        type: SearchDataDto,
         title: 'Search data',
+        required: false,
     })
     @IsOptional()
     searchData?: SearchDataDto;
@@ -31,6 +33,7 @@ export class PastTrainingsPayload {
     @ApiPropertyOptional({
         type: Array<String>,
         title: 'Muscle groups filter',
+        required: false,
     })
     @IsOptional()
     @IsArray()

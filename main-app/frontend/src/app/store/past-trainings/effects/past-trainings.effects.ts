@@ -17,10 +17,12 @@ export class PastTrainingsEffects {
                 this._swaggerPastTrainingsService
                     .pastTrainingsControllerGetPastTrainings({
                         currentDate: action.payload.currentDate?.toString(),
-                        filterType: action.payload.periodFilterType,
-                        page: action.payload.searchData?.page,
-                        perPage: action.payload.searchData?.perPage,
-                        searchText: action.payload.searchData?.searchText,
+                        periodFilterType: action.payload.periodFilterType,
+                        searchData: {
+                            page: action.payload.searchData?.page,
+                            perPage: action.payload.searchData?.perPage,
+                            searchText: action.payload.searchData?.searchText,
+                        },
                         muscleGroups: action.payload.muscleGroups,
                     })
                     .pipe(

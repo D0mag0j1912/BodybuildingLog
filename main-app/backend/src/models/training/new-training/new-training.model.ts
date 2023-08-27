@@ -53,6 +53,7 @@ export class NewTrainingDto {
     @ApiProperty({
         type: [SingleExerciseDto],
         description: 'Training exercises data',
+        required: true,
     })
     @ArrayMinSize(1, { message: 'training.new_training.errors.at_least_one_exercise' })
     @ValidateNested({ each: true })
@@ -60,12 +61,16 @@ export class NewTrainingDto {
     @IsArray()
     exercises: SingleExerciseDto[];
 
-    @ApiProperty({ description: "Whether it's edit mode or not" })
+    @ApiProperty({
+        description: "Whether it's edit mode or not",
+        type: Boolean,
+        required: true,
+    })
     @IsBoolean({ message: '@training.new_training.errors.error_save_training' })
     @IsNotEmpty()
     editMode: boolean;
 
-    @ApiProperty({ description: 'Training date' })
+    @ApiProperty({ description: 'Training date', type: Date, required: true })
     @IsDateString(
         {},
         {
@@ -74,24 +79,37 @@ export class NewTrainingDto {
     )
     trainingDate: Date;
 
-    @ApiProperty({ description: 'Id of authenticated user' })
+    @ApiProperty({
+        description: 'Id of authenticated user',
+        type: String,
+        required: true,
+    })
     @IsNotEmpty({ message: '@common.errors.not_authenticated' })
     userId: string;
 
     @ApiProperty({
         type: NewTrainingPreferencesDto,
         description: 'Training preferences',
+        required: true,
     })
     @IsNotEmpty()
     preferences: NewTrainingPreferencesDto;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        type: String,
+        title: 'Training ID',
+        required: false,
+    })
     @IsString({ message: '@training.new_training.errors.error_save_training' })
     @IsMongoId()
     @IsOptional()
     _id?: string;
 
-    @ApiPropertyOptional({ description: "User's bodyweight" })
+    @ApiPropertyOptional({
+        description: "User's bodyweight",
+        type: Number,
+        required: false,
+    })
     @IsOptional()
     @IsNumber(
         {},
