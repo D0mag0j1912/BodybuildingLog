@@ -163,16 +163,6 @@ export class NewTrainingComponent implements OnInit {
 
         this.trainingStream$ = this._route.params.pipe(
             take(1),
-            switchMap((params: Params) =>
-                this._trainingsCommonFacadeService.selectExercises().pipe(
-                    take(1),
-                    tap(
-                        (allExercises: StreamData<Exercise[]>) =>
-                            (this.allExercises = allExercises),
-                    ),
-                    map((_) => params),
-                ),
-            ),
             switchMap((params: Params) => {
                 if (params['id']) {
                     this.editMode = true;
@@ -325,6 +315,11 @@ export class NewTrainingComponent implements OnInit {
         if (trainingSplitId) {
             this._trainingSplitsFacadeService.getTrainingSplit(trainingSplitId);
         }
+
+        this._trainingsCommonFacadeService
+            .selectExercises()
+            .pipe(takeUntil(this._unsubscribeService))
+            .subscribe((data: StreamData<Exercise[]>) => (this.allExercises = data));
     }
 
     onSubmit(): void {
