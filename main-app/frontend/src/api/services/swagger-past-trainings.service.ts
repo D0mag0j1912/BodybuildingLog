@@ -39,7 +39,7 @@ export class SwaggerPastTrainingsService extends BaseService {
    */
   pastTrainingsControllerGetPastTrainings$Response(params?: {
     currentDate?: string;
-    periodFilterType?: string;
+    periodFilterType?: 'week' | 'day';
     searchData?: any;
     muscleGroups?: Array<'Legs' | 'Core' | 'Back' | 'Chest' | 'Biceps' | 'Triceps' | 'Neck' | 'Forearm' | 'Glutes' | 'Shoulders' | ''>;
     context?: HttpContext
@@ -90,7 +90,7 @@ export class SwaggerPastTrainingsService extends BaseService {
    */
   pastTrainingsControllerGetPastTrainings(params?: {
     currentDate?: string;
-    periodFilterType?: string;
+    periodFilterType?: 'week' | 'day';
     searchData?: any;
     muscleGroups?: Array<'Legs' | 'Core' | 'Back' | 'Chest' | 'Biceps' | 'Triceps' | 'Neck' | 'Forearm' | 'Glutes' | 'Shoulders' | ''>;
     context?: HttpContext

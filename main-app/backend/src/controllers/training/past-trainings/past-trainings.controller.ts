@@ -17,12 +17,11 @@ import { StreamModelDto } from '../../../models/common/stream.model';
 import { StreamModelResponse } from '../../../decorators/stream-model-response.decorator';
 import { PastTrainingsPayload } from '../../../models/training/past-trainings/past-trainings-payload.model';
 import { PaginatorResponse } from '../../../decorators/paginator-response.decorator';
-import { SearchDataDto } from '../../../models/common/search-data.model';
 
 @ApiTags('Past trainings')
 @Controller('api/training/past-trainings')
 @UseGuards(AuthGuard())
-@ApiExtraModels(PaginatorDto, PastTrainingsDto, PastTrainingsPayload, SearchDataDto)
+@ApiExtraModels(PaginatorDto, PastTrainingsDto, PastTrainingsPayload)
 export class PastTrainingsController {
     constructor(private _pastTrainingsService: PastTrainingsService) {}
 
