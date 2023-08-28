@@ -40,9 +40,8 @@ export class SwaggerPastTrainingsService extends BaseService {
   pastTrainingsControllerGetPastTrainings$Response(params?: {
     currentDate?: string;
     periodFilterType?: string;
-    searchData?: {
-};
-    muscleGroups?: Array<any>;
+    searchData?: any;
+    muscleGroups?: Array<'Legs' | 'Core' | 'Back' | 'Chest' | 'Biceps' | 'Triceps' | 'Neck' | 'Forearm' | 'Glutes' | 'Shoulders' | ''>;
     context?: HttpContext
   }
 ): Observable<StrictHttpResponse<PaginatorDto & {
@@ -92,9 +91,8 @@ export class SwaggerPastTrainingsService extends BaseService {
   pastTrainingsControllerGetPastTrainings(params?: {
     currentDate?: string;
     periodFilterType?: string;
-    searchData?: {
-};
-    muscleGroups?: Array<any>;
+    searchData?: any;
+    muscleGroups?: Array<'Legs' | 'Core' | 'Back' | 'Chest' | 'Biceps' | 'Triceps' | 'Neck' | 'Forearm' | 'Glutes' | 'Shoulders' | ''>;
     context?: HttpContext
   }
 ): Observable<PaginatorDto & {

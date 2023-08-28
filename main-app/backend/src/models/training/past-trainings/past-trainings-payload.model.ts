@@ -31,8 +31,21 @@ export class PastTrainingsPayload {
     searchData?: SearchDataDto;
 
     @ApiPropertyOptional({
-        type: Array<String>,
+        enum: [
+            'Legs',
+            'Core',
+            'Back',
+            'Chest',
+            'Biceps',
+            'Triceps',
+            'Neck',
+            'Forearm',
+            'Glutes',
+            'Shoulders',
+            '',
+        ],
         title: 'Muscle groups filter',
+        isArray: true,
         required: false,
     })
     @IsOptional()

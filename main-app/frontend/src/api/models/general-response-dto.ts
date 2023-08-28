@@ -3,7 +3,7 @@
 export interface GeneralResponseDto {
 
   /**
-   * Message returned by server to client
+   * Message returned by server to the client
    */
   Message: string;
 }
