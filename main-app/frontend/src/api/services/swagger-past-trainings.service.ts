@@ -37,10 +37,12 @@ export class SwaggerPastTrainingsService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  pastTrainingsControllerGetPastTrainings$Response(params?: {
+  pastTrainingsControllerGetPastTrainings$Response(params: {
     currentDate?: string;
     periodFilterType?: 'week' | 'day';
-    searchData?: any;
+    page: number;
+    perPage: number;
+    searchText: string;
     muscleGroups?: Array<'Legs' | 'Core' | 'Back' | 'Chest' | 'Biceps' | 'Triceps' | 'Neck' | 'Forearm' | 'Glutes' | 'Shoulders' | ''>;
     context?: HttpContext
   }
@@ -58,7 +60,9 @@ export class SwaggerPastTrainingsService extends BaseService {
     if (params) {
       rb.query('currentDate', params.currentDate, {});
       rb.query('periodFilterType', params.periodFilterType, {});
-      rb.query('searchData', params.searchData, {});
+      rb.query('page', params.page, {});
+      rb.query('perPage', params.perPage, {});
+      rb.query('searchText', params.searchText, {});
       rb.query('muscleGroups', params.muscleGroups, {});
     }
 
@@ -88,10 +92,12 @@ export class SwaggerPastTrainingsService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  pastTrainingsControllerGetPastTrainings(params?: {
+  pastTrainingsControllerGetPastTrainings(params: {
     currentDate?: string;
     periodFilterType?: 'week' | 'day';
-    searchData?: any;
+    page: number;
+    perPage: number;
+    searchText: string;
     muscleGroups?: Array<'Legs' | 'Core' | 'Back' | 'Chest' | 'Biceps' | 'Triceps' | 'Neck' | 'Forearm' | 'Glutes' | 'Shoulders' | ''>;
     context?: HttpContext
   }

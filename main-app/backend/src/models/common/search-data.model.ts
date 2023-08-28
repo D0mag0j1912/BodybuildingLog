@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsLowercase, IsNotEmpty, IsString } from 'class-validator';
+import { IsLowercase, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class SearchDataDto {
     @ApiProperty({
@@ -8,6 +8,7 @@ export class SearchDataDto {
         required: true,
     })
     @IsNotEmpty()
+    @IsNumber()
     page: number;
 
     @ApiProperty({
@@ -16,6 +17,7 @@ export class SearchDataDto {
         required: true,
     })
     @IsNotEmpty()
+    @IsNumber()
     perPage: number;
 
     @ApiProperty({

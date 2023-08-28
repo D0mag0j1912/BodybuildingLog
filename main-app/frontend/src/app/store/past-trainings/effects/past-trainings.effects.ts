@@ -18,11 +18,9 @@ export class PastTrainingsEffects {
                     .pastTrainingsControllerGetPastTrainings({
                         currentDate: action.payload.currentDate?.toString(),
                         periodFilterType: action.payload.periodFilterType,
-                        searchData: {
-                            page: action.payload.searchData?.page,
-                            perPage: action.payload.searchData?.perPage,
-                            searchText: action.payload.searchData?.searchText,
-                        },
+                        page: action.payload.searchData?.page,
+                        perPage: action.payload.searchData?.perPage,
+                        searchText: action.payload.searchData?.searchText,
                         muscleGroups: action.payload.muscleGroups,
                     })
                     .pipe(

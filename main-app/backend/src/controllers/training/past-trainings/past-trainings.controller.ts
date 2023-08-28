@@ -37,7 +37,7 @@ export class PastTrainingsController {
     @Get()
     async getPastTrainings(
         @GET_USER() user: UserDto,
-        @Query('payload') payload: PastTrainingsPayload,
+        @Query() payload: PastTrainingsPayload,
     ): Promise<PaginatorDto<PastTrainingsDto>> {
         return this._pastTrainingsService.getPastTrainings(payload, user._id);
     }
