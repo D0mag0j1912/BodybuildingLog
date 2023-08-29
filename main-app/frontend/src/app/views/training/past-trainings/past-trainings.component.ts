@@ -28,7 +28,6 @@ import {
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
-import { StreamData } from '../../../models/common/common.model';
 import { Paginator, PaginatorChanged } from '../../../models/common/paginator.model';
 import {
     PastTrainingsQueryParams,
@@ -215,7 +214,7 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                         break;
                     }
                     case 'week': {
-                        payloadDate = startOfWeek(startOfDay(new Date()));
+                        payloadDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
                         break;
                     }
                 }
