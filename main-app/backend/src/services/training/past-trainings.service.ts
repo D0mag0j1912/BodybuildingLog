@@ -38,7 +38,7 @@ export class PastTrainingsService {
     ): Promise<PaginatorDto<PastTrainingsDto>> {
         try {
             const searchData = payload.searchData;
-            const currentDate = payload.currentDate;
+            const currentDate = new Date(payload.currentDate);
             const periodFilterType = payload.periodFilterType;
             let condition: FilterQuery<NewTrainingDto>;
             let results: PaginatorDto<PastTrainingsDto>;

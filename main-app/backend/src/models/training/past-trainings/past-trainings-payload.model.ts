@@ -6,12 +6,12 @@ import { PeriodFilterType } from './period-filter.type';
 
 export class PastTrainingsPayload {
     @ApiPropertyOptional({
-        type: Date,
+        type: String,
         title: 'Current date',
         required: false,
     })
     @IsOptional()
-    currentDate?: Date;
+    currentDate?: string;
 
     @ApiPropertyOptional({
         enum: ['week', 'day'],
