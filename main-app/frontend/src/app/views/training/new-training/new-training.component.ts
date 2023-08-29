@@ -119,7 +119,6 @@ export class NewTrainingComponent implements OnInit {
     editTrainingData: NewTraining;
     bodyweightValidators = [Validators.min(30), Validators.max(300)];
     bodyweightSetCategories = BODYWEIGHT_SET_CATEGORIES;
-    allExercises: StreamData<Exercise[]>;
 
     newTrainingForm = new FormGroup({
         bodyweight: new FormControl(0, {
@@ -163,7 +162,8 @@ export class NewTrainingComponent implements OnInit {
 
         this.trainingStream$ = this._route.params.pipe(
             take(1),
-            switchMap((params: Params) => {
+            withLatestFrom(this._trainingsCommonFacadeService.selectExercises()),
+            switchMap(([params, allExercises]: [Params, StreamData<Exercise[]>]) => {
                 if (params['id']) {
                     this.editMode = true;
                     return this._pastTrainingService.getPastTraining(params['id']).pipe(
@@ -181,120 +181,121 @@ export class NewTrainingComponent implements OnInit {
                             }
                             return EMPTY;
                         }),
+                        //Temporary solution
+                        map((_) => allExercises),
                     );
                 } else {
-                    return this._newTrainingStoreService.trainingState$.pipe(
-                        take(1),
-                        withLatestFrom(
-                            this._trainingSplitsFacadeService.selectActiveTrainingSplit(),
-                        ),
-                        switchMap(
-                            ([currentTrainingState, activeTrainingSplit]: [
-                                NewTraining,
-                                TrainingSplit,
-                            ]) => {
-                                this.activeTrainingSplit = activeTrainingSplit;
-                                if (this.activeTrainingSplit) {
-                                    const todaysDayIndex = getDay(new Date());
-                                    const todaysDayName = DAYS_OF_WEEK.find(
-                                        (dayData) => dayData.index === todaysDayIndex,
-                                    ).day;
-                                    const customTraining = activeTrainingSplit.trainings.find(
-                                        (training: CustomTraining) =>
-                                            training.dayOfWeek === todaysDayName,
-                                    );
-                                    return this._newTrainingStoreService.updateTrainingState(
-                                        'useTrainingSplit',
-                                        {
-                                            trainingState: undefined,
-                                            exercises: customTraining.exercises,
-                                            userId: activeTrainingSplit.userId,
-                                            allExercises: this.allExercises.Value,
-                                        },
-                                    );
-                                } else {
-                                    let newTrainingState: NewTraining;
-                                    //If training was in edit mode, but currently is in creation mode
-                                    if (currentTrainingState.editMode && !this.editMode) {
-                                        newTrainingState = {
-                                            ...EMPTY_TRAINING,
-                                            exercises: [
-                                                createEmptyExercise(this.allExercises.Value),
-                                            ],
-                                            userId: currentTrainingState?.userId ?? '',
-                                            trainingDate: new Date().toISOString(),
-                                            editMode: false,
-                                        };
+                    return this._newTrainingStoreService.trainingState$
+                        .pipe(
+                            take(1),
+                            withLatestFrom(
+                                this._trainingSplitsFacadeService.selectActiveTrainingSplit(),
+                            ),
+                            switchMap(
+                                ([currentTrainingState, activeTrainingSplit]: [
+                                    NewTraining,
+                                    TrainingSplit,
+                                ]) => {
+                                    this.activeTrainingSplit = activeTrainingSplit;
+                                    if (this.activeTrainingSplit) {
+                                        const todaysDayIndex = getDay(new Date());
+                                        const todaysDayName = DAYS_OF_WEEK.find(
+                                            (dayData) => dayData.index === todaysDayIndex,
+                                        ).day;
+                                        const customTraining = activeTrainingSplit.trainings.find(
+                                            (training: CustomTraining) =>
+                                                training.dayOfWeek === todaysDayName,
+                                        );
+                                        return this._newTrainingStoreService.updateTrainingState(
+                                            'useTrainingSplit',
+                                            {
+                                                trainingState: undefined,
+                                                exercises: customTraining.exercises,
+                                                userId: activeTrainingSplit.userId,
+                                                allExercises: allExercises.Value,
+                                            },
+                                        );
+                                    } else {
+                                        let newTrainingState: NewTraining;
+                                        //If training was in edit mode, but currently is in creation mode
+                                        if (currentTrainingState.editMode && !this.editMode) {
+                                            newTrainingState = {
+                                                ...EMPTY_TRAINING,
+                                                exercises: [
+                                                    createEmptyExercise(allExercises.Value),
+                                                ],
+                                                userId: currentTrainingState?.userId ?? '',
+                                                trainingDate: new Date().toISOString(),
+                                                editMode: false,
+                                            };
+                                        }
+                                        //If training is in creation mode
+                                        if (!currentTrainingState.editMode && !this.editMode) {
+                                            newTrainingState = {
+                                                ...currentTrainingState,
+                                                userId: currentTrainingState?.userId ?? '',
+                                                trainingDate: currentTrainingState.trainingDate,
+                                                exercises: [...currentTrainingState.exercises].map(
+                                                    (singleExercise: SingleExercise) => {
+                                                        const trainingSplitExercisesIds =
+                                                            currentTrainingState.exercises
+                                                                .map(
+                                                                    (
+                                                                        singleExercise: SingleExercise,
+                                                                    ) =>
+                                                                        singleExercise.exerciseData,
+                                                                )
+                                                                .map((value: Exercise) => value._id)
+                                                                .filter(
+                                                                    (id: string) =>
+                                                                        id !==
+                                                                        singleExercise.exerciseData
+                                                                            ._id,
+                                                                );
+                                                        return {
+                                                            ...singleExercise,
+                                                            availableExercises:
+                                                                allExercises.Value.filter(
+                                                                    (availableExercise: Exercise) =>
+                                                                        !trainingSplitExercisesIds.includes(
+                                                                            availableExercise._id,
+                                                                        ),
+                                                                ),
+                                                        };
+                                                    },
+                                                ),
+                                            };
+                                        }
+                                        return this._newTrainingStoreService.updateTrainingState(
+                                            'newTrainingInit',
+                                            { trainingState: newTrainingState },
+                                        );
                                     }
-                                    //If training is in creation mode
-                                    if (!currentTrainingState.editMode && !this.editMode) {
-                                        newTrainingState = {
-                                            ...currentTrainingState,
-                                            userId: currentTrainingState?.userId ?? '',
-                                            trainingDate: currentTrainingState.trainingDate,
-                                            exercises: [...currentTrainingState.exercises].map(
-                                                (singleExercise: SingleExercise) => {
-                                                    const trainingSplitExercisesIds =
-                                                        currentTrainingState.exercises
-                                                            .map(
-                                                                (singleExercise: SingleExercise) =>
-                                                                    singleExercise.exerciseData,
-                                                            )
-                                                            .map((value: Exercise) => value._id)
-                                                            .filter(
-                                                                (id: string) =>
-                                                                    id !==
-                                                                    singleExercise.exerciseData._id,
-                                                            );
-                                                    return {
-                                                        ...singleExercise,
-                                                        availableExercises:
-                                                            this.allExercises.Value.filter(
-                                                                (availableExercise: Exercise) =>
-                                                                    !trainingSplitExercisesIds.includes(
-                                                                        availableExercise._id,
-                                                                    ),
-                                                            ),
-                                                    };
-                                                },
-                                            ),
-                                        };
-                                    }
-                                    return this._newTrainingStoreService.updateTrainingState(
-                                        'newTrainingInit',
-                                        { trainingState: newTrainingState },
-                                    );
-                                }
-                            },
-                        ),
-                    );
+                                },
+                            ),
+                        )
+                        .pipe(
+                            //Temporary solution
+                            map((_) => allExercises),
+                        );
                 }
             }),
-            switchMap((_) =>
-                of(this.allExercises).pipe(
-                    tap((_) => {
-                        this._formInit();
-                        if (this.editTrainingData) {
-                            const editTrainingWeightUnit =
-                                this.editTrainingData.preferences.weightUnit;
-                            const isBodyweightEntered =
-                                !!this.newTrainingForm.controls.bodyweight.value;
-                            if (
-                                editTrainingWeightUnit !== this.currentWeightUnit &&
-                                isBodyweightEntered
-                            ) {
-                                this.newTrainingForm.controls.bodyweight.patchValue(
-                                    convertWeightUnit(
-                                        this.currentWeightUnit,
-                                        this.newTrainingForm.controls.bodyweight.value,
-                                    ),
-                                );
-                            }
-                        }
-                    }),
-                    mapStreamData(),
-                ),
-            ),
+            tap((_) => {
+                this._formInit();
+                if (this.editTrainingData) {
+                    const editTrainingWeightUnit = this.editTrainingData.preferences.weightUnit;
+                    const isBodyweightEntered = !!this.newTrainingForm.controls.bodyweight.value;
+                    if (editTrainingWeightUnit !== this.currentWeightUnit && isBodyweightEntered) {
+                        this.newTrainingForm.controls.bodyweight.patchValue(
+                            convertWeightUnit(
+                                this.currentWeightUnit,
+                                this.newTrainingForm.controls.bodyweight.value,
+                            ),
+                        );
+                    }
+                }
+            }),
+            mapStreamData(),
         );
 
         this._changeDetectorRef.detectChanges();
@@ -315,11 +316,6 @@ export class NewTrainingComponent implements OnInit {
         if (trainingSplitId) {
             this._trainingSplitsFacadeService.getTrainingSplit(trainingSplitId);
         }
-
-        this._trainingsCommonFacadeService
-            .selectExercises()
-            .pipe(takeUntil(this._unsubscribeService))
-            .subscribe((data: StreamData<Exercise[]>) => (this.allExercises = data));
     }
 
     onSubmit(): void {
