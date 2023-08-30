@@ -23,7 +23,6 @@ export class PastTrainingsPayload {
     periodFilterType?: PeriodFilterType;
 
     @ApiPropertyOptional({
-        type: SearchDataDto,
         title: 'Search data',
         required: false,
     })

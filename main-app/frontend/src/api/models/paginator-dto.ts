@@ -2,10 +2,10 @@
 /* eslint-disable */
 import { PaginatorParamsDto } from './paginator-params-dto';
 export interface PaginatorDto {
-  CurrentPage: number;
+  CurrentPage?: number;
   Next?: PaginatorParamsDto;
-  PerPage: number;
+  PerPage?: number;
   Previous?: PaginatorParamsDto;
-  TotalCount: number;
-  TotalPages: number;
+  TotalCount?: number;
+  TotalPages?: number;
 }

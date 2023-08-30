@@ -4,9 +4,9 @@ import { PreferencesDto } from './preferences-dto';
 export interface UpdatePreferencesDto {
 
   /**
-   * Type of preferences that changed
+   * Type of the preference that changed
    */
-  preferenceChanged: string;
+  preferenceChanged: 'language' | 'showByPeriod' | 'weightUnit' | 'setDurationUnit' | 'trainingSplit';
 
   /**
    * Preferences data
