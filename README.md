@@ -5,7 +5,7 @@ It is initially designed to be used on mobile phones most of the time.
 
 It has built in support for:
 - Android and iPhone devices
-- Multiple languages (croatian and english)
+- Multiple languages (Croatian and English)
 - Individual user preferences (more on this later)
 
 ## Built with
@@ -18,5 +18,7 @@ It has built in support for:
 ## Main features
 - Log new training
 - View past trainings
+- Create custom training splits
 
 ### Log new training
+This is the core feature of the application because it allows users to record and document their workouts.
