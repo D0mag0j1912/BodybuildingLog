@@ -26,3 +26,8 @@ export const selectPastTrainingsFilter = createSelector(
     pastTrainingsState,
     (state: PastTrainingsState) => state?.filter,
 );
+
+export const selectIsLoading = createSelector(
+    pastTrainingsState,
+    (state: PastTrainingsState) => state.isLoading,
+);

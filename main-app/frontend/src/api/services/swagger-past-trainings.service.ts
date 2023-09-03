@@ -11,6 +11,8 @@ import { map, filter } from 'rxjs/operators';
 
 import { NewTrainingDto } from '../models/new-training-dto';
 import { PaginatorDto } from '../models/paginator-dto';
+import { PaginatorParamsDto } from '../models/paginator-params-dto';
+import { PastTrainingsDto } from '../models/past-trainings-dto';
 import { StreamModelDto } from '../models/stream-model-dto';
 
 @Injectable({
@@ -36,26 +38,32 @@ export class SwaggerPastTrainingsService extends BaseService {
    * This method doesn't expect any request body.
    */
   pastTrainingsControllerGetPastTrainings$Response(params: {
-    currentDate: string;
-    filterType: string;
+    currentDate?: string;
+    periodFilterType?: 'week' | 'day';
     page: number;
     perPage: number;
-    searchText?: string;
+    searchText: string;
+    muscleGroups?: Array<'Legs' | 'Core' | 'Back' | 'Chest' | 'Biceps' | 'Triceps' | 'Neck' | 'Forearm' | 'Glutes' | 'Shoulders' | ''>;
     context?: HttpContext
   }
-): Observable<StrictHttpResponse<StreamModelDto & {
-'IsLoading'?: boolean;
-'IsError'?: boolean;
-'Value'?: PaginatorDto;
+): Observable<StrictHttpResponse<PaginatorDto & {
+'Next'?: PaginatorParamsDto;
+'Previous'?: PaginatorParamsDto;
+'CurrentPage'?: number;
+'PerPage'?: number;
+'TotalCount'?: number;
+'TotalPages'?: number;
+'Results'?: PastTrainingsDto;
 }>> {
 
     const rb = new RequestBuilder(this.rootUrl, SwaggerPastTrainingsService.PastTrainingsControllerGetPastTrainingsPath, 'get');
     if (params) {
       rb.query('currentDate', params.currentDate, {});
-      rb.query('filterType', params.filterType, {});
+      rb.query('periodFilterType', params.periodFilterType, {});
       rb.query('page', params.page, {});
       rb.query('perPage', params.perPage, {});
       rb.query('searchText', params.searchText, {});
+      rb.query('muscleGroups', params.muscleGroups, {});
     }
 
     return this.http.request(rb.build({
@@ -65,10 +73,14 @@ export class SwaggerPastTrainingsService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<StreamModelDto & {
-        'IsLoading'?: boolean;
-        'IsError'?: boolean;
-        'Value'?: PaginatorDto;
+        return r as StrictHttpResponse<PaginatorDto & {
+        'Next'?: PaginatorParamsDto;
+        'Previous'?: PaginatorParamsDto;
+        'CurrentPage'?: number;
+        'PerPage'?: number;
+        'TotalCount'?: number;
+        'TotalPages'?: number;
+        'Results'?: PastTrainingsDto;
         }>;
       })
     );
@@ -81,28 +93,41 @@ export class SwaggerPastTrainingsService extends BaseService {
    * This method doesn't expect any request body.
    */
   pastTrainingsControllerGetPastTrainings(params: {
-    currentDate: string;
-    filterType: string;
+    currentDate?: string;
+    periodFilterType?: 'week' | 'day';
     page: number;
     perPage: number;
-    searchText?: string;
+    searchText: string;
+    muscleGroups?: Array<'Legs' | 'Core' | 'Back' | 'Chest' | 'Biceps' | 'Triceps' | 'Neck' | 'Forearm' | 'Glutes' | 'Shoulders' | ''>;
     context?: HttpContext
   }
-): Observable<StreamModelDto & {
-'IsLoading'?: boolean;
-'IsError'?: boolean;
-'Value'?: PaginatorDto;
+): Observable<PaginatorDto & {
+'Next'?: PaginatorParamsDto;
+'Previous'?: PaginatorParamsDto;
+'CurrentPage'?: number;
+'PerPage'?: number;
+'TotalCount'?: number;
+'TotalPages'?: number;
+'Results'?: PastTrainingsDto;
 }> {
 
     return this.pastTrainingsControllerGetPastTrainings$Response(params).pipe(
-      map((r: StrictHttpResponse<StreamModelDto & {
-'IsLoading'?: boolean;
-'IsError'?: boolean;
-'Value'?: PaginatorDto;
-}>) => r.body as StreamModelDto & {
-'IsLoading'?: boolean;
-'IsError'?: boolean;
-'Value'?: PaginatorDto;
+      map((r: StrictHttpResponse<PaginatorDto & {
+'Next'?: PaginatorParamsDto;
+'Previous'?: PaginatorParamsDto;
+'CurrentPage'?: number;
+'PerPage'?: number;
+'TotalCount'?: number;
+'TotalPages'?: number;
+'Results'?: PastTrainingsDto;
+}>) => r.body as PaginatorDto & {
+'Next'?: PaginatorParamsDto;
+'Previous'?: PaginatorParamsDto;
+'CurrentPage'?: number;
+'PerPage'?: number;
+'TotalCount'?: number;
+'TotalPages'?: number;
+'Results'?: PastTrainingsDto;
 })
     );
   }

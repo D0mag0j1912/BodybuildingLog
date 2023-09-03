@@ -3,7 +3,7 @@
         <div class="paginator">
             <div class="controls-wrapper">
                 <ng-container *ngIf="isSearch">
-                    <ion-item *skeleton="isLoading; width: '50px'; height: '35px'" class="page-size-item">
+                    <ion-item class="page-size-item">
                         <ion-select class="page-size-select" [(ngModel)]="perPage" (ionChange)="loadPage()">
                             <ion-select-option *ngFor="let size of PAGE_SIZE_OPTIONS" [value]="size">
                                 {{ size }}
@@ -13,7 +13,6 @@
                 </ng-container>
                 <div class="arrow-wrapper" [class.arrow-wrapper-search]="isSearch">
                     <ion-button
-                        *skeleton="isLoading; width: '50px'; height: '35px'"
                         class="first"
                         type="button"
                         color="primary"
@@ -24,29 +23,26 @@
                         <ion-icon name="play-back-sharp"></ion-icon>
                     </ion-button>
                     <ion-button
-                        *skeleton="isLoading; width: '50px'; height: '35px'"
                         type="button"
                         class="previous"
                         color="primary"
                         fill="outline"
-                        [disabled]="data?.IsLoading || !isPreviousPage"
+                        [disabled]="!isPreviousPage"
                         (click)="loadPage('Previous')"
                     >
                         <ion-icon name="chevron-back-sharp"></ion-icon>
                     </ion-button>
                     <ion-button
-                        *skeleton="isLoading; width: '50px'; height: '35px'"
                         type="button"
                         class="next"
                         color="primary"
                         fill="outline"
-                        [disabled]="data.IsLoading || !isNextPage"
+                        [disabled]="!isNextPage"
                         (click)="loadPage('Next')"
                     >
                         <ion-icon name="chevron-forward-sharp"></ion-icon>
                     </ion-button>
                     <ion-button
-                        *skeleton="isLoading; width: '50px'; height: '35px'"
                         type="button"
                         class="last"
                         color="primary"
@@ -59,16 +55,14 @@
                 </div>
             </div>
             <ng-container *ngIf="isSearch">
-                <ng-container *ngIf="data?.Value?.TotalPages; else noPages">
+                <ng-container *ngIf="data.TotalPages; else noPages">
                     <div
-                        *skeleton="isLoading; width: '75px'; height: '25px'"
                         class="label"
-                        [innerHTML]="'common.pagination_label' | translate: { firstPage: page, secondPage: data.Value.TotalPages } | sanitizeHtml"
+                        [innerHTML]="'common.pagination_label' | translate: { firstPage: page, secondPage: data.TotalPages } | sanitizeHtml"
                     ></div>
                 </ng-container>
                 <ng-template #noPages>
                     <div
-                        *skeleton="isLoading; width: '75px'; height: '25px'"
                         class="label"
                         [innerHTML]="'common.page_number' | translate: { page } | sanitizeHtml"></div>
                 </ng-template>

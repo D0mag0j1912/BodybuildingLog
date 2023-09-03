@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { isNeverCheck } from '../../../helpers/is-never-check.helper';
-import { StreamData } from '../../../models/common/common.model';
 import { Paginator } from '../../../models/common/paginator.model';
 import { Page } from '../../../models/common/page.type';
 import { PastTrainings } from '../../../models/training/past-trainings/past-trainings.model';
@@ -32,10 +31,7 @@ export class PaginationComponent {
     isNextPage = false;
 
     @Input()
-    data: StreamData<Paginator<PastTrainings>> | undefined = undefined;
-
-    @Input()
-    isLoading = false;
+    data: Paginator<PastTrainings> | undefined = undefined;
 
     @Output()
     paginatorChanged = new EventEmitter<PaginatorChanged>();
@@ -57,7 +53,7 @@ export class PaginationComponent {
                         break;
                     }
                     case 'Last': {
-                        this.page = this.data.Value.TotalPages;
+                        this.page = this.data.TotalPages;
                         break;
                     }
                     default:

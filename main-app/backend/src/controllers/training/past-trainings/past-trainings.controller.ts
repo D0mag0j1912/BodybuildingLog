@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
     ApiExtraModels,
@@ -13,16 +13,15 @@ import { GET_USER } from '../../../decorators/get-user.decorator';
 import { TrainingGuard } from '../../../guards/training/training.guard';
 import { UserDto } from '../../../models/auth/login/login.model';
 import { PaginatorDto } from '../../../models/common/paginator.model';
-import { PeriodFilterType } from '../../../models/training/past-trainings/period-filter.type';
 import { StreamModelDto } from '../../../models/common/stream.model';
 import { StreamModelResponse } from '../../../decorators/stream-model-response.decorator';
-import { PaginatePipe } from '../../../pipes/common/paginate.pipe';
-import { SearchDataDto } from '../../../models/common/search-data.model';
+import { PastTrainingsPayload } from '../../../models/training/past-trainings/past-trainings-payload.model';
+import { PaginatorResponse } from '../../../decorators/paginator-response.decorator';
 
 @ApiTags('Past trainings')
 @Controller('api/training/past-trainings')
 @UseGuards(AuthGuard())
-@ApiExtraModels(StreamModelDto, PaginatorDto)
+@ApiExtraModels(PaginatorDto, PastTrainingsDto, PastTrainingsPayload)
 export class PastTrainingsController {
     constructor(private _pastTrainingsService: PastTrainingsService) {}
 
@@ -34,26 +33,13 @@ export class PastTrainingsController {
         status: 401,
         description: 'Unauthorized',
     })
-    @StreamModelResponse(PaginatorDto, false, true)
+    @PaginatorResponse()
     @Get()
     async getPastTrainings(
         @GET_USER() user: UserDto,
-        @Query('currentDate') currentDate: Date,
-        @Query('filterType') filterType: PeriodFilterType,
-        @Query(PaginatePipe) searchData: SearchDataDto,
-    ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
-        //TODO: Create custom Pipe
-        if (!currentDate || !filterType) {
-            throw new BadRequestException(
-                'training.past_trainings.errors.past_trainings_error_title',
-            );
-        }
-        return this._pastTrainingsService.getPastTrainings(
-            currentDate,
-            filterType,
-            user._id,
-            searchData,
-        );
+        @Query() payload: PastTrainingsPayload,
+    ): Promise<PaginatorDto<PastTrainingsDto>> {
+        return this._pastTrainingsService.getPastTrainings(payload, user._id);
     }
 
     @StreamModelResponse(NewTrainingDto)

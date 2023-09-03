@@ -28,12 +28,12 @@ import {
 import { OverlayEventDetail } from '@ionic/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { ALL_MONTHS } from '../../../helpers/months.helper';
-import { StreamData } from '../../../models/common/common.model';
 import { Paginator, PaginatorChanged } from '../../../models/common/paginator.model';
 import {
     PastTrainingsQueryParams,
     PastTrainings,
     PeriodFilterType,
+    PastTrainingsPayloadType,
 } from '../../../models/training/past-trainings/past-trainings.model';
 import {
     QUERY_PARAMS_DATE_FORMAT,
@@ -71,10 +71,10 @@ import { PastTrainingsFiltersDialogComponent } from './past-trainings-filters-di
 })
 export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
     pastTrainings$ = this._pastTrainingsFacadeService.selectPastTrainings().pipe(
-        tap(async (response: StreamData<Paginator<PastTrainings>>) => {
+        tap(async (response: Paginator<PastTrainings>) => {
             if (response) {
                 //If searching
-                if (response?.Value?.TotalPages) {
+                if (response?.TotalPages) {
                     this.updatePageAndSize(response);
                 }
                 this.handlePaginationArrows(response);
@@ -85,6 +85,8 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             }
         }),
     );
+
+    isLoading$ = this._pastTrainingsFacadeService.selectIsLoading();
 
     private _isSearch$ = new BehaviorSubject<boolean>(false);
     readonly isSearch$ = this._isSearch$.asObservable();
@@ -206,43 +208,44 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             .subscribe((response: OverlayEventDetail<Partial<PastTrainingsQueryParams>>) => {
                 this.periodFilter = (response.data as PastTrainingsQueryParams).showBy;
                 let payloadDate: Date;
-                const searchData: SearchParams = {
-                    page: this.page,
-                    perPage: this.perPage,
-                    searchText: '',
-                };
                 switch (this.periodFilter) {
                     case 'day': {
                         payloadDate = new Date();
                         break;
                     }
                     case 'week': {
-                        payloadDate = startOfWeek(startOfDay(new Date()));
+                        payloadDate = startOfWeek(startOfDay(new Date()), { weekStartsOn: 1 });
                         break;
                     }
                 }
-                this._pastTrainingsFacadeService.getPastTrainings(
-                    payloadDate.toISOString(),
-                    this.periodFilter,
-                    searchData,
-                );
+                const payload: PastTrainingsPayloadType = {
+                    currentDate: payloadDate.toISOString(),
+                    periodFilterType: this.periodFilter,
+                    muscleGroups: response.data.muscleGroups ?? [],
+                };
+                this._pastTrainingsFacadeService.getPastTrainings(payload);
             });
     }
 
     onSearchEmitted(searchText: string): void {
         this.searchText = searchText;
         this._isSearch$.next(!!searchText);
-        this.page = INITIAL_PAGE;
-        const searchData: SearchParams = {
-            page: this.page,
-            perPage: this.perPage,
-            searchText,
-        };
-        this._pastTrainingsFacadeService.getPastTrainings(
-            new Date().toISOString(),
-            this.periodFilter,
-            searchData,
-        );
+        let payload: PastTrainingsPayloadType;
+        if (this.searchText) {
+            this.page = INITIAL_PAGE;
+            const searchData: SearchParams = {
+                page: this.page,
+                perPage: this.perPage,
+                searchText,
+            };
+            payload = { searchData };
+        } else {
+            payload = {
+                currentDate: new Date().toISOString(),
+                periodFilterType: this.periodFilter,
+            };
+        }
+        this._pastTrainingsFacadeService.getPastTrainings(payload);
     }
 
     onPaginatorChanged($event: PaginatorChanged, results: PastTrainings): void {
@@ -252,11 +255,8 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                 page: $event.page,
                 searchText: this.searchText?.trim()?.toLowerCase() ?? '',
             };
-            this._pastTrainingsFacadeService.getPastTrainings(
-                new Date().toISOString(),
-                this.periodFilter,
-                searchData,
-            );
+            const payload: PastTrainingsPayloadType = { searchData };
+            this._pastTrainingsFacadeService.getPastTrainings(payload);
         } else {
             let currentDate: Date;
             switch (this.periodFilter) {
@@ -314,10 +314,11 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                     isNeverCheck(this.periodFilter);
                 }
             }
-            this._pastTrainingsFacadeService.getPastTrainings(
-                currentDate.toISOString(),
-                this.periodFilter,
-            );
+            const payload: PastTrainingsPayloadType = {
+                currentDate: currentDate.toISOString(),
+                periodFilterType: this.periodFilter,
+            };
+            this._pastTrainingsFacadeService.getPastTrainings(payload);
         }
     }
 
@@ -394,9 +395,24 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
             );
     }
 
-    //TODO: align with 'ShowByDay' feature
     tryAgain(): void {
-        this.initPastTrainings();
+        this.isSearch$.pipe(take(1)).subscribe((isSearch: boolean) => {
+            let payload: PastTrainingsPayloadType;
+            if (isSearch) {
+                const searchData: SearchParams = {
+                    perPage: this.perPage,
+                    page: this.page,
+                    searchText: this.searchText?.trim().toLowerCase(),
+                };
+                payload = { searchData };
+            } else {
+                payload = {
+                    currentDate: new Date().toISOString(),
+                    periodFilterType: this.periodFilter,
+                };
+            }
+            this._pastTrainingsFacadeService.getPastTrainings(payload);
+        });
     }
 
     setTimePeriod$(results: PastTrainings): Observable<string> {
@@ -482,28 +498,26 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
                 page: this.page,
                 searchText: this.searchText.trim().toLowerCase(),
             };
-            this._pastTrainingsFacadeService.getPastTrainings(
-                new Date().toISOString(),
-                this.periodFilter,
-                searchData,
-            );
+            const payload: PastTrainingsPayloadType = { searchData };
+            this._pastTrainingsFacadeService.getPastTrainings(payload);
         } else {
             this.periodFilter = this.currentQueryParams.showBy as PeriodFilterType;
             const currentDate = this.getDateTimeQueryParams();
-            this._pastTrainingsFacadeService.getPastTrainings(
-                currentDate.toISOString(),
-                this.periodFilter ?? 'week',
-            );
+            const payload: PastTrainingsPayloadType = {
+                currentDate: currentDate.toISOString(),
+                periodFilterType: this.periodFilter,
+            };
+            this._pastTrainingsFacadeService.getPastTrainings(payload);
         }
     }
 
-    private updatePageAndSize(response: StreamData<Paginator<PastTrainings>>): void {
-        this.page = response?.Value?.CurrentPage ?? INITIAL_PAGE;
-        this.perPage = response?.Value?.PerPage ?? DEFAULT_PER_PAGE;
+    private updatePageAndSize(response: Paginator<PastTrainings>): void {
+        this.page = response?.CurrentPage ?? INITIAL_PAGE;
+        this.perPage = response?.PerPage ?? DEFAULT_PER_PAGE;
     }
 
     private handleQueryParams(
-        trainingData: StreamData<Paginator<PastTrainings>>,
+        trainingData: Paginator<PastTrainings>,
         searchValue?: string,
     ): { filter: string } {
         const params: PastTrainingsQueryParams = {
@@ -521,24 +535,24 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
 
     private handleSpecificQueryParam(
         searchValue: string | undefined,
-        trainingData: StreamData<Paginator<PastTrainings>>,
+        trainingData: Paginator<PastTrainings>,
         queryParam: keyof PastTrainingsQueryParams,
     ): string | undefined {
         if (searchValue) {
-            if (trainingData?.Value?.Results?.Trainings?.length > 0) {
+            if (trainingData.Results.Trainings.length > 0) {
                 if (queryParam === 'page') {
                     return this.page.toString();
                 } else if (queryParam === 'startDate') {
                     return format(
-                        trainingData?.Value?.Results?.Dates?.StartDate
-                            ? new Date(trainingData.Value.Results.Dates.StartDate)
+                        trainingData.Results.Dates.StartDate
+                            ? new Date(trainingData.Results.Dates.StartDate)
                             : new Date(),
                         QUERY_PARAMS_DATE_FORMAT,
                     );
                 } else if (queryParam === 'endDate') {
                     return format(
-                        trainingData?.Value?.Results?.Dates?.EndDate
-                            ? new Date(trainingData.Value.Results.Dates.EndDate)
+                        trainingData.Results.Dates.EndDate
+                            ? new Date(trainingData.Results.Dates.EndDate)
                             : new Date(),
                         QUERY_PARAMS_DATE_FORMAT,
                     );
@@ -551,15 +565,15 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         } else {
             if (queryParam === 'startDate') {
                 return format(
-                    trainingData?.Value?.Results?.Dates?.StartDate
-                        ? new Date(trainingData.Value.Results.Dates.StartDate)
+                    trainingData.Results.Dates.StartDate
+                        ? new Date(trainingData.Results.Dates.StartDate)
                         : new Date(),
                     QUERY_PARAMS_DATE_FORMAT,
                 );
             } else if (queryParam === 'endDate') {
                 return format(
-                    trainingData?.Value?.Results?.Dates?.EndDate
-                        ? new Date(trainingData.Value.Results.Dates.EndDate)
+                    trainingData.Results.Dates.EndDate
+                        ? new Date(trainingData.Results.Dates.EndDate)
                         : new Date(),
                     QUERY_PARAMS_DATE_FORMAT,
                 );
@@ -569,15 +583,13 @@ export class PastTrainingsComponent implements AfterViewChecked, OnDestroy {
         }
     }
 
-    private handlePaginationArrows(response: StreamData<Paginator<PastTrainings>>): void {
-        if (response?.Value) {
-            if (response.Value.Results.EarliestTrainingDate !== undefined) {
-                this.isPreviousPage = response.Value.Results.IsPrevious;
-                this.isNextPage = response.Value.Results.IsNext;
-            } else {
-                this.isPreviousPage = !!response.Value.Previous;
-                this.isNextPage = !!response.Value.Next;
-            }
+    private handlePaginationArrows(response: Paginator<PastTrainings>): void {
+        if (response.Results.EarliestTrainingDate !== undefined) {
+            this.isPreviousPage = response.Results.IsPrevious;
+            this.isNextPage = response.Results.IsNext;
+        } else {
+            this.isPreviousPage = !!response.Previous;
+            this.isNextPage = !!response.Next;
         }
     }
 

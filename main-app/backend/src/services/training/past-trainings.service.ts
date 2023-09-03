@@ -8,11 +8,10 @@ import { PaginatorDto } from '../../models/common/paginator.model';
 import { NewTrainingDto } from '../../models/training/new-training/new-training.model';
 import { PastTrainingsDto } from '../../models/training/past-trainings/past-trainings.model';
 import { DateIntervalDto } from '../../models/common/dates.model';
-import { PeriodFilterType } from '../../models/training/past-trainings/period-filter.type';
 import { isNeverCheck } from '../../helpers/is-never-check';
 import { StreamModelDto } from '../../models/common/stream.model';
 import { PaginatorParamsDto } from '../../models/common/paginator-params.model';
-import { SearchDataDto } from '../../models/common/search-data.model';
+import { PastTrainingsPayload } from '../../models/training/past-trainings/past-trainings-payload.model';
 
 @Injectable()
 export class PastTrainingsService {
@@ -34,12 +33,13 @@ export class PastTrainingsService {
     }
 
     async getPastTrainings(
-        currentDate: Date,
-        periodFilterType: PeriodFilterType,
-        loggedUserId: string,
-        searchData: SearchDataDto,
-    ): Promise<StreamModelDto<PaginatorDto<PastTrainingsDto>>> {
+        payload: PastTrainingsPayload,
+        userId: string,
+    ): Promise<PaginatorDto<PastTrainingsDto>> {
         try {
+            const searchData = payload.searchData;
+            const currentDate = new Date(payload.currentDate);
+            const periodFilterType = payload.periodFilterType;
             let condition: FilterQuery<NewTrainingDto>;
             let results: PaginatorDto<PastTrainingsDto>;
             const isSearch = !!searchData?.searchText;
@@ -64,7 +64,7 @@ export class PastTrainingsService {
                                     },
                                 },
                             ],
-                            userId: loggedUserId,
+                            userId: userId,
                         },
                     ],
                 };
@@ -74,8 +74,8 @@ export class PastTrainingsService {
                     Results: {
                         ...results.Results,
                         Dates: setTrainingDate(results?.Results.Trainings, {
-                            StartDate: new Date(await this._getEarliestDate(loggedUserId)),
-                            EndDate: new Date(await this._getLatestDate(loggedUserId)),
+                            StartDate: new Date(await this._getEarliestDate(userId)),
+                            EndDate: new Date(await this._getLatestDate(userId)),
                         }),
                     },
                 };
@@ -87,7 +87,7 @@ export class PastTrainingsService {
                     },
                 };
             } else {
-                const earliestDate = new Date(await this._getEarliestDate(loggedUserId));
+                const earliestDate = new Date(await this._getEarliestDate(userId));
                 let dates: DateIntervalDto;
                 switch (periodFilterType) {
                     case 'day': {
@@ -98,7 +98,7 @@ export class PastTrainingsService {
                             EndDate: endOfWeekDate,
                         };
                         condition = {
-                            userId: loggedUserId,
+                            userId: userId,
                             trainingDate: {
                                 $gte: startOfDay(new Date(currentDate)),
                                 $lt: endOfDay(new Date(currentDate)),
@@ -116,7 +116,7 @@ export class PastTrainingsService {
                             EndDate: endOfDayDate,
                         };
                         condition = {
-                            userId: loggedUserId,
+                            userId: userId,
                             trainingDate: {
                                 $gte: dates.StartDate,
                                 $lt: dates.EndDate,
@@ -141,11 +141,7 @@ export class PastTrainingsService {
                     },
                 };
             }
-            return {
-                IsLoading: true,
-                Value: results,
-                IsError: false,
-            } as StreamModelDto<PaginatorDto<PastTrainingsDto>>;
+            return results;
         } catch (error: unknown) {
             throw new InternalServerErrorException(
                 'training.past_trainings.errors.past_trainings_error_title',

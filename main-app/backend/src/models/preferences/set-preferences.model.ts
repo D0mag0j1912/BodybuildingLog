@@ -4,10 +4,16 @@ import { PreferenceChangedType } from './preferences.type';
 
 export class UpdatePreferencesDto {
     @ApiProperty({
+        type: PreferencesDto,
+        required: true,
         description: 'Preferences data',
     })
     preferences: PreferencesDto;
 
-    @ApiProperty({ type: String, description: 'Type of preferences that changed' })
+    @ApiProperty({
+        enum: ['language', 'showByPeriod', 'weightUnit', 'setDurationUnit', 'trainingSplit'],
+        description: 'Type of the preference that changed',
+        required: true,
+    })
     preferenceChanged: PreferenceChangedType;
 }

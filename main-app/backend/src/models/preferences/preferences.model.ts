@@ -26,6 +26,7 @@ export const PREFERENCES_SCHEMA = new Schema({
 
 export class PreferencesDto {
     @ApiProperty({
+        required: true,
         enum: ['hr', 'en'],
         description: "User's current language code preference",
     })
@@ -34,6 +35,7 @@ export class PreferencesDto {
     languageCode: LanguageCodeType;
 
     @ApiProperty({
+        required: true,
         enum: ['lbs', 'kg'],
         description: "User's current weight unit preference",
     })
@@ -42,6 +44,7 @@ export class PreferencesDto {
     weightUnit: WeightUnitType;
 
     @ApiPropertyOptional({
+        required: false,
         enum: ['week', 'day'],
         description: "User's current past trainings period preference",
     })
@@ -51,6 +54,7 @@ export class PreferencesDto {
     showByPeriod?: PeriodFilterType;
 
     @ApiPropertyOptional({
+        required: false,
         enum: ['seconds', 'minutes'],
         description: "User's current set duration unit preference",
     })
@@ -59,7 +63,11 @@ export class PreferencesDto {
     @IsNotEmpty({ message: '@preferences.errors.set_duration_unit_required' })
     setDurationUnit?: SetDurationUnitType;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        type: String,
+        title: 'Preferences ID',
+        required: false,
+    })
     @IsOptional()
     @IsMongoId()
     _id?: string;
@@ -67,6 +75,7 @@ export class PreferencesDto {
     @ApiPropertyOptional({
         description: 'Id of authenticated user',
         type: String,
+        required: false,
     })
     @IsOptional()
     @IsMongoId()
@@ -75,6 +84,7 @@ export class PreferencesDto {
     @ApiPropertyOptional({
         description: 'Training split ID',
         type: String,
+        required: false,
     })
     @IsOptional()
     @IsMongoId()

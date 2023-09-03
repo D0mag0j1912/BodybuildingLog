@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { endOfDay, endOfWeek, format, startOfDay, startOfWeek } from 'date-fns';
-import { map, startWith, withLatestFrom } from 'rxjs/operators';
+import { delay, map, startWith, withLatestFrom } from 'rxjs/operators';
 import { QUERY_PARAMS_DATE_FORMAT } from '../../constants/training/past-trainings-date-format.const';
 import { PreferencesStoreService } from '../../services/store/shared/preferences-store.service';
 import { PreferencesDto as Preferences } from '../../../api/models/preferences-dto';
@@ -16,6 +16,7 @@ import { TrainingsCommonFacadeService } from '../../store/trainings-common/train
 })
 export class TrainingComponent implements OnInit {
     pastTrainingsFilter$ = this._pastTrainingsFacadeService.selectPastTrainingsFilter().pipe(
+        delay(0),
         startWith(''),
         withLatestFrom(this._preferencesStoreService.preferencesChanged$),
         map(([filter, preferences]: [string, Preferences]) => {

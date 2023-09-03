@@ -6,7 +6,6 @@ import * as PastTrainingsActions from '../actions/past-trainings.actions';
 import { PastTrainingsFacadeService } from '../past-trainings-facade.service';
 import { SwaggerPastTrainingsService } from '../../../../api';
 import * as CommonActions from '../../common/actions/common.actions';
-import { mapStreamData } from '../../../helpers/training/past-trainings/map-stream-data.helper';
 
 @Injectable()
 export class PastTrainingsEffects {
@@ -17,14 +16,14 @@ export class PastTrainingsEffects {
             switchMap((action) =>
                 this._swaggerPastTrainingsService
                     .pastTrainingsControllerGetPastTrainings({
-                        currentDate: action.currentDate.toString(),
-                        filterType: action.periodFilterType,
-                        page: action.searchData?.page,
-                        perPage: action.searchData?.perPage,
-                        searchText: action.searchData?.searchText,
+                        currentDate: action.payload.currentDate?.toString(),
+                        periodFilterType: action.payload.periodFilterType,
+                        page: action.payload.searchData?.page,
+                        perPage: action.payload.searchData?.perPage,
+                        searchText: action.payload.searchData?.searchText,
+                        muscleGroups: action.payload.muscleGroups,
                     })
                     .pipe(
-                        mapStreamData(),
                         catchError((_) => {
                             CommonActions.showToastMessage({
                                 color: 'danger',
