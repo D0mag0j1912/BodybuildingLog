@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsArray, IsOptional, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { SearchDataDto } from '../../common/search-data.model';
 import { PrimaryMuscleGroupType } from '../primary-muscle-group.type';
 import { PeriodFilterType } from './period-filter.type';
@@ -48,6 +49,7 @@ export class PastTrainingsPayload {
         required: false,
     })
     @IsOptional()
+    @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
     @IsArray()
     muscleGroups?: PrimaryMuscleGroupType[];
 }
