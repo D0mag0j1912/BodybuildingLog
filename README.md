@@ -38,6 +38,7 @@ Users are able to access and review their historical workout data. This feature 
 Users are able to:
   - Search trainings by exercise names
   - Filter trainings by day or week
+  - Filter trainings by muscle groups
   - Edit training
   - Delete training
 
