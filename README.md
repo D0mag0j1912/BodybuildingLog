@@ -1,6 +1,7 @@
 ## About the project
 <img src="main-app/frontend/src/assets/images/logo.png" width="200" height="200">
-This web application is made to help it's users to track and log their progress in the gym. 
+This web application is my side project built for fun and it's purpose was to help me deepen my knowledge about Angular and other mentioned technologies.
+Application's purpose is to help it's users to track and log their progress in the gym. 
 It is initially designed to be used on mobile phones.
 
 It has built in support for Android and iPhone devices.
